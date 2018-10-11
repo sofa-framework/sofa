@@ -59,10 +59,30 @@ namespace component
 namespace mapping
 {
 
+using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Matrix3;
+using sofa::defaulttype::Mat3x3d;
+using sofa::defaulttype::Vec3d;
+// 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
+typedef typename sofa::core::topology::BaseMeshTopology::Line Line;
+typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
+typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
+typedef typename sofa::core::topology::BaseMeshTopology::Tetra Tetra;
+typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+typedef typename sofa::core::topology::BaseMeshTopology::Hexa Hexa;
+typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
+typedef typename sofa::core::topology::BaseMeshTopology::SeqLines SeqLines;
+typedef typename sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+typedef typename sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+typedef typename sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+typedef typename sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+typedef typename sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
+
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping()
     : Inherit()
-    , mapper(initLink("mapper","Internal mapper created depending on the type of topology"))
+    , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"))
     , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
 #ifdef SOFA_DEV
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
@@ -73,7 +93,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping()
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
     : Inherit ( from, to )
-    , mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
+    , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
 #ifdef SOFA_DEV
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
@@ -85,7 +105,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology )
     : Inherit ( from, to )
-    , mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
+    , m_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
 #ifdef SOFA_DEV
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
@@ -102,44 +122,41 @@ BarycentricMapping<TIn, TOut>::~BarycentricMapping()
 }
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::clear ( int reserve )
+void BarycentricMapperRegularGridTopology<In,Out>::clearMapAndReserve ( int size )
 {
     updateJ = true;
-    map.clear();
-    if ( reserve>0 ) map.reserve ( reserve );
+    m_map.clear();
+    if ( size>0 ) m_map.reserve ( size );
 }
 
 template <class In, class Out>
 int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
 {
-    map.resize ( map.size() +1 );
-    CubeData& data = *map.rbegin();
+    m_map.resize ( m_map.size() +1 );
+    CubeData& data = *m_map.rbegin();
     data.in_index = cubeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)map.size()-1;
+    return (int)m_map.size()-1;
 }
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/ )
+void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    //if ( map.size() != 0 ) return;
+    SOFA_UNUSED(in);
+
     updateJ = true;
 
-    int outside = 0;
-    clear ( (int)out.size() );
-    if ( fromTopology->isVolume() )
+    clearMapAndReserve ( (int)out.size() );
+    if ( m_fromTopology->isVolume() )
     {
         for ( unsigned int i=0; i<out.size(); i++ )
         {
-            sofa::defaulttype::Vector3 coefs;
-            int cube = fromTopology->findCube ( sofa::defaulttype::Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+            Vector3 coefs;
+            int cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             if ( cube==-1 )
-            {
-                ++outside;
-                cube = fromTopology->findNearestCube ( sofa::defaulttype::Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
-            }
+                cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
 
             this->addPointInCube ( cube, coefs.ptr() );
         }
@@ -147,141 +164,147 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
 }
 
 template <class In, class Out>
-void BarycentricMapperSparseGridTopology<In,Out>::clear ( int reserve )
+void BarycentricMapperSparseGridTopology<In,Out>::clearMapAndReserve ( int size )
 {
     updateJ = true;
-    map.clear();
-    if ( reserve>0 ) map.reserve ( reserve );
+    m_map.clear();
+    if ( size>0 ) m_map.reserve ( size );
 }
 
 template <class In, class Out>
 int BarycentricMapperSparseGridTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
 {
-    map.resize ( map.size() +1 );
-    CubeData& data = *map.rbegin();
+    m_map.resize ( m_map.size() +1 );
+    CubeData& data = *m_map.rbegin();
     data.in_index = cubeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)map.size()-1;
+    return (int)m_map.size()-1;
 }
 
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/ )
 {
-    if ( this->map.size() != 0 ) return;
+    if ( this->m_map.size() != 0 ) return;
     updateJ = true;
-    int outside = 0;
-    clear ( (int)out.size() );
+    clearMapAndReserve ( (int)out.size() );
 
-    if ( fromTopology->isVolume() )
+    if ( m_fromTopology->isVolume() )
     {
         for ( unsigned int i=0; i<out.size(); i++ )
         {
-            sofa::defaulttype::Vector3 coefs;
-            int cube = fromTopology->findCube ( sofa::defaulttype::Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+            Vector3 coefs;
+            int cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             if ( cube==-1 )
             {
-                ++outside;
-                cube = fromTopology->findNearestCube ( sofa::defaulttype::Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+                cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             }
-            sofa::defaulttype::Vector3 baryCoords = coefs;
+            Vector3 baryCoords = coefs;
             this->addPointInCube ( cube, baryCoords.ptr() );
         }
     }
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clear1d ( int reserve )
+void BarycentricMapperMeshTopology<In,Out>::clearMap1dAndReserve ( int size )
 {
-    updateJ = true;
-    map1d.clear(); if ( reserve>0 ) map1d.reserve ( reserve );
+    m_updateJ = true;
+    m_map1d.clear();
+    if ( size>0 ) m_map1d.reserve ( size );
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clear2d ( int reserve )
+void BarycentricMapperMeshTopology<In,Out>::clearMap2dAndReserve ( int size )
 {
-    updateJ = true;
-    map2d.clear(); if ( reserve>0 ) map2d.reserve ( reserve );
+    m_updateJ = true;
+    m_map2d.clear();
+    if ( size>0 ) m_map2d.reserve ( size );
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clear3d ( int reserve )
+void BarycentricMapperMeshTopology<In,Out>::clearMap3dAndReserve ( int size )
 {
-    updateJ = true;
-    map3d.clear(); if ( reserve>0 ) map3d.reserve ( reserve );
+    m_updateJ = true;
+    m_map3d.clear();
+    if ( size>0 ) m_map3d.reserve ( size );
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clear ( int reserve )
+void BarycentricMapperMeshTopology<In,Out>::clearMapAndReserve ( int size )
 {
-    updateJ = true;
-    map1d.clear(); if ( reserve>0 ) map1d.reserve ( reserve );
-    map2d.clear(); if ( reserve>0 ) map2d.reserve ( reserve );
-    map3d.clear(); if ( reserve>0 ) map3d.reserve ( reserve );
+    m_updateJ = true;
+    m_map1d.clear();
+    if ( size>0 ) m_map1d.reserve ( size );
+
+    m_map2d.clear();
+    if ( size>0 ) m_map2d.reserve ( size );
+
+    m_map3d.clear();
+    if ( size>0 ) m_map3d.reserve ( size );
 }
 
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::addPointInLine ( const int lineIndex, const SReal* baryCoords )
 {
-    map1d.resize ( map1d.size() +1 );
-    MappingData1D& data = *map1d.rbegin();
+    m_map1d.resize ( m_map1d.size() +1 );
+    MappingData1D& data = *m_map1d.rbegin();
     data.in_index = lineIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
-    return (int)map1d.size()-1;
+    return (int)m_map1d.size()-1;
 }
 
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::addPointInTriangle ( const int triangleIndex, const SReal* baryCoords )
 {
-    map2d.resize ( map2d.size() +1 );
-    MappingData2D& data = *map2d.rbegin();
+    m_map2d.resize ( m_map2d.size() +1 );
+    MappingData2D& data = *m_map2d.rbegin();
     data.in_index = triangleIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
-    return (int)map2d.size()-1;
+    return (int)m_map2d.size()-1;
 }
 
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::addPointInQuad ( const int quadIndex, const SReal* baryCoords )
 {
-    map2d.resize ( map2d.size() +1 );
-    MappingData2D& data = *map2d.rbegin();
-    data.in_index = quadIndex + this->fromTopology->getNbTriangles();
+    m_map2d.resize ( m_map2d.size() +1 );
+    MappingData2D& data = *m_map2d.rbegin();
+    data.in_index = quadIndex + this->m_fromTopology->getNbTriangles();
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
-    return (int)map2d.size()-1;
+    return (int)m_map2d.size()-1;
 }
 
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const int tetraIndex, const SReal* baryCoords )
 {
-    map3d.resize ( map3d.size() +1 );
-    MappingData3D& data = *map3d.rbegin();
+    m_map3d.resize ( m_map3d.size() +1 );
+    MappingData3D& data = *m_map3d.rbegin();
     data.in_index = tetraIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)map3d.size()-1;
+    return (int)m_map3d.size()-1;
 }
 
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
 {
-    map3d.resize ( map3d.size() +1 );
-    MappingData3D& data = *map3d.rbegin();
-    data.in_index = cubeIndex + this->fromTopology->getNbTetrahedra();
+    m_map3d.resize ( m_map3d.size() +1 );
+    MappingData3D& data = *m_map3d.rbegin();
+    data.in_index = cubeIndex + this->m_fromTopology->getNbTetrahedra();
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)map3d.size()-1;
+    return (int)m_map3d.size()-1;
 }
 
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[1];
-    const sofa::core::topology::BaseMeshTopology::Line& elem = this->fromTopology->getLine ( lineIndex );
+    const Line& elem = this->m_fromTopology->getLine ( lineIndex );
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
@@ -293,7 +316,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
-    const sofa::core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
+    const Triangle& elem = this->m_fromTopology->getTriangle ( triangleIndex );
 
     const typename In::Coord & p1 = ( *points ) [elem[0]];
     const typename In::Coord & p2 = ( *points ) [elem[1]];
@@ -373,7 +396,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
-    const sofa::core::topology::BaseMeshTopology::Quad& elem = this->fromTopology->getQuad ( quadIndex );
+    const Quad& elem = this->m_fromTopology->getQuad ( quadIndex );
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[3]] - p0;
@@ -394,36 +417,33 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Ou
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    int outside = 0;
-    updateJ = true;
+    m_updateJ = true;
 
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqTetrahedra& tetras = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& hexas = this->m_fromTopology->getHexahedra();
 
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    sofa::helper::vector<sofa::defaulttype::Matrix3> bases;
-    sofa::helper::vector<sofa::defaulttype::Vector3> centers;
-    if ( tetrahedra.empty() && cubes.empty() )
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    helper::vector<Matrix3> bases;
+    helper::vector<Vector3> centers;
+    if ( tetras.empty() && hexas.empty() )
     {
         if ( triangles.empty() && quads.empty() )
         {
-            //no 3D elements, nor 2D elements -> map on 1D elements
-
-            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = this->fromTopology->getEdges();
+            const SeqEdges& edges = this->m_fromTopology->getEdges();
             if ( edges.empty() ) return;
 
-            clear1d ( (int)out.size() );
+            clearMap1dAndReserve ( (int)out.size() );
 
-            sofa::helper::vector< SReal >   lengthEdges;
-            sofa::helper::vector< sofa::defaulttype::Vector3 > unitaryVectors;
+            helper::vector< SReal >   lengthEdges;
+            helper::vector< Vector3 > unitaryVectors;
 
             unsigned int e;
             for ( e=0; e<edges.size(); e++ )
             {
                 lengthEdges.push_back ( ( in[edges[e][1]]-in[edges[e][0]] ).norm() );
 
-                sofa::defaulttype::Vector3 V12 = ( in[edges[e][1]]-in[edges[e][0]] ); V12.normalize();
+                Vector3 V12 = ( in[edges[e][1]]-in[edges[e][0]] ); V12.normalize();
                 unitaryVectors.push_back ( V12 );
             }
 
@@ -433,27 +453,25 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 for ( e=0; e<edges.size(); e++ )
                 {
                     SReal lengthEdge = lengthEdges[e];
-                    sofa::defaulttype::Vector3 V12 =unitaryVectors[e];
+                    Vector3 V12 =unitaryVectors[e];
 
-                    coef = ( V12 ) * sofa::defaulttype::Vector3 ( Out::getCPos(out[i])-in[edges[e][0]] ) /lengthEdge;
+                    coef = ( V12 ) * Vector3 ( Out::getCPos(out[i])-in[edges[e][0]] ) /lengthEdge;
                     if ( coef >= 0 && coef <= 1 ) {addPointInLine ( e,&coef );  break; }
 
                 }
                 //If no good coefficient has been found, we add to the last element
                 if ( e == edges.size() ) addPointInLine ( (int)edges.size()-1,&coef );
-
             }
         }
         else
         {
-            // no 3D elements -> map on 2D elements
-            clear2d ( (int)out.size() ); // reserve space for 2D mapping
-            size_t c0 = triangles.size();
+            clearMap2dAndReserve ( (int)out.size() );
+            size_t nbTriangles = triangles.size();
             bases.resize ( triangles.size() +quads.size() );
             centers.resize ( triangles.size() +quads.size() );
             for ( unsigned int t = 0; t < triangles.size(); t++ )
             {
-                sofa::defaulttype::Mat3x3d m,mt;
+                Mat3x3d m,mt;
                 m[0] = in[triangles[t][1]]-in[triangles[t][0]];
                 m[1] = in[triangles[t][2]]-in[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -461,135 +479,116 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 bases[t].invert ( mt );
                 centers[t] = ( in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]] ) /3;
             }
-            for ( unsigned int c = 0; c < quads.size(); c++ )
+            for ( unsigned int q = 0; q < quads.size(); q++ )
             {
-                sofa::defaulttype::Mat3x3d m,mt;
-                m[0] = in[quads[c][1]]-in[quads[c][0]];
-                m[1] = in[quads[c][3]]-in[quads[c][0]];
+                Mat3x3d m,mt;
+                m[0] = in[quads[q][1]]-in[quads[q][0]];
+                m[1] = in[quads[q][3]]-in[quads[q][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
-                bases[c0+c].invert ( mt );
-                centers[c0+c] = ( in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]] ) *0.25;
+                bases[nbTriangles+q].invert ( mt );
+                centers[nbTriangles+q] = ( in[quads[q][0]]+in[quads[q][1]]+in[quads[q][2]]+in[quads[q][3]] ) *0.25;
             }
             for ( unsigned int i=0; i<out.size(); i++ )
             {
-                sofa::defaulttype::Vector3 pos = Out::getCPos(out[i]);
-                sofa::defaulttype::Vector3 coefs;
+                Vector3 pos = Out::getCPos(out[i]);
+                Vector3 coefs;
                 int index = -1;
                 double distance = 1e10;
                 for ( unsigned int t = 0; t < triangles.size(); t++ )
                 {
-                    sofa::defaulttype::Vec3d v = bases[t] * ( pos - in[triangles[t][0]] );
+                    Vec3d v = bases[t] * ( pos - in[triangles[t][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
                     if ( d>0 ) d = ( pos-centers[t] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = t; }
                 }
-                for ( unsigned int c = 0; c < quads.size(); c++ )
+                for ( unsigned int q = 0; q < quads.size(); q++ )
                 {
-                    sofa::defaulttype::Vec3d v = bases[c0+c] * ( pos - in[quads[c][0]] );
+                    Vec3d v = bases[nbTriangles+q] * ( pos - in[quads[q][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
-                    if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
-                    if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
+                    if ( d>0 ) d = ( pos-centers[nbTriangles+q] ).norm2();
+                    if ( d<distance ) { coefs = v; distance = d; index = nbTriangles+q; }
                 }
-                if ( distance>0 )
-                {
-                    ++outside;
-                }
-                if ( index < (int)c0 )
+                if ( index < (int)nbTriangles )
                     addPointInTriangle ( index, coefs.ptr() );
                 else
-                    addPointInQuad ( index-c0, coefs.ptr() );
+                    addPointInQuad ( index-nbTriangles, coefs.ptr() );
             }
         }
     }
     else
     {
-        clear3d ( out.size() ); // reserve space for 3D mapping
-        int c0 = tetrahedra.size();
-        bases.resize ( tetrahedra.size() +cubes.size() );
-        centers.resize ( tetrahedra.size() +cubes.size() );
-        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+        clearMap3dAndReserve ( out.size() );
+        int nbTetras = tetras.size();
+        bases.resize ( tetras.size() + hexas.size() );
+        centers.resize ( tetras.size() + hexas.size() );
+        for ( unsigned int t = 0; t < tetras.size(); t++ )
         {
-            sofa::defaulttype::Mat3x3d m,mt;
-            m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
-            m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
-            m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
+            Mat3x3d m,mt;
+            m[0] = in[tetras[t][1]]-in[tetras[t][0]];
+            m[1] = in[tetras[t][2]]-in[tetras[t][0]];
+            m[2] = in[tetras[t][3]]-in[tetras[t][0]];
             mt.transpose ( m );
             bases[t].invert ( mt );
-            centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
+            centers[t] = ( in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]] ) *0.25;
         }
-        for ( unsigned int c = 0; c < cubes.size(); c++ )
+        for ( unsigned int h = 0; h < hexas.size(); h++ )
         {
-            sofa::defaulttype::Mat3x3d m,mt;
-            m[0] = in[cubes[c][1]]-in[cubes[c][0]];
-            m[1] = in[cubes[c][3]]-in[cubes[c][0]];
-            m[2] = in[cubes[c][4]]-in[cubes[c][0]];
+            Mat3x3d m,mt;
+            m[0] = in[hexas[h][1]]-in[hexas[h][0]];
+            m[1] = in[hexas[h][3]]-in[hexas[h][0]];
+            m[2] = in[hexas[h][4]]-in[hexas[h][0]];
             mt.transpose ( m );
-            bases[c0+c].invert ( mt );
-            centers[c0+c] = ( in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]] ) *0.125;
+            bases[nbTetras+h].invert ( mt );
+            centers[nbTetras+h] = ( in[hexas[h][0]]+in[hexas[h][1]]+in[hexas[h][2]]+in[hexas[h][3]]+in[hexas[h][4]]+in[hexas[h][5]]+in[hexas[h][6]]+in[hexas[h][7]] ) *0.125;
         }
         for ( unsigned int i=0; i<out.size(); i++ )
         {
-            sofa::defaulttype::Vector3 pos = Out::getCPos(out[i]);
-            sofa::defaulttype::Vector3 coefs;
+            Vector3 pos = Out::getCPos(out[i]);
+            Vector3 coefs;
             int index = -1;
             double distance = 1e10;
-            for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+            for ( unsigned int t = 0; t < tetras.size(); t++ )
             {
-                sofa::defaulttype::Vector3 v = bases[t] * ( pos - in[tetrahedra[t][0]] );
+                Vector3 v = bases[t] * ( pos - in[tetras[t][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
                 if ( d>0 ) d = ( pos-centers[t] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = t; }
             }
-            for ( unsigned int c = 0; c < cubes.size(); c++ )
+            for ( unsigned int h = 0; h < hexas.size(); h++ )
             {
-                sofa::defaulttype::Vector3 v = bases[c0+c] * ( pos - in[cubes[c][0]] );
+                Vector3 v = bases[nbTetras+h] * ( pos - in[hexas[h][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
-                if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
-                if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
+                if ( d>0 ) d = ( pos-centers[nbTetras+h] ).norm2();
+                if ( d<distance ) { coefs = v; distance = d; index = nbTetras+h; }
             }
-            if ( distance>0 )
-            {
-                ++outside;
-            }
-            if ( index < c0 )
+            if ( index < nbTetras )
                 addPointInTetra ( index, coefs.ptr() );
             else
-                addPointInCube ( index-c0, coefs.ptr() );
+                addPointInCube ( index-nbTetras, coefs.ptr() );
         }
     }
 }
 
 
 
-
-
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::clear ( int reserve )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::addPointInLine ( const int edgeIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
-    map.endEdit();
-}
-
-
-template <class In, class Out>
-int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const int edgeIndex, const SReal* baryCoords )
-{
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.resize ( map.getValue().size() +1 );
-    map.endEdit();
+    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    vectorData.resize ( d_map.getValue().size() +1 );
+    d_map.endEdit();
     MappingData& data = *vectorData.rbegin();
     data.in_index = edgeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
-    return (int)map.getValue().size()-1;
+    return (int)d_map.getValue().size()-1;
 }
 
-template <class In, class Out>
-int BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::createPointInLine ( const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[1];
-    const core::topology::BaseMeshTopology::Edge& elem = this->fromTopology->getEdge ( edgeIndex );
+    const Edge& elem = this->m_fromTopology->getEdge ( edgeIndex );
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
@@ -597,48 +596,30 @@ int BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine ( const typename
     return this->addPointInLine ( edgeIndex, baryCoords );
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::init ( const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/ )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::init ( const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/ )
 {
-    _fromContainer->getContext()->get ( _fromGeomAlgo );
-    // Why do we need that ? is reset the map in case of topology change
-//    if (this->toTopology)
-//    {
-//        map.createTopologicalEngine(this->toTopology);
-//        map.registerTopologicalData();
-//    }
-
-    //  int outside = 0;
-    //  const sofa::helper::vector<topology::Edge>& edges = this->fromTopology->getEdges();
-    //TODO: implementation of BarycentricMapperEdgeSetTopology::init
+    m_fromContainer->getContext()->get ( m_fromGeomAlgo );
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::clear ( int reserve )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::addPointInTriangle ( const int triangleIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
-    map.endEdit();
-}
-
-template <class In, class Out>
-int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const int triangleIndex, const SReal* baryCoords )
-{
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.resize ( map.getValue().size() +1 );
+    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
-    map.endEdit();
+    d_map.endEdit();
     data.in_index = triangleIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
-    return (int)map.getValue().size()-1;
+    return (int)d_map.getValue().size()-1;
 }
 
-template <class In, class Out>
-int BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
-    const core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
+    const Triangle& elem = this->m_fromTopology->getTriangle ( triangleIndex );
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[2]] - p0;
@@ -652,32 +633,22 @@ int BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const 
     return this->addPointInTriangle ( triangleIndex, baryCoords );
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    _fromContainer->getContext()->get ( _fromGeomAlgo );
+    m_fromContainer->getContext()->get ( m_fromGeomAlgo );
 
-    // Why do we need that ? it reset the map in case of topology change
-//    if (this->toTopology)
-//    {
-//        map.createTopologicalEngine(this->toTopology);
-//        map.registerTopologicalData();
-//    }
+    const helper::vector<Triangle>& triangles = this->m_fromTopology->getTriangles();
+    helper::vector<Mat3x3d> bases;
+    helper::vector<Vector3> centers;
 
-    int outside = 0;
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
-    sofa::helper::vector<sofa::defaulttype::Mat3x3d> bases;
-    sofa::helper::vector<sofa::defaulttype::Vector3> centers;
-
-    // no 3D elements -> map on 2D elements
-    clear ( (int)out.size() ); // reserve space for 2D mapping
+    this->clearMapAndReserve ( (int)out.size() );
     bases.resize ( triangles.size() );
     centers.resize ( triangles.size() );
 
     for ( unsigned int t = 0; t < triangles.size(); t++ )
     {
-        sofa::defaulttype::Mat3x3d m,mt;
+        Mat3x3d m,mt;
         m[0] = in[triangles[t][1]]-in[triangles[t][0]];
         m[1] = in[triangles[t][2]]-in[triangles[t][0]];
         m[2] = cross ( m[0],m[1] );
@@ -688,51 +659,39 @@ void BarycentricMapperTriangleSetTopology<In,Out>::init ( const typename Out::Ve
 
     for ( unsigned int i=0; i<out.size(); i++ )
     {
-        sofa::defaulttype::Vec3d pos = Out::getCPos(out[i]);
-        sofa::defaulttype::Vector3 coefs;
-        int index = -1;
+        Vec3d pos = Out::getCPos(out[i]);
+        Vector3 baryCoords;
+        int triangleIndex = -1;
         double distance = 1e10;
         for ( unsigned int t = 0; t < triangles.size(); t++ )
         {
-            sofa::defaulttype::Vec3d v = bases[t] * ( pos - in[triangles[t][0]] );
+            Vec3d v = bases[t] * ( pos - in[triangles[t][0]] );
             double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
             if ( d>0 ) d = ( pos-centers[t] ).norm2();
-            if ( d<distance ) { coefs = v; distance = d; index = t; }
+            if ( d<distance ) { baryCoords = v; distance = d; triangleIndex = t; }
         }
-        if ( distance>0 )
-        {
-            ++outside;
-        }
-        addPointInTriangle ( index, coefs.ptr() );
+        addPointInTriangle ( triangleIndex, baryCoords.ptr() );
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::clear ( int reserve )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::addPointInQuad ( const int quadIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
-    map.beginEdit();
-}
-
-template <class In, class Out>
-int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const int quadIndex, const SReal* baryCoords )
-{
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.resize ( map.getValue().size() +1 );
+    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
-    map.endEdit();
+    d_map.endEdit();
     data.in_index = quadIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
-    return (int)map.getValue().size()-1;
+    return (int)d_map.getValue().size()-1;
 }
 
-template <class In, class Out>
-int BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::createPointInQuad ( const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
-    const core::topology::BaseMeshTopology::Quad& elem = this->fromTopology->getQuad ( quadIndex );
+    const Quad& elem = this->m_fromTopology->getQuad ( quadIndex );
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[3]] - p0;
@@ -750,30 +709,23 @@ int BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename
     return this->addPointInQuad ( quadIndex, baryCoords );
 }
 
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    _fromContainer->getContext()->get ( _fromGeomAlgo );
-    // Why do we need that ? is reset the map in case of topology change
-//    if (this->toTopology)
-//    {
-//        map.createTopologicalEngine(this->toTopology);
-//        map.registerTopologicalData();
-//    }
+    m_fromContainer->getContext()->get ( m_fromGeomAlgo );
 
-    int outside = 0;
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
 
-    sofa::helper::vector< sofa::defaulttype::Matrix3> bases;
-    sofa::helper::vector< sofa::defaulttype::Vector3> centers;
+    helper::vector< Matrix3> bases;
+    helper::vector< Vector3> centers;
 
-    clear ( (int)out.size() );
+    this->clearMapAndReserve ( (int)out.size() );
     bases.resize ( quads.size() );
     centers.resize ( quads.size() );
 
     for ( unsigned int c = 0; c < quads.size(); c++ )
     {
-        sofa::defaulttype::Mat3x3d m,mt;
+        Mat3x3d m,mt;
         m[0] = in[quads[c][1]]-in[quads[c][0]];
         m[1] = in[quads[c][3]]-in[quads[c][0]];
         m[2] = cross ( m[0],m[1] );
@@ -784,182 +736,140 @@ void BarycentricMapperQuadSetTopology<In,Out>::init ( const typename Out::VecCoo
 
     for ( unsigned int i=0; i<out.size(); i++ )
     {
-        sofa::defaulttype::Vec3d pos = Out::getCPos(out[i]);
-        sofa::defaulttype::Vector3 coefs;
-        int index = -1;
+        Vec3d pos = Out::getCPos(out[i]);
+        Vector3 coefs;
+        int quadIndex = -1;
         double distance = 1e10;
         for ( unsigned int c = 0; c < quads.size(); c++ )
         {
-            sofa::defaulttype::Vec3d v = bases[c] * ( pos - in[quads[c][0]] );
+            Vec3d v = bases[c] * ( pos - in[quads[c][0]] );
             double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
             if ( d>0 ) d = ( pos-centers[c] ).norm2();
-            if ( d<distance ) { coefs = v; distance = d; index = c; }
+            if ( d<distance ) { coefs = v; distance = d; quadIndex = c; }
         }
-        if ( distance>0 )
-        {
-            ++outside;
-        }
-        addPointInQuad ( index, coefs.ptr() );
+        addPointInQuad ( quadIndex, coefs.ptr() );
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::clear ( int reserve )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::addPointInTetra ( const int tetraIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
-    map.endEdit();
-}
-
-template <class In, class Out>
-int BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const int tetraIndex, const SReal* baryCoords )
-{
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.resize ( map.getValue().size() +1 );
+    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
-    map.endEdit();
+    d_map.endEdit();
     data.in_index = tetraIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)map.getValue().size()-1;
+    return (int)d_map.getValue().size()-1;
 }
 
-//template <class In, class Out>
-//int BarycentricMapperTetrahedronSetTopology<In,Out>::createPointInTetra(const typename Out::Coord& p, int index, const typename In::VecCoord* points)
-//{
-//  //TODO: add implementation
-//}
-
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    _fromContainer->getContext()->get ( _fromGeomAlgo );
-    // Why do we need that ? is reset the map in case of topology change
-//    if (this->toTopology)
-//    {
-//        map.createTopologicalEngine(this->toTopology);
-//        map.registerTopologicalData();
-//    }
+    m_fromContainer->getContext()->get ( m_fromGeomAlgo );
 
-    int outside = 0;
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const helper::vector<Tetrahedron>& tetras = this->m_fromTopology->getTetrahedra();
 
-    sofa::helper::vector< sofa::defaulttype::Matrix3> bases;
-    sofa::helper::vector< sofa::defaulttype::Vector3> centers;
+    helper::vector< Matrix3> bases;
+    helper::vector< Vector3> centers;
 
-    clear ( (int)out.size() );
-    bases.resize ( tetrahedra.size() );
-    centers.resize ( tetrahedra.size() );
-    for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+    this->clearMapAndReserve ( (int)out.size() );
+    bases.resize ( tetras.size() );
+    centers.resize ( tetras.size() );
+
+    // Compute tetras base and center
+    for ( unsigned int t = 0; t < tetras.size(); t++ )
     {
-        sofa::defaulttype::Mat3x3d m,mt;
-        m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
-        m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
-        m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
+        Mat3x3d m,mt;
+        m[0] = in[tetras[t][1]]-in[tetras[t][0]];
+        m[1] = in[tetras[t][2]]-in[tetras[t][0]];
+        m[2] = in[tetras[t][3]]-in[tetras[t][0]];
         mt.transpose ( m );
         bases[t].invert ( mt );
-        centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
+        centers[t] = ( in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]] ) *0.25;
     }
 
-    for ( unsigned int i=0; i<out.size(); i++ )
+    // Find nearest tetra for each point, and compute corresponding barycentric coordinate
+    for ( unsigned int i = 0; i < out.size(); i++ )
     {
-        sofa::defaulttype::Vec3d pos = Out::getCPos(out[i]);
-        sofa::defaulttype::Vector3 coefs;
-        int index = -1;
+        Vec3d pos = Out::getCPos(out[i]);
+        Vector3 baryCoords;
+        int tetraIndex = -1;
         double distance = 1e10;
-        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+        for ( unsigned int t = 0; t < tetras.size(); t++ )
         {
-            sofa::defaulttype::Vec3d v = bases[t] * ( pos - in[tetrahedra[t][0]] );
-            double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+            Vec3d v = bases[t] * ( pos - in[tetras[t][0]] );
+            double d = std::max ( std::max ( -v[0],-v[1] ), std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
             if ( d>0 ) d = ( pos-centers[t] ).norm2();
-            if ( d<distance ) { coefs = v; distance = d; index = t; }
+            if ( d<distance ) { baryCoords = v; distance = d; tetraIndex = t; }
         }
-        if ( distance>0 )
-        {
-            ++outside;
-        }
-        addPointInTetra ( index, coefs.ptr() );
+        addPointInTetra ( tetraIndex, baryCoords.ptr() );
     }
 }
 
-
-
-
-
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::clear ( int reserve )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear();
-    if ( reserve>0 ) vectorData.reserve ( reserve );
-    map.endEdit();
-}
-
-template <class In, class Out>
-int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
-{
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.resize ( map.getValue().size() +1 );
+    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
-    map.endEdit();
+    d_map.endEdit();
     data.in_index = cubeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)map.getValue().size()-1;
+    return (int)d_map.getValue().size()-1;
 }
 
-template <class In, class Out>
-int BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const int pointIndex,
-        const int cubeIndex,
-        const SReal* baryCoords )
+template <class In, class Out, class MappingDataType>
+int BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::setPointInCube ( const int pointIndex, const int cubeIndex, const SReal* baryCoords )
 {
-    if ( pointIndex >= ( int ) map.getValue().size() )
+    if ( pointIndex >= ( int ) d_map.getValue().size() )
         return -1;
 
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
+    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     MappingData& data = vectorData[pointIndex];
     data.in_index = cubeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    map.endEdit();
+    d_map.endEdit();
 
     if(cubeIndex == -1)
-        _invalidIndex.insert(pointIndex);
+        m_invalidIndex.insert(pointIndex);
     else
-        _invalidIndex.erase(pointIndex);
+        m_invalidIndex.erase(pointIndex);
 
     return pointIndex;
 }
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::VecCoord& out,
-        const typename In::VecCoord& /*in*/ )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    _fromContainer->getContext()->get ( _fromGeomAlgo );
+    SOFA_UNUSED(in);
+    m_fromContainer->getContext()->get ( m_fromGeomAlgo );
 
-    if ( _fromGeomAlgo == NULL )
+    if ( m_fromGeomAlgo == NULL )
     {
         msg_error() << "Cannot find GeometryAlgorithms component at init." ;
     }
 
-    if ( !map.getValue().empty() )
+    if ( !d_map.getValue().empty() )
         return;
 
-
-    clear ( (int)out.size() );
+    this->clearMapAndReserve ( (int)out.size() );
 
     typename In::VecCoord coord;
     helper::vector<int>   elements ( out.size() );
-    helper::vector<sofa::defaulttype::Vector3> coefs ( out.size() );
+    helper::vector<Vector3> coefs ( out.size() );
     helper::vector<Real>  distances ( out.size() );
 
     coord.resize ( out.size() );
     for ( unsigned int i=0; i<out.size(); ++i ) coord[i] = Out::getCPos(out[i]);
 
-    _fromGeomAlgo->findNearestElementsInRestPos ( coord, elements, coefs, distances );
+    m_fromGeomAlgo->findNearestElementsInRestPos ( coord, elements, coefs, distances );
 
     for ( unsigned int i=0; i<elements.size(); ++i )
     {
@@ -970,12 +880,14 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
     }
 }
 
+
+
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology * topology )
 {
     using sofa::core::behavior::BaseMechanicalState;
 
-    mapper = NULL;
+    m_mapper = NULL;
 
     topology::PointSetTopologyContainer* toTopoCont;
     this->toModel->getContext()->get(toTopoCont);
@@ -991,14 +903,13 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         this->fromModel->getContext()->get(fromTopoCont);
     }
 
-
     if (fromTopoCont != NULL)
     {
         topology::HexahedronSetTopologyContainer* t1 = dynamic_cast< topology::HexahedronSetTopologyContainer* >(fromTopoCont);
         if (t1 != NULL)
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(t1, toTopoCont);
+            m_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(t1, toTopoCont);
         }
         else
         {
@@ -1006,7 +917,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
             if (t2 != NULL)
             {
                 typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                mapper = sofa::core::objectmodel::New<TetrahedronSetMapper>(t2, toTopoCont);
+                //m_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper>(t2, toTopoCont);
             }
             else
             {
@@ -1014,7 +925,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
                 if (t3 != NULL)
                 {
                     typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                    mapper = sofa::core::objectmodel::New<QuadSetMapper>(t3, toTopoCont);
+                    m_mapper = sofa::core::objectmodel::New<QuadSetMapper>(t3, toTopoCont);
                 }
                 else
                 {
@@ -1022,7 +933,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
                     if (t4 != NULL)
                     {
                         typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                        mapper = sofa::core::objectmodel::New<TriangleSetMapper>(t4, toTopoCont);
+                        m_mapper = sofa::core::objectmodel::New<TriangleSetMapper>(t4, toTopoCont);
                     }
                     else
                     {
@@ -1030,7 +941,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
                         if ( t5 != NULL )
                         {
                             typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                            mapper = sofa::core::objectmodel::New<EdgeSetMapper>(t5, toTopoCont);
+                            m_mapper = sofa::core::objectmodel::New<EdgeSetMapper>(t5, toTopoCont);
                         }
                     }
                 }
@@ -1047,7 +958,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         {
             typedef BarycentricMapperRegularGridTopology< InDataTypes, OutDataTypes > RegularGridMapper;
 
-            mapper = sofa::core::objectmodel::New<RegularGridMapper>(rgt, toTopoCont);
+            m_mapper = sofa::core::objectmodel::New<RegularGridMapper>(rgt, toTopoCont);
         }
         else
         {
@@ -1057,7 +968,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
             if (sgt != NULL && sgt->isVolume())
             {
                 typedef BarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes > SparseGridMapper;
-                mapper = sofa::core::objectmodel::New<SparseGridMapper>(sgt, toTopoCont);
+                m_mapper = sofa::core::objectmodel::New<SparseGridMapper>(sgt, toTopoCont);
             }
             else // generic MeshTopology
             {
@@ -1065,16 +976,16 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
 
                 typedef BarycentricMapperMeshTopology< InDataTypes, OutDataTypes > MeshMapper;
                 BaseMeshTopology* bmt = dynamic_cast< BaseMeshTopology* >(topology);
-                mapper = sofa::core::objectmodel::New<MeshMapper>(bmt, toTopoCont);
+                m_mapper = sofa::core::objectmodel::New<MeshMapper>(bmt, toTopoCont);
             }
         }
     }
-    if (mapper)
+    if (m_mapper)
     {
-        mapper->setName("mapper");
-        this->addSlave(mapper.get());
-        mapper->maskFrom = this->maskFrom;
-        mapper->maskTo = this->maskTo;
+        m_mapper->setName("mapper");
+        this->addSlave(m_mapper.get());
+        m_mapper->maskFrom = this->maskFrom;
+        m_mapper->maskTo = this->maskTo;
     }
 }
 
@@ -1084,15 +995,9 @@ void BarycentricMapping<TIn, TOut>::init()
     topology_from = this->fromModel->getContext()->getMeshTopology();
     topology_to = this->toModel->getContext()->getMeshTopology();
 
-    //IPB
-    //core::objectmodel::BaseContext* context = this->fromModel->getContext();
-    //->get(tetForceField);
-    //serr << "!!!!!!!!!!!! getDT = " <<  this->fromModel->getContext()->getDt() << sendl;
-    //IPE
-
     Inherit::init();
 
-    if ( mapper == NULL ) // try to create a mapper according to the topology of the In model
+    if ( m_mapper == NULL ) // try to create a mapper according to the topology of the In model
     {
         if ( topology_from!=NULL )
         {
@@ -1100,16 +1005,16 @@ void BarycentricMapping<TIn, TOut>::init()
         }
     }
 
-    if ( mapper != NULL )
+    if ( m_mapper != NULL )
     {
         if (useRestPosition.getValue())
-            mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
+            m_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
         else
-            mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+            m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
     else
     {
-        serr << "ERROR: Barycentric mapping does not understand topology."<<sendl;
+        msg_error() << "Barycentric mapping does not understand topology.";
     }
 
 }
@@ -1117,54 +1022,61 @@ void BarycentricMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::reinit()
 {
-    if ( mapper != NULL )
+    if ( m_mapper != NULL )
     {
-        mapper->clear();
-        mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+        m_mapper->clearMapAndReserve();
+        m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
 }
 
+
+
+/************************************* Apply and Resize ***********************************/
+
+
+
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
+void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
 {
+    SOFA_UNUSED(mparams);
+
     if (
 #ifdef SOFA_DEV
         sleeping.getValue()==false &&
 #endif
-        mapper != NULL)
+        m_mapper != NULL)
     {
-        mapper->resize( this->toModel );
-        mapper->apply(*out.beginWriteOnly(), in.getValue());
+        m_mapper->resize( this->toModel );
+        m_mapper->apply(*out.beginWriteOnly(), in.getValue());
         out.endEdit();
     }
 }
 
-
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(map1d.size() +map2d.size() +map3d.size());
+    toModel->resize(m_map1d.size() +m_map2d.size() +m_map3d.size());
 }
 
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    out.resize( map1d.size() +map2d.size() +map3d.size() );
+    out.resize( m_map1d.size() +m_map2d.size() +m_map3d.size() );
 
-    const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqLines& lines = this->m_fromTopology->getLines();
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
     // 1D elements
     {
-        for ( unsigned int i=0; i<map1d.size(); i++ )
+        for ( unsigned int i=0; i<m_map1d.size(); i++ )
         {
-            const Real fx = map1d[i].baryCoords[0];
-            int index = map1d[i].in_index;
+            const Real fx = m_map1d[i].baryCoords[0];
+            int index = m_map1d[i].in_index;
             {
-                const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
+                const Line& line = lines[index];
                 Out::setCPos(out[i] , in[line[0]] * ( 1-fx )
                         + in[line[1]] * fx );
             }
@@ -1172,16 +1084,16 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     }
     // 2D elements
     {
-        const int i0 = map1d.size();
+        const int i0 = m_map1d.size();
         const int c0 = triangles.size();
-        for ( unsigned int i=0; i<map2d.size(); i++ )
+        for ( unsigned int i=0; i<m_map2d.size(); i++ )
         {
-            const Real fx = map2d[i].baryCoords[0];
-            const Real fy = map2d[i].baryCoords[1];
-            int index = map2d[i].in_index;
+            const Real fx = m_map2d[i].baryCoords[0];
+            const Real fy = m_map2d[i].baryCoords[1];
+            int index = m_map2d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                const Triangle& triangle = triangles[index];
                 Out::setCPos(out[i+i0] , in[triangle[0]] * ( 1-fx-fy )
                         + in[triangle[1]] * fx
                         + in[triangle[2]] * fy );
@@ -1190,7 +1102,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             {
                 if (quads.size())
                 {
-                    const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                    const Quad& quad = quads[index-c0];
                     Out::setCPos(out[i+i0] , in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
                             + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
                             + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
@@ -1201,17 +1113,17 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     }
     // 3D elements
     {
-        const int i0 = map1d.size() + map2d.size();
+        const int i0 = m_map1d.size() + m_map2d.size();
         const int c0 = tetrahedra.size();
-        for ( unsigned int i=0; i<map3d.size(); i++ )
+        for ( unsigned int i=0; i<m_map3d.size(); i++ )
         {
-            const Real fx = map3d[i].baryCoords[0];
-            const Real fy = map3d[i].baryCoords[1];
-            const Real fz = map3d[i].baryCoords[2];
-            int index = map3d[i].in_index;
+            const Real fx = m_map3d[i].baryCoords[0];
+            const Real fy = m_map3d[i].baryCoords[1];
+            const Real fz = m_map3d[i].baryCoords[2];
+            int index = m_map3d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
+                const Tetra& tetra = tetrahedra[index];
                 Out::setCPos(out[i+i0] , in[tetra[0]] * ( 1-fx-fy-fz )
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -1219,7 +1131,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+                const Hexa& cube = cubes[index-c0];
 
                 Out::setCPos(out[i+i0] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                         + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
@@ -1234,26 +1146,24 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     }
 }
 
-
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(map.size());
+    toModel->resize(m_map.size());
 }
-
 
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    out.resize( map.size() );
+    out.resize( m_map.size() );
 
-    for ( unsigned int i=0; i<map.size(); i++ )
+    for ( unsigned int i=0; i<m_map.size(); i++ )
     {
-        const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[i].in_index );
+        const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
 
-        const Real fx = map[i].baryCoords[0];
-        const Real fy = map[i].baryCoords[1];
-        const Real fz = map[i].baryCoords[2];
+        const Real fx = m_map[i].baryCoords[0];
+        const Real fy = m_map[i].baryCoords[1];
+        const Real fz = m_map[i].baryCoords[2];
         Out::setCPos(out[i] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
@@ -1268,25 +1178,25 @@ void BarycentricMapperRegularGridTopology<In,Out>::apply ( typename Out::VecCoor
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(map.size());
+    toModel->resize(m_map.size());
 }
 
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    out.resize( map.size() );
+    out.resize( m_map.size() );
 
-    typedef sofa::helper::vector< CubeData > CubeDataVector;
+    typedef helper::vector< CubeData > CubeDataVector;
     typedef typename CubeDataVector::const_iterator CubeDataVectorIt;
 
-    CubeDataVectorIt it = map.begin();
-    CubeDataVectorIt itEnd = map.end();
+    CubeDataVectorIt it = m_map.begin();
+    CubeDataVectorIt itEnd = m_map.end();
 
     unsigned int i = 0;
 
     while (it != itEnd)
     {
-        const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron( it->in_index );
+        const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron( it->in_index );
 
         const Real fx = it->baryCoords[0];
         const Real fy = it->baryCoords[1];
@@ -1306,149 +1216,116 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::resize( core::State<Out>* toModel )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    toModel->resize(map.getValue().size());
-}
+    out.resize( d_map.getValue().size() );
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
-    // 2D elements
-    helper::vector<MappingData>& vectorData = *(map.beginEdit());
-
-    for ( unsigned int i=0; i<map.getValue().size(); i++ )
+    const helper::vector<Edge>& edges = this->m_fromTopology->getEdges();
+    for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
     {
-        const Real fx = vectorData[i].baryCoords[0];
-        int index = vectorData[i].in_index;
-        const core::topology::BaseMeshTopology::Edge& edge = edges[index];
-        Out::setCPos(out[i] , in[edge[0]] * ( 1-fx )
-                + in[edge[1]] * fx );
+        const Edge& edge = edges[d_map.getValue()[i].in_index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<edge.size(); j++)
+            inPos += in[edge[j]] * baryCoef[j];
+
+        Out::setCPos(out[i] , inPos);
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::resize( core::State<Out>* toModel )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    toModel->resize(map.getValue().size());
-}
+    out.resize( d_map.getValue().size() );
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
-    for ( unsigned int i=0; i<map.getValue().size(); i++ )
+    const helper::vector<Triangle>& triangles = this->m_fromTopology->getTriangles();
+    for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
     {
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-        Out::setCPos(out[i] , in[triangle[0]] * ( 1-fx-fy )
-                + in[triangle[1]] * fx
-                + in[triangle[2]] * fy );
+        int index = d_map.getValue()[i].in_index;
+        const Triangle& triangle = triangles[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<triangle.size(); j++)
+            inPos += in[triangle[j]] * baryCoef[j];
+
+        Out::setCPos(out[i] , inPos);
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::resize( core::State<Out>* toModel )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    toModel->resize(map.getValue().size());
-}
+    out.resize( d_map.getValue().size() );
 
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
-    for ( unsigned int i=0; i<map.getValue().size(); i++ )
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
+    for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
     {
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Quad& quad = quads[index];
-        Out::setCPos(out[i] , in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
-                + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
-                + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
-                + in[quad[2]] * ( ( fx ) * ( fy ) ) );
+        int index = d_map.getValue()[i].in_index;
+        const Quad& quad = quads[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<quad.size(); j++)
+            inPos += in[quad[j]] * baryCoef[j];
+
+        Out::setCPos(out[i] , inPos);
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::resize( core::State<Out>* toModel )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    toModel->resize(map.getValue().size());
-}
+    out.resize( d_map.getValue().size() );
 
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
-    for ( unsigned int i=0; i<map.getValue().size(); i++ )
+    const helper::vector<Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
+    for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
     {
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        const Real fz = map.getValue()[i].baryCoords[2];
-        int index = map.getValue()[i].in_index;
+        int index = d_map.getValue()[i].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
-        Out::setCPos(out[i] , in[tetra[0]] * ( 1-fx-fy-fz )
-                + in[tetra[1]] * fx
-                + in[tetra[2]] * fy
-                + in[tetra[3]] * fz );
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<tetra.size(); j++)
+            inPos += in[tetra[j]] * baryCoef[j];
+
+        Out::setCPos(out[i] , inPos);
     }
-    //serr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, in = "<<in<<sendl;
-    //serr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, out = "<<out<<sendl;
 }
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::resize( core::State<Out>* toModel )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    toModel->resize(map.getValue().size());
-}
+    out.resize( d_map.getValue().size() );
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
-    for ( unsigned int i=0; i<map.getValue().size(); i++ )
+    const helper::vector<Hexahedron>& cubes = this->m_fromTopology->getHexahedra();
+    for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
     {
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        const Real fz = map.getValue()[i].baryCoords[2];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
-        Out::setCPos(out[i] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
-                + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-                + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
-                + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-                + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
+        int index = d_map.getValue()[i].in_index;
+        const Hexahedron& cube = cubes[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<cube.size(); j++)
+            inPos += in[cube[j]] * baryCoef[j];
+
+        Out::setCPos(out[i] , inPos);
     }
 }
 
 
 //-- test mapping partiel
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const unsigned int& hexaPointId,typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::applyOnePoint( const unsigned int& hexaPointId,typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
-    const Real fx = map.getValue()[hexaPointId].baryCoords[0];
-    const Real fy = map.getValue()[hexaPointId].baryCoords[1];
-    const Real fz = map.getValue()[hexaPointId].baryCoords[2];
-    int index = map.getValue()[hexaPointId].in_index;
-    const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
+    const helper::vector<Hexahedron>& cubes = this->m_fromTopology->getHexahedra();
+    const Real fx = d_map.getValue()[hexaPointId].baryCoords[0];
+    const Real fy = d_map.getValue()[hexaPointId].baryCoords[1];
+    const Real fz = d_map.getValue()[hexaPointId].baryCoords[2];
+    int index = d_map.getValue()[hexaPointId].in_index;
+    const Hexahedron& cube = cubes[index];
     Out::setCPos(out[hexaPointId] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
             + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
             + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
@@ -1460,17 +1337,22 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const unsign
 }
 //--
 
+
+/************************************* ApplyJ ***********************************/
+
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mparams*/, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
+void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mparams, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
 {
+    SOFA_UNUSED(mparams);
+
 #ifdef SOFA_DEV
     if ( sleeping.getValue()==false)
     {
 #endif
         typename Out::VecDeriv* out = _out.beginEdit();
-        if (mapper != NULL)
+        if (m_mapper != NULL)
         {
-            mapper->applyJ(*out, in.getValue());
+            m_mapper->applyJ(*out, in.getValue());
         }
         _out.endEdit();
 #ifdef SOFA_DEV
@@ -1481,21 +1363,17 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mpa
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map1d.size() +map2d.size() +map3d.size() );
+    out.resize( m_map1d.size() +m_map2d.size() +m_map3d.size() );
 
-    const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqLines& lines = this->m_fromTopology->getLines();
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
-
-
-    //std::cout << "BarycentricMapper: applyJ with masks" << std::endl;
-
-    const size_t sizeMap1d=map1d.size();
-    const size_t sizeMap2d=map2d.size();
-    const size_t sizeMap3d=map3d.size();
+    const size_t sizeMap1d=m_map1d.size();
+    const size_t sizeMap2d=m_map2d.size();
+    const size_t sizeMap3d=m_map3d.size();
 
     const size_t idxStart1=sizeMap1d;
     const size_t idxStart2=sizeMap1d+sizeMap2d;
@@ -1508,10 +1386,10 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
         // 1D elements
         if (i < idxStart1)
         {
-            const Real fx = map1d[i].baryCoords[0];
-            int index = map1d[i].in_index;
+            const Real fx = m_map1d[i].baryCoords[0];
+            int index = m_map1d[i].in_index;
             {
-                const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
+                const Line& line = lines[index];
                 Out::setDPos(out[i] , in[line[0]] * ( 1-fx )
                         + in[line[1]] * fx );
             }
@@ -1522,20 +1400,20 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
             const size_t i0 = idxStart1;
             const size_t c0 = triangles.size();
 
-            const Real fx = map2d[i-i0].baryCoords[0];
-            const Real fy = map2d[i-i0].baryCoords[1];
-            size_t index = map2d[i-i0].in_index;
+            const Real fx = m_map2d[i-i0].baryCoords[0];
+            const Real fy = m_map2d[i-i0].baryCoords[1];
+            size_t index = m_map2d[i-i0].in_index;
 
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                const Triangle& triangle = triangles[index];
                 Out::setDPos(out[i] , in[triangle[0]] * ( 1-fx-fy )
                         + in[triangle[1]] * fx
                         + in[triangle[2]] * fy );
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                const Quad& quad = quads[index-c0];
                 Out::setDPos(out[i] , in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
                         + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
                         + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
@@ -1547,13 +1425,13 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
         {
             const size_t i0 = idxStart2;
             const size_t c0 = tetrahedra.size();
-            const Real fx = map3d[i-i0].baryCoords[0];
-            const Real fy = map3d[i-i0].baryCoords[1];
-            const Real fz = map3d[i-i0].baryCoords[2];
-            size_t index = map3d[i-i0].in_index;
+            const Real fx = m_map3d[i-i0].baryCoords[0];
+            const Real fy = m_map3d[i-i0].baryCoords[1];
+            const Real fz = m_map3d[i-i0].baryCoords[2];
+            size_t index = m_map3d[i-i0].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
+                const Tetra& tetra = tetrahedra[index];
                 Out::setDPos(out[i] , in[tetra[0]] * ( 1-fx-fy-fz )
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -1561,7 +1439,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+                const Hexa& cube = cubes[index-c0];
 
                 Out::setDPos(out[i] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                         + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
@@ -1580,17 +1458,17 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map.size() );
+    out.resize( m_map.size() );
 
     for( size_t index=0 ; index<this->maskTo->size() ; ++index)
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(index) ) continue;
 
-        const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[index].in_index );
+        const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[index].in_index );
 
-        const Real fx = map[index].baryCoords[0];
-        const Real fy = map[index].baryCoords[1];
-        const Real fz = map[index].baryCoords[2];
+        const Real fx = m_map[index].baryCoords[0];
+        const Real fy = m_map[index].baryCoords[1];
+        const Real fz = m_map[index].baryCoords[2];
         Out::setDPos(out[index] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
@@ -1605,17 +1483,17 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map.size() );
+    out.resize( m_map.size() );
 
     for( size_t index=0 ; index<this->maskTo->size() ; ++index)
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(index) ) continue;
 
-        const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[index].in_index );
+        const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[index].in_index );
 
-        const Real fx = map[index].baryCoords[0];
-        const Real fy = map[index].baryCoords[1];
-        const Real fz = map[index].baryCoords[2];
+        const Real fx = m_map[index].baryCoords[0];
+        const Real fy = m_map[index].baryCoords[1];
+        const Real fz = m_map[index].baryCoords[2];
         Out::setDPos(out[index] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
@@ -1628,130 +1506,136 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeri
 
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map.getValue().size() );
+    out.resize( d_map.getValue().size() );
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
+    const helper::vector<Edge>& edges = this->m_fromTopology->getEdges();
+    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    {
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
+
+        int index = d_map.getValue()[i].in_index;
+        const Edge& edge = edges[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<edge.size(); j++)
+            inPos += in[edge[j]] * baryCoef[j];
+
+        Out::setDPos(out[i] , inPos);
+    }
+}
+
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+{
+    out.resize( d_map.getValue().size() );
+
+    const helper::vector<Triangle>& triangles = this->m_fromTopology->getTriangles();
+    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    {
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
+
+        int index = d_map.getValue()[i].in_index;
+        const Triangle& triangle = triangles[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<triangle.size(); j++)
+            inPos += in[triangle[j]] * baryCoef[j];
+
+        Out::setDPos(out[i] , inPos);
+    }
+}
+
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+{
+    out.resize( d_map.getValue().size() );
+
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
-        const Real fx = map.getValue()[i].baryCoords[0];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Edge& edge = edges[index];
-        Out::setDPos(out[i] , in[edge[0]] * ( 1-fx )
-                + in[edge[1]] * fx);
+        int index = d_map.getValue()[i].in_index;
+        const Quad& quad = quads[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<quad.size(); j++)
+            inPos += in[quad[j]] * baryCoef[j];
+
+        Out::setDPos(out[i] , inPos);
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map.getValue().size() );
+    out.resize( d_map.getValue().size() );
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
-
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-    {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-        Out::setDPos(out[i] , in[triangle[0]] * ( 1-fx-fy )
-                + in[triangle[1]] * fx
-                + in[triangle[2]] * fy);
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
-
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-    {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Quad& quad = quads[index];
-        Out::setDPos(out[i] , in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
-                + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
-                + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
-                + in[quad[2]] * ( ( fx ) * ( fy ) ) );
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
-{
-    out.resize( map.getValue().size() );
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const helper::vector<Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        const Real fz = map.getValue()[i].baryCoords[2];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
-        Out::setDPos(out[i] , in[tetra[0]] * ( 1-fx-fy-fz )
-                + in[tetra[1]] * fx
-                + in[tetra[2]] * fy
-                + in[tetra[3]] * fz );
+        int index = d_map.getValue()[i].in_index;
+        const Tetrahedron& tetra = tetrahedra[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<tetra.size(); j++)
+            inPos += in[tetra[j]] * baryCoef[j];
+
+        Out::setDPos(out[i] , inPos);
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map.getValue().size() );
+    out.resize( d_map.getValue().size() );
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
+    const helper::vector<Hexahedron>& cubes = this->m_fromTopology->getHexahedra();
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
-        const Real fx = map.getValue()[i].baryCoords[0];
-        const Real fy = map.getValue()[i].baryCoords[1];
-        const Real fz = map.getValue()[i].baryCoords[2];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
-        Out::setDPos(out[i] ,
-                in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
-                + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-                + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
-                + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-                + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
+        int index = d_map.getValue()[i].in_index;
+        const Hexahedron& cube = cubes[index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        InDeriv inPos{0.,0.,0.};
+        for (unsigned int j=0; j<cube.size(); j++)
+            inPos += in[cube[j]] * baryCoef[j];
+
+        Out::setDPos(out[i] , inPos);
     }
 }
+
+
+/************************************* ApplyJT ***********************************/
+
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * /*mparams*/, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in)
+void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mparams, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in)
 {
+    SOFA_UNUSED(mparams);
+
     if (
 #ifdef SOFA_DEV
         sleeping.getValue()==false &&
 #endif
-        mapper != NULL)
+        m_mapper != NULL)
     {
-        mapper->applyJT(*out.beginEdit(), in.getValue());
+        m_mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();
     }
 }
@@ -1759,15 +1643,15 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * /*mp
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqLines& lines = this->m_fromTopology->getLines();
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
-    const size_t i1d = map1d.size();
-    const size_t i2d = map2d.size();
-    const size_t i3d = map3d.size();
+    const size_t i1d = m_map1d.size();
+    const size_t i2d = m_map2d.size();
+    const size_t i3d = m_map3d.size();
 
     ForceMask& mask = *this->maskFrom;
 
@@ -1779,10 +1663,10 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
         if (i < i1d)
         {
             const typename Out::DPos v = Out::getDPos(in[i]);
-            const OutReal fx = ( OutReal ) map1d[i].baryCoords[0];
-            size_t index = map1d[i].in_index;
+            const OutReal fx = ( OutReal ) m_map1d[i].baryCoords[0];
+            size_t index = m_map1d[i].in_index;
             {
-                const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
+                const Line& line = lines[index];
                 out[line[0]] += v * ( 1-fx );
                 out[line[1]] += v * fx;
                 mask.insertEntry(line[0]);
@@ -1792,15 +1676,15 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
         // 2D elements
         else if (i < i1d+i2d)
         {
-            const size_t i0 = map1d.size();
+            const size_t i0 = m_map1d.size();
             const size_t c0 = triangles.size();
             const typename Out::DPos v = Out::getDPos(in[i]);
-            const OutReal fx = ( OutReal ) map2d[i-i0].baryCoords[0];
-            const OutReal fy = ( OutReal ) map2d[i-i0].baryCoords[1];
-            size_t index = map2d[i-i0].in_index;
+            const OutReal fx = ( OutReal ) m_map2d[i-i0].baryCoords[0];
+            const OutReal fy = ( OutReal ) m_map2d[i-i0].baryCoords[1];
+            size_t index = m_map2d[i-i0].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                const Triangle& triangle = triangles[index];
                 out[triangle[0]] += v * ( 1-fx-fy );
                 out[triangle[1]] += v * fx;
                 out[triangle[2]] += v * fy;
@@ -1810,7 +1694,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                const Quad& quad = quads[index-c0];
                 out[quad[0]] += v * ( ( 1-fx ) * ( 1-fy ) );
                 out[quad[1]] += v * ( ( fx ) * ( 1-fy ) );
                 out[quad[3]] += v * ( ( 1-fx ) * ( fy ) );
@@ -1824,16 +1708,16 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
         // 3D elements
         else if (i < i1d+i2d+i3d)
         {
-            const size_t i0 = map1d.size() + map2d.size();
+            const size_t i0 = m_map1d.size() + m_map2d.size();
             const size_t c0 = tetrahedra.size();
             const typename Out::DPos v = Out::getDPos(in[i]);
-            const OutReal fx = ( OutReal ) map3d[i-i0].baryCoords[0];
-            const OutReal fy = ( OutReal ) map3d[i-i0].baryCoords[1];
-            const OutReal fz = ( OutReal ) map3d[i-i0].baryCoords[2];
-            size_t index = map3d[i-i0].in_index;
+            const OutReal fx = ( OutReal ) m_map3d[i-i0].baryCoords[0];
+            const OutReal fy = ( OutReal ) m_map3d[i-i0].baryCoords[1];
+            const OutReal fz = ( OutReal ) m_map3d[i-i0].baryCoords[2];
+            size_t index = m_map3d[i-i0].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
+                const Tetra& tetra = tetrahedra[index];
                 out[tetra[0]] += v * ( 1-fx-fy-fz );
                 out[tetra[1]] += v * fx;
                 out[tetra[2]] += v * fy;
@@ -1846,7 +1730,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             else
             {
 
-                const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+                const Hexa& cube = cubes[index-c0];
 
                 out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
                 out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
@@ -1874,9 +1758,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
     }
 }
 
-
-
-
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
@@ -1887,11 +1768,11 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDer
         if( !this->maskTo->getEntry(index) ) continue;
 
         const typename Out::DPos v = Out::getDPos(in[index]);
-        const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[index].in_index );
+        const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[index].in_index );
 
-        const OutReal fx = ( OutReal ) map[index].baryCoords[0];
-        const OutReal fy = ( OutReal ) map[index].baryCoords[1];
-        const OutReal fz = ( OutReal ) map[index].baryCoords[2];
+        const OutReal fx = ( OutReal ) m_map[index].baryCoords[0];
+        const OutReal fy = ( OutReal ) m_map[index].baryCoords[1];
+        const OutReal fz = ( OutReal ) m_map[index].baryCoords[2];
         out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
         out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
 
@@ -1927,11 +1808,11 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecDeri
 
         const typename Out::DPos v = Out::getDPos(in[index]);
 
-        const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[index].in_index );
+        const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[index].in_index );
 
-        const OutReal fx = ( OutReal ) map[index].baryCoords[0];
-        const OutReal fy = ( OutReal ) map[index].baryCoords[1];
-        const OutReal fz = ( OutReal ) map[index].baryCoords[2];
+        const OutReal fx = ( OutReal ) m_map[index].baryCoords[0];
+        const OutReal fy = ( OutReal ) m_map[index].baryCoords[1];
+        const OutReal fz = ( OutReal ) m_map[index].baryCoords[2];
         out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
         out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
 
@@ -1955,157 +1836,123 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecDeri
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
+    const helper::vector<Edge>& edges = this->m_fromTopology->getEdges();
 
     ForceMask& mask = *this->maskFrom;
-
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        const typename Out::DPos v = Out::getDPos(in[i]);
-        const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Edge& edge = edges[index];
-        out[edge[0]] += v * ( 1-fx );
-        out[edge[1]] += v * fx;
+        int index = d_map.getValue()[i].in_index;
+        const Edge& edge = edges[index];
 
-        mask.insertEntry(edge[0]);
-        mask.insertEntry(edge[1]);
+        const typename Out::DPos inPos = Out::getDPos(in[i]);
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        for (unsigned int j=0; j<edge.size(); j++)
+        {
+            out[edge[j]] += inPos * baryCoef[j];
+            mask.insertEntry(edge[j]);
+        }
     }
-
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
+    const helper::vector<Triangle>& triangles = this->m_fromTopology->getTriangles();
 
     ForceMask& mask = *this->maskFrom;
-
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        const typename Out::DPos v = Out::getDPos(in[i]);
-        const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
-        const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-        out[triangle[0]] += v * ( 1-fx-fy );
-        out[triangle[1]] += v * fx;
-        out[triangle[2]] += v * fy;
-        mask.insertEntry(triangle[0]);
-        mask.insertEntry(triangle[1]);
-        mask.insertEntry(triangle[2]);
-    }
+        int index = d_map.getValue()[i].in_index;
+        const Triangle& triangle = triangles[index];
 
+        const typename Out::DPos inPos = Out::getDPos(in[i]);
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        for (unsigned int j=0; j<triangle.size(); j++)
+        {
+            out[triangle[j]] += inPos * baryCoef[j];
+            mask.insertEntry(triangle[j]);
+        }
+    }
 }
 
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
 
     ForceMask& mask = *this->maskFrom;
-
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        const typename Out::DPos v = Out::getDPos(in[i]);
-        const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
-        const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Quad& quad = quads[index];
-        out[quad[0]] += v * ( ( 1-fx ) * ( 1-fy ) );
-        out[quad[1]] += v * ( ( fx ) * ( 1-fy ) );
-        out[quad[3]] += v * ( ( 1-fx ) * ( fy ) );
-        out[quad[2]] += v * ( ( fx ) * ( fy ) );
-        mask.insertEntry(quad[0]);
-        mask.insertEntry(quad[1]);
-        mask.insertEntry(quad[2]);
-        mask.insertEntry(quad[3]);
+        int index = d_map.getValue()[i].in_index;
+        const Quad& quad = quads[index];
+
+        const typename Out::DPos inPos = Out::getDPos(in[i]);
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        for (unsigned int j=0; j<quad.size(); j++)
+        {
+            out[quad[j]] += inPos * baryCoef[j];
+            mask.insertEntry(quad[j]);
+        }
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const helper::vector<Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     ForceMask& mask = *this->maskFrom;
-
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        const typename Out::DPos v = Out::getDPos(in[i]);
-        const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
-        const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
-        const OutReal fz = ( OutReal ) map.getValue()[i].baryCoords[2];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
-        out[tetra[0]] += v * ( 1-fx-fy-fz );
-        out[tetra[1]] += v * fx;
-        out[tetra[2]] += v * fy;
-        out[tetra[3]] += v * fz;
-        mask.insertEntry(tetra[0]);
-        mask.insertEntry(tetra[1]);
-        mask.insertEntry(tetra[2]);
-        mask.insertEntry(tetra[3]);
+        int index = d_map.getValue()[i].in_index;
+        const Tetrahedron& tetra = tetrahedra[index];
+
+        const typename Out::DPos inPos = Out::getDPos(in[i]);
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        for (unsigned int j=0; j<tetra.size(); j++)
+        {
+            out[tetra[j]] += inPos * baryCoef[j];
+            mask.insertEntry(tetra[j]);
+        }
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
+    const helper::vector<Hexahedron>& cubes = this->m_fromTopology->getHexahedra();
 
     ForceMask& mask = *this->maskFrom;
-
-    //////////////  DEBUG  /////////////
-    // unsigned int mapSize = map.size();
-    // std::cout << "Map size: " << mapSize << std::endl;
-    // for(unsigned int i=0;i<map.size();i++)
-    // {
-    //   std::cout << "index " << map[i].in_index << ", baryCoord ( " << (OutReal)map[i].baryCoords[0] << ", " << (OutReal)map[i].baryCoords[1] << ", " << (OutReal)map[i].baryCoords[2] << ")." << std::endl;
-    // }
-    ////////////////////////////////////
-
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        const typename Out::DPos v = Out::getDPos(in[i]);
-        const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
-        const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
-        const OutReal fz = ( OutReal ) map.getValue()[i].baryCoords[2];
-        int index = map.getValue()[i].in_index;
-        const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
-        out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
-        out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-        out[cube[3]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-        out[cube[2]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-        out[cube[4]] += v * ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
-        out[cube[5]] += v * ( ( fx ) * ( 1-fy ) * ( fz ) );
-        out[cube[7]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
-        out[cube[6]] += v * ( ( fx ) * ( fy ) * ( fz ) );
+        int index = d_map.getValue()[i].in_index;
+        const Hexahedron& cube = cubes[index];
 
-        mask.insertEntry(cube[0]);
-        mask.insertEntry(cube[1]);
-        mask.insertEntry(cube[2]);
-        mask.insertEntry(cube[3]);
-        mask.insertEntry(cube[4]);
-        mask.insertEntry(cube[5]);
-        mask.insertEntry(cube[6]);
-        mask.insertEntry(cube[7]);
+        const typename Out::DPos inPos = Out::getDPos(in[i]);
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        for (unsigned int j=0; j<cube.size(); j++)
+        {
+            out[cube[j]] += inPos * baryCoef[j];
+            mask.insertEntry(cube[j]);
+        }
     }
 }
 
+
+/************************************* GetJ ***********************************/
 
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
@@ -2114,11 +1961,11 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
 #ifdef SOFA_DEV
         sleeping.getValue()==false &&
 #endif
-        mapper!=NULL )
+        m_mapper!=NULL )
     {
         const size_t outStateSize = this->toModel->getSize();
         const size_t inStateSize = this->fromModel->getSize();
-        const sofa::defaulttype::BaseMatrix* matJ = mapper->getJ((int)outStateSize, (int)inStateSize);
+        const sofa::defaulttype::BaseMatrix* matJ = m_mapper->getJ((int)outStateSize, (int)inStateSize);
 
         return matJ;
     }
@@ -2130,108 +1977,105 @@ template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ(int outSize, int inSize)
 {
 
-    if (matrixJ && !updateJ && matrixJ->rowBSize() == (MatrixTypeIndex)outSize && matrixJ->colBSize() == (MatrixTypeIndex)inSize)
-        return matrixJ;
-    if (outSize > 0 && map1d.size()+map2d.size()+map3d.size() == 0)
+    if (m_matrixJ && !m_updateJ && m_matrixJ->rowBSize() == (MatrixTypeIndex)outSize && m_matrixJ->colBSize() == (MatrixTypeIndex)inSize)
+        return m_matrixJ;
+    if (outSize > 0 && m_map1d.size()+m_map2d.size()+m_map3d.size() == 0)
         return NULL; // error: maps not yet created ?
-//	std::cout << "BarycentricMapperMeshTopology: creating " << outSize << "x" << inSize << " " << NOut << "x" << NIn << " J matrix" << std::endl;
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
+    if (!m_matrixJ) m_matrixJ = new MatrixType;
+    if (m_matrixJ->rowBSize() != (MatrixTypeIndex)outSize || m_matrixJ->colBSize() != (MatrixTypeIndex)inSize)
+        m_matrixJ->resize(outSize*NOut, inSize*NIn);
     else
-        matrixJ->clear();
+        m_matrixJ->clear();
 
-    const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqLines& lines = this->m_fromTopology->getLines();
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
 
     // 1D elements
     {
-        for ( size_t i=0; i<map1d.size(); i++ )
+        for ( size_t i=0; i<m_map1d.size(); i++ )
         {
             const size_t out = i;
-            const Real fx = ( Real ) map1d[i].baryCoords[0];
-            size_t index = map1d[i].in_index;
+            const Real fx = ( Real ) m_map1d[i].baryCoords[0];
+            size_t index = m_map1d[i].in_index;
             {
-                const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
-                this->addMatrixContrib(matrixJ, out, line[0],  ( 1-fx ));
-                this->addMatrixContrib(matrixJ, out, line[1],  fx);
+                const Line& line = lines[index];
+                this->addMatrixContrib(m_matrixJ, out, line[0],  ( 1-fx ));
+                this->addMatrixContrib(m_matrixJ, out, line[1],  fx);
             }
         }
     }
     // 2D elements
     {
-        const size_t i0 = map1d.size();
+        const size_t i0 = m_map1d.size();
         const size_t c0 = triangles.size();
-        for ( size_t i=0; i<map2d.size(); i++ )
+        for ( size_t i=0; i<m_map2d.size(); i++ )
         {
             const size_t out = i+i0;
-            const Real fx = ( Real ) map2d[i].baryCoords[0];
-            const Real fy = ( Real ) map2d[i].baryCoords[1];
-            size_t index = map2d[i].in_index;
+            const Real fx = ( Real ) m_map2d[i].baryCoords[0];
+            const Real fy = ( Real ) m_map2d[i].baryCoords[1];
+            size_t index = m_map2d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-                this->addMatrixContrib(matrixJ, out, triangle[0],  ( 1-fx-fy ));
-                this->addMatrixContrib(matrixJ, out, triangle[1],  fx);
-                this->addMatrixContrib(matrixJ, out, triangle[2],  fy);
+                const Triangle& triangle = triangles[index];
+                this->addMatrixContrib(m_matrixJ, out, triangle[0],  ( 1-fx-fy ));
+                this->addMatrixContrib(m_matrixJ, out, triangle[1],  fx);
+                this->addMatrixContrib(m_matrixJ, out, triangle[2],  fy);
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
-                this->addMatrixContrib(matrixJ, out, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(matrixJ, out, quad[1],  ( ( fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(matrixJ, out, quad[3],  ( ( 1-fx ) * ( fy ) ));
-                this->addMatrixContrib(matrixJ, out, quad[2],  ( ( fx ) * ( fy ) ));
+                const Quad& quad = quads[index-c0];
+                this->addMatrixContrib(m_matrixJ, out, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, quad[1],  ( ( fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, quad[3],  ( ( 1-fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, out, quad[2],  ( ( fx ) * ( fy ) ));
             }
         }
     }
     // 3D elements
     {
-        const size_t i0 = map1d.size() + map2d.size();
+        const size_t i0 = m_map1d.size() + m_map2d.size();
         const size_t c0 = tetrahedra.size();
-        for ( size_t i=0; i<map3d.size(); i++ )
+        for ( size_t i=0; i<m_map3d.size(); i++ )
         {
             const size_t out = i+i0;
-            const Real fx = ( Real ) map3d[i].baryCoords[0];
-            const Real fy = ( Real ) map3d[i].baryCoords[1];
-            const Real fz = ( Real ) map3d[i].baryCoords[2];
-            size_t index = map3d[i].in_index;
+            const Real fx = ( Real ) m_map3d[i].baryCoords[0];
+            const Real fy = ( Real ) m_map3d[i].baryCoords[1];
+            const Real fz = ( Real ) m_map3d[i].baryCoords[2];
+            size_t index = m_map3d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
-                this->addMatrixContrib(matrixJ, out, tetra[0],  ( 1-fx-fy-fz ));
-                this->addMatrixContrib(matrixJ, out, tetra[1],  fx);
-                this->addMatrixContrib(matrixJ, out, tetra[2],  fy);
-                this->addMatrixContrib(matrixJ, out, tetra[3],  fz);
+                const Tetra& tetra = tetrahedra[index];
+                this->addMatrixContrib(m_matrixJ, out, tetra[0],  ( 1-fx-fy-fz ));
+                this->addMatrixContrib(m_matrixJ, out, tetra[1],  fx);
+                this->addMatrixContrib(m_matrixJ, out, tetra[2],  fy);
+                this->addMatrixContrib(m_matrixJ, out, tetra[3],  fz);
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+                const Hexa& cube = cubes[index-c0];
 
-                this->addMatrixContrib(matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-                this->addMatrixContrib(matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-                this->addMatrixContrib(matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                this->addMatrixContrib(matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
             }
         }
     }
-    matrixJ->compress();
-//	std::cout << "J = " << *matrixJ << std::endl;
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
-
 
 template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out>::getJ(int outSize, int inSize)
@@ -2246,15 +2090,15 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
     else
         matrixJ->clear();
 
-    for ( size_t i=0; i<map.size(); i++ )
+    for ( size_t i=0; i<m_map.size(); i++ )
     {
         const int out = i;
 
-        const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[i].in_index );
+        const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
 
-        const Real fx = ( Real ) map[i].baryCoords[0];
-        const Real fy = ( Real ) map[i].baryCoords[1];
-        const Real fz = ( Real ) map[i].baryCoords[2];
+        const Real fx = ( Real ) m_map[i].baryCoords[0];
+        const Real fy = ( Real ) m_map[i].baryCoords[1];
+        const Real fz = ( Real ) m_map[i].baryCoords[2];
         this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
@@ -2284,15 +2128,15 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
     else
         matrixJ->clear();
 
-    for ( size_t i=0; i<map.size(); i++ )
+    for ( size_t i=0; i<m_map.size(); i++ )
     {
         const int out = i;
 
-        const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[i].in_index );
+        const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[i].in_index );
 
-        const Real fx = ( Real ) map[i].baryCoords[0];
-        const Real fy = ( Real ) map[i].baryCoords[1];
-        const Real fz = ( Real ) map[i].baryCoords[2];
+        const Real fx = ( Real ) m_map[i].baryCoords[0];
+        const Real fy = ( Real ) m_map[i].baryCoords[1];
+        const Real fz = ( Real ) m_map[i].baryCoords[2];
         this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
@@ -2306,194 +2150,127 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
         this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
     }
     matrixJ->compress();
-//	std::cout << "J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::getJ(int outSize, int inSize)
+template <class In, class Out, class MappingDataType>
+const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::getJ(int outSize, int inSize)
 {
-    if (matrixJ && !updateJ)
-        return matrixJ;
+    Inherit::getJ(outSize,inSize);
 
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
-    else
-        matrixJ->clear();
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
+    const helper::vector<Edge>& edges = this->m_fromTopology->getEdges();
 
     for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
     {
         if( !this->maskTo->getEntry(outId) ) continue;
 
-        const Real fx = map.getValue()[outId].baryCoords[0];
-        int index = map.getValue()[outId].in_index;
-        const core::topology::BaseMeshTopology::Edge& edge = edges[index];
+        const Edge& edge = edges[d_map.getValue()[outId].in_index];
 
-        this->addMatrixContrib(matrixJ, outId, edge[0], ( 1-fx));
-        this->addMatrixContrib(matrixJ, outId, edge[1], (   fx));
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
+        for (unsigned int j=0; j<edge.size(); j++)
+            this->addMatrixContrib(m_matrixJ, outId, edge[j], baryCoef[j]);
     }
-    matrixJ->compress();
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
-template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out>::getJ(int outSize, int inSize)
+template <class In, class Out, class MappingDataType>
+const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::getJ(int outSize, int inSize)
 {
-    if (matrixJ && !updateJ)
-        return matrixJ;
+    Inherit::getJ(outSize,inSize);
 
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
-    else
-        matrixJ->clear();
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
+    const helper::vector<Triangle>& triangles = this->m_fromTopology->getTriangles();
 
     for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
     {
         if( !this->maskTo->getEntry(outId) ) continue;
 
-        const Real fx = map.getValue()[outId].baryCoords[0];
-        const Real fy = map.getValue()[outId].baryCoords[1];
-        int index = map.getValue()[outId].in_index;
-        const core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-        this->addMatrixContrib(matrixJ, outId, triangle[0], ( 1-fx-fy ));
-        this->addMatrixContrib(matrixJ, outId, triangle[1],      ( fx ));
-        this->addMatrixContrib(matrixJ, outId, triangle[2],      ( fy ));
+        const Triangle& triangle = triangles[d_map.getValue()[outId].in_index];
+
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
+        for (unsigned int j=0; j<triangle.size(); j++)
+            this->addMatrixContrib(m_matrixJ, outId, triangle[j], baryCoef[j]);
     }
 
 
-    matrixJ->compress();
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
-template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::getJ(int outSize, int inSize)
+template <class In, class Out, class MappingDataType>
+const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::getJ(int outSize, int inSize)
 {
-    if (matrixJ && !updateJ)
-        return matrixJ;
+    Inherit::getJ(outSize,inSize);
 
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
-    else
-        matrixJ->clear();
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
-
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
 
     for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
     {
         if( !this->maskTo->getEntry(outId) ) continue;
 
-        const Real fx = map.getValue()[outId].baryCoords[0];
-        const Real fy = map.getValue()[outId].baryCoords[1];
-        int index = map.getValue()[outId].in_index;
-        const core::topology::BaseMeshTopology::Quad& quad = quads[index];
+        const Quad& quad = quads[d_map.getValue()[outId].in_index];
 
-        this->addMatrixContrib(matrixJ, outId, quad[0], ( ( 1-fx ) * ( 1-fy ) ));
-        this->addMatrixContrib(matrixJ, outId, quad[1], (   ( fx ) * ( 1-fy ) ));
-        this->addMatrixContrib(matrixJ, outId, quad[2], (   ( fx ) *   ( fy ) ));
-        this->addMatrixContrib(matrixJ, outId, quad[3], ( ( 1-fx ) *   ( fy ) ));
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
+        for (unsigned int j=0; j<quad.size(); j++)
+            this->addMatrixContrib(m_matrixJ, outId, quad[j], baryCoef[j]);
     }
 
-    matrixJ->compress();
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
-template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,Out>::getJ(int outSize, int inSize)
+template <class In, class Out, class MappingDataType>
+const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::getJ(int outSize, int inSize)
 {
+    Inherit::getJ(outSize,inSize);
 
-    if (matrixJ && !updateJ)
-        return matrixJ;
-
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
-    else
-        matrixJ->clear();
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const helper::vector<Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
     {
         if( !this->maskTo->getEntry(outId) ) continue;
 
-        const Real fx = map.getValue()[outId].baryCoords[0];
-        const Real fy = map.getValue()[outId].baryCoords[1];
-        const Real fz = map.getValue()[outId].baryCoords[2];
-        int index = map.getValue()[outId].in_index;
-        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
+        const Tetrahedron& tetra = tetrahedra[d_map.getValue()[outId].in_index];
 
-        this->addMatrixContrib(matrixJ, outId, tetra[0], ( 1-fx-fy-fz ));
-        this->addMatrixContrib(matrixJ, outId, tetra[1],         ( fx ));
-        this->addMatrixContrib(matrixJ, outId, tetra[2],         ( fy ));
-        this->addMatrixContrib(matrixJ, outId, tetra[3],         ( fz ));
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
+        for (unsigned int j=0; j<tetra.size(); j++)
+            this->addMatrixContrib(m_matrixJ, outId, tetra[j], baryCoef[j]);
     }
 
-    matrixJ->compress();
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
-template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,Out>::getJ(int outSize, int inSize)
+template <class In, class Out, class MappingDataType>
+const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::getJ(int outSize, int inSize)
 {
-    if (matrixJ && !updateJ)
-        return matrixJ;
+    Inherit::getJ(outSize,inSize);
 
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
-    else
-        matrixJ->clear();
-
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
+    const helper::vector<Hexahedron>& hexas = this->m_fromTopology->getHexahedra();
 
     for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
     {
         if( !this->maskTo->getEntry(outId) ) continue;
 
-        const Real fx = map.getValue()[outId].baryCoords[0];
-        const Real fy = map.getValue()[outId].baryCoords[1];
-        const Real fz = map.getValue()[outId].baryCoords[2];
-        int index = map.getValue()[outId].in_index;
-        const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
+        const Hexahedron& hexa = hexas[d_map.getValue()[outId].in_index];
 
-        this->addMatrixContrib(matrixJ, outId, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[1], (   ( fx ) * ( 1-fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[2], (   ( fx ) *   ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[3], ( ( 1-fx ) *   ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[4], ( ( 1-fx ) * ( 1-fy ) *   ( fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[5], (   ( fx ) * ( 1-fy ) *   ( fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[6], (   ( fx ) *   ( fy ) *   ( fz ) ));
-        this->addMatrixContrib(matrixJ, outId, cube[7], ( ( 1-fx ) *   ( fy ) *   ( fz ) ));
+        helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
+        for (unsigned int j=0; j<hexa.size(); j++)
+            this->addMatrixContrib(m_matrixJ, outId, hexa[j], baryCoef[j]);
     }
 
-    matrixJ->compress();
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
+/************************************* Draw ***********************************/
 
 
 template <class TIn, class TOut>
@@ -2501,38 +2278,43 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
 {
     if ( !vparams->displayFlags().getShowMappings() ) return;
 
+    // Draw model (out) points
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
     for ( unsigned int i=0; i<out.size(); i++ )
     {
         points.push_back ( OutDataTypes::getCPos(out[i]) );
     }
-//	glEnd();
-    const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    if ( mapper!=NULL ) mapper->draw(vparams,out, in );
-
     vparams->drawTool()->drawPoints ( points, 7, sofa::defaulttype::Vec<4,float> ( 1,1,0,1 ) );
+
+    // Draw mapping line between models
+    const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    if ( m_mapper!=NULL )
+        m_mapper->draw(vparams,out,in);
+
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,
+                                                   const typename Out::VecCoord& out,
+                                                   const typename In::VecCoord& in )
 {
-    const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqLines& lines = this->m_fromTopology->getLines();
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
     // 1D elements
     {
         const int i0 = 0;
-        for ( unsigned int i=0; i<map1d.size(); i++ )
+        for ( unsigned int i=0; i<m_map1d.size(); i++ )
         {
-            const Real fx = map1d[i].baryCoords[0];
-            int index = map1d[i].in_index;
+            const Real fx = m_map1d[i].baryCoords[0];
+            int index = m_map1d[i].in_index;
             {
-                const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
+                const Line& line = lines[index];
                 Real f[2];
                 f[0] = ( 1-fx );
                 f[1] = fx;
@@ -2540,7 +2322,6 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
                     {
-                        //                         glColor3f((float)f[j],1,(float)f[j]);
                         points.push_back ( Out::getCPos(out[i+i0]) );
                         points.push_back ( in[line[j]] );
                     }
@@ -2550,16 +2331,16 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     }
     // 2D elements
     {
-        const int i0 = map1d.size();
+        const int i0 = m_map1d.size();
         const int c0 = triangles.size();
-        for ( unsigned int i=0; i<map2d.size(); i++ )
+        for ( unsigned int i=0; i<m_map2d.size(); i++ )
         {
-            const Real fx = map2d[i].baryCoords[0];
-            const Real fy = map2d[i].baryCoords[1];
-            int index = map2d[i].in_index;
+            const Real fx = m_map2d[i].baryCoords[0];
+            const Real fy = m_map2d[i].baryCoords[1];
+            int index = m_map2d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                const Triangle& triangle = triangles[index];
                 Real f[3];
                 f[0] = ( 1-fx-fy );
                 f[1] = fx;
@@ -2568,7 +2349,6 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
                     {
-                        //                         glColor3f((float)f[j],1,(float)f[j]);
                         points.push_back ( Out::getCPos(out[i+i0]) );
                         points.push_back ( in[triangle[j]] );
                     }
@@ -2576,7 +2356,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                const Quad& quad = quads[index-c0];
                 Real f[4];
                 f[0] = ( ( 1-fx ) * ( 1-fy ) );
                 f[1] = ( ( fx ) * ( 1-fy ) );
@@ -2586,7 +2366,6 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
                     {
-                        //                         glColor3f((float)f[j],1,(float)f[j]);
                         points.push_back ( Out::getCPos(out[i+i0]) );
                         points.push_back ( in[quad[j]] );
                     }
@@ -2596,17 +2375,17 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     }
     // 3D elements
     {
-        const int i0 = map1d.size() +map2d.size();
+        const int i0 = m_map1d.size() +m_map2d.size();
         const int c0 = tetrahedra.size();
-        for ( unsigned int i=0; i<map3d.size(); i++ )
+        for ( unsigned int i=0; i<m_map3d.size(); i++ )
         {
-            const Real fx = map3d[i].baryCoords[0];
-            const Real fy = map3d[i].baryCoords[1];
-            const Real fz = map3d[i].baryCoords[2];
-            int index = map3d[i].in_index;
+            const Real fx = m_map3d[i].baryCoords[0];
+            const Real fy = m_map3d[i].baryCoords[1];
+            const Real fz = m_map3d[i].baryCoords[2];
+            int index = m_map3d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
+                const Tetra& tetra = tetrahedra[index];
                 Real f[4];
                 f[0] = ( 1-fx-fy-fz );
                 f[1] = fx;
@@ -2616,7 +2395,6 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
                     {
-                        //                         glColor3f((float)f[j],1,(float)f[j]);
                         points.push_back ( Out::getCPos(out[i+i0]) );
                         points.push_back ( in[tetra[j]] );
                     }
@@ -2624,7 +2402,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+                const Hexa& cube = cubes[index-c0];
 
                 Real f[8];
                 f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
@@ -2643,7 +2421,6 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
                     {
-                        //                         glColor3f((float)f[j],1,1);
                         points.push_back ( Out::getCPos(out[i+i0]) );
                         points.push_back ( in[cube[j]] );
                     }
@@ -2655,18 +2432,20 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
 }
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,
+                                                          const typename Out::VecCoord& out,
+                                                          const typename In::VecCoord& in )
 {
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
 
-    for ( unsigned int i=0; i<map.size(); i++ )
+    for ( unsigned int i=0; i<m_map.size(); i++ )
     {
 
-        const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[i].in_index );
+        const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
 
-        const Real fx = map[i].baryCoords[0];
-        const Real fy = map[i].baryCoords[1];
-        const Real fz = map[i].baryCoords[2];
+        const Real fx = m_map[i].baryCoords[0];
+        const Real fy = m_map[i].baryCoords[1];
+        const Real fz = m_map[i].baryCoords[2];
         Real f[8];
         f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
         f[1] = ( fx ) * ( 1-fy ) * ( 1-fz );
@@ -2684,7 +2463,6 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
         {
             if ( f[j]<=-0.0001 || f[j]>=0.0001 )
             {
-                //glColor3f((float)f[j],(float)f[j],1);
                 points.push_back ( Out::getCPos(out[i]) );
                 points.push_back ( in[cube[j]] );
             }
@@ -2695,17 +2473,19 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
 }
 
 template <class In, class Out>
-void BarycentricMapperSparseGridTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperSparseGridTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,
+                                                         const typename Out::VecCoord& out,
+                                                         const typename In::VecCoord& in )
 {
-    std::vector< sofa::defaulttype::Vector3 > points;
-    for ( unsigned int i=0; i<map.size(); i++ )
+    std::vector< Vector3 > points;
+    for ( unsigned int i=0; i<m_map.size(); i++ )
     {
 
-        const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[i].in_index );
+        const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[i].in_index );
 
-        const Real fx = map[i].baryCoords[0];
-        const Real fy = map[i].baryCoords[1];
-        const Real fz = map[i].baryCoords[2];
+        const Real fx = m_map[i].baryCoords[0];
+        const Real fy = m_map[i].baryCoords[1];
+        const Real fz = m_map[i].baryCoords[2];
         Real f[8];
         f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
         f[1] = ( fx ) * ( 1-fy ) * ( 1-fz );
@@ -2723,44 +2503,34 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const core::visual::Vis
         {
             if ( f[j]<=-0.0001 || f[j]>=0.0001 )
             {
-                //glColor3f((float)f[j],(float)f[j],1);
                 points.push_back ( Out::getCPos(out[i]) );
                 points.push_back ( in[cube[j]] );
             }
         }
     }
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,0,1,1 ) );
-
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::draw  (const core::visual::VisualParams* vparams,
+                                                                      const typename Out::VecCoord& out,
+                                                                      const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
+    // Draw line between mapped node (out) and nodes of nearest element (in)
+    const helper::vector<Edge>& edges = this->m_fromTopology->getEdges();
 
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
     {
-        for ( unsigned int i=0; i<map.getValue().size(); i++ )
+        for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
         {
-            const Real fx = map.getValue()[i].baryCoords[0];
-            int index = map.getValue()[i].in_index;
-            const core::topology::BaseMeshTopology::Edge& edge = edges[index];
+            const Edge& edge = edges[d_map.getValue()[i].in_index];
+            helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+            for ( int j=0; j<2; j++ )
             {
-                const Real f = Real ( 1.0 )-fx;
-                if ( f<=-0.0001 || f>=0.0001 )
+                if ( baryCoef[j]<=-0.0001 || baryCoef[j]>=0.0001 )
                 {
-                    //                     glColor3f((float)f,1,(float)f);
                     points.push_back ( Out::getCPos(out[i]) );
-                    points.push_back ( in[edge[0]] );
-                }
-            }
-            {
-                const Real f = fx;
-                if ( f<=-0.0001 || f>=0.0001 )
-                {
-                    //                     glColor3f((float)f,1,(float)f);
-                    points.push_back ( Out::getCPos(out[i]) );
-                    points.push_back ( in[edge[1]] );
+                    points.push_back ( in[edge[j]] );
                 }
             }
         }
@@ -2768,28 +2538,24 @@ void BarycentricMapperEdgeSetTopology<In,Out>::draw  (const core::visual::Visual
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::draw  (const core::visual::VisualParams* vparams,
+                                                                          const typename Out::VecCoord& out,
+                                                                          const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
+    // Draw line between mapped node (out) and nodes of nearest element (in)
+    const helper::vector<Triangle>& triangles = m_fromTopology->getTriangles();
 
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
     {
-        for ( unsigned int i=0; i<map.getValue().size(); i++ )
+        for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
         {
-            const Real fx = map.getValue()[i].baryCoords[0];
-            const Real fy = map.getValue()[i].baryCoords[1];
-            int index = map.getValue()[i].in_index;
-            const core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-            Real f[3];
-            f[0] = ( 1-fx-fy );
-            f[1] = fx;
-            f[2] = fy;
+            const Triangle& triangle = triangles[d_map.getValue()[i].in_index];
+            helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
             for ( int j=0; j<3; j++ )
             {
-                if ( f[j]<=-0.0001 || f[j]>=0.0001 )
+                if ( baryCoef[j]<=-0.0001 || baryCoef[j]>=0.0001 )
                 {
-                    //                     glColor3f((float)f[j],1,(float)f[j]);
                     points.push_back ( Out::getCPos(out[i]) );
                     points.push_back ( in[triangle[j]] );
                 }
@@ -2799,28 +2565,24 @@ void BarycentricMapperTriangleSetTopology<In,Out>::draw  (const core::visual::Vi
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::draw  (const core::visual::VisualParams* vparams,
+                                                                      const typename Out::VecCoord& out,
+                                                                      const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
-    std::vector< sofa::defaulttype::Vector3 > points;
+    // Draw line between mapped node (out) and nodes of nearest element (in)
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
+
+    std::vector< Vector3 > points;
     {
-        for ( unsigned int i=0; i<map.getValue().size(); i++ )
+        for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
         {
-            const Real fx = map.getValue()[i].baryCoords[0];
-            const Real fy = map.getValue()[i].baryCoords[1];
-            int index = map.getValue()[i].in_index;
-            const core::topology::BaseMeshTopology::Quad& quad = quads[index];
-            Real f[4];
-            f[0] = ( ( 1-fx ) * ( 1-fy ) );
-            f[1] = ( ( fx ) * ( 1-fy ) );
-            f[3] = ( ( 1-fx ) * ( fy ) );
-            f[2] = ( ( fx ) * ( fy ) );
+            const Quad& quad = quads[d_map.getValue()[i].in_index];
+            helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
             for ( int j=0; j<4; j++ )
             {
-                if ( f[j]<=-0.0001 || f[j]>=0.0001 )
+                if ( baryCoef[j]<=-0.0001 || baryCoef[j]>=0.0001 )
                 {
-                    //                     glColor3f((float)f[j],1,(float)f[j]);
                     points.push_back ( Out::getCPos(out[i]) );
                     points.push_back ( in[quad[j]] );
                 }
@@ -2830,30 +2592,23 @@ void BarycentricMapperQuadSetTopology<In,Out>::draw  (const core::visual::Visual
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::draw  (const core::visual::VisualParams* vparams,
+                                                                             const typename Out::VecCoord& out,
+                                                                             const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const helper::vector<Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
     {
-        for ( unsigned int i=0; i<map.getValue().size(); i++ )
+        for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
         {
-            const Real fx = map.getValue()[i].baryCoords[0];
-            const Real fy = map.getValue()[i].baryCoords[1];
-            const Real fz = map.getValue()[i].baryCoords[2];
-            int index = map.getValue()[i].in_index;
-            const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
-            Real f[4];
-            f[0] = ( 1-fx-fy-fz );
-            f[1] = fx;
-            f[2] = fy;
-            f[3] = fz;
+            const Tetrahedron& tetra = tetrahedra[d_map.getValue()[i].in_index];
+            helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
             for ( int j=0; j<4; j++ )
             {
-                if ( f[j]<=-0.0001 || f[j]>=0.0001 )
+                if ( baryCoef[j]<=-0.0001 || baryCoef[j]>=0.0001 )
                 {
-                    //                     glColor3f((float)f[j],1,(float)f[j]);
                     points.push_back ( Out::getCPos(out[i]) );
                     points.push_back ( in[tetra[j]] );
                 }
@@ -2863,36 +2618,27 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::draw  (const core::visual:
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::draw  (const core::visual::VisualParams* vparams,
+                                                                            const typename Out::VecCoord& out,
+                                                                            const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
+    // Draw line between mapped node (out) and nodes of nearest element (in)
+    const helper::vector<Hexahedron>& hexas = this->m_fromTopology->getHexahedra();
 
-    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< Vector3 > points;
     {
-        for ( unsigned int i=0; i<map.getValue().size(); i++ )
+        for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
         {
-            const Real fx = map.getValue()[i].baryCoords[0];
-            const Real fy = map.getValue()[i].baryCoords[1];
-            const Real fz = map.getValue()[i].baryCoords[2];
-            int index = map.getValue()[i].in_index;
-            const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
-            Real f[8];
-            f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
-            f[1] = ( fx ) * ( 1-fy ) * ( 1-fz );
-            f[3] = ( 1-fx ) * ( fy ) * ( 1-fz );
-            f[2] = ( fx ) * ( fy ) * ( 1-fz );
-            f[4] = ( 1-fx ) * ( 1-fy ) * ( fz );
-            f[5] = ( fx ) * ( 1-fy ) * ( fz );
-            f[7] = ( 1-fx ) * ( fy ) * ( fz );
-            f[6] = ( fx ) * ( fy ) * ( fz );
+            int index = d_map.getValue()[i].in_index;
+            const Hexahedron& hexa = hexas[index];
+            helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
             for ( int j=0; j<8; j++ )
             {
-                if ( f[j]<=-0.0001 || f[j]>=0.0001 )
+                if ( baryCoef[j]<=-0.0001 || baryCoef[j]>=0.0001 )
                 {
-                    //                     glColor3f((float)f[j],1,1);
                     points.push_back ( Out::getCPos(out[i]) );
-                    points.push_back ( in[cube[j]] );
+                    points.push_back ( in[hexa[j]] );
                 }
             }
         }
@@ -2900,43 +2646,41 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw  (const core::visual::
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
+
 /************************************* PropagateConstraint ***********************************/
 
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in)
+void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in)
 {
+    SOFA_UNUSED(cparams);
+
     if (
 #ifdef SOFA_DEV
         sleeping.getValue()==false &&
 #endif
-        mapper!=NULL )
+        m_mapper!=NULL )
     {
-        mapper->applyJT(*out.beginEdit(), in.getValue());
+        m_mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();
     }
 }
 
-
-/// @todo Optimization
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
-    const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const SeqLines& lines = this->m_fromTopology->getLines();
+    const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const SeqQuads& quads = this->m_fromTopology->getQuads();
+    const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const SeqHexahedra& hexas = this->m_fromTopology->getHexahedra();
 
-    //const size_t iLine = lines.size();
     const size_t iTri = triangles.size();
-    //const size_t iQuad = quads.size();
     const size_t iTetra= tetrahedra.size();
-    //const size_t iCube = cubes.size();
 
-    const size_t i1d = map1d.size();
-    const size_t i2d = map2d.size();
-    const size_t i3d = map3d.size();
+    const size_t i1d = m_map1d.size();
+    const size_t i2d = m_map2d.size();
+    const size_t i3d = m_map3d.size();
 
     size_t indexIn;
 
@@ -2959,10 +2703,10 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 // 1D elements
                 if ( indexIn < i1d )
                 {
-                    const OutReal fx = ( OutReal ) map1d[indexIn].baryCoords[0];
-                    size_t index = map1d[indexIn].in_index;
+                    const OutReal fx = ( OutReal ) m_map1d[indexIn].baryCoords[0];
+                    size_t index = m_map1d[indexIn].in_index;
                     {
-                        const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
+                        const Line& line = lines[index];
                         o.addCol( line[0], data * ( 1-fx ) );
                         o.addCol( line[1], data * fx );
                     }
@@ -2970,55 +2714,55 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 // 2D elements : triangle or quad
                 else if ( indexIn < i2d )
                 {
-                    const OutReal fx = ( OutReal ) map2d[indexIn].baryCoords[0];
-                    const OutReal fy = ( OutReal ) map2d[indexIn].baryCoords[1];
-                    size_t index = map2d[indexIn].in_index;
+                    const OutReal fx = ( OutReal ) m_map2d[indexIn].baryCoords[0];
+                    const OutReal fy = ( OutReal ) m_map2d[indexIn].baryCoords[1];
+                    size_t index = m_map2d[indexIn].in_index;
                     if ( index < iTri ) // triangle
                     {
-                        const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                        const Triangle& triangle = triangles[index];
                         o.addCol( triangle[0], data * ( 1-fx-fy ) );
                         o.addCol( triangle[1], data * fx );
                         o.addCol( triangle[2], data * fy );
                     }
-                    else // 2D element : Quad
+                    else // quad
                     {
-                        const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index - iTri];
+                        const Quad& quad = quads[index - iTri];
                         o.addCol( quad[0], data * ( ( 1-fx ) * ( 1-fy ) ) );
                         o.addCol( quad[1], data * ( ( fx ) * ( 1-fy ) ) );
                         o.addCol( quad[3], data * ( ( 1-fx ) * ( fy ) ) );
                         o.addCol( quad[2], data * ( ( fx ) * ( fy ) ) );
                     }
                 }
-                // 3D elements
+                // 3D elements : tetra or hexa
                 else if ( indexIn < i3d )
                 {
-                    const OutReal fx = ( OutReal ) map3d[indexIn].baryCoords[0];
-                    const OutReal fy = ( OutReal ) map3d[indexIn].baryCoords[1];
-                    const OutReal fz = ( OutReal ) map3d[indexIn].baryCoords[2];
-                    size_t index = map3d[indexIn].in_index;
+                    const OutReal fx = ( OutReal ) m_map3d[indexIn].baryCoords[0];
+                    const OutReal fy = ( OutReal ) m_map3d[indexIn].baryCoords[1];
+                    const OutReal fz = ( OutReal ) m_map3d[indexIn].baryCoords[2];
+                    size_t index = m_map3d[indexIn].in_index;
                     if ( index < iTetra ) // tetra
                     {
-                        const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
+                        const Tetra& tetra = tetrahedra[index];
                         o.addCol ( tetra[0], data * ( 1-fx-fy-fz ) );
                         o.addCol ( tetra[1], data * fx );
                         o.addCol ( tetra[2], data * fy );
                         o.addCol ( tetra[3], data * fz );
                     }
-                    else // cube
+                    else // hexa
                     {
-                        const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-iTetra];
+                        const Hexa& hexa = hexas[index-iTetra];
 
-                        o.addCol ( cube[0],data * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
-                        o.addCol ( cube[1],data * ( ( fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( hexa[0],data * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( hexa[1],data * ( ( fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
 
-                        o.addCol ( cube[3],data * ( ( 1-fx ) * ( fy ) * ( 1-fz ) ) ) ;
-                        o.addCol ( cube[2],data * ( ( fx ) * ( fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( hexa[3],data * ( ( 1-fx ) * ( fy ) * ( 1-fz ) ) ) ;
+                        o.addCol ( hexa[2],data * ( ( fx ) * ( fy ) * ( 1-fz ) ) ) ;
 
-                        o.addCol ( cube[4],data * ( ( 1-fx ) * ( 1-fy ) * ( fz ) ) ) ;
-                        o.addCol ( cube[5],data * ( ( fx ) * ( 1-fy ) * ( fz ) ) ) ;
+                        o.addCol ( hexa[4],data * ( ( 1-fx ) * ( 1-fy ) * ( fz ) ) ) ;
+                        o.addCol ( hexa[5],data * ( ( fx ) * ( 1-fy ) * ( fz ) ) ) ;
 
-                        o.addCol ( cube[7],data * ( ( 1-fx ) * ( fy ) * ( fz ) ) ) ;
-                        o.addCol ( cube[6],data * ( ( fx ) * ( fy ) * ( fz ) ) ) ;
+                        o.addCol ( hexa[7],data * ( ( 1-fx ) * ( fy ) * ( fz ) ) ) ;
+                        o.addCol ( hexa[6],data * ( ( fx ) * ( fy ) * ( fz ) ) ) ;
                     }
                 }
             }
@@ -3046,11 +2790,11 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 
-                const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[indexIn].in_index );
+                const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[indexIn].in_index );
 
-                const OutReal fx = (OutReal) map[indexIn].baryCoords[0];
-                const OutReal fy = (OutReal) map[indexIn].baryCoords[1];
-                const OutReal fz = (OutReal) map[indexIn].baryCoords[2];
+                const OutReal fx = (OutReal) m_map[indexIn].baryCoords[0];
+                const OutReal fy = (OutReal) m_map[indexIn].baryCoords[1];
+                const OutReal fz = (OutReal) m_map[indexIn].baryCoords[2];
                 const OutReal oneMinusFx = 1-fx;
                 const OutReal oneMinusFy = 1-fy;
                 const OutReal oneMinusFz = 1-fz;
@@ -3091,11 +2835,11 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[indexIn].in_index );
 
-                const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
-                const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
-                const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal fx = ( OutReal ) m_map[indexIn].baryCoords[0];
+                const OutReal fy = ( OutReal ) m_map[indexIn].baryCoords[1];
+                const OutReal fz = ( OutReal ) m_map[indexIn].baryCoords[2];
                 const OutReal oneMinusFx = 1-fx;
                 const OutReal oneMinusFy = 1-fy;
                 const OutReal oneMinusFz = 1-fz;
@@ -3131,11 +2875,11 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperEdgeSetTopology<In,Out,MappingDataType>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
+    const helper::vector<Edge>& edges = this->m_fromTopology->getEdges();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -3150,53 +2894,21 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJT ( typename In::MatrixDeri
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const core::topology::BaseMeshTopology::Edge edge = edges[this->map.getValue()[indexIn].in_index];
-                const OutReal fx = ( OutReal ) map.getValue()[indexIn].baryCoords[0];
+                const Edge edge = edges[this->d_map.getValue()[indexIn].in_index];
 
-                o.addCol ( edge[0], data * ( 1-fx ) );
-                o.addCol ( edge[1], data * ( fx ) );
+                helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
+                for (unsigned int j=0; j<edge.size(); j++)
+                    o.addCol(edge[j], data*baryCoef[j]);
             }
         }
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTriangleSetTopology<In,Out,MappingDataType>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
-
-    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
-        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
-
-        if (colIt != colItEnd)
-        {
-            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
-
-            for ( ; colIt != colItEnd; ++colIt)
-            {
-                unsigned indexIn = colIt.index();
-                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
-
-                const core::topology::BaseMeshTopology::Triangle triangle = triangles[this->map.getValue()[indexIn].in_index];
-                const OutReal fx = ( OutReal ) map.getValue()[indexIn].baryCoords[0];
-                const OutReal fy = ( OutReal ) map.getValue()[indexIn].baryCoords[1];
-
-                o.addCol (triangle[0],data * ( 1-fx-fy ) );
-                o.addCol (triangle[1],data * ( fx ) );
-                o.addCol (triangle[2],data * ( fy ) );
-            }
-        }
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
-{
-    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
+    const helper::vector<Triangle>& triangles = this->m_fromTopology->getTriangles();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -3212,24 +2924,21 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::MatrixDeri
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const OutReal fx = ( OutReal ) map.getValue()[indexIn].baryCoords[0];
-                const OutReal fy = ( OutReal ) map.getValue()[indexIn].baryCoords[1];
-                const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[map.getValue()[indexIn].in_index];
+                const Triangle triangle = triangles[this->d_map.getValue()[indexIn].in_index];
 
-                o.addCol (quad[0], data * ( ( 1-fx ) * ( 1-fy ) ) );
-                o.addCol (quad[1], data * ( ( fx ) * ( 1-fy ) ) );
-                o.addCol (quad[3], data * ( ( 1-fx ) * ( fy ) ) );
-                o.addCol (quad[2], data * ( ( fx ) * ( fy ) ) );
+                helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
+                for (unsigned int j=0; j<triangle.size(); j++)
+                    o.addCol(triangle[j], data*baryCoef[j]);
             }
         }
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperQuadSetTopology<In,Out,MappingDataType>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const helper::vector<Quad>& quads = this->m_fromTopology->getQuads();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -3245,26 +2954,21 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Mat
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const OutReal fx = ( OutReal ) map.getValue()[indexIn].baryCoords[0];
-                const OutReal fy = ( OutReal ) map.getValue()[indexIn].baryCoords[1];
-                const OutReal fz = ( OutReal ) map.getValue()[indexIn].baryCoords[2];
-                int index = map.getValue()[indexIn].in_index;
-                const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
+                const Quad& quad = quads[d_map.getValue()[indexIn].in_index];
 
-                o.addCol (tetra[0], data * ( 1-fx-fy-fz ) );
-                o.addCol (tetra[1], data * fx );
-                o.addCol (tetra[2], data * fy );
-                o.addCol (tetra[3], data * fz );
+                helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
+                for (unsigned int j=0; j<quad.size(); j++)
+                    o.addCol(quad[j], data*baryCoef[j]);
             }
         }
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperTetrahedronSetTopology<In,Out,MappingDataType>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector< core::topology::BaseMeshTopology::Hexahedron >& cubes = this->fromTopology->getHexahedra();
+    const helper::vector<Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -3280,43 +2984,62 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::Matr
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const OutReal fx = ( OutReal ) map.getValue()[indexIn].baryCoords[0];
-                const OutReal fy = ( OutReal ) map.getValue()[indexIn].baryCoords[1];
-                const OutReal fz = ( OutReal ) map.getValue()[indexIn].baryCoords[2];
-                const OutReal oneMinusFx = 1-fx;
-                const OutReal oneMinusFy = 1-fy;
-                const OutReal oneMinusFz = 1-fz;
+                const Tetrahedron& tetra = tetrahedra[d_map.getValue()[indexIn].in_index];
 
-                int index = map.getValue()[indexIn].in_index;
-                const core::topology::BaseMeshTopology::Hexahedron& cube = cubes[index];
-
-                o.addCol (cube[0], data * ( oneMinusFx * oneMinusFy * oneMinusFz ) );
-                o.addCol (cube[1], data * ( ( fx ) * oneMinusFy * oneMinusFz ) );
-                o.addCol (cube[3], data * ( oneMinusFx * ( fy ) * oneMinusFz ) );
-                o.addCol (cube[2], data * ( ( fx ) * ( fy ) * oneMinusFz ) );
-                o.addCol (cube[4], data * ( oneMinusFx * oneMinusFy * ( fz ) ) );
-                o.addCol (cube[5], data * ( ( fx ) * oneMinusFy * ( fz ) ) );
-                o.addCol (cube[7], data * ( oneMinusFx * ( fy ) * ( fz ) ) );
-                o.addCol (cube[6], data * ( ( fx ) * ( fy ) * ( fz ) ) );
+                helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
+                for (unsigned int j=0; j<tetra.size(); j++)
+                    o.addCol(tetra[j], data*baryCoef[j]);
             }
         }
     }
 }
+
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+{
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    const helper::vector< Hexahedron >& hexas = this->m_fromTopology->getHexahedra();
+
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+
+        if (colIt != colItEnd)
+        {
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned indexIn = colIt.index();
+                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
+
+                const Hexahedron& hexa = hexas[d_map.getValue()[indexIn].in_index];
+
+                helper::vector<Real> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
+                for (unsigned int j=0; j<hexa.size(); j++)
+                    o.addCol(hexa[j], data*baryCoef[j]);
+            }
+        }
+    }
+}
+
 
 /************************************* Topological Changes ***********************************/
 
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::topology::Topology* t)
+
+template <class In, class Out, class MappingDataType>
+void BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType>::handleTopologyChange(core::topology::Topology* t)
 {
     using sofa::core::behavior::MechanicalState;
 
-    if (t != this->fromTopology) return;
+    if (t != this->m_fromTopology) return;
 
-    if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
+    if ( this->m_fromTopology->beginChange() == this->m_fromTopology->endChange() )
         return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
+    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
+    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
@@ -3327,17 +3050,17 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
         {
-            if(!_invalidIndex.empty())
+            if(!m_invalidIndex.empty())
             {
-                helper::vector<MappingData>& mapData = *(map.beginEdit());
+                helper::vector<MappingData>& mapData = *(d_map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
-                        iter != _invalidIndex.end(); ++iter )
+                for ( std::set<int>::const_iterator iter = m_invalidIndex.begin();
+                        iter != m_invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
-                        sofa::defaulttype::Vector3 coefs;
+                        Vector3 coefs;
                         typename In::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
                         pos[1] = mapData[j].baryCoords[1];
@@ -3360,13 +3083,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             else
                             {
                                 const typename MechanicalStateT::VecCoord& xto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
-                                index = _fromGeomAlgo->findNearestElementInRestPos ( Out::getCPos(xto0[j]), coefs, distance );
-                                coefs = _fromGeomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);
+                                index = m_fromGeomAlgo->findNearestElementInRestPos ( Out::getCPos(xto0[j]), coefs, distance );
+                                coefs = m_fromGeomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);
                             }
                         }
                         else
                         {
-                            index = _fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+                            index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
                         }
 
                         if ( index != -1 )
@@ -3379,8 +3102,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                     }
                 }
 
-                map.endEdit();
-                _invalidIndex.clear();
+                d_map.endEdit();
+                m_invalidIndex.clear();
             }
         }
         break;
@@ -3402,35 +3125,35 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
+            const unsigned int nbHexahedra = this->m_fromTopology->getNbHexahedra();
 
-            const sofa::helper::vector<unsigned int> &hexahedra =
+            const helper::vector<unsigned int> &hexahedra =
                     ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
-            //        sofa::helper::vector<unsigned int> hexahedra(tab);
+            //        helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {
                 // remove all references to the removed cubes from the mapping data
                 unsigned int cubeId = hexahedra[i];
-                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
                 {
-                    if ( map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
+                    if ( d_map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
                     {
-                        sofa::defaulttype::Vector3 coefs;
-                        coefs[0] = map.getValue()[j].baryCoords[0];
-                        coefs[1] = map.getValue()[j].baryCoords[1];
-                        coefs[2] = map.getValue()[j].baryCoords[2];
+                        Vector3 coefs;
+                        coefs[0] = d_map.getValue()[j].baryCoords[0];
+                        coefs[1] = d_map.getValue()[j].baryCoords[1];
+                        coefs[2] = d_map.getValue()[j].baryCoords[2];
 
-                        typename In::Coord restPos = _fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+                        typename In::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
-                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = -1;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
                         vectorData[j].baryCoords[2] = restPos[2];
-                        map.endEdit();
+                        d_map.endEdit();
 
-                        _invalidIndex.insert(j);
+                        m_invalidIndex.insert(j);
                     }
                 }
             }
@@ -3440,13 +3163,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
                 unsigned int cubeId = hexahedra[i];
-                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
                 {
-                    if ( map.getValue()[j].in_index == ( int ) lastCubeId )
+                    if ( d_map.getValue()[j].in_index == ( int ) lastCubeId )
                     {
-                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = cubeId;
-                        map.endEdit();
+                        d_map.endEdit();
                     }
                 }
             }
@@ -3460,12 +3183,10 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
     }
 }
 
-// handle topology changes depending on the topology
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* /*t*/ )
+void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
 {
-//    if (mapper)
-//        mapper->handleTopologyChange(t);
+    SOFA_UNUSED(t);
     reinit(); // we now recompute the entire mapping when there is a topologychange
 }
 
@@ -3546,7 +3267,6 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
 
 #endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
 
-
 template<class TIn, class TOut>
 const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
@@ -3566,8 +3286,8 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::updateForceMask()
 {
-    if( mapper )
-        mapper->updateForceMask();
+    if( m_mapper )
+        m_mapper->updateForceMask();
 }
 
 } // namespace mapping
