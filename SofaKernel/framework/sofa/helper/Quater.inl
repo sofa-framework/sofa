@@ -254,12 +254,24 @@ template<class Real>
 void Quater<Real>::normalize()
 {
     Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
-    if( mag != 0)
+    double epsilon = 1.0e-10;
+    if (std::abs(mag - 1.0) > epsilon)
     {
-        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-        for (int i = 0; i < 4; i++)
+        if( mag != 0)
         {
-            _q[i] *= sqr;
+            Real sqr = static_cast<Real>(1.0 / sqrt(mag));
+            for (int i = 0; i < 4; i++)
+            {
+                _q[i] *= sqr;
+            }
+            msg_warning("Quater") << "Rigid Object with invalid quaternion (non-unitary norm)! Normalising quaternion value...";
+            msg_warning("Quater") << "New value is: " << _q[0] << " " << _q[1] << " " << _q[2] << " "<< _q[3];
+        }
+        else
+        {
+            _q[3] = 1;
+            msg_warning("Quater") << "Rigid Object with invalid quaternion (zero norm)! Normalising quaternion value...";
+            msg_warning("Quater") << "New value is: " << _q[0] << " " << _q[1] << " " << _q[2] << " "<< _q[3];
         }
     }
 }

@@ -327,10 +327,12 @@ public:
         out<<v._q[0]<<" "<<v._q[1]<<" "<<v._q[2]<<" "<<v._q[3];
         return out;
     }
+
     /// read from an input stream
     inline friend std::istream& operator >> ( std::istream& in, Quater& v )
     {
         in>>v._q[0]>>v._q[1]>>v._q[2]>>v._q[3];
+        v.normalize();
         return in;
     }
 
