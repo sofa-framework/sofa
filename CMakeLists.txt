@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(Sofa VERSION 18.12.dev)
+project(Sofa VERSION 18.12.99)
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
@@ -397,10 +397,6 @@ set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
 
 ######################
 # IFW Generator config
-if(CPACK_GENERATOR STREQUAL "IFW" AND Sofa_VERSION_PATCH STREQUAL "dev")
-    # IFW wants numbers for version
-    set(CPACK_PACKAGE_VERSION "${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.99")
-endif()
 set(CPACK_IFW_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
 set(CPACK_IFW_PACKAGE_TITLE "${CPACK_PACKAGE_NAME}")
 set(CPACK_IFW_PRODUCT_URL "${CPACK_PACKAGE_HOMEPAGE_URL}")

@@ -187,11 +187,7 @@ list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 ## Version
 set(SOFAFRAMEWORK_VERSION "${Sofa_VERSION}")
 set(SOFA_VERSION_STR "\"${Sofa_VERSION}\"")
-if(Sofa_VERSION_PATCH STREQUAL "dev")
-    set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}99")
-else()
-    set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
-endif()
+set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa COMPONENT headers)
 
