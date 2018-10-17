@@ -64,37 +64,15 @@ def RestShapeObject(impl, name="unnamed", position=[]):
                 d = node.addObject(impl)
         return node
                 
-class Test(unittest.TestCase):
-    def test_animation(self):
-        node = Sofa.Node("TestAnimation")
+def createScene(node):
         node.addObject("OglLineAxis")
         node.addObject("RequiredPlugin", name="SofaSparseSolver")
         node.addObject("DefaultAnimationLoop", name="loop")
         node.addObject("EulerImplicit")
         node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
-        #node.addObject("SparseLDLSolver")
-
-        #object1.addChild( MyForceField("customFF", ks=5.0) )
-        a=node.addChild( RestShapeObject( MyForceField("customFF", ks=5.0) , name="python", position=[[i*1-10.0, 0, 0] for i in range(20)] ) )
+       
+        a=node.addChild( RestShapeObject( MyForceField("customFF", ks=5.0) , name="python", position=[[i-7.5, 0, 0] for i in range(10)] ) )
         a.mechanical.showColor = [1.0,0.0,0.0,1.0]
-        b=node.addChild( RestShapeObject( CreateObject("RestShapeSpringsForceField", stiffness=5.0) , name="c++", position=[[i*0.5-1.0, 0, 0] for i in range(1)]))
-        b.mechanical.showColor = [1.0,1.0,0.0,1.0]
         
-        return node
-
-def getTestsName():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return [ test.id().split(".")[2] for test in suite]
-
-def runTests():
-        import sys
-        suite = None
-        if( len(sys.argv) == 1 ):
-            suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-        else:
-            suite = unittest.TestSuite()
-            suite.addTest(Test(sys.argv[1]))
-        return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
-
-def createScene(rootNode):
-        rootNode.addChild(Test().test_animation())
+        b=node.addChild( RestShapeObject( CreateObject("RestShapeSpringsForceField", stiffness=5.0) , name="c++", position=[[i-2.5, 0, 0] for i in range(10)]))
+        b.mechanical.showColor = [1.0,1.0,0.0,1.0]
