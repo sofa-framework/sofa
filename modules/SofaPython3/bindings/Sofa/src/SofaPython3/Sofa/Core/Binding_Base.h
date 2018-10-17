@@ -25,8 +25,8 @@ using sofa::core::sptr;
 class BindingBase
 {
 public:
-    static py::object GetAttr(Base* self, const std::string& s);
-    static void SetAttr(py::object self, const std::string& s, pybind11::object value);
+    static py::object GetAttr(Base* self, const std::string& s, bool doThrowException=true);
+    static void SetAttr(py::object self, const std::string& s, pybind11::object value, bool withDict=false);
     static void SetAttr(Base& self, const std::string& s, py::object value);
     static void SetAttrFromArray(py::object self, const std::string& s, const pybind11::array &value);
 };

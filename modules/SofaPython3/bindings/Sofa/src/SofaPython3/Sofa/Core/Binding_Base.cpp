@@ -68,7 +68,7 @@ PSDEDataFactory* getFactoryInstance(){
 
 
 
-py::object BindingBase::GetAttr(Base* self, const std::string& s)
+py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowException)
 {
     /// I'm not sure implicit behavior is nice but we could do:
     ///    - The attribute is a data,
@@ -94,11 +94,13 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s)
     if( s == "__data__")
         return py::cast( DataDict(self) );
 
+    if(doThrowException)
+        throw py::attribute_error(s);
 
-    throw py::attribute_error(s);
+    return py::none();
 }
 
-void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
+void BindingBase::SetAttr(py::object self, const std::string& s, py::object value, bool withDict)
 {
     Base* self_d = py::cast<Base*>(self);
     BaseData* d = self_d->findData(s);
@@ -123,14 +125,6 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
         return;
     }
 
-    /// We are falling back to dynamically adding the objet into the object dict.
-//    py::dict t = self.attr("__dict__");
-//    if(!t.is_none())
-//    {
-//        t[s.c_str()] = value;
-//        return;
-//    }
-
     std::string id="none";
     if(py::isinstance<py::float_>(value))
         id = "double";
@@ -151,8 +145,19 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
         return;
     }
 
+    /// We are falling back to dynamically adding the objet into the object dict.
+    if(withDict)
+    {
+        py::dict t = self.attr("__dict__");
+        if(!t.is_none())
+        {
+            t[s.c_str()] = value;
+            return;
+        }
+    }
+
     /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error();
+    throw py::attribute_error("Unable to set attribute '"+s+"', unknow data type");
 }
 
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
@@ -312,8 +317,6 @@ void moduleAddDataDict(py::module& m)
     d.def("__getitem__",
           [](DataDict& self, const std::string& s) -> py::object
     {
-        std::cout << "Get ITEM" << s << std::endl ;
-
         BaseData* d = self.owner->findData(s);
         if(d!=nullptr)
         {
@@ -334,7 +337,6 @@ void moduleAddDataDict(py::module& m)
     ////////////////////////////////////////////////////////////////////////////////////////////////
     d.def("__setitem__",[](DataDict& d, const std::string& s, py::object v)
     {
-        std::cout << "SET ITEM TO: " << s << std::endl;
         return 0.0;
     });
 
@@ -386,7 +388,7 @@ void moduleAddDataDictIterator(py::module &m)
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> p(m, "Base");
+    py::class_<Base, Base::SPtr> p(m, "Base", py::dynamic_attr());
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
         BaseData* d = self.findData(s);
@@ -397,7 +399,18 @@ void moduleAddBase(py::module &m)
         return py::none();
     });
 
-    p.def("__getattr__", &BindingBase::GetAttr);
+    p.def("__getattr__", [](py::object self, const std::string& s) -> py::object
+    {
+        py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
+        if( res.is_none() )
+        {
+            self.attr("__dict__");
+            return self.attr("__dict__")[s.c_str()];
+        }
+
+        return res;
+    });
+
     p.def("__setattr__", [](py::object self, const std::string& s, py::object value)
     {
         if(py::isinstance<DataContainer>(value))
@@ -414,7 +427,7 @@ void moduleAddBase(py::module &m)
             return;
         }
 
-        BindingBase::SetAttr(self,s,value);
+        BindingBase::SetAttr(self,s,value,true);
     });
 }
 
