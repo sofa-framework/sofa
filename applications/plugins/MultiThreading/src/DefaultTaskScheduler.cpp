@@ -19,17 +19,15 @@ namespace sofa
         //static  WorkerThread* WorkerThread::_workerThreadIndex = nullptr;
         SOFA_THREAD_SPECIFIC_PTR(WorkerThread, workerThreadIndex);
 
-        std::map< std::thread::id, WorkerThread*> TaskSchedulerDefault::_threads;
-        
-//        const bool TaskSchedulerDefault::isRegistered = TaskScheduler::registerScheduler(TaskSchedulerDefault::name(), &TaskSchedulerDefault::create);
+        std::map< std::thread::id, WorkerThread*> DefaultTaskScheduler::_threads;
 
 
-        TaskSchedulerDefault* TaskSchedulerDefault::create()
+        DefaultTaskScheduler* DefaultTaskScheduler::create()
         {
-            return new TaskSchedulerDefault();
+            return new DefaultTaskScheduler();
         }
 
-        TaskSchedulerDefault::TaskSchedulerDefault()
+        DefaultTaskScheduler::DefaultTaskScheduler()
             : TaskScheduler()
 		{
 			_isInitialized = false;
@@ -42,7 +40,7 @@ namespace sofa
            
 		}
 
-        TaskSchedulerDefault::~TaskSchedulerDefault()
+        DefaultTaskScheduler::~DefaultTaskScheduler()
 		{
 			if ( _isInitialized ) 
 			{
@@ -51,13 +49,13 @@ namespace sofa
 		}
 
 
-		unsigned TaskSchedulerDefault::GetHardwareThreadsCount()
+		unsigned DefaultTaskScheduler::GetHardwareThreadsCount()
 		{
 			return std::thread::hardware_concurrency() / 2;
 		}
 
 
-		const WorkerThread* TaskSchedulerDefault::getWorkerThread(const std::thread::id id)
+		const WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
 		{
 			auto thread =_threads.find(id);
 			if (thread == _threads.end() )
@@ -67,7 +65,7 @@ namespace sofa
 			return thread->second;
 		}
 
-        void TaskSchedulerDefault::init(const unsigned int NbThread )
+        void DefaultTaskScheduler::init(const unsigned int NbThread )
         {
             if ( _isInitialized )
             {
@@ -81,7 +79,7 @@ namespace sofa
             start(NbThread);
         }
         
-		void TaskSchedulerDefault::start(const unsigned int NbThread )
+		void DefaultTaskScheduler::start(const unsigned int NbThread )
 		{
 			stop();
 
@@ -113,7 +111,7 @@ namespace sofa
 
 
 
-		void TaskSchedulerDefault::stop()
+		void DefaultTaskScheduler::stop()
 		{
 			_isClosing = true;
 
@@ -157,37 +155,37 @@ namespace sofa
 			return;
 		}
 
-        const char* TaskSchedulerDefault::getCurrentThreadName()
+        const char* DefaultTaskScheduler::getCurrentThreadName()
         {
             WorkerThread* thread = WorkerThread::getCurrent();
             return thread->getName();
         }
 
-        bool TaskSchedulerDefault::addTask(Task* task)
+        bool DefaultTaskScheduler::addTask(Task* task)
         {
             WorkerThread* thread = WorkerThread::getCurrent();
             return thread->addTask(task);
         }
 
-        void TaskSchedulerDefault::workUntilDone(Task::Status* status)
+        void DefaultTaskScheduler::workUntilDone(Task::Status* status)
         {
             WorkerThread* thread = WorkerThread::getCurrent();
             thread->workUntilDone(status);
         }
 
-        void* TaskSchedulerDefault::allocateTask(size_t size)
+        void* DefaultTaskScheduler::allocateTask(size_t size)
         {
             return std::malloc(size);
         }
 
-        void TaskSchedulerDefault::releaseTask(Task* task)
+        void DefaultTaskScheduler::releaseTask(Task* task)
         {
             delete task;
         }
 
 
 
-		void TaskSchedulerDefault::wakeUpWorkers()
+		void DefaultTaskScheduler::wakeUpWorkers()
 		{
 			{
 				std::lock_guard<std::mutex> guard(_wakeUpMutex);
@@ -196,7 +194,7 @@ namespace sofa
 			_wakeUpEvent.notify_all();
 		}
 
-		void TaskSchedulerDefault::WaitForWorkersToBeReady()
+		void DefaultTaskScheduler::WaitForWorkersToBeReady()
 		{
 			_workerThreadsIdle = true;
 		}
@@ -209,7 +207,7 @@ namespace sofa
 
 
 
-        WorkerThread::WorkerThread(TaskSchedulerDefault* const& pScheduler, const int index, const std::string& name)
+        WorkerThread::WorkerThread(DefaultTaskScheduler* const& pScheduler, const int index, const std::string& name)
             : _tasks()
             , _index(index)
             , _name(name + std::to_string(index))
@@ -235,7 +233,7 @@ namespace sofa
             return _finished;
         }
 
-		bool WorkerThread::start(TaskSchedulerDefault* const& taskScheduler)
+		bool WorkerThread::start(DefaultTaskScheduler* const& taskScheduler)
 		{
 			assert(taskScheduler);
 			_taskScheduler = taskScheduler;
@@ -244,7 +242,7 @@ namespace sofa
 			return  true;
 		}
 
-        std::thread* WorkerThread::create_and_attach(TaskSchedulerDefault* const & taskScheduler)
+        std::thread* WorkerThread::create_and_attach(DefaultTaskScheduler* const & taskScheduler)
         {
             _stdThread = std::thread(std::bind(&WorkerThread::run, this));
             return &_stdThread;
@@ -253,8 +251,8 @@ namespace sofa
         WorkerThread* WorkerThread::getCurrent()
         {
             //return workerThreadIndex;
-            auto thread = TaskSchedulerDefault::_threads.find(std::this_thread::get_id());
-            if (thread == TaskSchedulerDefault::_threads.end())
+            auto thread = DefaultTaskScheduler::_threads.find(std::this_thread::get_id());
+            if (thread == DefaultTaskScheduler::_threads.end())
             {
                 return nullptr;
             }

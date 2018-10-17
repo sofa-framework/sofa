@@ -12,13 +12,14 @@ namespace sofa
 	namespace simulation
 	{
         
-
+        // the order of initialization of these static vars is important
+        // the TaskScheduler::_schedulers must be initialized before any call to TaskScheduler::registerScheduler
         std::map<std::string, std::function<TaskScheduler*()> > TaskScheduler::_schedulers;
         std::string TaskScheduler::_currentSchedulerName;
         TaskScheduler* TaskScheduler::_currentScheduler = nullptr;
 
         // register default task scheduler
-        bool TaskSchedulerDefault::isRegistered = TaskScheduler::registerScheduler(TaskSchedulerDefault::name(), &TaskSchedulerDefault::create);
+        const bool DefaultTaskScheduler::isRegistered = TaskScheduler::registerScheduler(DefaultTaskScheduler::name(), &DefaultTaskScheduler::create);
 
         
         TaskScheduler* TaskScheduler::create(const char* name)

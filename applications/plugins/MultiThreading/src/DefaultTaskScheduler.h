@@ -64,7 +64,7 @@ namespace sofa  {
 #endif
 
 
-        class TaskSchedulerDefault;
+        class DefaultTaskScheduler;
         class WorkerThread;
 
 
@@ -72,7 +72,7 @@ namespace sofa  {
         {
         public:
 
-            WorkerThread(TaskSchedulerDefault* const& taskScheduler, const int index, const std::string& name = "Worker");
+            WorkerThread(DefaultTaskScheduler* const& taskScheduler, const int index, const std::string& name = "Worker");
 
             ~WorkerThread();
 
@@ -104,9 +104,9 @@ namespace sofa  {
 
         private:
 
-            bool start(TaskSchedulerDefault* const& taskScheduler);
+            bool start(DefaultTaskScheduler* const& taskScheduler);
 
-            std::thread* create_and_attach(TaskSchedulerDefault* const& taskScheduler);
+            std::thread* create_and_attach(DefaultTaskScheduler* const& taskScheduler);
 
             void runTask(Task* task);
 
@@ -148,17 +148,17 @@ namespace sofa  {
 
             Task::Status*	_currentStatus;
 
-            TaskSchedulerDefault*     _taskScheduler;
+            DefaultTaskScheduler*     _taskScheduler;
 
             // The following members may be accessed by _multiple_ threads at the same time:
             volatile bool	_finished;
 
-            friend class TaskSchedulerDefault;
+            friend class DefaultTaskScheduler;
         };
 
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerDefault : public TaskScheduler
+        class SOFA_MULTITHREADING_PLUGIN_API DefaultTaskScheduler : public TaskScheduler
         {
             enum
             {
@@ -184,9 +184,9 @@ namespace sofa  {
             // factory methods: name, creator function
             static const char* name() { return "_default"; }
 
-            static TaskSchedulerDefault* create();
+            static DefaultTaskScheduler* create();
 
-            static bool isRegistered;
+            static const bool isRegistered;
 
         private:
 
@@ -221,11 +221,11 @@ namespace sofa  {
 
         private:
 
-            TaskSchedulerDefault();
+            DefaultTaskScheduler();
 
-            TaskSchedulerDefault(const TaskSchedulerDefault&) {}
+            DefaultTaskScheduler(const DefaultTaskScheduler&) {}
 
-            virtual ~TaskSchedulerDefault();
+            virtual ~DefaultTaskScheduler();
 
             void start(unsigned int NbThread);
 
