@@ -7,6 +7,7 @@ set(SOURCE_FILES
     DiagonalMass_test.cpp
     MechanicalObject_test.cpp
     UniformMass_test.cpp
+    BarycentricMapping_test.cpp
     )
 
 

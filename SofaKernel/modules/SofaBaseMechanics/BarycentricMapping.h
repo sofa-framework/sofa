@@ -563,6 +563,7 @@ typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron
 typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3i;
 
 
 /// Template class for topology container mappers
@@ -586,9 +587,19 @@ public:
     enum { NOut = Inherit::NOut };
 
 protected:
+
+    using Inherit::m_fromTopology;
+
     topology::PointData< helper::vector<MappingDataType > > d_map;
     MatrixType* m_matrixJ;
     bool m_updateJ;
+
+    // Spacial hashing utils
+    Real m_gridCellSize;
+    Real m_convFactor;
+    unsigned int m_hashTableSize;
+    helper::vector<helper::vector<unsigned int>> m_hashTable;
+    bool m_computeDistances;
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
          : Inherit(fromTopology, toTopology),
@@ -599,6 +610,33 @@ protected:
 
     virtual ~BarycentricMapperTopologyContainer() {}
 
+    unsigned int getHashIndexFromCoord(const Vector3& x)
+    {
+        Vec3i v = getGridIndices(x);
+        return getHashIndexFromIndices(v[0],v[1],v[2]);
+    }
+
+    unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z)
+    {
+        unsigned int h = (73856093*x^19349663*y^83492791*z)%m_hashTableSize;
+        return h;
+    }
+
+    Vec3i getGridIndices(const Vector3& x)
+    {
+        Vec3i i_x;
+        for(int i=0; i<3; i++)
+            i_x[i]=floor(x[i]*m_convFactor);
+
+        return i_x;
+    }
+
+    void addToHashTable(const unsigned int& hId, const unsigned int& vertexId)
+    {
+        if(hId<m_hashTableSize)
+            m_hashTable[hId].push_back(vertexId);
+    }
+
 protected:
 
     virtual helper::vector<Element> getElements()=0;
@@ -607,6 +645,11 @@ protected:
     virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element)=0;
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
+
+    void initHashing(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void computeHashingCellSize(const typename In::VecCoord& in);
+    void computeBB(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void computeHashTable(const typename In::VecCoord& in);
 
 public:
 
@@ -676,6 +719,12 @@ protected:
     using Inherit::m_fromTopology;
     using Inherit::m_matrixJ;
     using Inherit::m_updateJ;
+
+    BarycentricMapperEdgeSetTopology()
+         : Inherit(NULL,NULL),
+           m_fromContainer(NULL),
+           m_fromGeomAlgo(NULL)
+    {}
 
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology),
@@ -751,6 +800,12 @@ protected:
     using Inherit::m_fromTopology;
     using Inherit::m_matrixJ;
     using Inherit::m_updateJ;
+
+    BarycentricMapperTriangleSetTopology()
+         : Inherit(NULL,NULL),
+           m_fromContainer(NULL),
+           m_fromGeomAlgo(NULL)
+    {}
 
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology),
@@ -842,7 +897,6 @@ protected:
 
     virtual ~BarycentricMapperQuadSetTopology() {}
 
-
     virtual helper::vector<Element> getElements() override
     {
         return this->m_fromTopology->getQuads();
@@ -904,8 +958,6 @@ public:
     typedef MappingDataType MappingData;
     typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
     typedef typename Inherit::Real Real;
-    typedef typename In::VecCoord VecCoord;
-
 
 protected:
 
@@ -913,9 +965,15 @@ protected:
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
     using Inherit::d_map;
-    using Inherit::m_fromTopology;
     using Inherit::m_matrixJ;
     using Inherit::m_updateJ;
+    using Inherit::m_fromTopology;
+
+    BarycentricMapperTetrahedronSetTopology()
+        : Inherit(NULL,NULL),
+          m_fromContainer(NULL),
+          m_fromGeomAlgo(NULL)
+    {}
 
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology),
@@ -923,7 +981,7 @@ protected:
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperTetrahedronSetTopology() override {}
+    virtual ~BarycentricMapperTetrahedronSetTopology() {}
 
 
     virtual helper::vector<Element> getElements() override

@@ -720,8 +720,122 @@ int BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType,Element>::setP
 }
 
 template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::initHashing( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+{
+    computeHashingCellSize(in);
+    computeBB(out,in);
+    computeHashTable(in);
+}
+
+template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::computeHashingCellSize(const typename In::VecCoord& in )
+{
+    // The grid cell size is set to the average edge length of all elements
+    const SeqEdges& edges = m_fromTopology->getEdges();
+    Real averageLength=0.;
+
+    if(edges.size()>0)
+    {
+        for(unsigned int i=0; i<edges.size(); i++)
+        {
+            Edge edge = edges[i];
+            averageLength += (in[edge[0]]-in[edge[1]]).norm();
+        }
+        averageLength/=(Real)edges.size();
+
+    }
+    else
+    {
+        const helper::vector<Element>& elements = getElements();
+
+        for(unsigned int i=0; i<elements.size(); i++)
+        {
+            Element element = elements[i];
+            averageLength += (in[element[0]]-in[element[1]]).norm();
+        }
+        averageLength/=(Real)elements.size();
+    }
+
+    m_gridCellSize = averageLength;
+    m_convFactor = 1./(Real)m_gridCellSize;
+}
+
+template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::computeBB( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+{
+    Vector3 BBmin1 = {1e10,1e10,1e10}, BBmin2 = {1e10,1e10,1e10};
+    Vector3 BBmax1 = {-1e10,-1e10,-1e10}, BBmax2 = {-1e10,-1e10,-1e10};
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(int k=0; k<3; k++)
+        {
+            if(in[i][k]<BBmin1[k]) BBmin1[k]=in[i][k];
+            if(in[i][k]>BBmax1[k]) BBmax1[k]=in[i][k];
+        }
+    }
+
+    for(unsigned int i=0; i<out.size(); i++)
+    {
+        for(int k=0; k<3; k++)
+        {
+            if(out[i][k]<BBmin2[k]) BBmin2[k]=out[i][k];
+            if(out[i][k]>BBmax2[k]) BBmax2[k]=out[i][k];
+        }
+    }
+
+    m_computeDistances = false;
+    for(int k=0; k<3; k++)
+    {
+        if ((BBmin1[k]<=BBmax2[k] && BBmin1[k]>=BBmin2[k]) || (BBmax1[k]<=BBmax2[k] && BBmax1[k]>=BBmin2[k]))
+            m_computeDistances = true;
+
+        if ((BBmin2[k]<=BBmax1[k] && BBmin2[k]>=BBmin1[k]) || (BBmax2[k]<=BBmax1[k] && BBmax2[k]>=BBmin1[k]))
+            m_computeDistances = true;
+    }
+}
+
+template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::computeHashTable( const typename In::VecCoord& in )
+{
+    const helper::vector<Element>& elements = getElements();
+    m_hashTableSize = elements.size()*2; // Next prime number would be better
+    m_hashTable.clear();
+    m_hashTable.resize(m_hashTableSize);
+    for (unsigned int i=0; i<m_hashTableSize; i++)
+        m_hashTable[i].clear();
+
+    for(unsigned int i=0; i<elements.size(); i++)
+    {
+        Element element = elements[i];
+        Vector3 min=in[element[0]], max=in[element[0]];
+
+        for(unsigned int j=0; j<element.size(); j++)
+        {
+            for(int k=0; k<3; k++)
+            {
+                if(in[element[j]][k]<min[k]) min[k]=in[element[j]][k];
+                if(in[element[j]][k]>max[k]) max[k]=in[element[j]][k];
+            }
+        }
+
+        Vec3i i_min=getGridIndices(min);
+        Vec3i i_max=getGridIndices(max);
+
+        for(int j=i_min[0]; j<=i_max[0]; j++)
+            for(int k=i_min[1]; k<=i_max[1]; k++)
+                for(int l=i_min[2]; l<=i_max[2]; l++)
+                {
+                    unsigned int h = getHashIndexFromIndices(j,k,l);
+                    addToHashTable(h, i);
+                }
+    }
+}
+
+template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    initHashing(out,in);
     const helper::vector<Element>& elements = getElements();
     helper::vector<Mat3x3d> bases;
     helper::vector<Vector3> centers;
@@ -730,44 +844,73 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
     bases.resize ( elements.size() );
     centers.resize ( elements.size() );
 
-    // Compute bases and centers of each element
-    for ( unsigned int e = 0; e < elements.size(); e++ )
+    bool wrongMapping = false;
+    if(m_computeDistances)
     {
-        Element element = elements[e];
-
-        Mat3x3d base;
-        computeBase(base,in,element);
-        bases[e] = base;
-
-        Vector3 center;
-        computeCenter(center,in,element);
-        centers[e] = center;
-    }
-
-    // Compute distances to get nearest element and corresponding bary coef
-    for ( unsigned int i=0; i<out.size(); i++ )
-    {
-        Vec3d outPos = Out::getCPos(out[i]);
-        Vector3 baryCoords;
-        int elementIndex = -1;
-        double distance = 1e10;
+        // Compute bases and centers of each element
         for ( unsigned int e = 0; e < elements.size(); e++ )
         {
-            Vec3d bary = bases[e] * ( outPos - in[elements[e][0]] );
-            double dist;
-            computeDistance(dist, bary);
-            if ( dist>0 )
-                dist = ( outPos-centers[e] ).norm2();
-            if ( dist<distance )
-            {
-                baryCoords = bary;
-                distance = dist;
-                elementIndex = e;
-            }
+            Element element = elements[e];
+
+            Mat3x3d base;
+            computeBase(base,in,element);
+            bases[e] = base;
+
+            Vector3 center;
+            computeCenter(center,in,element);
+            centers[e] = center;
         }
-        addPointInElement(elementIndex, baryCoords.ptr());
+
+        // Compute distances to get nearest element and corresponding bary coef
+        for ( unsigned int i=0; i<out.size(); i++ )
+        {
+            Vec3d outPos = Out::getCPos(out[i]);
+            Vector3 baryCoords;
+            int elementIndex = -1;
+            double distance = 1e10;
+
+            unsigned int h = getHashIndexFromCoord(outPos);
+            for ( unsigned int j=0; j<m_hashTable[h].size(); j++)
+            {
+                int e = m_hashTable[h][j];
+                Vec3d bary = bases[e] * ( outPos - in[elements[e][0]] );
+                double dist;
+                computeDistance(dist, bary);
+                if ( dist>0 )
+                    dist = ( outPos-centers[e] ).norm2();
+                if ( dist<distance )
+                {
+                    baryCoords = bary;
+                    distance = dist;
+                    elementIndex = e;
+                }
+            }
+
+            if(elementIndex==-1)
+            {
+                baryCoords = Vector3{0.,0.,0.};
+                wrongMapping = true;
+                addPointInElement(elements.size(), baryCoords.ptr());
+            }
+            else
+                addPointInElement(elementIndex, baryCoords.ptr());
+        }
+
+        if(wrongMapping)
+            msg_warning() << "Some points seem to be away from the model their should be mapped on. The mapping may act wrong.";
+    }
+    else
+    {
+        msg_warning() << "The two models you are trying to map are far from each other. The mapping will be wrong.";
+
+        //Bounding box of each object do not intersect: avoid expensive computations and map each point to last element
+        Vector3 baryCoords{0.,0.,0.};
+        for ( unsigned int i=0; i<out.size(); i++ )
+            addPointInElement(elements.size(), baryCoords.ptr());
     }
 }
+
+
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology * topology )
