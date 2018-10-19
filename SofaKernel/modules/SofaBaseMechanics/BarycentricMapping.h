@@ -622,7 +622,10 @@ protected:
 
     unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z)
     {
-        unsigned int h = (73856093*x^19349663*y^83492791*z)%m_hashTableSize;
+        int h = (73856093*x^19349663*y^83492791*z)%m_hashTableSize;
+        if(h<0)
+            h += m_hashTableSize;
+
         return h;
     }
 
