@@ -608,7 +608,11 @@ protected:
            m_updateJ(true)
      {}
 
-    virtual ~BarycentricMapperTopologyContainer() {}
+    virtual ~BarycentricMapperTopologyContainer()
+    {
+        if (m_matrixJ)
+            delete m_matrixJ;
+    }
 
     unsigned int getHashIndexFromCoord(const Vector3& x)
     {
