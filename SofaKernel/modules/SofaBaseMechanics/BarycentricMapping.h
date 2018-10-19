@@ -752,10 +752,10 @@ protected:
 
     virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
     {
-        Mat3x3d mt;
-        base[0] = in[element[1]]-in[element[0]];
-        mt.transpose(base);
-        base.invert(mt);
+        //Not implemented for Edge
+        SOFA_UNUSED(base);
+        SOFA_UNUSED(in);
+        SOFA_UNUSED(element);
     }
 
     virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
@@ -765,6 +765,7 @@ protected:
 
     virtual void computeDistance(double& d, const Vector3& v) override
     {
+        //Not implemented for Edge
         SOFA_UNUSED(d);
         SOFA_UNUSED(v);
     }
@@ -776,6 +777,12 @@ protected:
 
 public:
 
+    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override
+    {
+        SOFA_UNUSED(out);
+        SOFA_UNUSED(in);
+        msg_warning() << "Mapping not implemented for edge elements.";
+    }
     virtual int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
     virtual int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
 };
@@ -814,7 +821,6 @@ protected:
     {}
 
     virtual ~BarycentricMapperTriangleSetTopology() {}
-
 
     virtual helper::vector<Element> getElements() override
     {
@@ -982,7 +988,6 @@ protected:
     {}
 
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
-
 
     virtual helper::vector<Element> getElements() override
     {

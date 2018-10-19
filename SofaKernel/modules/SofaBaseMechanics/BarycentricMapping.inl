@@ -720,6 +720,7 @@ int BarycentricMapperHexahedronSetTopology<In,Out,MappingDataType,Element>::setP
 }
 
 template <class In, class Out, class MappingDataType, class Element>
+
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::initHashing( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     computeHashingCellSize(in);
@@ -909,8 +910,6 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
             addPointInElement(elements.size(), baryCoords.ptr());
     }
 }
-
-
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology * topology )
