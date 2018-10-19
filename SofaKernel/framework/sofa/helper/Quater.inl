@@ -247,6 +247,16 @@ Quater<Real> Quater<Real>::inverse() const
     return ret;
 }
 
+/// Returns true if norm of Quaternion is one, false otherwise.
+template<class Real>
+bool Quater<Real>::isNormalized()
+{
+    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
+    double epsilon = 1.0e-10;
+    return (std::abs(mag - 1.0) < epsilon);
+}
+
+
 /// Quater<Real>s always obey:  a^2 + b^2 + c^2 + d^2 = 1.0
 /// If they don't add up to 1.0, dividing by their magnitude will
 /// renormalize them.
@@ -264,14 +274,10 @@ void Quater<Real>::normalize()
             {
                 _q[i] *= sqr;
             }
-            msg_warning("Quater") << "Rigid Object with invalid quaternion (non-unitary norm)! Normalising quaternion value...";
-            msg_warning("Quater") << "New value is: " << _q[0] << " " << _q[1] << " " << _q[2] << " "<< _q[3];
         }
         else
         {
             _q[3] = 1;
-            msg_warning("Quater") << "Rigid Object with invalid quaternion (zero norm)! Normalising quaternion value...";
-            msg_warning("Quater") << "New value is: " << _q[0] << " " << _q[1] << " " << _q[2] << " "<< _q[3];
         }
     }
 }
