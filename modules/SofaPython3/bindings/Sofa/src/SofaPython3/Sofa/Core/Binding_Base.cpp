@@ -136,11 +136,12 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
     BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
     if(data)
     {
-        fromPython(data, value);
+        data->setName(s);
         data->setGroup("Custom");
         data->setDisplayed(true);
         data->setPersistent(true);
         self_d->addData(data, s);
+        fromPython(data, value);
 
         return;
     }
@@ -401,6 +402,8 @@ void moduleAddBase(py::module &m)
 
     p.def("__getattr__", [](py::object self, const std::string& s) -> py::object
     {
+        std::cout << "WHY GET Attr: " << s << std::endl ;
+
         py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
         if( res.is_none() )
         {

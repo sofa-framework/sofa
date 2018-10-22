@@ -21,12 +21,14 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
+    Core/AutoDiffForceField.py
     Core/BaseData.py
     Core/Base.py
     Core/BaseObject.py
     Core/ForceField.py
+    Core/PythonRestShapeForceField.py
     Core/ScriptController.py
-    Core/AutoDiffForceField.py
+    Helper/Message.py
     Simulation/Node.py
     bench_datacontainer.py
     bench_node.py

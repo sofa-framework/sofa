@@ -82,3 +82,24 @@ def createScene(node):
         
         b=node.addChild( RestShapeObject( CreateObject("RestShapeSpringsForceField", stiffness=5.0) , name="c++", position=[[i-2.5, 0, 0] for i in range(10)]))
         b.mechanical.showColor = [1.0,1.0,0.0,1.0]
+
+######################################### TESTS ####################################################
+## In the following is the code used to consider this example as a test.
+####################################################################################################
+class Test(unittest.TestCase):
+    def test_example(self):
+            createScene(Sofa.Node("root"))
+
+def getTestsName():
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+    return [ test.id().split(".")[2] for test in suite]
+
+def runTests():
+        import sys
+        suite = None
+        if( len(sys.argv) == 1 ):
+            suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+        else:
+            suite = unittest.TestSuite()
+            suite.addTest(Test(sys.argv[1]))
+        return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()

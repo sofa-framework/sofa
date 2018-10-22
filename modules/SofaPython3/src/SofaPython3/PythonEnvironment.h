@@ -35,7 +35,7 @@
 
 namespace sofapython3
 {
-namespace py = pybind11;
+namespace py { using namespace pybind11; }
 using sofa::simulation::SceneLoader ;
 
 /// Forward definition

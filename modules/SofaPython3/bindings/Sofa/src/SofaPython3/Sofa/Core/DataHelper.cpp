@@ -215,8 +215,6 @@ py::buffer_info toBufferInfo(BaseData& m)
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
     if(rows == 1 && nfo.FixedSize()){
-        std::cout << "WEIRD BUFFER" << std::endl ;
-        std::cout << "COLD" << cols << " d " << datasize << std::endl;
         return py::buffer_info(
                     ptr, /* Pointer to buffer */
                     datasize,                              /* Size of one scalar */
@@ -318,35 +316,13 @@ py::array getPythonArrayFor(BaseData* d)
 
         memcache[d] = a;
 
-        std::cout << "CREATE A NEW CACHE ENTRY FOR: " << d->getName() << std::endl ;
-        std::cout << "                            : " << d->beginEditVoidPtr() << std::endl ;
         if(ninfo.ndim==2)
             std::cout << "                            : " << ninfo.shape[0] << "," << ninfo.shape[1] << std::endl ;
         else
             std::cout << "                            : " << ninfo.shape[0] << std::endl ;
 
         return a;
-        //std::cout << "ADDING AN ARRAY SIZE: " << a.shape(0) << ":" << a.shape(1) << " for " << d->getName() <<  std::endl;
     }
-    //    else
-    //    {
-    //        if( d->getValueVoidPtr() != memcache[d].request().ptr )
-    //        {
-    //            std::cout << " OUFFFFFFFFFFFFFFTY " << std::endl ;
-    //            /*
-    //            auto capsule = py::capsule(d->getOwner(),
-    //                                       [](void *v){ std::cout << "Trashing array..."  << std::endl; });
-
-    //            py::buffer_info ninfo = toBufferInfo(*d);
-    //            py::array a(pybind11::dtype(ninfo), ninfo.shape,
-    //                        ninfo.strides, ninfo.ptr, capsule);
-    //            */
-
-
-    //            //memcache[d] = a;
-    //        }
-    //    }
-
     return memcache[d];
 }
 

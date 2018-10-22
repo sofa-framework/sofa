@@ -117,7 +117,7 @@ py::module PythonEnvironment::importFromFile(const std::string& module, const st
     py::dict locals;
     locals["module_name"] = py::cast(module); // have to cast the std::string first
     locals["path"]        = py::cast(path);
-
+    msg_info("SofaPython3") << "Importing module: " << path ;
     py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
                                               "import imp\n"
                                               "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
@@ -146,7 +146,7 @@ void PythonEnvironment::Init()
         // dmarchal: The problem still exists python3 10/10/2018.
         std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
         dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-        std::cout << "ICI..." << pythonLibraryName << std::endl;
+        msg_info("SofaPython3") << "Shared library name is" << pythonLibraryName ;
     #endif
 
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.
@@ -156,7 +156,6 @@ void PythonEnvironment::Init()
     if ( !Py_IsInitialized() )
     {
         msg_info("SofaPython3") << "Intializing python";
-        //Py_Initialize();
         py::initialize_interpreter();
     }
 

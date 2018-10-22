@@ -15,11 +15,9 @@ namespace sofapython3
 {
 
     void PythonController::init() {
-        std::cout << " PythonController::init()" << std::endl;
     }
 
     void PythonController::reinit() {
-        std::cout << " PythonController::reinit()" << std::endl;
     }
 
     class PythonController_Trampoline : public PythonController, public PythonTrampoline
@@ -27,12 +25,10 @@ namespace sofapython3
     public:
         PythonController_Trampoline()
         {
-            std::cout << "PythonController_Trampoline() at "<<(void*)this<<std::endl;
         }
 
         ~PythonController_Trampoline()
         {
-            std::cout << "~PythonController_Trampoline()"<<std::endl;
         }
 
         virtual std::string getClassName() const override
@@ -47,13 +43,11 @@ namespace sofapython3
 
     void PythonController_Trampoline::init()
     {
-        //std::cout << "PythonController_trampoline::init()" << std::endl;
         PYBIND11_OVERLOAD(void, PythonController, init, );
     }
 
     void PythonController_Trampoline::reinit()
     {
-        //std::cout << "PythonController_trampoline::reinit()" << std::endl;
         PYBIND11_OVERLOAD(void, PythonController, reinit, );
     }
 

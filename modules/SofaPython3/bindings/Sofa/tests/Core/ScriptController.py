@@ -9,14 +9,13 @@ class MyController(Sofa.PythonController):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
         """        
-        inited = 0
-        iterations = 0
-        
         def __init__(self, *args, **kwargs):
                 ## These are needed (and the normal way to override from a python class)
                 Sofa.PythonController.__init__(self, *args, **kwargs)
                 print(" Python::__init__::"+str(self.name))
-        
+                self.inited = 0
+                self.iterations = 0
+
         def __del__(self):
                 print(" Python::__del__")
         

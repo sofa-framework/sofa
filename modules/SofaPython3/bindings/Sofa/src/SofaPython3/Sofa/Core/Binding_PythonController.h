@@ -23,14 +23,11 @@ public:
 
     PythonController()
     {
-        std::cout << "PythonController() at "<<(void*)this << std::endl;
     }
 
     ~PythonController()
     {
-        std::cout << "~PythonController()" << std::endl;
     }
-
 };
 
 void moduleAddPythonController(py::module &m);

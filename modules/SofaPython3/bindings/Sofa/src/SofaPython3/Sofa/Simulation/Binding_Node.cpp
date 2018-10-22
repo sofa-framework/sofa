@@ -130,20 +130,6 @@ void moduleAddNode(py::module &m) {
         auto object = simpleapi::createObject(self, type, desc);
         if(object)
             checkParamUsage(object.get(), desc);
-
-        /*
-        for(const auto& kv : kwargs)
-        {
-            BaseData* d = object->findData(py::str(kv.first));
-            if(d)
-            {
-                fromPython(d, py::cast<py::object>(kv.second));
-                continue;
-            }
-
-            /// TODO(dmarchal) do the links.
-        }*/
-
         return py::cast(object);
     });
     p.def("addObject", [](Node& self, BaseObject* object) -> py::object

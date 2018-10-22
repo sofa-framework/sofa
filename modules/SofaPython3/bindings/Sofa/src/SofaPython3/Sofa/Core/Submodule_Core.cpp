@@ -30,12 +30,6 @@ pybind11::module addSubmoduleCore(py::module& p)
     moduleAddDataContainer(core);
     moduleAddBaseObject(core);
     moduleAddPythonController(core);
-
-    /// For pybind11 to handle properly the in-heritance all the parents class needs
-    /// to be registered before registering the actual one.
-    //py::class_<sofa::core::behavior::BaseForceField,
-    //        sofa::core::objectmodel::BaseObject,
-    //        sofa::core::behavior::BaseForceField::SPtr> m(core, "BaseForceField");
     moduleAddForceField(core);
 
     py::class_<sofa::core::objectmodel::BaseNode,
