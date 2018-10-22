@@ -1,3 +1,5 @@
+# coding: utf8
+
 import sys
 import os
 import numpy
@@ -52,7 +54,7 @@ obj.position.apply(f)
 print(obj.position)
 print("counter: ", obj.position.getCounter())
 
-### Ici 
+### Ici 
 obj.position[2:] = 5.0
 print(obj.position)
 print("counter: ", obj.position.getCounter())

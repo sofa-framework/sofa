@@ -1,3 +1,5 @@
+# coding: utf8
+
 import unittest
 import Sofa
 import numpy as np

@@ -1,3 +1,5 @@
+# coding: utf8
+
 import unittest
 import Sofa
 import numpy as np
@@ -18,14 +20,17 @@ class MyForceField(Sofa.ForceField):
         self.d = 0.5
 
     def addForce(self, m, out_force, pos, vel):
-        ## Position are declared as autodiff numbers
-        p = adnumber(pos, "pos")
+        ## Position are declared as autodiff numbers
+        p = np.array([ adnumber(pos[i], i) for i in range(len(pos)) ])
         u = self.initpos-p
-        res = (u * self.ks) 
+        res = np.array((u * self.ks))
         
         ## This is needed to compute the ad jacobian (in a really ugly way)
         self.res = np.ndarray.flatten(res)
         self.p = np.ndarray.flatten(p)
+        
+        np.set_printoptions({"all" : lambda x : str(x.x)+"xx, d:"+str(x.d())})
+        print("s: ", res)
         
         # To me doing this is fundamentally ugly as we create a matrix full of zero.                 
         self.jacobian = jacobian(self.res, self.p) 
@@ -33,7 +38,8 @@ class MyForceField(Sofa.ForceField):
         ## Needed to extract the 'number' part of the autodiff array                
         def f(x):
                 return x.x
-        vf=np.vectorize(f)       
+        vf=np.vectorize(f)
+               
         out_force += vf(res)
         
 

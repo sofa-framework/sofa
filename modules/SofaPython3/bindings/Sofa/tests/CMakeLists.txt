@@ -26,6 +26,7 @@ set(PYTHON_FILES
     Core/BaseObject.py
     Core/ForceField.py
     Core/ScriptController.py
+    Core/AutoDiffForceField.py
     Simulation/Node.py
     bench_datacontainer.py
     bench_node.py
