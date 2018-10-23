@@ -392,8 +392,8 @@ void moduleAddBase(py::module &m)
     py::class_<Base, Base::SPtr> p(m, "Base", py::dynamic_attr(),
                                    R"(Ceci est la documentation de la méthode getData
                                      Je vois pas getData()
-                                   )"
-                                   );
+                                   )");
+
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
         BaseData* d = self.findData(s);
@@ -404,14 +404,32 @@ void moduleAddBase(py::module &m)
         return py::none();
     });
 
+    p.def("getFromData", [](Base* self, const std::string& s) -> py::object
+    {
+        return BindingBase::GetAttr(self, s, false);
+    });
+
+    p.def("setToData", [](py::object self, const std::string& s, py::object value)
+    {
+        BindingBase::SetAttr(self, s, value,false);
+    });
+
+    p.def("getFromDict", [](py::object self, const std::string& s) -> py::object
+    {
+        return self.attr("__dict__")[s.c_str()];
+    });
+
+    p.def("setToDict", [](py::object self, const std::string& s, py::object value)
+    {
+        py::dict d = self.attr("__dict__");
+        d[s.c_str()] = value;
+    });
+
     p.def("__getattr__", [](py::object self, const std::string& s) -> py::object
     {
-        std::cout << "WHY GET Attr: " << s << std::endl ;
-
         py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
         if( res.is_none() )
         {
-            self.attr("__dict__");
             return self.attr("__dict__")[s.c_str()];
         }
 
