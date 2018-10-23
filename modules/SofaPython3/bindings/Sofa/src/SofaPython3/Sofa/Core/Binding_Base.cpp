@@ -389,7 +389,11 @@ void moduleAddDataDictIterator(py::module &m)
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> p(m, "Base", py::dynamic_attr());
+    py::class_<Base, Base::SPtr> p(m, "Base", py::dynamic_attr(),
+                                   R"(Ceci est la documentation de la méthode getData
+                                     Je vois pas getData()
+                                   )"
+                                   );
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
         BaseData* d = self.findData(s);

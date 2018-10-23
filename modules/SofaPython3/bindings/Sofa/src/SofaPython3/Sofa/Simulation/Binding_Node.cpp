@@ -111,7 +111,9 @@ void moduleAddNode(py::module &m) {
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
-            p(m, "Node");
+            p(m, "Node", R"(Ceci est la documentation de la méthode getData
+                         Je vois pas getData()
+                       )");
 
     /// The Node::create function will be used as the constructor of the
     /// class two version exists.

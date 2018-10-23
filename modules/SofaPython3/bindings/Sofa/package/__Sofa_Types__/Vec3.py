@@ -1,6 +1,13 @@
 import numpy
 import math
 
+
+class Vector(numpy.ndarray):
+    def __new__(cls, input_array):
+        # We first cast to be our class type
+        obj = input_array.view(numpy.ndarray)
+        print("NUMPY: ", obj)
+
 class Vec3(numpy.ndarray):
     """ The Vec3 class implements the following:
 
@@ -50,6 +57,7 @@ class Vec3(numpy.ndarray):
             return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(args[0]), buffer=numpy.array([args[0],args[1],args[2]]))
 
         print(cls.__new__.__doc__)
+
         return super(Vec3,cls).__new__(cls, shape=(3,), dtype=float, buffer=numpy.array([args[0],args[0],args[0]]))
 
 

@@ -74,27 +74,14 @@ void moduleAddDataAsString(py::module& m)
 
 void moduleAddDataContainer(py::module& m)
 {
-    //m.def("dewrap", [](DataContainer* c, py::object fct){
-    //    return fct(py::cast<RGBAColor>(*c));
-    //});
 
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
                                                                       py::buffer_protocol());
-
 
     p.def("__getitem__", [](DataContainer* self, py::size_t index) -> py::object
     {
         py::array a = getPythonArrayFor(self);
         py::buffer_info parentinfo = a.request();
-    });
-
-    p.def("toarray", [](DataContainer* self){
-        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
-        py::buffer_info ninfo = toBufferInfo(*self);
-        py::array a(pybind11::dtype(ninfo), ninfo.shape,
-                    ninfo.strides, ninfo.ptr, capsule);
-        a.attr("flags").attr("writeable") = false;
-        return a;
     });
 
     p.def("__setitem__", [](DataContainer* self, size_t& index, py::object& value)
@@ -150,6 +137,15 @@ void moduleAddDataContainer(py::module& m)
 
     p.def("tolist", [](DataContainer* self){
         return convertToPython(self);
+    });
+
+    p.def("toarray", [](DataContainer* self){
+        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+        py::buffer_info ninfo = toBufferInfo(*self);
+        py::array a(pybind11::dtype(ninfo), ninfo.shape,
+                    ninfo.strides, ninfo.ptr, capsule);
+        a.attr("flags").attr("writeable") = false;
+        return a;
     });
 
     p.def("writeable", [](DataContainer* self, py::object f) -> py::object
