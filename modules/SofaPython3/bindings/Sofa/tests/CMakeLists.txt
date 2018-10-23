@@ -29,6 +29,8 @@ set(PYTHON_FILES
     Core/PythonRestShapeForceField.py
     Core/ScriptController.py
     Helper/Message.py
+    Types/RGBAColor.py
+    Types/Vec3.py
     Simulation/Node.py
     bench_datacontainer.py
     bench_node.py

@@ -27,6 +27,9 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Simulation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_RGBAColor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.h
 )
 
 set(SOURCE_FILES
@@ -46,12 +49,22 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Simulation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.cpp
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_RGBAColor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Module_Sofa.cpp
 )
 
+set(PYTHON_FILES
+    package/__Sofa_Types__/__init__.py
+    package/__Sofa_Types__/RGBAColor.py
+    package/__Sofa_Types__/Vec3.py
+    )
+
+
 sofa_add_pybind11_module(
              TARGET SofaPython3_Sofa
-             SOURCES  ${SOURCE_FILES} ${HEADER_FILES}
+             SOURCES  ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES}
              DEPENDS SofaCore SofaSimulationGraph SofaPython3 pybind11::module
              OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
              NAME Sofa

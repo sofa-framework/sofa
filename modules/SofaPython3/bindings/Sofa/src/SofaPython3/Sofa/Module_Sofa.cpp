@@ -1,6 +1,7 @@
 #include "Core/Submodule_Core.h"
 #include "Helper/Submodule_Helper.h"
 #include "Simulation/Submodule_Simulation.h"
+#include "Types/Submodule_Types.h"
 
 namespace sofapython3
 {
@@ -24,10 +25,11 @@ PYBIND11_MODULE(Sofa, m)
     m.add_object("msg_deprecated", helper.attr("msg_deprecated"));
 
     /// Import some binding part fully written in python (because I'm too lazy)
-    //py::module types = m.def_submodule("Types");
-    //py::module pytypes = py::module::import("Types");
-    //types.add_object("vec3", pytypes.attr("vec3"));
-    //types.add_object("quat", pytypes.attr("quat"));
+    py::module st = m.def_submodule("Types");
+    py::module stimpl = py::module::import("__Sofa_Types__");
+    st.add_object("RGBAColor", stimpl.attr("RGBAColor"));
+    st.add_object("Vec3", stimpl.attr("Vec3"));
+
 }
 
 } ///namespace sofapython3

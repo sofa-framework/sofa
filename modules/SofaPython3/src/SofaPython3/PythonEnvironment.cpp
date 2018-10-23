@@ -146,7 +146,7 @@ void PythonEnvironment::Init()
         // dmarchal: The problem still exists python3 10/10/2018.
         std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
         dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-        msg_info("SofaPython3") << "Shared library name is" << pythonLibraryName ;
+        msg_info("SofaPython3") << "Shared library name is '" << pythonLibraryName << "'" ;
     #endif
 
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.

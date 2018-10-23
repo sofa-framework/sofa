@@ -42,9 +42,10 @@ static struct PythonModule_Sofa_tests : public PythonTestList
 {
     PythonModule_Sofa_tests()
     {
-        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Core", "Sofa_Core_");
+        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Core", "Sofa_Core_");       
         addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Helper", "Sofa_Helper_");
         addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Simulation", "Sofa_Simulation_");
+        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Types", "Sofa_Types_");
     }
 } python_tests;
 

@@ -3,75 +3,27 @@
 import unittest
 import numpy
 import Sofa
-
-#with obj.position.writeable(RGBAColor) as w:
-
-class RGBAColor(numpy.ndarray):
-    def __new__(cls, input_array=None):
-           if input_array is None:
-               obj = super(Vec4d, cls).__new__(cls, shape=(4), dtype=float)
-               return obj
-
-           if isinstance(input_array, Sofa.Core.DataContainer):
-               cls.owner = input_array
-               input_array = input_array.toarray()
-
-           if input_array.ndim != 1:
-               raise TypeError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")
-
-           # Input array is an already formed ndarray instance
-           # We first cast to be our class type
-           obj = numpy.asarray(input_array).view(cls)
-
-           # Finally, we must return the newly created object:
-           return obj
-
-    def r(self):
-        return self[0]
-
-    def g(self):
-        return self[1]
-
-    def b(self):
-        return self[2]
-
-    def a(self):
-        return self[3]
-
-class Vec4d(numpy.ndarray):
-    def __new__(cls, input_array=None):
-           if input_array is None:
-               obj = super(Vec4d, cls).__new__(cls, shape=(4), dtype=float)
-               return obj
-
-           if input_array.ndim != 1:
-               raise TypeError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")
-
-           # Input array is an already formed ndarray instance
-           # We first cast to be our class type
-           obj = numpy.asarray(input_array).view(cls)
-
-           # Finally, we must return the newly created object:
-           return obj
-
-    def x(self):
-        return self[0]
-
-    def y(self):
-        return self[1]
-
-    def z(self):
-        return self[2]
-
-    def w(self):
-        return self[3]
+from Sofa.Types import RGBAColor
+#print("DIR: ", dir(Sofa))
 
 class Test(unittest.TestCase):
+        def test_typeName(self):
+            root = Sofa.Node("rootNode")
+            c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+            self.assertEqual(c.position.typeName(),"vector<Vec3d>")
+            self.assertEqual(c.showColor.typeName(),"RGBAColor")
+
+        def test_typeName(self):
+            root = Sofa.Node("rootNode")
+            c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+            self.assertEqual(c.position.typeName(), "vector<Vec3d>")
+
         #@unittest.skip  # no reason needed
         def test_ValidDataAccess(self):
                 root = Sofa.Node("rootNode")
                 c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
                 self.assertTrue(c.position is not None)
+
         #@unittest.skip  # no reason needed
         def test_InvalidDataAccess(self):
                 root = Sofa.Node("rootNode")

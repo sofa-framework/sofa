@@ -5,6 +5,7 @@ import unittest
 
 class Test(unittest.TestCase):
     def test_messages(self):
+        """Test that the message are correctly sended and does not generates exceptions"""
         for fname in ["msg_info", "msg_warning", "msg_deprecated"]:
             f = getattr(Sofa.Helper, fname)
             f("Simple message")

@@ -29,6 +29,7 @@ void moduleAddBaseData(py::module& m)
     p.def("getHelp", &BaseData::getHelp);
     p.def("unset", &BaseData::unset);
     p.def("getOwner", &BaseData::getOwner);
+    p.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); });
 
     // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
     p.def("__setitem__", [](BaseData& self, py::object& key, py::object& value)
