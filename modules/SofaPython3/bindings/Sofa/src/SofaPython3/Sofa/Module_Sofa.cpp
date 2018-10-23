@@ -1,7 +1,6 @@
 #include "Core/Submodule_Core.h"
 #include "Helper/Submodule_Helper.h"
 #include "Simulation/Submodule_Simulation.h"
-#include "Types/Submodule_Types.h"
 
 namespace sofapython3
 {
