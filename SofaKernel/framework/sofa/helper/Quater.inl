@@ -247,6 +247,16 @@ Quater<Real> Quater<Real>::inverse() const
     return ret;
 }
 
+/// Returns true if norm of Quaternion is one, false otherwise.
+template<class Real>
+bool Quater<Real>::isNormalized()
+{
+    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
+    double epsilon = 1.0e-10;
+    return (std::abs(mag - 1.0) < epsilon);
+}
+
+
 /// Quater<Real>s always obey:  a^2 + b^2 + c^2 + d^2 = 1.0
 /// If they don't add up to 1.0, dividing by their magnitude will
 /// renormalize them.
@@ -254,12 +264,20 @@ template<class Real>
 void Quater<Real>::normalize()
 {
     Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
-    if( mag != 0)
+    double epsilon = 1.0e-10;
+    if (std::abs(mag - 1.0) > epsilon)
     {
-        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-        for (int i = 0; i < 4; i++)
+        if( mag != 0)
         {
-            _q[i] *= sqr;
+            Real sqr = static_cast<Real>(1.0 / sqrt(mag));
+            for (int i = 0; i < 4; i++)
+            {
+                _q[i] *= sqr;
+            }
+        }
+        else
+        {
+            _q[3] = 1;
         }
     }
 }
