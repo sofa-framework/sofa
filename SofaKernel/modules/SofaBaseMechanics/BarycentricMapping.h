@@ -192,7 +192,7 @@ public:
     //--
 
 
-    virtual void clearMapAndReserve( int reserve=0 ) =0;
+    virtual void clear( int reserve=0 ) =0;
 
     //Nothing to do
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
@@ -310,7 +310,7 @@ protected:
     }
 public:
 
-    void clearMapAndReserve(int reserve=0) override;
+    void clear(int reserve=0) override;
 
     int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
     int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
@@ -442,7 +442,7 @@ protected:
     }
 public:
 
-    void clearMapAndReserve(int reserve=0) override;
+    void clear(int reserve=0) override;
 
     bool isEmpty() {return this->m_map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
@@ -523,7 +523,7 @@ protected:
     }
 public:
 
-    void clearMapAndReserve(int reserve=0) override;
+    void clear(int reserve=0) override;
 
     int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
@@ -610,7 +610,7 @@ protected:
 
 public:
 
-    virtual void clearMapAndReserve(int size=0) override;
+    virtual void clear(int size=0) override;
     virtual void resize( core::State<Out>* toModel ) override;
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;

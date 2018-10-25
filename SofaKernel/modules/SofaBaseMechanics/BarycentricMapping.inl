@@ -122,7 +122,7 @@ BarycentricMapping<TIn, TOut>::~BarycentricMapping()
 
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::clearMapAndReserve ( int size )
+void BarycentricMapperRegularGridTopology<In,Out>::clear ( int size )
 {
     updateJ = true;
     m_map.clear();
@@ -148,7 +148,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
 
     updateJ = true;
 
-    clearMapAndReserve ( (int)out.size() );
+    clear ( (int)out.size() );
     if ( m_fromTopology->isVolume() )
     {
         for ( unsigned int i=0; i<out.size(); i++ )
@@ -166,7 +166,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
 
 
 template <class In, class Out>
-void BarycentricMapperSparseGridTopology<In,Out>::clearMapAndReserve ( int size )
+void BarycentricMapperSparseGridTopology<In,Out>::clear ( int size )
 {
     updateJ = true;
     m_map.clear();
@@ -190,7 +190,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::init ( const typename Out::Vec
 {
     if ( this->m_map.size() != 0 ) return;
     updateJ = true;
-    clearMapAndReserve ( (int)out.size() );
+    clear ( (int)out.size() );
 
     if ( m_fromTopology->isVolume() )
     {
@@ -235,7 +235,7 @@ void BarycentricMapperMeshTopology<In,Out>::clearMap3dAndReserve ( int size )
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clearMapAndReserve ( int size )
+void BarycentricMapperMeshTopology<In,Out>::clear ( int size )
 {
     m_updateJ = true;
     clearMap1dAndReserve(size);
@@ -571,7 +571,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 
 
 template <class In, class Out, class MappingDataType, class Element>
-void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::clearMapAndReserve(int size)
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::clear(int size)
 {
     helper::vector<MappingDataType>& vectorData = *(d_map.beginEdit());
     vectorData.clear();
@@ -726,7 +726,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
     helper::vector<Mat3x3d> bases;
     helper::vector<Vector3> centers;
 
-    this->clearMapAndReserve ( (int)out.size() );
+    this->clear ( (int)out.size() );
     bases.resize ( elements.size() );
     centers.resize ( elements.size() );
 
@@ -911,7 +911,7 @@ void BarycentricMapping<TIn, TOut>::reinit()
 {
     if ( m_mapper != NULL )
     {
-        m_mapper->clearMapAndReserve();
+        m_mapper->clear();
         m_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
 }

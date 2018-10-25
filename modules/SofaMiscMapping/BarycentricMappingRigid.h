@@ -94,7 +94,7 @@ protected:
     virtual ~BarycentricMapperTetrahedronSetTopologyRigid() {}
 
 public:
-    void clearMapAndReserve(int reserve=0) override;
+    void clear(int reserve=0) override;
 
     int addPointInTetra(const int index, const SReal* baryCoords) override;
     int addPointOrientationInTetra( const int tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient );
