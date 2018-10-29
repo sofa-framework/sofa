@@ -43,7 +43,7 @@ namespace sofa
 	{
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
+        class SOFA_SIMULATION_CORE_API TaskScheduler
         {
 
         public:

@@ -35,7 +35,7 @@ namespace sofa
 	namespace simulation
     {
 
-        class SOFA_MULTITHREADING_PLUGIN_API Task
+        class SOFA_SIMULATION_CORE_API Task
         {
         public:
 

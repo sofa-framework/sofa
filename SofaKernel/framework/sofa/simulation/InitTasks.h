@@ -33,7 +33,7 @@ namespace sofa
 
 
 
-        class InitPerThreadDataTask : public Task
+        class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public Task
         {
 
         public:

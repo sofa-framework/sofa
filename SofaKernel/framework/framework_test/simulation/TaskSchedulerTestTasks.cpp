@@ -1,6 +1,6 @@
 #include "TaskSchedulerTestTasks.h"
 
-#include <MultiThreading/src/TaskScheduler.h>
+#include <sofa/simulation/TaskScheduler.h>
 
 using sofa::simulation::Task;
 

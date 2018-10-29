@@ -68,7 +68,7 @@ namespace sofa  {
         class WorkerThread;
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
+        class SOFA_SIMULATION_CORE_API WorkerThread
         {
         public:
 
@@ -158,7 +158,7 @@ namespace sofa  {
 
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerDefault : public TaskScheduler
+        class SOFA_SIMULATION_CORE_API TaskSchedulerDefault : public TaskScheduler
         {
             enum
             {

@@ -7,11 +7,6 @@ set(MULTITHREADING_VERSION ${MULTITHREADING_MAJOR_VERSION}.${MULTITHREADING_MINO
 
 set(HEADER_FILES
     config.h
-    src/TaskScheduler.h
-	src/DefaultTaskScheduler.h
-	src/Task.h
-	src/InitTasks.h
-    src/Locks.h
     src/AnimationLoopParallelScheduler.h
     src/AnimationLoopTasks.h
     src/BeamLinearMapping_mt.h
@@ -19,7 +14,6 @@ set(HEADER_FILES
     src/BeamLinearMapping_tasks.inl
     src/DataExchange.h
     src/DataExchange.inl
-	src/VisitorAsync.h
 	src/MeanComputation.h
 	src/MeanComputation.inl
     
@@ -27,10 +21,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/initMultiThreading.cpp
-    src/TaskScheduler.cpp
-	src/DefaultTaskScheduler.cpp
-	src/Task.cpp
-	src/InitTasks.cpp
     src/AnimationLoopParallelScheduler.cpp
     src/AnimationLoopTasks.cpp
     src/BeamLinearMapping_mt.cpp
@@ -65,6 +55,6 @@ install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
-        add_subdirectory(test)
+        # add_subdirectory(test)
     endif()
 endif()
