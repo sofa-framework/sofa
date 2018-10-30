@@ -30,6 +30,7 @@ setSofaOption(SOFA_USE_MASK OFF)
 
 setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
+setSofaOption(SOFA_BUILD_METIS ON)
 
 # Set all plugins/modules OFF
 get_cmake_property(_variableNames VARIABLES)
