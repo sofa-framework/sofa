@@ -271,9 +271,9 @@ endmacro()
 # Assumes relative path.
 macro(sofa_set_python_directory plugin_name directory)
     ## Install python scripts, preserving the file tree
-    file(GLOB_RECURSE PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*.py")
-    file(GLOB_RECURSE JSON_FILES   "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*.json")
-    LIST(APPEND ALL_FILES ${PYTHON_FILES} ${JSON_FILES})
+    file(GLOB_RECURSE ALL_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*")
+    file(GLOB_RECURSE PYC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*.pyc")
+    list(REMOVE_ITEM ALL_FILES ${PYC_FILES})
     foreach(python_file ${ALL_FILES})
         file(RELATIVE_PATH script "${CMAKE_CURRENT_SOURCE_DIR}/${directory}" "${python_file}")
         get_filename_component(path ${script} DIRECTORY)
