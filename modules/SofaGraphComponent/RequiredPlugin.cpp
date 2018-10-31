@@ -97,12 +97,11 @@ void RequiredPlugin::loadPlugin()
         {
             const std::string& suffix = suffixVec[suffixIndex];
             std::string pluginPath = pluginManager->findPlugin(name, suffix, false);
-            bool result = !pluginPath.empty();
-            if (result && !pluginManager->pluginIsLoaded(pluginPath))
+            if ( pluginPath.empty() || pluginManager->pluginIsLoaded(pluginPath) )
             {
-                result = pluginManager->loadPlugin(pluginPath, suffix, false, &errmsg);
+                continue;
             }
-            if (result)
+            if ( pluginManager->loadPlugin(pluginPath, suffix, false, &errmsg) )
             {
                 msg_info() << "Loaded " << pluginPath;
                 loaded.push_back(pluginPath);
