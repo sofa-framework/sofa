@@ -227,7 +227,7 @@ if( SofaPython_FOUND )
     set(PYTHON_FILES
         python/Compliant/Control.py
         python/Compliant/Frame.py
-        python/Compliant/Quaternion.py
+        # python/Compliant/Quaternion.py
         python/Compliant/Rigid.py
         python/Compliant/Script.py
         python/Compliant/StructuralAPI.py
