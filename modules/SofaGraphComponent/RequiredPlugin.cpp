@@ -26,6 +26,7 @@
 #include <sofa/helper/logging/Messaging.h>
 
 using sofa::helper::system::PluginManager;
+using sofa::helper::system::Plugin;
 
 namespace sofa
 {
@@ -97,9 +98,27 @@ void RequiredPlugin::loadPlugin()
         {
             const std::string& suffix = suffixVec[suffixIndex];
             std::string pluginPath = pluginManager->findPlugin(name, suffix, false);
-            if ( pluginPath.empty() || pluginManager->pluginIsLoaded(pluginPath) )
+            if ( pluginPath.empty() )
             {
-                continue;
+                // Try to find plugin name in PluginManager::PluginMap
+                std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+                for( const auto& elem : map)
+                {
+                    Plugin p = elem.second;
+                    if ( p.getModuleName() == name )
+                    {
+                        nameLoaded = true;
+                        break;
+                    }
+                }
+                if (nameLoaded && d_stopAfterFirstSuffixFound.getValue()) break;
+                else continue;
+            }
+            if( pluginManager->pluginIsLoaded(pluginPath) )
+            {
+                nameLoaded = true;
+                if (d_stopAfterFirstSuffixFound.getValue()) break;
+                else continue;
             }
             if ( pluginManager->loadPlugin(pluginPath, suffix, false, &errmsg) )
             {
