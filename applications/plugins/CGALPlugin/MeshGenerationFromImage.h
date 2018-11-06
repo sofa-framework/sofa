@@ -22,8 +22,6 @@
 #ifndef CGALPLUGIN_MESHGENERATIONFROMIMAGE_H
 #define CGALPLUGIN_MESHGENERATIONFROMIMAGE_H
 
-#define CGAL_MESH_3_VERBOSE
-
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>

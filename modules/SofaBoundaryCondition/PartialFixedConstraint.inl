@@ -41,107 +41,51 @@ namespace component
 namespace projectiveconstraintset
 {
 
-// Define TestNewPointFunction
-template< class DataTypes>
-bool PartialFixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
-{
-    return fc != 0;
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void PartialFixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((unsigned int) pointIndex);
-    }
-}
-
-
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
-    , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , fixedDirections( initData(&fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
-    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
+    : d_fixedDirections( initData(&d_fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
 {
     // default to indice 0
-    d_indices.beginEdit()->push_back(0);
-    d_indices.endEdit();
+    this->d_indices.beginEdit()->push_back(0);
+    this->d_indices.endEdit();
+
+    this->pointHandler = new typename Inherited::FCPointHandler(this, &this->d_indices);
+
     VecBool blockedDirection;
     for( unsigned i=0; i<NumDimensions; i++)
         blockedDirection[i] = true;
-    fixedDirections.setValue(blockedDirection);
-
-    pointHandler = new FCPointHandler(this, &d_indices);
+    d_fixedDirections.setValue(blockedDirection);
 }
 
 
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::~PartialFixedConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    //Parent class FixedConstraint already destruct : pointHandler and data
 }
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::clearConstraints()
-{
-    d_indices.beginEdit()->clear();
-    d_indices.endEdit();
-}
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::addConstraint(unsigned int index)
-{
-    d_indices.beginEdit()->push_back(index);
-    d_indices.endEdit();
-}
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::removeConstraint(unsigned int index)
-{
-    removeValue(*d_indices.beginEdit(),index);
-    d_indices.endEdit();
-}
-
-// -- Constraint interface
 
 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::init()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-
-    topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters
-    d_indices.createTopologicalEngine(topology, pointHandler);
-    d_indices.registerTopologicalData();
-
-    const SetIndexArray & indices = d_indices.getValue();
-
-    unsigned int maxIndex=this->mstate->getSize();
-    for (unsigned int i=0; i<indices.size(); ++i)
-    {
-        const unsigned int index=indices[i];
-        if (index >= maxIndex)
-        {
-            serr << "Index " << index << " not valid!" << sendl;
-            removeConstraint(index);
-        }
-    }
+    this->Inherited::init();
 }
+
+
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::reinit()
+{
+    this->Inherited::reinit();
+}
+
 
 template <class DataTypes>
 template <class DataDeriv>
 void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
-    const VecBool& blockedDirection = fixedDirections.getValue();
-    if (d_fixAll.getValue() == true)
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
+
+    if (this->d_fixAll.getValue() == true)
     {
         // fix everyting
         for( unsigned i=0; i<res.size(); i++ )
@@ -157,7 +101,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     }
     else
     {
-        const SetIndexArray & indices = d_indices.getValue();
+        const SetIndexArray & indices = this->d_indices.getValue();
         unsigned i=0;
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
@@ -179,40 +123,6 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
     projectResponseT(mparams, res.wref());
 }
 
-// projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
-// Each fixed point received a null velocity vector.
-// When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
-{
-    if(!d_projectVelocity.getValue()) return;
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
-
-    if( d_fixAll.getValue()==true )
-    {
-        // fix everyting
-        for( unsigned i=0; i<res.size(); i++ )
-        {
-            res[i] = Deriv();
-        }
-    }
-    else
-    {
-        const SetIndexArray & indices = d_indices.getValue();
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
-        {
-            res[*it] = Deriv();
-        }
-    }
-}
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
-{
-
-}
 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
@@ -233,23 +143,42 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
-    //TODO take f_fixAll into account
 
     const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = d_indices.getValue();
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
 
-    const VecBool& blockedDirection = fixedDirections.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    if( this->d_fixAll.getValue() )
     {
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<N; ++c)
+        unsigned size = this->mstate->getSize();
+        for(unsigned int i=0; i<size; i++)
         {
-            if( blockedDirection[c] ) mat->clearRowCol(offset + N * (*it) + c);
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if( blockedDirection[c] ) mat->clearRowCol(offset + N * i + c);
+            }
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if( blockedDirection[c] ) mat->set(offset + N * i + c, offset + N * i + c, 1.0);
+            }
         }
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<N; ++c)
+    }
+    else
+    {
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            if( blockedDirection[c] ) mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if( blockedDirection[c] ) mat->clearRowCol(offset + N * (*it) + c);
+            }
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if( blockedDirection[c] ) mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+            }
         }
     }
 }
@@ -257,18 +186,36 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //TODO take f_fixAll into account
+
+
     const unsigned int N = Deriv::size();
 
-    const VecBool& blockedDirection = fixedDirections.getValue();
-    const SetIndexArray & indices = d_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
+
+    if( this->d_fixAll.getValue() )
     {
-        for (unsigned int c = 0; c < N; ++c)
+        for( int i=0; i<vect->size(); i++ )
         {
-            if (blockedDirection[c])
+            for (unsigned int c = 0; c < N; ++c)
             {
-                vect->clear(offset + N * (*it) + c);
+                if (blockedDirection[c])
+                {
+                    vect->clear(offset + N * i + c);
+                }
+            }
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            for (unsigned int c = 0; c < N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    vect->clear(offset + N * (*it) + c);
+                }
             }
         }
     }
@@ -281,28 +228,51 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
     if(r)
     {
         const unsigned int N = Deriv::size();
-        const VecBool& blockedDirection = fixedDirections.getValue();
-        const SetIndexArray & indices = d_indices.getValue();
+        const VecBool& blockedDirection = d_fixedDirections.getValue();
+        const SetIndexArray & indices = this->d_indices.getValue();
 
-        //TODO take f_fixAll into account
-
-
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        if( this->d_fixAll.getValue() )
         {
-            // Reset Fixed Row and Col
-            for (unsigned int c=0; c<N; ++c)
+            unsigned size = this->mstate->getSize();
+            for(unsigned int i=0; i<size; i++)
             {
-                if (blockedDirection[c])
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
                 {
-                    r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->clearRowCol(r.offset + N * i + c);
+                    }
+                }
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->set(r.offset + N * i + c, r.offset + N * i + c, 1.0);
+                    }
                 }
             }
-            // Set Fixed Vertex
-            for (unsigned int c=0; c<N; ++c)
+        }
+        else
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                if (blockedDirection[c])
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
                 {
-                    r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                    }
+                }
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                    }
                 }
             }
         }
@@ -314,9 +284,9 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
-    const VecBool& blockedDirection = fixedDirections.getValue();
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
 
-    if( d_fixAll.getValue()==true )
+    if( this->d_fixAll.getValue() )
     {
         unsigned size = this->mstate->getSize();
         for( unsigned i=0; i<size; i++ )
@@ -332,7 +302,7 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
     }
     else
     {
-        const SetIndexArray & indices = d_indices.getValue();
+        const SetIndexArray & indices = this->d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             for (unsigned int c = 0; c < blockSize; ++c)
@@ -346,65 +316,6 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
     }
 }
 
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowBehaviorModels())
-        return;
-    if (!this->isActive())
-        return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    const SetIndexArray & indices = d_indices.getValue();
-
-    if (d_drawSize.getValue() == 0) // old classical drawing by points
-    {
-        std::vector<sofa::defaulttype::Vector3> points;
-        sofa::defaulttype::Vector3 point;
-        if (d_fixAll.getValue() == true)
-        {
-            for (unsigned i = 0; i < x.size(); i++)
-            {
-                point = DataTypes::getCPos(x[i]);
-                points.push_back(point);
-            }
-        }
-        else
-        {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
-            {
-                point = DataTypes::getCPos(x[*it]);
-                points.push_back(point);
-            }
-        }
-        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4, float> (1, 0.5, 0.5, 1));
-    }
-    else // new drawing by spheres
-    {
-        std::vector<sofa::defaulttype::Vector3> points;
-        sofa::defaulttype::Vector3 point;
-        if (d_fixAll.getValue() == true)
-        {
-            for (unsigned i = 0; i < x.size(); i++)
-            {
-                point = DataTypes::getCPos(x[i]);
-                points.push_back(point);
-            }
-        }
-        else
-        {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
-            {
-                point = DataTypes::getCPos(x[*it]);
-                points.push_back(point);
-            }
-        }
-        vparams->drawTool()->drawSpheres(points, (float) d_drawSize.getValue(), sofa::defaulttype::Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
-    }
-}
 
 } // namespace constraint
 

@@ -60,9 +60,9 @@ BaseLink::~BaseLink()
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {
-    std::size_t size = getSize();
+    unsigned int size = (unsigned int)getSize();
     bool first = true;
-    for (std::size_t i = 0; i<size; ++i)
+    for (unsigned int i = 0; i<size; ++i)
     {
         std::string path = getLinkedPath(i);
         if (path.empty()) continue;

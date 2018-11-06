@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP
+
 #include "LinearDiagonalCompliance.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_CPP
+
 #include "UniformCompliance.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

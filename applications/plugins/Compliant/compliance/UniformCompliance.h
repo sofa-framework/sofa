@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -76,10 +76,25 @@ protected:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec1dTypes>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec2dTypes>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec1fTypes>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec2fTypes>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec3fTypes>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec6fTypes>;
+#endif
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
 
 

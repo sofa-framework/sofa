@@ -5,8 +5,8 @@
 -->
 
 <Node name="root" dt="0.005" >
-        <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
-        <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+	<VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
+	<RequiredPlugin name="SofaPython" pluginName="SofaPython" />
 	<Gravity name="G" gravity="10 0 0" />
 	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
@@ -16,16 +16,14 @@
 	<LCPConstraintSolver tolerance="0.001"  maxIt="1000"/>
 
 	<Node name="Raptor">
-		
-
-           	<EulerImplicit name="odesolver" />
-            	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<EulerImplicit name="odesolver" />
+		<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<HexahedronSetGeometryAlgorithms />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>
 		<PrecomputedConstraintCorrection recompute="true"/>
 		<DiagonalMass massDensity="1" name="computed using mass density" />
-            	<HexahedronFEMForceField name="FEM" youngModulus="1000000" poissonRatio="0.45" method="large" />
+		<HexahedronFEMForceField name="FEM" youngModulus="1000000" poissonRatio="0.45" method="large" />
 		<FixedConstraint  name="FixedConstraint" indices="0 1 2 18 19 20 59 58 57 96 97 98 135 136 137" />
 		<Node name="VisualModel" >
 			<OglModel name="RaptorVisualModel" fileMesh="mesh/raptor_35kp.obj" color="white"/> 
@@ -33,7 +31,7 @@
 		</Node>
 
 		<Node name="CollisionModel" >
-		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
+			<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<Mesh src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
 			<Triangle name="raptor" contactStiffness="100"/>
@@ -63,7 +61,7 @@
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
 		<MechanicalObject name="instrumentState" template="Rigid" />
-		<UniformMass name="mass" totalmass="0.05" />
+		<UniformMass name="mass" totalMass="0.05" />
 		<LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<UncoupledConstraintCorrection/>
 		<Node name="VisualModel" >
@@ -79,6 +77,5 @@
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField  object1="@Input/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
-	</Node>  
-
+	</Node>
 </Node>

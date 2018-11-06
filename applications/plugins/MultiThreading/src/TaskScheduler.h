@@ -24,7 +24,7 @@
 
 #include <MultiThreading/config.h>
 
-#include "Tasks.h"
+#include "Task.h"
 #include "Locks.h"
 
 #include <thread>
@@ -33,6 +33,7 @@
 #include <memory>
 #include <map>
 #include <deque>
+#include <string> 
 
 
 namespace sofa
@@ -41,170 +42,56 @@ namespace sofa
 	namespace simulation
 	{
 
-		class TaskScheduler;
-		class WorkerThread;
-        class TasksAllocators;
 
+        class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
+        {
 
-		class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
-		{
-		public:
+        public:
 
-			WorkerThread(TaskScheduler* const& taskScheduler);
+            virtual ~TaskScheduler();
 
-			~WorkerThread();
+            static TaskScheduler* create(const char* name = "");
 
-			static WorkerThread* getCurrent();         
+            typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
 
-			// queue task if there is space, and run it otherwise
-			bool addTask(Task* pTask);
+            static bool registerScheduler(const char* name, std::function<TaskScheduler* ()> creatorFunc);
 
-			void workUntilDone(Task::Status* status);
+            static TaskScheduler* getInstance();
 
-			Task::Status* getCurrentStatus() const {return _currentStatus;}
+            static const std::string& getCurrentName()  { return _currentSchedulerName; }
 
-            const std::thread::id getId();
-            
-            const std::deque<Task*>* getTasksQueue() {return &_tasks;}
-            
-			std::uint64_t getTaskCount()  {return _tasks.size(); }
-            
-            int GetWorkerIndex();
-            
-            void* allocate();
-            
-            void free(void* ptr);
-            
-            
-		private:
+            // interface
+            virtual void init(const unsigned int nbThread = 0) = 0;
 
-			bool start(TaskScheduler* const& taskScheduler);
+            virtual void stop(void) = 0;
 
-                        std::thread* create_and_attach(TaskScheduler* const&);
+            virtual unsigned int getThreadCount(void) const = 0;
 
-			// queue task if there is space (or do nothing)
-			bool pushTask(Task* pTask);
+            virtual const char* getCurrentThreadName() = 0;
 
-			// pop task from queue
-			bool popTask(Task** ppTask);
-			
-			// steal and queue some task from another thread 
-			bool stealTasks();
+            // queue task if there is space, and run it otherwise
+            virtual bool addTask(Task* task) = 0;
 
-			// give an idle thread some work
-			bool giveUpSomeWork(WorkerThread* pIdleThread);
-			
-			void doWork(Task::Status* status);
+            virtual void workUntilDone(Task::Status* status) = 0;
 
-			// boost thread main loop
-			void run(void);
+            virtual void* allocateTask(size_t size) = 0;
 
-			//void	ThreadProc(void);
-            void	Idle(void);
+            virtual void releaseTask(Task*) = 0;
 
-            bool isFinished();
-            
-		private:
+        protected:
 
-			enum 
-			{
-				Max_TasksPerThread = 256
-			};
+            // factory map: registered schedulers: name, creation function
+            static std::map<std::string, std::function<TaskScheduler*()> > _schedulers;
 
-            SpinLock _taskMutex;
-            
-            std::deque<Task*> _tasks;
-            
-            std::thread  _stdThread;
-            
-			Task::Status*	_currentStatus;
+            // current instantiated scheduler
+            static std::string _currentSchedulerName;
+            static TaskScheduler * _currentScheduler;
 
-			TaskScheduler*     _taskScheduler;
-            
-			// The following members may be accessed by _multiple_ threads at the same time:
-			volatile bool	_finished;
-
-			friend class TaskScheduler;
-		};
+            friend class Task;
+        };
 
 
 
-
-		class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
-
-		{
-			enum
-			{
-				MAX_THREADS = 16,
-				STACKSIZE = 64*1024 /* 64K */,
-			};
-
-		public:
-			
-			static TaskScheduler& getInstance();
-			
-            void init(const unsigned int NbThread = 0);
-            
-            bool isInitialized() { return _isInitialized; }
-
-//            void start(unsigned int NbThread);
-			
-			void stop(void);
-
-			bool isClosing(void) const { return _isClosing; }
-
-			unsigned int getThreadCount(void) const { return _threadCount; }
-
-			void	WaitForWorkersToBeReady();
-
-			void	wakeUpWorkers();
-
-			static unsigned GetHardwareThreadsCount();
-
-			unsigned size()	const;
-
-			const WorkerThread* getWorkerThread(const std::thread::id id);
-		
-
-		private:
-			
-            //static thread_local WorkerThread* _workerThreadIndex;
-
-			static std::map< std::thread::id, WorkerThread*> _threads;
-
-			Task::Status*	_mainTaskStatus;
-
-			std::mutex  _wakeUpMutex;
-
-			std::condition_variable _wakeUpEvent;
-
-		private:
-
-			TaskScheduler();
-			
-			TaskScheduler(const TaskScheduler& ) {}
-
-			~TaskScheduler();
-
-            void start(unsigned int NbThread);
-            
-			bool _isInitialized;
-            
-			unsigned _workerThreadCount;
-
-			bool _workerThreadsIdle;
-
-			bool _isClosing;
-
-			unsigned _threadCount;
-
-			friend class WorkerThread;
-		};		
-
-
-
-
-		SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(WorkerThread* pThread, const Task *pTask );
 
 		SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(const Task *pTask );
 

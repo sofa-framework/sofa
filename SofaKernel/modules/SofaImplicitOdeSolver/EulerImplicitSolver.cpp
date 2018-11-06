@@ -54,6 +54,7 @@ EulerImplicitSolver::EulerImplicitSolver()
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
     , f_solveConstraint( initData(&f_solveConstraint,false,"solveConstraint","Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
@@ -74,7 +75,7 @@ void EulerImplicitSolver::cleanup()
 {
     // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
     sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-    vop.v_free( x.id(), true, true );
+    vop.v_free(x.id(), !d_threadSafeVisitor.getValue(), true);
 }
 
 void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -96,9 +97,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    x.realloc( &vop, true, true );
+    x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -176,7 +177,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     simulation::Visitor::printNode("SystemSolution");
 #endif
     sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
-    matrix.solve(x, b); //Call to ODE resolution.
+    matrix.solve(x, b); //Call to ODE resolution: x is the solution of the system
     sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");
@@ -207,17 +208,18 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     else
     {
         sofa::helper::AdvancedTimer::stepBegin("UpdateV");
-        //vel.peq( x );                       // vel = vel + x
+        // vel = vel + x
         newVel.eq(vel, x);
         sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
         mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
-        //pos.peq( vel, h );                  // pos = pos + h vel
+        // pos = pos + h vel
         newPos.eq(pos, newVel, h);
         sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
         mop.solveConstraint(newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
+
     }
 #ifndef SOFA_NO_VMULTIOP
     else
@@ -250,7 +252,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     }
 #endif
 
-    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to add G separately from the other forces to v
+
     if (f_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*f_velocityDamping.getValue());
 
@@ -264,7 +267,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
         mop.computeForce(f);
         serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
-
     }
 }
 

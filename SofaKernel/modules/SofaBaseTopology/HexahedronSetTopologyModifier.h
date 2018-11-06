@@ -44,6 +44,7 @@ public:
 
 
     typedef core::topology::BaseMeshTopology::HexaID HexaID;
+    typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
     typedef core::topology::BaseMeshTopology::Hexa Hexa;
     typedef core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
     typedef core::topology::BaseMeshTopology::HexahedraAroundVertex HexahedraAroundVertex;
@@ -82,25 +83,25 @@ public:
     *
     */
     virtual void addHexahedra(const sofa::helper::vector< Hexahedron > &hexahedra,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< HexahedronID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
     *
     * \sa addHexahedraProcess
     */
-    void addHexahedraWarning(const unsigned int nHexahedra,
+    void addHexahedraWarning(const size_t nHexahedra,
             const sofa::helper::vector< Hexahedron >& hexahedraList,
-            const sofa::helper::vector< unsigned int >& hexahedraIndexList);
+            const sofa::helper::vector< HexahedronID >& hexahedraIndexList);
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
     *
     * \sa addHexahedraProcess
     */
-    void addHexahedraWarning(const unsigned int nHexahedra,
+    void addHexahedraWarning(const size_t nHexahedra,
             const sofa::helper::vector< Hexahedron >& hexahedraList,
-            const sofa::helper::vector< unsigned int >& hexahedraIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< HexahedronID >& hexahedraIndexList,
+            const sofa::helper::vector< sofa::helper::vector< HexahedronID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
     /** \brief Add a hexahedron.
@@ -119,7 +120,7 @@ public:
     *
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    virtual void removeHexahedraWarning( sofa::helper::vector<unsigned int> &hexahedra);
+    virtual void removeHexahedraWarning( sofa::helper::vector<HexahedronID> &hexahedra);
 
     /** \brief Remove a subset of hexahedra
     *
@@ -129,7 +130,7 @@ public:
     * \sa removeHexahedraWarning
     * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    virtual void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices,
+    virtual void removeHexahedraProcess(const sofa::helper::vector<HexahedronID>&indices,
             const bool removeIsolatedItems = false);
 
     /** \brief Actually Add some quads to this topology.
@@ -144,7 +145,7 @@ public:
     * @param removeIsolatedEdges if true isolated edges are also removed
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void removeQuadsProcess(const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeQuadsProcess(const sofa::helper::vector<QuadID> &indices,
             const bool removeIsolatedEdges = false,
             const bool removeIsolatedPoints = false) override;
 
@@ -162,14 +163,14 @@ public:
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     * @param removeIsolatedItems if true remove isolated vertices
     */
-    virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeEdgesProcess(const sofa::helper::vector<EdgeID> &indices,
             const bool removeIsolatedItems = false) override;
 
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints) override;
+    virtual void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -179,31 +180,31 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true) override;
+    virtual void removePointsProcess(const sofa::helper::vector<PointID> &indices, const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int>& inv_index,
+    virtual void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
+            const sofa::helper::vector<PointID>& inv_index,
             const bool renumberDOF = true) override;
 
     /** \brief Remove a set  of hexahedra
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeHexahedra(const sofa::helper::vector<unsigned int> &hexahedraIds);
+    virtual void removeHexahedra(const sofa::helper::vector<HexahedronID> &hexahedraIds);
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> &items) override;
+    virtual void removeItems(const sofa::helper::vector<HexahedronID> &items) override;
 
     /** \brief Generic method for points renumbering
     */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,
-            const sofa::helper::vector<unsigned int>& inv_index) override;
+    virtual void renumberPoints( const sofa::helper::vector<PointID>& index,
+            const sofa::helper::vector<PointID>& inv_index) override;
 
 
 private:

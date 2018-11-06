@@ -106,6 +106,11 @@ public:
         this->updateIfDirty();
         return m_fullpath;
     }
+    virtual const std::string& getExtension() const
+    {
+        this->updateIfDirty();
+        return m_extension;
+    }
 
     virtual void update()
     {
@@ -118,6 +123,7 @@ protected:
 
     std::string m_fullpath;
     std::string m_relativepath;
+    std::string m_extension;
 
 private:
     DataFileName(const Inherit& d);

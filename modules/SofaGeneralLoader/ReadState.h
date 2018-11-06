@@ -49,11 +49,11 @@ class SOFA_GENERAL_LOADER_API ReadState: public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
 
-    sofa::core::objectmodel::DataFileName f_filename;
-    Data < double > f_interval; ///< time duration between inputs
-    Data < double > f_shift; ///< shift between times in the file and times when they will be read
-    Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
-    Data < double > f_scalePos; ///< scale the input mechanical object
+    sofa::core::objectmodel::DataFileName d_filename;
+    Data < double > d_interval; ///< time duration between inputs
+    Data < double > d_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > d_loop; ///< set to 'true' to re-read the file when reaching the end
+    Data < double > d_scalePos; ///< scale the input mechanical object
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;

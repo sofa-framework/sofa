@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/Node.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include "ScriptFunction.h"
 
 namespace sofa
@@ -18,10 +18,10 @@ namespace controller
 {
 
 
-class SOFA_SOFAPYTHON_API ScriptDataEngine : public core::DataEngine
+class SOFA_SOFAPYTHON_API ScriptDataEngine : public core::SimpleDataEngine
 {
 public:
-    SOFA_CLASS(ScriptDataEngine,core::DataEngine);
+    SOFA_CLASS(ScriptDataEngine,core::SimpleDataEngine);
 
 protected:
     ScriptDataEngine();
@@ -37,7 +37,8 @@ public:
     virtual void reinit() override ;
 
 
-    virtual void update() override ;
+    void call_update();
+    virtual void doUpdate() override ;
 
 
 protected:

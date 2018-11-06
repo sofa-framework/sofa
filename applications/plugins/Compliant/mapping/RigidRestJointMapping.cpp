@@ -1,3 +1,4 @@
+#define SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP
 #include "RigidRestJointMapping.h"
 
 #include <sofa/defaulttype/RigidTypes.h>

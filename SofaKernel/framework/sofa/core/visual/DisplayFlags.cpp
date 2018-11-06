@@ -134,13 +134,13 @@ std::istream& FlagTreeItem::read(std::istream &in)
 /*static*/
 void FlagTreeItem::create_parse_map(FlagTreeItem *root, std::map<std::string, bool, ci_comparison> &map)
 {
-    int sizeShow = root->m_showName.size();
-    int sizeHide = root->m_hideName.size();
-    for(int i=0; i<sizeShow; i++)
+    size_t sizeShow = root->m_showName.size();
+    size_t sizeHide = root->m_hideName.size();
+    for(size_t i=0; i<sizeShow; i++)
     {
         map[root->m_showName[i]] = false;
     }
-    for(int i=0; i<sizeHide; ++i)
+    for(size_t i=0; i<sizeHide; ++i)
     {
         map[root->m_hideName[i]] = false;
     }
@@ -159,12 +159,12 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
     std::map<std::string,bool>::const_iterator iter_hide;
     for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
     {
-        int sizeShow = (*iter)->m_showName.size();
-        int sizeHide = (*iter)->m_hideName.size();
+        size_t sizeShow = (*iter)->m_showName.size();
+        size_t sizeHide = (*iter)->m_hideName.size();
 
         bool found = false;
 
-        for(int i=0; i<sizeHide; i++)
+        for(size_t i=0; i<sizeHide; i++)
         {
             iter_hide = parse_map.find((*iter)->m_hideName[i]);
             if( iter_hide != parse_map.end() )
@@ -177,14 +177,12 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
                         msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_hideName[i] << "' is deprecated, please use '"<<(*iter)->m_hideName[0]<<"' instead";
                     }
 
-                    tristate merge_showhide;
-                    if (hide) merge_showhide = tristate::false_value;
-                    (*iter)->setValue(merge_showhide);
+                    (*iter)->setValue(tristate::false_value);
                     found = true;
                 }
             }
         }
-        for(int i=0; i<sizeShow; i++)
+        for(size_t i=0; i<sizeShow; i++)
         {
             iter_show = parse_map.find((*iter)->m_showName[i]);
             if( iter_show != parse_map.end() )
@@ -197,9 +195,7 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
                         msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_showName[i] << "' is deprecated, please use '"<<(*iter)->m_showName[0]<<"' instead";
                     }
 
-                    tristate merge_showhide;
-                    if (show) merge_showhide = tristate::true_value;
-                    (*iter)->setValue(merge_showhide);
+                    (*iter)->setValue(tristate::true_value);
                     found = true;
                 }
             }

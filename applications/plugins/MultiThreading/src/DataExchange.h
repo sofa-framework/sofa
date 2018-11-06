@@ -84,6 +84,16 @@ namespace sofa
 
 			virtual void handleEvent( core::objectmodel::Event* event );
 
+            virtual std::string getTemplateName() const  override
+            { 
+                return templateName(this);
+            }
+
+            static std::string templateName(const DataExchange<DataTypes>* = nullptr)
+            { 
+                return sofa::defaulttype::DataTypeName<DataTypes>::name();
+            }
+
 			template<class T>
 			static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
 			{

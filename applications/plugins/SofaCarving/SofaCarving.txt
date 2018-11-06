@@ -7,13 +7,22 @@
 
 AUTHOR :
  - Brina Goyette
+ - Erik Pernod (Version 0.3 - 2018-07-12)
 
-
+ 
 
 
 LICENCE :
- - None
+ - LGPL
 
 
 
 OTHER COMMENTS :
+
+The plugin include:
+ - CarvingManager handling carving operations between a tool and an object. 
+   The CarvingManager class will perform topological resection on a triangle surface (could be on top of tetrahedron topology)
+   The tool performing the carving as well as the object to carved need to be represented by collision models
+   Detecting the collision is done using the scene Intersection and NarrowPhaseDetection pipeline.
+ - 2 simples scenes showing a sphere carving a cylinder volume with different parameters
+ - A scene showing how to use the carving Manager on a tool object model. 

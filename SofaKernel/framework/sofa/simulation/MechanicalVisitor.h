@@ -1969,6 +1969,7 @@ protected:
     bool reverseOrder;
 };
 
+
 /** Apply the constraints as filters to the given vector.
 This works for simple independent constraints, like maintaining a fixed point.
 */

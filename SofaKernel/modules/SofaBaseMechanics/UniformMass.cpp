@@ -123,6 +123,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                                 if (!this->d_vertexMass.isSet())
                                 {
                                     this->d_vertexMass.forceSet();
+                                    this->d_totalMass.unset();
                                 }
                             }
                             else
@@ -430,8 +431,8 @@ template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::constructor_message()
 {
     d_filenameMass.setDisplayed(true) ;
-    d_filenameMass.setReadOnly(false) ;
-    d_filenameMass.setValue("") ;
+    d_filenameMass.setReadOnly(true) ;
+    d_filenameMass.setValue("unused") ;
 }
 
 template<> SOFA_BASE_MECHANICS_API

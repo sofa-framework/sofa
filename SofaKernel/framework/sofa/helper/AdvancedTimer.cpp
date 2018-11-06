@@ -23,7 +23,6 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>

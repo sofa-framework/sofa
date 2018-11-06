@@ -87,6 +87,8 @@ public:
         const char* widget;
     };
 
+    virtual BaseData* getNewInstance() { return nullptr; }
+
     /** Constructor used via the Base::initData() methods. */
     explicit BaseData(const BaseInitData& init);
 

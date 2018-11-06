@@ -125,29 +125,38 @@ void FixedConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    // Initialize functions and parameters
+      if (!topology)
+        msg_warning() << "Can not find the topology, won't be able to handle topological changes";
+
+    // Initialize topological functions
     d_indices.createTopologicalEngine(topology, pointHandler);
     d_indices.registerTopologicalData();
 
-    const SetIndexArray & indices = d_indices.getValue();
-
-    unsigned int maxIndex=this->mstate->getSize();
-    for (unsigned int i=0; i<indices.size(); ++i)
-    {
-        const unsigned int index=indices[i];
-        if (index >= maxIndex)
-        {
-            serr << "Index " << index << " not valid!" << sendl;
-            removeConstraint(index);
-        }
-    }
-
-    reinit();
+    this->checkIndices();
 }
 
 template <class DataTypes>
 void  FixedConstraint<DataTypes>::reinit()
 {
+    this->checkIndices();
+}
+
+template <class DataTypes>
+void  FixedConstraint<DataTypes>::checkIndices()
+{
+    // Check value of given indices
+    unsigned int maxIndex=this->mstate->getSize();
+
+    const SetIndexArray & indices = d_indices.getValue();
+    for (unsigned int i=0; i<indices.size(); ++i)
+    {
+        const unsigned int index=indices[i];
+        if (index >= maxIndex)
+        {
+            msg_warning() << "Index " << index << " not valid, should be [0,"<< maxIndex <<"]";
+            removeConstraint(index);
+        }
+    }
 }
 
 template <class DataTypes>
@@ -155,7 +164,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
-    if( d_fixAll.getValue()==true )
+    if( d_fixAll.getValue() )
     {
         unsigned size = this->mstate->getSize();
         for( unsigned i=0; i<size; i++ )
@@ -179,7 +188,8 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = d_indices.getValue(mparams);
-    if( d_fixAll.getValue(mparams) )
+
+    if( d_fixAll.getValue() )
     {
         // fix everything
         typename VecDeriv::iterator it;
@@ -207,8 +217,9 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
-    if( d_fixAll.getValue(mparams) )
+    if( d_fixAll.getValue() )
     {
+        // fix everything
         while (rowIt != rowItEnd)
         {
             rowIt.row().clear();
@@ -240,7 +251,7 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
-    if( this->d_fixAll.getValue()==true )
+    if( d_fixAll.getValue() )    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
             res[i] = Deriv();
@@ -270,19 +281,33 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
     if(r)
     {
         const unsigned int N = Deriv::size();
-        const SetIndexArray & indices = d_indices.getValue();
 
-        //TODO take f_fixAll into account
-
-
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        if( d_fixAll.getValue() )
         {
-            // Reset Fixed Row and Col
-            for (unsigned int c=0; c<N; ++c)
-                r.matrix->clearRowCol(r.offset + N * (*it) + c);
-            // Set Fixed Vertex
-            for (unsigned int c=0; c<N; ++c)
-                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+            unsigned size = this->mstate->getSize();
+            for(unsigned int i=0; i<size; i++)
+            {
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->clearRowCol(r.offset + N * i + c);
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->set(r.offset + N * i + c, r.offset + N * i + c, 1.0);
+            }
+        }
+        else
+        {
+            const SetIndexArray & indices = d_indices.getValue();
+
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+            }
         }
     }
 }
@@ -296,14 +321,22 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
-        //TODO take f_fixAll into account
-
-
-        const SetIndexArray & indices = d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        if( d_fixAll.getValue() )
         {
-            for (unsigned int c=0; c<N; ++c)
-                vect->clear(offset + N * (*it) + c);
+            for( int i=0; i<vect->size(); i++ )
+            {
+                for (unsigned int c=0; c<N; ++c)
+                    vect->clear(offset + N * i + c);
+            }
+        }
+        else
+        {
+            const SetIndexArray & indices = d_indices.getValue();
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                for (unsigned int c=0; c<N; ++c)
+                    vect->clear(offset + N * (*it) + c);
+            }
         }
     }
 }
@@ -317,15 +350,17 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
     vparams->drawTool()->saveLastState();
 
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = d_indices.getValue();
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
+
         if( d_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
