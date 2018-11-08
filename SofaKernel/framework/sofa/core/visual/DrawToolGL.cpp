@@ -85,7 +85,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
     disableLighting();
     glBegin(GL_POINTS);
     {
-        for (unsigned int i=0; i<points.size(); ++i)
+        for (std::size_t i=0; i<points.size(); ++i)
         {
             internalDrawPoint(points[i], colour);
         }
@@ -101,7 +101,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
     disableLighting();
     glBegin(GL_POINTS);
     {
-        for (unsigned int i=0; i<points.size(); ++i)
+        for (std::size_t i=0; i<points.size(); ++i)
         {
             setMaterial(colour[i]);
             internalDrawPoint(points[i], colour[i]);
@@ -132,7 +132,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
     disableLighting();
     glBegin(GL_LINES);
     {
-        for (unsigned int i=0; i<points.size()/2; ++i)
+        for (std::size_t i=0; i<points.size()/2; ++i)
         {
             internalDrawLine(points[2*i],points[2*i+1]  , colour );
         }
@@ -148,7 +148,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
     disableLighting();
     glBegin(GL_LINES);
     {
-        for (unsigned int i=0; i<points.size()/2; ++i)
+        for (std::size_t i=0; i<points.size()/2; ++i)
         {
             setMaterial(colours[i]);
             internalDrawLine(points[2*i],points[2*i+1]  , colours[i] );
@@ -168,7 +168,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
     disableLighting();
     glBegin(GL_LINES);
     {
-        for (unsigned int i=0; i<index.size(); ++i)
+        for (std::size_t i=0; i<index.size(); ++i)
         {
             internalDrawLine(points[ index[i][0] ],points[ index[i][1] ], colour );
         }
@@ -187,7 +187,7 @@ void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, c
     disableLighting();
     glBegin(GL_LINE_STRIP);
     {
-        for (unsigned int i=0; i<points.size(); ++i)
+        for (std::size_t i=0; i<points.size(); ++i)
         {
             internalDrawPoint(points[i]  , colour );
         }
@@ -206,7 +206,7 @@ void DrawToolGL::drawLineLoop(const std::vector<Vector3> &points, float size, co
     disableLighting();
     glBegin(GL_LINE_LOOP);
     {
-        for (unsigned int i=0; i<points.size(); ++i)
+        for (std::size_t i=0; i<points.size(); ++i)
         {
             internalDrawPoint(points[i]  , colour );
         }
@@ -223,7 +223,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vec<4,f
     setMaterial(colour);
     glBegin(GL_TRIANGLES);
     {
-        for (unsigned int i=0; i<points.size()/3; ++i)
+        for (std::size_t i=0; i<points.size()/3; ++i)
         {
             const Vector3& a = points[ 3*i+0 ];
             const Vector3& b = points[ 3*i+1 ];
@@ -250,7 +250,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vector3
     setMaterial(colour);
     glBegin(GL_TRIANGLES);
     {
-        for (unsigned int i=0; i<points.size()/3; ++i)
+        for (std::size_t i=0; i<points.size()/3; ++i)
             internalDrawTriangle(points[ 3*i+0 ],points[ 3*i+1 ],points[ 3*i+2 ], normal, colour);
     } glEnd();
     resetMaterial(colour);
@@ -264,7 +264,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::ve
     setMaterial(colour);
     glBegin(GL_TRIANGLES);
     {
-        for (unsigned int i=0; i<index.size(); ++i)
+        for (std::size_t i=0; i<index.size(); ++i)
         {
             internalDrawTriangle(points[ index[i][0] ],points[ index[i][1] ],points[ index[i][2] ],normal[i],colour);
         }
@@ -320,7 +320,7 @@ void DrawToolGL::drawTriangleStrip(const std::vector<Vector3> &points,
     setMaterial(colour);
     glBegin(GL_TRIANGLE_STRIP);
     {
-        for (unsigned int i=0; i<normal.size(); ++i)
+        for (std::size_t i=0; i<normal.size(); ++i)
         {
             glNormalT(normal[i]);
             glVertexNv<3>(points[2*i].ptr());
@@ -345,7 +345,7 @@ void DrawToolGL::drawTriangleFan(const std::vector<Vector3> &points,
     glVertexNv<3>(points[1].ptr());
     glVertexNv<3>(points[2].ptr());
 
-    for (unsigned int i=3; i<points.size(); ++i)
+    for (std::size_t i=3; i<points.size(); ++i)
     {
         glNormalT(normal[i]);
         glVertexNv<3>(points[i].ptr());
@@ -852,7 +852,7 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colo
     setMaterial(colour);
     glBegin(GL_QUADS);
     {
-        for (unsigned int i=0; i<points.size()/4; ++i)
+        for (std::size_t i=0; i<points.size()/4; ++i)
         {
             const Vector3& a = points[ 4*i+0 ];
             const Vector3& b = points[ 4*i+1 ];
@@ -870,7 +870,7 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const std::vector
 {
     glBegin(GL_QUADS);
     {
-        for (unsigned int i=0; i<points.size()/4; ++i)
+        for (std::size_t i=0; i<points.size()/4; ++i)
         {
             const Vector3& a = points[ 4*i+0 ];
             const Vector3& b = points[ 4*i+1 ];
