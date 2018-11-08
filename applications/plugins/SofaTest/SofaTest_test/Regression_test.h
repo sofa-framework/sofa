@@ -24,7 +24,6 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -32,8 +31,9 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <SofaGeneralLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
+#include <SofaGeneralLoader/ReadState.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaValidation/CompareState.h>
 
 #include <SofaTest/Sofa_test.h>
@@ -128,9 +128,9 @@ protected:
             double errorByDof = result.getErrorByDof() / double(result.getNumCompareState());
             if( errorByDof > epsilon )
             {
-                ADD_FAILURE() << scene
-                << ", TOTALERROR: " << result.getTotalError()
-                << ", ERRORBYDOF: " << errorByDof;
+                msg_error("Regression_test") << scene << ":" << msgendl
+                    << "    TOTALERROR: " << result.getTotalError() << msgendl
+                    << "    ERRORBYDOF: " << errorByDof;
             }
         }
 
