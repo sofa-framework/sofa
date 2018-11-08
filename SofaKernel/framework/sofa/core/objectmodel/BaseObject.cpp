@@ -90,7 +90,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
         if (valueString[0] != '@')
         {
-            serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+            msg_error() <<"'src' attribute value should be a link using '@'" ;
         }
         else
         {
@@ -115,7 +115,7 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
     loader = getContext()->get<BaseObject>(objectName);
     if (!loader)
     {
-        serr << "Source object \"" << valueString << "\" NOT FOUND." << sendl;
+        msg_error() << "Source object \"" << valueString << "\" NOT FOUND." ;
         return;
     }
     setSrc(valueString, loader, attributeList);
@@ -127,11 +127,6 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     std::multimap < std::string, BaseData*> dataLoaderMap(loader->m_aliasData);
     std::multimap < std::string, BaseData*>::iterator it_map;
-
-    //for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
-    //{
-    //	dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
-    //}
 
     if (attributeList != 0)
     {
@@ -162,11 +157,10 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
         {
             if (!(*it_map).second->isAutoLink())
             {
-                sout << "Disabling autolink for Data " << data->getName() << sendl;
+                msg_info() << "Disabling autolink for Data '" << data->getName() << "'";
             }
             else
             {
-                //serr << "Autolinking Data " << data->getName() << sendl;
                 std::string linkPath = valueString+"."+(*it_map).first;
                 data->setParent( (*it_map).second, linkPath);
             }
@@ -244,12 +238,6 @@ void BaseObject::copyAspect(int destAspect, int srcAspect)
 {
     Base::copyAspect(destAspect, srcAspect);
     // copyAspect is no longer recursive to slave objects
-    /*
-        for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
-        {
-            (*iSlaves)->copyAspect(destAspect, srcAspect);
-        }
-    */
 }
 
 /// Release memory allocated for the specified aspect.
@@ -257,23 +245,15 @@ void BaseObject::releaseAspect(int aspect)
 {
     Base::releaseAspect(aspect);
     // releaseAspect is no longer recursive to slave objects
-    /*
-        for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
-        {
-            (*iSlaves)->releaseAspect(aspect);
-        }
-    */
 }
 
 void BaseObject::init()
 {
-
-
 	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
 	{
 		if ((*iData)->isRequired() && !(*iData)->isSet())
 		{
-            serr << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
+            msg_error() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
 		}
 	}
 }
@@ -285,7 +265,6 @@ void BaseObject::bwdInit()
 /// Update method called when variables used in precomputation are modified.
 void BaseObject::reinit()
 {
-    //sout<<"WARNING: the reinit method of the object "<<this->getName()<<" does nothing."<<sendl;
 }
 
 /// Save the initial state for later uses in reset()
@@ -312,7 +291,6 @@ void BaseObject::handleTopologyChange(core::topology::Topology* t)
 {
     if (t == this->getContext()->getTopology())
     {
-        //	sout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << sendl;
         handleTopologyChange();
     }
 }
