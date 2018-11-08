@@ -61,10 +61,8 @@ void ProjectiveTransformEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ProjectiveTransformEngine<DataTypes>::update()
+void ProjectiveTransformEngine<DataTypes>::doUpdate()
 {
-    cleanDirty();
-
     helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
     helper::WriteAccessor< Data<VecCoord> > out = f_outputX;
     helper::ReadAccessor< Data<Real> > fdist = focal_distance;

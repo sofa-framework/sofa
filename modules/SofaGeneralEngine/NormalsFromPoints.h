@@ -61,7 +61,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     Data< VecCoord > position; ///< Vertices of the mesh
     Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles; ///< Triangles of the mesh

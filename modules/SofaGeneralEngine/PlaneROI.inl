@@ -285,7 +285,7 @@ bool PlaneROI<DataTypes>::isTetrahedronInPlane(const Tetra& t)
 
 
 template <class DataTypes>
-void PlaneROI<DataTypes>::update()
+void PlaneROI<DataTypes>::doUpdate()
 {
     const helper::vector<Vec10>& vp=planes.getValue();
     if (vp.empty())
@@ -296,10 +296,7 @@ void PlaneROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
-
     const VecCoord* x0 = &f_X0.getValue();
-
-    cleanDirty();
 
     // Write accessor for topological element indices in SPHERE
     SetIndex& indices = *(f_indices.beginWriteOnly());

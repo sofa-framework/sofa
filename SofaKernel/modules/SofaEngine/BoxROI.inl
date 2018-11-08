@@ -512,22 +512,20 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 
 // The update method is called when the engine is marked as dirty.
 template <class DataTypes>
-void BoxROI<DataTypes>::update()
+void BoxROI<DataTypes>::doUpdate()
 {
     if(m_componentstate==ComponentState::Invalid){
-        cleanDirty() ;
         return ;
     }
 
     if(!d_doUpdate.getValue()){
-        cleanDirty() ;
         return ;
     }
 
     const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
 
-    if (alignedBoxes.empty() && orientedBoxes.empty()) { cleanDirty(); return; }
+    if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
 
 
     // Read accessor for input topology
@@ -538,8 +536,6 @@ void BoxROI<DataTypes>::update()
     ReadAccessor< Data<vector<Quad> > > quad = d_quad;
 
     const VecCoord& x0 = d_X0.getValue();
-
-    cleanDirty();
 
     // Write accessor for topological element indices in BOX
     SetIndex& indices = *d_indices.beginWriteOnly();

@@ -79,12 +79,10 @@ void AbstractTransformMatrixEngine::reinit()
  * InvertTransformMatrixEngine
  */
 
-void InvertTransformMatrixEngine::update()
+void InvertTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
-
-    cleanDirty();
 
     /*bool ok = */transformInvertMatrix((*outT), (*inT));
     // TODO print warning if not ok
@@ -106,13 +104,11 @@ void TranslateTransformMatrixEngine::init()
     setDirtyValue();
 }
 
-void TranslateTransformMatrixEngine::update()
+void TranslateTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::ReadAccessor< Data<Vector3> > translation = d_translation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
-
-    cleanDirty();
 
     Matrix4 myT;
     myT.identity();
@@ -137,13 +133,11 @@ void RotateTransformMatrixEngine::init()
     setDirtyValue();
 }
 
-void RotateTransformMatrixEngine::update()
+void RotateTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::ReadAccessor< Data<Vector3> > rotation = d_rotation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
-
-    cleanDirty();
 
     Matrix4 myT;
     myT.identity();
@@ -171,13 +165,11 @@ void ScaleTransformMatrixEngine::init()
     setDirtyValue();
 }
 
-void ScaleTransformMatrixEngine::update()
+void ScaleTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::ReadAccessor< Data<Vector3> > scale = d_scale;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
-
-    cleanDirty();
 
     Matrix4 myT;
     myT.identity();
