@@ -142,6 +142,19 @@ protected:
 
 
 
+    std::string getFileName(const std::string& s)
+    {
+       char sep = '/';
+
+       size_t i = s.rfind(sep, s.length());
+       if (i != std::string::npos)
+       {
+          return(s.substr(i+1, s.length() - i));
+       }
+
+       return s;
+    }
+
     void runRegressionList( const std::string& testDir )
     {
         // lire plugin_test/regression_scene_list -> (file,nb time steps,epsilon)
@@ -189,34 +202,19 @@ protected:
         }
     }
 
-    std::string getFileName(const std::string& s)
-    {
-       char sep = '/';
-
-       size_t i = s.rfind(sep, s.length());
-       if (i != std::string::npos)
-       {
-          return(s.substr(i+1, s.length() - i));
-       }
-
-       return s;
-    }
 
 
-
-    void testTestPath( const std::string& pluginsDirectory )
+    void runRegressionTests( const std::string& directory )
     {
         // pour tous plugins/projets
-        std::vector<std::string> dir;
-        helper::system::FileSystem::listDirectory(pluginsDirectory, dir);
+        std::vector<std::string> dirContents;
+        helper::system::FileSystem::listDirectory(directory, dirContents);
 
-        for (std::vector<std::string>::iterator i = dir.begin(); i != dir.end(); ++i)
+        for ( const std::string& dirContent : dirContents )
         {
-            const std::string pluginPath = pluginsDirectory + "/" + *i;
-
-            if (helper::system::FileSystem::isDirectory(pluginPath))
+            if ( helper::system::FileSystem::isDirectory(directory + "/" + dirContent) )
             {
-                const std::string testDir = pluginPath + "/" + *i + "_test/regression";
+                const std::string testDir = directory + "/" + dirContent + "/" + dirContent + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))
                 {
                     runRegressionList( testDir );
@@ -237,26 +235,36 @@ protected:
 
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
-        // pour tous les emplacements critiques
+        static const std::string regressionsDir = std::string(SOFA_SRC_DIR) + "/applications/regressions";
+        if (helper::system::FileSystem::exists(regressionsDir))
+        {
+            runRegressionTests(regressionsDir);
+            return;
+        }
+
         static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
         if (helper::system::FileSystem::exists(pluginsDir))
-            testTestPath(pluginsDir);
+            runRegressionTests(pluginsDir);
 
         static const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
         if (helper::system::FileSystem::exists(devPluginsDir))
-            testTestPath(devPluginsDir);
+            runRegressionTests(devPluginsDir);
 
         static const std::string projectsDir = std::string(SOFA_SRC_DIR) + "/applications/projects";
         if (helper::system::FileSystem::exists(projectsDir))
-            testTestPath(projectsDir);
+            runRegressionTests(projectsDir);
 
         static const std::string devProjectsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/projects";
         if (helper::system::FileSystem::exists(devProjectsDir))
-            testTestPath(devProjectsDir);
+            runRegressionTests(devProjectsDir);
 
         static const std::string modulesDir = std::string(SOFA_SRC_DIR) + "/modules";
         if (helper::system::FileSystem::exists(modulesDir))
-            testTestPath(modulesDir);
+            runRegressionTests(modulesDir);
+
+        static const std::string kernelModulesDir = std::string(SOFA_SRC_DIR) + "/SofaKernel/modules";
+        if (helper::system::FileSystem::exists(kernelModulesDir))
+            runRegressionTests(kernelModulesDir);
     }
 
 };
