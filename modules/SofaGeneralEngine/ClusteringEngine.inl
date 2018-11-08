@@ -304,7 +304,6 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
-    input_filename.update();
     string fname(this->input_filename.getFullPath());
     if(!fname.compare(loadedFilename)) return true;
 
