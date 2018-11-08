@@ -22,6 +22,8 @@
 #ifndef SOFA_Regression_test_H
 #define SOFA_Regression_test_H
 
+#include <sofa/helper/testing/BaseTest.h>
+
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 
@@ -37,8 +39,29 @@
 #include <SofaValidation/CompareState.h>
 
 #include <SofaTest/Sofa_test.h>
+#include <sofa/helper/system/FileRepository.h>
 
-namespace sofa {
+using sofa::helper::testing::BaseTest;
+
+namespace sofa 
+{
+
+/// a struct to store all info to perform the regression test
+struct RegressionTestData
+{
+    RegressionTestData(const std::string& fileScenePath, const std::string& fileRefPath, unsigned int steps, double epsilon)
+        : fileScenePath(fileScenePath)
+        , fileRefPath(fileRefPath)
+        , steps(steps)
+        , epsilon(epsilon)
+    {}
+
+    std::string fileScenePath;
+    std::string fileRefPath;
+    unsigned int steps;
+    double epsilon;
+};
+
 
 /// To Perform a Regression Test on scenes
 ///
@@ -58,14 +81,25 @@ namespace sofa {
 ///
 /// @author Matthieu Nesme
 /// @date 2015
-class Regression_test: public testing::Test
+class Regression_test: public BaseSimulationTest, public ::testing::WithParamInterface<RegressionTestData>
 {
-
-protected:
-
-    void runRegressionScene( std::string& reference, const std::string& scene, unsigned int steps, double epsilon )
+public:
+    static std::string getTestName(const testing::TestParamInfo<RegressionTestData>& p)
     {
-        msg_info("Regression_test") << "  Testing " << scene;
+        std::string path = p.param.fileScenePath;
+        std::cout << "getTestName: " << path << std::endl;
+
+        std::size_t pos = path.find_last_of("/");      // position of "live" in str
+        std::string str3 = path.substr(pos+1);
+        str3 = str3.substr(0, str3.find_last_of("."));
+
+        return str3;
+    }
+
+
+    void runRegressionScene(RegressionTestData data)
+    {
+        msg_info("Regression_test") << "  Testing " << data.fileScenePath;
 
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
@@ -76,7 +110,7 @@ protected:
         simulation::Simulation* simulation = simulation::getSimulation();
 
         // Load the scene
-        sofa::simulation::Node::SPtr root = simulation->load(scene.c_str());
+        sofa::simulation::Node::SPtr root = simulation->load(data.fileScenePath.c_str());
 
         simulation->init(root.get());
 
@@ -85,12 +119,12 @@ protected:
 
         bool initializing = false;
 
-        if (helper::system::FileSystem::exists(reference) && !helper::system::FileSystem::isDirectory(reference))
+        if (helper::system::FileSystem::exists(data.fileRefPath) && !helper::system::FileSystem::isDirectory(data.fileRefPath))
         {
             // Add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
             sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
 //            compareVisitor.setCreateInMapping(true);
-            compareVisitor.setSceneName(reference);
+            compareVisitor.setSceneName(data.fileRefPath);
             compareVisitor.execute(root.get());
 
             sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
@@ -98,23 +132,23 @@ protected:
         }
         else // create reference
         {
-            msg_warning("Regression_test") << "Non existing reference created: " << reference;
+            msg_warning("Regression_test") << "Non existing reference created: " << data.fileRefPath;
 
             // just to create an empty file to know it is already init
-            std::ofstream filestream(reference.c_str());
+            std::ofstream filestream(data.fileRefPath.c_str());
             filestream.close();
 
             initializing = true;
             sofa::component::misc::WriteStateCreator writeVisitor(sofa::core::ExecParams::defaultInstance());
 //            writeVisitor.setCreateInMapping(true);
-            writeVisitor.setSceneName(reference);
+            writeVisitor.setSceneName(data.fileRefPath);
             writeVisitor.execute(root.get());
 
             sofa::component::misc::WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
             v_write.execute(root.get());
         }
 
-        for( unsigned int i=0 ; i<steps ; ++i )
+        for( unsigned int i=0 ; i<data.steps ; ++i )
         {
             simulation->animate( root.get(), root->getDt() );
         }
@@ -126,12 +160,12 @@ protected:
             result.execute(root.get());
 
             double errorByDof = result.getErrorByDof() / double(result.getNumCompareState());
-            if( errorByDof > epsilon )
+            if( errorByDof > data.epsilon )
             {
-                msg_error("Regression_test") << scene << ":" << msgendl
+                msg_error("Regression_test") << data.fileScenePath << ":" << msgendl
                     << "    TOTALERROR: " << result.getTotalError() << msgendl
                     << "    ERRORBYDOF: " << errorByDof;
-            }
+           }
         }
 
         // Clear and prepare for next scene
@@ -140,22 +174,14 @@ protected:
     }
 
 
+};
 
 
-    std::string getFileName(const std::string& s)
-    {
-       char sep = '/';
-
-       size_t i = s.rfind(sep, s.length());
-       if (i != std::string::npos)
-       {
-          return(s.substr(i+1, s.length() - i));
-       }
-
-       return s;
-    }
-
-    void runRegressionList( const std::string& testDir )
+struct Regression_test_lists
+{
+    std::vector<RegressionTestData> listScenes;
+protected:
+    void runRegressionList(const std::string& testDir)
     {
         // lire plugin_test/regression_scene_list -> (file,nb time steps,epsilon)
         // pour toutes les scenes
@@ -186,7 +212,7 @@ protected:
 
 #ifdef WIN32
                 // Minimize absolute scene path to avoid MAX_PATH problem
-                if(scene.length() > MAX_PATH)
+                if (scene.length() > MAX_PATH)
                 {
                     ADD_FAILURE() << scene << ": path is longer than " << MAX_PATH;
                     continue;
@@ -194,30 +220,30 @@ protected:
                 char buffer[MAX_PATH];
                 GetFullPathNameA(scene.c_str(), MAX_PATH, buffer, nullptr);
                 scene = std::string(buffer);
-                std::replace( scene.begin(), scene.end(), '\\', '/');
+                std::replace(scene.begin(), scene.end(), '\\', '/');
 #endif // WIN32
-
-                runRegressionScene( reference, scene, steps, epsilon );
+                listScenes.push_back(RegressionTestData(scene, reference, steps, epsilon));
+                //runRegressionScene( reference, scene, steps, epsilon );
             }
         }
     }
 
 
 
-    void runRegressionTests( const std::string& directory )
+    void runRegressionTests(const std::string& directory)
     {
         // pour tous plugins/projets
         std::vector<std::string> dirContents;
         helper::system::FileSystem::listDirectory(directory, dirContents);
 
-        for ( const std::string& dirContent : dirContents )
+        for (const std::string& dirContent : dirContents)
         {
-            if ( helper::system::FileSystem::isDirectory(directory + "/" + dirContent) )
+            if (helper::system::FileSystem::isDirectory(directory + "/" + dirContent))
             {
                 const std::string testDir = directory + "/" + dirContent + "/" + dirContent + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))
                 {
-                    runRegressionList( testDir );
+                    runRegressionList(testDir);
                 }
             }
         }
@@ -225,8 +251,9 @@ protected:
 
 
     // Create the context for the scene
-    virtual void SetUp()
+    virtual bool testAll()
     {
+        sofa::helper::system::DataRepository.addFirstPath(std::string(SOFA_SRC_DIR) + "/share");
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
         sofa::component::initComponentGeneral();
@@ -239,7 +266,7 @@ protected:
         if (helper::system::FileSystem::exists(regressionsDir))
         {
             runRegressionTests(regressionsDir);
-            return;
+            return false;
         }
 
         static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
@@ -265,9 +292,31 @@ protected:
         static const std::string kernelModulesDir = std::string(SOFA_SRC_DIR) + "/SofaKernel/modules";
         if (helper::system::FileSystem::exists(kernelModulesDir))
             runRegressionTests(kernelModulesDir);
+
+        return true;
     }
 
+    std::string getFileName(const std::string& s)
+    {
+        char sep = '/';
+
+        size_t i = s.rfind(sep, s.length());
+        if (i != std::string::npos)
+        {
+            return(s.substr(i + 1, s.length() - i));
+        }
+
+        return s;
+    }
 };
+
+static struct Regression_Sofa_tests : public Regression_test_lists
+{
+    Regression_Sofa_tests()
+    {
+        testAll();
+    }
+} regression_tests;
 
 
 
