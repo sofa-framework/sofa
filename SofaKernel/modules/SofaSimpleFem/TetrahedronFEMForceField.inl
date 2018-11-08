@@ -69,11 +69,9 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
-    #ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
     , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
-    #endif
     , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
 {
@@ -415,9 +413,6 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
             J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
-    //         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
-    //         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
-
 
     // eventually remove a part of the strain to simulate plasticity
     if( _plasticMaxThreshold.getValue() > 0 )
@@ -425,11 +420,9 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
         VoigtTensor elasticStrain = JtD; // JtD is the total strain
         elasticStrain -= plasticStrain; // totalStrain = elasticStrain + plasticStrain
 
-        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
         if( elasticStrain.norm2() > _plasticYieldThreshold.getValue()*_plasticYieldThreshold.getValue() )
             plasticStrain += _plasticCreep.getValue() * elasticStrain;
 
-        // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
         Real plasticStrainNorm2 = plasticStrain.norm2();
         if( plasticStrainNorm2 > _plasticMaxThreshold.getValue()*_plasticMaxThreshold.getValue() )
             plasticStrain *= _plasticMaxThreshold.getValue() / helper::rsqrt( plasticStrainNorm2 );
@@ -742,10 +735,7 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
                 MaterialStiffness K = materialsStiffnesses[i];
                 StrainDisplacement J = strainDisplacements[i];
 
-#if 0
-                F = J*(K*(J.multTranspose(D)));
-#else
-
+                /// The following may be doing F = J*(K*(J.multTranspose(D))) ?
                 VoigtTensor JtD;
                 JtD[0] = J[ 0][0]*D[ 0]+ J[ 3][0]*D[ 3]+ J[ 6][0]*D[ 6]+ J[ 9][0]*D[ 9];
                 JtD[1] = J[ 1][1]*D[ 1]+ J[ 4][1]*D[ 4]+ J[ 7][1]*D[ 7]+ J[10][1]*D[10];
@@ -779,8 +769,6 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
                 F[ 9] = J[ 9][0]*KJtD[0]+ J[ 9][3]*KJtD[3]+ J[ 9][5]*KJtD[5];
                 F[10] = J[10][1]*KJtD[1]+ J[10][3]*KJtD[3]+ J[10][4]*KJtD[4];
                 F[11] = J[11][2]*KJtD[2]+ J[11][4]*KJtD[4]+ J[11][5]*KJtD[5];
-
-#endif
 
                 // Compute potentialEnergy
                 energyPotential += dot(Deriv( F[0], F[1], F[2] ) ,-Deriv( D[0], D[1], D[2]));
@@ -1793,7 +1781,6 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->setLightingEnabled(false);
 
-#ifdef SIMPLEFEM_COLORMAP
     if (_showVonMisesStressPerNode.getValue()) {
         std::vector<defaulttype::Vec4f> nodeColors(x.size());
         std::vector<defaulttype::Vector3> pts(x.size());
@@ -1804,7 +1791,6 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         }
         vparams->drawTool()->drawPoints(pts, 10, nodeColors);
     }
-#endif
 
     if (edges)
     {
@@ -1827,13 +1813,11 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             points[0].push_back(pc);
             points[0].push_back(pd);
 
-            // 		glColor4f(0,0.5,1,1);
             points[1].push_back(pa);
             points[1].push_back(pc);
             points[1].push_back(pb);
             points[1].push_back(pd);
 
-            // 		glColor4f(0,1,1,1);
             points[2].push_back(pa);
             points[2].push_back(pd);
             points[2].push_back(pb);
@@ -1852,21 +1836,16 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawLines(points[2],1,color4 );
 
                 for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
-            } else {
-#ifdef SIMPLEFEM_COLORMAP
+            } else
+            {
                 if (_computeVonMisesStress.getValue() > 0)
                 {
                     for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
                 }
-#endif
             }
         }
 
-        if(!heterogeneous
-        #ifdef SIMPLEFEM_COLORMAP
-                && _computeVonMisesStress.getValue() == 0
-        #endif
-                )
+        if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
         {
             vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
             vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
@@ -1921,9 +1900,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawTriangles(points[2],color3 );
                 vparams->drawTool()->drawTriangles(points[3],color4 );
 
-                for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
-            } else {
-#ifdef SIMPLEFEM_COLORMAP
+                for(unsigned int i=0 ; i<4 ; i++)
+                    points[i].clear();
+            } else
+            {
                 if (_computeVonMisesStress.getValue() > 0) {
                     helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
                     defaulttype::Vec4f col = evalColor(vM[i]);
@@ -1936,22 +1916,17 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
                     for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
                 }
-#endif
             }
-
         }
 
-        if(!heterogeneous
-        #ifdef SIMPLEFEM_COLORMAP
-                && _computeVonMisesStress.getValue() == 0
-        #endif
-                )
+        if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
         {
             vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
             vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
             vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
             vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
         }
+
     }
 
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
@@ -1984,7 +1959,6 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawLines(points[0], 5, defaulttype::Vec<4,float>(1,0,0,1));
         vparams->drawTool()->drawLines(points[1], 5, defaulttype::Vec<4,float>(0,1,0,1));
         vparams->drawTool()->drawLines(points[2], 5, defaulttype::Vec<4,float>(0,0,1,1));
-
     }
 }
 
@@ -2612,7 +2586,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     if (maxVM < prevMaxStress)
         maxVM = prevMaxStress;
 
-#ifdef SIMPLEFEM_COLORMAP
     maxVM*=_showStressAlpha.getValue();
     vonMisesStressColors.resize(_mesh->getNbPoints());
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
@@ -2639,7 +2612,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
         }
     }
-#endif // SIMPLEFEM_COLORMAP
 }
 
 

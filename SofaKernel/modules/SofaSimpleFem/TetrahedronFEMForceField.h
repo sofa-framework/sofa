@@ -32,10 +32,6 @@
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
 
-// FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
-#define SIMPLEFEM_COLORMAP
-#define SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-
 #include <sofa/helper/ColorMap.h>
 
 // corotational tetrahedron from
@@ -190,7 +186,6 @@ public:
     Data<std::string> f_method; ///< the computation method of the displacements
 
     Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
-    //Data<Real> _youngModulus; ///< FEM Young Modulus
     Data<VecReal > _youngModulus; ///< FEM Young Modulus
     Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
@@ -226,15 +221,13 @@ public:
     Data<helper::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
     Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
     
-#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
     helper::ColorMap m_VonMisesColorMap;
-
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
     Data<bool> _showVonMisesStressPerNode; ///< draw points  showing vonMises stress interpolated in nodes
-#endif
+
     /// Suppress field for save as function
-    Data < bool > isToPrint;
+    Data<bool>  isToPrint;
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
     helper::vector<defaulttype::Vec<6,Real> > elemDisplacements;
