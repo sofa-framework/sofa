@@ -41,19 +41,19 @@ SOFA_DECL_CLASS(HexahedronFEMForceField)
 
 // Register in the Factory
 int HexahedronFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
-#ifndef SOFA_FLOAT
-        .add< HexahedronFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
         .add< HexahedronFEMForceField<Vec3fTypes> >()
+#endif
+#ifdef SOFA_WITH_DOUBLE
+        .add< HexahedronFEMForceField<Vec3dTypes> >()
 #endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3fTypes>;
+#endif
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3dTypes>;
 #endif
 
 } // namespace forcefield
