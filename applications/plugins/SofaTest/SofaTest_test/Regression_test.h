@@ -251,9 +251,8 @@ protected:
 
 
     // Create the context for the scene
-    virtual bool testAll()
+    virtual void testAll()
     {
-        sofa::helper::system::DataRepository.addFirstPath(std::string(SOFA_SRC_DIR) + "/share");
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
         sofa::component::initComponentGeneral();
@@ -262,12 +261,9 @@ protected:
 
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
-        static const std::string regressionsDir = std::string(SOFA_SRC_DIR) + "/applications/regressions";
+        static const std::string regressionsDir = std::string(SOFA_SRC_DIR) + "/applications";
         if (helper::system::FileSystem::exists(regressionsDir))
-        {
             runRegressionTests(regressionsDir);
-            return false;
-        }
 
         static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
         if (helper::system::FileSystem::exists(pluginsDir))
@@ -292,8 +288,6 @@ protected:
         static const std::string kernelModulesDir = std::string(SOFA_SRC_DIR) + "/SofaKernel/modules";
         if (helper::system::FileSystem::exists(kernelModulesDir))
             runRegressionTests(kernelModulesDir);
-
-        return true;
     }
 
     std::string getFileName(const std::string& s)
