@@ -28,21 +28,17 @@ namespace sofa
 namespace core
 {
 
-
-
-
-
 void DataTracker::trackData( const objectmodel::BaseData& data )
 {
     m_dataTrackers[&data] = data.getCounter();
 }
 
-bool DataTracker::isDirty( const objectmodel::BaseData& data )
+bool DataTracker::hasChanged( const objectmodel::BaseData& data )
 {
     return m_dataTrackers[&data] != data.getCounter();
 }
 
-bool DataTracker::isDirty()
+bool DataTracker::hasChanged()
 {
     for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
         if( it->second != it->first->getCounter() ) return true;

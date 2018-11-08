@@ -44,10 +44,10 @@ namespace core
 
         /// Was the tracked Data dirtied since last update?
         /// @warning data must be a tracked Data @see trackData
-        bool isDirty( const objectmodel::BaseData& data );
+        bool hasChanged( const objectmodel::BaseData& data );
 
         /// Was one of the tracked Data dirtied since last update?
-        bool isDirty();
+        bool hasChanged();
 
         /// comparison point is cleaned for the specified tracked Data
         /// @warning data must be a tracked Data @see trackData
