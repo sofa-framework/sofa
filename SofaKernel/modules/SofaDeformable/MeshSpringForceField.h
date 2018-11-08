@@ -61,7 +61,6 @@ protected:
     Data< Real >  cubesStiffness; ///< Stiffness for the Cubes
     Data< Real >  cubesDamping; ///< Damping for the Cubes
     Data< bool >  noCompression; ///< Only consider elongation
-    Data< bool  > d_draw; ///< Activation of draw
     Data< Real >  d_drawMinElongationRange; ///< Min range of elongation (red eongation - blue neutral - green compression)
     Data< Real >  d_drawMaxElongationRange; ///< Max range of elongation (red eongation - blue neutral - green compression)
     Data< Real >  d_drawSpringSize; ///< Size of drawed lines
@@ -84,7 +83,6 @@ protected:
         , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
         , cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
         , noCompression( initData(&noCompression, false, "noCompression", "Only consider elongation", false))
-        , d_draw(initData(&d_draw, false, "draw","Activation of draw"))
         , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
         , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
         , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
