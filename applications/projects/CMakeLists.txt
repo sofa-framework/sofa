@@ -19,4 +19,6 @@ sofa_add_application(meshconv meshconv OFF)
 sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 sofa_add_application(SofaGuiGlut SofaGuiGlut OFF)
 
+sofa_add_application(Regression_test Regression_test OFF)
+
 sofa_add_application(runSofa runSofa ON)
