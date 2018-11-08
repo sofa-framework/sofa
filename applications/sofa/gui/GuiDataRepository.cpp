@@ -35,7 +35,7 @@ namespace sofa
 namespace gui
 {
 
-FileRepository GuiDataRepository("GUI_DATA_PATH", Utils::getSofaPathTo("share/sofa/gui/common/resources").c_str());
+FileRepository GuiDataRepository("GUI_DATA_PATH", 0, Utils::getSofaPathTo("etc/SofaGuiQt.ini").c_str());
 
 }
 }
