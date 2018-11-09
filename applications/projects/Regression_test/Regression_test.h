@@ -47,9 +47,9 @@ namespace sofa
 {
 
 /// a struct to store all info to perform the regression test
-struct RegressionTestData
+struct RegressionSceneTest_Data
 {
-    RegressionTestData(const std::string& fileScenePath, const std::string& fileRefPath, unsigned int steps, double epsilon)
+    RegressionSceneTest_Data(const std::string& fileScenePath, const std::string& fileRefPath, unsigned int steps, double epsilon)
         : fileScenePath(fileScenePath)
         , fileRefPath(fileRefPath)
         , steps(steps)
@@ -81,105 +81,21 @@ struct RegressionTestData
 ///
 /// @author Matthieu Nesme
 /// @date 2015
-class Regression_test: public BaseSimulationTest, public ::testing::WithParamInterface<RegressionTestData>
+class RegressionScene_test: public BaseSimulationTest, public ::testing::WithParamInterface<RegressionSceneTest_Data>
 {
 public:
-    static std::string getTestName(const testing::TestParamInfo<RegressionTestData>& p)
-    {
-        std::string path = p.param.fileScenePath;
-        std::cout << "getTestName: " << path << std::endl;
+    /// Method that given the RegressionSceneTest_Data will return the name of the file tested without the path neither the extension
+    static std::string getTestName(const testing::TestParamInfo<RegressionSceneTest_Data>& p);
 
-        std::size_t pos = path.find_last_of("/");      // position of "live" in str
-        std::string str3 = path.substr(pos+1);
-        str3 = str3.substr(0, str3.find_last_of("."));
-
-        return str3;
-    }
-
-
-    void runRegressionScene(RegressionTestData data)
-    {
-        msg_info("Regression_test") << "  Testing " << data.fileScenePath;
-
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
-
-        simulation::Simulation* simulation = simulation::getSimulation();
-
-        // Load the scene
-        sofa::simulation::Node::SPtr root = simulation->load(data.fileScenePath.c_str());
-
-        simulation->init(root.get());
-
-        // TODO lancer visiteur pour dumper MO
-        // comparer ce dump avec le fichier sceneName.regressionreference
-
-        bool initializing = false;
-
-        if (helper::system::FileSystem::exists(data.fileRefPath) && !helper::system::FileSystem::isDirectory(data.fileRefPath))
-        {
-            // Add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
-            sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
-//            compareVisitor.setCreateInMapping(true);
-            compareVisitor.setSceneName(data.fileRefPath);
-            compareVisitor.execute(root.get());
-
-            sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
-            v_read.execute(root.get());
-        }
-        else // create reference
-        {
-            msg_warning("Regression_test") << "Non existing reference created: " << data.fileRefPath;
-
-            // just to create an empty file to know it is already init
-            std::ofstream filestream(data.fileRefPath.c_str());
-            filestream.close();
-
-            initializing = true;
-            sofa::component::misc::WriteStateCreator writeVisitor(sofa::core::ExecParams::defaultInstance());
-//            writeVisitor.setCreateInMapping(true);
-            writeVisitor.setSceneName(data.fileRefPath);
-            writeVisitor.execute(root.get());
-
-            sofa::component::misc::WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
-            v_write.execute(root.get());
-        }
-
-        for( unsigned int i=0 ; i<data.steps ; ++i )
-        {
-            simulation->animate( root.get(), root->getDt() );
-        }
-
-        if( !initializing )
-        {
-            // Read the final error: the summation of all the error made at each time step
-            sofa::component::misc::CompareStateResult result(sofa::core::ExecParams::defaultInstance());
-            result.execute(root.get());
-
-            double errorByDof = result.getErrorByDof() / double(result.getNumCompareState());
-            if( errorByDof > data.epsilon )
-            {
-                msg_error("Regression_test") << data.fileScenePath << ":" << msgendl
-                    << "    TOTALERROR: " << result.getTotalError() << msgendl
-                    << "    ERRORBYDOF: " << errorByDof;
-           }
-        }
-
-        // Clear and prepare for next scene
-        simulation->unload(root.get());
-        root.reset();
-    }
-
-
+    /// 
+    void runRegressionTest(RegressionSceneTest_Data data);
+    
 };
 
 
 struct Regression_test_lists
 {
-    std::vector<RegressionTestData> listScenes;
+    std::vector<RegressionSceneTest_Data> listScenes;
 protected:
     void runRegressionList(const std::string& testDir)
     {
@@ -222,7 +138,7 @@ protected:
                 scene = std::string(buffer);
                 std::replace(scene.begin(), scene.end(), '\\', '/');
 #endif // WIN32
-                listScenes.push_back(RegressionTestData(scene, reference, steps, epsilon));
+                listScenes.push_back(RegressionSceneTest_Data(scene, reference, steps, epsilon));
                 //runRegressionScene( reference, scene, steps, epsilon );
             }
         }
