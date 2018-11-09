@@ -1,5 +1,4 @@
-
-#include "Regression_test.h"
+#include "RegressionScene_test.h"
 
 
 namespace sofa 

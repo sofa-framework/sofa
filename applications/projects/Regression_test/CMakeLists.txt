@@ -4,11 +4,12 @@ project(Regression_test)
 find_package(SofaFramework)
 
 set(HEADER_FILES
-    Regression_test.h
+    RegressionScene_list.h
+	RegressionScene_test.h
 )
 
 set(SOURCE_FILES
-    Regression_test.cpp
+    RegressionScene_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})

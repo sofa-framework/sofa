@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_Regression_test_H
-#define SOFA_Regression_test_H
+#ifndef SOFA_RegressionScene_list_H
+#define SOFA_RegressionScene_list_H
 
 #include <sofa/helper/testing/BaseTest.h>
 
@@ -63,38 +63,9 @@ struct RegressionSceneTest_Data
 };
 
 
-/// To Perform a Regression Test on scenes
-///
-/// A scene is run for a given number of steps and the state (position/velocity) of every independent dofs is stored in files. These files must be added to the repository.
-/// At each commit, a test runs the scenes again for the same given number of steps. Then the independent states are compared to the references stored in the files.
-///
-/// The reference files are generated when running the test for the first time on a scene.
-/// @warning These newly created reference files must be added to the repository.
-/// If the result of the simulation changed voluntarily, these files must be manually deleted (locally) so they can be created again (by running the test).
-/// Their modifications must be pushed to the repository.
-///
-/// Scene tested for regression must be listed in a file "list.txt" located in a "regression" directory in the test directory ( e.g. myplugin/myplugin_test/regression/list.txt)
-/// Each line of the "list.txt" file must contain: a local path to the scene, the number of simulation steps to run, and a numerical epsilon for comparison.
-/// e.g. "gravity.scn 5 1e-10" to run the scene "regression/gravity.scn" for 5 time steps, and the state difference must be smaller than 1e-10
-///
-/// As an example, have a look to SofaTest_test/regression
-///
-/// @author Matthieu Nesme
-/// @date 2015
-class RegressionScene_test: public BaseSimulationTest, public ::testing::WithParamInterface<RegressionSceneTest_Data>
+class RegressionScene_list
 {
-public:
-    /// Method that given the RegressionSceneTest_Data will return the name of the file tested without the path neither the extension
-    static std::string getTestName(const testing::TestParamInfo<RegressionSceneTest_Data>& p);
-
-    /// 
-    void runRegressionTest(RegressionSceneTest_Data data);
-    
-};
-
-
-struct Regression_test_lists
-{
+public :
     std::vector<RegressionSceneTest_Data> listScenes;
 protected:
     void runRegressionList(const std::string& testDir)
@@ -220,17 +191,8 @@ protected:
     }
 };
 
-static struct Regression_Sofa_tests : public Regression_test_lists
-{
-    Regression_Sofa_tests()
-    {
-        testAll();
-    }
-} regression_tests;
-
-
 
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_RegressionScene_list_H
