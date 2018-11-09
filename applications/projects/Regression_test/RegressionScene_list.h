@@ -22,26 +22,13 @@
 #ifndef SOFA_RegressionScene_list_H
 #define SOFA_RegressionScene_list_H
 
-#include <sofa/helper/testing/BaseTest.h>
-
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <sofa/helper/testing/BaseTest.h>
 
-#include <SofaExporter/WriteState.h>
-#include <SofaGeneralLoader/ReadState.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaValidation/CompareState.h>
-
+#include <fstream>
 #include <SofaTest/Sofa_test.h>
-#include <sofa/helper/system/FileRepository.h>
-
-using sofa::helper::testing::BaseTest;
 
 namespace sofa 
 {
@@ -62,13 +49,21 @@ struct RegressionSceneTest_Data
     double epsilon;
 };
 
-
+/**
+    This class will parse a given list of path (project env paths) and search for list of scene files to collect
+    for future regression test.
+    Main method is @sa collectScenesFromPaths
+    All collected data will be store inside the vector @sa m_listScenes
+*/
 class RegressionScene_list
 {
-public :
-    std::vector<RegressionSceneTest_Data> listScenes;
+public:
+    /// List of regression Data to perform @sa RegressionSceneTest_Data
+    std::vector<RegressionSceneTest_Data> m_listScenes;
+
 protected:
-    void runRegressionList(const std::string& testDir)
+    /// Method called by collectScenesFromDir to search specific regression file list inside a directory
+    void collectScenesFromList(const std::string& testDir)
     {
         // lire plugin_test/regression_scene_list -> (file,nb time steps,epsilon)
         // pour toutes les scenes
@@ -109,15 +104,15 @@ protected:
                 scene = std::string(buffer);
                 std::replace(scene.begin(), scene.end(), '\\', '/');
 #endif // WIN32
-                listScenes.push_back(RegressionSceneTest_Data(scene, reference, steps, epsilon));
+                m_listScenes.push_back(RegressionSceneTest_Data(scene, reference, steps, epsilon));
                 //runRegressionScene( reference, scene, steps, epsilon );
             }
         }
     }
 
 
-
-    void runRegressionTests(const std::string& directory)
+    /// Method called by @sa collectScenesFromPaths to loop on the subdirectories to find regression file list
+    void collectScenesFromDir(const std::string& directory)
     {
         // pour tous plugins/projets
         std::vector<std::string> dirContents;
@@ -130,51 +125,43 @@ protected:
                 const std::string testDir = directory + "/" + dirContent + "/" + dirContent + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))
                 {
-                    runRegressionList(testDir);
+                    collectScenesFromList(testDir);
                 }
             }
         }
     }
 
 
-    // Create the context for the scene
-    virtual void testAll()
+    /// Main method to start the parsing of regression file list on specific Sofa src paths
+    virtual void collectScenesFromPaths()
     {
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
-
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
         static const std::string regressionsDir = std::string(SOFA_SRC_DIR) + "/applications";
         if (helper::system::FileSystem::exists(regressionsDir))
-            runRegressionTests(regressionsDir);
+            collectScenesFromDir(regressionsDir);
 
         static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
         if (helper::system::FileSystem::exists(pluginsDir))
-            runRegressionTests(pluginsDir);
+            collectScenesFromDir(pluginsDir);
 
         static const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
         if (helper::system::FileSystem::exists(devPluginsDir))
-            runRegressionTests(devPluginsDir);
+            collectScenesFromDir(devPluginsDir);
 
         static const std::string projectsDir = std::string(SOFA_SRC_DIR) + "/applications/projects";
         if (helper::system::FileSystem::exists(projectsDir))
-            runRegressionTests(projectsDir);
+            collectScenesFromDir(projectsDir);
 
         static const std::string devProjectsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/projects";
         if (helper::system::FileSystem::exists(devProjectsDir))
-            runRegressionTests(devProjectsDir);
+            collectScenesFromDir(devProjectsDir);
 
         static const std::string modulesDir = std::string(SOFA_SRC_DIR) + "/modules";
         if (helper::system::FileSystem::exists(modulesDir))
-            runRegressionTests(modulesDir);
+            collectScenesFromDir(modulesDir);
 
         static const std::string kernelModulesDir = std::string(SOFA_SRC_DIR) + "/SofaKernel/modules";
         if (helper::system::FileSystem::exists(kernelModulesDir))
-            runRegressionTests(kernelModulesDir);
+            collectScenesFromDir(kernelModulesDir);
     }
 
     std::string getFileName(const std::string& s)

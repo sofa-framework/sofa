@@ -19,7 +19,7 @@ std::string RegressionScene_test::getTestName(const testing::TestParamInfo<Regre
 }
 
 
-void RegressionScene_test::runRegressionTest(RegressionSceneTest_Data data)
+void RegressionScene_test::runRegressionStateTest(RegressionSceneTest_Data data)
 {
     msg_info("Regression_test") << "  Testing " << data.fileScenePath;
 
@@ -100,10 +100,10 @@ void RegressionScene_test::runRegressionTest(RegressionSceneTest_Data data)
 
 INSTANTIATE_TEST_CASE_P(regression,
     RegressionScene_test,
-    ::testing::ValuesIn(regression_tests.listScenes),
+    ::testing::ValuesIn(regressionState_tests.m_listScenes),
     RegressionScene_test::getTestName);
 
-TEST_P(RegressionScene_test, all_tests) { runRegressionTest(GetParam()); }
+TEST_P(RegressionScene_test, all_tests) { runRegressionStateTest(GetParam()); }
 
 
 } // namespace sofa

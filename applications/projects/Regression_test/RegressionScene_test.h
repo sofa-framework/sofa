@@ -71,18 +71,19 @@ public:
     /// Method that given the RegressionSceneTest_Data will return the name of the file tested without the path neither the extension
     static std::string getTestName(const testing::TestParamInfo<RegressionSceneTest_Data>& p);
 
-    /// 
-    void runRegressionTest(RegressionSceneTest_Data data);
-    
+    /// Method to really perfom the test and compare the states vector between current simulation and reference file.
+    void runRegressionStateTest(RegressionSceneTest_Data data);
 };
 
-static struct Regression_Sofa_tests : public RegressionScene_list
+
+/// Structure creating and storing the RegressionSceneTest_Data from Sofa src paths as a list for gtest 
+static struct RegressionStateScenes_list : public RegressionScene_list
 {
-    Regression_Sofa_tests()
+    RegressionStateScenes_list()
     {
-        testAll();
+        collectScenesFromPaths();
     }
-} regression_tests;
+} regressionState_tests;
 
 
 
