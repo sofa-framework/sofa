@@ -91,6 +91,11 @@ namespace loader
     class BaseLoader;
 } // namespace loader
 } // namespace core
+namespace simulation
+{
+    class Visitor;
+    class Node;
+} // namespace simulation
 } // namespace sofa
 
 // VisitorScheduler
@@ -110,6 +115,16 @@ namespace core
 
 namespace objectmodel
 {
+
+/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
+/// Indicate the state of an object. Whenever a datafield changes, the state becomes Invalid, until the object updates its internal logic accordingly (through the call to the reinit() method).
+enum class ComponentState {
+    Undefined, /// Requires a call to init()
+    Valid, /// Component is Ready, should behave as expected
+    Dirty, /// ! Component is Ready, but might require a call to reinit() to take into account datafield changes
+    Invalid /// Something happened, a call to reinit() is required
+};
+
 
 /**
  *  \brief Base class for everything
@@ -459,6 +474,18 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
+    /// Queries the component's state
+    ComponentState getComponentState() const { return m_componentstate ; }
+    /// sets the component's state. Should only be called by init/reinit Visitors, and data dependency graph propagation
+    void setComponentState(const ComponentState& state) { m_componentstate = state; }
+    /// Returns whether the component is in a valid OR Unspecified state
+    bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
+
+protected:
+    /// The state flag used to know whether the object's internal logic should be recomputed because of a change in a data field.
+    ComponentState m_componentstate { ComponentState::Undefined } ;
+
+
     /// @name casting
     ///   trivial cast to a few base components
     ///   through virtual functions
@@ -466,6 +493,7 @@ public:
     ///   must be specialized in each type implementation to return a pointer of this type
     /// @{
     ///
+
 public:
 
 
