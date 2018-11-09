@@ -35,6 +35,13 @@ using sofa::core::ObjectCreator ;
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::countingmessagehandler::CountingMessageHandler;
+#include <sofa/helper/logging/MessageDispatcher.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::Message;
+using sofa::core::objectmodel::ComponentState;
+
 using sofa::core::objectmodel::BaseObject;
 
 static BaseObject* get_baseobject(PyObject* self) {
@@ -45,21 +52,58 @@ static BaseObject* get_baseobject(PyObject* self) {
 static PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj = get_baseobject( self );
+    CountingMessageHandler* counter = new CountingMessageHandler();
+    int isInvalid = counter->getMessageCountFor(Message::Error);
+    MessageDispatcher::addHandler(counter);
+
     obj->init();
+    MessageDispatcher::rmHandler(counter);
+    isInvalid = counter->getMessageCountFor(Message::Error) - isInvalid;
+    delete counter;
+
+    if (isInvalid)
+        node->setComponentState(ComponentState::Invalid);
+    else
+        node->setComponentState(ComponentState::Valid);
     Py_RETURN_NONE;
 }
 
 static PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj = get_baseobject( self );
+    CountingMessageHandler* counter = new CountingMessageHandler();
+    int isInvalid = counter->getMessageCountFor(Message::Error);
+    MessageDispatcher::addHandler(counter);
+
     obj->bwdInit();
+    MessageDispatcher::rmHandler(counter);
+    isInvalid = counter->getMessageCountFor(Message::Error) - isInvalid;
+    delete counter;
+
+    if (isInvalid)
+        node->setComponentState(ComponentState::Invalid);
+    else
+        node->setComponentState(ComponentState::Valid);
     Py_RETURN_NONE;
 }
 
 static PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj = get_baseobject( self );
+
+    CountingMessageHandler* counter = new CountingMessageHandler();
+    int isInvalid = counter->getMessageCountFor(Message::Error);
+    MessageDispatcher::addHandler(counter);
+
     obj->reinit();
+    MessageDispatcher::rmHandler(counter);
+    isInvalid = counter->getMessageCountFor(Message::Error) - isInvalid;
+    delete counter;
+
+    if (isInvalid)
+        node->setComponentState(ComponentState::Invalid);
+    else
+        node->setComponentState(ComponentState::Valid);
     Py_RETURN_NONE;
 }
 
