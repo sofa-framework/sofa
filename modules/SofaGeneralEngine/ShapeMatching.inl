@@ -131,7 +131,7 @@ void ShapeMatching<DataTypes>::doUpdate()
     if(!nbc || !nbp  || !currentPositions.size()) return;
 
     //if mechanical state or cluster have changed, we must compute again xcm0
-    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || m_dataTracker.isDirty(this->cluster))
+    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || m_dataTracker.hasChanged(this->cluster))
     {
         dmsg_info() <<"shape matching: update Xcm0" ;
 
