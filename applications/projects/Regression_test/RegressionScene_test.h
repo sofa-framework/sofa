@@ -81,7 +81,7 @@ static struct RegressionStateScenes_list : public RegressionScene_list
 {
     RegressionStateScenes_list()
     {
-        collectScenesFromPaths();
+        collectScenesFromPaths("list.txt");
     }
 } regressionState_tests;
 

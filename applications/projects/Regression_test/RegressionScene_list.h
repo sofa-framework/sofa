@@ -58,6 +58,9 @@ struct RegressionSceneTest_Data
 class RegressionScene_list
 {
 public:
+    /// name of the file list 
+    std::string m_listFilename;
+
     /// List of regression Data to perform @sa RegressionSceneTest_Data
     std::vector<RegressionSceneTest_Data> m_listScenes;
 
@@ -68,7 +71,7 @@ protected:
         // lire plugin_test/regression_scene_list -> (file,nb time steps,epsilon)
         // pour toutes les scenes
 
-        const std::string regression_scene_list = testDir + "/list.txt";
+        const std::string regression_scene_list = testDir + "/" + m_listFilename;
 
         if (helper::system::FileSystem::exists(regression_scene_list) && !helper::system::FileSystem::isDirectory(regression_scene_list))
         {
@@ -89,7 +92,7 @@ protected:
                 lineStream >> steps;
                 lineStream >> epsilon;
 
-                scene = testDir + "/" + scene;
+                scene = std::string(SOFA_SRC_DIR) + "/" + scene;
                 std::string reference = testDir + "/" + getFileName(scene) + ".reference";
 
 #ifdef WIN32
@@ -105,7 +108,6 @@ protected:
                 std::replace(scene.begin(), scene.end(), '\\', '/');
 #endif // WIN32
                 m_listScenes.push_back(RegressionSceneTest_Data(scene, reference, steps, epsilon));
-                //runRegressionScene( reference, scene, steps, epsilon );
             }
         }
     }
@@ -133,8 +135,10 @@ protected:
 
 
     /// Main method to start the parsing of regression file list on specific Sofa src paths
-    virtual void collectScenesFromPaths()
+    virtual void collectScenesFromPaths(const std::string& listFilename)
     {
+        m_listFilename = listFilename;
+
         static const std::string regressionsDir = std::string(SOFA_SRC_DIR) + "/applications";
         if (helper::system::FileSystem::exists(regressionsDir))
             collectScenesFromDir(regressionsDir);
