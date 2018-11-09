@@ -73,8 +73,9 @@ void DDGNode::setDirtyValue(const core::ExecParams* params)
         if (owner)
             owner->sout << "Data " << getName() << " is now dirty." << owner->sendl;
 #endif
-        setDirtyOutputs(params);
     }
+    getOwner()->setComponentState(ComponentState::Dirty);
+    setDirtyOutputs(params);
 }
 
 void DDGNode::setDirtyOutputs(const core::ExecParams* params)
@@ -103,8 +104,15 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
             owner->sout << "Data " << getName() << " has been updated." << owner->sendl;
 #endif
 
+
         cleanDirtyOutputsOfInputs(params);
     }
+    bool isClean = true;
+    for (BaseData* field : getOwner()->getDataFields())
+        if (field->isDirty())
+            isClean = false;
+    if (isClean)
+        getOwner()->setComponentState(ComponentState::Valid);
 }
 
 

@@ -49,13 +49,7 @@ namespace objectmodel
 class Event;
 class BaseNode;
 
-/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
-/// Indicate the state of an object.
-enum class ComponentState {
-    Undefined,
-    Valid,
-    Invalid
-};
+
 
 /**
  *  \brief Base class for simulation components.
@@ -450,12 +444,7 @@ public:
     /// Return the full path name of this object
     virtual std::string getPathName() const;
 
-    ComponentState getComponentState() const { return m_componentstate ; }
-    bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
-
 protected:
-    ComponentState m_componentstate { ComponentState::Undefined } ;
-
     SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
     LinkSlaves l_slaves;
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;

@@ -34,7 +34,12 @@
 #endif
 
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::Message ;
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::countingmessagehandler::CountingMessageHandler;
+#include <sofa/helper/logging/MessageDispatcher.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::Message;
+using sofa::core::objectmodel::ComponentState;
 
 
 #include <iostream>
@@ -546,7 +551,20 @@ void ModifyObject::updateValues()
         {
             if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
             {
+                CountingMessageHandler* counter = new CountingMessageHandler();
+                int isInvalid = counter->getMessageCountFor(Message::Error);
+                MessageDispatcher::addHandler(counter);
+
                 obj->reinit();
+                MessageDispatcher::rmHandler(counter);
+                isInvalid = counter->getMessageCountFor(Message::Error) - isInvalid;
+                delete counter;
+
+                if (isInvalid)
+                    node->setComponentState(ComponentState::Invalid);
+                else
+                    node->setComponentState(ComponentState::Valid);
+
             }
             else if (simulation::Node *n = dynamic_cast< simulation::Node *>(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
         }

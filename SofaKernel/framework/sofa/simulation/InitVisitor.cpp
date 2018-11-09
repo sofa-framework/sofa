@@ -26,6 +26,13 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/BoundingBox.h>
 
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::countingmessagehandler::CountingMessageHandler;
+#include <sofa/helper/logging/MessageDispatcher.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::Message;
+using sofa::core::objectmodel::ComponentState;
+
 //#include "MechanicalIntegration.h"
 
 namespace sofa
@@ -37,6 +44,9 @@ namespace simulation
 
 Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
 {
+    CountingMessageHandler* counter = new CountingMessageHandler();
+    int isInvalid = counter->getMessageCountFor(Message::Error);
+    MessageDispatcher::addHandler(counter);
     if (!rootNode) rootNode=node;
 
     node->initialize();
@@ -52,12 +62,25 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
         nodeBBox->include(node->object[i]->f_bbox.getValue(params));
     }
     node->f_bbox.endEdit(params);
+    MessageDispatcher::rmHandler(counter);
+    isInvalid = counter->getMessageCountFor(Message::Error) - isInvalid;
+    delete counter;
+
+    if (isInvalid)
+        node->setComponentState(ComponentState::Invalid);
+    else
+        node->setComponentState(ComponentState::Valid);
+
     return RESULT_CONTINUE;
 }
 
 
 void InitVisitor::processNodeBottomUp(simulation::Node* node)
 {
+    CountingMessageHandler* counter = new CountingMessageHandler();
+    int isInvalid = counter->getMessageCountFor(Message::Error);
+    MessageDispatcher::addHandler(counter);
+
     // init all the components in reverse order
     node->setDefaultVisualContextValue();
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
@@ -70,6 +93,16 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 
     node->f_bbox.endEdit(params);
     node->bwdInit();
+
+    MessageDispatcher::rmHandler(counter);
+    isInvalid = counter->getMessageCountFor(Message::Error) - isInvalid;
+    delete counter;
+
+    if (isInvalid)
+        node->setComponentState(ComponentState::Invalid);
+    else
+        node->setComponentState(ComponentState::Valid);
+
 }
 
 
