@@ -176,17 +176,15 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
-        bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
+        bool updateImage = m_dataTracker.isDirty(this->inputImage);	// change of input image -> update output image
+        bool updateTransform = m_dataTracker.isDirty(this->inputTransform);	// change of input transform -> update output transform
         if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
         raParam p(this->param);
         raTransform inT(this->inputTransform);
         raImagei in(this->inputImage);
-
-        cleanDirty();
 
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);

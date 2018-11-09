@@ -83,7 +83,7 @@ void TriangularConvexHull3D<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void TriangularConvexHull3D<DataTypes>::update()
+void TriangularConvexHull3D<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data<VecCoord> > cloudPoints = f_X0;
     helper::WriteAccessor< Data<VecCoord> > newPoints = f_newX0;

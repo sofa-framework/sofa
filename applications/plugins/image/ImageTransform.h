@@ -112,7 +112,7 @@ protected:
 
     ImageContainer* container;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         if (!container) return;
 
