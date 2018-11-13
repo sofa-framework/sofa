@@ -62,9 +62,9 @@ static PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
     delete counter;
 
     if (isInvalid)
-        node->setComponentState(ComponentState::Invalid);
+        obj->setComponentState(ComponentState::Invalid);
     else
-        node->setComponentState(ComponentState::Valid);
+        obj->setComponentState(ComponentState::Valid);
     Py_RETURN_NONE;
 }
 
@@ -81,9 +81,9 @@ static PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
     delete counter;
 
     if (isInvalid)
-        node->setComponentState(ComponentState::Invalid);
+        obj->setComponentState(ComponentState::Invalid);
     else
-        node->setComponentState(ComponentState::Valid);
+        obj->setComponentState(ComponentState::Valid);
     Py_RETURN_NONE;
 }
 
@@ -101,9 +101,9 @@ static PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
     delete counter;
 
     if (isInvalid)
-        node->setComponentState(ComponentState::Invalid);
+        obj->setComponentState(ComponentState::Invalid);
     else
-        node->setComponentState(ComponentState::Valid);
+        obj->setComponentState(ComponentState::Valid);
     Py_RETURN_NONE;
 }
 
