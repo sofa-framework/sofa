@@ -386,7 +386,7 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::apply
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( map[indexIn].in_index );
 
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
