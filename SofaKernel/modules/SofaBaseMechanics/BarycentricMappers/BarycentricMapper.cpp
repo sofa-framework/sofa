@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include "BarycentricMapper.inl"
 
 namespace sofa
 {
@@ -34,45 +33,28 @@ namespace component
 namespace mapping
 {
 
+namespace _barycentricmapper_
+{
+
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(BarycentricMapping)
-
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
 #ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-        .add< BarycentricMapping< Vec3dTypes, ExtVec3fTypes > >()
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< BarycentricMapping< Vec3fTypes, ExtVec3fTypes > >()
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3fTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3fTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< BarycentricMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 
-} // namespace mapping
+}
 
-} // namespace component
+}}}
 
-} // namespace sofa
+#endif

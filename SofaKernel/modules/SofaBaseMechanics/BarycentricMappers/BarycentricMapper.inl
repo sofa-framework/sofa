@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include "BarycentricMapper.h"
 
 namespace sofa
 {
@@ -34,45 +33,37 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
+namespace _barycentricmapper_
+{
 
-SOFA_DECL_CLASS(BarycentricMapping)
+using sofa::component::linearsolver::CompressedRowSparseMatrix;
 
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-#ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-        .add< BarycentricMapping< Vec3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< BarycentricMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< BarycentricMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
-        ;
+template<class In, class Out>
+void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, int row, int col, Real value)
+{
+    MBloc* b = m->wbloc(row, col, true); // get write access to a matrix bloc, creating it if not found
+    for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
+        (*b)[i][i] += value;
+}
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
 
-} // namespace mapping
+template<class In, class Out>
+const sofa::defaulttype::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize, int inSize)
+{
+    SOFA_UNUSED(outSize);
+    SOFA_UNUSED(inSize);
+    dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) ;
+    return nullptr;
+}
 
-} // namespace component
+template<class In, class Out>
+void BarycentricMapper<In,Out>::applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in)
+{
+    SOFA_UNUSED(hexaId);
+    SOFA_UNUSED(out);
+    SOFA_UNUSED(in);
+}
 
-} // namespace sofa
+}}}}
+
+#endif
