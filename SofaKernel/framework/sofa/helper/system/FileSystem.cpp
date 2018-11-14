@@ -273,6 +273,37 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     return false;
 }
 
+bool FileSystem::findFiles(const std::string& directoryPath,
+                           std::vector<std::string>& outputFilePaths,
+                           const std::string& extension, const int depth)
+{
+    // List directory
+    std::vector<std::string> files;
+    if (listDirectory(directoryPath, files))
+        return true;
+
+    // Filter files
+    for (std::size_t i=0 ; i!=files.size() ; i++)
+    {
+        const std::string& filename = files[i];
+        const std::string& filepath = directoryPath + "/" + files[i];
+
+        if ( isDirectory(filepath) && filename[0] != '.' && depth > 0 )
+        {
+            if ( findFiles(filepath, outputFilePaths, extension, depth - 1) )
+                return true; // true = error
+        }
+        else if ( isFile(filepath) &&
+                  filename.length() >= extension.length() &&
+                  filename.compare(filename.length() - extension.length(), extension.length(), extension) == 0 )
+        {
+            // filename ends with extension
+            outputFilePaths.push_back(filepath);
+        }
+    }
+    return false;
+}
+
 
 static bool pathHasDrive(const std::string& path) {
     return path.length() >=3
