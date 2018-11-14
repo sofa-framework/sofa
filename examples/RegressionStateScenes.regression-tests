@@ -1,0 +1,11 @@
+Components/forcefield/BeamFEMForceField.scn 100 1e-4
+Components/constraint/BilateralInteractionConstraint.scn 100 1e-4
+Demos/caduceus.scn 100 1e-3
+Components/forcefield/scenes/FastTriangularBendingSprings.scn 100 1e-4
+Components/collision/FFDDistanceGridCollisionModel.scn 100 1e-4
+Components/constraint/scenes/FixedConstraint.scn 100 1e-4
+Components/constraint/scenes/FrictionContact.scn 100 1e-4
+Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4
+Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4
+Components/collision/RuleBasedContactManager.scn 100 1e-4
+Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4
