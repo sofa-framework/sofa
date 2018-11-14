@@ -164,7 +164,7 @@ public:
 
 protected:
     BarycentricMapper() {}
-    virtual ~BarycentricMapper() {}
+    virtual ~BarycentricMapper() override {}
 
 private:
     BarycentricMapper(const BarycentricMapper& n) ;
@@ -208,15 +208,14 @@ class TopologyBarycentricMapper : public BarycentricMapper<In,Out>
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out),SOFA_TEMPLATE2(BarycentricMapper,In,Out));
 
-    typedef BarycentricMapper<In,Out> Inherit;
-    typedef typename Inherit::Real Real;
+    typedef typename Inherit1::Real Real;
     typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
 
     ForceMask *maskFrom;
     ForceMask *maskTo;
 
 protected:
-    virtual ~TopologyBarycentricMapper() {}
+    virtual ~TopologyBarycentricMapper() override {}
 public:
 
     virtual int addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/) {return 0;}
@@ -266,28 +265,27 @@ class BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperMeshTopology,In,Out),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
 
-    typedef TopologyBarycentricMapper<In,Out> Inherit;
-    typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit1::Real Real;
+    typedef typename Inherit1::OutReal OutReal;
+    typedef typename Inherit1::OutDeriv  OutDeriv;
 
-    typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename Inherit::MappingData1D MappingData1D;
-    typedef typename Inherit::MappingData2D MappingData2D;
-    typedef typename Inherit::MappingData3D MappingData3D;
+    typedef typename Inherit1::InDeriv  InDeriv;
+    typedef typename Inherit1::MappingData1D MappingData1D;
+    typedef typename Inherit1::MappingData2D MappingData2D;
+    typedef typename Inherit1::MappingData3D MappingData3D;
 
-    enum { NIn = Inherit::NIn };
-    enum { NOut = Inherit::NOut };
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
+    enum { NIn = Inherit1::NIn };
+    enum { NOut = Inherit1::NOut };
+    typedef typename Inherit1::MBloc MBloc;
+    typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename Inherit1::ForceMask ForceMask;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
     {
-        Inherit::addMatrixContrib(m, row, col, value);
+        Inherit1::addMatrixContrib(m, row, col, value);
     }
 
     sofa::helper::vector< MappingData1D >  m_map1d;
@@ -304,35 +302,35 @@ protected:
     {
     }
 
-    virtual ~BarycentricMapperMeshTopology()
+    virtual ~BarycentricMapperMeshTopology() override
     {
         if (m_matrixJ) delete m_matrixJ;
     }
 public:
 
-    void clear(int reserve=0) override;
+    virtual void clear(int reserve=0) override;
 
-    int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
-    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
+    virtual int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
+    virtual int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
 
-    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
-    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
+    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
+    virtual int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
 
-    int addPointInQuad(const int quadIndex, const SReal* baryCoords) override;
-    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) override;
+    virtual int addPointInQuad(const int quadIndex, const SReal* baryCoords) override;
+    virtual int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) override;
 
-    int addPointInTetra(const int tetraIndex, const SReal* baryCoords) override;
+    virtual int addPointInTetra(const int tetraIndex, const SReal* baryCoords) override;
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    virtual void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     virtual void resize( core::State<Out>* toModel ) override;
 
     sofa::helper::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
@@ -402,25 +400,24 @@ class BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperRegularGridTopology,In,Out),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
-    typedef TopologyBarycentricMapper<In,Out> Inherit;
-    typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename Inherit::CubeData CubeData;
+    typedef typename Inherit1::Real Real;
+    typedef typename Inherit1::OutReal OutReal;
+    typedef typename Inherit1::OutDeriv  OutDeriv;
+    typedef typename Inherit1::InDeriv  InDeriv;
+    typedef typename Inherit1::CubeData CubeData;
 
-    enum { NIn = Inherit::NIn };
-    enum { NOut = Inherit::NOut };
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
+    enum { NIn = Inherit1::NIn };
+    enum { NOut = Inherit1::NOut };
+    typedef typename Inherit1::MBloc MBloc;
+    typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename Inherit1::ForceMask ForceMask;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
     {
-        Inherit::addMatrixContrib(m, row, col, value);
+        Inherit1::addMatrixContrib(m, row, col, value);
     }
 
     sofa::helper::vector<CubeData> m_map;
@@ -431,32 +428,32 @@ protected:
 
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology,
             topology::PointSetTopologyContainer* toTopology)
-        : Inherit(fromTopology, toTopology),m_fromTopology(fromTopology),
+        : Inherit1(fromTopology, toTopology),m_fromTopology(fromTopology),
           matrixJ(NULL), updateJ(true)
     {
     }
 
-    virtual ~BarycentricMapperRegularGridTopology()
+    virtual ~BarycentricMapperRegularGridTopology() override
     {
         if (matrixJ) delete matrixJ;
     }
 public:
 
-    void clear(int reserve=0) override;
+    virtual void clear(int reserve=0) override;
 
     bool isEmpty() {return this->m_map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->m_fromTopology);}
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    virtual void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     virtual void resize( core::State<Out>* toModel ) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
@@ -481,26 +478,25 @@ class BarycentricMapperSparseGridTopology : public TopologyBarycentricMapper<In,
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperSparseGridTopology,In,Out),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
-    typedef TopologyBarycentricMapper<In,Out> Inherit;
-    typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename Inherit1::Real Real;
+    typedef typename Inherit1::OutReal OutReal;
+    typedef typename Inherit1::OutDeriv  OutDeriv;
+    typedef typename Inherit1::InDeriv  InDeriv;
 
-    typedef typename Inherit::CubeData CubeData;
+    typedef typename Inherit1::CubeData CubeData;
 
-    enum { NIn = Inherit::NIn };
-    enum { NOut = Inherit::NOut };
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
+    enum { NIn = Inherit1::NIn };
+    enum { NOut = Inherit1::NOut };
+    typedef typename Inherit1::MBloc MBloc;
+    typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename Inherit1::ForceMask ForceMask;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
     {
-        Inherit::addMatrixContrib(m, row, col, value);
+        Inherit1::addMatrixContrib(m, row, col, value);
     }
 
     sofa::helper::vector<CubeData> m_map;
@@ -517,7 +513,7 @@ protected:
     {
     }
 
-    virtual ~BarycentricMapperSparseGridTopology()
+    virtual ~BarycentricMapperSparseGridTopology() override
     {
         if (matrixJ) delete matrixJ;
     }
@@ -571,19 +567,18 @@ class BarycentricMapperTopologyContainer : public TopologyBarycentricMapper<In,O
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
-    typedef TopologyBarycentricMapper<In,Out> Inherit;
-    typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename Inherit1::Real Real;
+    typedef typename Inherit1::OutReal OutReal;
+    typedef typename Inherit1::OutDeriv  OutDeriv;
+    typedef typename Inherit1::InDeriv  InDeriv;
 
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
+    typedef typename Inherit1::MBloc MBloc;
+    typedef typename Inherit1::MatrixType MatrixType;
 
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename Inherit1::ForceMask ForceMask;
     typedef typename MatrixType::Index MatrixTypeIndex;
-    enum { NIn = Inherit::NIn };
-    enum { NOut = Inherit::NOut };
+    enum { NIn = Inherit1::NIn };
+    enum { NOut = Inherit1::NOut };
 
 protected:
     topology::PointData< helper::vector<MappingDataType > > d_map;
@@ -591,13 +586,13 @@ protected:
     bool m_updateJ;
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
-         : Inherit(fromTopology, toTopology),
+         : Inherit1(fromTopology, toTopology),
            d_map(initData(&d_map,"map", "mapper data")),
            m_matrixJ(NULL),
            m_updateJ(true)
      {}
 
-    virtual ~BarycentricMapperTopologyContainer() {}
+    virtual ~BarycentricMapperTopologyContainer() override {}
 
 protected:
 
@@ -613,13 +608,13 @@ public:
     virtual void clear(int size=0) override;
     virtual void resize( core::State<Out>* toModel ) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> &b )
     {
@@ -659,33 +654,32 @@ public:
 
 
 /////// Class allowing barycentric mapping computation on a EdgeSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData1D, class Element = Edge>
-class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
+template<class In, class Out>
+class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData1D,Edge>
 {
+    typedef typename BarycentricMapper<In,Out>::MappingData1D MappingData;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperEdgeSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
-    typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
-    typedef typename Inherit::Real Real;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperEdgeSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Edge));
+    typedef typename Inherit1::Real Real;
 
 protected:
     topology::EdgeSetTopologyContainer*	m_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;
 
-    using Inherit::d_map;
-    using Inherit::m_fromTopology;
-    using Inherit::m_matrixJ;
-    using Inherit::m_updateJ;
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit(fromTopology, toTopology),
+        : Inherit1(fromTopology, toTopology),
           m_fromContainer(fromTopology),
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperEdgeSetTopology() {}
+    virtual ~BarycentricMapperEdgeSetTopology() override {}
 
-    virtual helper::vector<Element> getElements() override
+    virtual helper::vector<Edge> getElements() override
     {
         return this->m_fromTopology->getEdges();
     }
@@ -701,7 +695,7 @@ protected:
         return edgeCoef;
     }
 
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override
     {
         //Not implemented for Edge
         SOFA_UNUSED(base);
@@ -709,7 +703,7 @@ protected:
         SOFA_UNUSED(element);
     }
 
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element) override
     {
         center = (in[element[0]]+in[element[1]])*0.5;
     }
@@ -741,34 +735,33 @@ public:
 
 
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData2D, class Element = Triangle>
-class BarycentricMapperTriangleSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
+template<class In, class Out>
+class BarycentricMapperTriangleSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D,Triangle>
 {
+    typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperTriangleSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
-    typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
-    typedef typename Inherit::Real Real;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTriangleSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
+    typedef typename Inherit1::Real Real;
 
 protected:
     topology::TriangleSetTopologyContainer*			m_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
-    using Inherit::d_map;
-    using Inherit::m_fromTopology;
-    using Inherit::m_matrixJ;
-    using Inherit::m_updateJ;
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit(fromTopology, toTopology),
+        : Inherit1(fromTopology, toTopology),
           m_fromContainer(fromTopology),
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperTriangleSetTopology() {}
+    virtual ~BarycentricMapperTriangleSetTopology() override {}
 
 
-    virtual helper::vector<Element> getElements() override
+    virtual helper::vector<Triangle> getElements() override
     {
         return this->m_fromTopology->getTriangles();
     }
@@ -784,7 +777,7 @@ protected:
         return triangleCoef;
     }
 
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override
     {
         Mat3x3d mt;
         base[0] = in[element[1]]-in[element[0]];
@@ -794,7 +787,7 @@ protected:
         base.invert(mt);
     }
 
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element) override
     {
         center = (in[element[0]]+in[element[1]]+in[element[2]])/3;
     }
@@ -823,34 +816,33 @@ public:
 
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData2D, class Element = Quad>
-class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType, Element>
+template<class In, class Out>
+class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D, Quad>
 {
+    typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperQuadSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
-    typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
-    typedef typename Inherit::Real Real;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperQuadSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Quad));
+    typedef typename Inherit1::Real Real;
 
 protected:
     topology::QuadSetTopologyContainer*			m_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
-    using Inherit::d_map;
-    using Inherit::m_fromTopology;
-    using Inherit::m_matrixJ;
-    using Inherit::m_updateJ;
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 
     BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit(fromTopology, toTopology),
+        : Inherit1(fromTopology, toTopology),
           m_fromContainer(fromTopology),
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperQuadSetTopology() {}
+    virtual ~BarycentricMapperQuadSetTopology() override {}
 
 
-    virtual helper::vector<Element> getElements() override
+    virtual helper::vector<Quad> getElements() override
     {
         return this->m_fromTopology->getQuads();
     }
@@ -869,7 +861,7 @@ protected:
         return quadCoef;
     }
 
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element) override
     {
         Mat3x3d matrixTranspose;
         base[0] = in[element[1]]-in[element[0]];
@@ -879,7 +871,7 @@ protected:
         base.invert(matrixTranspose);
     }
 
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Quad& element) override
     {
         center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]] ) *0.25;
     }
@@ -903,14 +895,13 @@ public:
 
 
 /// Class allowing barycentric mapping computation on a TetrahedronSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData3D, class Element = Tetrahedron>
-class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
+template<class In, class Out>
+class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData3D,Tetrahedron>
 {
+    typedef typename BarycentricMapper<In,Out>::MappingData3D MappingData;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperTetrahedronSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
-    typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
-    typedef typename Inherit::Real Real;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Tetrahedron));
+    typedef typename Inherit1::Real Real;
     typedef typename In::VecCoord VecCoord;
 
 
@@ -919,13 +910,13 @@ protected:
     topology::TetrahedronSetTopologyContainer*      m_fromContainer;
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
-    using Inherit::d_map;
-    using Inherit::m_fromTopology;
-    using Inherit::m_matrixJ;
-    using Inherit::m_updateJ;
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit(fromTopology, toTopology),
+        : Inherit1(fromTopology, toTopology),
           m_fromContainer(fromTopology),
           m_fromGeomAlgo(NULL)
     {}
@@ -933,7 +924,7 @@ protected:
     virtual ~BarycentricMapperTetrahedronSetTopology() override {}
 
 
-    virtual helper::vector<Element> getElements() override
+    virtual helper::vector<Tetrahedron> getElements() override
     {
         return this->m_fromTopology->getTetrahedra();
     }
@@ -949,7 +940,7 @@ protected:
         return tetrahedronCoef;
     }
 
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override
     {
         Mat3x3d matrixTranspose;
         base[0] = in[element[1]]-in[element[0]];
@@ -959,7 +950,7 @@ protected:
         base.invert(matrixTranspose);
     }
 
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override
     {
         center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]] ) *0.25;
     }
@@ -982,41 +973,41 @@ public:
 
 
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In, Out>::MappingData3D, class Element = Hexahedron>
-class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
+template<class In, class Out>
+class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In, Out>::MappingData3D,Hexahedron>
 {
+    typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
+
 public:
-    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperHexahedronSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
-    typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
-    typedef typename Inherit::Real Real;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperHexahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Hexahedron));
+    typedef typename Inherit1::Real Real;
 
 protected:
     topology::HexahedronSetTopologyContainer*		m_fromContainer;
     topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
     std::set<int> m_invalidIndex;
 
-    using Inherit::d_map;
-    using Inherit::m_matrixJ;
-    using Inherit::m_updateJ;
-    using Inherit::m_fromTopology;
+    using Inherit1::d_map;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
+    using Inherit1::m_fromTopology;
 
     BarycentricMapperHexahedronSetTopology()
-        : Inherit(NULL, NULL),
+        : Inherit1(NULL, NULL),
           m_fromContainer(NULL),
           m_fromGeomAlgo(NULL)
     {}
 
     BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit(fromTopology, toTopology),
+        : Inherit1(fromTopology, toTopology),
           m_fromContainer(fromTopology),
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperHexahedronSetTopology() {}
+    virtual ~BarycentricMapperHexahedronSetTopology() override {}
 
 
-    virtual helper::vector<Element> getElements() override
+    virtual helper::vector<Hexahedron> getElements() override
     {
         return this->m_fromTopology->getHexahedra();
     }
@@ -1039,7 +1030,7 @@ protected:
         return hexahedronCoef;
     }
 
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override
     {
         Mat3x3d matrixTranspose;
         base[0] = in[element[1]]-in[element[0]];
@@ -1049,7 +1040,7 @@ protected:
         base.invert(matrixTranspose);
     }
 
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override
     {
         center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]]+in[element[4]]+in[element[5]]+in[element[6]]+in[element[7]] ) *0.125;
     }
@@ -1089,7 +1080,6 @@ class BarycentricMapping : public core::Mapping<TIn, TOut>
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
     typedef In InDataTypes;
@@ -1107,7 +1097,7 @@ public:
 
     typedef core::topology::BaseMeshTopology BaseMeshTopology;
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename Inherit1::ForceMask ForceMask;
 
 protected:
 
@@ -1128,7 +1118,7 @@ protected:
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology=NULL );
 
-    virtual ~BarycentricMapping();
+    virtual ~BarycentricMapping() override ;
 
 public:
     void init() override;
