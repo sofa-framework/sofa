@@ -72,8 +72,8 @@ static bool listDirectory(const std::string& directoryPath,
 ///
 /// It pushes the files absolute paths in the vector provided in argument.
 /// @warning The directory must exist.
-/// @return true on error
-static bool findFiles(const std::string& directoryPath,
+/// @return the number of files found or -1 as error
+static int findFiles(const std::string& directoryPath,
                           std::vector<std::string>& outputFilePaths,
                           const std::string& extension, const int depth = 0);
 

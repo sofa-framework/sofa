@@ -273,14 +273,14 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     return false;
 }
 
-bool FileSystem::findFiles(const std::string& directoryPath,
+int FileSystem::findFiles(const std::string& directoryPath,
                            std::vector<std::string>& outputFilePaths,
                            const std::string& extension, const int depth)
 {
     // List directory
     std::vector<std::string> files;
-    if (listDirectory(directoryPath, files))
-        return true;
+    if (listDirectory(directoryPath, files)) // true = error
+        return -1;
 
     // Filter files
     for (std::size_t i=0 ; i!=files.size() ; i++)
@@ -290,8 +290,8 @@ bool FileSystem::findFiles(const std::string& directoryPath,
 
         if ( isDirectory(filepath) && filename[0] != '.' && depth > 0 )
         {
-            if ( findFiles(filepath, outputFilePaths, extension, depth - 1) )
-                return true; // true = error
+            if ( findFiles(filepath, outputFilePaths, extension, depth - 1) == -1)
+                return -1;
         }
         else if ( isFile(filepath) &&
                   filename.length() >= extension.length() &&
@@ -301,7 +301,7 @@ bool FileSystem::findFiles(const std::string& directoryPath,
             outputFilePaths.push_back(filepath);
         }
     }
-    return false;
+    return (int)outputFilePaths.size();
 }
 
 
