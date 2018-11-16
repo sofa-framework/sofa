@@ -19,52 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#ifndef GEOMAGIC_CONFIG_H
+#define GEOMAGIC_CONFIG_H
 
-#include "Task.h"
+#include <sofa/helper/system/config.h>
 
+#ifdef SOFA_BUILD_GEOMAGIC
+#  define SOFA_GEOMAGIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_GEOMAGIC_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
-    namespace simulation
-    {
-        
-        using namespace sofa;
-        
-        
-        class StepTask : public Task
-        {
-        public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
-            
-            virtual ~StepTask();
-            
-            virtual bool run() final;
-            
-            
-        private:
-            
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
-            
-        };
-        
-        
-    } // namespace simulation
-    
-} // namespace sofa
-
-#endif // AnimationLoopTasks_h__
+#endif

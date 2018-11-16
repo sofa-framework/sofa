@@ -18,8 +18,8 @@ namespace sofa
         
         
         
-        StepTask::StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus)
-        : Task(pStatus)
+        StepTask::StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* status)
+        : Task(status)
         , animationloop(aloop)
         , dt(t)
         {
@@ -30,7 +30,7 @@ namespace sofa
         }
         
         
-        bool StepTask::run(WorkerThread* )
+        bool StepTask::run()
         {
             animationloop->step( core::ExecParams::defaultInstance(), dt);
             return true;
