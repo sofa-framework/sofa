@@ -177,7 +177,6 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
     bases.resize ( elements.size() );
     centers.resize ( elements.size() );
 
-    bool wrongMapping = false;
     if(m_computeDistances)
     {
         // Compute bases and centers of each element
@@ -221,16 +220,11 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
 
             if(elementIndex==-1)
             {
-                baryCoords = Vector3{0.,0.,0.};
-                wrongMapping = true;
-                addPointInElement(elements.size(), baryCoords.ptr());
+                exhaustiveSearch(outPos, in, bases, centers);
             }
             else
                 addPointInElement(elementIndex, baryCoords.ptr());
         }
-
-        if(wrongMapping)
-            msg_warning() << "Some points seem to be away from the model their should be mapped on. The mapping may act wrong.";
     }
     else
     {
@@ -243,6 +237,35 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
     }
 }
 
+
+template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::exhaustiveSearch ( Vec3d outPos,
+                                                                                            const typename In::VecCoord& in,
+                                                                                            const helper::vector<Mat3x3d>& bases,
+                                                                                            const helper::vector<Vector3>& centers)
+{
+    const helper::vector<Element>& elements = getElements();
+
+    // Compute distances to get nearest element and corresponding bary coef
+    Vector3 baryCoords;
+    int elementIndex = -1;
+    double distance = 1e10;
+    for ( unsigned int e = 0; e < elements.size(); e++ )
+    {
+        Vec3d bary = bases[e] * ( outPos - in[elements[e][0]] );
+        double dist;
+        computeDistance(dist, bary);
+        if ( dist>0 )
+            dist = ( outPos-centers[e] ).norm2();
+        if ( dist<distance )
+        {
+            baryCoords = bary;
+            distance = dist;
+            elementIndex = e;
+        }
+    }
+    addPointInElement(elementIndex, baryCoords.ptr());
+}
 
 
 template <class In, class Out, class MappingDataType, class Element>

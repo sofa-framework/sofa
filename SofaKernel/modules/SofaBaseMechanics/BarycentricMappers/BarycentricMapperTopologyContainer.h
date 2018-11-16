@@ -139,6 +139,10 @@ protected:
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
+    void exhaustiveSearch ( defaulttype::Vec3d outPos,
+                            const typename In::VecCoord& in,
+                            const helper::vector<Mat3x3d>& bases,
+                            const helper::vector<Vector3>& centers);
 
     unsigned int getHashIndexFromCoord(const Vector3& x);
     unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z);
