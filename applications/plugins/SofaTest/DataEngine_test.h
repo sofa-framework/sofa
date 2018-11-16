@@ -25,9 +25,11 @@
 
 #include "Sofa_test.h"
 
+#include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+using sofa::core::SimpleDataEngine;
 
 namespace sofa {
 
@@ -48,10 +50,19 @@ public:
     {}
 
 
-    virtual void update() override
+    template <class T = DataEngineType, typename std::enable_if<
+                  std::is_base_of<SimpleDataEngine, T>::value, int>::type = 0>
+    void update()
     {
         DataEngineType::update();
+        ++m_counter;
+    }
 
+    template <class T = DataEngineType, typename std::enable_if<
+                  std::is_base_of<SimpleDataEngine, T>::value, int>::type = 1>
+    void doUpdate()
+    {
+        SimpleDataEngine::doUpdate();
         ++m_counter;
     }
 
@@ -80,7 +91,7 @@ struct DataEngine_test : public Sofa_test<>
     typedef DDGNode::DDGLinkContainer DDGLinkContainer;
 
     typename Engine::SPtr m_engine; ///< the real tested engine
-    typename DataEngineType::SPtr m_engineInput; ///< an other identical engine, where only inputs are used (not the engine itself). It is an easy way to create all inputs of the right type, to be able to link wuth them.
+    typename DataEngineType::SPtr m_engineInput; ///< an other identical engine, where only inputs are used (not the engine itself). It is an easy way to create all inputs of the right type, to be able to link with them.
 
     ///
     DataEngine_test()

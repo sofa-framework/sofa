@@ -60,7 +60,6 @@ public:
     void setInstance(PyObject* instance);
     void refreshBinding();
     void doLoadScript();
-    virtual void handleEvent(Event *event) override;
     virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
 protected:

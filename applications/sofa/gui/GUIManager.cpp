@@ -236,7 +236,7 @@ int GUIManager::Init(const char* argv0, const char* name)
         return 1;
     }
 
-    if( strcmp(name,"") == 0 || name == NULL)
+    if( name == NULL || strcmp(name,"") == 0 )
     {
         name = GetValidGUIName(); // get the default gui name
     }

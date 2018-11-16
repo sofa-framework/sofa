@@ -56,6 +56,8 @@ using sofa::simulation::Node;
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
@@ -147,11 +149,15 @@ void addGUIParameters(ArgumentParser* argumentParser)
 int main(int argc, char** argv)
 {
     // Add resources dir to GuiDataRepository
-    const std::string sofaIniFilePath = Utils::getSofaPathPrefix() + "/etc/runSofa.ini";
+    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/runSofa.ini";
     std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
     if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
     {
-        GuiDataRepository.addFirstPath( iniFileValues["RESOURCES_DIR"] );
+        std::string iniFileValue = iniFileValues["RESOURCES_DIR"];
+        if (!FileSystem::isAbsolute(iniFileValue))
+            iniFileValue = etcDir + "/" + iniFileValue;
+        sofa::gui::GuiDataRepository.addFirstPath(iniFileValue);
     }
 
     sofa::helper::BackTrace::autodump();
