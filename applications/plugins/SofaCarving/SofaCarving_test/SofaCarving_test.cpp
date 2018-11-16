@@ -23,6 +23,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
@@ -30,11 +36,11 @@ using namespace sofa::simpleapi;
 using namespace sofa::simpleapi::components;
 
 
-class SofaCarving_test : public sofa::Sofa_test<>
+class SofaCarving_test : public BaseSimulationTest
 {
 public:
     SofaCarving_test()
-        : Sofa_test()
+        : BaseSimulationTest()
         , m_simu(NULL)
         , m_root(NULL)
     {
@@ -56,6 +62,12 @@ private:
 
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
    
