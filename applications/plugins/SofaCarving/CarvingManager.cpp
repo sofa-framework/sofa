@@ -117,9 +117,6 @@ void CarvingManager::init()
     m_intersectionMethod = getContext()->get<core::collision::Intersection>();
     m_detectionNP = getContext()->get<core::collision::NarrowPhaseDetection>();
 
-    if (!d_carvingDistance.isSet())
-        d_carvingDistance.setValue(m_intersectionMethod->getContactDistance());
-
     m_carvingReady = true;
 
     if (m_toolCollisionModel == NULL) { msg_error() << "m_toolCollisionModel not found"; m_carvingReady = false; }
