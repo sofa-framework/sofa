@@ -84,20 +84,14 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
         { "alarmDistance", "0.5" },
-        { "contactDistance", "0.1" }
+        { "contactDistance", "0.05" }
     });
     
-    createObject(m_root, "CollisionGroupManager", { { "name", "Collision Group Manager" } });
-
 
     // create solver
-    createObject(m_root, "EulerImplicitSolver", { { "name","Euler Implicit2" },
-        { "rayleighStiffness","0.01" },
-        { "rayleighMass", "1.0" } });
-
     createObject(m_root, "EulerImplicitSolver", { { "name","Euler Implicit" },
         { "rayleighStiffness","0.1" },
-        { "rayleighMass", "0.1" } 
+        { "rayleighMass", "0.1" }
     });
     createObject(m_root, "CGLinearSolver", { { "name","Conjugate Gradient" },
         { "iterations","25" },
@@ -161,7 +155,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "name", "CFEM" },
         { "poissonRatio", "0.3" },
         { "method", "large" },
-        { "youngModulus", "100" }
+        { "youngModulus", "300" }
     });
 
 
@@ -191,7 +185,14 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 
     createObject(nodeSurface, "TriangleSet", {
         { "name", "Triangle Model" },
-        { "tags", "CarvingSurface" }
+        { "tags", "CarvingSurface" },
+        { "group", "0" }
+        });
+
+    createObject(nodeSurface, "PointSet", {
+        { "name", "Point Model" },
+        { "tags", "CarvingSurface" },
+        { "group", "0" }
         });
 
 
@@ -202,7 +203,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(nodeCarv, "MechanicalObject", {
         { "name","Particles" },
         { "template","Vec3" },
-        { "position", "0 0 1.4" },
+        { "position", "0 0 1.0" },
         { "velocity", "0 0 0" }
     });
 
@@ -211,10 +212,11 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "totalMass", "1.0" }
     });
 
-    createObject(nodeSurface, "SphereModel", {
+    createObject(nodeCarv, "SphereModel", {
         { "name", "Sphere Model" },
         { "radius", "0.02" },
-        { "tags", "CarvingTool" }
+        { "tags", "CarvingTool" },
+        { "group", "1" }
         });
         
     return true;
@@ -232,7 +234,7 @@ bool SofaCarving_test::ManagerEmpty()
 
 bool SofaCarving_test::ManagerInit()
 {
-    bool res = createScene("0.1");
+    bool res = createScene("0.0");
     if (!res)
         return false;
 
@@ -259,7 +261,7 @@ bool SofaCarving_test::ManagerInit()
 
 bool SofaCarving_test::doCarving()
 {
-    bool res = createScene("0.1");
+    bool res = createScene("0.0");
     if (!res)
         return false;
 
@@ -275,16 +277,16 @@ bool SofaCarving_test::doCarving()
     EXPECT_NE(topo, nullptr);
 
     // perform some steps
-    for (unsigned int i = 0; i < 30; ++i)
+    for (unsigned int i = 0; i < 100; ++i)
     {
         m_simu->animate(m_root.get());
     }
 
     // checking topo after carving
-    EXPECT_EQ(topo->getNbPoints(), 170);
-    EXPECT_EQ(topo->getNbEdges(), 709);
-    EXPECT_EQ(topo->getNbTriangles(), 900);
-    EXPECT_EQ(topo->getNbTetrahedra(), 360);
+    EXPECT_EQ(topo->getNbPoints(), 471);
+    EXPECT_EQ(topo->getNbEdges(), 2802);
+    EXPECT_EQ(topo->getNbTriangles(), 4441);
+    EXPECT_EQ(topo->getNbTetrahedra(), 2109);
     
     return true;
 }
@@ -292,7 +294,7 @@ bool SofaCarving_test::doCarving()
 
 bool SofaCarving_test::doCarvingWithPenetration()
 {
-    bool res = createScene("-0.0001");
+    bool res = createScene("-0.02");
     if (!res)
         return false;
 
@@ -308,16 +310,16 @@ bool SofaCarving_test::doCarvingWithPenetration()
     EXPECT_NE(topo, nullptr);
 
     // perform some steps
-    for (unsigned int i = 0; i < 30; ++i)
+    for (unsigned int i = 0; i < 100; ++i)
     {
         m_simu->animate(m_root.get());
     }
 
     // checking topo after carving
-    EXPECT_EQ(topo->getNbPoints(), 310);
-    EXPECT_EQ(topo->getNbEdges(), 1529);
-    EXPECT_EQ(topo->getNbTriangles(), 2180);
-    EXPECT_EQ(topo->getNbTetrahedra(), 960);
+    EXPECT_EQ(topo->getNbPoints(), 503);
+    EXPECT_EQ(topo->getNbEdges(), 3059);
+    EXPECT_EQ(topo->getNbTriangles(), 4920);
+    EXPECT_EQ(topo->getNbTetrahedra(), 2363);
 
     return true;
 }
