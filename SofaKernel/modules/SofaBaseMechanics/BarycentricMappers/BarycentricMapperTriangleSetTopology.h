@@ -46,26 +46,21 @@ class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology : public Bary
 {
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTriangleSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTriangleSetTopology,In,Out),
+               SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
     typedef typename Inherit1::Real Real;
-
-protected:
-    topology::TriangleSetTopologyContainer*			m_fromContainer;
-    topology::TriangleSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
-
-    using Inherit1::d_map;
-    using Inherit1::m_fromTopology;
-    using Inherit1::m_matrixJ;
-    using Inherit1::m_updateJ;
-
-    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit1(fromTopology, toTopology),
-          m_fromContainer(fromTopology),
-          m_fromGeomAlgo(NULL)
-    {}
 
     virtual ~BarycentricMapperTriangleSetTopology() {}
 
+    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
+    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
+
+protected:
+    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
+                                         topology::PointSetTopologyContainer* toTopology);
+
+    topology::TriangleSetTopologyContainer*			m_fromContainer;
+    topology::TriangleSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
     virtual helper::vector<Triangle> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
@@ -75,15 +70,10 @@ protected:
     virtual void computeDistance(double& d, const Vector3& v) override;
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
-public:
-
-    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
-    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
-
-#ifdef BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
-    // handle topology changes in the From topology
-    virtual void handleTopologyChange(core::topology::Topology* t);
-#endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 };
 
 
@@ -91,8 +81,7 @@ using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, ExtVec3fTypes >;

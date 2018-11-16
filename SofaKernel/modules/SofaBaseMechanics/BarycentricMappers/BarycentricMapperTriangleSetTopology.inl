@@ -33,6 +33,14 @@ namespace component
 namespace mapping
 {
 
+template <class In, class Out>
+BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
+                                                                                   topology::PointSetTopologyContainer* toTopology)
+    : Inherit1(fromTopology, toTopology),
+      m_fromContainer(fromTopology),
+      m_fromGeomAlgo(NULL)
+{}
+
 
 template <class In, class Out>
 int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const int triangleIndex, const SReal* baryCoords )

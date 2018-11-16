@@ -43,38 +43,15 @@ typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 template<class In, class Out>
 class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In, Out>::MappingData3D,Hexahedron>
 {
+    typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
 
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperHexahedronSetTopology,In,Out),
+               SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Hexahedron));
 
-    typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperHexahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Hexahedron));
     typedef typename Inherit1::Real Real;
 
-protected:
-
-    topology::HexahedronSetTopologyContainer*		m_fromContainer;
-    topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
-    std::set<int> m_invalidIndex;
-
-    using Inherit1::d_map;
-    using Inherit1::m_matrixJ;
-    using Inherit1::m_updateJ;
-    using Inherit1::m_fromTopology;
-
-    BarycentricMapperHexahedronSetTopology()
-        : Inherit1(nullptr, nullptr),
-          m_fromContainer(nullptr),
-          m_fromGeomAlgo(nullptr)
-    {}
-
-    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit1(fromTopology, toTopology),
-          m_fromContainer(fromTopology),
-          m_fromGeomAlgo(nullptr)
-    {}
-
-    virtual ~BarycentricMapperHexahedronSetTopology() override {}
-
+    virtual ~BarycentricMapperHexahedronSetTopology() override ;
     virtual helper::vector<Hexahedron> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
     helper::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
@@ -83,25 +60,33 @@ protected:
     virtual void computeDistance(double& d, const Vector3& v) override;
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
-public:
-
     virtual int addPointInCube(const int index, const SReal* baryCoords) override;
     virtual int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords) override;
     virtual void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     virtual void handleTopologyChange(core::topology::Topology* t) override;
 
-    void setTopology(topology::HexahedronSetTopologyContainer* topology)
-    {
-        m_fromTopology  = topology;
-        m_fromContainer = topology;
-    }
+protected:
+    BarycentricMapperHexahedronSetTopology();
+    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
+                                           topology::PointSetTopologyContainer* toTopology);
+
+    void setTopology(topology::HexahedronSetTopologyContainer* topology);
+
+    topology::HexahedronSetTopologyContainer*		m_fromContainer {nullptr};
+    topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
+    std::set<int> m_invalidIndex;
+
+    using Inherit1::d_map;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
+    using Inherit1::m_fromTopology;
 };
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, ExtVec3fTypes >;

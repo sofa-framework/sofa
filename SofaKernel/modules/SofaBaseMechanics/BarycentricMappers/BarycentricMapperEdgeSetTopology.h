@@ -64,19 +64,8 @@ public:
 
 
 protected:
-    topology::EdgeSetTopologyContainer*	m_fromContainer;
-    topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;
-
-    using Inherit1::d_map;
-    using Inherit1::m_fromTopology;
-    using Inherit1::m_matrixJ;
-    using Inherit1::m_updateJ;
-
-    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit1(fromTopology, toTopology),
-          m_fromContainer(fromTopology),
-          m_fromGeomAlgo(NULL)
-    {}
+    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
+                                     topology::PointSetTopologyContainer* toTopology);
 
     virtual ~BarycentricMapperEdgeSetTopology() override {}
 
@@ -87,10 +76,18 @@ protected:
     virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element) override;
     virtual void computeDistance(double& d, const Vector3& v) override;
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+
+    topology::EdgeSetTopologyContainer*	m_fromContainer;
+    topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;
+
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, ExtVec3fTypes>;

@@ -47,27 +47,17 @@ class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology : public Barycent
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 
 public:
-
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperQuadSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Quad));
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperQuadSetTopology,In,Out),
+               SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Quad));
     typedef typename Inherit1::Real Real;
 
+    virtual int addPointInQuad(const int index, const SReal* baryCoords) override;
+    virtual int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points) override;
+
+    virtual ~BarycentricMapperQuadSetTopology();
 protected:
-
-    topology::QuadSetTopologyContainer*			m_fromContainer;
-    topology::QuadSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
-
-    using Inherit1::d_map;
-    using Inherit1::m_fromTopology;
-    using Inherit1::m_matrixJ;
-    using Inherit1::m_updateJ;
-
-    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit1(fromTopology, toTopology),
-          m_fromContainer(fromTopology),
-          m_fromGeomAlgo(NULL)
-    {}
-
-    virtual ~BarycentricMapperQuadSetTopology() {}
+    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
+                                     topology::PointSetTopologyContainer* toTopology);
 
     virtual helper::vector<Quad> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
@@ -77,10 +67,13 @@ protected:
     virtual void computeDistance(double& d, const Vector3& v) override;
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
-public:
+    topology::QuadSetTopologyContainer*			m_fromContainer;
+    topology::QuadSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
-    virtual int addPointInQuad(const int index, const SReal* baryCoords) override;
-    virtual int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points) override;
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 };
 
 
@@ -89,7 +82,7 @@ using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, ExtVec3fTypes >;

@@ -71,7 +71,7 @@ using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
-typedef typename sofa::core::topology::BaseMeshTopology::Line Line;
+typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;

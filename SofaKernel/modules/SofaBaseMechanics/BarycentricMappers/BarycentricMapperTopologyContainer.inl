@@ -21,6 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_INL
+#include <sofa/core/visual/VisualParams.h>
+
 #include "BarycentricMapperTopologyContainer.h"
 
 namespace sofa
@@ -36,6 +38,17 @@ namespace _barycentricmappertopologycontainer_
 {
 
 using defaulttype::Vec3d;
+
+template <class In, class Out, class MappingDataType, class Element>
+BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology,
+                                                                                                       topology::PointSetTopologyContainer* toTopology)
+     : Inherit1(fromTopology, toTopology),
+       d_map(initData(&d_map,"map", "mapper data")),
+       m_matrixJ(NULL),
+       m_updateJ(true)
+ {}
+
+
 
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::clear(int size)
@@ -270,9 +283,43 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
             }
         }
     }
-    //vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
-}}}}
+template<class In, class Out, class MappingData, class Element>
+std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingData, Element> &b )
+{
+    unsigned int size_vec;
+
+    in >> size_vec;
+    sofa::helper::vector<MappingData>& m = *(b.d_map.beginEdit());
+    m.clear();
+
+    MappingData value;
+    for (unsigned int i=0; i<size_vec; i++)
+    {
+        in >> value;
+        m.push_back(value);
+    }
+    b.d_map.endEdit();
+    return in;
+}
+
+template<class In, class Out, class MappingData, class Element>
+std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingData, Element> & b )
+{
+    out << b.d_map.getValue().size();
+    out << " " ;
+    out << b.d_map;
+
+    return out;
+}
+
+
+
+}
+} //
+} //
+} //
 
 #endif

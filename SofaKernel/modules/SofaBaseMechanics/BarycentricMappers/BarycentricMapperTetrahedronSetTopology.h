@@ -48,28 +48,15 @@ class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology : public B
     typedef typename BarycentricMapper<In,Out>::MappingData3D MappingData;
 
 public:
-
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Tetrahedron));
     typedef typename Inherit1::Real Real;
     typedef typename In::VecCoord VecCoord;
 
+    virtual int addPointInTetra(const int index, const SReal* baryCoords) override ;
 
 protected:
-
-    topology::TetrahedronSetTopologyContainer*      m_fromContainer;
-    topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
-
-    using Inherit1::d_map;
-    using Inherit1::m_fromTopology;
-    using Inherit1::m_matrixJ;
-    using Inherit1::m_updateJ;
-
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-        : Inherit1(fromTopology, toTopology),
-          m_fromContainer(fromTopology),
-          m_fromGeomAlgo(NULL)
-    {}
-
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
+                                            topology::PointSetTopologyContainer* toTopology);
     virtual ~BarycentricMapperTetrahedronSetTopology() override {}
 
     virtual helper::vector<Tetrahedron> getElements() override;
@@ -80,9 +67,13 @@ protected:
     virtual void computeDistance(double& d, const Vector3& v) override;
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
-public:
+    topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
+    topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
 
-    virtual int addPointInTetra(const int index, const SReal* baryCoords) override ;
+    using Inherit1::d_map;
+    using Inherit1::m_fromTopology;
+    using Inherit1::m_matrixJ;
+    using Inherit1::m_updateJ;
 };
 
 
@@ -91,7 +82,7 @@ using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, ExtVec3fTypes >;

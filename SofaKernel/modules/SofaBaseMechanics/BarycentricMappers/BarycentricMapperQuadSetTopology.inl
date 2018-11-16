@@ -35,6 +35,19 @@ namespace mapping
 {
 
 template <class In, class Out>
+BarycentricMapperQuadSetTopology<In,Out>::BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
+                                                                           topology::PointSetTopologyContainer* toTopology)
+    : Inherit1(fromTopology, toTopology),
+      m_fromContainer(fromTopology),
+      m_fromGeomAlgo(NULL)
+{}
+
+template <class In, class Out>
+BarycentricMapperQuadSetTopology<In,Out>::~BarycentricMapperQuadSetTopology()
+{}
+
+
+template <class In, class Out>
 int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const int quadIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());

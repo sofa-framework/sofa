@@ -40,18 +40,15 @@ namespace _topologybarycentricmapper_
 template<class In, class Out>
 class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper : public BarycentricMapper<In,Out>
 {
-
 public:
-
-    SOFA_CLASS(SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out),SOFA_TEMPLATE2(BarycentricMapper,In,Out));
+    SOFA_CLASS(SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out),
+               SOFA_TEMPLATE2(BarycentricMapper,In,Out));
 
     typedef typename Inherit1::Real Real;
     typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
 
     ForceMask *maskFrom;
     ForceMask *maskTo;
-
-public:
 
     virtual int addPointInLine(const int lineIndex, const SReal* baryCoords);
     virtual int setPointInLine(const int pointIndex, const int lineIndex, const SReal* baryCoords);
@@ -73,25 +70,23 @@ public:
     virtual int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords);
     virtual int createPointInCube(const typename Out::Coord& p, int cubeIndex, const typename In::VecCoord* points);
 
-    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->toTopology = toTopology;}
-    const topology::PointSetTopologyContainer *getToTopology() const {return toTopology;}
+    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->m_toTopology = toTopology;}
+    const topology::PointSetTopologyContainer *getToTopology() const {return m_toTopology;}
 
     virtual void updateForceMask(){/*mask is already filled in the mapper's applyJT*/}
-
     virtual void resize( core::State<Out>* toModel ) = 0;
 
 protected:
-    TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology = nullptr)
+    TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology,
+                              topology::PointSetTopologyContainer* toTopology = nullptr)
         : m_fromTopology(fromTopology)
-        , toTopology(toTopology)
+        , m_toTopology(toTopology)
     {}
 
     virtual ~TopologyBarycentricMapper() override {}
 
-protected:
-    core::topology::BaseMeshTopology* m_fromTopology;
-    topology::PointSetTopologyContainer* toTopology;
-
+    core::topology::BaseMeshTopology*    m_fromTopology;
+    topology::PointSetTopologyContainer* m_toTopology;
 };
 
 using sofa::defaulttype::Vec3dTypes;

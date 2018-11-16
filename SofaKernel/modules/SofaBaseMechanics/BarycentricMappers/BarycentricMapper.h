@@ -87,7 +87,6 @@ public:
 
 
 protected:
-
     void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
     template< int NC,  int NP>

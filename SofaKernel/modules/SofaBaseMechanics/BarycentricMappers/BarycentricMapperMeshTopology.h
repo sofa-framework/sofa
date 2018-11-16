@@ -41,7 +41,8 @@ template<class In, class Out>
 class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperMeshTopology,In,Out),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperMeshTopology,In,Out),
+               SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
 
     typedef typename Inherit1::Real Real;
     typedef typename Inherit1::OutReal OutReal;
@@ -60,9 +61,7 @@ public:
 
     typedef typename Inherit1::ForceMask ForceMask;
 
-
 public:
-
     virtual void clear(int reserve=0) override;
     virtual void resize( core::State<Out>* toModel ) override;
     virtual int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
@@ -85,91 +84,28 @@ public:
 
     sofa::helper::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
-    {
-        unsigned int size_vec;
-        in >> size_vec;
-        b.m_map1d.clear();
-        MappingData1D value1d;
-        for (unsigned int i=0; i<size_vec; i++)
-        {
-            in >> value1d;
-            b.m_map1d.push_back(value1d);
-        }
+    friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b );
+    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b );
 
-        in >> size_vec;
-        b.m_map2d.clear();
-        MappingData2D value2d;
-        for (unsigned int i=0; i<size_vec; i++)
-        {
-            in >> value2d;
-            b.m_map2d.push_back(value2d);
-        }
-
-        in >> size_vec;
-        b.m_map3d.clear();
-        MappingData3D value3d;
-        for (unsigned int i=0; i<size_vec; i++)
-        {
-            in >> value3d;
-            b.m_map3d.push_back(value3d);
-        }
-        return in;
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b )
-    {
-
-        out << b.m_map1d.size();
-        out << " " ;
-        out << b.m_map1d;
-        out << " " ;
-        out << b.m_map2d.size();
-        out << " " ;
-        out << b.m_map2d;
-        out << " " ;
-        out << b.m_map3d.size();
-        out << " " ;
-        out << b.m_map3d;
-
-        return out;
-    }
+    virtual ~BarycentricMapperMeshTopology() override ;
 
 protected:
+    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
+                                  topology::PointSetTopologyContainer* toTopology) ;
 
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
-    {
-        Inherit1::addMatrixContrib(m, row, col, value);
-    }
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
     sofa::helper::vector< MappingData1D >  m_map1d;
     sofa::helper::vector< MappingData2D >  m_map2d;
     sofa::helper::vector< MappingData3D >  m_map3d;
 
-    MatrixType* m_matrixJ;
-    bool m_updateJ;
-
-    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology)
-        : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
-          m_matrixJ(NULL), m_updateJ(true)
-    {
-    }
-
-    virtual ~BarycentricMapperMeshTopology() override
-    {
-        if (m_matrixJ) delete m_matrixJ;
-    }
-
-
+    MatrixType* m_matrixJ {nullptr};
+    bool        m_updateJ {false};
 private:
-
     void clearMap1dAndReserve(int size=0);
     void clearMap2dAndReserve(int size=0);
     void clearMap3dAndReserve(int size=0);
-
 };
-
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;

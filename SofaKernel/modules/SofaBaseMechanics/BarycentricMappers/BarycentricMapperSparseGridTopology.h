@@ -57,12 +57,12 @@ public:
     enum { NOut = Inherit1::NOut };
 
 public:
-
-    virtual void clear(int reserve=0) override;
-
-    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    virtual ~BarycentricMapperSparseGridTopology() override ;
 
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+
+    virtual void clear(int reserve=0) override;
+    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
@@ -73,44 +73,19 @@ public:
     virtual void draw(const VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     virtual void resize( core::State<Out>* toModel ) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
-    {
-        in >> b.m_map;
-        return in;
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b )
-    {
-        out << b.m_map;
-        return out;
-    }
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b );
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b );
 
 protected:
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
+                                        topology::PointSetTopologyContainer* _toTopology);
+
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
     sofa::helper::vector<CubeData> m_map;
-    topology::SparseGridTopology* m_fromTopology;
-
-    MatrixType* matrixJ;
-    bool updateJ;
-
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology)
-        : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
-          m_fromTopology(fromTopology),
-          matrixJ(NULL), updateJ(true)
-    {
-    }
-
-    virtual ~BarycentricMapperSparseGridTopology() override
-    {
-        if (matrixJ) delete matrixJ;
-    }
-
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
-    {
-        Inherit1::addMatrixContrib(m, row, col, value);
-    }
-
+    topology::SparseGridTopology* m_fromTopology {nullptr};
+    MatrixType* m_matrixJ {nullptr};
+    bool m_updateJ {false};
 };
 
 
@@ -118,8 +93,7 @@ using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, ExtVec3fTypes >;

@@ -22,6 +22,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_INL
 
+#include <sofa/core/visual/VisualParams.h>
+
 #include "BarycentricMapperRegularGridTopology.h"
 
 namespace sofa
@@ -36,9 +38,25 @@ namespace mapping
 using sofa::defaulttype::Vector3;
 
 template <class In, class Out>
+BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
+                                                                                   PointSetTopologyContainer* toTopology)
+    : Inherit1(fromTopology, toTopology)
+    , m_fromTopology(fromTopology)
+    , m_matrixJ(NULL), m_updateJ(true)
+{
+}
+
+template <class In, class Out>
+BarycentricMapperRegularGridTopology<In,Out>::~BarycentricMapperRegularGridTopology()
+{
+    if (m_matrixJ)
+        delete m_matrixJ;
+}
+
+template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::clear ( int size )
 {
-    updateJ = true;
+    m_updateJ = true;
     m_map.clear();
     if ( size>0 ) m_map.reserve ( size );
 }
@@ -60,7 +78,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
 {
     SOFA_UNUSED(in);
 
-    updateJ = true;
+    m_updateJ = true;
 
     clear ( (int)out.size() );
     if ( m_fromTopology->isVolume() )
@@ -178,14 +196,14 @@ template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out>::getJ(int outSize, int inSize)
 {
 
-    if (matrixJ && !updateJ)
-        return matrixJ;
+    if (m_matrixJ && !m_updateJ)
+        return m_matrixJ;
 
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
+    if (!m_matrixJ) m_matrixJ = new MatrixType;
+    if (m_matrixJ->rowBSize() != (MatrixTypeIndex)outSize || m_matrixJ->colBSize() != (MatrixTypeIndex)inSize)
+        m_matrixJ->resize(outSize*NOut, inSize*NIn);
     else
-        matrixJ->clear();
+        m_matrixJ->clear();
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
@@ -196,20 +214,20 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
         const Real fx = ( Real ) m_map[i].baryCoords[0];
         const Real fy = ( Real ) m_map[i].baryCoords[1];
         const Real fz = ( Real ) m_map[i].baryCoords[2];
-        this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-        this->addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
     }
-    updateJ = false;
-    return matrixJ;
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
 
@@ -251,9 +269,15 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
             }
         }
     }
-//    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,0,1,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,0,1,1 ) );
 }
 
+template <class In, class Out>
+void BarycentricMapperRegularGridTopology<In,Out>::addMatrixContrib(MatrixType* m,
+                                                                    int row, int col, Real value)
+{
+    Inherit1::addMatrixContrib(m, row, col, value);
+}
 
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
@@ -299,6 +323,24 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
     }
 }
 
-}}}
+template<class In, class Out>
+std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
+{
+    in >> b.m_map;
+    return in;
+}
+
+template<class In, class Out>
+std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b )
+{
+    out << b.m_map;
+    return out;
+}
+
+
+
+}
+}
+}
 
 #endif

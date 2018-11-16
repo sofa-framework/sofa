@@ -33,6 +33,13 @@ namespace component
 namespace mapping
 {
 
+template <class In, class Out>
+BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
+    : Inherit1(fromTopology, toTopology),
+      m_fromContainer(fromTopology),
+      m_fromGeomAlgo(NULL)
+{}
+
 
 template <class In, class Out>
 int BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const int tetraIndex, const SReal* baryCoords )
