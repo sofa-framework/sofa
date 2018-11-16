@@ -119,9 +119,11 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath, con
         for ( const auto &iniFileValue : iniFileValues )
         {
             std::string dir = iniFileValue.second;
-            if (!FileSystem::isAbsolute(dir))
-                dir = Utils::getSofaPathTo(dir);
-            addFirstPath(dir);
+            dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
+            if(FileSystem::isDirectory(dir))
+            {
+                addFirstPath(dir);
+            }
         }
     }
 }
