@@ -38,7 +38,7 @@ namespace mapping
 
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clearMapAndReserve ( int reserve )
+void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear ( int reserve )
 {
 
     helper::vector<MappingData>& vectorData = *(map.beginEdit());
@@ -107,7 +107,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
     sofa::helper::vector<sofa::defaulttype::Matrix3> bases;
     sofa::helper::vector<sofa::defaulttype::Vector3> centers;
 
-    clearMapAndReserve ( out.size() );
+    clear ( out.size() );
     bases.resize ( tetrahedra.size() );
     centers.resize ( tetrahedra.size() );
     for ( unsigned int t = 0; t < tetrahedra.size(); t++ )

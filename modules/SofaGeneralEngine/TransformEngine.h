@@ -48,10 +48,10 @@ namespace engine
 This transformation can be either translation, rotation, scale
  */
 template <class DataTypes>
-class TransformEngine : public core::DataEngine
+class TransformEngine : public core::SimpleDataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TransformEngine,DataTypes),core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(TransformEngine,DataTypes),core::SimpleDataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
@@ -66,8 +66,6 @@ public:
 
     void reinit() override;
 
-    void update() override;
-
     virtual std::string getTemplateName() const override
     {
         return templateName(this);
@@ -76,9 +74,10 @@ public:
     static std::string templateName(const TransformEngine<DataTypes>* = NULL)
     {
         return DataTypes::Name();
-    }
-
+    }    
 protected:
+    void doUpdate() override;
+
     Data<VecCoord> f_inputX; ///< input position
     Data<VecCoord> f_outputX; ///< ouput position
     Data<defaulttype::Vector3> translation; ///< translation

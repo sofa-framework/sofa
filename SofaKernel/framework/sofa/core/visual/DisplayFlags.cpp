@@ -177,9 +177,7 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
                         msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_hideName[i] << "' is deprecated, please use '"<<(*iter)->m_hideName[0]<<"' instead";
                     }
 
-                    tristate merge_showhide;
-                    if (hide) merge_showhide = tristate::false_value;
-                    (*iter)->setValue(merge_showhide);
+                    (*iter)->setValue(tristate::false_value);
                     found = true;
                 }
             }
@@ -197,9 +195,7 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
                         msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_showName[i] << "' is deprecated, please use '"<<(*iter)->m_showName[0]<<"' instead";
                     }
 
-                    tristate merge_showhide;
-                    if (show) merge_showhide = tristate::true_value;
-                    (*iter)->setValue(merge_showhide);
+                    (*iter)->setValue(tristate::true_value);
                     found = true;
                 }
             }

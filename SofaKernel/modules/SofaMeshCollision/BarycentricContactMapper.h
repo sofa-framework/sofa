@@ -88,7 +88,7 @@ public:
     {
         if (mapping!=NULL)
         {
-            mapper->clearMapAndReserve();
+            mapper->clear();
             mapping->getMechTo()[0]->resize(size);
         }
     }

@@ -22,7 +22,7 @@
 #ifndef AnimationLoopTasks_h__
 #define AnimationLoopTasks_h__
 
-#include "Tasks.h"
+#include "Task.h"
 
 
 namespace sofa
@@ -52,7 +52,7 @@ namespace sofa
             
             virtual ~StepTask();
             
-            virtual bool run(WorkerThread* );
+            virtual bool run() final;
             
             
         private:

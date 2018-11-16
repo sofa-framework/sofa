@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
 using sofa::component::mapping::BarycentricMapperTriangleSetTopology;
 using sofa::component::mapping::BarycentricMapping;
 
@@ -124,8 +125,8 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
 
     void initHashing_test()
     {
-        Real max =(m_in[0]-m_in[2]).norm();
         Real min =(m_in[0]-m_in[1]).norm();
+        Real max =(m_in[2]-m_in[1]).norm();
         EXPECT_LE(m_gridCellSize,max);
         EXPECT_GE(m_gridCellSize,min);
 

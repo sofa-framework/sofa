@@ -57,18 +57,45 @@ if(Qt5Core_FOUND)
 
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
-endif()
 
-if(WIN32)
-    sofa_copy_libraries_from_targets(${QT_TARGETS})
+    if(WIN32)
+        sofa_copy_libraries_from_targets(${QT_TARGETS})
+    endif()
     sofa_install_libraries_from_targets(${QT_TARGETS})
 
-    # Installing Qt platforms dll the hard way (dirty)
-    list (GET QT_TARGETS 0 QtCore_target)
-    get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
-    string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
-    FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
-    install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
+    # QT INSTALL (dirty)
+    # Get Qt libraries dir
+    get_target_property(QtCore_location Qt5::Core LOCATION)
+    get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
+    message("QT_LIBRARIES_DIR = ${QT_LIBRARIES_DIR}")
+    # Get Qt plugins dir
+    list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
+    if(TARGET ${QT_PLUGIN_ANY})
+        get_target_property(QT_PLUGIN_ANY_LOCATION ${QT_PLUGIN_ANY} LOCATION)
+        get_filename_component(QT_PLUGINS_SUBDIR ${QT_PLUGIN_ANY_LOCATION} DIRECTORY)
+        get_filename_component(QT_PLUGINS_DIR ${QT_PLUGINS_SUBDIR} DIRECTORY)
+    else()
+        # Try to guess QT_PLUGINS_DIR
+        if(UNIX AND NOT APPLE AND EXISTS "${QT_LIBRARIES_DIR}/qt5/plugins")
+            set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
+        endif()
+    endif()
+    message("QT_PLUGINS_DIR = ${QT_PLUGINS_DIR}")
+    # Install Qt plugins
+    install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
+    # Install Qt XCB libraries
+    file(GLOB QT_XCB_LIBRARIES
+        "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_XCB_LIBRARIES})
+    # Install Qt ICU libraries
+    file(GLOB QT_ICU_LIBRARIES
+        "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_ICU_LIBRARIES})
 endif()
 
 # These header files don't need to be processed by the moc.
