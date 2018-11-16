@@ -30,6 +30,7 @@ set(MOC_HEADER_FILES
     SofaVideoRecorderManager.h
     WDoubleLineEdit.h
     panels/QDocBrowser.h
+    DataLinkWidget.h
 )
 
 # these header files do not need MOCcing
@@ -44,6 +45,8 @@ set(HEADER_FILES
     TableDataWidget.h
     viewer/SofaViewer.h
     viewer/VisualModelPolicy.h
+    DataLinkWidget.h
+    GenericWidget.h
 )
 
 set(SOURCE_FILES
@@ -82,6 +85,7 @@ set(SOURCE_FILES
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
     panels/QDocBrowser.cpp
+    DataLinkWidget.cpp
 )
 
 set(UI_FILES
