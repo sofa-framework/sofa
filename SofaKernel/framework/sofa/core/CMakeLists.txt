@@ -122,7 +122,6 @@ set(HEADER_FILES
     objectmodel/SPtr.h
     objectmodel/Tag.h
     objectmodel/DataCallback.h
-    objectmodel/DataLink.h
     topology/BaseMeshTopology.h
     topology/BaseTopology.h
     topology/BaseTopologyData.h

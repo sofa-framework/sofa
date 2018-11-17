@@ -1,7 +1,6 @@
 #pragma once
 
 #include <sofa/gui/qt/DataWidget.h>
-#include <sofa/core/objectmodel/DataLink.h>
 
 namespace sofa {
 
