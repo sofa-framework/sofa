@@ -253,7 +253,7 @@ void BaseObject::init()
 	{
 		if ((*iData)->isRequired() && !(*iData)->isSet())
 		{
-            msg_error() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
+                        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
 		}
 	}
 }
