@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<>;
 
 namespace sofa
 {
