@@ -142,7 +142,6 @@ protected:
 };
 
 
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
 #ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3dTypes>;
@@ -153,7 +152,6 @@ extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaultty
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6fTypes>;
 #endif /// SOFA_WITH_FLOAT
-#endif
 
 } // namespace projectiveconstraintset
 

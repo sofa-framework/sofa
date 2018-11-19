@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP
-
 #include <SofaBoundaryCondition/FixedPlaneConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -34,11 +32,8 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-
-SOFA_DECL_CLASS(FixedPlaneConstraint)
 
 int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
 #ifdef SOFA_WITH_FLOAT
