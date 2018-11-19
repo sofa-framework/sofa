@@ -50,8 +50,8 @@ using sofa::simulation::SceneLoaderXML ;
 #include <string>
 using std::string ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<SReal>;
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
