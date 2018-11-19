@@ -44,7 +44,7 @@ using sofa::core::objectmodel::BaseObject ;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
-void SOFA_SIMULATION_GRAPH_API importPlugin(const std::string& name) ;
+bool SOFA_SIMULATION_GRAPH_API importPlugin(const std::string& name) ;
 
 Simulation::SPtr SOFA_SIMULATION_GRAPH_API createSimulation(const std::string& type="DAG") ;
 
