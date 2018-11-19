@@ -117,13 +117,13 @@ protected:
     class FCPointHandler;
 
     /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
+    FCPointHandler* m_pointHandler {nullptr};
 
     /// whether vertices should be selected from 2 parallel planes
-    bool m_selectVerticesFromPlanes;
+    bool m_selectVerticesFromPlanes {false};
 
     /// Pointer to the current topology
-    BaseMeshTopology* m_topology;
+    BaseMeshTopology* m_topology {nullptr};
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -140,6 +140,7 @@ protected:
     template<class T>
     void projectResponseImpl(const MechanicalParams* mparams, T& dx) const ;
 };
+
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
 #ifdef SOFA_WITH_DOUBLE
