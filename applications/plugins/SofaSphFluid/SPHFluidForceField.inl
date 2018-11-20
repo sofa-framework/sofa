@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <iostream>
 
@@ -546,18 +545,23 @@ SReal SPHFluidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPa
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowForceFields()) return;
-    //if (grid != NULL)
-    //	grid->draw(vparams);
+    if (!vparams->displayFlags().getShowForceFields())
+        return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    vparams->drawTool()->enableBlending();
+    vparams->drawTool()->disableDepthTest();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable(GL_LIGHTING);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthMask(0);
-    glColor3f(0,1,1);
-    glLineWidth(1);
-    glBegin(GL_LINES);
+
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glDepthMask(0);
+
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
     for (unsigned int i=0; i<particles.size(); i++)
     {
         Particle& Pi = particles[i];
@@ -565,7 +569,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         // Check grid
         if (Pi.neighbors.size() != Pi.neighbors2.size())
         {
-            glColor4f(1,0,0,1);
+            colorVector.push_back(sofa::defaulttype::Vec4f(1,0,0,1));
             for (unsigned int j=0; j<Pi.neighbors.size(); j++)
             {
                 int index = Pi.neighbors[j].first;
@@ -574,11 +578,15 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                     ++j2;
                 if (j2 == Pi.neighbors2.size())
                 {
-                    helper::gl::glVertexT(x[i]);
-                    helper::gl::glVertexT(x[index]);
+                    vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+                    vertices.push_back(sofa::defaulttype::Vector3(x[index]));
                 }
             }
-            glColor4f(1,0,1,1);
+            vparams->drawTool()->drawLines(vertices,1,colorVector[0]);
+            vertices.clear();
+            colorVector.clear();
+
+            colorVector.push_back(sofa::defaulttype::Vec4f(1,0,1,1));
             for (unsigned int j=0; j<Pi.neighbors2.size(); j++)
             {
                 int index = Pi.neighbors2[j].first;
@@ -587,10 +595,13 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                     ++j2;
                 if (j2 == Pi.neighbors.size())
                 {
-                    helper::gl::glVertexT(x[i]);
-                    helper::gl::glVertexT(x[index]);
+                    vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+                    vertices.push_back(sofa::defaulttype::Vector3(x[index]));
                 }
             }
+            vparams->drawTool()->drawLines(vertices,1,colorVector[0]);
+            vertices.clear();
+            colorVector.clear();
         }
 #else
         for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
@@ -600,22 +611,24 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             float f = r_h*2;
             if (f < 1)
             {
-                glColor4f(0,1-f,f,1-r_h);
+                colorVector.push_back(sofa::defaulttype::Vec4f(0,1-f,f,1-r_h));
             }
             else
             {
-                glColor4f(f-1,0,2-f,1-r_h);
+                colorVector.push_back(sofa::defaulttype::Vec4f(f-1,0,2-f,1-r_h));
             }
-            helper::gl::glVertexT(x[i]);
-            helper::gl::glVertexT(x[j]);
+            vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+            vertices.push_back(sofa::defaulttype::Vector3(x[j]));
         }
+        vparams->drawTool()->drawLines(vertices,1,colorVector);
+        vertices.clear();
+        colorVector.clear();
 #endif
     }
-    glEnd();
-    glDisable(GL_BLEND);
-    glDepthMask(1);
-    glPointSize(5);
-    glBegin(GL_POINTS);
+
+    vparams->drawTool()->disableBlending();
+    vparams->drawTool()->enableDepthTest();
+
     for (unsigned int i=0; i<particles.size(); i++)
     {
         Particle& Pi = particles[i];
@@ -623,18 +636,19 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         f = 1+10*(f-1);
         if (f < 1)
         {
-            glColor3f(0,1-f,f);
+            colorVector.push_back(sofa::defaulttype::Vec4f(0,1-f,f,1));
         }
         else
         {
-            glColor3f(f-1,0,2-f);
+            colorVector.push_back(sofa::defaulttype::Vec4f(f-1,0,2-f,1));
         }
-        helper::gl::glVertexT(x[i]);
+        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
     }
+    vparams->drawTool()->drawPoints(vertices,5,colorVector);
+    vertices.clear();
+    colorVector.clear();
 
-    glEnd();
-    glPointSize(1);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

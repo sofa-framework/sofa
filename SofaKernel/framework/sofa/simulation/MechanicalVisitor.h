@@ -1826,8 +1826,9 @@ class SOFA_SIMULATION_CORE_API MechanicalResetConstraintVisitor : public BaseMec
 {
 public:
     //VecId res;
-    MechanicalResetConstraintVisitor(const sofa::core::ExecParams* params)
-        : BaseMechanicalVisitor(params)
+    MechanicalResetConstraintVisitor(const sofa::core::ConstraintParams* cparams)
+        : BaseMechanicalVisitor(cparams)
+        , m_cparams(cparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1858,6 +1859,9 @@ public:
     {
     }
 #endif
+
+private:
+    const sofa::core::ConstraintParams* m_cparams;
 };
 
 
@@ -2073,45 +2077,6 @@ protected:
     bool reverseOrder;
 };
 
-class SOFA_SIMULATION_CORE_API MechanicalRenumberConstraint : public MechanicalVisitor
-{
-public:
-    MechanicalRenumberConstraint(const sofa::core::MechanicalParams* mparams , const sofa::helper::vector<unsigned> &renumbering)
-        : MechanicalVisitor(mparams) , renumbering(renumbering)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->renumberConstraintId(renumbering);
-        return RESULT_PRUNE;
-    }
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalRenumberConstraint"; }
-
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-
-protected:
-    const sofa::helper::vector<unsigned> &renumbering;
-};
 
 /** Apply the constraints as filters to the given vector.
 This works for simple independent constraints, like maintaining a fixed point.

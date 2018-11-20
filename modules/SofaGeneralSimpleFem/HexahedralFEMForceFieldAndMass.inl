@@ -472,19 +472,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
         for (n1=0; n1<8; n1++)
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
-#ifndef SOFA_NEW_HEXA
-            node1 = hexa[_indices[n1]];
-#else
             node1 = hexa[n1];
-#endif
+
             // find index of node 2
             //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = hexa[_indices[n2]];
-#else
                 node2 = hexa[n2];
-#endif
+
                 Mat33 tmp = it->rotation.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * it->rotation;
@@ -507,12 +501,19 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
+    if (this->hexahedronInfo.getValue().size() != hexahedra.size())
+    {
+        msg_error() << "HexahedronInformation vector and Topology's Hexahedron vector should have the same size.";
+        return;
+    }
+
     //typename VecElement::const_iterator it;
     typename helper::vector<HexahedronInformation>::const_iterator it;
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
-    for ( unsigned int e = 0; e < hexahedra.size(); ++e )
+    unsigned int e = 0;
+    for ( it = this->hexahedronInfo.getValue().begin() ; it != this->hexahedronInfo.getValue().end() ; ++it, ++e )
     {
         const ElementMass &Me = _elementMasses.getValue() [e];
         const Element hexa = hexahedra[e];
@@ -525,19 +526,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
         for ( n1 = 0; n1 < 8; n1++ )
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
-#ifndef SOFA_NEW_HEXA
-            node1 = hexa[_indices[n1]];
-#else
             node1 = hexa[n1];
-#endif
+
             // find index of node 2
             //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = hexa[_indices[n2]];
-#else
                 node2 = hexa[n2];
-#endif
+
                 // add M to matrix
                 Mat33 tmp = Mat33 ( Coord ( Me[3*n1+0][3*n2+0], Me[3*n1+0][3*n2+1], Me[3*n1+0][3*n2+2] ),
                         Coord ( Me[3*n1+1][3*n2+0], Me[3*n1+1][3*n2+1], Me[3*n1+1][3*n2+2] ),

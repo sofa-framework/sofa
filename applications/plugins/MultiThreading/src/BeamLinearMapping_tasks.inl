@@ -38,7 +38,7 @@ namespace mapping
 
 
 		template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( const simulation::Task::Status* status ) 
+	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( const Task::Status* status ) 
 		: Task( status )
 		, _mapping(0)	
 		, _in(0)
@@ -51,7 +51,7 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	bool BeamLinearMapping_mt< TIn, TOut>::applyTask::run( simulation::WorkerThread* )
+	bool BeamLinearMapping_mt< TIn, TOut>::applyTask::run()
 	{
 		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
@@ -79,12 +79,12 @@ namespace mapping
 			fact = 3*(fact*fact)-2*(fact*fact*fact);
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
 		}
-		return true;
+		return false;
 	}
 
 
 	template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( const simulation::Task::Status* status ) 
+	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( const Task::Status* status ) 
 		: Task( status )
 		, _mapping(0)	
 		, _in(0)
@@ -97,7 +97,7 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	bool BeamLinearMapping_mt< TIn, TOut>::applyJTask::run( simulation::WorkerThread* )
+	bool BeamLinearMapping_mt< TIn, TOut>::applyJTask::run()
 	{
 		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
@@ -128,12 +128,12 @@ namespace mapping
 			
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
 		}
-		return true;
+		return false;
 	}
 
 
 	template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( const simulation::Task::Status* status ) 
+	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( const Task::Status* status ) 
 		: Task( status )
 		, _mapping(0)	
 		, _in(0)
@@ -146,7 +146,7 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	bool BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::run( simulation::WorkerThread* )
+	bool BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::run()
 	{
 		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
@@ -183,7 +183,7 @@ namespace mapping
 			getVOrientation(_out1) += cross( rotatedPoint1, f) * (fact);
 
 		}
-		return true;
+		return false;
 	}
 
 

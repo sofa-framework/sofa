@@ -46,6 +46,7 @@ public:
 
 
     typedef core::topology::BaseMeshTopology::TetraID TetraID;
+    typedef core::topology::BaseMeshTopology::TetrahedronID TetrahedronID;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
@@ -84,7 +85,7 @@ public:
     *
     */
     virtual void addTetrahedra(const sofa::helper::vector< Tetrahedron > &tetrahedra,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< TetrahedronID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
 
@@ -92,18 +93,18 @@ public:
     *
     * \sa addTetrahedraProcess
     */
-    void addTetrahedraWarning(const unsigned int nTetrahedra,
+    void addTetrahedraWarning(const size_t nTetrahedra,
             const sofa::helper::vector< Tetrahedron >& tetrahedraList,
-            const sofa::helper::vector< unsigned int >& tetrahedraIndexList);
+            const sofa::helper::vector< TetrahedronID >& tetrahedraIndexList);
 
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
     *
     * \sa addTetrahedraProcess
     */
-    void addTetrahedraWarning(const unsigned int nTetrahedra,
+    void addTetrahedraWarning(const size_t nTetrahedra,
             const sofa::helper::vector< Tetrahedron >& tetrahedraList,
-            const sofa::helper::vector< unsigned int >& tetrahedraIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< TetrahedronID >& tetrahedraIndexList,
+            const sofa::helper::vector< sofa::helper::vector< TetrahedronID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
     /** \brief Add a tetrahedron.
@@ -123,7 +124,7 @@ public:
     *
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    void removeTetrahedraWarning( sofa::helper::vector<unsigned int> &tetrahedra);
+    void removeTetrahedraWarning( sofa::helper::vector<TetrahedronID> &tetrahedra);
 
     /** \brief Remove a subset of tetrahedra
     *
@@ -133,7 +134,7 @@ public:
     * \sa removeTetrahedraWarning
     * @param removeIsolatedItems if true remove isolated triangles, edges and vertices
     */
-    virtual void removeTetrahedraProcess( const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeTetrahedraProcess( const sofa::helper::vector<TetrahedronID> &indices,
             const bool removeIsolatedItems=false);
 
     /** \brief Actually Add some triangles to this topology.
@@ -148,7 +149,7 @@ public:
     * @param removeIsolatedEdges if true isolated edges are also removed
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeTrianglesProcess(const sofa::helper::vector<TriangleID> &indices,
             const bool removeIsolatedEdges=false,
             const bool removeIsolatedPoints=false) override;
 
@@ -166,14 +167,14 @@ public:
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     * @param removeIsolatedItems if true remove isolated vertices
     */
-    virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
             const bool removeIsolatedItems=false) override;
 
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints) override;
+    virtual void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -183,35 +184,35 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true) override;
+    virtual void removePointsProcess(const sofa::helper::vector<PointID> &indices, const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/,
+    virtual void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
+            const sofa::helper::vector<PointID> &/*inv_index*/,
             const bool renumberDOF = true) override;
 
     /** \brief Remove a set  of tetrahedra
     @param tetrahedra an array of tetrahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeTetrahedra(const sofa::helper::vector< unsigned int >& tetrahedraIds);
+    virtual void removeTetrahedra(const sofa::helper::vector< TetrahedronID >& tetrahedraIds);
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> &items) override;
+    virtual void removeItems(const sofa::helper::vector<TetrahedronID> &items) override;
 
     /** \brief  Removes all tetrahedra in the ball of center "ind_ta" and of radius dist(ind_ta, ind_tb)
     */
-    void RemoveTetraBall(unsigned int ind_ta, unsigned int ind_tb);
+    void RemoveTetraBall(TetrahedronID ind_ta, TetrahedronID ind_tb);
 
     /** \brief Generic method for points renumbering
     */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/) override;
+    virtual void renumberPoints( const sofa::helper::vector<PointID> &/*index*/,
+            const sofa::helper::vector<PointID> &/*inv_index*/) override;
 
 
 private:

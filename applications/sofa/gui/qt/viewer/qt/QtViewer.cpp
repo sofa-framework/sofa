@@ -50,6 +50,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 
+#include <QImage>
+
 namespace sofa
 {
 
@@ -101,9 +103,11 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    //VSync
-    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
-    f.setSwapInterval(0); // disable vertical refresh sync
+    if(!SOFA_GUI_VSYNC)
+    {
+        std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+        f.setSwapInterval(0); // disable vertical refresh sync
+    }
 
     int vmajor = 3, vminor = 2;
     f.setVersion(vmajor,vminor);
@@ -1697,6 +1701,23 @@ The captured images are saved in the running project directory under the name fo
 Each time the frame is updated a screenshot is saved<br></li>\
 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
     return text;
+}
+
+
+void QtViewer::screenshot(const std::string& filename, int compression_level)
+{
+    QImage screenshot;
+
+    screenshot = this->grabFramebuffer();
+    bool res = screenshot.save(filename.c_str(), nullptr, (compression_level == -1) ? -1 : compression_level*100); // compression_level is either -1 or [0,100]
+    if(res)
+    {
+        msg_info("QtViewer") << "Saved " << screenshot.width() << "x" << screenshot.height() << " screen image to " << filename;
+    }
+    else
+    {
+        msg_error("QtViewer") << "Unknown error while saving screen image to " << filename;
+    }
 }
 
 }// namespace qt

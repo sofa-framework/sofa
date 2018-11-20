@@ -29,8 +29,9 @@
 #cmakedefine SOFA_GUI_QT
 #cmakedefine SOFA_GUI_QGLVIEWER
 #cmakedefine SOFA_GUI_QTVIEWER
-#cmakedefine SOFA_GUI_INTERACTION
 #cmakedefine SOFA_GUI_NATIVE_MENU
 #cmakedefine SOFA_HAVE_QWT
+
+#define SOFA_GUI_VSYNC ${SOFA_GUI_VSYNC_}
 
 #endif

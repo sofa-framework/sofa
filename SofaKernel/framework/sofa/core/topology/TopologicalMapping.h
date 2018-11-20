@@ -22,11 +22,6 @@
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 #define SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 
-#include <cstdlib>
-#include <vector>
-#include <string>
-#include <iostream>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa

@@ -28,7 +28,6 @@
 
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <sofa/helper/RandomGenerator.h>
 
@@ -487,6 +486,8 @@ void TransformPosition<DataTypes>::update()
 template <class DataTypes>
 void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    vparams->drawTool()->saveLastState();
+
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
@@ -504,6 +505,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
             points.push_back(out[i]);
         vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2f, 0.8f, 0.2f, 1.0f));
     }
+    vparams->drawTool()->restoreLastState();
 }
 
 

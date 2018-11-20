@@ -23,8 +23,7 @@
 #ifndef SOFA_CORE_LOADER_PRIMITIVEGROUP_H_
 #define SOFA_CORE_LOADER_PRIMITIVEGROUP_H_
 
-#include <sofa/core/core.h>
-#include <sofa/core/loader/Material.h>
+#include <string>
 
 namespace sofa
 {

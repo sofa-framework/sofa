@@ -21,16 +21,29 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
+
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa
 {
+
+namespace core
+{
+    namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+    }
+}
+
 
 namespace component
 {
@@ -72,7 +85,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidCapsuleModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
 
-    IntersectorFactory::getInstance()->addIntersectors(this);
+	IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -85,14 +98,6 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
-}
-}
 
 } // namespace sofa
 

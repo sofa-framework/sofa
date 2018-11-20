@@ -75,8 +75,8 @@ public:
     //   - counting the number of activate/deactivate is a weak form of tracking the
     //     client of this class.
     void reset() ;
-    int activate() ;
-    int deactivate() ;
+    size_t activate() ;
+    size_t deactivate() ;
     const vector<Message>& getMessages() const ;
 
     /// Inherited from MessageHandler
@@ -97,8 +97,8 @@ class SOFA_HELPER_API MainLoggingMessageHandler
 {
 public:
     static LoggingMessageHandler& getInstance() ;
-    static int activate() ;
-    static int deactivate() ;
+    static size_t activate() ;
+    static size_t deactivate() ;
     static const vector<Message>& getMessages() ;
 };
 
@@ -126,7 +126,7 @@ public:
         return messages.end() ;
     }
 
-    int size()
+    size_t size()
     {
         const std::vector<Message>& messages = MainLoggingMessageHandler::getMessages() ;
 
@@ -134,7 +134,7 @@ public:
     }
 
 private:
-    unsigned int m_firstMessage      {0} ;
+    size_t m_firstMessage      {0} ;
 };
 
 

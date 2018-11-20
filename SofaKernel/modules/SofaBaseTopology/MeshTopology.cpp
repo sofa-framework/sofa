@@ -186,7 +186,9 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 // edge not in edgeMap so create a new one
                 edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                seqEdges.push_back(e);
+                // To be similar to TriangleSetTopologyContainer::createEdgeSetArray
+                //seqEdges.push_back(e); Changed to have oriented edges on the border of the triangulation. 
+                seqEdges.push_back(Edge(v1, v2));
             }
 //            else
 //            {
@@ -700,11 +702,9 @@ void MeshTopology::addTetra( int a, int b, int c, int d )
 
 void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
 {
-#ifdef SOFA_NEW_HEXA
+
     seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
-#else
-    seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
-#endif
+
     seqHexahedra.endEdit();
     if (p1 >= (int)nbPoints) nbPoints = p1+1;
     if (p2 >= (int)nbPoints) nbPoints = p2+1;
@@ -775,34 +775,34 @@ void MeshTopology::setNbPoints(int n)
     nbPoints = n;
 }
 
-int MeshTopology::getNbEdges()
+size_t MeshTopology::getNbEdges()
 {
-    return (int)getEdges().size();
+    return getEdges().size();
 }
 
-int MeshTopology::getNbTriangles()
+size_t MeshTopology::getNbTriangles()
 {
-    return (int)getTriangles().size();
+    return getTriangles().size();
 }
 
-int MeshTopology::getNbQuads()
+size_t MeshTopology::getNbQuads()
 {
-    return (int)getQuads().size();
+    return getQuads().size();
 }
 
-int MeshTopology::getNbTetrahedra()
+size_t MeshTopology::getNbTetrahedra()
 {
-    return (int)getTetrahedra().size();
+    return getTetrahedra().size();
 }
 
-int MeshTopology::getNbHexahedra()
+size_t MeshTopology::getNbHexahedra()
 {
-    return (int)getHexahedra().size();
+    return getHexahedra().size();
 }
 
-int MeshTopology::getNbUVs()
+size_t MeshTopology::getNbUVs()
 {
-    return (int)getUVs().size();
+    return getUVs().size();
 }
 
 const MeshTopology::Edge MeshTopology::getEdge(index_type i)
@@ -867,7 +867,7 @@ void MeshTopology::createEdgesAroundVertexArray ()
         {
             // adding edge i in the edge shell of both points
             m_edgesAroundVertex[ edges[i][0] ].push_back( i );
-            m_edgesAroundVertex[ edges[i][1] ].insert( m_edgesAroundVertex[ edges[i][1] ].begin(), i );
+            m_edgesAroundVertex[ edges[i][1] ].push_back( i );
         }
     }
 }
@@ -2317,7 +2317,7 @@ void MeshTopology::updateTetrahedra()
 
 bool MeshTopology::checkConnexity()
 {
-    unsigned int nbr = 0;
+    size_t nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2350,9 +2350,9 @@ bool MeshTopology::checkConnexity()
 }
 
 
-unsigned int MeshTopology::getNumberOfConnectedComponent()
+size_t MeshTopology::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = 0;
+    size_t nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2400,7 +2400,7 @@ unsigned int MeshTopology::getNumberOfConnectedComponent()
 
 const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsigned int elem)
 {
-    unsigned int nbr = 0;
+    size_t nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2641,7 +2641,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbEdges()*2u);
-        for (int i=0; i<getNbEdges(); i++)
+        for (EdgeID i=0; i<getNbEdges(); i++)
         {
             const Edge& c = getEdge(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2655,7 +2655,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbTriangles()*3u);
-        for (int i=0; i<getNbTriangles(); i++)
+        for (TriangleID i=0; i<getNbTriangles(); i++)
         {
             const Triangle& c = getTriangle(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2670,7 +2670,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbQuads()*4u);
-        for (int i=0; i<getNbQuads(); i++)
+        for (QuadID i=0; i<getNbQuads(); i++)
         {
             const Quad& c = getQuad(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2688,7 +2688,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
         std::vector<defaulttype::Vector3> pos2;
         pos1.reserve(this->getNbHexahedra()*8u);
         pos2.reserve(this->getNbHexahedra()*8u);
-        for (int i=0; i<getNbHexahedra(); i++)
+        for (HexahedronID i=0; i<getNbHexahedra(); i++)
         {
             const Hexa& c = getHexahedron(i);
             pos1.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2718,7 +2718,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbTetrahedra()*12u);
-        for (int i=0; i<getNbTetras(); i++)
+        for (TetrahedronID i=0; i<getNbTetras(); i++)
         {
             const Tetra& t = getTetra(i);
             pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));

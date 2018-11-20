@@ -215,9 +215,8 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
     this->interactor->setBodyPicked(firstIncisionBody);
 }
 
-void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
+void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (firstBody.body == NULL) return;
 
     BodyPicked currentBody=this->interactor->getBodyPicked();
@@ -277,22 +276,20 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
     positions[0] = pointA;
     positions[positions.size()-1] = pointB;
 
-    glDisable(GL_LIGHTING);
-    glColor3f(0.3f,0.8f,0.3f);
-    glBegin(GL_LINES);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(0.3, 0.8, 0.3, 1.0);
+    std::vector<sofa::defaulttype::Vector3> vertices;
     for (unsigned int i = 1; i<positions.size(); ++i)
     {
-        glVertex3d(positions[i-1][0], positions[i-1][1], positions[i-1][2]);
-        glVertex3d(positions[i][0], positions[i][1], positions[i][2]);
+        vertices.push_back(sofa::defaulttype::Vector3(positions[i-1][0], positions[i-1][1], positions[i-1][2]));
+        vertices.push_back(sofa::defaulttype::Vector3(positions[i][0], positions[i][1], positions[i][2]));
     }
-
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,1,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 
 }
 }
 }
-

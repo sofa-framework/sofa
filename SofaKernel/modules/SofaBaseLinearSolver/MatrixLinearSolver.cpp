@@ -168,7 +168,8 @@ GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVect
 }
 
 template<>
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyContactForce(const defaulttype::BaseVector* /*f*/,double /*positionFactor*/,double /*velocityFactor*/) {
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const defaulttype::BaseVector* /*f*/)
+{
 //    FullVector<Real> temporaryVector;
 //    temporaryVector.resize(currentGroup->systemMatrix->rowSize());
 //    internalData.projectForceInConstraintSpace(&temporaryVector,f);
@@ -211,6 +212,13 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 
 template<>
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix() { return NULL; }
+
+template<>
+const core::behavior::MultiMatrixAccessor* 
+MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>::getSystemMultiMatrixAccessor() const
+{
+    return nullptr;
+}
 
 template<>
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector() { return NULL; }

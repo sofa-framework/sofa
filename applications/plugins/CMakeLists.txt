@@ -9,7 +9,8 @@ sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollis
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
 sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
-sofa_add_plugin(image image)           # Depends on CImagePlugin
+sofa_add_plugin(MultiThreading MultiThreading)
+sofa_add_plugin(image image)           # Depends on CImagePlugin, soft dependency to MultiThreading
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin(Flexible Flexible)     # Depends on image & CImagePlugin
@@ -21,7 +22,6 @@ sofa_add_plugin(ARTrack ARTrack)
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
 sofa_add_plugin(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
-sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(PluginExample PluginExample)
 sofa_add_plugin(ManifoldTopologies ManifoldTopologies)
 sofa_add_plugin(OptiTrackNatNet OptiTrackNatNet)
@@ -41,9 +41,12 @@ sofa_add_plugin(SofaCarving SofaCarving)
 sofa_add_plugin(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
+sofa_add_plugin(SofaAssimp SofaAssimp)
 
 # SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
 sofa_add_plugin_experimental(PSL PSL)
+
+sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
@@ -56,4 +59,3 @@ else()
     sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 endif()
-

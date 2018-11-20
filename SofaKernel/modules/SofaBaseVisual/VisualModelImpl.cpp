@@ -40,7 +40,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/io/MeshOBJ.h>
-#include <sofa/helper/io/MeshSTL.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sstream>
@@ -522,20 +521,29 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
 
             if (objLoader.get() == 0)
             {
+                msg_error() << "Mesh creation failed. Loading mesh file directly inside the VisualModel is not maintained anymore. Use a MeshLoader and link the Data to the VisualModel. E.g:" << msgendl
+                    << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                    << "<OglModel src='@myLoader'/>";
                 return false;
             }
             else
-            {
-                //if( MeshSTL *Loader = dynamic_cast< MeshSTL *>(objLoader.get()) )
-                if(objLoader.get()->loaderType == "stl" || objLoader.get()->loaderType == "vtu")
-                {
-                    setMesh(*objLoader, false);
-                }
-                else
+            {				
+                if(objLoader.get()->loaderType == "obj")
                 {
                     //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
                     //setMesh(*objLoader,tex);
-                    setMesh(*objLoader, true);
+                    msg_warning() << "Loading obj mesh file directly inside the VisualModel will be deprecated soon. Use a MeshObjLoader and link the Data to the VisualModel. E.g:" << msgendl
+                        << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                        << "<OglModel src='@myLoader'/>";
+                    
+                    setMesh(*objLoader, true); 
+                }
+                else
+                {
+                    msg_error() << "Loading mesh file directly inside the VisualModel is not anymore supported since release 18.06. Use a MeshLoader and link the Data to the VisualModel. E.g:" << msgendl
+                        << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                        << "<OglModel src='@myLoader'/>";
+                    return false;
                 }
             }
 
@@ -765,8 +773,34 @@ void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int alg
 
 void VisualModelImpl::init()
 {
-    load(fileMesh.getFullPath(), "", texturename.getFullPath());
     m_topology = getContext()->getMeshTopology();
+    if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
+    { // handle case where vertPosIdx was initialized through a loader
+        m_vertices2.setValue(m_positions.getValue());
+        if (m_positions.getParent())
+        {
+            m_positions.delInput(m_positions.getParent()); // remove any link to positions, as we need to recompute it
+        }
+        helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
+        helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
+        helper::ReadAccessor<Data<sofa::defaulttype::ResizableExtVector<int>>> vertPosIdx = m_vertPosIdx;
+        int nbVIn = 0;
+        for (int i = 0; i < (int)vertPosIdx.size(); ++i)
+        {
+            if (vertPosIdx[i] >= nbVIn)
+            {
+                nbVIn = vertPosIdx[i]+1;
+            }
+        }
+        vIn.resize(nbVIn);
+        for (int i = 0; i < (int)vertPosIdx.size(); ++i)
+        {
+            vIn[vertPosIdx[i]] = vOut[i];
+        }
+        m_topology = nullptr; // make sure we don't use the topology
+    }
+
+    load(fileMesh.getFullPath(), "", texturename.getFullPath());
 
     if (m_topology == 0 || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != (unsigned int)m_topology->getNbPoints()))
     {

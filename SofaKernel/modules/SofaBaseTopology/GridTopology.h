@@ -180,7 +180,7 @@ public:
 
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    virtual int getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    virtual size_t getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 
@@ -188,11 +188,6 @@ public:
     Hexa getHexahedron(int x, int y, int z);
     Hexa getHexaCopy(int i);
     Quad getQuadCopy(int i);
-
-#ifndef SOFA_NEW_HEXA
-    Cube getCubeCopy(int i) { return getHexaCopy(i); }
-    Cube getCube(int x, int y, int z) { return getHexahedron(x,y,z); }
-#endif
 
     /// Get Point index in Grid, will call method @sa getIndex
     int point(int x, int y, int z) const { return getIndex(x,y,z); }

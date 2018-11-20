@@ -63,7 +63,7 @@ Using LCP contact detection and resolution:
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
         <MechanicalObject name="instrumentState" template="Rigid" position="1.2 1.6 -3.55  0 0 0 1" />
-        <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+        <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <LCPForceFeedback activate="true" forceCoef="0.005" />
         <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection />

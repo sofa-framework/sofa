@@ -29,6 +29,9 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/helper.h>
 
+#include <sofa/helper/StringUtils.h>
+using sofa::helper::getAStringCopy ;
+
 namespace sofa
 {
 
@@ -133,7 +136,7 @@ public:
                 std::ostringstream oname, ohelp;
                 oname << m_name << (i+1);
                 ohelp << m_help << "(" << (i+1) << ")";
-                Data< T >* d = new Data< T >(m_defaultValue, ohelp.str().c_str(), true, false);
+                Data< T >* d = new Data< T >(m_defaultValue, getAStringCopy(ohelp.str().c_str()), true, false);
                 d->setName(oname.str());
                 this->push_back(d);
                 if (m_component!=NULL)

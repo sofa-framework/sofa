@@ -38,7 +38,6 @@
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>
@@ -221,9 +220,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         {
           sofa::gui::initMain();
 
-          int argc= 1;
           char* argv[]= { const_cast<char*>("a") };
-          glutInit(&argc,argv);
 
           if (sofa::gui::GUIManager::Init(argv[0],"qt"))
               std::cerr << "ERROR in sofa::gui::GUIManager::Init()" << std::endl;

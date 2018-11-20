@@ -26,6 +26,7 @@
 
 #include "BeamLinearMapping_tasks.inl"
 
+#include "TaskScheduler.h"
 
 namespace sofa
 {
@@ -56,7 +57,7 @@ namespace mapping
 	template <class TIn, class TOut>
 	void BeamLinearMapping_mt< TIn, TOut>::init()
 	{
-		simulation::TaskScheduler::getInstance().start();
+        simulation::TaskScheduler::getInstance()->init();
 
 		BeamLinearMapping< TIn, TOut>::init();
 	}
@@ -73,7 +74,7 @@ namespace mapping
 	{
 
 		//Inherit::apply(mparams, dOut, dIn);
-		boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyTask));
+		//boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyTask));
 
         unsigned int numPoints = this->points.size();
 
@@ -91,10 +92,8 @@ namespace mapping
 
 
 			// create tasks
-			simulation::Task::Status status;
-			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
-
-			//const int nbThread = simulation::TaskScheduler::getInstance().size();
+            simulation::Task::Status status;
+            simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
 
@@ -104,7 +103,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
 
 				task->_mapping = this;
 				//task->_mparams = mparams;
@@ -113,13 +112,13 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 			if ( pointsLeft > 0)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
 
 				task->_mapping = this;
 				//task->_mparams = mparams;
@@ -128,17 +127,17 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
 
 				task->_mapping = this;
 				//task->_mparams = mparams;
@@ -147,11 +146,11 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 		}
 		else
@@ -162,7 +161,7 @@ namespace mapping
 		}
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 
 	}
 
@@ -173,7 +172,7 @@ namespace mapping
 	void BeamLinearMapping_mt< TIn, TOut>::applyJ(const core::MechanicalParams * params /* PARAMS FIRST */, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in)
 	{
 
-		boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTask));
+		//boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTask));
         unsigned int numPoints = this->points.size();
 
 		if ( numPoints >  2*mGrainSize.getValue()  )
@@ -187,8 +186,8 @@ namespace mapping
 
             out.resize(this->points.size());
 
-			simulation::Task::Status status;
-			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
+            simulation::Task::Status status;
+            simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
 
@@ -198,7 +197,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -206,13 +205,13 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 			if ( pointsLeft > 0)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -220,17 +219,17 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -238,11 +237,11 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 		}
 		else
@@ -253,7 +252,7 @@ namespace mapping
 		}
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 
 	}
 
@@ -264,7 +263,7 @@ namespace mapping
 	void BeamLinearMapping_mt<TIn, TOut>::applyJT(const core::MechanicalParams * mparams /* PARAMS FIRST */, Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in)
 	{
 
-		boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask));
+		//boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask));
 
         unsigned int numPoints = this->points.size();
 
@@ -274,8 +273,8 @@ namespace mapping
 			helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
 
 
-			simulation::Task::Status status;
-			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
+            simulation::Task::Status status;
+            simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
 
@@ -285,7 +284,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -293,13 +292,13 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 			if ( pointsLeft > 0)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -307,17 +306,17 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -325,11 +324,11 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 		}
 		else
@@ -340,7 +339,7 @@ namespace mapping
 		}
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 
 	}
 

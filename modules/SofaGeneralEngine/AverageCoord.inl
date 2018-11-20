@@ -27,7 +27,6 @@
 #endif
 
 #include "AverageCoord.h"
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

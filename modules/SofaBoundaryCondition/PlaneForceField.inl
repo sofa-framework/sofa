@@ -28,7 +28,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <sofa/defaulttype/BoundingBox.h>
@@ -55,16 +54,11 @@ PlaneForceField<DataTypes>::PlaneForceField() :
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness. (default=500)"))
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping. (default=5)"))
     , d_maxForce(initData(&d_maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
-
     , d_bilateral( initData(&d_bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
-
     , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-
-    // TODO(dmarchal): draw is a bad name. doDraw, doDebugDraw or drawEnabled to be consistent with the drawSize ?
-    , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "draw", "enable/disable drawing of plane. (default=false)"))
-    // TODO(dmarchal): color is a bad name.
-    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(0.0f,.5f,.2f,1.0f), "color", "plane color. (default=[0.0,0.5,0.2,1.0])"))
-    , d_drawSize(initData(&d_drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled. (default=10)"))
+    , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "showPlane", "enable/disable drawing of plane. (default=false)"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(0.0f,.5f,.2f,1.0f), "planeColor", "plane color. (default=[0.0,0.5,0.2,1.0])"))
+    , d_drawSize(initData(&d_drawSize, (Real)10.0f, "showPlaneSize", "plane display size if draw is enabled. (default=10)"))
 {
     Deriv n;
     DataTypes::set(n, 0, 1, 0);
@@ -284,17 +278,18 @@ void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if(this->m_componentstate != ComponentState::Valid)
         return ;
 
-    if (!vparams->displayFlags().getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawIsEnabled.getValue())
         return;
 
-    if (d_drawIsEnabled.getValue())
-        drawPlane(vparams);
+    drawPlane(vparams);
 }
 
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vparams,float size)
 {
+    if(!vparams->displayFlags().getShowForceFields())
+        return;
     if (size == 0.0f)
         size = (float)d_drawSize.getValue();
 
@@ -330,6 +325,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     points.push_back(corners[0]);
     points.push_back(corners[2]);
     points.push_back(corners[3]);
+    vparams->drawTool()->saveLastState();
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
@@ -363,15 +359,17 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         }
     }
     vparams->drawTool()->drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>
 void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
-    if (onlyVisible && !d_drawIsEnabled.getValue()) return;
+    if (onlyVisible && !d_drawIsEnabled.getValue())
+        return;
 
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
+    const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 

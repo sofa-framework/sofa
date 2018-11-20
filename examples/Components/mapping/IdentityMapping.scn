@@ -13,7 +13,7 @@
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <UniformMass mass="1" />
+        <UniformMass vertexMass="1" />
         <FixedConstraint indices="38 39 40 41 42 43 123 124 137" />
         <TriangleFEMForceField name="FEM" youngModulus="50000" poissonRatio="0.3" method="large" />
         <Triangle />

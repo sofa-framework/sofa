@@ -43,12 +43,12 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyC
 public:
     SOFA_CLASS(EdgeSetTopologyContainer,PointSetTopologyContainer);
 
-    typedef BaseMeshTopology::PointID		   	PointID;
-    typedef BaseMeshTopology::EdgeID			      EdgeID;
-    typedef BaseMeshTopology::Edge				   Edge;
-    typedef BaseMeshTopology::SeqEdges			   SeqEdges;
-    typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
-    typedef sofa::helper::vector<EdgeID>         VecEdgeID;
+    typedef BaseMeshTopology::PointID               PointID;
+    typedef BaseMeshTopology::EdgeID                EdgeID;
+    typedef BaseMeshTopology::Edge                  Edge;
+    typedef BaseMeshTopology::SeqEdges              SeqEdges;
+    typedef BaseMeshTopology::EdgesAroundVertex     EdgesAroundVertex;
+    typedef sofa::helper::vector<EdgeID>            VecEdgeID;
 
 
 protected:
@@ -128,12 +128,12 @@ public:
      * The difference to getNbEdges() is that this method does not generate the edge array if it does not exist.
      * @return the number of edges.
      */
-    unsigned int getNumberOfEdges() const;
+    size_t getNumberOfEdges() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const override;
+    virtual size_t getNumberOfElements() const override;
 
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -176,7 +176,7 @@ public:
     virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const VecEdgeID getConnectedElement(EdgeID elem) override;
@@ -187,8 +187,8 @@ public:
     virtual const VecEdgeID getElementAroundElements(VecEdgeID elems) override;
     /// @}
 
-	  /** \brief Returns the type of the topology */
-	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
+      /** \brief Returns the type of the topology */
+      virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
     
 
 protected:

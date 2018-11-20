@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_COLLISIONMODEL_H
 #define SOFA_CORE_COLLISIONMODEL_H
 
-#include <vector>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 

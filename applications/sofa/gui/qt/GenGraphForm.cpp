@@ -46,8 +46,10 @@ namespace gui
 namespace qt
 {
 
-GenGraphForm::GenGraphForm()
-    : currentTask(NULL), settingFilter(false)
+GenGraphForm::GenGraphForm(QWidget *parent)
+    : QDialog(parent)
+    , currentTask(NULL)
+    , settingFilter(false)
 {
     setupUi(this);
     // signals and slots connections

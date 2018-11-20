@@ -85,10 +85,7 @@
         <Attribute type="name">
             <Data value="particleMass" />
         </Attribute>
-        <Attribute type="mass">
-            <Data value="1" />
-        </Attribute>
-        <Attribute type="totalmass">
+        <Attribute type="totalMass">
             <Data value="1" />
         </Attribute>
     </UniformMass>

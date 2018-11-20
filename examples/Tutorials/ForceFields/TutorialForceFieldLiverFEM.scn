@@ -9,10 +9,11 @@
     <Node name="LiverFEM" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
-        <MeshTopology name="mesh" fileTopology="mesh/liver.msh" />
+        <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
+        <MeshTopology name="mesh" src="@meshLoader0" />
         <MechanicalObject template="Vec3d" name="dofs" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" poissonRatio="0.45" />
-        <UniformMass name="mass" totalmass="1" />
+        <UniformMass name="mass" totalMass="1" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" />

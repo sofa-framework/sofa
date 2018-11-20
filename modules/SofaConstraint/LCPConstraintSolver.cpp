@@ -28,9 +28,6 @@
 #include <sofa/simulation/SolveVisitor.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <math.h>
@@ -330,7 +327,7 @@ void LCPConstraintSolver::build_LCP()
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
-    simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), _numConstraints).execute(context);
+    simulation::MechanicalAccumulateConstraint(&cparams, cparams.j(), _numConstraints).execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
@@ -717,7 +714,7 @@ void LCPConstraintSolver::build_problem_info()
 
     simulation::MechanicalResetConstraintVisitor resetCtr(&cparams);
     resetCtr.execute(context);
-    simulation::MechanicalAccumulateConstraint accCtr(&cparams, core::MatrixDerivId::holonomicC(), _numConstraints );
+    simulation::MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
     accCtr.execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
@@ -1029,15 +1026,11 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         std::list<unsigned int>::iterator it_c ;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; ++it_c )
+        //constraints are treated 3x3 (friction contact)
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; std::advance(it_c, 3) )
         {
             int constraint = *it_c;
             c1 = constraint/3;
-
-            //constraints are treated 3x3 (friction contact)
-            ++it_c;
-            if(it_c != contact_sequence.end())
-                ++it_c;
 
             // compute the current violation :
 
@@ -1363,6 +1356,8 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     const int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
 
+    vparams->drawTool()->saveLastState();
+
     // from http://colorexplorer.com/colormatch.aspx
     const unsigned int colors[72]= { 0x2F2FBA, 0x111145, 0x2FBA8C, 0x114534, 0xBA8C2F, 0x453411, 0x2F72BA, 0x112A45, 0x2FBA48, 0x11451B, 0xBA2F5B, 0x451122, 0x2FB1BA, 0x114145, 0x79BA2F, 0x2D4511, 0x9E2FBA, 0x3B1145, 0x2FBA79, 0x11452D, 0xBA662F, 0x452611, 0x2F41BA, 0x111845, 0x2FBA2F, 0x114511, 0xBA2F8C, 0x451134, 0x2F8CBA, 0x113445, 0x6DBA2F, 0x284511, 0xAA2FBA, 0x3F1145, 0x2FAABA, 0x113F45, 0xAFBA2F, 0x414511, 0x692FBA, 0x271145, 0x2FBAAA, 0x11453F, 0xBA892F, 0x453311, 0x2F31BA, 0x111245, 0x2FBA89, 0x114533, 0xBA4F2F, 0x451D11, 0x2F4DBA, 0x111C45, 0x2FBA6D, 0x114528, 0xBA2F56, 0x451120, 0x2F72BA, 0x112A45, 0x2FBA48, 0x11451B, 0xBA2F9A, 0x451139, 0x2F93BA, 0x113645, 0x3FBA2F, 0x174511, 0x662FBA, 0x261145, 0x2FBAA8, 0x11453E, 0xB1BA2F, 0x414511};
 
@@ -1446,7 +1441,10 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
         }
         coord0 = (coord0 - merge_spatial_shift) * merge_spatial_step;
         coordFact *= merge_spatial_step;
+
     }
+    vparams->drawTool()->saveLastState();
+
 }
 
 int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")

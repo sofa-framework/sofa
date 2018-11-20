@@ -49,25 +49,53 @@ find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
     message("QGLViewer: Using Qt5")
+    find_package(Qt5 COMPONENTS Gui Xml OpenGL Widgets REQUIRED)
 
-    find_package(Qt5 COMPONENTS Gui Xml OpenGL REQUIRED)
-
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
     set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
     set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Xml_LIBRARIES})
 
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
 
-else()
-    message("QGLViewer: Using Qt4")
-    find_package(Qt4 QUIET REQUIRED QtCore QtOpenGL QtXml QtGui)
-    include(${QT_USE_FILE})
+    if(WIN32)
+        sofa_copy_libraries_from_targets(${QT_TARGETS})
+    endif()
+    sofa_install_libraries_from_targets(${QT_TARGETS})
 
-    set(EXT_QT_INCLUDES ${QT_INCLUDES})
-    set(EXT_QT_LIBRARIES ${QT_LIBRARIES})
-    qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
-    qt4_wrap_ui(FORM_FILES ${UI_FILES})
-
+    # QT INSTALL (dirty)
+    # Get Qt libraries dir
+    get_target_property(QtCore_location Qt5::Core LOCATION)
+    get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
+    message("QT_LIBRARIES_DIR = ${QT_LIBRARIES_DIR}")
+    # Get Qt plugins dir
+    list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
+    if(TARGET ${QT_PLUGIN_ANY})
+        get_target_property(QT_PLUGIN_ANY_LOCATION ${QT_PLUGIN_ANY} LOCATION)
+        get_filename_component(QT_PLUGINS_SUBDIR ${QT_PLUGIN_ANY_LOCATION} DIRECTORY)
+        get_filename_component(QT_PLUGINS_DIR ${QT_PLUGINS_SUBDIR} DIRECTORY)
+    else()
+        # Try to guess QT_PLUGINS_DIR
+        if(UNIX AND NOT APPLE AND EXISTS "${QT_LIBRARIES_DIR}/qt5/plugins")
+            set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
+        endif()
+    endif()
+    message("QT_PLUGINS_DIR = ${QT_PLUGINS_DIR}")
+    # Install Qt plugins
+    install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
+    # Install Qt XCB libraries
+    file(GLOB QT_XCB_LIBRARIES
+        "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_XCB_LIBRARIES})
+    # Install Qt ICU libraries
+    file(GLOB QT_ICU_LIBRARIES
+        "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_ICU_LIBRARIES})
 endif()
 
 # These header files don't need to be processed by the moc.

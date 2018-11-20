@@ -33,7 +33,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/helper/gl/BasicShapes.h>
 
 namespace sofa
 {

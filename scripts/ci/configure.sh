@@ -112,6 +112,8 @@ append "-DSOFA_BUILD_TUTORIALS=ON"
 append "-DSOFA_BUILD_TESTS=ON"
 append "-DSOFAGUI_BUILD_TESTS=OFF"
 append "-DPLUGIN_SOFAPYTHON=ON"
+append "-DAPPLICATION_SOFAPHYSICSAPI=ON"
+
 if [[ -n "$CI_HAVE_BOOST" ]]; then
     append "-DBOOST_ROOT=$CI_BOOST_PATH"
 fi
@@ -159,6 +161,13 @@ case $CI_OPTIONS in
             # For Windows, Assimp dll is in the repository
             append "-DPLUGIN_COLLADASCENELOADER=ON"
         fi
+		
+		if [ -n "$CI_HAVE_ASSIMP" ]; then
+		    append "-DPLUGIN_SOFAASSIMP=ON"
+        else
+            append "-DPLUGIN_SOFAASSIMP=OFF"
+        fi
+		
         append "-DPLUGIN_COMPLIANT=ON"
         append "-DPLUGIN_EXTERNALBEHAVIORMODEL=ON"
         append "-DPLUGIN_FLEXIBLE=ON"

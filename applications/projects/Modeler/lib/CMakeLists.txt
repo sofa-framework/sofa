@@ -51,19 +51,6 @@ if(Qt5Core_FOUND)
 
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
-
-else()
-    message("Modeler library: Using Qt4")
-
-    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml)
-    set (EXT_QT_INCLUDES ${QT_INCLUDES})
-    set(EXT_QT_LIBRARIES ${QT_LIBRARIES})
-
-    qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
-    set(MOC_FILES_GROUP "Generated")
-
-    qt4_wrap_ui(FORM_FILES ${UI_FILES})
-    set(FORM_FILES_GROUP "Generated")
 endif()
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})

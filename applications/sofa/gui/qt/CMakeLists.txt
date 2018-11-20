@@ -156,33 +156,56 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
-
     find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
 
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL)
     set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    # target_include_directories(${EXT_QT_INCLUDES})
-
     set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    # target_include_directories(${EXT_QT_INCLUDES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
 
+    if(WIN32)
+        sofa_copy_libraries_from_targets(${QT_TARGETS})
+    endif()
+    sofa_install_libraries_from_targets(${QT_TARGETS})
 
-else()
-    message("SofaGUIQt: Using Qt4")
-
-    set(QT4_NO_LINK_QTMAIN 1)
-    find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qtxml REQUIRED)
-
-    qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-    set(MOC_FILES_GROUP "Generated")
-    qt4_wrap_ui(FORM_FILES ${UI_FILES})
-    set(FORM_FILES_GROUP "Generated")
-
-    set(EXT_QT_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTXML_LIBRARY})
-
+    # QT INSTALL (dirty)
+    # Get Qt libraries dir
+    get_target_property(QtCore_location Qt5::Core LOCATION)
+    get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
+    message("QT_LIBRARIES_DIR = ${QT_LIBRARIES_DIR}")
+    # Get Qt plugins dir
+    list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
+    if(TARGET ${QT_PLUGIN_ANY})
+        get_target_property(QT_PLUGIN_ANY_LOCATION ${QT_PLUGIN_ANY} LOCATION)
+        get_filename_component(QT_PLUGINS_SUBDIR ${QT_PLUGIN_ANY_LOCATION} DIRECTORY)
+        get_filename_component(QT_PLUGINS_DIR ${QT_PLUGINS_SUBDIR} DIRECTORY)
+    else()
+        # Try to guess QT_PLUGINS_DIR
+        if(UNIX AND NOT APPLE AND EXISTS "${QT_LIBRARIES_DIR}/qt5/plugins")
+            set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
+        endif()
+    endif()
+    message("QT_PLUGINS_DIR = ${QT_PLUGINS_DIR}")
+    # Install Qt plugins
+    install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
+    # Install Qt XCB libraries
+    file(GLOB QT_XCB_LIBRARIES
+        "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_XCB_LIBRARIES})
+    # Install Qt ICU libraries
+    file(GLOB QT_ICU_LIBRARIES
+        "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_ICU_LIBRARIES})
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
@@ -203,8 +226,15 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 
-sofa_install_targets(SofaGui SofaGuiQt "")
+sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
 
-file(INSTALL "resources" DESTINATION "../../share/sofa/gui/qt")
-install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt")
-install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt")
+# Create build and install versions of .ini file for resources finding
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
+set(RESOURCES_DIR "../share/sofa/gui/qt")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
+
+install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
+install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
+install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)

@@ -107,7 +107,7 @@ void Triangle2EdgeTopologicalMapping::init()
                     to_tstm->addEdgeProcess(edgeArray[i]);
 
                     Loc2GlobVec.push_back(i);
-                    Glob2LocMap[i]=Loc2GlobVec.size()-1;
+                    Glob2LocMap[i]=(unsigned int)Loc2GlobVec.size()-1;
                 }
             }
 
@@ -171,17 +171,13 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESREMOVED" << sendl;
 
-                    int last;
-                    int ind_last;
-
-                    last= fromModel->getNbEdges() - 1;
+                    unsigned int last = (unsigned int)fromModel->getNbEdges() - 1;
+                    unsigned int ind_last = (unsigned int)toModel->getNbEdges();
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
 
                     unsigned int ind_tmp;
-
                     unsigned int ind_real_last;
-                    ind_last=toModel->getNbEdges();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
@@ -217,7 +213,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                             }
 
-                            if((int) ind_k != ind_last)
+                            if(ind_k != ind_last)
                             {
 
                                 Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
@@ -269,7 +265,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                         sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
                         sofa::helper::vector< unsigned int > edgesIndexList;
-                        int nb_elems = toModel->getNbEdges();
+                        unsigned int nb_elems = (unsigned int)toModel->getNbEdges();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -333,7 +329,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                             sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
+                                        Glob2LocMap[k]= (unsigned int)Loc2GlobVec.size()-1;
                                     }
                                 }
                             }
@@ -473,8 +469,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                 {
 
                                     unsigned int ind_k = Glob2LocMap[k];
-                                    unsigned int ind_last = Loc2GlobVec.size() - 1;
-                                    unsigned int ind_real_last = Loc2GlobVec[ind_last];
+                                    unsigned int ind_real_last = Loc2GlobVec[Loc2GlobVec.size() - 1];
 
                                     Glob2LocMap.erase(Glob2LocMap.find(ind_real_last));
                                     Glob2LocMap[ind_real_last] = ind_k;
@@ -506,7 +501,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         */
 
                                         edges_to_create.push_back(t);
-                                        edgesIndexList.push_back(Loc2GlobVec.size());
+                                        edgesIndexList.push_back((unsigned int)Loc2GlobVec.size());
 
                                         Loc2GlobVec.push_back(k);
                                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
@@ -515,7 +510,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                             sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
+                                        Glob2LocMap[k]= (unsigned int)Loc2GlobVec.size()-1;
 
                                         //to_tstm->addEdgesProcess(edges_to_create) ;
                                         //to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;

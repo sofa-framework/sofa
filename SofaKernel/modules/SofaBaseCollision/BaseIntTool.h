@@ -23,15 +23,9 @@
 #define BASEINTTOOL_H
 #include "config.h"
 
-#include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/IntrCapsuleOBB.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseCollision/CapsuleIntTool.h>
 #include <SofaBaseCollision/OBBIntTool.h>
-#include <cmath>
 
 namespace sofa
 {

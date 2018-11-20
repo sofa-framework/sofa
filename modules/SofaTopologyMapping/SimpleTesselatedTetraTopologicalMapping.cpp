@@ -105,7 +105,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 
             int newPointIndex = to_tstc->getNbPoints();
 
-            for (int i=0; i<from_tstc->getNbEdges(); i++)
+            for (unsigned int i=0; i<from_tstc->getNbEdges(); i++)
             {
                 Edge e = from_tstc->getEdge(i);
 
@@ -121,11 +121,11 @@ void SimpleTesselatedTetraTopologicalMapping::init()
             }
 
             fixed_array <int, 8> newTetrahedraIndices;
-            int newTetraIndex = to_tstc->getNbTetrahedra();
+            unsigned int newTetraIndex = (unsigned int)to_tstc->getNbTetrahedra();
 
             tetraSourceData.resize(8*from_tstc->getNbTetrahedra());
 
-            for (int i=0; i<from_tstc->getNbTetrahedra(); i++)
+            for (unsigned int i=0; i<from_tstc->getNbTetrahedra(); i++)
             {
                 core::topology::BaseMeshTopology::Tetra t = from_tstc->getTetrahedron(i);
                 core::topology::BaseMeshTopology::EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
@@ -273,7 +273,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::he
     helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromPointData = d_pointMappedFromPoint;
     helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-    unsigned int last = pointSourceData.size() -1;
+    int last = (int)pointSourceData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -343,7 +343,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa
     helper::vector< fixed_array<int, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
     helper::vector<int>& tetraSourceData = *(tetraSource.beginEdit());
 
-    int last = tetraSourceData.size() -1;
+    int last = (int)tetraSourceData.size() -1;
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapOutputTetrahedra( index[i], last );
@@ -488,7 +488,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::hel
     helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointSourceData = d_pointSource;
     helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromPointData = d_pointMappedFromPoint;
 
-    unsigned int last = pointMappedFromPointData.size() -1;
+    int last = (int)pointMappedFromPointData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -537,7 +537,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::help
     helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointSourceData = d_pointSource;
     helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-    unsigned int last = pointMappedFromEdgeData.size() -1;
+    int last = (int)pointMappedFromEdgeData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -577,7 +577,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputTetrahedra( const sofa:
     helper::vector< fixed_array<int, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
     helper::vector<int>& tetraSourceData = *(tetraSource.beginEdit());
 
-    unsigned int last = tetrahedraMappedFromTetraData.size() -1;
+    int last = (int)tetrahedraMappedFromTetraData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
