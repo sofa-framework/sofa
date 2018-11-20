@@ -175,12 +175,12 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
 
     if (!topology)
     {
-        serr  << "Error: TetrahedralMitchellShaefferForceField is not able to acces topology!" << sendl;
+        msg_error() << "Object is not able to acces topology!";
         return;
     }
     if (topology->getNbTetrahedra()==0)
     {
-        serr << "ERROR(TetrahedronDiffusionFEMForceField): object must have a Tetrahedral Set Topology."<<sendl;
+        msg_error() << "Object must have a Tetrahedral Set Topology.";
         return;
     }
 
@@ -201,7 +201,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
         loadedDiffusivity = true;
         if((int)(tetraDiff.size())!=topology->getNbTetrahedra())
         {
-            serr<<"ERROR(TetrahedronDiffusionFEMForceField): error wrong size of potential input vector."<<sendl;
+            msg_error() <<"Wrong size of potential input vector.";
             return;
         }
 
@@ -214,19 +214,17 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     this->getContext()->get(mechanicalObject, mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
     if (mechanicalObject==NULL)
     {
-        serr<<"ERROR(TetrahedronDiffusionFEMForceField): cannot find the mechanical object."<<sendl;
-        msg_info() <<"mechanicalObj = "<<mechanicalObject ;
-
+        msg_error() << "cannot find the mechanical object named '" << mechanicalObject << msgendl;
         return;
     }
 
     if(d_transverseAnisotropyRatio.getValue()!=1.0)
     {
-        msg_info() << "(TetrahedronDiffusionFEMForceField) anisotropic (r="<<sqrt(d_transverseAnisotropyRatio.getValue())<<") diffusion.";
+        msg_info() << "anisotropic (r="<<sqrt(d_transverseAnisotropyRatio.getValue())<<") diffusion.";
     }
     else
     {
-        msg_info() << "(TetrahedronDiffusionFEMForceField) isotropic diffusion.";
+        msg_info() << "isotropic diffusion.";
     }
 
     // prepare to store info in the edge array
@@ -243,7 +241,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 SReal TetrahedronDiffusionFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    serr<<"TetrahedronDiffusionFEMForceField::getPotentialEnergy not implemented yet"<<sendl;
+    msg_error() <<"GetPotentialEnergy not implemented (yet, report on github)." ;
     return 0;
 }
 
@@ -275,7 +273,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusion
     }
     else
     {
-        serr<<  "Tetra i is larger than topology->getNbTetrahedra() " << sendl;
+        msg_error() << "Tetra i is larger than topology->getNbTetrahedra() " ;
         return -1;
     }
 }

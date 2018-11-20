@@ -1056,15 +1056,8 @@ public:
     virtual const char* getClassName() const { return "MechanicalAddMDxVisitor"; }
     virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-#else
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
-#endif
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1075,13 +1068,6 @@ public:
     void setReadWriteVectors()
     {
         addReadVector(res);
-
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-        if (!dx.isNull()) addReadWriteVector(dx);
-        else addReadVector(dx);
-#else
-        addReadVector(dx);
-#endif
     }
 #endif
 };
@@ -1344,19 +1330,9 @@ public:
     sofa::core::MultiVecDerivId v;
     bool ignoreMask;
 
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    // compute the acceleration created by the input velocity and the derivative of the mapping
-    MultiVecDerivId a;
-    MechanicalPropagateOnlyPositionAndVelocityVisitor(
-        const sofa::core::MechanicalParams* mparams, SReal time=0,
-        sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity(),
-        sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx() , bool m=true); //
-#else
     MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
-            bool m=true );
-#endif
-  
+            bool m=true );  
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
@@ -1404,18 +1380,9 @@ public:
     sofa::core::MultiVecDerivId v;
     bool ignoreMask;    
     
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    // compute the acceleration created by the input velocity and the derivative of the mapping
-    sofa::core::MultiVecDerivId a;
-    MechanicalPropagateOnlyVelocityVisitor(
-        const sofa::core::MechanicalParams* mparams, SReal time=0,
-        sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity(),
-        sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx() , bool m=true);
-#else
     MechanicalPropagateOnlyVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
-#endif
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
@@ -1454,18 +1421,9 @@ public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
 
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    // compute the acceleration created by the input velocity and the derivative of the mapping
-    sofa::core::MultiVecDerivId a;
-    MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
-            SReal time=0, sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position() ,
-            sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity() ,
-            sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx()); //
-#else
     MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,SReal time=0,
                                             sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(),
                                             sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity());
-#endif
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 

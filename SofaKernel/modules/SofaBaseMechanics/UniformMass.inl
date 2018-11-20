@@ -485,14 +485,10 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
 }
 
 template <class DataTypes, class MassType>
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* mparams, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
-#else
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v )
 #else
 void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
-#endif
 #endif
 {
 #ifndef SOFA_SUPPORT_MOVING_FRAMES
@@ -541,23 +537,6 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
         f[indices[i]] += mg;
 #endif
     }
-
-
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    if ( compute_mapping_inertia.getValue() )
-    {
-        helper::ReadAccessor< Data<VecDeriv> > acc = *mparams->readDx(mstate);
-        // add inertia force due to acceleration from the motion of the mapping (coriolis type force)
-        if ( acc.size() != f.size() )
-            return;
-
-        for ( unsigned int i=0; i<f.size(); i++ )
-        {
-            Deriv coriolis = -acc[i]*m;
-            f[i] += coriolis;
-        }
-    }
-#endif
 }
 
 template <class DataTypes, class MassType>
