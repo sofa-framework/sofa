@@ -627,12 +627,12 @@ public:
         {
             EXPECT_MSG_EMIT(Error);
             root->init(ExecParams::defaultInstance());
-            EXPECT_TRUE( mass->isComponentStateValid() );
+            EXPECT_FALSE( mass->isComponentStateValid() );
         }else
         {
             EXPECT_MSG_NOEMIT(Error);
             root->init(ExecParams::defaultInstance()) ;
-            EXPECT_FALSE( mass->isComponentStateValid() );
+            EXPECT_TRUE( mass->isComponentStateValid() );
         }
 
         if(mass!=nullptr){

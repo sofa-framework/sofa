@@ -662,8 +662,10 @@ void DiagonalMass<DataTypes, MassType>::init()
 {
     if (!d_fileMass.getValue().empty())
     {
-        load(d_fileMass.getFullPath().c_str());
-
+        if(!load(d_fileMass.getFullPath().c_str())){
+            m_componentstate = ComponentState::Invalid;
+            return;
+        }
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
                       << "the topology won't be used to compute the mass" << msgendl
                       << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
@@ -1376,7 +1378,7 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
         Loader loader(this);
         return loader.load(filename);
     }
-    else return false;
+    return false;
 }
 
 
