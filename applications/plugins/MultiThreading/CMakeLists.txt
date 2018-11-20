@@ -46,15 +46,3 @@ sofa_create_package(MultiThreading ${MULTITHREADING_VERSION} MultiThreading Mult
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-
-# if(Boost_FOUND)
-#	include_directories(${Boost_INCLUDE_DIRS})
-# endif()
-
-if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        # add_subdirectory(test)
-    endif()
-endif()
