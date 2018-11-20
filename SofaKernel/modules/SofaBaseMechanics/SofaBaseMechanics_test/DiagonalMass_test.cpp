@@ -146,7 +146,9 @@ public:
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "    <MechanicalObject />                                                                       "
+                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
+                "    <HexahedronSetGeometryAlgorithms />                                                        "
                 "   <DiagonalMass name='m_mass'/>                            "
                 "</Node>                                                     " ;
 
@@ -603,7 +605,9 @@ public:
         return ;
     }
 
-    void checkAttributeLoadFromFile(const std::string& filename, int masscount, double totalMass){
+    void checkAttributeLoadFromFile(const std::string& filename, int masscount, double totalMass, bool shouldFail)
+    {
+
         std::stringstream scene;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
@@ -615,10 +619,21 @@ public:
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
+
+        if(shouldFail)
+        {
+            EXPECT_MSG_EMIT(Error);
+            root->init(ExecParams::defaultInstance());
+            EXPECT_TRUE( mass->isComponentStateValid() );
+        }else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            root->init(ExecParams::defaultInstance()) ;
+            EXPECT_FALSE( mass->isComponentStateValid() );
+        }
 
         if(mass!=nullptr){
             // The number of mass in card.rigid is one so this should be
@@ -816,12 +831,12 @@ TEST_F(DiagonalMass3_test, checkWrongSizeVertexMass_Tetra){
 
 
 /// Rigid file are not handled only xs3....
-TEST_F(DiagonalMass3_test, checkAttributeLoadFromXps){
-    checkAttributeLoadFromFile("BehaviorModels/card.rigid", 0, 0);
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsRigid){
+    checkAttributeLoadFromFile("BehaviorModels/card.rigid", 0, 0, true);
 }
 
-TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile){
-    checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6);
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsMassSpring){
+    checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6, false);
 }
 
 
