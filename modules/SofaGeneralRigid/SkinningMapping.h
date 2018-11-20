@@ -32,10 +32,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
-#ifdef SOFA_DEV
-#include <sofa/helper/DualQuat.h>
-#endif
-
 namespace sofa
 {
 
@@ -86,17 +82,7 @@ public:
 
     typedef typename Inherit::ForceMask ForceMask;
 
-#ifdef SOFA_DEV
-    typedef helper::DualQuatCoord3<OutReal> DQCoord;
-    typedef defaulttype::Mat<4,4,OutReal> Mat44;
-    typedef defaulttype::Mat<3,3,OutReal> Mat33;
-    typedef defaulttype::Mat<3,4,OutReal> Mat34;
-    typedef defaulttype::Mat<4,3,OutReal> Mat43;
-#endif
-
 protected:
-
-
     Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 
     // data for linear blending
@@ -105,14 +91,6 @@ protected:
     SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 
     // data for dual quat blending
-#ifdef SOFA_DEV
-    helper::vector<helper::vector< Mat44 > > f_T0; /// Real part of blended quaternion Jacobian : db = [T0,TE] dq
-    helper::vector<helper::vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
-    helper::vector<helper::vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
-    helper::vector<helper::vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
-    Data<bool> useDQ;  ///< use dual quat blending instead of linear blending
-#endif
-
     Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
     Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
     Data< helper::vector<sofa::helper::SVector<InReal> > > weight; ///< influence weights of the Dofs.

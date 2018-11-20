@@ -211,11 +211,6 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         sofa::gpu::cuda::CudaSortPrepare(numElements);
     }
 
-#ifdef SOFA_DEV
-    //sortTmp.recreate(radixSortTempStorage(nbPoints*8));
-    //sortTmp.deviceWrite();
-#endif
-
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
