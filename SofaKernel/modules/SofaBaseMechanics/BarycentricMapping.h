@@ -1037,13 +1037,8 @@ protected:
     SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> mapper;
 
 public:
-
     Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping
 
-#ifdef SOFA_DEV
-    //--- partial mapping test
-    Data< bool > sleeping; ///< is the mapping sleeping (not computed)
-#endif
 protected:
     BarycentricMapping();
 
