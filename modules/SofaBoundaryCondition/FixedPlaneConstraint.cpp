@@ -71,10 +71,10 @@ void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::Mechanical
 {
     Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
 
-    for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
-    {
-        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
-    }
+//    for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
+//    {
+//        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
+//    }
 }
 
 template <>
@@ -95,10 +95,10 @@ void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::Mechanical
 {
     Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
 
-    for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
-    {
-        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
-    }
+//    for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
+//    {
+//        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
+//    }
 }
 
 template <>

@@ -22,13 +22,14 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
 
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
 
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
 namespace sofa
 {
@@ -75,7 +76,7 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     pointHandler = new FCPointHandler(this, &m_indices);
 
     if(!m_beginConstraintTime.isSet())
-     m_beginConstraintTime = 0; 
+        m_beginConstraintTime = 0;
     if(!m_endConstraintTime.isSet())
         m_endConstraintTime = 20;
 }
@@ -88,7 +89,7 @@ AffineMovementConstraint<DataTypes>::~AffineMovementConstraint()
     if (pointHandler)
         delete pointHandler;
 }
- 
+
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::clearConstraints()
 {
@@ -167,6 +168,12 @@ void AffineMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
 }
 
 
+const sofa::defaulttype::Rigid3Types::Vec3& getVec(const sofa::defaulttype::Rigid3Types::Coord& i){ return i.getCenter(); }
+sofa::defaulttype::Rigid3Types::Vec3& getVec(sofa::defaulttype::Rigid3Types::Coord& i){ return i.getCenter(); }
+
+const sofa::defaulttype::Vec3dTypes::Coord& getVec(const sofa::defaulttype::Vec3Types::Coord& i){ return i; }
+sofa::defaulttype::Vec3dTypes::Coord& getVec(sofa::defaulttype::Vec3Types::Coord& i){ return i; }
+
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
@@ -178,52 +185,6 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     SReal beginTime = m_beginConstraintTime.getValue();
     SReal endTime = m_endConstraintTime.getValue();
     SReal totalTime = endTime - beginTime;
-   
-    //initialize initial mesh Dofs positions, if it's not done
-    if(meshPointsX0.size()==0)
-        this->initializeInitialPositions(m_meshIndices.getValue(),xData,meshPointsX0);
-
-    //initialize final mesh Dofs positions, if it's not done
-    if(meshPointsXf.size()==0)
-       this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
-  
-    //initialize initial constrained Dofs positions, if it's not done
-    if(x0.size() == 0)
-        this->initializeInitialPositions(indices,xData,x0);
-
-     //initialize final constrained Dofs positions, if it's not done
-    if (xf.size() == 0)
-        this->initializeFinalPositions(indices,xData,x0,xf);
-    // Update the intermediate Dofs positions computed by linear interpolation
-   SReal time = root->getTime();
-   if( time > beginTime && time <= endTime && totalTime > 0)
-    { 
-        for (size_t i = 0; i< indices.size(); ++i)
-        { 
-            x[indices[i]] = ((xf[indices[i]]-x0[indices[i]])*time + (x0[indices[i]]*endTime - xf[indices[i]]*beginTime))/totalTime;
-        }
-    }
-   else if (time > endTime)
-   {
-        for (size_t i = 0; i< indices.size(); ++i)
-        { 
-             x[indices[i]] = xf[indices[i]];
-        }
-   }  
-}
-
-
-template <>
-void AffineMovementConstraint<defaulttype::Rigid3Types>::projectPosition(const core::MechanicalParams* /*mparams*/, Data<defaulttype::Rigid3Types::VecCoord>& xData)
-{
-    sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
-    helper::WriteAccessor<DataVecCoord> x = xData;
-    const SetIndexArray & indices = m_indices.getValue();
-
-    // Time
-    SReal beginTime = m_beginConstraintTime.getValue();
-    SReal endTime = m_endConstraintTime.getValue();
-    SReal totalTime = endTime - beginTime;
 
     //initialize initial mesh Dofs positions, if it's not done
     if(meshPointsX0.size()==0)
@@ -231,45 +192,45 @@ void AffineMovementConstraint<defaulttype::Rigid3Types>::projectPosition(const c
 
     //initialize final mesh Dofs positions, if it's not done
     if(meshPointsXf.size()==0)
-       this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
+        this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
 
     //initialize initial constrained Dofs positions, if it's not done
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
 
-     //initialize final constrained Dofs positions, if it's not done
+    //initialize final constrained Dofs positions, if it's not done
     if (xf.size() == 0)
         this->initializeFinalPositions(indices,xData,x0,xf);
     // Update the intermediate Dofs positions computed by linear interpolation
-   SReal time = root->getTime();
-   if( time > beginTime && time <= endTime && totalTime > 0)
+    SReal time = root->getTime();
+    if( time > beginTime && time <= endTime && totalTime > 0)
     {
-        for (size_t i = 0; i< indices.size(); ++i)
+        for (auto index : indices)
         {
-            x[indices[i]].getCenter() = ((xf[indices[i]].getCenter()-x0[indices[i]].getCenter())*time + (x0[indices[i]].getCenter()*endTime - xf[indices[i]].getCenter()*beginTime))/totalTime;
+            DataTypes::setCPos( x[index],
+                                ((DataTypes::getCPos(xf[index])-DataTypes::getCPos(x0[index]))*time +
+                                 (DataTypes::getCPos(x0[index])*endTime - DataTypes::getCPos(xf[index])*beginTime))/totalTime);
         }
     }
-   else if (time > endTime)
-   {
-        for (size_t i = 0; i< indices.size(); ++i)
+    else if (time > endTime)
+    {
+        for (auto index : indices)
         {
-             x[indices[i]] = xf[indices[i]];
+            x[index] = xf[index];
         }
-   }
+    }
 }
-
 
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned /*offset*/ )
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;
- 
+
     for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
     {
         M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
     }
-   
 }
 
 template <class DataTypes>
@@ -277,11 +238,11 @@ void AffineMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,
 {
     // Indices of mesh points
     const SetIndexArray & meshIndices = m_meshIndices.getValue();
-  
+
     // Initialize final positions
     if(meshPointsXf.size()==0)
     {this->initializeFinalPositions(meshIndices,xData,meshPointsX0,meshPointsXf);}
-   
+
     // Set final positions
     finalPos.resize(meshIndices.size());
     for (size_t i=0; i < meshIndices.size() ; ++i)
@@ -300,7 +261,28 @@ void AffineMovementConstraint<DataTypes>::initializeInitialPositions (const SetI
     {
         x0[indices[i]] = x[indices[i]];
     }
-    
+}
+
+
+template <>
+void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetIndexArray & indices,
+                                                                   defaulttype::Rigid3Types::VecCoord& x0,
+                                                                   defaulttype::Rigid3Types::VecCoord& xf)
+{
+    // Get quaternion and translation values
+    RotationMatrix rotationMat(0);
+    Quat quat =  m_quaternion.getValue();
+    quat.toMatrix(rotationMat);
+    Vector3 translation = m_translation.getValue();
+
+    // Apply transformation
+    for (size_t i=0; i < indices.size() ; ++i)
+    {
+        // Translation
+        xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation;
+        // Rotation
+        xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
+    }
 }
 
 template <class DataTypes>
@@ -310,39 +292,17 @@ void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indice
 
     for (size_t i=0; i < indices.size() ; ++i)
     {
-         DataTypes::setCPos(xf[indices[i]], (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]]) + translation);
+        DataTypes::setCPos(xf[indices[i]], (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]]) + translation);
     }
-  
-}
-
-
-template <>
-void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetIndexArray & indices, defaulttype::Rigid3Types::VecCoord& x0, defaulttype::Rigid3Types::VecCoord& xf)
-{
-    // Get quaternion and translation values
-    RotationMatrix rotationMat(0);
-    Quat quat =  m_quaternion.getValue(); 
-    quat.toMatrix(rotationMat);
-    Vector3 translation = m_translation.getValue();
-
-    // Apply transformation
-    for (size_t i=0; i < indices.size() ; ++i)
-    {
-        // Translation 
-        xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation;
-        // Rotation
-        xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
-    }
-
 }
 
 
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
 {
-     Deriv displacement; 
-     helper::WriteAccessor<DataVecCoord> x = xData;
-   
+    Deriv displacement;
+    helper::WriteAccessor<DataVecCoord> x = xData;
+
     xf.resize(x.size());
     
     // if the positions were not initialized
@@ -362,13 +322,13 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     if(m_drawConstrainedPoints.getValue())
     {
-        for (SetIndexArray::const_iterator it = indices.begin();it != indices.end();++it)
+        for( auto& index : indices )
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
-    }  
+    }
 }
 
 
