@@ -167,13 +167,6 @@ void AffineMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
     projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
-
-const sofa::defaulttype::Rigid3Types::Vec3& getVec(const sofa::defaulttype::Rigid3Types::Coord& i){ return i.getCenter(); }
-sofa::defaulttype::Rigid3Types::Vec3& getVec(sofa::defaulttype::Rigid3Types::Coord& i){ return i.getCenter(); }
-
-const sofa::defaulttype::Vec3dTypes::Coord& getVec(const sofa::defaulttype::Vec3Types::Coord& i){ return i; }
-sofa::defaulttype::Vec3dTypes::Coord& getVec(sofa::defaulttype::Vec3Types::Coord& i){ return i; }
-
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
