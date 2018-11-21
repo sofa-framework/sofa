@@ -194,7 +194,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defau
 #ifdef SOFA_WITH_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3fTypes>;
-#ifdef //SOFA_WITH_FLOAT
+#endif //SOFA_WITH_FLOAT
 #endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
 
