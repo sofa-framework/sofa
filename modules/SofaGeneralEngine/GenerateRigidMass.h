@@ -52,7 +52,7 @@ public:
     /// Update method called when variables used in precomputation are modified.
     virtual void reinit() override;
     /// Update the output values
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 protected:
 

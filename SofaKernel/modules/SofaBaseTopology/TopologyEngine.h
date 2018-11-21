@@ -80,7 +80,7 @@ public:
 
     virtual void reinit() override;
 
-    virtual void update() override;
+    virtual void doUpdate() override;
 
     void ApplyTopologyChanges();
 

@@ -112,7 +112,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     /** \brief Compute the distance map depending ion the distance type.
     *

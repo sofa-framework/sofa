@@ -29,8 +29,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-using sofa::core::SimpleDataEngine;
-
 namespace sofa {
 
 
@@ -50,19 +48,9 @@ public:
     {}
 
 
-    template <class T = DataEngineType, typename std::enable_if<
-                  std::is_base_of<SimpleDataEngine, T>::value, int>::type = 0>
-    void update()
-    {
-        DataEngineType::update();
-        ++m_counter;
-    }
-
-    template <class T = DataEngineType, typename std::enable_if<
-                  std::is_base_of<SimpleDataEngine, T>::value, int>::type = 1>
     void doUpdate()
     {
-        SimpleDataEngine::doUpdate();
+        Inherit1::doUpdate();
         ++m_counter;
     }
 

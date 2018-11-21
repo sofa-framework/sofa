@@ -88,7 +88,7 @@ protected:
 
     virtual ~SelectLabelROI() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up
@@ -108,8 +108,6 @@ protected:
                     break;
                 }
         }
-
-        cleanDirty();
     }
 
 };

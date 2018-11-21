@@ -110,7 +110,7 @@ public:
     }
 
     virtual void reinit()    override { update();  }
-    void update() override;
+    void doUpdate() override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)

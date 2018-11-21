@@ -213,10 +213,9 @@ protected:
 
     unsigned int time;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         ImageCoordValuesFromPositionsSpecialization<ImageTypes>::update( *this );
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override
