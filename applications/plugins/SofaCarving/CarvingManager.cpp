@@ -198,7 +198,7 @@ void CarvingManager::doCarve()
 
 void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (m_carvingReady == false)
+    if (!m_carvingReady)
         return;
 
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
