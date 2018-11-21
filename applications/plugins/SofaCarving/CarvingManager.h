@@ -99,8 +99,8 @@ public:
     Data < bool > d_mouseEvent;
     ///< Activate carving with omni button
     Data < bool > d_omniEvent;
-    ///< Activate carving with string Event
-    Data < std::string > d_buttonName;
+    ///< Activate carving with string Event, the activator name has to be inside the script event. Will look for 'pressed' or 'release' keyword. For example: 'button1_pressed'
+    Data < std::string > d_activatorName;
     
 protected:
     /// Pointer to the tool collision model
