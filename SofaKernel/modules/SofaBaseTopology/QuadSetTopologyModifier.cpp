@@ -330,7 +330,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
         removePointsWarning(vertexToBeRemoved);
         /// propagate to all components
         propagateTopologicalChanges();
-        removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved, d_propagateToDOF.getValue());
     }
 }
 

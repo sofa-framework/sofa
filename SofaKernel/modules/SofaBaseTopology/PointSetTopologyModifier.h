@@ -44,12 +44,14 @@ class SOFA_BASE_TOPOLOGY_API PointSetTopologyModifier : public core::topology::T
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
-    
+
     typedef core::topology::BaseMeshTopology::PointID PointID;
+    Data<bool> d_propagateToDOF;
 
 protected:
     PointSetTopologyModifier()
         : TopologyModifier()
+        , d_propagateToDOF(initData(&d_propagateToDOF, true, "propagateToDOF", " propagate changes to MEchanical object DOFs if true"))
     {}
 
     virtual ~PointSetTopologyModifier() override {}

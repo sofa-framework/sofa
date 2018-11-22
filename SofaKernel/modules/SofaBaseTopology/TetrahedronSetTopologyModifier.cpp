@@ -424,7 +424,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
     {
         removePointsWarning(vertexToBeRemoved);
         propagateTopologicalChanges();
-        removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved, d_propagateToDOF.getValue());
     }
 }
 
