@@ -22,7 +22,7 @@
 #ifndef TaskScheduler_std_h__
 #define TaskScheduler_std_h__
 
-#include <MultiThreading/config.h>
+#include <sofa/config.h>
 
 #include "Task.h"
 #include "Locks.h"
@@ -43,7 +43,7 @@ namespace sofa
 	{
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
+        class SOFA_SIMULATION_CORE_API TaskScheduler
         {
 
         public:
@@ -93,7 +93,7 @@ namespace sofa
 
 
 
-		SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(const Task *pTask );
+        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask );
 
 
 	} // namespace simulation
