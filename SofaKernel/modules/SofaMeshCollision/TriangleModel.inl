@@ -237,8 +237,8 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::handleTopologyChange()
 {
     //bool debug_mode = false;
-    updateFromTopology();
-    if (triangles != &mytriangles)
+    //updateFromTopology();
+    //if (triangles != &mytriangles)
     {
         // We use the same triangle array as the topology -> only resize and recompute flags
 
@@ -259,8 +259,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
                 resize(_topology->getNbTriangles());
                 needsUpdate=true;
-                updateFlags();
-
+                //updateFlags();
+                updateFromTopology();
                 //                 updateNormals();
                 break;
             }
