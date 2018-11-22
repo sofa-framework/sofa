@@ -9,7 +9,7 @@ namespace sofa
 namespace simulation
 {
 
-class ConstraintStoreLambdaVisitor : public BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API ConstraintStoreLambdaVisitor : public BaseMechanicalVisitor
 {
 public:
     ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::defaulttype::BaseVector* lambda);

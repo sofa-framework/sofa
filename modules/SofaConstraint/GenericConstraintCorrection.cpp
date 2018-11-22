@@ -187,6 +187,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     for (unsigned i = 0; i < m_linearSolvers.size(); i++)
     {
         m_linearSolvers[i]->buildComplianceMatrix(cparams, W, factor);
+        m_linearSolvers[i]->addComplianceMatrix(cparams, W, factor);
     }
 }
 
