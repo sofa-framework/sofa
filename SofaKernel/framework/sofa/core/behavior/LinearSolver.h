@@ -138,10 +138,24 @@ public:
     ///
     /// @param cparams contains the MultiMatrixDerivId  which allows to retrieve the constraint jacobian to use for 
     ///        each mechanical object. 
-    /// @param result the variable where the result will be added
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
     virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
+    {
+        SOFA_UNUSED(cparams);
+        SOFA_UNUSED(fact);
+        serr << "Error buildComplianceMatrix has not been implemented" << sendl;
+        return false;
+    }
+
+    /// Build the jacobian of the constraints using a visitor and apply to result
+    ///
+    /// @param cparams contains the MultiMatrixDerivId  which allows to retrieve the constraint jacobian to use for 
+    ///        each mechanical object. 
+    /// @param result the variable where the result will be added
+    /// @param fact integrator parameter
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool addComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
     {
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
@@ -162,6 +176,18 @@ public:
         serr << "Error computeResidual has not been implemented" << sendl;
     }
 
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param J the matrix J to use
+    /// @param fact integrator parameter
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool computeJMInvJt(defaulttype::BaseMatrix* J, SReal fact)
+    {
+        SOFA_UNUSED(J);
+        SOFA_UNUSED(fact);
+        return false;
+    }
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///

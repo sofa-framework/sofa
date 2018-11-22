@@ -285,15 +285,21 @@ public:
 
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
 
+    virtual bool computeJMInvJtLocal(Matrix * /*M*/, const JMatrixType * J, double fact) { return false; }
+
     virtual bool addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, double fact);
 
     virtual bool addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const  JMatrixType * J, double fact);
+
+    virtual bool computeJMInvJt( defaulttype::BaseMatrix* J, double fact) override;
 
     virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
     virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
     virtual bool buildComplianceMatrix(const core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact) override;
+
+    virtual bool addComplianceMatrix(const core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact) override;
 
     virtual void applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const defaulttype::BaseVector* f) override;
 
@@ -493,6 +499,7 @@ extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatter
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const JMatrixType*, double);
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const  JMatrixType*, double);
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::buildComplianceMatrix(const core::ConstraintParams*, defaulttype::BaseMatrix*, double);
+extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>::addComplianceMatrix(const core::ConstraintParams* cparams, defaulttype::BaseMatrix* , double);
 extern template SOFA_BASE_LINEAR_SOLVER_API void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createGroups(const core::MechanicalParams* mparams);
 extern template SOFA_BASE_LINEAR_SOLVER_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getMatrixInvertData(defaulttype::BaseMatrix * m);
 extern template SOFA_BASE_LINEAR_SOLVER_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createInvertData();
