@@ -34,7 +34,6 @@ namespace component
 namespace controller
 {
 
-SOFA_DECL_CLASS(ARTrackDriver)
 
 int ARTrackDriverClass = core::RegisterObject("Driver for ARTrack system")
         .add< ARTrackDriver >()

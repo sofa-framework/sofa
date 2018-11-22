@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MathOp)
 
 int MathOpClass = core::RegisterObject("Apply a math operation to combine several inputs")
 #if defined(SOFA_DOUBLE)

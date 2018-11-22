@@ -36,7 +36,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(Visual3DText)
 
 int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
         .add< Visual3DText >()

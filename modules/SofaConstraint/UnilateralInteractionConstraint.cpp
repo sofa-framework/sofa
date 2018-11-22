@@ -37,7 +37,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(UnilateralInteractionConstraint)
 
 //TODO(dmarchal) What does this TODO mean ?
 int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-UnilateralInteractionConstraint")

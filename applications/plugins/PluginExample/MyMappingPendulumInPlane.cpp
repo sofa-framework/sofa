@@ -39,7 +39,6 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(MyMappingPendulumInPlane)
 
 int MyMappingPendulumInPlaneClass = core::RegisterObject("Mapping from an angle to a point in 2D")
 #ifndef SOFA_FLOAT

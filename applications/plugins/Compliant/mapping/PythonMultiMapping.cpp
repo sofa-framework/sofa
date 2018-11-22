@@ -10,7 +10,6 @@ namespace mapping {
 
 
     
-SOFA_DECL_CLASS(PythonMultiMapping)
 
 using namespace defaulttype;
 

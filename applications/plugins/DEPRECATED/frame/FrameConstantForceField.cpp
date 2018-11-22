@@ -38,7 +38,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameConstantForceField)
 
 int FrameConstantForceFieldClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT

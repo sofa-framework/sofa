@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(Vertex2Frame)
 
 int Vertex2FrameClass = core::RegisterObject("")
 #ifndef SOFA_FLOAT

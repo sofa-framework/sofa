@@ -39,7 +39,6 @@ namespace io
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-SOFA_DECL_CLASS(MeshOBJ)
 
 Creator<Mesh::FactoryMesh,MeshOBJ> MeshOBJClass("obj");
 

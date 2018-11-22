@@ -39,7 +39,6 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(ParticlesRepulsionForceField)
 
 int ParticlesRepulsionForceFieldClass = core::RegisterObject("ForceField using SpatialGridContainer to compute repulsion forces in a set of spheres")
 #ifndef SOFA_FLOAT

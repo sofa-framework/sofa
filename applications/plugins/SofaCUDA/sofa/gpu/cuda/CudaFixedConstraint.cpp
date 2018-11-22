@@ -59,7 +59,6 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaFixedConstraint)
 
 int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::projectiveconstraintset::FixedConstraint<CudaVec1fTypes> >()

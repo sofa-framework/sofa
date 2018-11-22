@@ -50,7 +50,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(LineBendingSprings)
 
 // Register in the Factory
 int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline to prevent bending")

@@ -74,15 +74,11 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
-SOFA_LINK_CLASS(PrecomputedLinearSolver)
 
 #ifdef SOFA_HAVE_CSPARSE
-SOFA_LINK_CLASS(SparseCholeskySolver)
-SOFA_LINK_CLASS(SparseLUSolver)
 #endif
 
 #ifdef SOFA_HAVE_METIS
-SOFA_LINK_CLASS(SparseLDLSolver)
 #endif
 
 } /// component

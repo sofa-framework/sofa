@@ -32,7 +32,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(Line)
 
 int LineModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
 #ifndef SOFA_FLOAT

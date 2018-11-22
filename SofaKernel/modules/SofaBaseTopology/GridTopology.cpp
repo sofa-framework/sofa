@@ -33,7 +33,6 @@ namespace component
 namespace topology
 {
 
-SOFA_DECL_CLASS(GridTopology)
 
 int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D")
         .addAlias("Grid")

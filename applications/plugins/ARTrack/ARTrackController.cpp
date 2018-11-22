@@ -37,8 +37,6 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ARTrackController)
-SOFA_DECL_CLASS(ARTrackVirtualTimeController)
 
 int ARTrackVirtualTimeControllerClass = core::RegisterObject("Provides ARTtrack control on the time of a BVHController.")
         .add< ARTrackVirtualTimeController >();

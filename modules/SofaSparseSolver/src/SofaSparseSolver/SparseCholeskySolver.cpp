@@ -130,7 +130,6 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
 }
 
-SOFA_DECL_CLASS(SparseCholeskySolver)
 
 int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library")
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)

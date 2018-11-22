@@ -39,7 +39,6 @@ void initBaseLinearSolver()
     }
 }
 
-SOFA_LINK_CLASS(CGLinearSolver)
 
 
 } // namespace component

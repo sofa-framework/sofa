@@ -38,7 +38,6 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(FixedPlaneConstraint)
 
 int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
 #ifndef SOFA_FLOAT

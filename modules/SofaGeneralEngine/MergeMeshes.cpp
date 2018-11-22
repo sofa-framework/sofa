@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MergeMeshes)
 
 int MergeMeshesClass = core::RegisterObject("Merge several meshes")
 #ifdef SOFA_FLOAT

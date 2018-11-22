@@ -550,7 +550,6 @@ void LabelPointsBySectionImageToolBoxAction::saveFileData()
 
 
 
-SOFA_DECL_CLASS(LabelPointsBySectionImageToolBoxAction)
 
 
 

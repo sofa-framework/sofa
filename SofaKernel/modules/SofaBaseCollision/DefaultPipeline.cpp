@@ -54,7 +54,6 @@ using namespace core::objectmodel;
 using namespace core::collision;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(DefaultPipeline)
 
 int DefaultPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
         .add< DefaultPipeline >()

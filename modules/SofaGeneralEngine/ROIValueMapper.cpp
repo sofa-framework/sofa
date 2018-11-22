@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa;
 
-SOFA_DECL_CLASS(ROIValueMapper)
 
 int ROIValueMapperClass = core::RegisterObject("Generate a list of values from value-indices pairs")
         .add< ROIValueMapper >(true)

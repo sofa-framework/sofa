@@ -39,7 +39,6 @@ void initGeneralImplicitODESolver()
     }
 }
 
-SOFA_LINK_CLASS(VariationalSymplecticSolver)
 
 } // namespace component
 

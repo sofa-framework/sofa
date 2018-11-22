@@ -15,7 +15,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(RigidComMultiMapping)
 
 using namespace defaulttype;
 

@@ -66,7 +66,6 @@ bool AttributeElement::initNode()
     return true;
 }
 
-SOFA_DECL_CLASS(Attribute)
 
 Creator<BaseElement::NodeFactory, AttributeElement> AttributeNodeClass("Attribute");
 

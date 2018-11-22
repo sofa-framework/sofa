@@ -33,7 +33,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(DistanceFromTargetMapping)
 
 using namespace defaulttype;
 

@@ -36,7 +36,6 @@
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-SOFA_DECL_CLASS(IRTracker)
 
 int IRTrackerClass = sofa::core::RegisterObject("Infrared Tracker")
 #ifndef SOFA_FLOAT

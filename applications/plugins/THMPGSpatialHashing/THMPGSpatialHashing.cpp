@@ -25,7 +25,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace collision;
 
-SOFA_DECL_CLASS(THMPGSpatialHashing)
 
 int THMPGSpatialHashingClass = core::RegisterObject("Collision detection using THMPG spatial hashing.")
         .add< THMPGSpatialHashing >()

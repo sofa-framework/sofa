@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MeshSubsetEngine)
 
 int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on selected vertices")
 #ifdef SOFA_FLOAT

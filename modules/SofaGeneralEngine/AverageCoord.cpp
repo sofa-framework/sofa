@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(AverageCoord)
 
 int AverageCoordClass = core::RegisterObject("Compute the average of coordinates")
 #ifndef SOFA_FLOAT

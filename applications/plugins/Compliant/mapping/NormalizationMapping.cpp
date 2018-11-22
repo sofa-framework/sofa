@@ -11,7 +11,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(NormalizationMapping)
 
 using namespace defaulttype;
 

@@ -34,7 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(CatchAllVector)
 
 int CatchAllVectorClass = core::RegisterObject("CatchAllVector")
         .add<CatchAllVector<float > >(true)

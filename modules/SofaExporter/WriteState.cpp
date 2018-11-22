@@ -31,7 +31,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(WriteState)
 
 using namespace defaulttype;
 

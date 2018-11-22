@@ -62,7 +62,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(ImageDensityMass)
 
 
 // Register in the Factory

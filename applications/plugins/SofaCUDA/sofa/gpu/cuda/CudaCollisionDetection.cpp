@@ -38,7 +38,6 @@ extern "C"
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
 }
 
-SOFA_DECL_CLASS(CudaCollisionDetection)
 
 int CudaCollisionDetectionClass = core::RegisterObject("GPU-based collision detection using CUDA")
         .add< CudaCollisionDetection >()

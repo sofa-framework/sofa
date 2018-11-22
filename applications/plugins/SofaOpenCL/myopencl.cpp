@@ -45,7 +45,6 @@ namespace opencl
 {
 #endif
 
-SOFA_LINK_CLASS(OpenCLMouseInteractor)
 
 
 //private data

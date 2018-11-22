@@ -13,7 +13,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(ProjectionMapping)
 
 using namespace defaulttype;
 

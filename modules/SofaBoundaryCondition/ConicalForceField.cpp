@@ -47,7 +47,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(ConicalForceField)
 
 int ConicalForceFieldClass = core::RegisterObject("Repulsion applied by a cone toward the exterior")
 #ifndef SOFA_FLOAT

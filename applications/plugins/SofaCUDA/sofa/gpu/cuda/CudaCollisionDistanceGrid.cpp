@@ -175,7 +175,6 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaCollisionDistanceGrid)
 
 using namespace sofa::component::collision;
 

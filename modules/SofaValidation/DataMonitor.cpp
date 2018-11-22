@@ -34,7 +34,6 @@ namespace misc
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(DataMonitor)
 
 int DataMonitorClass = core::RegisterObject("DataMonitor")
         .add< DataMonitor >()

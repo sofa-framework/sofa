@@ -36,7 +36,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(ShapeMatching)
 
 using namespace defaulttype;
 

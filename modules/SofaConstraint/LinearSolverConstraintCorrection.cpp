@@ -32,7 +32,6 @@ namespace constraintset
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(LinearSolverConstraintCorrection)
 
 int LinearSolverContactCorrectionClass = core::RegisterObject("")
 #ifndef SOFA_FLOAT

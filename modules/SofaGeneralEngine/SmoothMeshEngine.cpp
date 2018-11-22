@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SmoothMeshEngine)
 
 int SmoothMeshEngineClass = core::RegisterObject("Compute the laplacian smoothing of a mesh")
 #ifndef SOFA_FLOAT

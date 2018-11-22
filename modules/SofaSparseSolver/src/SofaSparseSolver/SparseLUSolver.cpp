@@ -42,7 +42,6 @@ namespace component
 namespace linearsolver
 {
 
-SOFA_DECL_CLASS(SparseLUSolver)
 
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
         .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()

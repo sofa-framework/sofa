@@ -36,7 +36,6 @@ namespace topology
 using namespace std;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(QuadSetTopologyContainer)
 int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology container")
         .add< QuadSetTopologyContainer >()
         ;

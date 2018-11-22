@@ -36,7 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
 
 // Register in the Factory
 int NonUniformHexahedralFEMForceFieldAndMassClass = core::RegisterObject("Non uniform Hexahedral finite elements")

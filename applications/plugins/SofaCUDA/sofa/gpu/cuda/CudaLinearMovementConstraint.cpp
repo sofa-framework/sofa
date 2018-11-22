@@ -61,7 +61,6 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaLinearMovementConstraint)
 
 int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3fTypes> >()

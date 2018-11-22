@@ -77,7 +77,6 @@ using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 
 helper::SofaViewerCreator< QtViewer> QtViewer_class("qt",false);
-SOFA_DECL_CLASS ( QTGUI )
 
 //Q:Why would the QtViewer write its .view file with the qglviewer (a GPL library) extension?
 //A:The new QtViewer has the same parameters as QGLViewer.

@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(RandomPointDistributionInSurface)
 
 int RandomPointDistributionInSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
 #ifndef SOFA_FLOAT

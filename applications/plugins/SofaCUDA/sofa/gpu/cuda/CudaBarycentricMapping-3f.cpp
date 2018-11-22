@@ -304,7 +304,6 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaBarycentricMapping_3f)
 
 int BarycentricMappingCudaClass_3f = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()

@@ -36,7 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(BuoyantForceField)
 
 int BuoyantForceFieldClass = core::RegisterObject("Upward acting force exerted by a fluid, that opposes an object's weight")
 #ifndef SOFA_FLOAT

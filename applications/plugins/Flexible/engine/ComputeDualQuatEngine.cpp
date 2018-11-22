@@ -17,7 +17,6 @@ namespace engine
 
 
 
-SOFA_DECL_CLASS( ComputeDualQuatEngine )
 
 using namespace defaulttype;
 

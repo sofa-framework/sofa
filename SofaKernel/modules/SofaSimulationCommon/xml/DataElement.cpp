@@ -57,7 +57,6 @@ bool DataElement::initNode()
     return true;
 }
 
-SOFA_DECL_CLASS(Data)
 
 Creator<BaseElement::NodeFactory, DataElement> DataNodeClass("Data");
 

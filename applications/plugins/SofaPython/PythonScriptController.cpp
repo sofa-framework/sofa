@@ -108,7 +108,6 @@ int PythonScriptControllerClass = core::RegisterObject("A Sofa controller script
         .add< PythonScriptController >()
         ;
 
-SOFA_DECL_CLASS(PythonScriptController)
 
 PythonScriptController::PythonScriptController()
     : ScriptController()

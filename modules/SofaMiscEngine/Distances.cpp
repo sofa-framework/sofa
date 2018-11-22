@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(Distances)
 
 int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
 #ifndef SOFA_FLOAT

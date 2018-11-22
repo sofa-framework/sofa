@@ -32,7 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglTexturePointer)
 
 // Register the OglTexturePointer class in the Factory
 int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();

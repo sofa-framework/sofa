@@ -47,7 +47,6 @@ namespace visualmodel
 {
 
 
-SOFA_DECL_CLASS(OglOITShader)
 
 //Register OglShader in the Object Factory
 int OglOITShaderClass = core::RegisterObject("OglOITShader")

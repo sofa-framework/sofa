@@ -36,7 +36,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(SphereForceField)
 
 int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere toward the exterior")
 #ifndef SOFA_FLOAT

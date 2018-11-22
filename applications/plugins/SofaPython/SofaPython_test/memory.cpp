@@ -24,7 +24,6 @@ protected:
 int PythonTestAllocationCounterClass = core::RegisterObject("A test component counting allocations")
         .add< PythonTestAllocationCounter >()
         ;
-SOFA_DECL_CLASS(PythonTestAllocationCounter)
 
 
 

@@ -34,7 +34,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS(ParabolicConstraint)
 
 
 int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")

@@ -58,7 +58,6 @@ void MyBehaviorModel::updatePosition(double /*dt*/)
 {
 }
 
-SOFA_DECL_CLASS(MyBehaviorModel)
 
 int MyBehaviorModelClass = core::RegisterObject("Dummy component with a custom widget.").add< MyBehaviorModel >();
 

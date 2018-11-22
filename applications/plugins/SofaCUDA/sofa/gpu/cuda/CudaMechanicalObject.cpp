@@ -62,7 +62,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaMechanicalObject)
 
 int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::container::MechanicalObject<CudaVec1fTypes> >()

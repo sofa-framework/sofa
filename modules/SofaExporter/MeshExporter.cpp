@@ -47,7 +47,6 @@ namespace component
 namespace _meshexporter_
 {
 
-SOFA_DECL_CLASS(MeshExporter)
 
 int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
                                              "Supported format are: " msgendl

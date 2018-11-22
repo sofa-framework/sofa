@@ -78,8 +78,4 @@ const char* getModuleComponentList()
 
 } // namespace sofa
 
-SOFA_LINK_CLASS(PersistentContactBarycentricMapping)
-SOFA_LINK_CLASS(PersistentContactRigidMapping)
-SOFA_LINK_CLASS(PersistentFrictionContact)
-SOFA_LINK_CLASS(PersistentUnilateralInteractionConstraint)
 

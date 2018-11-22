@@ -76,7 +76,6 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaRigidMapping)
 
 int RigidMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3fTypes> >()

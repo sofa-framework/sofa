@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(JoinPoints)
 
 int JoinPointsClass = core::RegisterObject("?")
 #ifndef SOFA_FLOAT

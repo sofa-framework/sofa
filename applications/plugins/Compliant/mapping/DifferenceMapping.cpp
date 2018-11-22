@@ -11,7 +11,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(DifferenceMapping)
 
 using namespace defaulttype;
 
@@ -46,7 +45,6 @@ template class SOFA_Compliant_API DifferenceMapping< Rigid3fTypes, Vec3fTypes >;
 ///////////////////////
 
 
-SOFA_DECL_CLASS(DifferenceMultiMapping)
 
 using namespace defaulttype;
 

@@ -16,7 +16,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(ContourImageToolBox)
 
 int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
         .add<ContourImageToolBox<ImageUC> >()

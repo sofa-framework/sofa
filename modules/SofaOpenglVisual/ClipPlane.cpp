@@ -34,7 +34,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(ClipPlane)
 
 int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
         .add< ClipPlane >()

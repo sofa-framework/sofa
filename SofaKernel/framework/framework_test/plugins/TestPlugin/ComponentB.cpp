@@ -43,7 +43,6 @@ ComponentB<T>::~ComponentB()
 {
 }
 
-SOFA_DECL_CLASS(ComponentB)
 
 int ComponentBClass = sofa::core::RegisterObject("Component B")
 #ifndef SOFA_FLOAT

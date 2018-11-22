@@ -36,7 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TriangularAnisotropicFEMForceField)
 
 // Register in the Factory
 int TriangularAnisotropicFEMForceFieldClass = core::RegisterObject("Triangular finite element model using anisotropic material")

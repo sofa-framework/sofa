@@ -1106,7 +1106,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
 .add< GenericConstraintSolver >();
 
-SOFA_DECL_CLASS(GenericConstraintSolver)
 
 
 } // namespace constraintset

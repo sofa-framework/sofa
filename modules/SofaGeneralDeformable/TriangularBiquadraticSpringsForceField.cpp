@@ -40,7 +40,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TriangularBiquadraticSpringsForceField)
 
 using namespace sofa::defaulttype;
 

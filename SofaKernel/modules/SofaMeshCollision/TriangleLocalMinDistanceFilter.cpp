@@ -333,7 +333,6 @@ bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, cons
 
 
 
-SOFA_DECL_CLASS(TriangleLocalMinDistanceFilter)
 
 int TriangleLocalMinDistanceFilterClass = core::RegisterObject("This class manages Triangle collision models cones filters computations and updates.")
         .add< TriangleLocalMinDistanceFilter >()

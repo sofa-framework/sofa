@@ -44,7 +44,6 @@ using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 using sofa::helper::fixed_array;
 
-SOFA_DECL_CLASS ( SimpleTesselatedHexaTopologicalMapping )
 
 // Register in the Factory
 int SimpleTesselatedHexaTopologicalMappingClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted into a finer HexahedronSetTopology" )

@@ -166,7 +166,6 @@ void  VRPN_CALLBACK handle_end_of_frame(void *userData,const struct _vrpn_IMAGER
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-SOFA_DECL_CLASS(VRPNImager)
 
 int VRPNImagerClass = sofa::core::RegisterObject("VRPN Imager")
 #ifndef SOFA_FLOAT

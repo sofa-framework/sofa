@@ -41,7 +41,6 @@ namespace io
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-SOFA_DECL_CLASS(MeshGmsh)
 
 Creator<Mesh::FactoryMesh, MeshGmsh> MeshGmshClass("gmsh");
 

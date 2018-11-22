@@ -33,7 +33,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(AverageCatchAllVector)
 
 int AverageCatchAllVectorClass = core::RegisterObject("AverageCatchAllVector")
         .add<AverageCatchAllVector<float > >(true)

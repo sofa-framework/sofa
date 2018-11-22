@@ -34,7 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaBeamLinearMapping)
 
 using namespace sofa::component::mapping;
 using namespace defaulttype;

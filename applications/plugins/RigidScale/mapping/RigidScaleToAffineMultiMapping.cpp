@@ -16,7 +16,6 @@ namespace mapping
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(RigidScaleToAffineMultiMapping)
 
 int RigidScaleToAffineMultiMappingClass = core::RegisterObject("Convert a rigid in addition to a scale into an affine without shearing effect.")
 #ifndef SOFA_FLOAT

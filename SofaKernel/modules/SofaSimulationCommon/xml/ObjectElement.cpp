@@ -113,7 +113,6 @@ bool ObjectElement::initNode()
     return true;
 }
 
-SOFA_DECL_CLASS(Object)
 
 Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
 

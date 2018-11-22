@@ -14,8 +14,7 @@ namespace sofa
         namespace engine
         {
 
-            SOFA_DECL_CLASS(MeanComputation)
-
+            
                 int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
 #ifdef SOFA_FLOAT
                 .add< MeanComputationEngine<defaulttype::Vec3fTypes> >(true) // default template

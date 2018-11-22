@@ -36,7 +36,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(DistanceGridForceField)
 
 int DistanceGridForceFieldClass = core::RegisterObject("Force applied by a distancegrid toward the exterior, the interior, or the surface")
 #ifndef SOFA_FLOAT

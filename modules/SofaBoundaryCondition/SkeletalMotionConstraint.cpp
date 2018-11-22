@@ -36,7 +36,6 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(SkeletalMotionConstraint)
 
 
 int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")

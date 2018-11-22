@@ -37,7 +37,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(TetrahedronFEMForceField)
 
 // Register in the Factory
 int TetrahedronFEMForceFieldClass = core::RegisterObject("Tetrahedral finite elements")

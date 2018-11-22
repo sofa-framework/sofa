@@ -57,7 +57,6 @@ typedef BaseMeshTopology In;
 /// Output Topology
 typedef BaseMeshTopology Out;
 
-SOFA_DECL_CLASS(Quad2TriangleTopologicalMapping)
 
 // Register in the Factory
 int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where QuadSetTopology is converted to TriangleSetTopology")

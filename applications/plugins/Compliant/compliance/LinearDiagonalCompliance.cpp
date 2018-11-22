@@ -25,7 +25,6 @@ int LinearDiagonalComplianceClass = core::RegisterObject("Linear Diagonal compli
 #endif
         ;
 
-SOFA_DECL_CLASS(LinearDiagonalCompliance)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API LinearDiagonalCompliance<Vec1dTypes>;

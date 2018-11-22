@@ -81,5 +81,3 @@ const char* getModuleComponentList()
 
 } // namespace sofa
 
-SOFA_LINK_CLASS(OglTetrahedralModel)
-SOFA_LINK_CLASS(OglVolumetricModel)

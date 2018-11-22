@@ -32,7 +32,6 @@ namespace engine {
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(MassFromDensity)
 
 int MassFromDensityClass = core::RegisterObject("Compute a mass matrix from a density image")
         .add<MassFromDensity<Affine3Types,ImageD > >(true)

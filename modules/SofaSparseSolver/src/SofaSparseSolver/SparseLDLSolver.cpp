@@ -33,7 +33,6 @@ namespace component
 namespace linearsolver
 {
 
-SOFA_DECL_CLASS(SparseLDLSolver)
 
 int SparseLDLSolverClass = core::RegisterObject("Direct Linear Solver using a Sparse LDL^T factorization.")
 #ifdef SOFA_WITH_DOUBLE

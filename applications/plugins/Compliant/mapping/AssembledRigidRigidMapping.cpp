@@ -12,7 +12,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(AssembledRigidRigidMapping)
 
 using namespace defaulttype;
 

@@ -37,7 +37,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(CylinderGridTopology)
 
 int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
         .addAlias("CylinderGrid")

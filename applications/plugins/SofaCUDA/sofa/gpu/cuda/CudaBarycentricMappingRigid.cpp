@@ -44,7 +44,6 @@ namespace mapping
 using namespace sofa::defaulttype;
 using namespace sofa::gpu::cuda;
 
-SOFA_DECL_CLASS(BarycentricMappingRigid)
 
 // Register in the Factory
 int BarycentricMappingRigidClass = core::RegisterObject("")

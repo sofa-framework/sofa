@@ -35,7 +35,6 @@ namespace shapefunction
 using namespace defaulttype;
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(VoronoiShapeFunction)
 
 // Register in the Factory
 int VoronoiShapeFunctionClass = core::RegisterObject("Computes natural neighbor shape functions in images")

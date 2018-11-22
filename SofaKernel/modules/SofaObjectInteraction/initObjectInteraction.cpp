@@ -39,7 +39,6 @@ void initObjectInteraction()
     }
 }
 
-SOFA_LINK_CLASS(PenalityContactForceField)
 
 
 } // namespace component

@@ -45,7 +45,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(DistanceGridCollisionModel)
 
 int RigidDistanceGridCollisionModelClass = core::RegisterObject("Grid-based distance field")
         .add< RigidDistanceGridCollisionModel >()

@@ -36,7 +36,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(TetrahedronSetTopologyModifier)
 int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
         .add< TetrahedronSetTopologyModifier >();
 

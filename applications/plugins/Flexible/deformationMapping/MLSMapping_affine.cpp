@@ -40,7 +40,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(MLSMapping_affine)
 
 using namespace defaulttype;
 

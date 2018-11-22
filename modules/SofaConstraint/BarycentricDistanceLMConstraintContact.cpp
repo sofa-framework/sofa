@@ -36,7 +36,6 @@ namespace collision
 
 using simulation::Node;
 
-SOFA_DECL_CLASS(BarycentricDistanceLMConstraintContact)
 
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereModel, SphereModel> > SphereSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereModel, PointModel> > SpherePointDistanceLMConstraintContactClass("distanceLMConstraint",true);

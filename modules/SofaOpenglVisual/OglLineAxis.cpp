@@ -35,7 +35,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglLineAxis)
 
 int OglLineAxisClass = core::RegisterObject("Display scene axis")
         .add< component::visualmodel::OglLineAxis >()

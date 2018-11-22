@@ -77,11 +77,6 @@ const char* getModuleComponentList()
            "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
 }
 
-SOFA_LINK_CLASS(DistanceGridCollisionModel)
-SOFA_LINK_CLASS(FFDDistanceGridDiscreteIntersection)
-SOFA_LINK_CLASS(RayDistanceGridContact)
-SOFA_LINK_CLASS(RigidDistanceGridDiscreteIntersection)
-SOFA_LINK_CLASS(DistanceGridForceField)
 
 } /// component
 

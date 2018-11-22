@@ -859,7 +859,6 @@ void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_i
 
 
 
-SOFA_DECL_CLASS(DAGNode)
 
 //helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeDefaultClass("default");
 helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");

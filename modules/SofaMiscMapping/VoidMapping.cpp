@@ -37,7 +37,6 @@ using namespace core;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(VoidMapping)
 
 // Register in the Factory
 int VoidMappingClass = core::RegisterObject("Special mapping that 'map' points for void ( no input DOF ). This is useful to be able to create animated objects mixed with real DOFs.")

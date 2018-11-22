@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageToRigidMassEngine)
 
 int ImageToRigidMassEngineClass = core::RegisterObject("Compute rigid mass from a density image")
         .add<ImageToRigidMassEngine<ImageD> >(true)

@@ -86,7 +86,6 @@ bool NodeElement::init()
     return res;
 }
 
-SOFA_DECL_CLASS(NodeElement)
 
 helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
 

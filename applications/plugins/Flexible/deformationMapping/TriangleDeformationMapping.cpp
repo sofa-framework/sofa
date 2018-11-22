@@ -39,7 +39,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(TriangleDeformationMapping)
 
 using namespace defaulttype;
 

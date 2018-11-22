@@ -37,7 +37,6 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(FixedTranslationConstraint)
 
 int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids to their initial positions but they still can have rotations")
 #ifndef SOFA_FLOAT

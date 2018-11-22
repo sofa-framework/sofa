@@ -39,22 +39,7 @@ void initOpenGLVisual()
     }
 }
 
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglCylinderModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(OglColorMap)
-SOFA_LINK_CLASS(DataDisplay)
-SOFA_LINK_CLASS(OglLabel)
 #ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTexture)
-SOFA_LINK_CLASS(OglViewport)
 #endif
 
 

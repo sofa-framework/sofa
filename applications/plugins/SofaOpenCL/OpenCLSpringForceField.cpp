@@ -92,8 +92,6 @@ namespace gpu
 namespace opencl
 {
 
-SOFA_DECL_CLASS(OpenCLSpringForceField)
-SOFA_DECL_CLASS(OpenCLBoxStiffSpringForceField)
 
 int SpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< component::interactionforcefield::SpringForceField<OpenCLVec3fTypes> >()

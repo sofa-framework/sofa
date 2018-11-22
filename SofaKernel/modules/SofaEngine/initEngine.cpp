@@ -39,7 +39,6 @@ void initEngine()
     }
 }
 
-SOFA_LINK_CLASS(BoxROI)
 
 } // namespace component
 

@@ -35,7 +35,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(RigidToQuatEngine)
 
 int RigidToQuatEngineClass = core::RegisterObject("Transform a couple of Vec3 and Quaternion in Rigid")
 #ifndef SOFA_FLOAT

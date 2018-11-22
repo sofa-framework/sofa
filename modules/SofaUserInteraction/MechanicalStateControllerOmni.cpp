@@ -39,7 +39,6 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MechanicalStateControllerOmni)
 
 // Register in the Factory
 int MechanicalStateControllerOmniClass = core::RegisterObject("Provides an Omni user control on a Mechanical State.")

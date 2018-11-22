@@ -37,8 +37,7 @@ namespace sofa
 
             using namespace sofa::defaulttype;
 
-            SOFA_DECL_CLASS(DiagonalVelocityDampingForceField)
-
+            
                 int DiagonalVelocityDampingForceFieldClass = core::RegisterObject("Diagonal velocity damping")
 #ifndef SOFA_FLOAT
                 .add< DiagonalVelocityDampingForceField<Vec3dTypes> >()

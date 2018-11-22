@@ -39,7 +39,6 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(FrameSpringForceField2)
 
 using namespace sofa::defaulttype;
 

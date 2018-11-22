@@ -34,7 +34,6 @@ namespace component
 namespace interactionforcefield
 {
 
-SOFA_DECL_CLASS(RegularGridSpringForceField)
 
 using namespace sofa::defaulttype;
 

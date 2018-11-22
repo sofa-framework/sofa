@@ -34,7 +34,6 @@ namespace component
 {
 namespace topology
 {
-SOFA_DECL_CLASS(QuadSetTopologyModifier)
 int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
         .add< QuadSetTopologyModifier >();
 

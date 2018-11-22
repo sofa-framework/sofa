@@ -32,10 +32,6 @@ namespace visualmodel
 {
 
 /** SINGLE INT VARIABLE **/
-SOFA_DECL_CLASS(OglIntVariable)
-SOFA_DECL_CLASS(OglInt2Variable)
-SOFA_DECL_CLASS(OglInt3Variable)
-SOFA_DECL_CLASS(OglInt4Variable)
 
 //Register OglIntVariable in the Object Factory
 int OglIntVariableClass = core::RegisterObject("OglIntVariable")
@@ -56,10 +52,6 @@ int OglInt4VariableClass = core::RegisterObject("OglInt4Variable")
 
 /** SINGLE FLOAT VARIABLE **/
 
-SOFA_DECL_CLASS(OglFloatVariable)
-SOFA_DECL_CLASS(OglFloat2Variable)
-SOFA_DECL_CLASS(OglFloat3Variable)
-SOFA_DECL_CLASS(OglFloat4Variable)
 
 //Register OglFloatVariable in the Object Factory
 int OglFloatVariableClass = core::RegisterObject("OglFloatVariable")
@@ -79,10 +71,6 @@ int OglFloat4VariableClass = core::RegisterObject("OglFloat4Variable")
         ;
 
 /** INT VECTOR VARIABLE **/
-SOFA_DECL_CLASS(OglIntVectorVariable)
-SOFA_DECL_CLASS(OglIntVector2Variable)
-SOFA_DECL_CLASS(OglIntVector3Variable)
-SOFA_DECL_CLASS(OglIntVector4Variable)
 
 //Register OglIntVectorVariable in the Object Factory
 int OglIntVectorVariableClass = core::RegisterObject("OglIntVectorVariable")
@@ -106,10 +94,6 @@ int OglIntVector4VariableClass = core::RegisterObject("OglIntVector4Variable")
 
 
 /** FLOAT VECTOR VARIABLE **/
-SOFA_DECL_CLASS(OglFloatVectorVariable)
-SOFA_DECL_CLASS(OglFloatVector2Variable)
-SOFA_DECL_CLASS(OglFloatVector3Variable)
-SOFA_DECL_CLASS(OglFloatVector4Variable)
 
 //Register OglFloatVectorVariable in the Object Factory
 int OglFloatVectorVariableClass = core::RegisterObject("OglFloatVectorVariable")
@@ -131,15 +115,6 @@ int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable
         ;
 
 /** Matrix VARIABLE **/
-SOFA_DECL_CLASS(OglMatrix2Variable)
-SOFA_DECL_CLASS(OglMatrix3Variable)
-SOFA_DECL_CLASS(OglMatrix4Variable)
-SOFA_DECL_CLASS(OglMatrix2x3Variable)
-SOFA_DECL_CLASS(OglMatrix3x2Variable)
-SOFA_DECL_CLASS(OglMatrix2x4Variable)
-SOFA_DECL_CLASS(OglMatrix4x2Variable)
-SOFA_DECL_CLASS(OglMatrix3x4Variable)
-SOFA_DECL_CLASS(OglMatrix4x3Variable)
 
 //Register OglMatrix2Variable in the Object Factory
 int OglMatrix2VariableClass = core::RegisterObject("OglMatrix2Variable")

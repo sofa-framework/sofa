@@ -37,7 +37,6 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(PartialLinearMovementConstraint)
 
 
 int PartialLinearMovementConstraintClass = core::RegisterObject("translate given particles")

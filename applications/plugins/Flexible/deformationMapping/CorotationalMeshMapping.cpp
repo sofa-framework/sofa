@@ -34,7 +34,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CorotationalMeshMapping)
 
 using namespace defaulttype;
 

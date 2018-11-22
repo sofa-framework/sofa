@@ -34,7 +34,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(EvalPointsDistance)
 
 using namespace defaulttype;
 

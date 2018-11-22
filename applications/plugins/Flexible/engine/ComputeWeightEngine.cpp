@@ -13,7 +13,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS( ComputeWeightEngine )
 
 using namespace defaulttype;
 

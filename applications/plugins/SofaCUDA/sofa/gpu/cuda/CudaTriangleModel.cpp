@@ -50,7 +50,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaTriangleModel)
 
 int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::TTriangleModel<CudaVec3fTypes> >()

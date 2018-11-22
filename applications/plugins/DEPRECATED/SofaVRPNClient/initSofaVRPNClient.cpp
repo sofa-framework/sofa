@@ -81,7 +81,4 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(VRPNTracker)
-SOFA_LINK_CLASS(VRPNButton)
-SOFA_LINK_CLASS(VRPNAnalog)
 

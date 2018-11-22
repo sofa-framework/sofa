@@ -34,7 +34,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(DefaultContactManager)
 
 int DefaultContactManagerClass = core::RegisterObject("Default class to create reactions to the collisions")
         .add< DefaultContactManager >()

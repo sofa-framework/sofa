@@ -33,7 +33,6 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TestImageEngine)
 
 int TestImageEngineClass = core::RegisterObject("TestImageEngine to test engine with data image")
 

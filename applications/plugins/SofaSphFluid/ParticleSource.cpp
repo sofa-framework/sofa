@@ -34,7 +34,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(ParticleSource)
 
 int ParticleSourceClass = core::RegisterObject("Parametrable particle generator")
 #ifndef SOFA_FLOAT

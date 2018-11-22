@@ -36,7 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(EdgePressureForceField)
 
 int EdgePressureForceFieldClass = core::RegisterObject("EdgePressure")
 #ifndef SOFA_FLOAT

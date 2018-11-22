@@ -35,7 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(RelativeStrainMapping)
 
 using namespace defaulttype;
 

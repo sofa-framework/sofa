@@ -40,7 +40,6 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(StiffSpringForceField)
 
 // Register in the Factory
 int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implicit integration")

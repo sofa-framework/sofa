@@ -129,7 +129,6 @@ Vector6 MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalP
 
 
 
-SOFA_DECL_CLASS(MeshMatrixMass)
 
 // Register in the Factory
 int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")

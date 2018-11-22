@@ -34,7 +34,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(RigidRigidMapping)
 
 using namespace defaulttype;
 

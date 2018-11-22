@@ -35,7 +35,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(OpenCTMLoader)
 
 int OpenCTMLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
         .add< OpenCTMLoader >()

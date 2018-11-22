@@ -47,7 +47,6 @@ namespace cuda
 
 
 
-SOFA_DECL_CLASS(CudaParticleSource)
 
 int ParticleSourceCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::misc::ParticleSource<CudaVec3fTypes> >()

@@ -38,7 +38,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(StereoOglModel)
 
 int StereoOglModelClass = core::RegisterObject("StereoOglModel")
         .add< StereoOglModel >()

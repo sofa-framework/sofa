@@ -21,7 +21,6 @@ using namespace sofa::helper;
 using simulation::Node;
 using core::collision::Contact;
 
-SOFA_DECL_CLASS(PenaltyCompliantContact)
 
 
 Creator<Contact::Factory, PenaltyCompliantContact<PointModel, PointModel> > PointPointPenaltyCompliantContactClass("PenaltyCompliantContact",true);

@@ -393,7 +393,6 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
 }
 
 
-SOFA_DECL_CLASS(SparsePARDISOSolver)
 
 int SparsePARDISOSolverClass = core::RegisterObject("Direct linear solvers implemented with the PARDISO library")
         .add< SparsePARDISOSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()

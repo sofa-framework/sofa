@@ -39,7 +39,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(DisabledContact)
 
 
 using namespace sofa::core::collision;

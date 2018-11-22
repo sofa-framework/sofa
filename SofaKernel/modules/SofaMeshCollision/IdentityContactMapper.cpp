@@ -33,7 +33,6 @@ namespace collision
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(IdentityContactMapper)
 
 ContactMapperCreator< ContactMapper<SphereModel> > SphereContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<PointModel> > PointContactMapperClass("default",true);

@@ -92,8 +92,6 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(ProgressiveScaling)
-SOFA_LINK_CLASS(ComputeMeshIntersection)
 
 }
 

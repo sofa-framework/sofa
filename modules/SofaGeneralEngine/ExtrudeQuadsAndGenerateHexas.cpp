@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ExtrudeQuadsAndGenerateHexas)
 
 int ExtrudeQuadsAndGenerateHexasClass = core::RegisterObject("This engine extrudes a quad-based surface into a set of hexahedral elements")
 #ifndef SOFA_FLOAT

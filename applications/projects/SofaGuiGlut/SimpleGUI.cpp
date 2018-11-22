@@ -173,7 +173,6 @@ int SimpleGUI::closeGUI()
 }
 
 
-SOFA_DECL_CLASS(SimpleGUI)
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 

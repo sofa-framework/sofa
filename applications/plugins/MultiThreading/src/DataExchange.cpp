@@ -40,8 +40,7 @@ namespace sofa
 
         SOFA_EVENT_CPP(DataExchangeEvent)
 
-        SOFA_DECL_CLASS(DataExchange)
-
+        
 // Register in the Factory
 int DataExchangeClass = core::RegisterObject("DataExchange")
 .add< DataExchange< sofa::helper::vector<sofa::defaulttype::Vec3d> > >(true)

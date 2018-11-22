@@ -40,7 +40,6 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-SOFA_DECL_CLASS(Fluid2D)
 
 int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
         .add< Fluid2D >()

@@ -468,7 +468,6 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
 }
 
 
-SOFA_DECL_CLASS(GNode)
 
 //helper::Creator<xml::NodeElement::Factory, GNode> GNodeDefaultClass("default");
 helper::Creator<xml::NodeElement::Factory, GNode> GNodeClass("GNode");

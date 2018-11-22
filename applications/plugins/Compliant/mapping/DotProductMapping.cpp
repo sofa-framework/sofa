@@ -11,7 +11,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(DotProductMapping)
 
 using namespace defaulttype;
 
@@ -38,7 +37,6 @@ template class SOFA_Compliant_API DotProductMapping< Vec3fTypes, Vec1fTypes >;
 ///////////////////////
 
 
-SOFA_DECL_CLASS(DotProductMultiMapping)
 
 using namespace defaulttype;
 
@@ -64,7 +62,6 @@ template class SOFA_Compliant_API DotProductMultiMapping< Vec3fTypes, Vec1fTypes
 
 ///////////////////////
 
-SOFA_DECL_CLASS(DotProductFromTargetMapping)
 
 using namespace defaulttype;
 

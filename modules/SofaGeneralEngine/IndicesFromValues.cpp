@@ -34,7 +34,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(IndicesFromValues)
 
 int IndicesFromValuesClass = core::RegisterObject("Find the indices of a list of values within a larger set of values")
         .add< IndicesFromValues<std::string> >()

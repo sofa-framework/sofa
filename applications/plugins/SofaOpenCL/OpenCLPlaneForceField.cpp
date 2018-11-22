@@ -38,7 +38,6 @@ namespace gpu
 namespace opencl
 {
 
-SOFA_DECL_CLASS(OpenCLPlaneForceField)
 
 int PlaneForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< component::forcefield::PlaneForceField<OpenCLVec3fTypes> >()

@@ -15,7 +15,6 @@ int STEPShapeExtractorClass = core::RegisterObject("Extract a shape from a MeshS
         .add< STEPShapeExtractor>(true);
 
 
-SOFA_DECL_CLASS(STEPShapeExtractor)
 
 STEPShapeExtractor::STEPShapeExtractor(MeshSTEPLoader* loader, MeshTopology* topology):
     shapeNumber(initData(&shapeNumber,"shapeNumber", "Shape number to be loaded" ) )

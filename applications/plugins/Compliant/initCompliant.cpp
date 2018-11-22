@@ -121,5 +121,4 @@ SOFA_Compliant_API void initCompliant()
 }
 
 
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-
+//

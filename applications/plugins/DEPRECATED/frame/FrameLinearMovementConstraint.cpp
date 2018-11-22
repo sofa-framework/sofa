@@ -38,7 +38,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS ( FrameLinearMovementConstraint )
 
 using namespace sofa::defaulttype;
 

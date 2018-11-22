@@ -36,7 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TaitSurfacePressureForceField)
 
 int TaitSurfacePressureForceFieldClass = core::RegisterObject("\
 This component computes the volume enclosed by a surface mesh \

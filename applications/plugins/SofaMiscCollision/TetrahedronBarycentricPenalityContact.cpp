@@ -38,7 +38,6 @@ using namespace defaulttype;
 using simulation::Node;
 using namespace sofa::core::collision;
 
-SOFA_DECL_CLASS(TetrahedronBarycentricPenalityContact)
 
 Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, SphereModel> > TetrahedronSpherePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, PointModel> > TetrahedronPointPenalityContactClass("default",true);

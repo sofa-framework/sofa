@@ -55,7 +55,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaExtraMonitor)
 
 int ExtraMonitorCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
         .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()

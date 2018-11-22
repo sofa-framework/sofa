@@ -37,7 +37,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(BarycentricMapping)
 
 // Register in the Factory
 int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")

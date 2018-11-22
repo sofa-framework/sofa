@@ -37,7 +37,6 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FixedRotationConstraint)
 
 int FixedRotationConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
 

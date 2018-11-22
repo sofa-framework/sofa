@@ -51,7 +51,6 @@ using namespace sofa::gpu::opencl;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(OpenCLSpatialGridContainer)
 
 int SpatialGridContainerOpenCLClass = core::RegisterObject("GPU support using OpenCL.")
         .add< SpatialGridContainer<OpenCLVec3fTypes> >()

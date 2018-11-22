@@ -10,7 +10,6 @@ namespace component {
 
 namespace mass {
 
-SOFA_DECL_CLASS(RigidMass)
 
 using namespace defaulttype;
 

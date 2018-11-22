@@ -33,7 +33,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(BeamLinearMapping_mt)
 
 //using namespace defaulttype;
 // Register in the Factory

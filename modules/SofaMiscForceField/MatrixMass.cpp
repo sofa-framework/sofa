@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(MatrixMass)
 
 
 // Register in the Factory

@@ -57,7 +57,6 @@ void GNodeMultiMappingElement::updateSceneGraph(
 }
 
 
-SOFA_DECL_CLASS(GNodeMultiMappingElement)
 
 helper::Creator<sofa::simulation::xml::BaseElement::NodeFactory, GNodeMultiMappingElement> GNodeMultiMappingClass("GNodeMultiMapping");
 

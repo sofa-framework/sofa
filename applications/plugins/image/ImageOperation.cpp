@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageOperation)
 
 int ImageOperationClass = core::RegisterObject("This class computes an image as an operation between two images")
         .add<ImageOperation<ImageUC> >(true)

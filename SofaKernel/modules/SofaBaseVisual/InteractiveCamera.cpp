@@ -32,7 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(InteractiveCamera)
 
 int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
         .add< InteractiveCamera >()

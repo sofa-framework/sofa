@@ -37,7 +37,6 @@ namespace topology
 
 
 
-SOFA_DECL_CLASS(SparseGridRamificationTopology)
 
 int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3D (modified)")
         .addAlias("SparseGridRamification")

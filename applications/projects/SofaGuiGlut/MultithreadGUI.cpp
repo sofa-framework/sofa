@@ -209,7 +209,6 @@ int MultithreadGUI::closeGUI()
 }
 
 
-SOFA_DECL_CLASS(MultithreadGUI)
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 

@@ -35,7 +35,6 @@ namespace externalBehaviorModel
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FEMGridBehaviorModel)
 
 // Register in the Factory (XML read/write...)
 int FEMGridBehaviorModelModelClass = core::RegisterObject("FEMGridBehaviorModel Example")

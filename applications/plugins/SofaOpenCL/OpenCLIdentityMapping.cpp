@@ -104,7 +104,6 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(OpenCLIdentityMapping)
 
 int IdentityMappingOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes> >()

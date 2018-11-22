@@ -31,7 +31,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(ReadTopology)
 
 using namespace defaulttype;
 

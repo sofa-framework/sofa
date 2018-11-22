@@ -32,7 +32,6 @@ namespace misc
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS (ImageViewer)
 // Register in the Factory
 
 int ImageViewerClass = core::RegisterObject ( "Image viewer" )

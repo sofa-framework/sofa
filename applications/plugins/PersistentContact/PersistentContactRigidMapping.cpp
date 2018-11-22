@@ -32,7 +32,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(PersistentContactRigidMapping)
 
 using namespace defaulttype;
 

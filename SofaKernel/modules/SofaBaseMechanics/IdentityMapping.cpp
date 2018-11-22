@@ -39,7 +39,6 @@ using namespace core;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(IdentityMapping)
 
 // Register in the Factory
 int IdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")

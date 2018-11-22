@@ -36,7 +36,6 @@ namespace collision
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(SubsetContactMapper)
 
 } // namespace collision
 

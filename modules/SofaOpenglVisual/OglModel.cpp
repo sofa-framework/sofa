@@ -45,7 +45,6 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-SOFA_DECL_CLASS(OglModel)
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
         .add< OglModel >()

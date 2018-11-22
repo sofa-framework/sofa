@@ -34,7 +34,6 @@ namespace misc
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(DataController)
 
 int DataControllerClass = core::RegisterObject("DataController")
         .add< DataController >()

@@ -36,7 +36,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-SOFA_DECL_CLASS(Point)
 
 int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
 #ifndef SOFA_FLOAT

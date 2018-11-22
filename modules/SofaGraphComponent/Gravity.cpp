@@ -49,7 +49,6 @@ void Gravity::apply()
     getContext()->setGravity( f_gravity.getValue() );
 }
 
-SOFA_DECL_CLASS(Gravity)
 
 int GravityClass = core::RegisterObject("Gravity in world coordinates")
         .add< Gravity >()

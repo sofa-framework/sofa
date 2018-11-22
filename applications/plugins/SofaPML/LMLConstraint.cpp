@@ -49,7 +49,6 @@ namespace pml
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 using namespace core::behavior;
-SOFA_DECL_CLASS(LMLConstraint)
 
 
 template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;

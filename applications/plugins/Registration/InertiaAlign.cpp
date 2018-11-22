@@ -41,7 +41,6 @@ int InertiaAlignClass = core::RegisterObject("An engine computing inertia matrix
         ;
 
 
-SOFA_DECL_CLASS(InertiaAlign)
 
 InertiaAlign::InertiaAlign()
     : targetC( initData(&targetC,"targetCenter","input: the gravity center of the target mesh") )

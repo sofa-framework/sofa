@@ -96,10 +96,6 @@ const char* getModuleComponentList()
 }
 
 SP_DECLARE_CLASS_TYPE(Template)
-SOFA_LINK_CLASS(Import)
-SOFA_LINK_CLASS(Python)
-SOFA_LINK_CLASS(TestResult)
-SOFA_LINK_CLASS(PSLVersion)
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 

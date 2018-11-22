@@ -51,7 +51,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaLinearForceField)
 
 int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
         .add< component::forcefield::LinearForceField<CudaVec6fTypes> >()

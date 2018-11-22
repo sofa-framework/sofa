@@ -37,7 +37,6 @@ namespace component
 namespace linearsolver
 {
 
-SOFA_DECL_CLASS(BTDLinearSolver)
 
 int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
 #ifndef SOFA_FLOAT

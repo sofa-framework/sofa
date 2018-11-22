@@ -36,7 +36,6 @@
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-SOFA_DECL_CLASS(ToolTracker)
 
 int ToolTrackerClass = sofa::core::RegisterObject("Specific engine to compute positions and orientations from 3 3D points")
 #ifndef SOFA_FLOAT

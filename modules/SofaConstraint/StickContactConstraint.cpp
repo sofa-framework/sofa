@@ -38,7 +38,6 @@ using namespace sofa::helper;
 using simulation::Node;
 using namespace sofa::core::collision;
 
-SOFA_DECL_CLASS(StickContactConstraint)
 
 Creator<Contact::Factory, StickContactConstraint<PointModel, PointModel> > PointPointStickContactConstraintClass("StickContactConstraint",true);
 Creator<Contact::Factory, StickContactConstraint<LineModel, SphereModel> > LineSphereStickContactConstraintClass("StickContactConstraint",true);

@@ -87,5 +87,4 @@ const char* getModuleComponentList()
 }
 
 
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-
+//

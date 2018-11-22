@@ -39,8 +39,6 @@ void initBaseVisual()
     }
 }
 
-SOFA_LINK_CLASS(VisualModelImpl)
-SOFA_LINK_CLASS(InteractiveCamera)
 
 } // namespace component
 

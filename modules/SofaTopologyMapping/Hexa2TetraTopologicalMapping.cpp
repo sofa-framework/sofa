@@ -52,7 +52,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(Hexa2TetraTopologicalMapping)
 
 // Register in the Factory
 int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to TetrahedronSetTopology")

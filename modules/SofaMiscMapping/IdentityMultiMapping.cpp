@@ -37,7 +37,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(IdentityMultiMapping)
 
 // Register in the Factory
 int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States together")

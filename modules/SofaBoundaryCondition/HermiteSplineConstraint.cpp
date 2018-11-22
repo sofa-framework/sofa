@@ -35,7 +35,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS(HermiteSplineConstraint)
 
 
 int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")

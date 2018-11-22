@@ -97,7 +97,6 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaIdentityMapping)
 
 int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< IdentityMapping< CudaVec3fTypes, CudaVec3fTypes> >()

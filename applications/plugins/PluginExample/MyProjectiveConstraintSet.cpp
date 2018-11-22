@@ -36,7 +36,6 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(MyProjectiveConstraintSet)
 
 int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of templated component")
 #ifndef SOFA_FLOAT

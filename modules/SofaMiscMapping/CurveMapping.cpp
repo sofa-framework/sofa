@@ -50,7 +50,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(CurveMapping)
 
 // Register in the Factory
 int CurveMappingClass = core::RegisterObject("Mapping allowing one or more rigid objects follow a trajectory determined by a set of points")

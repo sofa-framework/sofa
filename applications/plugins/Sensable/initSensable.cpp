@@ -98,5 +98,3 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(NewOmniDriver)
-SOFA_LINK_CLASS(OmniDriver)

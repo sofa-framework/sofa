@@ -35,7 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(PlasticStrainMapping)
 
 using namespace defaulttype;
 

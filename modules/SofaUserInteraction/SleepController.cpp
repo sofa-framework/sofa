@@ -428,7 +428,6 @@ simulation::Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation:
 int SleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object")
 .add< SleepController >();
 
-SOFA_DECL_CLASS(SleepController)
 
 } // namespace controller
 

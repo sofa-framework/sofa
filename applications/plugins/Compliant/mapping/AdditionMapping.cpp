@@ -11,7 +11,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(AdditionMapping)
 
 using namespace defaulttype;
 
@@ -46,7 +45,6 @@ template class SOFA_Compliant_API AdditionMapping< Rigid3fTypes, Vec3fTypes >;
 ///////////////////////
 
 
-SOFA_DECL_CLASS(AdditionMultiMapping)
 
 using namespace defaulttype;
 

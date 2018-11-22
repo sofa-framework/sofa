@@ -27,7 +27,6 @@ int FullComplianceClass = core::RegisterObject("User provided full compliance or
 #endif
         ;
 
-SOFA_DECL_CLASS(FullCompliance)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API FullCompliance<Vec1dTypes>;

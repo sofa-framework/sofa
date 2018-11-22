@@ -32,7 +32,6 @@ namespace component
 namespace shapefunction
 {
 
-SOFA_DECL_CLASS(ShepardShapeFunction)
 
 // Register in the Factory
 int ShepardShapeFunctionClass = core::RegisterObject("Computes Shepard shape functions")

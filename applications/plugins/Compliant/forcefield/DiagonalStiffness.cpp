@@ -25,7 +25,6 @@ int DiagonalStiffnessClass = core::RegisterObject("Diagonal stiffness")
 #endif
         ;
 
-SOFA_DECL_CLASS(DiagonalStiffness)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API DiagonalStiffness<Vec1dTypes>;

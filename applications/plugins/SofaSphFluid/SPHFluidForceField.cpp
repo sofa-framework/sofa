@@ -39,7 +39,6 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(SPHFluidForceField)
 
 int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamics")
 #ifndef SOFA_FLOAT

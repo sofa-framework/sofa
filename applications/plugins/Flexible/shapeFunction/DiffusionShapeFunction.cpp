@@ -35,7 +35,6 @@ namespace shapefunction
 using namespace defaulttype;
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(DiffusionShapeFunction)
 
 // Register in the Factory
 int DiffusionShapeFunctionClass = core::RegisterObject("Computes shape functions based on diffusion in images")

@@ -16,7 +16,6 @@ using namespace defaulttype;
 
 
 
-SOFA_DECL_CLASS(SafeDistanceMapping)
 
 // Register in the Factory
 int SafeDistanceMappingClass = core::RegisterObject("Compute position SafeDistances between dofs")
@@ -42,7 +41,6 @@ template class SOFA_Compliant_API SafeDistanceMapping< Vec3fTypes, Vec1fTypes >;
 
 
 
-SOFA_DECL_CLASS(SafeDistanceFromTargetMapping)
 
 // Register in the Factory
 int SafeDistanceFromTargetMappingClass = core::RegisterObject("Compute position SafeDistanceFromTargets between dofs")

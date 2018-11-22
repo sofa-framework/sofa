@@ -39,13 +39,6 @@ void initBaseMechanics()
     }
 }
 
-SOFA_LINK_CLASS(MappedObject)
-SOFA_LINK_CLASS(MechanicalObject)
-SOFA_LINK_CLASS(DiagonalMass)
-SOFA_LINK_CLASS(UniformMass)
-SOFA_LINK_CLASS(BarycentricMapping)
-SOFA_LINK_CLASS(IdentityMapping)
-SOFA_LINK_CLASS(SubsetMapping)
 
 } // namespace component
 

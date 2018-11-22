@@ -13,7 +13,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(PairingMultiMapping)
 
 using namespace defaulttype;
 

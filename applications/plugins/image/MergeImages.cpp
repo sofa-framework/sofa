@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(MergeImages)
 
 int MergeImagesClass = core::RegisterObject("Merge images")
         .add<MergeImages<ImageUC> >(true)

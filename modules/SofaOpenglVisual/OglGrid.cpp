@@ -34,7 +34,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglGrid)
 
 int OglGridClass = core::RegisterObject("Display a simple grid")
         .add< component::visualmodel::OglGrid>()

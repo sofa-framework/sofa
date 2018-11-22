@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MergeSets)
 
 int MergeSetsClass = core::RegisterObject("Merge two sets of indices using specified boolean operation")
         .add< MergeSets<int> >(true)

@@ -72,6 +72,5 @@ void create(LineMapping*& obj, XML::Node<Sofa::Core::BasicMapping>* arg)
 }
 }
 
-SOFA_DECL_CLASS(LineMapping)
 
 Creator< XML::MappingNode::Factory, LineMapping > LineMappingClass("LineMapping", true);

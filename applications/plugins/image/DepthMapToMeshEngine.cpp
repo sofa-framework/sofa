@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(DepthMapToMeshEngine)
 
 int DepthMapToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth map image ")
         .add<DepthMapToMeshEngine<ImageUC> >(true)

@@ -40,7 +40,6 @@ using namespace sofa::defaulttype;
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TrianglePressureForceField)
 
 int TrianglePressureForceFieldClass = core::RegisterObject("TrianglePressure")
 #ifndef SOFA_FLOAT

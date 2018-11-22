@@ -40,7 +40,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping_rigid)
 
 using namespace defaulttype;
 

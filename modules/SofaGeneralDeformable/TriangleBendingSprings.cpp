@@ -50,7 +50,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(TriangleBendingSprings)
 
 // Register in the Factory
 int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")

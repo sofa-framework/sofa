@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageAccumulator)
 
 int ImageAccumulatorClass = core::RegisterObject ( "Wraps images from a video stream into a single image" )
         .add<ImageAccumulator<ImageUC> >(true)

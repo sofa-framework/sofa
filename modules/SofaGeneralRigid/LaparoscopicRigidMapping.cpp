@@ -37,7 +37,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LaparoscopicRigidMapping)
 
 using namespace sofa::defaulttype;
 

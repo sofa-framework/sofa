@@ -37,7 +37,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(HexahedralFEMForceFieldAndMass)
 
 // Register in the Factory
 int HexahedralFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finite elements with mass")

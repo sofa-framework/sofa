@@ -38,7 +38,6 @@ namespace loader
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-SOFA_DECL_CLASS(MeshSTEPLoader)
 
 int MeshSTEPLoaderClass = core::RegisterObject("Specific mesh loader for STEP file format (see PluginMeshSTEPLoader.txt for further information).")
         .add< MeshSTEPLoader >();

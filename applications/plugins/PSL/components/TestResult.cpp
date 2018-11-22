@@ -70,7 +70,6 @@ void TestResult::init()
 }
 
 
-SOFA_DECL_CLASS(TestResult)
 int TestResultClass = core::RegisterObject("This component stores the results of tests.")
         .add< TestResult >();
 

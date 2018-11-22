@@ -12,7 +12,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(RigidRestJointMapping)
 
 using namespace defaulttype;
 
