@@ -22,8 +22,6 @@
 #ifndef MultiThreadingLocks_h__
 #define MultiThreadingLocks_h__
 
-#include <MultiThreading/config.h>
-
 #include <thread>
 #include <atomic>
 

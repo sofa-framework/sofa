@@ -45,7 +45,6 @@ namespace core
  * {
  *    addInput // indicate all inputs
  *    addOutput // indicate all outputs
- *    setDirtyValue(); // You still have to set that manually, sorry
  * }
  *
  * // optional (called each time a data is modified in the gui)
@@ -57,7 +56,7 @@ namespace core
  *
  * void doUpdate() override
  * {
- *    acces your inputs, set your outputs...
+ *    access your inputs, set your outputs...
  * }
  *
  */

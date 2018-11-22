@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP
-
 #include <SofaBoundaryCondition/FixedPlaneConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -34,88 +33,36 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(FixedPlaneConstraint)
-
 int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
-#ifndef SOFA_FLOAT
-        .add< FixedPlaneConstraint<Vec3dTypes> >()
-        .add< FixedPlaneConstraint<Vec6dTypes> >()
-        .add< FixedPlaneConstraint<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
         .add< FixedPlaneConstraint<Vec3fTypes> >()
         .add< FixedPlaneConstraint<Vec6fTypes> >()
         .add< FixedPlaneConstraint<Rigid3fTypes> >()
-#endif
+#endif /// SOFA_WITH_FLOAT
+#ifdef SOFA_WITH_DOUBLE
+        .add< FixedPlaneConstraint<Rigid3dTypes> >()
+        .add< FixedPlaneConstraint<Vec3dTypes> >()
+        .add< FixedPlaneConstraint<Vec6dTypes> >()
+#endif /// SOFA_WITH_DOUBLE
         ;
 
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6dTypes>;
+#endif /// SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6fTypes>;
+#endif /// SOFA_WITH_FLOAT
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Rigid3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Rigid3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec6fTypes>;
-#endif
+} /// namespace projectiveconstraintset
 
-#ifndef SOFA_FLOAT
-template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
-{
-    Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
+} /// namespace component
 
-    for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
-    {
-        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
-    }
-}
-
-template <>
-bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
-{
-    Vec<Coord::spatial_dimensions,Real> pos = p.getCenter();
-    Real d=pos*direction.getValue().getCenter();
-    if ((d>dmin.getValue())&& (d<dmax.getValue()))
-        return true;
-    else
-        return false;
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
-{
-    Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
-
-    for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
-    {
-        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
-    }
-}
-
-template <>
-bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord p)
-{
-    Vec<Coord::spatial_dimensions,Real> pos = p.getCenter();
-    Real d=pos*direction.getValue().getCenter();
-    if ((d>dmin.getValue())&& (d<dmax.getValue()))
-        return true;
-    else
-        return false;
-}
-#endif
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace sofa
 

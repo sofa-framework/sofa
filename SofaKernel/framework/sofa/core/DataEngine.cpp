@@ -46,6 +46,7 @@ void DataEngine::addInput(objectmodel::BaseData* n)
     if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
         n->setGroup("Inputs"); // set the group of input Datas if not yet set
     core::objectmodel::DDGNode::addInput(n);
+    setDirtyValue();
 }
 
 /// Add a new output to this engine
@@ -54,6 +55,7 @@ void DataEngine::addOutput(objectmodel::BaseData* n)
     if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
         n->setGroup("Outputs"); // set the group of output Datas if not yet set
     core::objectmodel::DDGNode::addOutput(n);
+    setDirtyValue();
 }
 
 void DataEngine::updateAllInputs()
