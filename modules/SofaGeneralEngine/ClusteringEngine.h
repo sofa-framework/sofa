@@ -79,7 +79,7 @@ public:
     virtual ~ClusteringEngine() {}
 
     void init() override;
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

@@ -69,10 +69,8 @@ void HausdorffDistance<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void HausdorffDistance<DataTypes>::update()
+void HausdorffDistance<DataTypes>::doUpdate()
 {
-    cleanDirty();
-
     if (f_update.getValue())
         computeDistances();
 }

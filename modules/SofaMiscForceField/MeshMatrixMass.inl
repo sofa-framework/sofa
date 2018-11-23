@@ -1293,7 +1293,7 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::reinit()
 {
-    if (m_dataTrackerTotal.isDirty() || m_dataTrackerDensity.isDirty() || m_dataTrackerVertex.isDirty())
+    if (m_dataTrackerTotal.hasChanged() || m_dataTrackerDensity.hasChanged() || m_dataTrackerVertex.hasChanged())
     {
         update();
     }
@@ -1305,7 +1305,7 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
-    if (m_dataTrackerTotal.isDirty())
+    if (m_dataTrackerTotal.hasChanged())
     {
         if(checkTotalMass())
         {
@@ -1314,7 +1314,7 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
         }
         m_dataTrackerTotal.clean();
     }
-    else if(m_dataTrackerDensity.isDirty())
+    else if(m_dataTrackerDensity.hasChanged())
     {
         if(checkMassDensity())
         {
@@ -1323,9 +1323,9 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
         }
         m_dataTrackerDensity.clean();
     }
-    else if(m_dataTrackerVertex.isDirty())
+    else if(m_dataTrackerVertex.hasChanged())
     {
-        if(m_dataTrackerEdge.isDirty())
+        if(m_dataTrackerEdge.hasChanged())
         {
             if(checkVertexMass() && checkEdgeMass() )
             {
@@ -1335,7 +1335,7 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
             m_dataTrackerVertex.clean();
             m_dataTrackerEdge.clean();
         }
-        else if(d_lumping.getValue() && (!m_dataTrackerEdge.isDirty()))
+        else if(d_lumping.getValue() && (!m_dataTrackerEdge.hasChanged()))
         {
             if(checkVertexMass())
             {

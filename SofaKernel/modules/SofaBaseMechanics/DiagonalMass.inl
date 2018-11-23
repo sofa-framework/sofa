@@ -538,7 +538,7 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    if (m_dataTrackerTotal.isDirty() || m_dataTrackerDensity.isDirty() || m_dataTrackerVertex.isDirty())
+    if (m_dataTrackerTotal.hasChanged() || m_dataTrackerDensity.hasChanged() || m_dataTrackerVertex.hasChanged())
     {
         update();
     }
@@ -1190,7 +1190,7 @@ bool DiagonalMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
-    if (m_dataTrackerTotal.isDirty())
+    if (m_dataTrackerTotal.hasChanged())
     {
         if(checkTotalMass())
         {
@@ -1199,7 +1199,7 @@ bool DiagonalMass<DataTypes, MassType>::update()
         }
         m_dataTrackerTotal.clean();
     }
-    else if(m_dataTrackerDensity.isDirty())
+    else if(m_dataTrackerDensity.hasChanged())
     {
         if(checkMassDensity())
         {
@@ -1208,7 +1208,7 @@ bool DiagonalMass<DataTypes, MassType>::update()
         }
         m_dataTrackerDensity.clean();
     }
-    else if(m_dataTrackerVertex.isDirty())
+    else if(m_dataTrackerVertex.hasChanged())
     {
         if(checkVertexMass())
         {

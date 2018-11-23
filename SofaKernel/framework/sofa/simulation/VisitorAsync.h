@@ -37,7 +37,7 @@ namespace sofa
         * Used to execute async tasks
         */
 
-        class SOFA_MULTITHREADING_PLUGIN_API VisitorAsync : public Visitor
+        class SOFA_SIMULATION_CORE_API VisitorAsync : public Visitor
         {
         public:
             VisitorAsync(const sofa::core::ExecParams* params, Task::Status* status)

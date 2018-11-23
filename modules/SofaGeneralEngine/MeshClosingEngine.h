@@ -113,7 +113,7 @@ public:
     }
 
     virtual void reinit()    override { update();  }
-    void update() override;
+    void doUpdate() override;
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)

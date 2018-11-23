@@ -254,7 +254,7 @@ bool UniformMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
-    if (m_dataTrackerTotal.isDirty())
+    if (m_dataTrackerTotal.hasChanged())
     {
         if(checkTotalMass())
         {
@@ -263,7 +263,7 @@ bool UniformMass<DataTypes, MassType>::update()
         }
         m_dataTrackerTotal.clean();
     }
-    else if(m_dataTrackerVertex.isDirty())
+    else if(m_dataTrackerVertex.hasChanged())
     {
         if(checkVertexMass())
         {
@@ -684,7 +684,7 @@ void UniformMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Even
 {
     if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
-        if (m_dataTrackerVertex.isDirty() || m_dataTrackerTotal.isDirty())
+        if (m_dataTrackerVertex.hasChanged() || m_dataTrackerTotal.hasChanged())
         {
             update();
         }

@@ -1,7 +1,7 @@
 #include "TaskSchedulerTestTasks.h"
 
-#include <MultiThreading/src/TaskScheduler.h>
-#include <MultiThreading/src/DefaultTaskScheduler.h>
+#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/helper/testing/BaseTest.h>
 
 namespace sofa

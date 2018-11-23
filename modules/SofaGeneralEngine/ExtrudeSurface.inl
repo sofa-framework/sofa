@@ -67,10 +67,9 @@ void ExtrudeSurface<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ExtrudeSurface<DataTypes>::update()
+void ExtrudeSurface<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
-
 
     const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
@@ -79,8 +78,6 @@ void ExtrudeSurface<DataTypes>::update()
         return;
 
     const BaseMeshTopology::SeqTriangles* triangles = &f_triangles.getValue();
-
-    cleanDirty();
 
     VecCoord* extrusionVertices = f_extrusionVertices.beginWriteOnly();
     extrusionVertices->clear();

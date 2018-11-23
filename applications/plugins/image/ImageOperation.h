@@ -109,12 +109,10 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         raImage in1(this->inputImage1);
         raImage in2(this->inputImage2);
-
-        cleanDirty();
 
         waImage out(this->outputImage);
 

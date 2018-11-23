@@ -112,7 +112,7 @@ protected:
 
     virtual ~ROIValueMapper() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
@@ -140,8 +140,6 @@ protected:
                 outputValues[ind] = value;
             }
         }
-
-        cleanDirty();
     }
 
 };

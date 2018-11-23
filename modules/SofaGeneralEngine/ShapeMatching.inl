@@ -105,10 +105,8 @@ void ShapeMatching<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ShapeMatching<DataTypes>::update()
+void ShapeMatching<DataTypes>::doUpdate()
 {
-    bool clusterdirty = this->cluster.isDirty();
-
     const VecCoord& restPositions = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
     helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
@@ -126,7 +124,7 @@ void ShapeMatching<DataTypes>::update()
     if(!nbc || !nbp  || !currentPositions.size()) return;
 
     //if mechanical state or cluster have changed, we must compute again xcm0
-    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || clusterdirty)
+    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || m_dataTracker.hasChanged(this->cluster))
     {
         dmsg_info() <<"shape matching: update Xcm0" ;
 
@@ -203,18 +201,16 @@ void ShapeMatching<DataTypes>::update()
                 targetPos[i] /= (Real)nbClust[i];
             else targetPos[i]=currentPositions[i];
     }
-
-    cleanDirty();
 }
 
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void ShapeMatching<sofa::defaulttype::Rigid3dTypes >::update();
+void ShapeMatching<sofa::defaulttype::Rigid3dTypes >::doUpdate();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void ShapeMatching<sofa::defaulttype::Rigid3fTypes >::update();
+void ShapeMatching<sofa::defaulttype::Rigid3fTypes >::doUpdate();
 #endif
 
 

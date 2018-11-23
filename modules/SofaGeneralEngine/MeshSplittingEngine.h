@@ -160,7 +160,7 @@ public:
     }
 
 
-    void update() override;
+    void doUpdate() override;
 
 protected:
     void resizeData()

@@ -135,11 +135,9 @@ void Distances< DataTypes >::reinit()
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::update()
+void Distances< DataTypes >::doUpdate()
 {
 
-    // tester les data dirty
-    cleanDirty();
 
     /*
     if( true)

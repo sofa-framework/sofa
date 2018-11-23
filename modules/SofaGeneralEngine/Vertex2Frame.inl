@@ -72,7 +72,7 @@ void Vertex2Frame<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void Vertex2Frame<DataTypes>::update()
+void Vertex2Frame<DataTypes>::doUpdate()
 {
     const helper::vector<CPos>& fVertices = d_vertices.getValue();
     const helper::vector<CPos>& fNormals = d_normals.getValue();
@@ -87,12 +87,6 @@ void Vertex2Frame<DataTypes>::update()
         msg_info(this) << "Vertex2Frame : no vertices found. Component will not compute anything";
         return ;
     }
-
-    d_texCoords.updateIfDirty();
-    d_rotation.updateIfDirty();
-    d_rotationAngle.updateIfDirty();
-
-    cleanDirty();
 
     VecCoord& fFrames = *(d_frames.beginEdit());
     fFrames.resize(nbVertices);

@@ -67,15 +67,13 @@ void MergeSets<T>::reinit()
 }
 
 template <class T>
-void MergeSets<T>::update()
+void MergeSets<T>::doUpdate()
 {
     std::string op = f_op.getValue();
     if (op.empty()) op = "union";
 
     helper::ReadAccessor<Data<VecIndex> > in1 = f_in1;
     helper::ReadAccessor<Data<VecIndex> > in2 = f_in2;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecIndex> > out = f_out;
 

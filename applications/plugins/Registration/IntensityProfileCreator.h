@@ -82,11 +82,9 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void doUpdate()
     {
         helper::ReadAccessor<Data< helper::vector<T> > > val(this->values);
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< ImageTypes > > out(this->image);
         imCoord dim(val.size(),1,1,1,1);

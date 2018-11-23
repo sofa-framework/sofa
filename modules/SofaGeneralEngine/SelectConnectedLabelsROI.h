@@ -109,11 +109,8 @@ public:
 protected:
 
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
         indices.clear();
 

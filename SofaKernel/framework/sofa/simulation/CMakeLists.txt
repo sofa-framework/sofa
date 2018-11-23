@@ -62,6 +62,12 @@ set(HEADER_FILES
     init.h
     MechanicalGetMomentumVisitor.h
     BaseSimulationExporter.h
+    TaskScheduler.h
+    DefaultTaskScheduler.h
+    Task.h
+    InitTasks.h
+    Locks.h
+    VisitorAsync.h
 )
 
 set(SOURCE_FILES
@@ -119,6 +125,10 @@ set(SOURCE_FILES
     init.cpp
     MechanicalComputeEnergyVisitor.cpp
     BaseSimulationExporter.cpp
+    TaskScheduler.cpp
+    DefaultTaskScheduler.cpp
+    Task.cpp
+    InitTasks.cpp
 )
 
 
