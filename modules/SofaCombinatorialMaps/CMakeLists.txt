@@ -23,64 +23,63 @@ set(SOURCE_FILES
  # Sources
 list(APPEND HEADER_FILES
 	#core
-        src/SofaCombinatorialMaps/MapTopology.h
-        src/SofaCombinatorialMaps/CMTopologyChange.h
-        src/SofaCombinatorialMaps/CMTopologyHandler.h
-        src/SofaCombinatorialMaps/CMTopologyElementHandler.h
-        src/SofaCombinatorialMaps/CMBaseTopologyData.h
-        src/SofaCombinatorialMaps/CMBaseTopologyEngine.h
-        src/SofaCombinatorialMaps/CMBaseTopology.h
+		src/SofaCombinatorialMaps/Core/CMapTopology.h
+		src/SofaCombinatorialMaps/Core/CMTopologyChange.h
+		src/SofaCombinatorialMaps/Core/CMTopologyHandler.h
+		src/SofaCombinatorialMaps/Core/CMTopologyElementHandler.h
+		src/SofaCombinatorialMaps/Core/CMBaseTopologyData.h
+		src/SofaCombinatorialMaps/Core/CMBaseTopologyEngine.h
+		src/SofaCombinatorialMaps/Core/CMBaseTopology.h
 	
 	#BaseTopology
-        src/SofaCombinatorialMaps/CMTopologyData.h
-        src/SofaCombinatorialMaps/CMTopologyData.inl
-        src/SofaCombinatorialMaps/CMTopologyDataHandler.h
-        src/SofaCombinatorialMaps/CMTopologyDataHandler.inl
-        src/SofaCombinatorialMaps/CMTopologyEngine.h
-        src/SofaCombinatorialMaps/CMTopologyEngine.inl
-        src/SofaCombinatorialMaps/MapTriangleSetTopologyContainer.h
-        src/SofaCombinatorialMaps/MapTetrahedronSetTopologyContainer.h
-        src/SofaCombinatorialMaps/MapHexahedronSetTopologyContainer.h
-        src/SofaCombinatorialMaps/SurfaceTopologyContainer.h
-        src/SofaCombinatorialMaps/SurfaceMaskTraversal.h
-        src/SofaCombinatorialMaps/VolumeTopologyContainer.h
-        src/SofaCombinatorialMaps/VolumeTopologyModifier.h
-        src/SofaCombinatorialMaps/VolumeGeometryAlgorithms.h
-        src/SofaCombinatorialMaps/CMTopologyCoupling.h
-        src/SofaCombinatorialMaps/CMTopologyCoupling.inl
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyData.h
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyData.inl
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyDataHandler.h
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyDataHandler.inl
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyEngine.h
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyEngine.inl
+		src/SofaCombinatorialMaps/BaseTopology/CMapTriangleSetTopologyContainer.h
+		src/SofaCombinatorialMaps/BaseTopology/CMapTetrahedronSetTopologyContainer.h
+		src/SofaCombinatorialMaps/BaseTopology/CMapHexahedronSetTopologyContainer.h
+		src/SofaCombinatorialMaps/BaseTopology/SurfaceTopologyContainer.h
+		src/SofaCombinatorialMaps/BaseTopology/SurfaceMaskTraversal.h
+		src/SofaCombinatorialMaps/BaseTopology/VolumeTopologyContainer.h
+		src/SofaCombinatorialMaps/BaseTopology/VolumeTopologyModifier.h
+		src/SofaCombinatorialMaps/BaseTopology/VolumeGeometryAlgorithms.h
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyCoupling.h
 
 	#ForceFields
-        src/SofaCombinatorialMaps/CMHexahedronFEMForceField.h
-        src/SofaCombinatorialMaps/CMHexahedronFEMForceField.inl
-        src/SofaCombinatorialMaps/CMTetrahedralCorotationalFEMForceField.h
-        src/SofaCombinatorialMaps/CMTetrahedralCorotationalFEMForceField.inl
-        src/SofaCombinatorialMaps/CMTriangularFEMForceField.h
-        src/SofaCombinatorialMaps/CMTriangularFEMForceField.inl
+		src/SofaCombinatorialMaps/ForceFields/CMHexahedronFEMForceField.h
+		src/SofaCombinatorialMaps/ForceFields/CMHexahedronFEMForceField.inl
+		src/SofaCombinatorialMaps/ForceFields/CMTetrahedralCorotationalFEMForceField.h
+		src/SofaCombinatorialMaps/ForceFields/CMTetrahedralCorotationalFEMForceField.inl
+		src/SofaCombinatorialMaps/ForceFields/CMTriangularFEMForceField.h
+		src/SofaCombinatorialMaps/ForceFields/CMTriangularFEMForceField.inl
 	)
 
 list(APPEND SOURCE_FILES
 	#core
-        src/SofaCombinatorialMaps/MapTopology.cpp
-        src/SofaCombinatorialMaps/CMTopologyChange.cpp
-        src/SofaCombinatorialMaps/CMTopologyHandler.cpp
-        src/SofaCombinatorialMaps/CMTopologyElementHandler.cpp
-        src/SofaCombinatorialMaps/CMBaseTopology.cpp
+		src/SofaCombinatorialMaps/Core/CMapTopology.cpp
+		src/SofaCombinatorialMaps/Core/CMTopologyChange.cpp
+		src/SofaCombinatorialMaps/Core/CMTopologyHandler.cpp
+		src/SofaCombinatorialMaps/Core/CMTopologyElementHandler.cpp
+		src/SofaCombinatorialMaps/Core/CMBaseTopology.cpp
 
 	#BaseTopology
-        src/SofaCombinatorialMaps/MapTriangleSetTopologyContainer.cpp
-        src/SofaCombinatorialMaps/MapTetrahedronSetTopologyContainer.cpp
-        src/SofaCombinatorialMaps/MapHexahedronSetTopologyContainer.cpp
-        src/SofaCombinatorialMaps/SurfaceTopologyContainer.cpp
-        src/SofaCombinatorialMaps/SurfaceMaskTraversal.cpp
-        src/SofaCombinatorialMaps/VolumeTopologyContainer.cpp
-        src/SofaCombinatorialMaps/VolumeTopologyModifier.cpp
-        src/SofaCombinatorialMaps/VolumeGeometryAlgorithms.cpp
-        src/SofaCombinatorialMaps/CMTopologyCoupling.cpp
+		src/SofaCombinatorialMaps/BaseTopology/CMapTriangleSetTopologyContainer.cpp
+		src/SofaCombinatorialMaps/BaseTopology/CMapTetrahedronSetTopologyContainer.cpp
+		src/SofaCombinatorialMaps/BaseTopology/CMapHexahedronSetTopologyContainer.cpp
+		src/SofaCombinatorialMaps/BaseTopology/SurfaceTopologyContainer.cpp
+		src/SofaCombinatorialMaps/BaseTopology/SurfaceMaskTraversal.cpp
+		src/SofaCombinatorialMaps/BaseTopology/VolumeTopologyContainer.cpp
+		src/SofaCombinatorialMaps/BaseTopology/VolumeTopologyModifier.cpp
+		src/SofaCombinatorialMaps/BaseTopology/VolumeGeometryAlgorithms.cpp
+		src/SofaCombinatorialMaps/BaseTopology/CMTopologyCoupling.cpp
 
 	#ForceFields
-        src/SofaCombinatorialMaps/CMHexahedronFEMForceField.cpp
-        src/SofaCombinatorialMaps/CMTetrahedralCorotationalFEMForceField.cpp
-        src/SofaCombinatorialMaps/CMTriangularFEMForceField.cpp
+		src/SofaCombinatorialMaps/ForceFields/CMHexahedronFEMForceField.cpp
+		src/SofaCombinatorialMaps/ForceFields/CMTetrahedralCorotationalFEMForceField.cpp
+		src/SofaCombinatorialMaps/ForceFields/CMTriangularFEMForceField.cpp
 	)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
