@@ -61,10 +61,10 @@ void TopologyEngineImpl< VecT>::reinit()
 
 
 template <typename VecT>
-void TopologyEngineImpl< VecT>::update()
+void TopologyEngineImpl< VecT>::doUpdate()
 {
 #ifndef NDEBUG // too much warnings
-    sout << "TopologyEngine::update" << sendl;
+	sout << "TopologyEngine::doUpdate" << sendl;
     sout<< "Number of topological changes: " << m_changeList.getValue().size() << sendl;
 #endif
     this->cleanDirty();

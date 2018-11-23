@@ -60,7 +60,7 @@ public:
 
     void reinit();
 
-    void update();
+	void doUpdate();
 
     void ApplyTopologyChanges();
 
