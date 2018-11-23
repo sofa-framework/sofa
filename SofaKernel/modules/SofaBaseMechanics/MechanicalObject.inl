@@ -32,6 +32,8 @@
 
 #include <sofa/helper/accessor.h>
 
+#include <iomanip>      // std::setprecision
+
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1333,13 +1335,13 @@ void MechanicalObject<DataTypes>::writeVec(core::ConstVecId v, std::ostream &out
     switch (v.type)
     {
     case sofa::core::V_COORD:
-        out << this->read(core::ConstVecCoordId(v))->getValue();
+        out << std::scientific << std::setprecision(18) << this->read(core::ConstVecCoordId(v))->getValue();
         break;
     case sofa::core::V_DERIV:
-        out << this->read(core::ConstVecDerivId(v))->getValue();
+        out << std::scientific << std::setprecision(18) << this->read(core::ConstVecDerivId(v))->getValue();
         break;
     case sofa::core::V_MATDERIV:
-        out << this->read(core::ConstMatrixDerivId(v))->getValue();
+        out << std::scientific << std::setprecision(18) << this->read(core::ConstMatrixDerivId(v))->getValue();
         break;
     default:
         break;
