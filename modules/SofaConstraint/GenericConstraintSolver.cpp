@@ -80,6 +80,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 , currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
 , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
 , current_cp(&m_cpBuffer[0])
+, lamdaContact(initData(&lamdaContact,"lamdaContact","Contact forces"))
 , last_cp(NULL)
 {
     addAlias(&maxIt, "maxIt");
@@ -332,7 +333,7 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
     }
 }
 
-void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
+void printLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
 {
     file.precision(9);
     // affichage de la matrice du LCP
@@ -383,7 +384,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         {
             std::stringstream tmp;
             tmp << "---> Before Resolution" << msgendl  ;
-            afficheLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
+            printLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
 
             msg_info() << tmp.str() ;
         }
@@ -408,8 +409,18 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     {
         std::stringstream tmp;
         tmp << "---> After Resolution" << msgendl;
-        afficheLCP(tmp, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
-        msg_info() << tmp.str() ;
+        printLCP(tmp, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
+	
+	std::vector<double>* v = lamdaContact.beginEdit();
+        v->resize(current_cp->getDimension());
+        for(int i=0; i<current_cp->getDimension(); i++)
+        {
+            (*v)[i] = current_cp->getF()[i];
+        }
+
+        lamdaContact.endEdit();     
+
+	msg_info() << tmp.str() ;
     }
 
 	

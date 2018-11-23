@@ -130,6 +130,8 @@ public:
 	Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
 	Data<double> currentError; ///< OUTPUT: current error
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
+    Data<helper::vector< double >> lamdaContact;
+
 
     virtual sofa::core::MultiVecDerivId getLambda() const override
     {
