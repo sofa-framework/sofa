@@ -95,7 +95,7 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
 		raTransform inT(this->inputTransform);
         waTransform outT(this->outputTransform);
@@ -124,8 +124,6 @@ protected:
         outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
 
         outT->update(); // update internal data
-
-        cleanDirty();
     }
 
 };

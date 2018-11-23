@@ -108,7 +108,11 @@ public:
         TriangularAnisotropicFEMForceField<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    /// Inherited member
+    /// Bring inherited member in the current lookup context.
+    /// otherwise any access to the Inherit1::member would require "this->".
+    /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    using Inherit1::_topology;
 
     TRQSTriangleHandler* triangleHandler;
 };

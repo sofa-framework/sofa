@@ -570,12 +570,8 @@ protected:
 
     unsigned int time;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        updateAllInputsIfDirty(); // easy to ensure that all inputs are up-to-date
-
-        cleanDirty();
-
         raParam params(this->param);
 
         if(this->method.getValue().getSelectedId() == REGULAR)

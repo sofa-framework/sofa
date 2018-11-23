@@ -337,11 +337,7 @@ void VoxelGridLoader::addBackgroundValue ( const int value )
     helper::vector<int>& vecVal = ( *backgroundValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-
-    helper::vector<int>::iterator it;
-    it = std::unique(vecVal.begin(), vecVal.end());
-    vecVal.resize( std::distance(vecVal.begin(),it) );
-
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     backgroundValue.endEdit();
     reinit();
 }
@@ -360,11 +356,7 @@ void VoxelGridLoader::addActiveDataValue(const int value)
     helper::vector<int>& vecVal = ( *activeValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-
-    helper::vector<int>::iterator it;
-    it = std::unique(vecVal.begin(), vecVal.end());
-    vecVal.resize( std::distance(vecVal.begin(),it) );
-
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     activeValue.endEdit();
     reinit();
 }

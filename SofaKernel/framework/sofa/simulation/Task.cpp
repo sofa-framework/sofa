@@ -1,6 +1,6 @@
-#include "Tasks.h"
+#include "Task.h"
 
-#include "TaskScheduler.h"
+//#include "TaskScheduler.h"
 //#include "TasksAllocator.h"
 
 #include <assert.h>
@@ -9,26 +9,23 @@
 
 namespace sofa
 {
-
 	namespace simulation
 	{
 
 
-		Task::Task(const Task::Status* pStatus)
-			: _status(pStatus)
+		Task::Task(const Task::Status* status)
+			: _status(status)
             , _id(0)
-		{
-            
+		{            
 		}
 
 		Task::~Task()
 		{
-//            delete this;
 		}
         
         
-		ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus )
-			: Task(pStatus)
+		ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const Task::Status* status )
+			: Task(status)
 			, _atomicCounter(atomicCounter) 
 			, _threadSpecificMutex(mutex)
 		{}
@@ -37,7 +34,7 @@ namespace sofa
 		{
 		}
 
-		bool ThreadSpecificTask::run(WorkerThread* )
+		bool ThreadSpecificTask::run()
 		{  
 
 			runThreadSpecific();
@@ -58,8 +55,6 @@ namespace sofa
 		}  
 
 	
-
-
 	} // namespace simulation
 
 } // namespace sofa

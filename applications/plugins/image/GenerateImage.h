@@ -81,11 +81,10 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         const imCoord& dim = this->dimxyzct.getValue();
         helper::WriteOnlyAccessor<Data< ImageTypes > > out(this->image);
-        cleanDirty();
         out->setDimensions(dim);
     }
 

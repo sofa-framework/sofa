@@ -67,7 +67,7 @@ public:
     void init();
     void reinit();
 
-    void update();
+    void doUpdate();
 
     virtual std::string getTemplateName() const
     {

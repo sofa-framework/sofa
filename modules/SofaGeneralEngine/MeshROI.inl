@@ -592,7 +592,7 @@ void MeshROI<DataTypes>::compute()
 
 
 template <class DataTypes>
-void MeshROI<DataTypes>::update()
+void MeshROI<DataTypes>::doUpdate()
 {
     if(d_doUpdate.getValue())
         compute();

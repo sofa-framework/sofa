@@ -98,11 +98,8 @@ protected:
     {
     }
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         const unsigned int M = vf_inputs.size();
         if(!M) return;
 

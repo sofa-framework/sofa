@@ -7,10 +7,6 @@ set(MULTITHREADING_VERSION ${MULTITHREADING_MAJOR_VERSION}.${MULTITHREADING_MINO
 
 set(HEADER_FILES
     config.h
-    src/TaskScheduler.h
-    src/Tasks.h
-	src/InitTasks.h
-    src/Locks.h
     src/AnimationLoopParallelScheduler.h
     src/AnimationLoopTasks.h
     src/BeamLinearMapping_mt.h
@@ -18,7 +14,6 @@ set(HEADER_FILES
     src/BeamLinearMapping_tasks.inl
     src/DataExchange.h
     src/DataExchange.inl
-	src/VisitorAsync.h
 	src/MeanComputation.h
 	src/MeanComputation.inl
     
@@ -26,9 +21,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/initMultiThreading.cpp
-    src/TaskScheduler.cpp
-    src/Tasks.cpp
-	src/InitTasks.cpp
     src/AnimationLoopParallelScheduler.cpp
     src/AnimationLoopTasks.cpp
     src/BeamLinearMapping_mt.cpp
@@ -54,15 +46,3 @@ sofa_create_package(MultiThreading ${MULTITHREADING_VERSION} MultiThreading Mult
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-
-# if(Boost_FOUND)
-#	include_directories(${Boost_INCLUDE_DIRS})
-# endif()
-
-if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(test)
-    endif()
-endif()

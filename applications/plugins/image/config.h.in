@@ -24,6 +24,8 @@
 
 #include <sofa/config.h>
 
+#cmakedefine WITH_MULTITHREADING
+
 #define IMAGE_MAJOR_VERSION ${IMAGE_MAJOR_VERSION}
 #define IMAGE_MINOR_VERSION ${IMAGE_MINOR_VERSION}
 

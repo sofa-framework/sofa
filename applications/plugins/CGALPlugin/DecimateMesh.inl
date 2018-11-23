@@ -85,10 +85,8 @@ void DecimateMesh<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void DecimateMesh<DataTypes>::update()
+void DecimateMesh<DataTypes>::doUpdate()
 {
-    cleanDirty();
-
     // Writes topology into CGAL containers
     Surface surface;
     geometry_to_surface(surface);

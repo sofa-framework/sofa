@@ -92,7 +92,7 @@ public:
     void init();
     void reinit();
 
-    void update();
+    void doUpdate();
     void draw();
     void writeObj();
     void computeNormals();

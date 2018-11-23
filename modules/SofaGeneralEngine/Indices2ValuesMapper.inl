@@ -68,10 +68,8 @@ void Indices2ValuesMapper<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void Indices2ValuesMapper<DataTypes>::update()
+void Indices2ValuesMapper<DataTypes>::doUpdate()
 {
-    cleanDirty();
-
     helper::ReadAccessor< Data< helper::vector<Real> > > inputValues = f_inputValues;
 
     helper::ReadAccessor< Data< helper::vector<Real> > > indices = f_indices;

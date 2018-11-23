@@ -89,7 +89,7 @@ void ClusteringEngine<DataTypes>::init()
 
 
 template <class DataTypes>
-void ClusteringEngine<DataTypes>::update()
+void ClusteringEngine<DataTypes>::doUpdate()
 {
     if(load()) return;
 
@@ -158,7 +158,6 @@ void ClusteringEngine<DataTypes>::update()
     }
 
     save();
-    cleanDirty();
 }
 
 
@@ -305,7 +304,6 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
-    input_filename.update();
     string fname(this->input_filename.getFullPath());
     if(!fname.compare(loadedFilename)) return true;
 

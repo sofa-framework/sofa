@@ -62,7 +62,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     core::objectmodel::Data<VecValue> f_values; ///< input values
     core::objectmodel::Data<VecValue> f_global; ///< Global values, in which the input values are searched

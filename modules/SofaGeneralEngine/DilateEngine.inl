@@ -90,15 +90,13 @@ void DilateEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void DilateEngine<DataTypes>::update()
+void DilateEngine<DataTypes>::doUpdate()
 {
     ReadAccessor<Data<VecCoord> > in = d_inputX;
     ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
     ReadAccessor<Data<SeqQuads> > quads = d_quads;
     const Real distance = d_distance.getValue();
     const Real minThickness = d_minThickness.getValue();
-
-    cleanDirty();
 
     WriteOnlyAccessor<Data<VecCoord> > out = d_outputX;
 

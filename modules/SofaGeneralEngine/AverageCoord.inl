@@ -67,7 +67,7 @@ void AverageCoord<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void AverageCoord<DataTypes>::update()
+void AverageCoord<DataTypes>::doUpdate()
 {
     if(mstate==NULL)
     {
@@ -86,8 +86,6 @@ void AverageCoord<DataTypes>::update()
         c += coord[ (indices.empty()) ? i : indices[i]];
     }
     c *= 1./n;
-
-    cleanDirty();
 
     d_average.setValue(c);
 }

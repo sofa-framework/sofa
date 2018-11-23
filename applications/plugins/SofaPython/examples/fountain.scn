@@ -15,7 +15,7 @@
     <Triangle name="Floor" simulated="0" moving="0"  group='2'/>
     <Line name="Floor" simulated="0" moving="0" group='2'/>
     <Point name="Floor" simulated="0" moving="0" group='2'/>
-    <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
+    <OglModel name="FloorV" src="@loader" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
   </Node>
 
   <PythonScriptController name="Fountain" filename="fountain.py" classname="Fountain"/>

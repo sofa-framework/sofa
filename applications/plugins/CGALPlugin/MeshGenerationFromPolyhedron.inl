@@ -164,7 +164,7 @@ void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
 }
 
 template <class DataTypes>
-void MeshGenerationFromPolyhedron<DataTypes>::update()
+void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
 {
     // Domain
     // (we use exact intersection computation with Robust_intersection_traits_3)

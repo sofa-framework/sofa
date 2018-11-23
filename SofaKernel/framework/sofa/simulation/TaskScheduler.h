@@ -19,13 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MultiThreadingLocks_h__
-#define MultiThreadingLocks_h__
+#ifndef TaskScheduler_std_h__
+#define TaskScheduler_std_h__
 
-#include <MultiThreading/config.h>
+#include <sofa/config.h>
+
+#include "Task.h"
+#include "Locks.h"
 
 #include <thread>
-#include <atomic>
+#include <mutex>
+#include <condition_variable>
+#include <memory>
+#include <map>
+#include <deque>
+#include <string> 
+
 
 namespace sofa
 {
@@ -34,76 +43,62 @@ namespace sofa
 	{
 
 
-        class SpinLock
+        class SOFA_SIMULATION_CORE_API TaskScheduler
         {
-            enum
-            {
-                CACHE_LINE = 64
-            };
-            
+
         public:
-            
-            SpinLock()
-            {}
-            
-            ~SpinLock()
-            {
-                unlock();
-            }
-            
-            bool try_lock()
-            {
-                return !_flag.test_and_set( std::memory_order_acquire );
-            }
-            
-            void lock()
-            {
-                while( _flag.test_and_set(std::memory_order_acquire) )
-                {
-                    // cpu busy wait
-                    //std::this_thread::yield();
-                }
-            }
-            
-            void unlock()
-            {
-                _flag.clear( std::memory_order_release );
-            }
-            
-        private:
-            
-            std::atomic_flag _flag = ATOMIC_FLAG_INIT;
-            
-            char _pad [CACHE_LINE - sizeof(std::atomic_flag)];
+
+            virtual ~TaskScheduler();
+
+            static TaskScheduler* create(const char* name = "");
+
+            typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
+
+            static bool registerScheduler(const char* name, std::function<TaskScheduler* ()> creatorFunc);
+
+            static TaskScheduler* getInstance();
+
+            static const std::string& getCurrentName()  { return _currentSchedulerName; }
+
+            // interface
+            virtual void init(const unsigned int nbThread = 0) = 0;
+
+            virtual void stop(void) = 0;
+
+            virtual unsigned int getThreadCount(void) const = 0;
+
+            virtual const char* getCurrentThreadName() = 0;
+
+            // queue task if there is space, and run it otherwise
+            virtual bool addTask(Task* task) = 0;
+
+            virtual void workUntilDone(Task::Status* status) = 0;
+
+            virtual void* allocateTask(size_t size) = 0;
+
+            virtual void releaseTask(Task*) = 0;
+
+        protected:
+
+            // factory map: registered schedulers: name, creation function
+            static std::map<std::string, std::function<TaskScheduler*()> > _schedulers;
+
+            // current instantiated scheduler
+            static std::string _currentSchedulerName;
+            static TaskScheduler * _currentScheduler;
+
+            friend class Task;
         };
-        
-        
-        
-        class ScopedLock
-        {
-        public:
-            
-            explicit ScopedLock( SpinLock & lock ): _spinlock( lock )
-            {
-                _spinlock.lock();
-            }
-            
-            ~ScopedLock()
-            {
-                _spinlock.unlock();
-            }
-            
-            ScopedLock( ScopedLock const & ) = delete;
-            ScopedLock & operator=( ScopedLock const & ) = delete;
-            
-        private:
-            
-            SpinLock& _spinlock;
-        };
+
+
+
+
+        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask );
+
 
 	} // namespace simulation
 
 } // namespace sofa
 
 
-#endif // MultiThreadingLocks_h__
+#endif // TaskScheduler_std_h__

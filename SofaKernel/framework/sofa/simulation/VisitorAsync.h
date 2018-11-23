@@ -19,45 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef InitTasks_h__
-#define InitTasks_h__
+#ifndef Sofa_VisitorAsync_h__
+#define Sofa_VisitorAsync_h__
 
-#include "TaskScheduler.h"
+#include <Multithreading/config.h>
+
+#include <sofa/simulation/Visitor.h>
+#include <MultiThreading/src/Tasks.h>
 
 namespace sofa
 {
+
     namespace simulation
     {
 
-        using namespace sofa;
+        /**
+        * Used to execute async tasks
+        */
 
-
-
-        class InitPerThreadDataTask : public Task
+        class SOFA_SIMULATION_CORE_API VisitorAsync : public Visitor
         {
-
         public:
+            VisitorAsync(const sofa::core::ExecParams* params, Task::Status* status)
+                : Visitor(params)
+                , _status(status)
+            {}
 
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
+            const Task::Status* getStatus() { return _status; }
 
-            virtual ~InitPerThreadDataTask();
+        protected:
 
-            virtual bool run(WorkerThread*) override;
+            Task::Status* _status;
 
-        private:
-
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
         };
 
 
-        //fix and prefer using the global runThreadSpecificTask
-        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
-        
-
-        
     } // namespace simulation
 
 } // namespace sofa
 
-#endif // InitTasks_h__
+#endif // Sofa_VisitorAsync_h__

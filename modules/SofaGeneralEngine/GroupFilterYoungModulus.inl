@@ -61,7 +61,7 @@ void GroupFilterYoungModulus<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GroupFilterYoungModulus<DataTypes>::update()
+void GroupFilterYoungModulus<DataTypes>::doUpdate()
 {
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
@@ -70,8 +70,6 @@ void GroupFilterYoungModulus<DataTypes>::update()
     const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
-
-    cleanDirty();
 
     //Output
     helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();

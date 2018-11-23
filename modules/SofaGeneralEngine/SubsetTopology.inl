@@ -385,9 +385,8 @@ void SubsetTopology<DataTypes>::findVertexOnBorder(const Tetra &t, unsigned int 
 
 
 template <class DataTypes>
-void SubsetTopology<DataTypes>::update()
+void SubsetTopology<DataTypes>::doUpdate()
 {
-
     unsigned int ROInum = 0;
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
@@ -425,18 +424,6 @@ void SubsetTopology<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
 
     const VecCoord* x0 = &f_X0.getValue();
-
-    d_tetrahedraInput.updateIfDirty();
-
-    // Why are they inputs? Are they used somewhere?
-    direction.updateIfDirty();
-    normal.updateIfDirty();
-    edgeAngle.updateIfDirty();
-    triAngle.updateIfDirty();
-
-
-    cleanDirty();
-
 
     // Write accessor for topological element indices in ROI
     SetIndex& indices = *(f_indices.beginWriteOnly());

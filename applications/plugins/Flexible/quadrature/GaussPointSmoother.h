@@ -98,11 +98,8 @@ protected:
     }
 
 
-    virtual void update()
+    virtual void doUpdate()
     {
-        this->updateAllInputsIfDirty();
-        cleanDirty();
-
         BaseShapeFunction* _shapeFunction=NULL;
         this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);
         if( !_shapeFunction ) { serr<<"Shape function not found"<< sendl; return;}
