@@ -270,7 +270,7 @@ bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, c
 
 
 template <class DataTypes>
-void SphereROI<DataTypes>::update()
+void SphereROI<DataTypes>::doUpdate()
 {
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
@@ -311,11 +311,6 @@ void SphereROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     const VecCoord* x0 = &f_X0.getValue();
-
-
-    cleanDirty();
-
-
 
 
     // Write accessor for topological element indices in SPHERE
@@ -672,10 +667,8 @@ bool SphereROI<defaulttype::Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, 
 
 
 template <>
-void SphereROI<defaulttype::Rigid3dTypes>::update()
+void SphereROI<defaulttype::Rigid3dTypes>::doUpdate()
 {
-	cleanDirty();
-
 	const helper::vector<Vec3>& cen = (centers.getValue());
 	const helper::vector<Real>& rad = (radii.getValue());
 
@@ -932,10 +925,8 @@ bool SphereROI<defaulttype::Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, 
 
 
 template <>
-void SphereROI<defaulttype::Rigid3fTypes>::update()
+void SphereROI<defaulttype::Rigid3fTypes>::doUpdate()
 {
-	cleanDirty();
-
 	const helper::vector<Vec3>& cen = (centers.getValue());
 	const helper::vector<Real>& rad = (radii.getValue());
 

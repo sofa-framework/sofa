@@ -128,7 +128,7 @@ public:
 };
 
 template <class DataTypes>
-void ProximityROI<DataTypes>::update()
+void ProximityROI<DataTypes>::doUpdate()
 {
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
@@ -165,11 +165,7 @@ void ProximityROI<DataTypes>::update()
         serr << "There parameter 'Radius' has more elements than parameters 'center'." << sendl;
     }
 
-
     const VecCoord* x0 = &f_X0.getValue();
-
-    cleanDirty();
-
 
     // Write accessor for topological element indices
     SetIndex& indices = *(f_indices.beginWriteOnly());

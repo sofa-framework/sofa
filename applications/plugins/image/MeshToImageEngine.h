@@ -251,11 +251,8 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         // to be backward-compatible, if less than 3 values, fill with the last one
         waVecReal vs( voxelSize ); unsigned vs_lastid=vs.size()-1;
         for( unsigned i=vs.size() ; i<3 ; ++i ) vs.push_back( vs[vs_lastid] );

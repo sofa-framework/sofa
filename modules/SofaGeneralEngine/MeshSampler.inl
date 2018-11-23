@@ -67,15 +67,9 @@ void MeshSampler<DataTypes>::init()
 
 
 template <class DataTypes>
-void MeshSampler<DataTypes>::update()
+void MeshSampler<DataTypes>::doUpdate()
 {
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
-
-    number.updateIfDirty();
-    f_edges.updateIfDirty();
-    maxIter.updateIfDirty();
-
-    cleanDirty();
 
     VVI ngb;    if(this->f_edges.getValue().size()!=0) computeNeighbors(ngb); // one ring neighbors from edges
     VI voronoi;

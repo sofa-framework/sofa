@@ -80,14 +80,9 @@ void MergeVectors<VecT>::reinit()
 }
 
 template <class VecT>
-void MergeVectors<VecT>::update()
+void MergeVectors<VecT>::doUpdate()
 {
     unsigned int nb = f_nbInputs.getValue();
-
-    for (unsigned int i=0; i<nb; ++i)
-        vf_inputs[i]->updateIfDirty();
-
-    cleanDirty();
 
     helper::vectorData<VecValue>::merge( f_output, vf_inputs );
 }

@@ -23,6 +23,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
@@ -30,11 +36,11 @@ using namespace sofa::simpleapi;
 using namespace sofa::simpleapi::components;
 
 
-class SofaCarving_test : public sofa::Sofa_test<>
+class SofaCarving_test : public BaseSimulationTest
 {
 public:
     SofaCarving_test()
-        : Sofa_test()
+        : BaseSimulationTest()
         , m_simu(NULL)
         , m_root(NULL)
     {
@@ -56,6 +62,12 @@ private:
 
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
    
@@ -72,20 +84,14 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
         { "alarmDistance", "0.5" },
-        { "contactDistance", "0.1" }
+        { "contactDistance", "0.05" }
     });
     
-    createObject(m_root, "CollisionGroupManager", { { "name", "Collision Group Manager" } });
-
 
     // create solver
-    createObject(m_root, "EulerImplicitSolver", { { "name","Euler Implicit2" },
-        { "rayleighStiffness","0.01" },
-        { "rayleighMass", "1.0" } });
-
     createObject(m_root, "EulerImplicitSolver", { { "name","Euler Implicit" },
         { "rayleighStiffness","0.1" },
-        { "rayleighMass", "0.1" } 
+        { "rayleighMass", "0.1" }
     });
     createObject(m_root, "CGLinearSolver", { { "name","Conjugate Gradient" },
         { "iterations","25" },
@@ -149,7 +155,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "name", "CFEM" },
         { "poissonRatio", "0.3" },
         { "method", "large" },
-        { "youngModulus", "100" }
+        { "youngModulus", "300" }
     });
 
 
@@ -179,7 +185,14 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 
     createObject(nodeSurface, "TriangleSet", {
         { "name", "Triangle Model" },
-        { "tags", "CarvingSurface" }
+        { "tags", "CarvingSurface" },
+        { "group", "0" }
+        });
+
+    createObject(nodeSurface, "PointSet", {
+        { "name", "Point Model" },
+        { "tags", "CarvingSurface" },
+        { "group", "0" }
         });
 
 
@@ -190,7 +203,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(nodeCarv, "MechanicalObject", {
         { "name","Particles" },
         { "template","Vec3" },
-        { "position", "0 0 1.4" },
+        { "position", "0 0 1.0" },
         { "velocity", "0 0 0" }
     });
 
@@ -199,10 +212,11 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "totalMass", "1.0" }
     });
 
-    createObject(nodeSurface, "SphereModel", {
+    createObject(nodeCarv, "SphereModel", {
         { "name", "Sphere Model" },
         { "radius", "0.02" },
-        { "tags", "CarvingTool" }
+        { "tags", "CarvingTool" },
+        { "group", "1" }
         });
         
     return true;
@@ -220,7 +234,7 @@ bool SofaCarving_test::ManagerEmpty()
 
 bool SofaCarving_test::ManagerInit()
 {
-    bool res = createScene("0.1");
+    bool res = createScene("0.0");
     if (!res)
         return false;
 
@@ -247,7 +261,7 @@ bool SofaCarving_test::ManagerInit()
 
 bool SofaCarving_test::doCarving()
 {
-    bool res = createScene("0.1");
+    bool res = createScene("0.0");
     if (!res)
         return false;
 
@@ -263,16 +277,16 @@ bool SofaCarving_test::doCarving()
     EXPECT_NE(topo, nullptr);
 
     // perform some steps
-    for (unsigned int i = 0; i < 30; ++i)
+    for (unsigned int i = 0; i < 100; ++i)
     {
         m_simu->animate(m_root.get());
     }
 
     // checking topo after carving
-    EXPECT_EQ(topo->getNbPoints(), 170);
-    EXPECT_EQ(topo->getNbEdges(), 709);
-    EXPECT_EQ(topo->getNbTriangles(), 900);
-    EXPECT_EQ(topo->getNbTetrahedra(), 360);
+    EXPECT_LE(topo->getNbPoints(), 480);
+    EXPECT_LE(topo->getNbEdges(), 2900);
+    EXPECT_LE(topo->getNbTriangles(), 4500);
+    EXPECT_LE(topo->getNbTetrahedra(), 2200);
     
     return true;
 }
@@ -280,7 +294,7 @@ bool SofaCarving_test::doCarving()
 
 bool SofaCarving_test::doCarvingWithPenetration()
 {
-    bool res = createScene("-0.0001");
+    bool res = createScene("-0.02");
     if (!res)
         return false;
 
@@ -296,16 +310,16 @@ bool SofaCarving_test::doCarvingWithPenetration()
     EXPECT_NE(topo, nullptr);
 
     // perform some steps
-    for (unsigned int i = 0; i < 30; ++i)
+    for (unsigned int i = 0; i < 100; ++i)
     {
         m_simu->animate(m_root.get());
     }
 
     // checking topo after carving
-    EXPECT_EQ(topo->getNbPoints(), 310);
-    EXPECT_EQ(topo->getNbEdges(), 1529);
-    EXPECT_EQ(topo->getNbTriangles(), 2180);
-    EXPECT_EQ(topo->getNbTetrahedra(), 960);
+    EXPECT_LT(topo->getNbPoints(), 510);
+    EXPECT_LT(topo->getNbEdges(), 3119);
+    EXPECT_LT(topo->getNbTriangles(), 5040);
+    EXPECT_LT(topo->getNbTetrahedra(), 2430);
 
     return true;
 }

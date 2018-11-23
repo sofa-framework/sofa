@@ -49,7 +49,7 @@ void STEPShapeExtractor::init()
 }
 
 
-void STEPShapeExtractor::update()
+void STEPShapeExtractor::doUpdate()
 {
     MeshSTEPLoader* input = loader.get();
     MeshTopology* output = topology.get();

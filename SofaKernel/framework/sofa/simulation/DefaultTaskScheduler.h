@@ -22,7 +22,7 @@
 #ifndef DefaultTaskScheduler_h__
 #define DefaultTaskScheduler_h__
 
-#include <MultiThreading/config.h>
+#include <sofa/config.h>
 
 #include "TaskScheduler.h"
 
@@ -68,7 +68,7 @@ namespace sofa  {
         class WorkerThread;
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
+        class SOFA_SIMULATION_CORE_API WorkerThread
         {
         public:
 
@@ -158,7 +158,7 @@ namespace sofa  {
 
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API DefaultTaskScheduler : public TaskScheduler
+        class SOFA_SIMULATION_CORE_API DefaultTaskScheduler : public TaskScheduler
         {
             enum
             {

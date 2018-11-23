@@ -199,7 +199,7 @@ bool RandomPointDistributionInSurface<DataTypes>::testDistance(Coord p)
 }
 
 template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::update()
+void RandomPointDistributionInSurface<DataTypes>::doUpdate()
 {
     const VecCoord& vertices = f_vertices.getValue();
     const helper::vector<sofa::core::topology::BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
@@ -209,8 +209,6 @@ void RandomPointDistributionInSurface<DataTypes>::update()
         serr << "Error in input data (number of vertices of triangles is less than 1)." << sendl;
         return;
     }
-
-    cleanDirty();
 
     VecCoord* inPoints = f_inPoints.beginWriteOnly();
     inPoints->clear();

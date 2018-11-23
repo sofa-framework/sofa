@@ -90,7 +90,7 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
     }
 

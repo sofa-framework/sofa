@@ -64,7 +64,7 @@ template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3fTypes>;
 
 #ifndef SOFA_FLOAT
 template <>
-void ShapeMatching<Rigid3dTypes>::update()
+void ShapeMatching<Rigid3dTypes>::doUpdate()
 {
     // TO DO: shape matching for rigids as in [Muller11]
 }
@@ -73,7 +73,7 @@ void ShapeMatching<Rigid3dTypes>::update()
 
 #ifndef SOFA_DOUBLE
 template <>
-void ShapeMatching<Rigid3fTypes>::update()
+void ShapeMatching<Rigid3fTypes>::doUpdate()
 {
     // TO DO: shape matching for rigids as in [Muller11]
 }

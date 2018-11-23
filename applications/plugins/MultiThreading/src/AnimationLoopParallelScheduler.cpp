@@ -1,8 +1,8 @@
 #include "AnimationLoopParallelScheduler.h"
 
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 #include "AnimationLoopTasks.h"
-#include "InitTasks.h"
+#include <sofa/simulation/InitTasks.h>
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>

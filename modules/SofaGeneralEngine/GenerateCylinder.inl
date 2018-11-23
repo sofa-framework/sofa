@@ -93,7 +93,7 @@ void GenerateCylinder<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GenerateCylinder<DataTypes>::update()
+void GenerateCylinder<DataTypes>::doUpdate()
 {
     const Real radius = f_radius.getValue();
     const Real height = f_height.getValue();
@@ -102,8 +102,6 @@ void GenerateCylinder<DataTypes>::update()
     const size_t freqTheta=f_resolutionCircumferential.getValue();
     const size_t freqR=f_resolutionRadial.getValue();
     const size_t freqZ=f_resolutionHeight.getValue();
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecCoord> > out = f_outputTetrahedraPositions;
     helper::WriteOnlyAccessor<Data<SeqTetrahedra> > tetras = f_tetrahedra;

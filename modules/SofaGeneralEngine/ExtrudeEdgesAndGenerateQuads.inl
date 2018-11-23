@@ -93,7 +93,7 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::checkInput()
 }
 
 template <class DataTypes>
-void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
+void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
 {
     const vector<BaseMeshTopology::Edge>& curveEdges = d_curveEdges.getValue();
     const VecCoord& curveVertices = d_curveVertices.getValue();
@@ -105,8 +105,6 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 
         return;
     }
-
-    cleanDirty();
 
     VecCoord* extrudedVertices = d_extrudedVertices.beginWriteOnly();
     extrudedVertices->clear();

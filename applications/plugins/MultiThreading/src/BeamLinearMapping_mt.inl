@@ -26,7 +26,7 @@
 
 #include "BeamLinearMapping_tasks.inl"
 
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 
 namespace sofa
 {

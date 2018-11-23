@@ -101,7 +101,7 @@ protected:
 
     virtual ~MergeROIs() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
@@ -116,8 +116,6 @@ protected:
             outputIndices[j].resize(indices.size());
             for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
         }
-
-        cleanDirty();
     }
 
 };

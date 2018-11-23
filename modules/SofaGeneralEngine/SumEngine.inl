@@ -60,12 +60,9 @@ void SumEngine<DataType>::reinit()
 }
 
 template <class DataType>
-void SumEngine<DataType>::update()
+void SumEngine<DataType>::doUpdate()
 {
-
     helper::ReadAccessor<Data<VecData> > in = d_input;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<DataType> > out = d_output;
     out.wref() = std::accumulate(in.begin(), in.end(), DataType() );
