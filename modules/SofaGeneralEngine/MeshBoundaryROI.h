@@ -89,12 +89,10 @@ public:
     }
 
     virtual void reinit()    override { update();  }
-    void update() override
+    void doUpdate() override
     {
         helper::ReadAccessor<Data< SeqTriangles > > triangles(this->d_triangles);
         helper::ReadAccessor<Data< SeqQuads > > quads(this->d_quads);
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
         indices.clear();

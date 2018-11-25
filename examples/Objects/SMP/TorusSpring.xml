@@ -4,7 +4,7 @@
 	<MeshGmshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
 	<Mesh src="@meshLoader" />
 	<MechanicalObject  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
-	<UniformMass totalmass="5" />
+	<UniformMass totalMass="5" />
 	<MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4"/>
 	<Node name="Visu">
 		<OglModel name="Visual" fileMesh="mesh/torus.obj"  color="green"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>

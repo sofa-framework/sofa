@@ -269,7 +269,7 @@ bool ImageDDS::load(std::string filename)
         case 24:
             if (header.ddpfPixelFormat.dwRBitMask == 0x0000FF &&
                 header.ddpfPixelFormat.dwGBitMask == 0x00FF00 &&
-                header.ddpfPixelFormat.dwGBitMask == 0xFF0000)
+                header.ddpfPixelFormat.dwBBitMask == 0xFF0000)
             {
                 type = Image::UNORM8;
                 channels = Image::RGB;

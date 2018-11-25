@@ -19,43 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef Sofa_VisitorAsync_h__
-#define Sofa_VisitorAsync_h__
+#ifndef MULTITHREADING_CONFIG_H
+#define MULTITHREADING_CONFIG_H
 
-#include <Multithreading/config.h>
+#include <sofa/helper/system/config.h>
 
-#include <sofa/simulation/Visitor.h>
-#include <MultiThreading/src/Tasks.h>
+#ifdef SOFA_MULTITHREADING_PLUGIN
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-
-    namespace simulation
-    {
-
-        /**
-        * Used to execute async tasks
-        */
-
-        class SOFA_MULTITHREADING_PLUGIN_API VisitorAsync : public Visitor
-        {
-        public:
-            VisitorAsync(const sofa::core::ExecParams* params, Task::Status* status)
-                : Visitor(params)
-                , _status(status)
-            {}
-
-            const Task::Status* getStatus() { return _status; }
-
-        protected:
-
-            Task::Status* _status;
-
-        };
-
-
-    } // namespace simulation
-
-} // namespace sofa
-
-#endif // Sofa_VisitorAsync_h__
+#endif

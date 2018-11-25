@@ -86,13 +86,11 @@ inline void MapIndices<unsigned int>::apply(Value& v, const MapIndex& m)
 }
 
 template <class T>
-void MapIndices<T>::update()
+void MapIndices<T>::doUpdate()
 {
     helper::ReadAccessor<Data<VecValue> > in = f_in;
     helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
     const bool transpose = f_transpose.getValue();
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;
 

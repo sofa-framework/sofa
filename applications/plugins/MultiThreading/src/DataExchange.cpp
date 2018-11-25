@@ -40,7 +40,7 @@ namespace sofa
 
         SOFA_EVENT_CPP(DataExchangeEvent)
 
-		SOFA_DECL_CLASS(DataExchange)
+        SOFA_DECL_CLASS(DataExchange)
 
 // Register in the Factory
 int DataExchangeClass = core::RegisterObject("DataExchange")
@@ -59,6 +59,7 @@ int DataExchangeClass = core::RegisterObject("DataExchange")
 .add< DataExchange< sofa::helper::vector<int> > >()
 .add< DataExchange< sofa::helper::vector<unsigned int> > >()
 .add< DataExchange< bool > >()
+
 //.add< DataExchange< sofa::gpu::cuda::CudaVector<sofa::gpu::cuda::CudaVec2fTypes> >()
 ;
 
@@ -80,6 +81,7 @@ template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< float >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::helper::vector<int> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::helper::vector<unsigned int> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< bool >;
+
 //template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::gpu::cuda::CudaVector<sofa::gpu::cuda::CudaVec2fTypes> >;
 
 

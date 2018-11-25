@@ -69,7 +69,7 @@ void MergePoints<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void MergePoints<DataTypes>::update()
+void MergePoints<DataTypes>::doUpdate()
 {
     if (f_noUpdate.getValue() && initDone)
         return;
@@ -136,8 +136,6 @@ void MergePoints<DataTypes>::update()
             indices2.push_back(index+i);
         }
     }
-
-    cleanDirty();
 
     f_indices1.endEdit();
     f_indices2.endEdit();

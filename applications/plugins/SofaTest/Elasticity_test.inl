@@ -218,9 +218,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     // FixedPlaneConstraint
     typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes>::SPtr fpc=
             modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
-    fpc->dmin= -0.01;
-    fpc->dmax= 0.01;
-    fpc->direction=Coord(0,0,1);
+    fpc->d_dmin= -0.01;
+    fpc->d_dmax= 0.01;
+    fpc->d_direction=Coord(0,0,1);
     /// box pressure
     box[0]= -0.2;box[1]= -0.2;box[2]= 0.99;box[3]= 0.2;box[4]= 0.2;box[5]= 1.01;
     vecBox[0]=box;

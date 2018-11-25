@@ -1,4 +1,4 @@
-#include <MultiThreading/src/Tasks.h>
+#include <sofa/simulation/Task.h>
 
 
 namespace sofa
@@ -9,7 +9,7 @@ namespace sofa
 	class FibonacciTask : public simulation::Task
 	{
 	public:
-		FibonacciTask(const int64_t N, int64_t* const sum, Task::Status* status)
+		FibonacciTask(const int64_t N, int64_t* const sum, simulation::Task::Status* status)
 			: Task(status)
 			, _N(N)
 			, _sum(sum)
@@ -17,7 +17,7 @@ namespace sofa
 
 		virtual ~FibonacciTask() { }
 
-		virtual bool run(simulation::WorkerThread*);
+		virtual bool run() final;
 
 	private:
 
@@ -31,7 +31,7 @@ namespace sofa
 	class IntSumTask : public simulation::Task
 	{
 	public:
-		IntSumTask(const int64_t first, const int64_t last, int64_t* const sum, Task::Status* status)
+		IntSumTask(const int64_t first, const int64_t last, int64_t* const sum, simulation::Task::Status* status)
 			: Task(status) 
 			, _first(first)
 			, _last(last)
@@ -40,7 +40,7 @@ namespace sofa
 
 		virtual ~IntSumTask() {}
 
-		virtual bool run(simulation::WorkerThread*);
+		virtual bool run() final;
 
 
 	private:

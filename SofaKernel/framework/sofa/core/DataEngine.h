@@ -45,7 +45,6 @@ namespace core
  * {
  *    addInput // indicate all inputs
  *    addOutput // indicate all outputs
- *    setDirtyValue(); // the engine must start dirty (of course, no output are up-to-date)
  * }
  *
  * // optional (called each time a data is modified in the gui)
@@ -55,25 +54,16 @@ namespace core
  *    update();
  * }
  *
- * void update()
+ * void doUpdate() override
  * {
- *      // FIRST all inputs must be updated
- *      // can be done by Data::getValue, ReadAccessor, Data::updateIfDirty, DataEngine::updateAllInputsIfDirty
- *
- *      // must be called AFTER updating all inputs, otherwise a modified input will set the engine to dirty again.
- *      // must be called BEFORE read access to an output, otherwise read-accessing the output will call update
- *      cleanDirty();
- *
- *      // FINALLY access and set outputs
- *      // Note that a write-only access has better performance and is enough in 99% engines   Data::beginWriteOnly, WriteOnlyAccessor
- *      // A read access is possible, in that case, be careful the cleanDirty is called before the read-access, otherwise it can call an DataEngine::update itself.  Data::beginEdit, WriteAccessor
+ *    access your inputs, set your outputs...
  * }
  *
  */
 class SOFA_CORE_API DataEngine : public core::DataTrackerDDGNode, public virtual core::objectmodel::BaseObject
 {
 public:
-    SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS2(DataEngine, core::objectmodel::BaseObject, core::DataTrackerDDGNode);
     SOFA_BASE_CAST_IMPLEMENTATION(DataEngine)
 protected:
     /// Constructor
@@ -85,10 +75,23 @@ protected:
 private:
 	DataEngine(const DataEngine& n) ;
 	DataEngine& operator=(const DataEngine& n) ;
-	
+
+    /// Called in update(), back-propagates the data update
+    /// in the data dependency graph
+    void updateAllInputs();
+
+protected:
+    /// Where you put your engine's impl
+    virtual void doUpdate() = 0;
+
 public:
+    /// Updates your inputs and calls cleanDirty() for you.
+    /// User implementation moved to doUpdate()
+    virtual void update() final;
+
     /// Add a new input to this engine
-    void addInput(objectmodel::BaseData* n);
+    /// Automatically adds the input fields to the datatracker
+    void addInput(sofa::core::objectmodel::BaseData* data);
 
     /// Add a new output to this engine
     void addOutput(objectmodel::BaseData* n);
@@ -181,7 +184,6 @@ public:
     {
         objectmodel::BaseObject::addLink(l);
     }
-
 };
 
 } // namespace core

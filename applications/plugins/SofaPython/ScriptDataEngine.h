@@ -37,7 +37,8 @@ public:
     virtual void reinit() override ;
 
 
-    virtual void update() override ;
+    void call_update();
+    virtual void doUpdate() override ;
 
 
 protected:

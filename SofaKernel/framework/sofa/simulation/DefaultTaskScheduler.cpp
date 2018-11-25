@@ -1,12 +1,12 @@
-#include "TaskScheduler.h"
+#include "DefaultTaskScheduler.h"
 
-//#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/system/thread/thread_specific_ptr.h>
 
+#include <assert.h>
 
 
 namespace sofa
 {
-
 	namespace simulation
 	{
         
@@ -14,30 +14,33 @@ namespace sofa
         DEFINE_TASK_SCHEDULER_PROFILER(Pop);
         DEFINE_TASK_SCHEDULER_PROFILER(Steal);
 
+
         // mac clang 3.5 doesn't support thread_local vars
-        //static thread_local WorkerThread* workerThreadIndex = nullptr;
+        //static  WorkerThread* WorkerThread::_workerThreadIndex = nullptr;
+        SOFA_THREAD_SPECIFIC_PTR(WorkerThread, workerThreadIndex);
 
-        std::map< std::thread::id, WorkerThread*> TaskScheduler::_threads;
-        
-		TaskScheduler& TaskScheduler::getInstance()
-		{
-			static TaskScheduler instance;
-			return instance;
-		}
+        std::map< std::thread::id, WorkerThread*> DefaultTaskScheduler::_threads;
 
-		TaskScheduler::TaskScheduler()
+
+        DefaultTaskScheduler* DefaultTaskScheduler::create()
+        {
+            return new DefaultTaskScheduler();
+        }
+
+        DefaultTaskScheduler::DefaultTaskScheduler()
+            : TaskScheduler()
 		{
 			_isInitialized = false;
 			_threadCount = 0;
 			_isClosing = false;
 
             // init global static thread local var
-            //workerThreadIndex = new WorkerThread(this);
-            _threads[std::this_thread::get_id()] = new WorkerThread(this, 0, "Main  ");
+            workerThreadIndex = new WorkerThread(this, 0, "Main  ");
+            _threads[std::this_thread::get_id()] = workerThreadIndex;// new WorkerThread(this, 0, "Main  ");
            
 		}
 
-		TaskScheduler::~TaskScheduler()
+        DefaultTaskScheduler::~DefaultTaskScheduler()
 		{
 			if ( _isInitialized ) 
 			{
@@ -45,13 +48,14 @@ namespace sofa
 			}
 		}
 
-		unsigned TaskScheduler::GetHardwareThreadsCount()
+
+		unsigned DefaultTaskScheduler::GetHardwareThreadsCount()
 		{
-			return std::thread::hardware_concurrency();
+			return std::thread::hardware_concurrency() / 2;
 		}
 
 
-		const WorkerThread* TaskScheduler::getWorkerThread(const std::thread::id id)
+		const WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
 		{
 			auto thread =_threads.find(id);
 			if (thread == _threads.end() )
@@ -61,11 +65,11 @@ namespace sofa
 			return thread->second;
 		}
 
-        void TaskScheduler::init(const unsigned int NbThread )
+        void DefaultTaskScheduler::init(const unsigned int NbThread )
         {
             if ( _isInitialized )
             {
-                if ( NbThread == _threadCount )
+                if ( (NbThread == _threadCount) || (NbThread==0 && _threadCount==GetHardwareThreadsCount()) )
                 {
                     return;
                 }
@@ -75,7 +79,7 @@ namespace sofa
             start(NbThread);
         }
         
-		void TaskScheduler::start(const unsigned int NbThread )
+		void DefaultTaskScheduler::start(const unsigned int NbThread )
 		{
 			stop();
 
@@ -84,9 +88,9 @@ namespace sofa
             _mainTaskStatus	= nullptr;          
 
             // default number of thread: only physicsal cores. no advantage from hyperthreading.
-            _threadCount = GetHardwareThreadsCount() / 2;
+            _threadCount = GetHardwareThreadsCount();
             
-            if ( NbThread > 0 && NbThread <= MAX_THREADS  )
+            if ( NbThread > 0 )//&& NbThread <= MAX_THREADS  )
             {
                 _threadCount = NbThread;
             }
@@ -107,7 +111,7 @@ namespace sofa
 
 
 
-		void TaskScheduler::stop()
+		void DefaultTaskScheduler::stop()
 		{
 			_isClosing = true;
 
@@ -151,13 +155,37 @@ namespace sofa
 			return;
 		}
 
-        bool TaskScheduler::addTask(Task* task)
+        const char* DefaultTaskScheduler::getCurrentThreadName()
         {
-            simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
+            WorkerThread* thread = WorkerThread::getCurrent();
+            return thread->getName();
+        }
+
+        bool DefaultTaskScheduler::addTask(Task* task)
+        {
+            WorkerThread* thread = WorkerThread::getCurrent();
             return thread->addTask(task);
         }
 
-		void TaskScheduler::wakeUpWorkers()
+        void DefaultTaskScheduler::workUntilDone(Task::Status* status)
+        {
+            WorkerThread* thread = WorkerThread::getCurrent();
+            thread->workUntilDone(status);
+        }
+
+        void* DefaultTaskScheduler::allocateTask(size_t size)
+        {
+            return std::malloc(size);
+        }
+
+        void DefaultTaskScheduler::releaseTask(Task* task)
+        {
+            delete task;
+        }
+
+
+
+		void DefaultTaskScheduler::wakeUpWorkers()
 		{
 			{
 				std::lock_guard<std::mutex> guard(_wakeUpMutex);
@@ -166,20 +194,20 @@ namespace sofa
 			_wakeUpEvent.notify_all();
 		}
 
-		void TaskScheduler::WaitForWorkersToBeReady()
+		void DefaultTaskScheduler::WaitForWorkersToBeReady()
 		{
 			_workerThreadsIdle = true;
 		}
 
 
-		unsigned TaskScheduler::size()	const
-		{
-			return _workerThreadCount;
-		}
+		//unsigned TaskSchedulerDefault::size()	const
+		//{
+		//	return _workerThreadCount;
+		//}
 
 
 
-        WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, const int index, const std::string& name)
+        WorkerThread::WorkerThread(DefaultTaskScheduler* const& pScheduler, const int index, const std::string& name)
             : _tasks()
             , _index(index)
             , _name(name + std::to_string(index))
@@ -205,7 +233,7 @@ namespace sofa
             return _finished;
         }
 
-		bool WorkerThread::start(TaskScheduler* const& taskScheduler)
+		bool WorkerThread::start(DefaultTaskScheduler* const& taskScheduler)
 		{
 			assert(taskScheduler);
 			_taskScheduler = taskScheduler;
@@ -214,7 +242,7 @@ namespace sofa
 			return  true;
 		}
 
-        std::thread* WorkerThread::create_and_attach( TaskScheduler* const & /*taskScheduler*/)
+        std::thread* WorkerThread::create_and_attach(DefaultTaskScheduler* const & taskScheduler)
         {
             _stdThread = std::thread(std::bind(&WorkerThread::run, this));
             return &_stdThread;
@@ -223,8 +251,8 @@ namespace sofa
         WorkerThread* WorkerThread::getCurrent()
         {
             //return workerThreadIndex;
-            auto thread = TaskScheduler::_threads.find(std::this_thread::get_id());
-            if (thread == TaskScheduler::_threads.end())
+            auto thread = DefaultTaskScheduler::_threads.find(std::this_thread::get_id());
+            if (thread == DefaultTaskScheduler::_threads.end())
             {
                 return nullptr;
             }
@@ -235,7 +263,7 @@ namespace sofa
 		{
             
             //workerThreadIndex = this;
-//            TaskScheduler::_threads[std::this_thread::get_id()] = this;
+            //TaskSchedulerDefault::_threads[std::this_thread::get_id()] = this;
 
 			// main loop
             while ( !_taskScheduler->isClosing() )
@@ -268,12 +296,12 @@ namespace sofa
         {
             {
                 std::unique_lock<std::mutex> lock( _taskScheduler->_wakeUpMutex );
-//                if (!_taskScheduler->_workerThreadsIdle)
-//                {
-//                    return;
-//                }
+				//if (!_taskScheduler->_workerThreadsIdle)
+				//{
+				//	return;
+				//}
                 // cpu free wait
-                _taskScheduler->_wakeUpEvent.wait(lock, [&]{return !_taskScheduler->_workerThreadsIdle;} );
+                _taskScheduler->_wakeUpEvent.wait(lock, [&] {return !_taskScheduler->_workerThreadsIdle; });
             }
             return;
         }
@@ -318,10 +346,10 @@ namespace sofa
             _currentStatus = task->getStatus();
 
             {
-                if (task->run(this))
+                if (task->run())
                 {
                     // pooled memory: call destructor and free
-                    //task->~TaskLockFree();
+                    //task->~Task();
                     delete task;
                 }
             }
@@ -348,7 +376,7 @@ namespace sofa
 		{
             TASK_SCHEDULER_PROFILER(Pop);
 
-            ScopedLock lock( _taskMutex );
+            simulation::ScopedLock lock( _taskMutex );
             if (!_tasks.empty() )
             {
                 *task = _tasks.back();
@@ -371,7 +399,7 @@ namespace sofa
             {
                 TASK_SCHEDULER_PROFILER(Push);
 
-                ScopedLock lock(_taskMutex);
+                simulation::ScopedLock lock(_taskMutex);
                 int taskId = task->getStatus()->setBusy(true);
                 task->_id = taskId;
                 _tasks.push_back(task);
@@ -418,7 +446,7 @@ namespace sofa
                     {
                         TASK_SCHEDULER_PROFILER(Steal);
 
-                        ScopedLock lock(otherThread->_taskMutex);
+                        simulation::ScopedLock lock(otherThread->_taskMutex);
                         if (!otherThread->_tasks.empty())
                         {
                             *task = otherThread->_tasks.front();
@@ -433,37 +461,6 @@ namespace sofa
             return false;
         }
 		
-		// called once by each thread used
-		// by the TaskScheduler
-		bool runThreadSpecificTask(WorkerThread* thread, const Task * /*task*/ )
-		{
-            std::atomic<int> atomicCounter;
-            atomicCounter = TaskScheduler::getInstance().size();
-            
-            std::mutex  InitThreadSpecificMutex;
-            
-            Task::Status status;
-            
-            const int nbThread = TaskScheduler::getInstance().size();
-            
-            for (int i=0; i<nbThread; ++i)
-            {
-                thread->addTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
-            }
-            
-            thread->workUntilDone(&status);
-
-			return true;
-		}
-
-
-		// called once by each thread used
-		// by the TaskScheduler
-		bool runThreadSpecificTask(const Task *task )
-		{
-			return runThreadSpecificTask(WorkerThread::getCurrent(), task );
-		}
-
 
 	} // namespace simulation
 

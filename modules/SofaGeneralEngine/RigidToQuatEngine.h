@@ -58,7 +58,7 @@ protected:
     RigidToQuatEngine();
     virtual ~RigidToQuatEngine();
 public:
-    void update() override;
+    void doUpdate() override;
     void init() override;
     void reinit() override;
 

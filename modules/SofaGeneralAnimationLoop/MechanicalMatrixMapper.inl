@@ -109,6 +109,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 
     // Parse l_nodeToParse to find & link with the forcefields
     parseNode(l_nodeToParse.get(),massName);
+    m_nbInteractionForceFields = l_nodeToParse.get()->interactionForceField.size();
 
     if (l_forceField.size() == 0)
     {
@@ -124,23 +125,39 @@ template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node,std::string massName)
 {
     bool empty = d_forceFieldList.getValue().empty();
-    for(unsigned int i=0; i<node->forceField.size(); i++)
+
+    for(BaseForceField* forcefield : node->forceField)
     {
-        if (node->forceField[i]->name != massName)
+        if (forcefield->name != massName)
         {
             bool found = true;
             if (!empty)
-                found = (std::find(d_forceFieldList.getValue().begin(), d_forceFieldList.getValue().end(), node->forceField[i]->getName()) != d_forceFieldList.getValue().end());
+                found = (std::find(d_forceFieldList.getValue().begin(),
+                                   d_forceFieldList.getValue().end(), forcefield->getName()) != d_forceFieldList.getValue().end());
 
             if(found)
             {
-                l_forceField.add(node->forceField[i],node->forceField[i]->getPathName());
+                l_forceField.add(forcefield,forcefield->getPathName());
             }
         }
     }
-    for (sofa::simulation::Node::ChildIterator it = node->child.begin(), itend = node->child.end(); it != itend; ++it)
+
+    for(BaseForceField* iforcefield : node->interactionForceField)
     {
-        parseNode(it->get(),massName);
+        bool found = true;
+        if (!empty)
+            found = (std::find(d_forceFieldList.getValue().begin(),
+                               d_forceFieldList.getValue().end(),
+                               iforcefield->getName()) != d_forceFieldList.getValue().end());
+
+        if(found)
+        {
+            l_forceField.add(iforcefield,iforcefield->getPathName());
+        }
+
+    }
+    for(auto& child : node->child){
+        parseNode(child.get(), massName);
     }
     return;
 }
@@ -274,7 +291,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
     totime = (double)timer->getTime();
-
     sofa::core::behavior::MechanicalState<DataTypes1>* ms1 = this->getMState1();
     sofa::core::behavior::MechanicalState<DataTypes2>* ms2 = this->getMState2();
 
@@ -317,6 +333,27 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     KAccessor->setupMatrices();
 
     time= (double)timer->getTime();
+
+    sofa::simulation::Node *node = l_nodeToParse.get();
+    size_t currentNbInteractionFFs = node->interactionForceField.size();
+
+    if (m_nbInteractionForceFields != currentNbInteractionFFs)
+    {
+        bool emptyForceFieldList = l_forceField.empty();
+        if (!emptyForceFieldList)
+        {
+            while(l_forceField.size()>0)
+            {
+                l_forceField.removeAt(0);
+            }
+
+        }
+        std::string massName;
+        if (l_nodeToParse.get()->mass)
+            massName.append(l_nodeToParse.get()->mass->getName());
+        parseNode(l_nodeToParse.get(),massName);
+        m_nbInteractionForceFields = currentNbInteractionFFs;
+    }
 
     for(unsigned int i=0; i<l_forceField.size(); i++)
     {

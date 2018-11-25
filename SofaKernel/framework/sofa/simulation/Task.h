@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MultiThreadingTasks_h__
-#define MultiThreadingTasks_h__
+#ifndef MultiThreadingTask_h__
+#define MultiThreadingTask_h__
 
-#include <MultiThreading/config.h>
+#include <sofa/config.h>
 
 #include <atomic>
 #include <mutex>
@@ -32,31 +32,24 @@
 
 namespace sofa
 {
-
 	namespace simulation
-	{
+    {
 
-		class WorkerThread;
-		class TaskScheduler;
-
-
-		class SOFA_MULTITHREADING_PLUGIN_API Task
-		{
-		public:
+        class SOFA_SIMULATION_CORE_API Task
+        {
+        public:
 
             // Task Status class definition
             class Status
             {
             public:
                 Status() : _busy(0) {}
-                
+
                 bool isBusy() const
                 {
                     return (_busy.load(std::memory_order_relaxed) > 0);
-                }         
-        
-            private:
-                
+                }
+
                 int setBusy(bool busy)
                 {
                     if (busy)
@@ -68,70 +61,63 @@ namespace sofa
                         return _busy.fetch_sub(1, std::memory_order_relaxed);
                     }
                 }
-                
+
+            private:
                 std::atomic<int> _busy;
-                
-                friend class WorkerThread;
             };
 
-		protected:
 
-			Task(const Task::Status* status);
+            Task(const Task::Status* status = nullptr);
 
-		
-		public:
-			
-			virtual ~Task();
+            virtual ~Task();
 
-			virtual bool run(WorkerThread* thread) = 0;
-            
-		private:
+        public:
 
-            Task(const Task& /*task*/) {}
-            Task& operator= (const Task& /*task*/) {return *this;}
+            virtual bool run() = 0;
 
 
-		protected:
+            // remove from this interface
+        public:
 
-			inline Task::Status* getStatus(void) const
+            inline Task::Status* getStatus(void) const
             {
                 return const_cast<Task::Status*>(_status);
             }
 
-			const Task::Status*	_status;
+        protected:
 
+            const Task::Status*	_status;
+
+        public:
             int _id;
+        };
 
-			friend class WorkerThread;
-
-		};
 
 
 
 		// This task is called once by each thread used by the TasScheduler
 		// this is useful to initialize the thread specific variables
-		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
+		class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public Task
 		{
 
 		public:
 
-			ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus );
+            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const Task::Status* status);
 
 			virtual ~ThreadSpecificTask();
 
-			virtual bool runThreadSpecific()  {return true;}
+            virtual bool run() final;
 
-			virtual bool runCriticalThreadSpecific() {return true;}
 
-		private:
+        private:
 
-			virtual bool run(WorkerThread* );
+            virtual bool runThreadSpecific() { return true; }
 
-			//volatile long* mAtomicCounter;
+            virtual bool runCriticalThreadSpecific() { return true; }
+
+
 			std::atomic<int>* _atomicCounter;
-
 			std::mutex*	 _threadSpecificMutex;
-
 		};
 
 
@@ -140,7 +126,5 @@ namespace sofa
 } // namespace sofa
 
 
-//#include "Tasks.inl"
 
-
-#endif // MultiThreadingTasksPOC_h__
+#endif // MultiThreadingTask_h__

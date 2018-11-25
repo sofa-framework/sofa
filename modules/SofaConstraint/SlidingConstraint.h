@@ -35,6 +35,7 @@ namespace component
 
 namespace constraintset
 {
+
 using sofa::core::ConstraintParams;
 
 template<class DataTypes>
@@ -59,42 +60,43 @@ public:
 
 protected:
 
-    bool yetIntegrated;
-
-    unsigned int cid;
-
-    Data<int> m1; ///< index of the spliding point on the first model
-    Data<int> m2a; ///< index of one end of the sliding axis
-    Data<int> m2b; ///< index of the other end of the sliding axis
+    Data<int> d_m1; ///< index of the spliding point on the first model
+    Data<int> d_m2a; ///< index of one end of the sliding axis
+    Data<int> d_m2b; ///< index of the other end of the sliding axis
+    Data<Deriv> d_force; ///< interaction force
 
     Real m_dist;	// constraint violation
-    Real thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
-
+    Real m_thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
+    bool m_yetIntegrated;
+    unsigned int m_cid;
 
 
     SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
-        , yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+        , m_yetIntegrated(false)
     {
     }
 
     SlidingConstraint(MechanicalState* object)
         : Inherit(object, object)
-        , yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+        , m_yetIntegrated(false)
     {
     }
 
     SlidingConstraint()
-        : yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        : d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+        , m_yetIntegrated(false)
     {
     }
 
@@ -107,14 +109,22 @@ public:
     virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;
 
-    void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+    virtual void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
     virtual void getConstraintResolution(const core::ConstraintParams*,
                                          std::vector<core::behavior::ConstraintResolution*>& resTab,
                                          unsigned int& offset) override;
+    virtual void storeLambda(const ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
+
+private:
+    // storage of force
+    Deriv  m_dirAxe, m_dirProj, m_dirOrtho;
+
+
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)

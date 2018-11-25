@@ -70,7 +70,7 @@ void NormalsFromPoints<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void NormalsFromPoints<DataTypes>::update()
+void NormalsFromPoints<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< VecCoord > > raPositions = position;
     helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > raTriangles = triangles;
@@ -141,8 +141,6 @@ void NormalsFromPoints<DataTypes>::update()
 
     for (unsigned int i = 0; i < waNormals.size(); i++)
         waNormals[i].normalize();
-
-    cleanDirty();
 }
 
 } // namespace engine

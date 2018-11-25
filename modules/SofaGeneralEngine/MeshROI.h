@@ -74,7 +74,7 @@ public:
 
     virtual void init() override;
     virtual void reinit() override;
-    virtual void update() override;
+    virtual void doUpdate() override;
     virtual void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.

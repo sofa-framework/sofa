@@ -76,7 +76,7 @@ public:
     void init();
     void reinit();
 
-    void update();
+    void doUpdate();
     void scale();
     void orientate();
     void draw();

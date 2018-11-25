@@ -280,12 +280,8 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::update()
+void ValuesFromPositions<DataTypes>::doUpdate()
 {
-    updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
-
-    cleanDirty();
-
     TempData data;
     data.dir = f_direction.getValue();
     data.inputValues = f_inputValues.getValue();

@@ -72,11 +72,9 @@ void SmoothMeshEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void SmoothMeshEngine<DataTypes>::update()
+void SmoothMeshEngine<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
-
-    cleanDirty();
 
     if (!m_topo) return;
 

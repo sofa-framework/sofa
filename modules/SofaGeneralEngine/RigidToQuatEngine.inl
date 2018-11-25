@@ -69,11 +69,9 @@ void RigidToQuatEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void RigidToQuatEngine<DataTypes>::update()
+void RigidToQuatEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data< helper::vector<RigidVec3> > > rigids = f_rigids;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor< Data< helper::vector<Vec3> > > positions = f_positions;
     helper::WriteOnlyAccessor< Data< helper::vector<Quat> > > orientations = f_orientations;
