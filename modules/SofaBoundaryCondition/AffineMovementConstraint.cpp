@@ -38,7 +38,7 @@ namespace component
 namespace projectiveconstraintset
 {
 
-auto tmp = core::RegisterObject("bilinear constraint")
+int AffineMovementConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
 #ifdef SOFA_WITH_DOUBLE
         .add< AffineMovementConstraint<defaulttype::Vec3dTypes> >()
         .add< AffineMovementConstraint<defaulttype::Rigid3dTypes> >()
