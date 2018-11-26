@@ -434,12 +434,6 @@ extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::ExtVec3dTypes >;
 
 #endif //SOFA_WITH_FLOAT
-
-// this is needed even if SOFA_DOUBLE only is compiled
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::ExtVec2fTypes >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6dTypes, sofa::defaulttype::ExtVec3fTypes >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif //SOFA_WITH_DOUBLE
 
 #endif
