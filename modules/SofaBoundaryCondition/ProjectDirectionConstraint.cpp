@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-
 int ProjectDirectionConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT
         .add< ProjectDirectionConstraint<Vec3dTypes> >()

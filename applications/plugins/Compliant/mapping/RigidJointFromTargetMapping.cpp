@@ -13,7 +13,6 @@ namespace mapping
 
 using namespace defaulttype;
 
-
 int RigidJointFromTargetMappingClass = core::RegisterObject("Computes relative rigid configurations from given targets")
 
 #ifndef SOFA_FLOAT
@@ -34,7 +33,6 @@ template class SOFA_Compliant_API RigidJointFromTargetMapping< Rigid3fTypes, Vec
 
 
 ///////////////////////
-
 
 
 int RigidJointFromWorldFrameMappingClass = core::RegisterObject("Computes relative rigid configurations from world frame")

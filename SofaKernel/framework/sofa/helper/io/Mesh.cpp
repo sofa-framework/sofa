@@ -34,7 +34,6 @@ template class Factory<std::string, io::Mesh, std::string>;
 namespace io
 {
 
-
 Mesh* Mesh::Create(const std::string& filename)
 {
     std::string loader="default";

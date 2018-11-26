@@ -80,6 +80,3 @@ namespace component
 } 
 
 } 
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-//////

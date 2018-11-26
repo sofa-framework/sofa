@@ -31,7 +31,6 @@ namespace component
 namespace misc
 {
 
-
 using namespace defaulttype;
 
 int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")

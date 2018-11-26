@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given mesh")
 #ifndef SOFA_FLOAT
         .add< MeshROI<Vec3dTypes> >(true) //default template

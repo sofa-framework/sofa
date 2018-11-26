@@ -35,7 +35,6 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-
 int InterpolationControllerClass = core::RegisterObject("Interpolates nodes between two meshes")
 #ifndef SOFA_FLOAT
 .add< InterpolationController<Vec3dTypes> > ()

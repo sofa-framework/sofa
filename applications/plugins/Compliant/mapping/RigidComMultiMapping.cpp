@@ -15,7 +15,6 @@ namespace component
 namespace mapping
 {
 
-
 using namespace defaulttype;
 
 // Register in the Factory

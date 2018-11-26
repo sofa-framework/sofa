@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int ProximityROIClass = core::RegisterObject("Find the N closest primitives from a given position")
 #ifndef SOFA_FLOAT
         .add< ProximityROI<Vec3dTypes> >()

@@ -31,7 +31,6 @@ int UniformStiffnessClass = core::RegisterObject("Uniform stiffness")
 #endif
         ;
 
-
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API UniformStiffness<Vec1dTypes>;
 template class SOFA_Compliant_API UniformStiffness<Vec2dTypes>;

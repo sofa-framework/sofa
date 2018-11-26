@@ -45,7 +45,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
 using namespace sofa::defaulttype;
 
 

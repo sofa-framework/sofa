@@ -45,7 +45,6 @@ namespace component
 namespace collision
 {
 
-
 int RigidDistanceGridCollisionModelClass = core::RegisterObject("Grid-based distance field")
         .add< RigidDistanceGridCollisionModel >()
         .addAlias("DistanceGridCollisionModel")

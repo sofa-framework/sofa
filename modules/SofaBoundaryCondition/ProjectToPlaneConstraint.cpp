@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-
 int ProjectToPlaneConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT
         .add< ProjectToPlaneConstraint<Vec3dTypes> >()

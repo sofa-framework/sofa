@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-
 int FixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifdef SOFA_WITH_DOUBLE
         .add< FixedConstraint<Vec3dTypes> >()

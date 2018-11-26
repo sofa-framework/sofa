@@ -37,7 +37,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-
 int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian (only triangulations) file format.")
         .add< MeshTrianLoader >()
         ;

@@ -46,7 +46,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int TriangularFEMForceFieldOptimCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
         ;

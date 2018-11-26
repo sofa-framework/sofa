@@ -113,7 +113,6 @@ bool ObjectElement::initNode()
     return true;
 }
 
-
 Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
 
 const char* ObjectElement::getClass() const

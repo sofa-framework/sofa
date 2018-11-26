@@ -34,7 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-
 using namespace sofa::component::mapping;
 using namespace defaulttype;
 using namespace core;

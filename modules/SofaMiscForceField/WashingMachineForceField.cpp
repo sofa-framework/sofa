@@ -36,7 +36,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
 // Register in the Factory
 int WashingMachineForceFieldClass = core::RegisterObject("A custom force field")
 #ifndef SOFA_FLOAT

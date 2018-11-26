@@ -1090,7 +1090,6 @@ int NewOmniDriverClass = core::RegisterObject("Solver to test compliance computa
         .addAlias("DefaultHapticsDevice")
         ;
 
-
 } // namespace controller
 
 } // namespace component

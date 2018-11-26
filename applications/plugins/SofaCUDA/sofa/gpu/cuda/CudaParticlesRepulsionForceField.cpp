@@ -34,7 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int ParticlesRepulsionForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::ParticlesRepulsionForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE

@@ -32,7 +32,6 @@ namespace constraintset
 {
 using namespace sofa::defaulttype;
 
-
 int LinearSolverContactCorrectionClass = core::RegisterObject("")
 #ifndef SOFA_FLOAT
         .add< LinearSolverConstraintCorrection<Vec3dTypes> >()

@@ -39,7 +39,6 @@ void initHaptics()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

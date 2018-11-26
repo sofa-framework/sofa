@@ -32,7 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-
 // Register the OglTexture* objects in the Object Factory
 int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
 int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();

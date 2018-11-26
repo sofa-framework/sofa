@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int AverageCoordClass = core::RegisterObject("Compute the average of coordinates")
 #ifndef SOFA_FLOAT
         .add< AverageCoord<Vec2dTypes> >()

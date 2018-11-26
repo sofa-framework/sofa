@@ -35,7 +35,6 @@ namespace forcefield
 
     using namespace defaulttype;
 
-      
       // Register in the Factory
       int IntensityProfileRegistrationForceFieldClass = core::RegisterObject("Compute normal forces on a point set based on the closest intensity profile in the target image")
     #ifndef SOFA_FLOAT

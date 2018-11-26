@@ -96,7 +96,6 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     m_componentstate = ComponentState::Valid ;
 }
 
-
 int MakeDataAliasComponentClass = RegisterObject("This object create an alias to a data field. ")
         .add< MakeDataAliasComponent >()
         ;

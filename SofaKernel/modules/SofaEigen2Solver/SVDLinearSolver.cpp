@@ -134,7 +134,6 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 }
 
 
-
 int SVDLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< SVDLinearSolver< FullMatrix<double>, FullVector<double> > >()
         .add< SVDLinearSolver< FullMatrix<float>, FullVector<float> > >()

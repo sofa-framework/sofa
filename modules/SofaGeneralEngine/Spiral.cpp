@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int SpiralClass = core::RegisterObject("This class truns on spiral any topological model")
 #ifndef SOFA_FLOAT
         .add< Spiral<Vec3dTypes> >()

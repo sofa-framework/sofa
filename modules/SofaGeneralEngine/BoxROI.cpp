@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
 #ifndef SOFA_FLOAT
         .add< BoxROI<Vec3dTypes> >()

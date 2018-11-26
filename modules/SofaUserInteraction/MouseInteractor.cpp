@@ -34,7 +34,6 @@ namespace component
 namespace collision
 {
 
-
 int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
 #ifndef SOFA_DOUBLE
         .add< MouseInteractor<defaulttype::Vec2fTypes> >()

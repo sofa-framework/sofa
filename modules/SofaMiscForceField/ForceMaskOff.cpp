@@ -34,7 +34,6 @@ namespace forcefield
 {
 
 
-
 int ForceMaskOffClass = core::RegisterObject("ForceMask canceller")
         .add< ForceMaskOff >();
 

@@ -37,8 +37,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
-
 int AngularSpringForceFieldClass = core::RegisterObject("Angular springs applied to rotational degrees of freedom of a rigid body or frame")
 #ifndef SOFA_FLOAT
         .add< AngularSpringForceField<Rigid3dTypes> >()

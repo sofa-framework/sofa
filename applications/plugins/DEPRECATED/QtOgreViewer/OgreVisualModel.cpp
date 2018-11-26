@@ -39,7 +39,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int OgreVisualModel::meshName=0; //static counter to get unique name for entities
 bool OgreVisualModel::lightsEnabled=false;
 

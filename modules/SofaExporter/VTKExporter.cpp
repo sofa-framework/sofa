@@ -48,7 +48,6 @@ namespace component
 namespace misc
 {
 
-
 int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
         .add< VTKExporter >();
 

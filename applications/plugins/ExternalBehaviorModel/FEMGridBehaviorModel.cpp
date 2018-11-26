@@ -35,7 +35,6 @@ namespace externalBehaviorModel
 using namespace sofa::defaulttype;
 
 
-
 // Register in the Factory (XML read/write...)
 int FEMGridBehaviorModelModelClass = core::RegisterObject("FEMGridBehaviorModel Example")
 #ifndef SOFA_FLOAT

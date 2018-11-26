@@ -62,7 +62,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::container::MechanicalObject<CudaVec1fTypes> >()
         .add< component::container::MechanicalObject<CudaVec2fTypes> >()

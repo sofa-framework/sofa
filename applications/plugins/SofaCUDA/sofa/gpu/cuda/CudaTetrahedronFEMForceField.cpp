@@ -50,7 +50,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int TetrahedronFEMForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::TetrahedronFEMForceField<CudaVec3fTypes> >()
         .add< component::forcefield::TetrahedronFEMForceField<CudaVec3f1Types> >()

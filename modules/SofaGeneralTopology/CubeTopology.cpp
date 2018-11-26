@@ -64,7 +64,6 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }
 
-
 int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
         .add< CubeTopology >()
         ;

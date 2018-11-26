@@ -468,7 +468,6 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
 }
 
 
-
 //helper::Creator<xml::NodeElement::Factory, GNode> GNodeDefaultClass("default");
 helper::Creator<xml::NodeElement::Factory, GNode> GNodeClass("GNode");
 

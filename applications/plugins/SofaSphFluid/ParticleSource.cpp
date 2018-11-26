@@ -34,7 +34,6 @@ namespace component
 namespace misc
 {
 
-
 int ParticleSourceClass = core::RegisterObject("Parametrable particle generator")
 #ifndef SOFA_FLOAT
         .add< ParticleSource<defaulttype::Vec3dTypes> >()

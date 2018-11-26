@@ -348,7 +348,6 @@ void RegularGridTopology::createTexCoords()
 }
 
 
-
 int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
         .addAlias("RegularGrid")
         .add< RegularGridTopology >()

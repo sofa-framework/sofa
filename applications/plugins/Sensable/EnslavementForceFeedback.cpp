@@ -119,7 +119,6 @@ int EnslavementForceFeedbackClass = core::RegisterObject("Updates force to the h
         .add< EnslavementForceFeedback >()
         ;
 
-
 }
 
 }

@@ -33,7 +33,6 @@ namespace component
 namespace mapping
 {
 
-
 //using namespace defaulttype;
 // Register in the Factory
 int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")

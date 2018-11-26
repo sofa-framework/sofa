@@ -35,7 +35,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int CudaPointModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
         .add< CudaPointModel >()
         .addAlias("CudaPoint")

@@ -297,7 +297,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 }
 
 
-
 int FreeMotionAnimationLoopClass = core::RegisterObject("Constraint solver")
         .add< FreeMotionAnimationLoop >()
         .addAlias("FreeMotionMasterSolver")

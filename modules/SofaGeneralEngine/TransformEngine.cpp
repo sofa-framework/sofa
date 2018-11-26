@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int TransformEngineClass = core::RegisterObject("Transform position of 3d points")
 #ifdef SOFA_FLOAT
         .add< TransformEngine<defaulttype::Vec3fTypes> >(true) // default template

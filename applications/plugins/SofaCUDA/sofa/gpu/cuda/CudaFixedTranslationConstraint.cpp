@@ -123,7 +123,6 @@ namespace cuda
 {
 
 
-
 int FixedTranslationConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 // .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaVec3fTypes> >()
 // .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaVec3f1Types> >()

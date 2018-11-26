@@ -143,6 +143,5 @@ namespace sofa
 				.add< SofaHAPIForceFeedbackEffect >()
 				;
 
-		
 	} // namespace SofaHAPI
 }

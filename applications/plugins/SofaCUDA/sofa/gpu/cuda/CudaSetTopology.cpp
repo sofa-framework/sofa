@@ -67,8 +67,6 @@ using namespace sofa::core;
 using namespace sofa::gpu::cuda;
 using namespace sofa::core::behavior;
 
-
-
 /*
 /// Cross product for 3-elements vectors.
 template< class Real>

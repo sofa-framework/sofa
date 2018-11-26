@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int GenerateImageClass = core::RegisterObject("Create an image with custom dimensions")
         .add<GenerateImage<ImageUC> >(true)
         .add<GenerateImage<ImageD> >()

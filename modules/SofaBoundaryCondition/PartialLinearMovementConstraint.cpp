@@ -37,8 +37,6 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-
-
 int PartialLinearMovementConstraintClass = core::RegisterObject("translate given particles")
 #ifndef SOFA_FLOAT
         .add< PartialLinearMovementConstraint<defaulttype::Vec3dTypes> >()

@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int CollisionToCarvingEngineClass = core::RegisterObject("Filter an image")
         .add<CollisionToCarvingEngine<ImageUC,ImageUC    > >(true)
         .add<CollisionToCarvingEngine<ImageD ,ImageD     > >()

@@ -310,7 +310,6 @@ double EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative, d
 }
 
 
-
 int EulerImplicitSolverClass = core::RegisterObject("Time integrator using implicit backward Euler scheme")
         .add< EulerImplicitSolver >()
         .addAlias("EulerImplicit")

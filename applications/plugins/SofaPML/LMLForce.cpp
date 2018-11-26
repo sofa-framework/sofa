@@ -50,7 +50,6 @@ using namespace sofa::component;
 
 using namespace core::behavior;
 
-
 template class SOFA_BUILD_FILEMANAGER_PML_API LMLForce<Vec3Types>;
 
 }

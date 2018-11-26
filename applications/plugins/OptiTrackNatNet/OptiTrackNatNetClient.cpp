@@ -987,7 +987,6 @@ void OptiTrackNatNetClient::draw(const sofa::core::visual::VisualParams* vparams
     }
 }
 
-
 int OptiTrackNatNetClientClass = sofa::core::RegisterObject("Network client to receive tracked points and rigids from NaturalPoint OptiTrack devices using NatNet protocol")
         .add< OptiTrackNatNetClient >()
         ;

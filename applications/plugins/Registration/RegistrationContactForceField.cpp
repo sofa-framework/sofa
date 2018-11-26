@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 
 
 
-
 // Register in the Factory
 int RegistrationContactForceFieldClass = core::RegisterObject("Contact using attractive springs")
 #ifndef SOFA_FLOAT

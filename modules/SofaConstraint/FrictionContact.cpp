@@ -37,7 +37,6 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
 
-
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<PointModel, PointModel> > PointPointFrictionContactClass("FrictionContact",true);
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<LineModel, SphereModel> > LineSphereFrictionContactClass("FrictionContact",true);
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<LineModel, PointModel> > LinePointFrictionContactClass("FrictionContact",true);

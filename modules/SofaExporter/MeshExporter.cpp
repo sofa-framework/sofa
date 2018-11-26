@@ -47,7 +47,6 @@ namespace component
 namespace _meshexporter_
 {
 
-
 int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
                                              "Supported format are: " msgendl
                                              "- vtkxml" msgendl

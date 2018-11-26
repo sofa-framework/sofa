@@ -34,7 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int TopologyGaussPointSamplerClass = core::RegisterObject("Samples an object represented by a mesh")
         .add<TopologyGaussPointSampler>(true)
         ;

@@ -550,9 +550,6 @@ void LabelPointsBySectionImageToolBoxAction::saveFileData()
 
 
 
-
-
-
 }
 }
 }

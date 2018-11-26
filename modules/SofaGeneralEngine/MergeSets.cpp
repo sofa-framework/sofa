@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int MergeSetsClass = core::RegisterObject("Merge two sets of indices using specified boolean operation")
         .add< MergeSets<int> >(true)
         .add< MergeSets<unsigned int> >()

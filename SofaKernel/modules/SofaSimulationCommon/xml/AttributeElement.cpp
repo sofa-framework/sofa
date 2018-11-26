@@ -66,7 +66,6 @@ bool AttributeElement::initNode()
     return true;
 }
 
-
 Creator<BaseElement::NodeFactory, AttributeElement> AttributeNodeClass("Attribute");
 
 const char* AttributeElement::getClass() const

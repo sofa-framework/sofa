@@ -718,7 +718,6 @@ int GeomagicDriverClass = core::RegisterObject("Driver allowing interfacing with
 .addAlias("DefaultHapticsDevice")
 ;
 
-
 } // namespace controller
 
 } // namespace component

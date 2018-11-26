@@ -178,7 +178,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 }
 
 
-
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing constraint forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< UncoupledConstraintCorrection< Vec1dTypes > >()

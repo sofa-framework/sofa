@@ -356,7 +356,6 @@ void MechanicalObject<DeformationGradient332dTypes >::draw(const core::visual::V
 
 
 
-
 using namespace sofa::defaulttype;
 
 int MechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )

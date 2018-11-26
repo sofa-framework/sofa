@@ -33,7 +33,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int PlaneForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::PlaneForceField<CudaVec3fTypes> >()
         .add< component::forcefield::PlaneForceField<CudaVec3f1Types> >()

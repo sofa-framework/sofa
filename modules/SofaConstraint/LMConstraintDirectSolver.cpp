@@ -314,9 +314,6 @@ void LMConstraintDirectSolver::buildLeftRectangularMatrix(const DofToMatrix& inv
 int LMConstraintDirectSolverClass = core::RegisterObject("A Direct Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintDirectSolver >();
 
-SOFA_DECL_CLASS(LMConstraintDirectSolver);
-
-
 } // namespace constraintset
 
 } // namespace component

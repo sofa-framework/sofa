@@ -53,7 +53,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::engine::boxroi::BoxROI<CudaVec2fTypes> >()
         .add< component::engine::boxroi::BoxROI<CudaVec3fTypes> >()

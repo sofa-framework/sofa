@@ -34,8 +34,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-
 int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
 #ifndef SOFA_FLOAT
         .add< ParabolicConstraint<defaulttype::Vec3dTypes> >()

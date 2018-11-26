@@ -37,7 +37,6 @@ namespace component
 namespace mapping
 {
 
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory

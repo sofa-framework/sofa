@@ -34,7 +34,6 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-
 int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
 #ifndef SOFA_FLOAT
         .add< OglTetrahedralModel<Vec3dTypes> >()

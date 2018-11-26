@@ -350,9 +350,6 @@ void LabelGridImageToolBoxAction::sectionButtonClick()
 
 
 
-
-
-
 }
 }
 }

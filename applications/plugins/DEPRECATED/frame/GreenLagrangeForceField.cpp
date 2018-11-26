@@ -35,7 +35,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int GreenLagrangeForceFieldClass = core::RegisterObject("Compute forces on deformation gradients")
 #ifndef SOFA_FLOAT

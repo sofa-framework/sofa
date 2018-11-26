@@ -39,8 +39,6 @@ void initMiscSolver()
     }
 }
 
-
-
 } // namespace component
 
 } // namespace sofa

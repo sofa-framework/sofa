@@ -37,8 +37,6 @@ namespace component
 namespace forcefield
 {
 
-
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory

@@ -34,7 +34,6 @@ namespace component
 namespace engine
 {
 
-
 int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels")
         .add< SelectLabelROI<unsigned int> >(true)
         .add< SelectLabelROI<unsigned char> >()

@@ -36,7 +36,6 @@ namespace engine
 using namespace defaulttype;
 using namespace core::behavior;
 
-
 // Register in the Factory
 int ImageShapeFunctionSelectNodeClass = core::RegisterObject("select shapeFunction weight of the specified parent node")
     .add< ImageShapeFunctionSelectNode<ImageUC> >(true)

@@ -40,7 +40,6 @@ ComponentA::~ComponentA()
 }
 
 
-
 int ComponentAClass = core::RegisterObject("Component A").add< ComponentA >();
 
 

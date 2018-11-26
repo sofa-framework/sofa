@@ -677,8 +677,6 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 int OmniDriverClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< OmniDriver >();
 
-
-
 } // namespace controller
 
 } // namespace component

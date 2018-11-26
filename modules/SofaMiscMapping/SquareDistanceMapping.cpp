@@ -33,8 +33,6 @@ namespace component
 namespace mapping
 {
 
-
-
 using namespace defaulttype;
 
 

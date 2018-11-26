@@ -221,7 +221,6 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     a.eq(aResult);
 }
 
-
 int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integratorusing Newmark scheme")
         .add< NewmarkImplicitSolver >()
         .addAlias("Newmark");

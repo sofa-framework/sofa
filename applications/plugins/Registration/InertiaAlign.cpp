@@ -41,7 +41,6 @@ int InertiaAlignClass = core::RegisterObject("An engine computing inertia matrix
         ;
 
 
-
 InertiaAlign::InertiaAlign()
     : targetC( initData(&targetC,"targetCenter","input: the gravity center of the target mesh") )
     , sourceC( initData(&sourceC,"sourceCenter","input: the gravity center of the source mesh") )

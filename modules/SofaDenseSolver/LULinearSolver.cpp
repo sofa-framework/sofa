@@ -42,7 +42,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::simulation;
 
-
 template<class Matrix, class Vector>
 LULinearSolver<Matrix,Vector>::LULinearSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )

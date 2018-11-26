@@ -31,7 +31,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
                     .add<Camera>() ;
 

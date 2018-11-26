@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
 #ifndef SOFA_FLOAT
         .add< SphereROI<Vec3dTypes> >()

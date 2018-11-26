@@ -452,9 +452,6 @@ void DepthImageToolBoxAction::sectionButtonClick()
 
 
 
-
-
-
 }
 }
 }

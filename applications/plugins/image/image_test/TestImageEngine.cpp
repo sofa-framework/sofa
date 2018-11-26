@@ -33,7 +33,6 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-
 int TestImageEngineClass = core::RegisterObject("TestImageEngine to test engine with data image")
 
         .add<TestImageEngine<ImageUC> >(true)

@@ -36,7 +36,6 @@ namespace component
 namespace misc
 {
 
-
 int RequiredPluginClass = core::RegisterObject("Load the required plugins")
         .add< RequiredPlugin >();
 

@@ -35,7 +35,6 @@ namespace component
 namespace collision
 {
 
-
 int SpatialGridPointModelClass = core::RegisterObject("Collision model which represents a set of points, spatially grouped using a SpatialGridContainer")
         .add< SpatialGridPointModel >()
         ;

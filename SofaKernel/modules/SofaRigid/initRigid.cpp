@@ -39,7 +39,6 @@ void initRigid()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

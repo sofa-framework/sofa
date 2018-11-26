@@ -34,7 +34,6 @@ namespace component
 namespace misc
 {
 
-
 using namespace defaulttype;
 
 

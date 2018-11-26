@@ -41,7 +41,6 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-
 // Register in the Factory
 int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
 #ifndef SOFA_FLOAT

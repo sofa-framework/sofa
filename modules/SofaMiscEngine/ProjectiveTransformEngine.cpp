@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-  
   int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
 #ifdef SOFA_FLOAT
         .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template

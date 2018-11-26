@@ -39,7 +39,6 @@ void initBaseTopology()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

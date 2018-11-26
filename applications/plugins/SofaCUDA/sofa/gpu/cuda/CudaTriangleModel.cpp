@@ -50,7 +50,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::TTriangleModel<CudaVec3fTypes> >()
         .add< component::collision::TTriangleModel<CudaVec3f1Types> >()

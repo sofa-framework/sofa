@@ -39,7 +39,6 @@ namespace io
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-
 Creator<Mesh::FactoryMesh,MeshOBJ> MeshOBJClass("obj");
 
 void MeshOBJ::init (std::string filename)

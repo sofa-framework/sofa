@@ -35,7 +35,6 @@ namespace forcefield
 
 using namespace defaulttype;
 
-
 // Register in the Factory
 int HEMLStVKForceFieldClass = core::RegisterObject("St Venant-Kirchhoff (Hooke's Law for isotropic homogeneous materials)")
         .add< HEMLStVKForceField< Vec1Types > >(true)

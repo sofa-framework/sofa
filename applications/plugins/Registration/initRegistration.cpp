@@ -80,4 +80,4 @@ namespace component
 
 ////////// BEGIN CLASS LIST //////////
 #ifdef SOFA_HAVE_IMAGE
-    #endif
+#endif

@@ -42,7 +42,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int CudaRigidDistanceGridCollisionModelClass = core::RegisterObject("GPU-based grid distance field using CUDA")
         .add< CudaRigidDistanceGridCollisionModel >()
         .addAlias("CudaDistanceGridCollisionModel")

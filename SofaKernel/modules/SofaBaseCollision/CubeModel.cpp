@@ -36,7 +36,6 @@ namespace component
 namespace collision
 {
 
-
 using namespace sofa::defaulttype;
 
 int CubeModelClass = core::RegisterObject("Collision model representing a cube")

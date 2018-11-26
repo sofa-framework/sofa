@@ -44,7 +44,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using sofa::helper::DistanceSegTri;
 
-
 IntersectorCreator<NewProximityIntersection, RayNewProximityIntersection> RayNewProximityIntersectors("Ray");
 
 RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf)

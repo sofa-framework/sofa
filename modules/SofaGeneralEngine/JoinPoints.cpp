@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int JoinPointsClass = core::RegisterObject("?")
 #ifndef SOFA_FLOAT
         .add< JoinPoints<Vec3dTypes> >()

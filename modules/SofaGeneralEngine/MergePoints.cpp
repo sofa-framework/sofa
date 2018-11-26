@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
 #ifdef SOFA_FLOAT
         .add< MergePoints<defaulttype::Vec3fTypes> >(true) // default template

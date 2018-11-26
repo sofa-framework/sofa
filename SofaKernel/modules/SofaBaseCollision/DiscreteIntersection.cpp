@@ -54,7 +54,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-
 int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionClass")
         .add< DiscreteIntersection >()
         ;

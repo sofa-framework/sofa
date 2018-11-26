@@ -77,7 +77,6 @@ namespace gpu
 namespace opencl
 {
 
-
 int MouseInteractorOpenCLClass = core::RegisterObject("Supports Mouse Interaction using OPENCL")
         .add< component::collision::MouseInteractor<OpenCLVec3fTypes> >()
 #ifdef SOFAOPENCL_DOUBLE

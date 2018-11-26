@@ -48,7 +48,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::TSphereModel<CudaVec3fTypes> >()
         .add< component::collision::TSphereModel<CudaVec3f1Types> >()

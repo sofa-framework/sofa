@@ -32,7 +32,6 @@ namespace component
 namespace collision
 {
 
-
 int LineModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
 #ifndef SOFA_FLOAT
         .add< TLineModel<defaulttype::Vec3dTypes> >()

@@ -17,7 +17,6 @@ namespace engine
 
 
 
-
 using namespace defaulttype;
 
 int ComputeDualQuatEngineClass = core::RegisterObject("Converts a vector of Affine or Rigid to a vector of Dual Quaternions.")

@@ -176,7 +176,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
 }
 
-
 int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
         .add< VisualModelImpl >()
         .addAlias("VisualModel")

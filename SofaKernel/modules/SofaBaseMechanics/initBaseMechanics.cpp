@@ -39,7 +39,6 @@ void initBaseMechanics()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

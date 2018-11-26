@@ -36,7 +36,6 @@ namespace component
 namespace interactionforcefield
 {
 
-
 int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the points inside a given box")
 #ifndef SOFA_FLOAT
         .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3dTypes> >()

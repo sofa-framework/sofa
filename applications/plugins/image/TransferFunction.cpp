@@ -33,7 +33,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
         .add<TransferFunction<ImageUC,ImageUC    > >(true)
         .add<TransferFunction<ImageD ,ImageD     > >()

@@ -41,7 +41,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-
 int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
         .add< MeshSTLLoader >()
         ;

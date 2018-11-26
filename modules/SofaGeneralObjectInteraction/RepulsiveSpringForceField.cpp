@@ -35,7 +35,6 @@ namespace interactionforcefield
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
 #ifndef SOFA_FLOAT

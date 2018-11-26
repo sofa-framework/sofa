@@ -38,7 +38,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
 // Register in the Factory
 int FlexibleCorotationalMeshFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
         .add< FlexibleCorotationalMeshFEMForceField< Vec3Types > >(true)

@@ -34,7 +34,6 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-
 int GenerateCylinderClass = core::RegisterObject("Generate a Cylindrical Tetrahedral Mesh")
 #ifndef SOFA_FLOAT
         .add< GenerateCylinder<Vec3dTypes> >()

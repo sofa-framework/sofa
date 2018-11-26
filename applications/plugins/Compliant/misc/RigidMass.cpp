@@ -10,7 +10,6 @@ namespace component {
 
 namespace mass {
 
-
 using namespace defaulttype;
 
 

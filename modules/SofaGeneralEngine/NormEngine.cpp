@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int NormEngineClass = core::RegisterObject("Convert Vec in Real")
 #ifndef SOFA_FLOAT
         .add< NormEngine<defaulttype::Vec3d> >(true) // default template

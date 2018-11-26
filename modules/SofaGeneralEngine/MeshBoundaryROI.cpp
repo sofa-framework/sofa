@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary vertices of a triangle/quad mesh")
         .add< MeshBoundaryROI >(true);
 

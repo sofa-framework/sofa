@@ -40,8 +40,6 @@ void initTopologyMapping()
 }
 
 
-
-
 } // namespace component
 
 } // namespace sofa

@@ -32,7 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
         .add< InteractiveCamera >()
         ;

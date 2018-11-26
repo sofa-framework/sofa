@@ -129,7 +129,6 @@ void GetConstrainedContextPairs::processMapping(simulation::Node* /*node*/, core
 int CompliantSleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object (compatible with compliant specific constraints)")
 	.add< CompliantSleepController >();
 
-
 } // namespace controller
 
 } // namepace component

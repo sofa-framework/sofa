@@ -39,7 +39,6 @@ namespace component
 namespace misc
 {
 
-
 // Register in the Factory
 int InputEventReaderClass = core::RegisterObject("Read events from file")
         .add< InputEventReader >();

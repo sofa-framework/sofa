@@ -39,7 +39,6 @@ void initEngine()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

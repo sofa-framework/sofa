@@ -32,7 +32,6 @@ namespace plugins
 namespace pim
 {
 
-
 int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
 #ifndef SOFA_FLOAT
         .add< ProgressiveScaling<Vec3dTypes> >()

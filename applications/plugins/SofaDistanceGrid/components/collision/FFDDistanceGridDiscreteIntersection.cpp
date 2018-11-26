@@ -42,7 +42,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-
 IntersectorCreator<DiscreteIntersection, FFDDistanceGridDiscreteIntersection> FFDDistanceGridDiscreteIntersectors("FFDDistanceGrid");
 
 FFDDistanceGridDiscreteIntersection::FFDDistanceGridDiscreteIntersection(DiscreteIntersection* object)

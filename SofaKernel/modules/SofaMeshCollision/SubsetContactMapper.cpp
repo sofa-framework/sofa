@@ -36,7 +36,6 @@ namespace collision
 
 using namespace defaulttype;
 
-
 } // namespace collision
 
 } // namespace component

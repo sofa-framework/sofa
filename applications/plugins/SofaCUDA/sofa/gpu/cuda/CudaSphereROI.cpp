@@ -51,7 +51,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int SphereROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::engine::SphereROI<CudaVec3fTypes> >()
         .add< component::engine::SphereROI<CudaVec3f1Types> >()

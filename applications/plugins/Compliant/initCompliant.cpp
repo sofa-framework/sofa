@@ -121,4 +121,3 @@ SOFA_Compliant_API void initCompliant()
 }
 
 
-//

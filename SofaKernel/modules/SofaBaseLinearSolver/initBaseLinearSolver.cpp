@@ -39,8 +39,6 @@ void initBaseLinearSolver()
     }
 }
 
-
-
 } // namespace component
 
 } // namespace sofa

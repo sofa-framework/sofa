@@ -63,7 +63,6 @@ void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
     }
 }
 
-
 int PauseAnimationOnEventClass = core::RegisterObject("PauseAnimationOnEvent")
         .add< PauseAnimationOnEvent >();
 

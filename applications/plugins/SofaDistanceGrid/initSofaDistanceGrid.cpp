@@ -77,7 +77,6 @@ const char* getModuleComponentList()
            "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
 }
 
-
 } /// component
 
 } /// sofa

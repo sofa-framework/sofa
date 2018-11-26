@@ -56,7 +56,6 @@ namespace component
 namespace _objexporter_
 {
 
-
 int OBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
                                             "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
         .add< OBJExporter >()

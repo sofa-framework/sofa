@@ -148,8 +148,6 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
 
 
 
-
-
 int CompliantPostStabilizationAnimationLoopClass = core::RegisterObject("CompliantPostStabilizationAnimationLoop").add< CompliantPostStabilizationAnimationLoop >();
 
 } // namespace animationloop

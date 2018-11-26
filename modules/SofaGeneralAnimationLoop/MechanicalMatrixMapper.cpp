@@ -39,7 +39,6 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-
 int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to map the stiffness (and mass) matrix through a mapping.")
 #ifdef SOFA_WITH_FLOAT
         .add< MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes> >()

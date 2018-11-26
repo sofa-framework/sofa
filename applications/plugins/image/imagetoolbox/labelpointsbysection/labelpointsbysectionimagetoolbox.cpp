@@ -13,7 +13,6 @@ namespace component
 namespace engine
 {
 
-
 int LabelPointsBySectionImageToolBox_Class = core::RegisterObject("LabelPointsBySectionImageToolBox")
 .add< LabelPointsBySectionImageToolBox >()
 .addLicense("LGPL")

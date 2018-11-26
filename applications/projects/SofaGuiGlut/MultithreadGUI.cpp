@@ -209,7 +209,6 @@ int MultithreadGUI::closeGUI()
 }
 
 
-
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
 int MultithreadGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)

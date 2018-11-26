@@ -37,7 +37,6 @@ using namespace sofa::defaulttype;
 
 
 
-
 int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
         .addAlias("SphereGrid")
         .add< SphereGridTopology >()

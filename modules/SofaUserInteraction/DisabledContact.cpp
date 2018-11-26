@@ -39,8 +39,6 @@ namespace component
 namespace collision
 {
 
-
-
 using namespace sofa::core::collision;
 
 Creator<Contact::Factory, DisabledContact<SphereModel, SphereModel> > SphereSphereDisabledContactClass("disabled",true);

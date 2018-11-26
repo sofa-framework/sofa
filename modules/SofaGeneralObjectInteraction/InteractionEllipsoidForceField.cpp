@@ -42,7 +42,6 @@ using namespace sofa::defaulttype;
 //template class InteractionEllipsoidForceField<Vec2dTypes, Rigid2dTypes>;
 //template class InteractionEllipsoidForceField<Vec2fTypes, Rigid2dTypes>;
 
-
 int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
 #ifndef SOFA_FLOAT
         .add< InteractionEllipsoidForceField<Vec3dTypes, Rigid3dTypes> >()

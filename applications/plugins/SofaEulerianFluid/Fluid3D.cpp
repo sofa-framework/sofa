@@ -42,7 +42,6 @@ namespace eulerianfluid
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
-
 int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
         .add< Fluid3D >()
         .addLicense("LGPL")

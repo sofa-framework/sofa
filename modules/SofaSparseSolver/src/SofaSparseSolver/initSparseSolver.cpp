@@ -74,7 +74,6 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
-
 #ifdef SOFA_HAVE_CSPARSE
 #endif
 

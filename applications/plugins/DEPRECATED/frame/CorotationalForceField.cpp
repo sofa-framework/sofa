@@ -35,7 +35,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int CorotationalForceFieldClass = core::RegisterObject("Compute corotational forces on deformation gradients")
 #ifndef SOFA_FLOAT

@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int IntensityProfileCreatorClass = core::RegisterObject("Create reference intensity profiles from custom values")
         .add<IntensityProfileCreator<ImageUC> >(true)
         .add<IntensityProfileCreator<ImageUS> >()

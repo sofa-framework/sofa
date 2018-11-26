@@ -37,7 +37,6 @@ namespace misc
 
 using namespace defaulttype;
 
-
 int ImageExporterClass = core::RegisterObject("Save an image")
         .add<ImageExporter<ImageUC> >(true)
         .add<ImageExporter<ImageD> >()

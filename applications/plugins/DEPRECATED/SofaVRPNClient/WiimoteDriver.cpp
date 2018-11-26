@@ -36,7 +36,6 @@
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-
 int WiimoteDriverClass = sofa::core::RegisterObject("Wiimote Driver")
 #ifndef SOFA_FLOAT
         .add< WiimoteDriver<Vec3dTypes> >()

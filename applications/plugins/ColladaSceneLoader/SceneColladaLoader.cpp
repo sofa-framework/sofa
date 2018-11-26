@@ -72,7 +72,6 @@ using namespace sofa::component::collision;
 using namespace sofa::component::projectiveconstraintset;
 using namespace sofa::simulation;
 
-
 int SceneColladaLoaderClass = core::RegisterObject("Specific scene loader for Collada file format.")
         .add< SceneColladaLoader >()
         ;

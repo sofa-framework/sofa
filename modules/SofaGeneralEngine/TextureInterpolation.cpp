@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int TextureInterpolationClass = core::RegisterObject("Create texture coordinate for a given field")
 #ifndef SOFA_FLOAT
         .add< TextureInterpolation <Vec1dTypes> >()

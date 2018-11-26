@@ -3,7 +3,6 @@
 
 namespace sofa{namespace component{namespace collision{
 
-//
 int BulletIntersctionClass = core::RegisterObject("Intersection to use with BulletCollisionDetection")
         .add< BulletIntersection >()
         ;

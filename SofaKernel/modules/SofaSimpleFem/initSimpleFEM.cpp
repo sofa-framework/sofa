@@ -38,7 +38,6 @@ void initSimpleFEM()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

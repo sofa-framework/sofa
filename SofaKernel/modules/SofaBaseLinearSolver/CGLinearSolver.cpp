@@ -64,7 +64,6 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 #endif
 }
 
-
 int CGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)
 #ifndef SOFA_FLOAT

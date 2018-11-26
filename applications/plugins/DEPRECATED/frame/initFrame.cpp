@@ -77,6 +77,3 @@ const char* getModuleComponentList()
 } // namespace frame
 
 } // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-//

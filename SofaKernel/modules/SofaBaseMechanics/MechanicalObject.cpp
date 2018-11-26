@@ -37,7 +37,6 @@ namespace container
 using namespace core::behavior;
 using namespace defaulttype;
 
-
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 #ifdef SOFA_FLOAT
         .add< MechanicalObject<Vec3fTypes> >(true) // default template

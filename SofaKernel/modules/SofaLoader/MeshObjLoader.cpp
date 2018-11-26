@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::helper::types;
 
-
 int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
         .add< MeshObjLoader >()
         ;

@@ -42,7 +42,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-
 IntersectorCreator<DiscreteIntersection, RayDiscreteIntersection> RayDiscreteIntersectors("Ray");
 
 // since MinProximityIntersection inherits from DiscreteIntersection, should not this line be implicit? (but it is not the case...)

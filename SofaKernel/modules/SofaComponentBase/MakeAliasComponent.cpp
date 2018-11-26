@@ -81,7 +81,6 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     m_componentstate = ComponentState::Valid ;
 }
 
-
 int MakeAliasComponentClass = RegisterObject("This object create an alias to a component name to make the scene more readable. ")
         .add< MakeAliasComponent >()
         ;

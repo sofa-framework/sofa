@@ -58,7 +58,6 @@ void initComponentBase()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

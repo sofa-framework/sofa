@@ -34,7 +34,6 @@ namespace component
 namespace engine
 {
 
-
 int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of points or cells labeled from different sources, that are connected given a list of connection pairs")
         .add< SelectConnectedLabelsROI<unsigned int> >(true)
         .add< SelectConnectedLabelsROI<unsigned char> >()

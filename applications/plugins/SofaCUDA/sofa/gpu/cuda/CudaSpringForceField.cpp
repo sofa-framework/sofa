@@ -82,7 +82,6 @@ namespace gpu
 namespace cuda
 {
 
-//
 //int SpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 //.add< component::interactionforcefield::SpringForceField<CudaVec3fTypes> >()
 //.add< component::interactionforcefield::SpringForceField<CudaVec3f1Types> >()

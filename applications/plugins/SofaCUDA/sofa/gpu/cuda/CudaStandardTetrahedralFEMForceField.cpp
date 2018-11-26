@@ -34,7 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 .add< component::forcefield::StandardTetrahedralFEMForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE

@@ -135,8 +135,6 @@ double StaticSolver::getSolutionIntegrationFactor(int outputDerivative) const
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")
         .add< StaticSolver >();
 
-
-
 } // namespace odesolver
 
 } // namespace component

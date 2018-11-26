@@ -34,7 +34,6 @@ namespace component
 namespace engine
 {
 
-
 int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list of indices")
         .add< ValuesFromIndices<std::string> >()
         .add< ValuesFromIndices<int> >()

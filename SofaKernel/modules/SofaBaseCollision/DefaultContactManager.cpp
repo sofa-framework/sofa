@@ -34,7 +34,6 @@ namespace component
 namespace collision
 {
 
-
 int DefaultContactManagerClass = core::RegisterObject("Default class to create reactions to the collisions")
         .add< DefaultContactManager >()
         .addAlias("CollisionResponse")

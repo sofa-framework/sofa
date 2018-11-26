@@ -39,7 +39,6 @@ void initGeneralImplicitODESolver()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

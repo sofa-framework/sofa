@@ -86,8 +86,3 @@ const char* getModuleComponentList()
 } // namespace sofa
 
 ////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(OgrePlanarReflectionMaterial);
-SOFA_LINK_CLASS(OgreMeshLoader);
-
-
-

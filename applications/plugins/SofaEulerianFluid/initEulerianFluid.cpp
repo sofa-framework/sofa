@@ -76,7 +76,6 @@ const char* getModuleComponentList()
 }
 
 
-
 } /// namespace component
 
 } /// namespace sofa

@@ -32,7 +32,6 @@ void create(LennardJonesForceField<DataTypes>*& obj, XML::Node<Sofa::Core::Force
 }
 }
 
-
 // Each instance of our class must be compiled
 template class LennardJonesForceField<Vec3fTypes>;
 template class LennardJonesForceField<Vec3dTypes>;

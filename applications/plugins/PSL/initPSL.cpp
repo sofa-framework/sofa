@@ -96,7 +96,6 @@ const char* getModuleComponentList()
 }
 
 SP_DECLARE_CLASS_TYPE(Template)
-
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 
 /// register the loader in the factory

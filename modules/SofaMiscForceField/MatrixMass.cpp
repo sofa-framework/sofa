@@ -38,8 +38,6 @@ using namespace sofa::defaulttype;
 
 
 
-
-
 // Register in the Factory
 int MatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
 //.addAlias("MatrixMass")

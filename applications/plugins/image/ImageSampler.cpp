@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int ImageSamplerClass = core::RegisterObject("Samples an object represented by an image")
         .add<ImageSampler<ImageB> >(true)
         .add<ImageSampler<ImageUC> >()

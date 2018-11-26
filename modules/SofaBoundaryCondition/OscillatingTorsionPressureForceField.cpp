@@ -39,7 +39,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
 int OscillatingTorsionPressureForceFieldClass = core::RegisterObject("OscillatingTorsionPressure")
 #ifndef SOFA_FLOAT
         .add< OscillatingTorsionPressureForceField<Vec3dTypes> >()

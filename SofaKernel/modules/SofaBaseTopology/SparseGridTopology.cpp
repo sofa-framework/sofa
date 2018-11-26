@@ -49,7 +49,6 @@ namespace component
 namespace topology
 {
 
-
 int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .addAlias("SparseGrid")
         .add< SparseGridTopology >()

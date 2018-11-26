@@ -34,7 +34,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int SumEngineClass = core::RegisterObject("Computing the Sum between two vector of dofs")
 #ifndef SOFA_FLOAT
         .add< SumEngine<Vec1d> >()

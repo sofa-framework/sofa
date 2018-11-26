@@ -37,7 +37,6 @@ namespace topology
 
 
 
-
 int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3D (modified)")
         .addAlias("SparseGridRamification")
         .add< SparseGridRamificationTopology >()

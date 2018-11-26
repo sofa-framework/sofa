@@ -37,7 +37,6 @@ using namespace sofa::gpu::cuda;
 using namespace core::behavior;
 
 
-
 int SpatialGridContainerCudaClass = core::RegisterObject("GPU support using CUDA.")
         .add< SpatialGridContainer<CudaVec3fTypes> >()
         ;

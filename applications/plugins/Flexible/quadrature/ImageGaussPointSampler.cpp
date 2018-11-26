@@ -34,7 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 // Register in the Factory
 int ImageGaussPointSamplerClass = core::RegisterObject("Samples an object represented by an image with gauss points")
 

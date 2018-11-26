@@ -35,7 +35,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-
 int LinearForceFieldClass = core::RegisterObject("Linearly interpolated force applied to given degrees of freedom")
 #ifndef SOFA_FLOAT
         .add< LinearForceField<Vec3dTypes> >()

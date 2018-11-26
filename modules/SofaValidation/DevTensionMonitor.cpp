@@ -35,7 +35,6 @@ namespace misc
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int DevTensionMonitorClass = core::RegisterObject("Tension monitoring")
 #ifndef SOFA_FLOAT

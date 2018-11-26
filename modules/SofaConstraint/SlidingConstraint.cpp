@@ -39,7 +39,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
 int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
 #ifdef SOFA_FLOAT
         .add< SlidingConstraint<Vec3fTypes> >(true)

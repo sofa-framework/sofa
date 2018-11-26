@@ -172,9 +172,6 @@ void LabelPointImageToolBoxAction::sectionButtonClick()
 
 
 
-
-
-
 }
 }
 }

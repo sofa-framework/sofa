@@ -38,7 +38,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-
 int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
 #ifndef SOFA_FLOAT
         .add< SubsetMapping< Vec3dTypes, Vec3dTypes > >()

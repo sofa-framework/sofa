@@ -53,7 +53,6 @@ SReal ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const co
 #endif
 
 
-
 int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to given degrees of freedom")
 #ifndef SOFA_FLOAT
         .add< ConstantForceField<Vec3dTypes> >()

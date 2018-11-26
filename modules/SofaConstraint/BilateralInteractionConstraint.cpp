@@ -415,7 +415,6 @@ void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv
 #endif
 
 
-
 int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
         #ifdef SOFA_WITH_DOUBLE
         .add< BilateralInteractionConstraint<Vec3dTypes> >()

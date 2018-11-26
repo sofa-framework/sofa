@@ -23,7 +23,6 @@ namespace component
 namespace misc
 {
 
-
 int RegistrationExporterClass = core::RegisterObject("Replicate loaded obj files into path, with current positions")
 .add< RegistrationExporter >();
 

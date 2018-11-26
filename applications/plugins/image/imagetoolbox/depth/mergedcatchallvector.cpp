@@ -34,7 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
         .add<MergedCatchAllVector<float > >(true)
         //.add<MergedCatchAllVector<unsigned float> >()

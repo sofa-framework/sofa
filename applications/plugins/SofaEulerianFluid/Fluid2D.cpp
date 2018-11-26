@@ -40,7 +40,6 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-
 int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
         .add< Fluid2D >()
         .addLicense("LGPL")

@@ -11,7 +11,6 @@ namespace component
 namespace mapping
 {
 
-
 using namespace defaulttype;
 
 // Register in the Factory
@@ -43,7 +42,6 @@ template class SOFA_Compliant_API AdditionMapping< Rigid3fTypes, Vec3fTypes >;
 
 
 ///////////////////////
-
 
 
 using namespace defaulttype;

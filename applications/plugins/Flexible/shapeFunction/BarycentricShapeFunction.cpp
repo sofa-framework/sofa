@@ -34,7 +34,6 @@ namespace shapefunction
 
 using namespace core::behavior;
 
-
 // Register in the Factory
 int BarycentricShapeFunctionClass = core::RegisterObject("Computes Barycentric shape functions")
 #ifndef SOFA_FLOAT

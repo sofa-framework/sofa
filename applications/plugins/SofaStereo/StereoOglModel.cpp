@@ -38,7 +38,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int StereoOglModelClass = core::RegisterObject("StereoOglModel")
         .add< StereoOglModel >()
         ;

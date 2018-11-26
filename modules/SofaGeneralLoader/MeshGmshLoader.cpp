@@ -40,7 +40,6 @@ using namespace sofa::defaulttype;
 using std::string;
 using std::stringstream;
 
-
 int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh file format.")
         .add< MeshGmshLoader >()
         ;

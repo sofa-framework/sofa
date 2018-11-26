@@ -46,8 +46,6 @@ void initMeshCollision()
     (void) pMeshNewProximityIntersectors;
 }
 
-
-
 } // namespace component
 
 } // namespace sofa

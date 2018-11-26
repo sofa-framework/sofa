@@ -39,7 +39,6 @@ void initMiscForcefield()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

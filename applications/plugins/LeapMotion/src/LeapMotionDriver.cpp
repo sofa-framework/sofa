@@ -734,8 +734,6 @@ void LeapMotionDriver::handleEvent(core::objectmodel::Event *event)
 int LeapMotionDriverClass = core::RegisterObject("LeapMotion device driver")
 .add< LeapMotionDriver >();
 
-
-
 } // namespace controller
 
 } // namespace component

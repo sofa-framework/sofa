@@ -15,7 +15,6 @@ namespace component
 namespace engine
 {
 
-
 int DistanceZoneImageToolBox_Class = core::RegisterObject("DistanceZoneImageToolBox")
         .add<DistanceZoneImageToolBox<ImageUC> >()
         .add<DistanceZoneImageToolBox<ImageD> >(true)

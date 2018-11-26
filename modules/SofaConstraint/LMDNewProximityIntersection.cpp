@@ -63,7 +63,6 @@ void GetPosOfEdgeVertexOnTriangle(Vector3& pv1, Vector3& pv2, int edge_number, T
     pv2= (mState->read(core::ConstVecCoordId::position())->getValue())[edge[1]];
 }
 
-
 int LMDNewProximityIntersectionClass = core::RegisterObject("Filtered optimized proximity intersection.")
         .add< LMDNewProximityIntersection >()
         ;

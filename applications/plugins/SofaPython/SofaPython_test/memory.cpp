@@ -24,13 +24,6 @@ protected:
 int PythonTestAllocationCounterClass = core::RegisterObject("A test component counting allocations")
         .add< PythonTestAllocationCounter >()
         ;
-
-
-
-
-
-
-
 struct MemoryTest : public ::testing::Test
 {
     MemoryTest()

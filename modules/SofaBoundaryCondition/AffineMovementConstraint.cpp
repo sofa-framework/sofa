@@ -38,8 +38,6 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-
-
 int AffineMovementConstraintClass = core::RegisterObject("bilinear constraint")
 #ifndef SOFA_FLOAT
         .add< AffineMovementConstraint<defaulttype::Vec3dTypes> >()

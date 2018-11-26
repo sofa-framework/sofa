@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
 #ifdef SOFA_FLOAT
         .add< MeshClosingEngine<defaulttype::Vec3fTypes> >(true) // default template

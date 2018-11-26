@@ -38,7 +38,6 @@ namespace component
 namespace interactionforcefield
 {
 
-
 using namespace sofa::defaulttype;
 
 

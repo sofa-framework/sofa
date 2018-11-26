@@ -35,7 +35,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-
 int RigidCylinderModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
 #ifndef SOFA_FLOAT
         .add<  TCylinderModel<defaulttype::Rigid3dTypes> >()

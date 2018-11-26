@@ -47,7 +47,6 @@ namespace sofa
 namespace simulation
 {
 
-
 int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
         .add< DefaultAnimationLoop >()
         .addDescription(R"(

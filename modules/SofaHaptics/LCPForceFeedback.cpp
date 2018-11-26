@@ -171,8 +171,6 @@ template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1fTypes>;
 template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3fTypes>;
 #endif
 
-
-
 } // namespace controller
 
 } // namespace component

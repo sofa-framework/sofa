@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int VoronoiToMeshEngineClass = core::RegisterObject("Generate flat faces between adjacent regions of an image")
         .add<VoronoiToMeshEngine<ImageUI> >(true)
         .add<VoronoiToMeshEngine<ImageUC> >()

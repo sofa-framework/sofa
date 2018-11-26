@@ -89,8 +89,6 @@ const char* getModuleComponentList()
            "SphericalField DiscreteGridField";
 }
 
-
-
 } /// component
 
 } /// sofa

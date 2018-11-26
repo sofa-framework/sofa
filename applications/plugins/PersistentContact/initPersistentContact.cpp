@@ -78,4 +78,3 @@ const char* getModuleComponentList()
 
 } // namespace sofa
 
-

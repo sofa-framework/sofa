@@ -34,7 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 // Register in the Factory
 int ShapeFunctionDiscretizerClass = core::RegisterObject("Discretize shape functions in an image")
         .add< ShapeFunctionDiscretizer<ImageUC> >(true)

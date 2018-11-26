@@ -956,7 +956,6 @@ void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 }
 
 
-
 int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
         .add< ConstraintAnimationLoop >()
         .addAlias("MasterConstraintSolver");

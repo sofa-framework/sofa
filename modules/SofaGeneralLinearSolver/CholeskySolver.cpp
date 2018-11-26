@@ -38,7 +38,6 @@ namespace linearsolver
 
 using namespace sofa::defaulttype;
 
-
 int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
 #ifndef SOFA_FLOAT
         .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)

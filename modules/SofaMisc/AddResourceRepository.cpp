@@ -36,8 +36,6 @@ namespace component
 namespace misc
 {
 
-
-
 int AddResourceRepositoryClass = core::RegisterObject("Add a repository to the pool of resources")
 .add< AddResourceRepository >();
 

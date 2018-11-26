@@ -61,7 +61,6 @@ namespace cuda
 {
 
 
-
 int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3fTypes> >()
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3f1Types> >()

@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace core;
 using namespace core::behavior;
 
-
 // Register in the Factory
 int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
 #ifndef SOFA_FLOAT

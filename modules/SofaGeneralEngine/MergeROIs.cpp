@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa;
 
-
 int MergeROIsClass = core::RegisterObject("Merge a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)")
         .add< MergeROIs >(true)
         ;

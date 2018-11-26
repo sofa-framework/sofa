@@ -351,7 +351,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     pPrevious.eq(newp);
 }
 
-
 int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integrator which conserves linear momentum and mechanical energy")
         .add< VariationalSymplecticSolver >()
         .addAlias("VariationalSolver")

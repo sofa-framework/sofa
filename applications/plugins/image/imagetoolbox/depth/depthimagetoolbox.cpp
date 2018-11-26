@@ -17,7 +17,6 @@ namespace component
 namespace engine
 {
 
-
 int DepthImageToolBox_Class = core::RegisterObject("DepthImageToolBox")
 .add< DepthImageToolBox >()
 .addLicense("LGPL")

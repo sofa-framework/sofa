@@ -35,7 +35,6 @@ namespace component
 namespace mapping
 {
 
-
 using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;

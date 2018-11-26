@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
 #ifndef SOFA_FLOAT
         .add< Distances<Vec3dTypes> >()

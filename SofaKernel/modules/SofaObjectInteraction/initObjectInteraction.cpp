@@ -39,8 +39,6 @@ void initObjectInteraction()
     }
 }
 
-
-
 } // namespace component
 
 } // namespace sofa

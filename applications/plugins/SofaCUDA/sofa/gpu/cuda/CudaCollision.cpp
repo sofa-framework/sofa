@@ -95,14 +95,12 @@ namespace cuda
 {
 
 
-
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
         .add< component::collision::MouseInteractor<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::collision::MouseInteractor<CudaVec3dTypes> >()
 #endif
         ;
-
 
 
 using namespace sofa::component::collision;

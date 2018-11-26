@@ -37,7 +37,6 @@ using namespace sofa::defaulttype;
 
 
 
-
 int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
         .addAlias("SphereQuad")
         .add< SphereQuadTopology >()

@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
 #ifndef SOFA_FLOAT
         .add< PointsFromIndices<Vec3dTypes> >()

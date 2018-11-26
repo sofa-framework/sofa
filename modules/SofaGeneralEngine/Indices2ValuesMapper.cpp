@@ -37,7 +37,6 @@ namespace engine
 using namespace sofa;
 using namespace sofa::defaulttype;
 
-
 int Indices2ValuesMapperClass = core::RegisterObject("?")
 #ifndef SOFA_FLOAT
         .add< Indices2ValuesMapper<Vec3dTypes> >(true)

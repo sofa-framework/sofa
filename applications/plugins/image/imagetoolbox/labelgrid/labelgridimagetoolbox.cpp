@@ -19,7 +19,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int LabelGridImageToolBox_Class = core::RegisterObject("LabelGridImageToolBox")
         .add<LabelGridImageToolBox<ImageUC> >()
         .add<LabelGridImageToolBox<ImageD> >(true)

@@ -35,7 +35,6 @@ namespace misc
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int DevAngleCollisionMonitorClass = core::RegisterObject("Angle collision monitoring")
 #ifndef SOFA_FLOAT

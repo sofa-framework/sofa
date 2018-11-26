@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int ImageTransformEngineClass = core::RegisterObject("Apply a transform to the data 'transform'")
         .add<ImageTransformEngine>(true)
         ;

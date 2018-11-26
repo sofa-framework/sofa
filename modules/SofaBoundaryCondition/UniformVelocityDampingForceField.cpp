@@ -37,7 +37,6 @@ namespace sofa
 
             using namespace sofa::defaulttype;
 
-            
                 int UniformVelocityDampingForceFieldClass = core::RegisterObject("Uniform velocity damping")
 #ifndef SOFA_FLOAT
                 .add< UniformVelocityDampingForceField<Vec3dTypes> >()

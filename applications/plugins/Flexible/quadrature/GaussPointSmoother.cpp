@@ -34,7 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int GaussPointSmootherClass = core::RegisterObject("Smooth gauss points from another sampler")
         .add<GaussPointSmoother>(true)
         ;

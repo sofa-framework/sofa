@@ -282,7 +282,7 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fType
 
 //// ==========================================================================
 //// ProjectToLineConstraint
-////int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
 //#ifndef SOFA_FLOAT
 //.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 //#endif
@@ -299,7 +299,7 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fType
 
 //// ==========================================================================
 //// ProjectToPlaneConstraint
-////int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
 //#ifndef SOFA_FLOAT
 //.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 //#endif
@@ -317,7 +317,7 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fType
 
 //// ==========================================================================
 //// ProjectDirectionConstraint
-////int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
 //#ifndef SOFA_FLOAT
 //.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 //#endif
@@ -451,7 +451,6 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
 #endif
 // ==========================================================================
 // Instanciation
-
 
 using namespace sofa::defaulttype;
 
@@ -603,7 +602,6 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 
     using namespace sofa::defaulttype;
 
-    
     int EVALUATOR(TYPEABSTRACTNAME,UniformMassClass) = core::RegisterObject ( "Define the same mass for all the particles" )
 #ifndef SOFA_FLOAT
     .add< UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass> >()
@@ -616,7 +614,6 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 
 #ifdef SOFA_HAVE_IMAGE
 
-    
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
 #ifndef SOFA_FLOAT
     .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass> >()
@@ -793,7 +790,6 @@ namespace mapping
 {
 
 
-
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
 #ifndef SOFA_FLOAT
@@ -848,7 +844,6 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 using namespace sofa::defaulttype;
 
-
 int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
 #ifndef SOFA_FLOAT
     .add< SubsetMultiMapping< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dTypes > >()
@@ -871,7 +866,6 @@ int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("
 
 namespace engine
 {
-    
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,BoxROIClass) = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
 #ifndef SOFA_FLOAT
@@ -895,7 +889,6 @@ namespace engine
 namespace forcefield
 {
 
-    
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,RestShapeSpringsForceFieldClass) = core::RegisterObject("Spring attached to rest position")
     #ifndef SOFA_FLOAT
@@ -917,7 +910,6 @@ namespace forcefield
 
 
 
-    
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,ConstantForceFieldClass) = core::RegisterObject("Constant forces applied to given degrees of freedom")
     #ifndef SOFA_FLOAT
@@ -935,7 +927,6 @@ namespace forcefield
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     #endif
 
-    
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceFieldClass) = core::RegisterObject("Uniform velocity damping")
     #ifndef SOFA_FLOAT

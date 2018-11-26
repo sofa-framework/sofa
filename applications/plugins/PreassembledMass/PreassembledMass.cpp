@@ -16,8 +16,6 @@ using namespace sofa::defaulttype;
 
 
 
-
-
 // Register in the Factory
 int PreassembledMassClass = core::RegisterObject("Preassembled mass")
 

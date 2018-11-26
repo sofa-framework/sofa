@@ -33,7 +33,6 @@ namespace component
 namespace misc
 {
 
-
 int ParticleSinkClass = core::RegisterObject("Parametrable particle generator")
 #ifndef SOFA_FLOAT
         .add< ParticleSink<defaulttype::Vec3dTypes> >()

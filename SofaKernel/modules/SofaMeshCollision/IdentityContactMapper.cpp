@@ -33,7 +33,6 @@ namespace collision
 
 using namespace defaulttype;
 
-
 ContactMapperCreator< ContactMapper<SphereModel> > SphereContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<PointModel> > PointContactMapperClass("default",true);
 

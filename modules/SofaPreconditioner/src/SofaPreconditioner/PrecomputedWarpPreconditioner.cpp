@@ -34,7 +34,6 @@ namespace component
 namespace linearsolver
 {
 
-
 int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
 #ifndef SOFA_FLOAT
         .add< PrecomputedWarpPreconditioner< defaulttype::Vec3dTypes > >()

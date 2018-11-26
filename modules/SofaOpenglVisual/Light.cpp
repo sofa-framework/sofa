@@ -47,7 +47,6 @@ namespace component
 namespace visualmodel
 {
 
-
 //Register DirectionalLight in the Object Factory
 int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
         .add< DirectionalLight >()

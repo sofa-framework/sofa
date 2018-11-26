@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int ImageFilterClass = core::RegisterObject("Filter an image")
         .add<ImageFilter<ImageUC,ImageUC    > >(true)
         .add<ImageFilter<ImageD ,ImageD     > >()

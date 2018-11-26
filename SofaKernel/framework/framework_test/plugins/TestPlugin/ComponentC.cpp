@@ -58,7 +58,6 @@ void MyBehaviorModel::updatePosition(double /*dt*/)
 {
 }
 
-
 int MyBehaviorModelClass = core::RegisterObject("Dummy component with a custom widget.").add< MyBehaviorModel >();
 
 

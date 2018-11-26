@@ -38,7 +38,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
 int DistanceLMContactConstraintClass = core::RegisterObject("Maintain a minimum contact distance between two objects")
 #ifndef SOFA_FLOAT
         .add< DistanceLMContactConstraint<Vec3dTypes> >()

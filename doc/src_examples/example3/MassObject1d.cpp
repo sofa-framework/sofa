@@ -68,5 +68,4 @@ void create(MassObject1d*& obj, XML::Node<Sofa::Core::DynamicModel>* arg)
 }
 }
 
-
 Creator< XML::DynamicNode::Factory, MassObject<Vec1dTypes> > MassObject1dClass("MassObject1d");

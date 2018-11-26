@@ -34,7 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int SPHFluidForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::SPHFluidForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE

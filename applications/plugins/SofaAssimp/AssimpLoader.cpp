@@ -41,7 +41,6 @@ namespace loader
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
 int AssimpLoaderClass = core::RegisterObject("Sofa mesh loader component as API to assimp loader library.")
         .add< AssimpLoader >()
         ;

@@ -49,7 +49,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int SlicedVolumetricModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
         .add< SlicedVolumetricModel >()
         ;

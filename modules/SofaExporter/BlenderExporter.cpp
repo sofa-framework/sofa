@@ -32,7 +32,6 @@ namespace sofa
         {
             using namespace defaulttype;
 
-            
                 int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
 #ifndef SOFA_FLOAT
                 .add< BlenderExporter<Vec3dTypes> >()

@@ -69,7 +69,6 @@ Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( cons
 
 
 
-
 int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
 #ifndef SOFA_FLOAT
         .add<  TSphereModel<Vec3dTypes> >()

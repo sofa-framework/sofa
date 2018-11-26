@@ -37,7 +37,6 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 
-
 int ExternalInterpolationMappingClass = core::RegisterObject("TODO-ExternalInterpolationMappingClass")
 #ifndef SOFA_FLOAT
         .add< ExternalInterpolationMapping< Vec3dTypes, Vec3dTypes > >()

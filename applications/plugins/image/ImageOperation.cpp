@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int ImageOperationClass = core::RegisterObject("This class computes an image as an operation between two images")
         .add<ImageOperation<ImageUC> >(true)
         .add<ImageOperation<ImageD> >()

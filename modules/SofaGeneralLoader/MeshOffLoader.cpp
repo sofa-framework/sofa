@@ -36,7 +36,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-
 int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file format.")
         .add< MeshOffLoader >()
         ;

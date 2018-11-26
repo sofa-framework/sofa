@@ -34,7 +34,6 @@ namespace component
 namespace engine
 {
 
-
 int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
         .add< MapIndices<int> >()
         .add< MapIndices<unsigned int> >()

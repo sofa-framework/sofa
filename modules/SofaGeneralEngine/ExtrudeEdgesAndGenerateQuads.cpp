@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int ExtrudeEdgesAndGenerateQuadsClass = core::RegisterObject("This engine extrudes an edge-based curve into a quad surface patch")
 #ifdef SOFA_WITH_DOUBLE
         .add< ExtrudeEdgesAndGenerateQuads<Vec3dTypes> >(true) // default template

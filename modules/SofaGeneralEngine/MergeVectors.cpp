@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine several inputs")
 #if defined(SOFA_DOUBLE)
     .add< MergeVectors< helper::vector<double> > >(true)

@@ -39,7 +39,6 @@ void initBaseVisual()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

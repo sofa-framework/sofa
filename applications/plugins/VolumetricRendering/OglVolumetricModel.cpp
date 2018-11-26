@@ -40,7 +40,6 @@ namespace visualmodel
 {
 
 
-
 int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for OpenGL display")
 .add < OglVolumetricModel >();
 

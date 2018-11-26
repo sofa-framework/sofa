@@ -86,7 +86,6 @@ bool NodeElement::init()
     return res;
 }
 
-
 helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
 
 const char* NodeElement::getClass() const

@@ -34,7 +34,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int DifferenceEngineClass = core::RegisterObject("Computing the difference between two vector of dofs")
 #ifndef SOFA_FLOAT
         .add< DifferenceEngine<Vec1d> >()

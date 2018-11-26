@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-
 int ProjectToLineConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT
         .add< ProjectToLineConstraint<Vec3dTypes> >()

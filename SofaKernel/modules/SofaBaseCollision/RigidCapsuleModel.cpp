@@ -35,7 +35,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-
 int RigidCapsuleModelClass = core::RegisterObject("Collision model which represents a set of rigid capsules")
 #ifndef SOFA_FLOAT
         .add<  TCapsuleModel<defaulttype::Rigid3dTypes> >()

@@ -34,7 +34,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int VisualTransformClass = sofa::core::RegisterObject("TODO")
         .add<VisualTransform>();
 

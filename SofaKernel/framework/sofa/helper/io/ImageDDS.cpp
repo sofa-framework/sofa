@@ -93,7 +93,6 @@ namespace helper
 {
 namespace io
 {
-
 Creator<Image::FactoryImage,ImageDDS> ImageDDSClass("dds");
 
 #pragma pack (push, 1)

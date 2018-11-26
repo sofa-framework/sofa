@@ -36,7 +36,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-
 int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
 #ifndef SOFA_FLOAT
         .add< TPointModel<defaulttype::Vec3dTypes> >()

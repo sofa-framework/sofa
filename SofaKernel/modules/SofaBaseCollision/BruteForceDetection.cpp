@@ -42,7 +42,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace collision;
 
-
 int BruteForceDetectionClass = core::RegisterObject("Collision detection using extensive pair-wise tests")
         .add< BruteForceDetection >()
         ;

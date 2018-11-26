@@ -52,7 +52,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int RestShapeSpringsForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::RestShapeSpringsForceField<CudaVec3fTypes> >()
         .add< component::forcefield::RestShapeSpringsForceField<CudaVec3f1Types> >()

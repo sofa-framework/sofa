@@ -39,7 +39,6 @@ void initExplicitODESolver()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

@@ -38,7 +38,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
 int FixedLMConstraintClass = core::RegisterObject("Maintain a set of particle to a fixed position using LMConstraint")
 #ifndef SOFA_FLOAT
         .add< FixedLMConstraint<Vec3dTypes> >()

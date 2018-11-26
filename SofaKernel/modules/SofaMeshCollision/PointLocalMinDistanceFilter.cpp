@@ -293,7 +293,6 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
 
 
 
-
 int PointLocalMinDistanceFilterClass = core::RegisterObject("This class manages Point collision models cones filters computations and updates.")
         .add< PointLocalMinDistanceFilter >()
         ;

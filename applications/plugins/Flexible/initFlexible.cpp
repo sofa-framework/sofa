@@ -86,7 +86,3 @@ const char* getModuleComponentList()
 #ifdef SOFA_HAVE_SofaHighOrderTopology
 #endif
 
-
-
-
-

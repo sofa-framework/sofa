@@ -36,7 +36,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
 

@@ -70,8 +70,6 @@ using sofa::simulation::getSimulation;
 using namespace sofa::simulation;
 
 helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
-
-
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------

@@ -38,7 +38,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
 ///////////// SPECIALIZATION FOR RIGID TYPES //////////////
 
 

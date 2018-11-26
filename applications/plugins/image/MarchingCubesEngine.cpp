@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int MarchingCubesEngineClass = core::RegisterObject("Compute an isosurface from an image using marching cubes algorithm")
         .add<MarchingCubesEngine<ImageUC> >(true)
         .add<MarchingCubesEngine<ImageD> >()

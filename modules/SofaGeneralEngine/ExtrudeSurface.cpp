@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
 #ifndef SOFA_FLOAT
         .add< ExtrudeSurface<Vec3dTypes> >()

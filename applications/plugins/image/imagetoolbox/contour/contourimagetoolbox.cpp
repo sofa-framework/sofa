@@ -16,7 +16,6 @@ namespace component
 namespace engine
 {
 
-
 int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
         .add<ContourImageToolBox<ImageUC> >()
         .add<ContourImageToolBox<ImageD> >(true)

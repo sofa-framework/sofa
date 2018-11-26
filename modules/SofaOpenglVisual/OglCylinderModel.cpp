@@ -45,7 +45,6 @@ namespace component
 namespace visualmodel
 {
 
-
 int OglCylinderModelClass = core::RegisterObject("A simple visualization for set of cylinder.")
         .add< OglCylinderModel >()
         ;

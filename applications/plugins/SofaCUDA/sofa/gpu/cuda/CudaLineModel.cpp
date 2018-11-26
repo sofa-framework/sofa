@@ -51,7 +51,6 @@ namespace gpu
 namespace cuda
 {
 
-
 int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::TLineModel<CudaVec3fTypes> >()
         .add< component::collision::TLineModel<CudaVec3f1Types> >()

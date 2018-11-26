@@ -342,8 +342,6 @@ double DSAPBox::squaredDistance(const DSAPBox & other)const{
 using namespace sofa::defaulttype;
 using namespace collision;
 
-
-
 int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
         .add< DirectSAP >()
         ;

@@ -35,7 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int NormalsFromPointsClass = core::RegisterObject("Compute vertex normals by averaging face normals")
 #ifndef SOFA_FLOAT
         .add< NormalsFromPoints<Vec3dTypes> >()

@@ -57,7 +57,6 @@ bool DataElement::initNode()
     return true;
 }
 
-
 Creator<BaseElement::NodeFactory, DataElement> DataNodeClass("Data");
 
 const char* DataElement::getClass() const

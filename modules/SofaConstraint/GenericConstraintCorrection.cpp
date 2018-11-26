@@ -296,7 +296,6 @@ void GenericConstraintCorrection::resetContactForce()
 }
 
 
-
 int GenericConstraintCorrectionClass = RegisterObject("")
 .add< GenericConstraintCorrection >()
 ;

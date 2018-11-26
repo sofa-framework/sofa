@@ -167,7 +167,6 @@ void ArticulatedHierarchyBVHController::applyController(void)
     }
 }
 
-
 // Register in the Factory
 int ArticulatedHierarchyBVHControllerClass = core::RegisterObject("Implements a handler that controls the values of the articulations of an articulated hierarchy container using a .bvh file.")
         .add< ArticulatedHierarchyBVHController >()

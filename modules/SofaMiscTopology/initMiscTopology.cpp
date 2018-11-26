@@ -39,7 +39,6 @@ void initMiscTopology()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

@@ -37,7 +37,6 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-
 int RigidConstraintClass = core::RegisterObject("Rigidify a deformable frame")
 #ifndef SOFA_FLOAT
         .add< RigidConstraint<Affine3dTypes> >()

@@ -39,7 +39,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int BarycentricMappingRigidClass = core::RegisterObject("")
 #ifndef SOFA_FLOAT

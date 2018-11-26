@@ -37,7 +37,6 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
 int AttachConstraintClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
 #ifndef SOFA_FLOAT
         .add< AttachConstraint<Vec3dTypes> >()

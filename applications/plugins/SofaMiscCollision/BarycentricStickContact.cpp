@@ -34,7 +34,6 @@ namespace component
 namespace collision
 {
 
-
 Creator<Contact::Factory, BarycentricStickContact<SphereModel, SphereModel> > SphereSphereStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<SphereModel, PointModel> > SpherePointStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<PointModel, PointModel> > PointPointStickContactClass("stick",true);

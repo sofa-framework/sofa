@@ -34,7 +34,6 @@ namespace component
 namespace controller
 {
 
-
 int ARTrackDriverClass = core::RegisterObject("Driver for ARTrack system")
         .add< ARTrackDriver >()
         ;

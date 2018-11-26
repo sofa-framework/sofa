@@ -33,7 +33,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int ImageTransformClass = core::RegisterObject("Read data from ImageContainer")
         .add<ImageTransform<ImageUC> >(true)
         .add<ImageTransform<ImageD> >()

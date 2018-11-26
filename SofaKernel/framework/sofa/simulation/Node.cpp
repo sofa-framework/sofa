@@ -981,7 +981,6 @@ void Node::setSleeping(bool val)
     }
 }
 
-
 }
 
 }

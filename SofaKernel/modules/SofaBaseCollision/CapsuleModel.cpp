@@ -37,7 +37,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-
 int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
 #ifndef SOFA_FLOAT
         .add<  TCapsuleModel<Vec3dTypes> >()

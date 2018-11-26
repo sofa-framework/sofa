@@ -273,7 +273,6 @@ SOFA_XITACTPLUGIN_API int initDevice(XiToolDataIHP& /*data*/)
 }
 
 
-
 int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
         .add< IHPDriver >();
 

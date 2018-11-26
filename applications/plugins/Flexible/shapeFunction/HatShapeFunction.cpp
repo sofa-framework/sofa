@@ -32,7 +32,6 @@ namespace component
 namespace shapefunction
 {
 
-
 // Register in the Factory
 int HatShapeFunctionClass = core::RegisterObject("Computes compactly supported hat shape functions")
 

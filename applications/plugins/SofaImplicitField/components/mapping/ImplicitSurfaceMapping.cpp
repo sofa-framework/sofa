@@ -35,7 +35,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
 #ifndef SOFA_FLOAT

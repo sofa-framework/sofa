@@ -39,8 +39,6 @@ void initBaseCollision()
     }
 }
 
-
-
 } // namespace component
 
 } // namespace sofa

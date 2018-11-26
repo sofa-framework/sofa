@@ -119,7 +119,6 @@ private:
 };
 
 
-
 int TransformAffineEngineClass = core::RegisterObject("Transform position of dofs")
         .add< TransformEngine<defaulttype::Affine3Types> >()
         ;

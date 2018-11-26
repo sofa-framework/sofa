@@ -341,9 +341,6 @@ void LabelBoxImageToolBoxAction::validView()
 
 
 
-
-
-
 }
 }
 }

@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int ImageValuesFromPositionsClass = core::RegisterObject("Get image intensities at sample locations")
         .add<ImageValuesFromPositions<ImageD> >(true)
         .add<ImageValuesFromPositions<ImageUC> >()

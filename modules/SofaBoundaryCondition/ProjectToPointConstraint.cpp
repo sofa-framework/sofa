@@ -38,7 +38,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-
 int ProjectToPointConstraintClass = core::RegisterObject("Project particles to a point")
 #ifndef SOFA_FLOAT
         .add< ProjectToPointConstraint<Vec3dTypes> >()

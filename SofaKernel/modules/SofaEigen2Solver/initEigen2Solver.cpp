@@ -39,8 +39,6 @@ void initEigen2Solver()
     }
 }
 
-
-
 } // namespace component
 
 } // namespace sofa

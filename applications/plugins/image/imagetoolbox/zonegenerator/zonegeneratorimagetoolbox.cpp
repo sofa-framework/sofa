@@ -15,7 +15,6 @@ namespace component
 namespace engine
 {
 
-
 int ZoneGeneratorImageToolBox_Class = core::RegisterObject("ZoneGeneratorImageToolBox")
         .add<ZoneGeneratorImageToolBox<ImageUC> >()
         .add<ZoneGeneratorImageToolBox<ImageD> >(true)

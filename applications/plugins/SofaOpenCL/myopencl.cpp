@@ -45,8 +45,6 @@ namespace opencl
 {
 #endif
 
-
-
 //private data
 int _numDevices = 0;
 cl_context _context = NULL;

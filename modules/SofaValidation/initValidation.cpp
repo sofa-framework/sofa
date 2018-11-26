@@ -39,7 +39,6 @@ void initValidation()
     }
 }
 
-
 } // namespace component
 
 } // namespace sofa

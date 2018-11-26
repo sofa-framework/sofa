@@ -18,7 +18,6 @@ namespace helper
 namespace io
 {
 
-
 std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
 #ifdef CIMGPLUGIN_HAVE_PNG
     "png",

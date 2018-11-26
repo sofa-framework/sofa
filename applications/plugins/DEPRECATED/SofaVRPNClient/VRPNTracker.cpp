@@ -42,7 +42,6 @@ namespace client
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-
 int VRPNTrackerClass = sofa::core::RegisterObject("VRPN Tracker")
 #ifndef SOFA_FLOAT
         .add< VRPNTracker<Vec3dTypes> >()

@@ -35,7 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-
 int MergeImagesClass = core::RegisterObject("Merge images")
         .add<MergeImages<ImageUC> >(true)
         .add<MergeImages<ImageD> >()

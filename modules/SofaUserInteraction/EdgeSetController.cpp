@@ -49,7 +49,6 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int EdgeSetControllerClass = core::RegisterObject("")
 //.add< EdgeSetController<Vec3dTypes> >()

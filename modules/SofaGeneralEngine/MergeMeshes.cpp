@@ -32,7 +32,6 @@ namespace component
 namespace engine
 {
 
-
 int MergeMeshesClass = core::RegisterObject("Merge several meshes")
 #ifdef SOFA_FLOAT
         .add< MergeMeshes<defaulttype::Vec3fTypes> >(true) // default template

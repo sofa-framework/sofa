@@ -41,7 +41,6 @@ using namespace sofa::helper;
 
 ///TODO: handle combinaison of Rigid and Deformable bodies.
 
-
 int DistanceLMConstraintClass = core::RegisterObject("Maintain constant the length of some edges of a pair of objects")
 #ifndef SOFA_FLOAT
         .add< DistanceLMConstraint<Vec3dTypes> >()

@@ -36,7 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-
 int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vector of young modulus according of a list of defined groups")
 #ifndef SOFA_FLOAT
         .add< GroupFilterYoungModulus<Vec3dTypes> >()

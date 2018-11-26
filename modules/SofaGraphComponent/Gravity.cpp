@@ -49,7 +49,6 @@ void Gravity::apply()
     getContext()->setGravity( f_gravity.getValue() );
 }
 
-
 int GravityClass = core::RegisterObject("Gravity in world coordinates")
         .add< Gravity >()
         ;

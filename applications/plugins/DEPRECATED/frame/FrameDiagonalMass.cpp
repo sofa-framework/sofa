@@ -35,7 +35,6 @@ namespace mass
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
 int FrameDiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
 #ifndef SOFA_FLOAT
