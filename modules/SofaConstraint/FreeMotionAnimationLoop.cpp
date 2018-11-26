@@ -129,9 +129,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
     {
-    ScopedAdvancedTimer timer("MechanicalVInitVisitor");
-    simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
-    simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
+        ScopedAdvancedTimer timer("MechanicalVInitVisitor");
+        simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
+        simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
     }
 
 
@@ -181,9 +181,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     // Free Motion
     {
-    ScopedAdvancedTimer timer("FreeMotion");
-    simulation::SolveVisitor freeMotion(params, dt, true);
-    this->gnode->execute(&freeMotion);
+        ScopedAdvancedTimer timer("FreeMotion");
+        simulation::SolveVisitor freeMotion(params, dt, true);
+        this->gnode->execute(&freeMotion);
     }
 
     
@@ -210,8 +210,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     // Collision detection and response creation
     {
-    ScopedAdvancedTimer timer("Collision");
-    computeCollision(params);
+        ScopedAdvancedTimer timer("Collision");
+        computeCollision(params);
     }
 
     if (displayTime.getValue())
