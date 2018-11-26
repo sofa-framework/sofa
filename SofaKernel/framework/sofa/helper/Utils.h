@@ -80,15 +80,15 @@ static const std::string& getPluginDirectory();
 /// the installation prefix).
 ///
 /// @warning This function is meant to be used only by the applications that are
-/// distributed with SOFA: it deduces the "root" path from the path of the
-/// executable that is currently running. (It returns the path to the parent of
-/// the "bin" directory.)
+/// distributed with SOFA
+/// @return The ABSOLUTE path of Sofa build dir (or install dir)
 static const std::string& getSofaPathPrefix();
 
 /// @brief Construct a path based on the build dir path of Sofa
 ///
 /// @warning This function is meant to be used only by the applications that are
 /// distributed with SOFA: it uses getSofaPathPrefix()
+/// @return The ABSOLUTE path of anything in Sofa build dir (or install dir)
 static const std::string getSofaPathTo(const std::string& pathFromBuildDir);
 
 /// @brief Read a file written in a very basic ini-like format.

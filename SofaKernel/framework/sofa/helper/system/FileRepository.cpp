@@ -43,6 +43,8 @@
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 
 #ifdef WIN32
 #define ON_WIN32 true
@@ -75,20 +77,19 @@ std::string cleanPath( const std::string& path )
     return p;
 }
 
-/// Initialize PluginRepository with the current working directory
+// Initialize PluginRepository and DataRepository
 #ifdef WIN32
 FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getExecutableDirectory().c_str() );
 #else
 FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getSofaPathTo("lib").c_str() );
 #endif
-
-FileRepository DataRepository("SOFA_DATA_PATH");
+FileRepository DataRepository( "SOFA_DATA_PATH", 0, Utils::getSofaPathTo("etc/sofa.ini").c_str() );
 
 #if defined (_XBOX) || defined(PS3)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
 #endif
 
-FileRepository::FileRepository(const char* envVar, const char* relativePath)
+FileRepository::FileRepository(const char* envVar, const char* relativePath, const char *iniFilePath)
 {
     if (envVar != NULL && envVar[0]!='\0')
     {
@@ -112,7 +113,19 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath)
             p0 = p1+1;
         }
     }
-    //print();
+    if ( iniFilePath != NULL && iniFilePath[0] != '\0' )
+    {
+        std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(iniFilePath);
+        for ( const auto &iniFileValue : iniFileValues )
+        {
+            std::string dir = iniFileValue.second;
+            dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
+            if(FileSystem::isDirectory(dir))
+            {
+                addFirstPath(dir);
+            }
+        }
+    }
 }
 
 FileRepository::~FileRepository()
@@ -195,6 +208,11 @@ void FileRepository::removePath(const std::string& path)
     {
         vpath.erase( find(vpath.begin(), vpath.end(), *it) );
     }
+}
+
+void FileRepository::clear()
+{
+    vpath.clear();
 }
 
 std::string FileRepository::getFirstPath()
