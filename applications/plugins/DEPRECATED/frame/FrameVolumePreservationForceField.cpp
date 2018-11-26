@@ -35,8 +35,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameVolumePreservationForceField)
-
 // Register in the Factory
 int FrameVolumePreservationForceFieldClass = core::RegisterObject("Compute volume preservation forces on deformation gradients")
 #ifndef SOFA_FLOAT

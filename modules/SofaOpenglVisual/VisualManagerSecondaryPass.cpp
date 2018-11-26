@@ -44,7 +44,6 @@ using namespace helper::gl;
 using namespace simulation;
 using namespace core::visual;
 
-SOFA_DECL_CLASS(VisualManagerSecondaryPass)
 //Register LightManager in the Object Factory
 int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSecondaryPass")
         .add< VisualManagerSecondaryPass >()

@@ -49,8 +49,6 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MechanicalStateController)
-
 // Register in the Factory
 int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Keyboard user control on a Mechanical State.")
 #ifndef SOFA_FLOAT

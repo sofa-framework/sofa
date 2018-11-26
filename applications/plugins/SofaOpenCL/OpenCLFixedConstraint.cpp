@@ -44,8 +44,6 @@ namespace opencl
 {
 
 
-SOFA_DECL_CLASS(OpenCLFixedConstraint)
-
 int FixedConstraintOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3fTypes> >()
         .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3f1Types> >()

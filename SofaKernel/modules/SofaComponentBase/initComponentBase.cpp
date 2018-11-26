@@ -58,11 +58,6 @@ void initComponentBase()
     }
 }
 
-SOFA_LINK_CLASS(MakeAliasComponent)
-SOFA_LINK_CLASS(MakeDataAliasComponent)
-SOFA_LINK_CLASS(MessageHandlerComponent)
-SOFA_LINK_CLASS(FileMessageHandlerComponent)
-
 } // namespace component
 
 } // namespace sofa

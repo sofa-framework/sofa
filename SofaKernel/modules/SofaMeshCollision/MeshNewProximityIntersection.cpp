@@ -38,8 +38,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(MeshNewProximityIntersection)
-
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 

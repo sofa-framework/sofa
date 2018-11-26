@@ -34,7 +34,6 @@ namespace component
 {
 namespace topology
 {
-SOFA_DECL_CLASS(HexahedronSetTopologyModifier)
 int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
         .add< HexahedronSetTopologyModifier >();
 

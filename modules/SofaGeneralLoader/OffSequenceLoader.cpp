@@ -39,8 +39,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(OffSequenceLoader)
-
 int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at each timestep")
         .add< OffSequenceLoader >();
 

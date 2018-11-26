@@ -37,8 +37,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(QuadPressureForceField)
-
 int QuadPressureForceFieldClass = core::RegisterObject("QuadPressure")
 #ifndef SOFA_FLOAT
         .add< QuadPressureForceField<Vec3dTypes> >()

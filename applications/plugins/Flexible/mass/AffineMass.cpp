@@ -34,8 +34,6 @@ namespace mass {
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(AffineMass)
-
 // Register in the Factory
 int AffineMassClass = core::RegisterObject("Mass for affine frames")
         #ifndef SOFA_FLOAT

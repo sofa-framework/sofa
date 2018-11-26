@@ -33,8 +33,6 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(PersistentFrictionContact)
-
 Creator<Contact::Factory, PersistentFrictionContact<PointModel, PointModel> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
 Creator<Contact::Factory, PersistentFrictionContact<LineModel, PointModel> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);
 Creator<Contact::Factory, PersistentFrictionContact<LineModel, LineModel> > LineLinePersistentFrictionContactClass("PersistentFrictionContact",true);

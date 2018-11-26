@@ -34,8 +34,6 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(GenerateGrid)
-
 int GenerateGridClass = core::RegisterObject("Generate a Grid Tetrahedral or Hexahedral Mesh")
 #ifndef SOFA_FLOAT
         .add< GenerateGrid<Vec3dTypes> >()

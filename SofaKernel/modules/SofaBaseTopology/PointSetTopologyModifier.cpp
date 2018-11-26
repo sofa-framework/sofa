@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(PointSetTopologyModifier)
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
         .add< PointSetTopologyModifier >();
 

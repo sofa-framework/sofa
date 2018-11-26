@@ -39,11 +39,6 @@ void initGeneralLinearSolver()
     }
 }
 
-SOFA_LINK_CLASS(MinResLinearSolver)
-SOFA_LINK_CLASS(CholeskySolver)
-SOFA_LINK_CLASS(BTDLinearSolver)
-
-
 } // namespace component
 
 } // namespace sofa

@@ -46,17 +46,6 @@ void initMeshCollision()
     (void) pMeshNewProximityIntersectors;
 }
 
-SOFA_LINK_CLASS(BarycentricPenalityContact)
-SOFA_LINK_CLASS(BarycentricContactMapper)
-SOFA_LINK_CLASS(IdentityContactMapper)
-SOFA_LINK_CLASS(MeshNewProximityIntersection)
-SOFA_LINK_CLASS(Point)
-SOFA_LINK_CLASS(Line)
-SOFA_LINK_CLASS(Triangle)
-SOFA_LINK_CLASS(LineLocalMinDistanceFilter)
-SOFA_LINK_CLASS(PointLocalMinDistanceFilter)
-
-
 } // namespace component
 
 } // namespace sofa

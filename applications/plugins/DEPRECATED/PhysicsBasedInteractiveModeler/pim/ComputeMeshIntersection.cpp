@@ -32,8 +32,6 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ComputeMeshIntersection)
-
 int ComputeMeshIntersectionClass = sofa::core::RegisterObject("Compute Mesh Intersection")
 #ifndef SOFA_FLOAT
         .add< ComputeMeshIntersection<Vec3dTypes> >()

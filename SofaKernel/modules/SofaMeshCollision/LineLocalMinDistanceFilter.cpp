@@ -282,8 +282,6 @@ bool LineLocalMinDistanceFilter::validLine(const int /*lineIndex*/, const defaul
 }
 
 
-SOFA_DECL_CLASS(LineLocalMinDistanceFilter)
-
 int LineLocalMinDistanceFilterClass = core::RegisterObject("This class manages Line collision models cones filters computations and updates.")
         .add< LineLocalMinDistanceFilter >()
         ;

@@ -37,8 +37,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(QuadularBendingSprings)
-
 // Register in the Factory
 int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
 #ifndef SOFA_FLOAT

@@ -34,8 +34,6 @@ namespace collision
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(RigidContactMapper)
-
 ContactMapperCreator< ContactMapper<CylinderModel,Vec3Types> > CylinderModelContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<OBBModel,Vec3Types> > OBBContactMapperClass("default", true);

@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(TriangleSetTopologyModifier)
 int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
         .add< TriangleSetTopologyModifier >()
         ;

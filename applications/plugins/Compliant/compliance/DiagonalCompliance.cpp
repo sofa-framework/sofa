@@ -25,8 +25,6 @@ int DiagonalComplianceClass = core::RegisterObject("Diagonal compliance")
 #endif
         ;
 
-SOFA_DECL_CLASS(DiagonalCompliance)
-
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API DiagonalCompliance<Vec1dTypes>;
 template class SOFA_Compliant_API DiagonalCompliance<Vec3dTypes>;

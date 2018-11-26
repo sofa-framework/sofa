@@ -33,8 +33,6 @@ namespace component
 
 namespace mapping
 {
-SOFA_DECL_CLASS(FrameBlendingMapping_Quadratic3d);
-
 using namespace defaulttype;
 using namespace core;
 

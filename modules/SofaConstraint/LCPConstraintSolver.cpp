@@ -1419,9 +1419,6 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")
         .add< LCPConstraintSolver >();
 
-SOFA_DECL_CLASS(LCPConstraintSolver);
-
-
 } // namespace constraintset
 
 } // namespace component

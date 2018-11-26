@@ -32,8 +32,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MeshBoundaryROI)
-
 int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary vertices of a triangle/quad mesh")
         .add< MeshBoundaryROI >(true);
 

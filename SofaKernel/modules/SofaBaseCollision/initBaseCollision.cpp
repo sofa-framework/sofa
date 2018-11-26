@@ -39,13 +39,6 @@ void initBaseCollision()
     }
 }
 
-SOFA_LINK_CLASS(DefaultPipeline)
-SOFA_LINK_CLASS(Sphere)
-SOFA_LINK_CLASS(Cube)
-SOFA_LINK_CLASS(DiscreteIntersection)
-SOFA_LINK_CLASS(DefaultContactManager)
-
-
 } // namespace component
 
 } // namespace sofa

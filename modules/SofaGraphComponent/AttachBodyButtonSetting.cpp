@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(AttachBodyButtonSetting)
 int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button configuration")
         .add< AttachBodyButtonSetting >()
         .addAlias("AttachBodyButton")

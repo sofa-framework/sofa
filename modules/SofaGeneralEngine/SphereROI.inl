@@ -1097,7 +1097,7 @@ void SphereROI<defaulttype::Rigid3fTypes>::doUpdate()
 	f_tetrahedronIndices.endEdit();
 }
 
-#endif //#ifndef SOFA_DOUBLE
+#endif //SOFA_DOUBLE
 
 
 } // namespace engine

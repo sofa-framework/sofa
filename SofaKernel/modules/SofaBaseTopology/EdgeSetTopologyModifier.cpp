@@ -51,7 +51,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(EdgeSetTopologyModifier)
 int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modifier")
         .add< EdgeSetTopologyModifier >();
 

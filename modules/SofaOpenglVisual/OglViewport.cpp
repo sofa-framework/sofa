@@ -41,7 +41,6 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(OglViewport)
 //Register OglViewport in the Object Factory
 int OglViewportClass = core::RegisterObject("OglViewport")
         .add< OglViewport >()

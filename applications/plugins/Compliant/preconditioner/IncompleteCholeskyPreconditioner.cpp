@@ -8,7 +8,6 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(IncompleteCholeskyPreconditioner)
 int IncompleteCholeskyPreconditionerClass = core::RegisterObject("Incomplete Cholesky preconditioner").add< IncompleteCholeskyPreconditioner >();
 
 

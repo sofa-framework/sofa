@@ -38,9 +38,6 @@ void initSimpleFEM()
     }
 }
 
-SOFA_LINK_CLASS(HexahedronFEMForceField)
-SOFA_LINK_CLASS(TetrahedronFEMForceField)
-
 } // namespace component
 
 } // namespace sofa

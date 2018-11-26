@@ -76,8 +76,6 @@ namespace gpu
 namespace opencl
 {
 
-SOFA_DECL_CLASS(OpenCLMechanicalObject)
-
 int MechanicalObjectOpenCLClass = core::RegisterObject("Supports GPU-side computations using OpenCL")
         .add< component::container::MechanicalObject<OpenCLVec3fTypes> >()
         .add< component::container::MechanicalObject<OpenCLVec3f1Types> >()

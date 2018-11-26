@@ -93,8 +93,6 @@ namespace helper
 {
 namespace io
 {
-SOFA_DECL_CLASS(ImageDDS)
-
 Creator<Image::FactoryImage,ImageDDS> ImageDDSClass("dds");
 
 #pragma pack (push, 1)

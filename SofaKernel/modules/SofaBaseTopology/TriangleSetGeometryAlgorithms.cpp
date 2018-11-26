@@ -33,7 +33,6 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TriangleSetGeometryAlgorithms)
 int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geometry algorithms")
 #ifdef SOFA_FLOAT
         .add< TriangleSetGeometryAlgorithms<Vec3fTypes> >(true) // default template

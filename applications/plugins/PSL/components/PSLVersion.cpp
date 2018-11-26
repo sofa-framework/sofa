@@ -72,7 +72,6 @@ PSLVersion::PSLVersion() : BaseObject()
 
 PSLVersion::~PSLVersion(){}
 
-SOFA_DECL_CLASS(PSLVersion)
 int PSLVersionClass = core::RegisterObject("Specify the version of the PSL language a scene expect.")
         .add< PSLVersion >();
 
