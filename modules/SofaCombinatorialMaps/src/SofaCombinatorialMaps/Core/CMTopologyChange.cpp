@@ -47,6 +47,31 @@ bool TopologyChange::read(std::istream& /* in */)
 	return false;
 }
 
+std::ostream& operator<< ( std::ostream& out, const core::cm_topology::TopologyChange* t )
+{
+	if (t)
+	{
+		t->write(out);
+	}
+	return out;
+}
+
+std::istream& operator>> ( std::istream& in, const core::cm_topology::TopologyChange*& )
+{
+	return in;
+}
+
+/// Input (empty) stream
+std::istream& operator>> ( std::istream& in, core::cm_topology::TopologyChange*& t )
+{
+	if (t)
+	{
+		t->read(in);
+	}
+	return in;
+}
+
+
 EndingEvent::~EndingEvent()
 {
 }

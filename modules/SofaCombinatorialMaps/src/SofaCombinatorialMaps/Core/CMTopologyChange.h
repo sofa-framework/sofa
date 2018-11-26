@@ -55,7 +55,7 @@ enum TopologyChangeType
 //SOFA_COMBINATORIALMAPS_API std::string parseTopologyChangeTypeToString(TopologyChangeType t); // TODO
 
 // forward declarations
-//class SOFA_COMBINATORIALMAPS_API CMapTopology;
+class SOFA_COMBINATORIALMAPS_API CMapTopology;
 class SOFA_COMBINATORIALMAPS_API TopologyChange;
 class SOFA_COMBINATORIALMAPS_API EndingEvent;
 class SOFA_COMBINATORIALMAPS_API PointsIndicesSwap;
@@ -263,32 +263,6 @@ public:
 	virtual bool write(std::ostream& out) const;
 	virtual bool read(std::istream& in);
 
-	/// Output  stream
-	friend std::ostream& operator<< ( std::ostream& out, const core::cm_topology::TopologyChange* t )
-	{
-		if (t)
-		{
-			t->write(out);
-		}
-		return out;
-	}
-
-	/// Input (empty) stream
-	friend std::istream& operator>> ( std::istream& in, core::cm_topology::TopologyChange*& t )
-	{
-		if (t)
-		{
-			t->read(in);
-		}
-		return in;
-	}
-
-	/// Input (empty) stream
-	friend std::istream& operator>> ( std::istream& in, const core::cm_topology::TopologyChange*& )
-	{
-		return in;
-	}
-
 protected:
 	TopologyChange( TopologyChangeType changeType = BASE )
 		: m_changeType(changeType)
@@ -296,6 +270,16 @@ protected:
 
 	TopologyChangeType m_changeType; ///< A code that tells the nature of the Topology modification event (could be an enum).
 };
+
+
+/// Output  stream
+std::ostream& operator<<(std::ostream& out, const core::cm_topology::TopologyChange* t);
+
+/// Input (empty) stream
+std::istream& operator>>(std::istream& in, core::cm_topology::TopologyChange*& t);
+
+/// Input (empty) stream
+std::istream& operator>>(std::istream& in, const core::cm_topology::TopologyChange*&);
 
 /** notifies the end for the current sequence of topological change events */
 class SOFA_COMBINATORIALMAPS_API EndingEvent : public core::cm_topology::TopologyChange
