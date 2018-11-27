@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/Link.h>
 #include "PythonToSofa.inl"
 
+#include <SofaPython/PythonFactory.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -118,6 +119,15 @@ static PyObject * Link_setValueString(PyObject* self, PyObject* args)
     Py_RETURN_NONE;
 }
 
+static PyObject * Link_getLinkedBase(PyObject *self, PyObject * /*args*/)
+{
+    BaseLink* link = get_baselink( self );
+
+    if( link->getLinkedBase() )
+        return sofa::PythonFactory::toPython(link->getLinkedBase()) ;
+
+    Py_RETURN_NONE;
+}
 
 static PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
@@ -162,6 +172,9 @@ SP_CLASS_METHOD_DOC(Link,isPersistant, "Returns True if the PERSISTANT(STORE) fl
                                        "indicate that the field should be saved.")
 SP_CLASS_METHOD_DOC(Link,setPersistant,  "Change the value of the PERSISTANT(STORE) flag. This is used to \n"
                                          "control if the field should be saved.")
+SP_CLASS_METHOD_DOC(Link,getLinkedBase,  "Return the sofa object pointed by the link")
+
+
 SP_CLASS_METHOD(Link,getSize)
 SP_CLASS_METHODS_END
 
