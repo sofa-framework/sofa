@@ -35,7 +35,6 @@ namespace defaulttype
 
 template <int L, int C, class real=float>
 class Mat : public helper::fixed_array<VecNoInit<C,real>,L>
-    //class Mat : public Vec<L,Vec<C,real> >
 {
 public:
 
@@ -626,6 +625,31 @@ public:
         return m;
     }
 
+    template<class Quat>
+    void setFromQuaternion(const Quat& q)
+    {
+        Mat<L,C,real>::setFromQuaternion(*this, q) ;
+    }
+
+    template<class Quat>
+    static void setFromQuaternion(Mat<L,C,Real>& m, const Quat& q)
+    {
+        m.identity();
+
+        m[0][0] = (1 - 2 * (q[1] * q[1] + q[2] * q[2]));
+        m[0][1] = (2 * (q[0] * q[1] - q[2] * q[3]));
+        m[0][2] = (2 * (q[2] * q[0] + q[1] * q[3]));
+
+        m[1][0] = (2 * (q[0] * q[1] + q[2] * q[3]));
+        m[1][1] = (1 - 2 * (q[2] * q[2] + q[0] * q[0]));
+        m[1][2] = (2 * (q[1] * q[2] - q[0] * q[3]));
+
+        m[2][0] = (2 * (q[2] * q[0] - q[1] * q[3]));
+        m[2][1] = (2 * (q[1] * q[2] + q[0] * q[3]));
+        m[2][2] = (1 - 2 * (q[1] * q[1] + q[0] * q[0]));
+    }
+
+
     /// Invert square matrix m
     bool invert(const Mat<L,C,real>& m)
     {
@@ -670,8 +694,7 @@ public:
     static Mat<L,C,real> transformRotation(const Quat& q)
     {
         Mat<L,C,real> m;
-        m.identity();
-        q.toMatrix(m);
+        m.setFromQuaternion(q);
         return m;
     }
 

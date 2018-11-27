@@ -570,7 +570,7 @@ public:
     void toMatrix( Mat& m) const
     {
         m.identity();
-        orientation.toMatrix(m);
+        m.setFromQuaternion(orientation);
         m[0][3] = (typename Mat::Real)center[0];
         m[1][3] = (typename Mat::Real)center[1];
         m[2][3] = (typename Mat::Real)center[2];
@@ -591,7 +591,7 @@ public:
     template<class Mat>
     void writeRotationMatrix( Mat& m) const
     {
-        orientation.toMatrix(m);
+        m.setFromQuaternion(orientation);
     }
 
     /// Write the OpenGL transformation matrix
@@ -919,7 +919,7 @@ public:
         // Transformation between c2 and c1 frames
         quat = quat1*quat2.inverse();
         quat.normalize();
-        defaulttype::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
+        defaulttype::Vector3 axis; defaulttype::Quat::Real angle; quat.quatToAxis(axis, angle);
         axis*=angle;
         return Deriv(vCenter, axis);
     }

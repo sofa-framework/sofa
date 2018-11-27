@@ -58,8 +58,8 @@ static void skipToEOL(FILE* f)
 Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 {
     Quatd q=Quatd::fromEuler(thetaX, thetaY, thetaZ) ;
-    Mat3x3d m;
-    q.toMatrix(m);
+    Mat3x3d m ;
+    m.setFromQuaternion(q);
     return m;
 }
 

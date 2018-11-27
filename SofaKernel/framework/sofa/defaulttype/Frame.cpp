@@ -88,7 +88,7 @@ void Frame::setBasis( const Frame::Mat33& m )
 void Frame::setTransform( const Frame::Vec3& origin, const Frame::Quat& orientation, const Frame::Vec3& scale )
 {
     setOrigin(origin);
-    orientation.toMatrix(basis_);
+    basis_.setFromQuaternion(orientation);
     for( int i=0; i<3; i++ )
     {
         basis_[i][0] *= scale[0];

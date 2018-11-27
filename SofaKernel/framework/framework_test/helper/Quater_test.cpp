@@ -194,7 +194,7 @@ TEST(QuaterTest, QuaterdToMatrix)
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     sofa::defaulttype::Mat3x3d mat;
-    quat.toMatrix(mat);
+    mat.setFromQuaternion(quat);
 
     //matlab results
     EXPECT_NEAR(0.433012701892219,  mat[0][0], errorThreshold);

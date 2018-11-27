@@ -39,17 +39,15 @@ typedef Quatd Quat; ///< alias
 #endif
 typedef Quat Quaternion; ///< alias
 
-// Specialization of the defaulttype::DataTypeInfo type traits template
-
+/// Specialization of the defaulttype::DataTypeInfo type traits template
 template<class T>
 struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
 {
     static std::string name() { std::ostringstream o; o << "Quater<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
-// The next line hides all those methods from the doxygen documentation
+/// The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
-
 template<> struct DataTypeName<defaulttype::Quatf> { static const char* name() { return "Quatf"; } };
 template<> struct DataTypeName<defaulttype::Quatd> { static const char* name() { return "Quatd"; } };
 

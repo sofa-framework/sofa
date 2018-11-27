@@ -70,7 +70,8 @@ template <class DataTypes, class TMassType>
 class DiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes,TMassType),
+               SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;

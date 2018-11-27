@@ -73,101 +73,10 @@ public:
 protected:
 
     typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
-
-    //typedef Mat<6, 6, Real> MaterialStiffness;    ///< the matrix of material stiffness
-    //typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
-    //VecMaterialStiffness _materialsStiffnesses;                    ///< the material stiffness matrices vector
-
-    //typedef Mat<12, 6, Real> StrainDisplacement;    ///< the strain-displacement matrix
-    //typedef vector<StrainDisplacement> VecStrainDisplacement;        ///< a vector of strain-displacement matrices
-    //VecStrainDisplacement _strainDisplacements;                       ///< the strain-displacement matrices vector
-
     typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
-
-
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
-    //typedef topology::EdgeData<StiffnessMatrix> VecStiffnessMatrices;         ///< a vector of stiffness matrices
-    //VecStiffnessMatrices _stiffnessMatrices;                    ///< the material stiffness matrices vector
 
-    struct BeamInfo
-    {
-        // 	static const double FLEXIBILITY=1.00000; // was 1.00001
-        double _E0,_E; //Young
-        double _nu;//Poisson
-        double _L; //length
-        double _r; //radius of the section
-        double _rInner; //inner radius of the section if beam is hollow
-        double _G; //shear modulus
-        double _Iy;
-        double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
-        double _J;  //Polar moment of inertia (J = Iy + Iz)
-        double _A; // A is the cross-sectional area;
-        double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
-        double _Asz; //_Asz is the z-direction effective shear area;
-        StiffnessMatrix _k_loc;
-        //new: k_loc is the stiffness in the local frame... to compute Ke we only change lambda
-        //NewMAT::Matrix  _k_loc;
-
-        // _eigenvalue_loc are 4 diagonal matrices (6x6) representing the eigenvalues of each
-        // 6x6 block of _k_loc. _eigenvalue_loc[1] = _eigenvalue_loc[2] since _k_loc[1] = _k_loc[2]
-        //NewMAT::DiagonalMatrix  _eigenvalue_loc[4], _inv_eigenvalue_loc[4];
-        // k_flex is the stiffness matrix + reinforcement of diagonal (used in gauss-seidel process)
-        //NewMAT::Matrix  _k_flex;
-        //lambda is a matrix that contains the direction of the local frame in the global frame
-        //NewMAT::Matrix  _lambda;
-        //non-linear value of the internal forces (computed with previous time step positions) (based on k_loc)
-        //NewMAT::ColumnVector  _f_k;
-        //initial deformation of the beam (gives the curvature) on the local frame
-        //NewMAT::ColumnVector _u_init;
-        //actual deformation of the beam on the local frame
-        //NewMAT::ColumnVector _u_actual;
-
-        //NewMAT::Matrix _Ke;
-
-        defaulttype::Quat quat;
-
-        //void localStiffness();
-        void init(double E, double L, double nu, double r, double rInner);
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
-        {
-            os	<< bi._E0 << " "
-                << bi._E << " "
-                << bi._nu << " "
-                << bi._L << " "
-                << bi._r << " "
-                << bi._rInner << " "
-                << bi._G << " "
-                << bi._Iy << " "
-                << bi._Iz << " "
-                << bi._J << " "
-                << bi._A << " "
-                << bi._Asy << " "
-                << bi._Asz << " "
-                << bi._k_loc;
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, BeamInfo& bi )
-        {
-            in	>> bi._E0
-                >> bi._E
-                >> bi._nu
-                >> bi._L
-                >> bi._r
-                >> bi._rInner
-                >> bi._G
-                >> bi._Iy
-                >> bi._Iz
-                >> bi._J
-                >> bi._A
-                >> bi._Asy
-                >> bi._Asz
-                >> bi._k_loc;
-            return in;
-        }
-    };
+    struct BeamInfo ;
 
     //just for draw forces
     VecDeriv _forces;
@@ -192,29 +101,22 @@ protected:
 
     };
 
-
-
     const VecElement *_indexedElements;
-//	unsigned int maxPoints;
-//	int _method; ///< the computation method of the displacements
     Data<Real> _poissonRatio; ///< Potion Ratio
     Data<Real> _youngModulus; ///< Young Modulus
-//	Data<bool> _timoshenko;
     Data<Real> _radius; ///< radius of the section
     Data<Real> _radiusInner; ///< inner radius of the section for hollow beams
     Data< VecIndex > _list_segment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
     Data< bool> _useSymmetricAssembly; ///< use symmetric assembly of the matrix K
-    bool _partial_list_segment;
 
+    bool _partial_list_segment;
     bool _updateStiffnessMatrix;
     bool _assembling;
 
     double lastUpdatedStep;
 
     container::StiffnessContainer* stiffnessContainer;
-//	container::LengthContainer* lengthContainer;
     container::PoissonContainer* poissonContainer;
-//	container::RadiusContainer* radiusContainer;
 
     defaulttype::Quat& beamQuat(int i)
     {
@@ -224,9 +126,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* _topology;
     BeamFFEdgeHandler* edgeHandler;
 
-
-    BeamFEMForceField();
-    BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
+    BeamFEMForceField(Real poissonRatio=0.49, Real youngModulus=5000, Real radius=0.1, Real radiusInner=0.0);
     virtual ~BeamFEMForceField();
 public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
@@ -257,29 +157,15 @@ public:
 protected:
 
     void drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x);
-
-    //void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
-    //void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
-
-    //void computeMaterialStiffness(int i, Index&a, Index&b);
     void computeStiffness(int i, Index a, Index b);
 
-    //void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
-
     ////////////// large displacements method
-    //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    //VecReal _initialLength;
     helper::vector<Transformation> _nodeRotations;
-    //vector<Quat> _beamQuat;
     void initLarge(int i, Index a, Index b);
-    //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
-    //void accumulateDampingLarge( Vector& f, Index elementIndex );
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
-
-    //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)

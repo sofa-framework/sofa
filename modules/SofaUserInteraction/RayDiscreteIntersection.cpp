@@ -144,9 +144,8 @@ int  RayDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, OutputVe
     //Box
     const Vector3 v3HalfExtents = rObb.extents();
     const Vector3& v3BoxCenter = rObb.center();
-    const Quaternion& qOrientation = rObb.orientation();
     Mat33 m33Orientation;
-    qOrientation.toMatrix(m33Orientation);
+    m33Orientation.setFromQuaternion(rObb.orientation());
 
     //Vector from origin of ray to center of box
     Vector3 v3RayOriginToBoxCenter = v3BoxCenter - v3Origin;

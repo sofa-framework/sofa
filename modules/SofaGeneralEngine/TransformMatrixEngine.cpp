@@ -143,7 +143,7 @@ void RotateTransformMatrixEngine::doUpdate()
     myT.identity();
     Matrix3 R;
     Quaternion q = Quaternion::createQuaterFromEuler((*rotation) * M_PI / 180.0);
-    q.toMatrix(R);
+    R.setFromQuaternion(q);
     myT.setsub(0,0,R);
 
     (*outT) = (*inT) * myT;

@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_QUAT_H
 #define SOFA_DEFAULTTYPE_QUAT_H
 
-#include <sofa/helper/Quater.h>
+#include <sofa/helper/Quater.inl>
 
 namespace sofa
 {

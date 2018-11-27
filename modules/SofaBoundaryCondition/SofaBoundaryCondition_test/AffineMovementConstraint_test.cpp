@@ -102,7 +102,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
         w = randomGenerator.random<SReal>(0.0,360.0);
         Quat quat(x,y,z,w);
         quat.normalize();
-        quat.toMatrix(testedRotation);
+        testedRotation.setFromQuaternion(quat);
 
         patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
 

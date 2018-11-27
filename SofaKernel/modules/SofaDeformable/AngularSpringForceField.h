@@ -72,6 +72,12 @@ public:
     typedef helper::vector< unsigned int > VecIndex;
     typedef helper::vector< Real >	 VecReal;
 
+    class Self
+    {
+    public:
+        typedef typename DataTypes::Quat Quat;
+    };
+
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 

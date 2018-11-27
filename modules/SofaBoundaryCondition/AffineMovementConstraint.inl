@@ -275,7 +275,7 @@ void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetInde
     // Get quaternion and translation values
     RotationMatrix rotationMat(0);
     Quat quat =  m_quaternion.getValue(); 
-    quat.toMatrix(rotationMat);
+    rotationMat.setFromQuaternion(quat);
     Vector3 translation = m_translation.getValue();
 
     // Apply transformation

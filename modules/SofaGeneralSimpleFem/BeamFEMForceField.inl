@@ -51,38 +51,73 @@ namespace component
 namespace forcefield
 {
 
-
 template<class DataTypes>
-BeamFEMForceField<DataTypes>::BeamFEMForceField()
-    : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
-    , _indexedElements(NULL)
-//  , _method(0)
-    , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
-    , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-//  , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
-    , _radius(initData(&_radius,(Real)0.1,"radius","radius of the section"))
-    , _radiusInner(initData(&_radiusInner,(Real)0.0,"radiusInner","inner radius of the section for hollow beams"))
-    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
-    , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , _partial_list_segment(false)
-    , _updateStiffnessMatrix(true)
-    , _assembling(false)
-    , edgeHandler(NULL)
+struct BeamFEMForceField<DataTypes>::BeamInfo
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+    double _E0,_E; //Young
+    double _nu;//Poisson
+    double _L; //length
+    double _r; //radius of the section
+    double _rInner; //inner radius of the section if beam is hollow
+    double _G; //shear modulus
+    double _Iy;
+    double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
+    double _J;  //Polar moment of inertia (J = Iy + Iz)
+    double _A; // A is the cross-sectional area;
+    double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
+    double _Asz; //_Asz is the z-direction effective shear area;
+    StiffnessMatrix _k_loc;
+    defaulttype::Quat quat;
 
-    _poissonRatio.setRequired(true);
-    _youngModulus.setReadOnly(true);
-}
+    void init(double E, double L, double nu, double r, double rInner);
+
+    /// Output stream
+    inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
+    {
+        os	<< bi._E0 << " "
+            << bi._E << " "
+            << bi._nu << " "
+            << bi._L << " "
+            << bi._r << " "
+            << bi._rInner << " "
+            << bi._G << " "
+            << bi._Iy << " "
+            << bi._Iz << " "
+            << bi._J << " "
+            << bi._A << " "
+            << bi._Asy << " "
+            << bi._Asz << " "
+            << bi._k_loc;
+        return os;
+    }
+
+    /// Input stream
+    inline friend std::istream& operator>> ( std::istream& in, BeamInfo& bi )
+    {
+        in	>> bi._E0
+            >> bi._E
+            >> bi._nu
+            >> bi._L
+            >> bi._r
+            >> bi._rInner
+            >> bi._G
+            >> bi._Iy
+            >> bi._Iz
+            >> bi._J
+            >> bi._A
+            >> bi._Asy
+            >> bi._Asz
+            >> bi._k_loc;
+        return in;
+    }
+};
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
-//  , _method(0)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
-//  , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
     , _radius(initData(&_radius,(Real)radius,"radius","radius of the section"))
     , _radiusInner(initData(&_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
@@ -114,7 +149,6 @@ void BeamFEMForceField<DataTypes>::bwdInit()
 }
 
 
-
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
@@ -129,25 +163,25 @@ void BeamFEMForceField<DataTypes>::init()
 
     if (_topology==NULL)
     {
-        serr << "ERROR(BeamFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
+        msg_error() << "Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology).";
         return;
     }
     else
     {
         if(_topology->getNbEdges()==0)
         {
-            serr << "ERROR(BeamFEMForceField): topology is empty."<<sendl;
+            msg_error() <<  "Topology is empty.";
             return;
         }
         _indexedElements = &_topology->getEdges();
         if (_list_segment.getValue().size() == 0)
         {
-            sout<<"Forcefield named "<<this->getName()<<" applies to the wholo topo"<<sendl;
+            msg_info() <<"Forcefield named "<<this->getName()<<" applies to the wholo topo";
             _partial_list_segment = false;
         }
         else
         {
-            sout<<"Forcefield named "<<this->getName()<<" applies to a subset of edges"<<sendl;
+            msg_info()<<"Forcefield named "<<this->getName()<<" applies to a subset of edges";
             _partial_list_segment = true;
 
             for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
@@ -155,7 +189,7 @@ void BeamFEMForceField<DataTypes>::init()
                 unsigned int i = _list_segment.getValue()[j];
                 if (i>=_indexedElements->size())
                 {
-                    serr<<"WARNING defined listSegment is not compatible with topology"<<sendl;
+                    msg_warning() <<"Defined listSegment is not compatible with topology";
                     _partial_list_segment = false;
                 }
             }
@@ -229,7 +263,6 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 
     if (_partial_list_segment)
     {
-
         for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
         {
             unsigned int i = _list_segment.getValue()[j];
@@ -373,7 +406,6 @@ inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
         a[3] = -a[3];
     }
     defaulttype::Quat q = b.inverse() * a;
-    //sout << "qDiff("<<a<<","<<b<<")="<<q<<", bq="<<(b*q)<<sendl;
     return q;
 }
 
@@ -395,15 +427,15 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     dQ = qDiff(quatB, quatA);
     dQ.normalize();
 
-    dW = dQ.quatToRotationVector();     // Use of quatToRotationVector instead of toEulerVector:
-                                        // this is done to keep the old behavior (before the
-                                        // correction of the toEulerVector  function). If the
-                                        // purpose was to obtain the Eulerian vector and not the
-                                        // rotation vector please use the following line instead
-//    dW = dQ.toEulerVector();
+    // Use of quatToRotationVector instead of toEulerVector:
+    dW = dQ.quatToRotationVector();
+    // this is done to keep the old behavior (before the
+    // correction of the toEulerVector  function). If the
+    // purpose was to obtain the Eulerian vector and not the
+    // rotation vector please use the following line instead
+    //    dW = dQ.toEulerVector();
 
     SReal Theta = dW.norm();
-
 
     if(Theta>(SReal)0.0000001)
     {
@@ -429,6 +461,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     beamsData.endEdit();
 
     defaulttype::Vec<3,Real> u, P1P2, P1P2_0;
+
     // local displacement
     Displacement depl;
 
@@ -445,22 +478,20 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     // rotations //
     defaulttype::Quat dQ0, dQ;
 
-    // dQ = QA.i * QB ou dQ = QB * QA.i() ??
-    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
-    dQ =  qDiff(x[b].getOrientation(), x[a].getOrientation()); // x[a].getOrientation().inverse() * x[b].getOrientation();
-    //u = dQ.toEulerVector() - dQ0.toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
-
+    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation());
+    dQ =  qDiff(x[b].getOrientation(), x[a].getOrientation());
     dQ0.normalize();
     dQ.normalize();
 
     defaulttype::Quat tmpQ = qDiff(dQ,dQ0);
     tmpQ.normalize();
 
-    u = tmpQ.quatToRotationVector(); //dQ.quatToRotationVector() - dQ0.quatToRotationVector();  // Use of quatToRotationVector instead of toEulerVector:
-                                                                                                // this is done to keep the old behavior (before the
-                                                                                                // correction of the toEulerVector  function). If the
-                                                                                                // purpose was to obtain the Eulerian vector and not the
-                                                                                                // rotation vector please use the following line instead
+    // Use of quatToRotationVector instead of toEulerVector:
+    u = tmpQ.quatToRotationVector();
+    // this is done to keep the old behavior (before the
+    // correction of the toEulerVector  function). If the
+    // purpose was to obtain the Eulerian vector and not the
+    // rotation vector please use the following line instead
     //u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
 
     depl[3] = 0.0; 	depl[4] = 0.0; 	depl[5] = 0.0;
@@ -469,29 +500,23 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     // this computation can be optimised: (we know that half of "depl" is null)
     Displacement force = beamsData.getValue()[i]._k_loc * depl;
 
-
     // Apply lambda transpose (we use the rotation value of point a for the beam)
-
     Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0],force[1],force[2]));
     Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3],force[4],force[5]));
 
     Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6],force[7],force[8]));
     Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9],force[10],force[11]));
 
-
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
-
 }
 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact)
 {
-    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-
     Displacement local_depl;
     defaulttype::Vec<3,Real> u;
-    defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
+    defaulttype::Quat& q = beamQuat(i);
     q.normalize();
 
     u = q.inverseRotate(getVCenter(dx[a]));
@@ -521,7 +546,6 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
     Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
     Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_force[9],local_force[10],local_force[11]));
 
-
     df[a] += Deriv(-fa1,-fa2) * fact;
     df[b] += Deriv(-fb1,-fb2) * fact;
 }
@@ -536,26 +560,22 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
     if (r)
     {
         unsigned int i=0;
-
         unsigned int &offset = r.offset;
 
         if (_partial_list_segment)
         {
-
             for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
             {
-
                 i = _list_segment.getValue()[j];
                 Element edge= (*_indexedElements)[i];
                 Index a = edge[0];
                 Index b = edge[1];
 
-                Displacement local_depl;
                 defaulttype::Vec3d u;
-                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
+                defaulttype::Quat& q = beamQuat(i);
                 q.normalize();
                 Transformation R,Rt;
-                q.toMatrix(R);
+                R.setFromQuaternion(q);
                 Rt.transpose(R);
                 const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
                 StiffnessMatrix K;
@@ -575,9 +595,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 for (int x1=0; x1<12; ++x1)
                     for (int y1=0; y1<12; ++y1)
                         mat->add(index[x1], index[y1], - K(x1,y1)*k);
-
             }
-
         }
         else
         {
@@ -587,13 +605,10 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Index a = (*it)[0];
                 Index b = (*it)[1];
 
-
-                //Displacement local_depl;
-                //defaulttype::Vec3d u;
-                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
+                defaulttype::Quat& q = beamQuat(i);
                 q.normalize();
                 Transformation R,Rt;
-                q.toMatrix(R);
+                R.setFromQuaternion(q);
                 Rt.transpose(R);
                 const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
                 StiffnessMatrix K;
@@ -642,9 +657,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
             }
         }
-
     }
-
 }
 
 
@@ -682,12 +695,10 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 {
     if( !onlyVisible ) return;
 
-
     static const Real max_real = std::numeric_limits<Real>::max();
     static const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
-
 
     const size_t npoints = this->mstate->getSize();
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -712,7 +723,6 @@ void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::
 {
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
-    //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
     defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
     defaulttype::Vec3d beamVec;
     beamVec[0]=beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
@@ -763,7 +773,6 @@ void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu,
     _Iy = _Iz ;
     _J = _Iz+_Iy;
     _A = M_PI*(r*r - rInner*rInner);
-
 
     _Asy = 0.0;
     _Asz = 0.0;

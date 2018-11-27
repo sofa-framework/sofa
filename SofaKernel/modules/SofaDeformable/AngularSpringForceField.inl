@@ -102,7 +102,7 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
     for (unsigned int i = 1; i < indices.getValue().size(); i++)
     {
         const unsigned int index = indices.getValue()[i];
-        defaulttype::Quat dq = p1[index].getOrientation() * p1[index-1].getOrientation().inverse();
+        typename Self::Quat dq = p1[index].getOrientation() * p1[index-1].getOrientation().inverse();
         defaulttype::Vec3d axis;
         double angle = 0.0;
         Real stiffness;

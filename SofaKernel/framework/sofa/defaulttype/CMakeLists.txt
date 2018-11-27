@@ -15,13 +15,10 @@ set(HEADER_FILES
     Mat_solve_SVD.h
     Quat.h
     Quat.inl
-    # RigidInertia.h
-    # RigidInertia.inl
     RigidTypes.h
     RigidVec6Types.h
     SolidTypes.h
     SolidTypes.inl
-    # SparseConstraintTypes.h
     TemplatesAliases.h
     Vec.h
     Vec3Types.h
@@ -41,7 +38,6 @@ set(SOURCE_FILES
     BaseMatrix.cpp
     BoundingBox.cpp
     Frame.cpp
-    # RigidInertia.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
     init.cpp

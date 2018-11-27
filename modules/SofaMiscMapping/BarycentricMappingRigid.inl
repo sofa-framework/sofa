@@ -143,17 +143,20 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
         if ( distance>0 ) ++outside;
 
         //convert the orientation to basis given by closest tetrahedron
-        sofa::defaulttype::Quat quatA = out[i].getOrientation();
-        //initRigidOrientation[i]=quatA;
         sofa::defaulttype::Matrix3 orientationMatrix, orientationMatrixBary;
-        quatA.toMatrix(orientationMatrix);    //direction vectors stored as columns
-        orientationMatrix.transpose(); //to simplify the multiplication below
+
+        //direction vectors stored as columns
+        orientationMatrix.setFromQuaternion(out[i].getOrientation());
+
+        //to simplify the multiplication below
+        orientationMatrix.transpose();
         for (unsigned c=0; c < 3; c++)
         {
             orientationMatrixBary[c]=bases[index]*orientationMatrix[c];
             orientationMatrixBary[c].normalize();
         }
-        orientationMatrixBary.transpose();  //to get the directions as columns
+        //to get the directions as columns
+        orientationMatrixBary.transpose();
 
         //store the point and orientation in local coordinates of tetrahedra frame
         addPointInTetra ( index, coefs.ptr() );
@@ -178,8 +181,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
 
-//    typename In::VecCoord inCopy = in;
-
     for ( unsigned int i=0; i<map.size(); i++ )
     {
         //get barycentric coors for given point (node of a beam in this case)
@@ -193,7 +194,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         Out::setCPos(out[i] , rotatedPosition); // glPointPositions[i] );
     }
 
-    //sofa::helper::vector<Vector3> vectors
     sofa::helper::vector< sofa::defaulttype::Mat<12,3> > rotJ;
     rotJ.resize(map.size());
     //point running over each DoF (assoc. with frame) in the out vector; get it from the mapOrient[0]
