@@ -34,6 +34,14 @@ namespace mapping
 {
 
 template <class In, class Out>
+BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
+                                                                   topology::PointSetTopologyContainer* toTopology)
+    : Inherit1(fromTopology, toTopology),
+      m_fromContainer(fromTopology),
+      m_fromGeomAlgo(NULL)
+{}
+
+template <class In, class Out>
 int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const int edgeIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
@@ -56,7 +64,6 @@ int BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine ( const typename
     baryCoords[0] = dot ( pA,pos ) /dot ( pA,pA );
     return this->addPointInLine ( edgeIndex, baryCoords );
 }
-
 
 template <class In, class Out>
 helper::vector<Edge> BarycentricMapperEdgeSetTopology<In,Out>::getElements()

@@ -38,7 +38,6 @@
 
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 
-
 namespace sofa
 {
 
@@ -74,30 +73,8 @@ public:
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
     typedef typename Inherit::ForceMask ForceMask;
 
-protected:
-
-    SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> m_mapper;
-
 public:
-
     Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping
-
-#ifdef SOFA_DEV
-    //--- partial mapping test
-    Data< bool > sleeping; ///< is the mapping sleeping (not computed)
-#endif
-
-protected:
-
-    BarycentricMapping();
-
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr m_mapper);
-
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology=nullptr );
-
-    virtual ~BarycentricMapping() override;
-
-public:
 
     virtual void init() override;
     virtual void reinit() override;
@@ -106,26 +83,8 @@ public:
     virtual void applyJT(const core::MechanicalParams *mparams, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in) override;
     virtual void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in) override;
     virtual const sofa::defaulttype::BaseMatrix* getJ() override;
-
-
-public:
-
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
-
-protected:
-
-    typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
-
-    // eigen matrix for use with Compliant plugin
-    eigen_type eigen;
-    helper::vector< defaulttype::BaseMatrix* > js;
-
-    virtual void updateForceMask() override;
-
-public:
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
+    virtual void draw(const core::visual::VisualParams* vparams) override;
     virtual void handleTopologyChange(core::topology::Topology* t) override;
 
     // interface for continuous friction contact
@@ -135,12 +94,27 @@ public:
     }
 
 protected:
+    typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
+
+    // eigen matrix for use with Compliant plugin
+    eigen_type eigen;
+    helper::vector< defaulttype::BaseMatrix* > js;
+
+    BarycentricMapping();
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to,
+                       typename Mapper::SPtr m_mapper);
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to,
+                       BaseMeshTopology * topology=nullptr );
+
+    SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> m_mapper;
+
+    virtual ~BarycentricMapping() override;
+    virtual void updateForceMask() override;
 
     sofa::core::topology::BaseMeshTopology* topology_from;
     sofa::core::topology::BaseMeshTopology* topology_to;
 
 private:
-
     void createMapperFromTopology(BaseMeshTopology * topology);
 };
 

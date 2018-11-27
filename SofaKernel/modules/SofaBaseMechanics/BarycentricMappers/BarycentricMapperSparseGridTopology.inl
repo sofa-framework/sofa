@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_INL
 #include "BarycentricMapperSparseGridTopology.h"
-
+#include <sofa/core/visual/VisualParams.h>
 namespace sofa
 {
 
@@ -36,11 +36,35 @@ using sofa::defaulttype::Vector3;
 using sofa::core::visual::VisualParams;
 using sofa::defaulttype::Vec;
 
+template<class In, class Out>
+BarycentricMapperSparseGridTopology<In, Out>::BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
+        topology::PointSetTopologyContainer* _toTopology)
+    : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
+      m_fromTopology(fromTopology),
+      m_matrixJ(NULL), m_updateJ(true)
+{
+}
+
+template<class In, class Out>
+BarycentricMapperSparseGridTopology<In, Out>::~BarycentricMapperSparseGridTopology()
+{
+    if (m_matrixJ)
+        delete m_matrixJ;
+}
+
+template<class In, class Out>
+void BarycentricMapperSparseGridTopology<In, Out>::addMatrixContrib(MatrixType* m,
+                                                                    int row, int col, Real value)
+{
+    Inherit1::addMatrixContrib(m, row, col, value);
+}
+
+
 
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::clear ( int size )
 {
-    updateJ = true;
+    m_updateJ = true;
     m_map.clear();
     if ( size>0 ) m_map.reserve ( size );
 }
@@ -70,7 +94,7 @@ template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/ )
 {
     if ( this->m_map.size() != 0 ) return;
-    updateJ = true;
+    m_updateJ = true;
     clear ( (int)out.size() );
 
     if ( m_fromTopology->isVolume() )
@@ -126,21 +150,21 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
             }
         }
     }
-//    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
 }
 
 
 template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>::getJ(int outSize, int inSize)
 {
-    if (matrixJ && !updateJ)
-        return matrixJ;
+    if (m_matrixJ && !m_updateJ)
+        return m_matrixJ;
 
-    if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-        matrixJ->resize(outSize*NOut, inSize*NIn);
+    if (!m_matrixJ) m_matrixJ = new MatrixType;
+    if (m_matrixJ->rowBSize() != (MatrixTypeIndex)outSize || m_matrixJ->colBSize() != (MatrixTypeIndex)inSize)
+        m_matrixJ->resize(outSize*NOut, inSize*NIn);
     else
-        matrixJ->clear();
+        m_matrixJ->clear();
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
@@ -151,21 +175,21 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
         const Real fx = ( Real ) m_map[i].baryCoords[0];
         const Real fy = ( Real ) m_map[i].baryCoords[1];
         const Real fz = ( Real ) m_map[i].baryCoords[2];
-        this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-        this->addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-        this->addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(m_matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
     }
-    matrixJ->compress();
-    updateJ = false;
-    return matrixJ;
+    m_matrixJ->compress();
+    m_updateJ = false;
+    return m_matrixJ;
 }
 
 
@@ -333,6 +357,23 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 }
 
 
-}}}
+
+template<class In, class Out>
+std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
+{
+    in >> b.m_map;
+    return in;
+}
+
+template<class In, class Out>
+std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b )
+{
+    out << b.m_map;
+    return out;
+}
+
+} // namespace mapping
+} // namespace component
+} // namespace sofa
 
 #endif

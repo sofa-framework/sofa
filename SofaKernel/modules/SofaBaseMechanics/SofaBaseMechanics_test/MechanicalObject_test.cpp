@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
-#include <gtest/gtest.h>
-
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<>;
 
 namespace sofa
 {
@@ -37,7 +37,7 @@ struct StubMechanicalObject : public component::container::MechanicalObject<T>
 {};
 
 template<typename T>
-struct MechanicalObject_test :  public ::testing::Test
+struct MechanicalObject_test :  public BaseTest
 {
     typedef typename StubMechanicalObject<T>::DataTypes::Coord  Coord;
     typedef typename StubMechanicalObject<T>::DataTypes::Real   Real;

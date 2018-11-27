@@ -43,9 +43,7 @@ using topology::PointSetTopologyContainer;
 template<class In, class Out>
 class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
 {
-
 public:
-
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperRegularGridTopology,In,Out),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
     typedef typename Inherit1::Real Real;
     typedef typename Inherit1::OutReal OutReal;
@@ -60,9 +58,8 @@ public:
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
-
 public:
-
+    virtual ~BarycentricMapperRegularGridTopology() override;
     virtual void clear(int reserve=0) override;
     virtual void resize( core::State<Out>* toModel ) override;
     virtual bool isEmpty() {return this->m_map.size() == 0;}
@@ -78,48 +75,25 @@ public:
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     virtual const BaseMatrix* getJ(int outSize, int inSize) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
-    {
-        in >> b.m_map;
-        return in;
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b )
-    {
-        out << b.m_map;
-        return out;
-    }
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b );
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b );
 
 protected:
-
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
-    {
-        Inherit1::addMatrixContrib(m, row, col, value);
-    }
+    BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
+                                         PointSetTopologyContainer* toTopology);
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
     helper::vector<CubeData> m_map;
-    RegularGridTopology* m_fromTopology;
-    MatrixType* matrixJ;
-    bool updateJ;
-
-    BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology, PointSetTopologyContainer* toTopology)
-        : Inherit1(fromTopology, toTopology)
-        , m_fromTopology(fromTopology)
-        , matrixJ(NULL), updateJ(true)
-    {
-    }
-
-    virtual ~BarycentricMapperRegularGridTopology() override
-    {
-        if (matrixJ) delete matrixJ;
-    }
+    RegularGridTopology* m_fromTopology   {nullptr};
+    MatrixType* m_matrixJ                 {nullptr};
+    bool m_updateJ                        {false};
 };
 
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, ExtVec3fTypes >;

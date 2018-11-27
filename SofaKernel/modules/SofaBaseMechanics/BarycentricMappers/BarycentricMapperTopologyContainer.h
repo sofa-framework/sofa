@@ -76,33 +76,8 @@ public:
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> &b )
-    {
-        unsigned int size_vec;
-
-        in >> size_vec;
-        sofa::helper::vector<MappingDataType>& m = *(b.d_map.beginEdit());
-        m.clear();
-
-        MappingDataType value;
-        for (unsigned int i=0; i<size_vec; i++)
-        {
-            in >> value;
-            m.push_back(value);
-        }
-        b.d_map.endEdit();
-        return in;
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> & b )
-    {
-
-        out << b.d_map.getValue().size();
-        out << " " ;
-        out << b.d_map;
-
-        return out;
-    }
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> &b );
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> & b );
 
     bool isEmpty();
 
@@ -111,8 +86,8 @@ protected:
     using Inherit1::m_fromTopology;
 
     topology::PointData< helper::vector<MappingDataType > > d_map;
-    MatrixType* m_matrixJ;
-    bool m_updateJ;
+    MatrixType* m_matrixJ {nullptr};
+    bool m_updateJ {nullptr};
 
     // Spacial hashing utils
     Real m_gridCellSize;
@@ -121,16 +96,9 @@ protected:
     helper::vector<helper::vector<unsigned int>> m_hashTable;
     bool m_computeDistances;
 
-    BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
-         : Inherit1(fromTopology, toTopology),
-           d_map(initData(&d_map,"map", "mapper data")),
-           m_matrixJ(NULL),
-           m_updateJ(true)
-     {}
+    BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
 
     virtual ~BarycentricMapperTopologyContainer() override {}
-
-protected:
 
     virtual helper::vector<Element> getElements()=0;
     virtual helper::vector<SReal> getBaryCoef(const Real* f)=0;
@@ -152,7 +120,6 @@ protected:
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeBB(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
-
 };
 
 
@@ -166,7 +133,7 @@ typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron
 typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData1D, Edge>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData1D, Edge>;

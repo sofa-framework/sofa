@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_INL
 
 #include "BarycentricMapperMeshTopology.h"
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -41,7 +42,6 @@ using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
-typedef typename sofa::core::topology::BaseMeshTopology::Line Line;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
 typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
@@ -55,6 +55,27 @@ typedef typename sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
 typedef typename sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 typedef typename sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
+template <class In, class Out>
+BarycentricMapperMeshTopology<In,Out>::BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
+        topology::PointSetTopologyContainer* toTopology)
+    : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
+      m_matrixJ(NULL), m_updateJ(true)
+{
+}
+
+template <class In, class Out>
+BarycentricMapperMeshTopology<In,Out>::~BarycentricMapperMeshTopology()
+{
+    if (m_matrixJ)
+        delete m_matrixJ;
+}
+
+template <class In, class Out>
+void BarycentricMapperMeshTopology<In,Out>::addMatrixContrib(MatrixType* m,
+                                                             int row, int col, Real value)
+{
+    Inherit1::addMatrixContrib(m, row, col, value);
+}
 
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
@@ -314,7 +335,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[1];
-    const Line& elem = this->m_fromTopology->getLine ( lineIndex );
+    const Edge& elem = this->m_fromTopology->getLine ( lineIndex );
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
@@ -467,7 +488,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                     const OutReal fx = ( OutReal ) m_map1d[indexIn].baryCoords[0];
                     size_t index = m_map1d[indexIn].in_index;
                     {
-                        const Line& line = lines[index];
+                        const Edge& line = lines[index];
                         o.addCol( line[0], data * ( 1-fx ) );
                         o.addCol( line[1], data * fx );
                     }
@@ -552,7 +573,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             const Real fx = m_map1d[i].baryCoords[0];
             int index = m_map1d[i].in_index;
             {
-                const Line& line = lines[index];
+                const Edge& line = lines[index];
                 Real f[2];
                 f[0] = ( 1-fx );
                 f[1] = fx;
@@ -666,7 +687,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
         }
     }
-//    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -698,7 +719,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             const Real fx = ( Real ) m_map1d[i].baryCoords[0];
             size_t index = m_map1d[i].in_index;
             {
-                const Line& line = lines[index];
+                const Edge& line = lines[index];
                 this->addMatrixContrib(m_matrixJ, out, line[0],  ( 1-fx ));
                 this->addMatrixContrib(m_matrixJ, out, line[1],  fx);
             }
@@ -800,7 +821,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             const OutReal fx = ( OutReal ) m_map1d[i].baryCoords[0];
             size_t index = m_map1d[i].in_index;
             {
-                const Line& line = lines[index];
+                const Edge& line = lines[index];
                 out[line[0]] += v * ( 1-fx );
                 out[line[1]] += v * fx;
                 mask.insertEntry(line[0]);
@@ -923,7 +944,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
             const Real fx = m_map1d[i].baryCoords[0];
             int index = m_map1d[i].in_index;
             {
-                const Line& line = lines[index];
+                const Edge& line = lines[index];
                 Out::setDPos(out[i] , in[line[0]] * ( 1-fx )
                         + in[line[1]] * fx );
             }
@@ -1015,7 +1036,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             const Real fx = m_map1d[i].baryCoords[0];
             int index = m_map1d[i].in_index;
             {
-                const Line& line = lines[index];
+                const Edge& line = lines[index];
                 Out::setCPos(out[i] , in[line[0]] * ( 1-fx )
                         + in[line[1]] * fx );
             }
@@ -1084,6 +1105,59 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
         }
     }
 }
+
+template <class In, class Out>
+std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
+{
+    unsigned int size_vec;
+    in >> size_vec;
+    b.m_map1d.clear();
+    typename BarycentricMapperMeshTopology<In, Out>::MappingData1D value1d;
+    for (unsigned int i=0; i<size_vec; i++)
+    {
+        in >> value1d;
+        b.m_map1d.push_back(value1d);
+    }
+
+    in >> size_vec;
+    b.m_map2d.clear();
+    typename BarycentricMapperMeshTopology<In, Out>::MappingData2D value2d;
+    for (unsigned int i=0; i<size_vec; i++)
+    {
+        in >> value2d;
+        b.m_map2d.push_back(value2d);
+    }
+
+    in >> size_vec;
+    b.m_map3d.clear();
+    typename BarycentricMapperMeshTopology<In, Out>::MappingData3D value3d;
+    for (unsigned int i=0; i<size_vec; i++)
+    {
+        in >> value3d;
+        b.m_map3d.push_back(value3d);
+    }
+    return in;
+}
+
+template <class In, class Out>
+std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b )
+{
+
+    out << b.m_map1d.size();
+    out << " " ;
+    out << b.m_map1d;
+    out << " " ;
+    out << b.m_map2d.size();
+    out << " " ;
+    out << b.m_map2d;
+    out << " " ;
+    out << b.m_map3d.size();
+    out << " " ;
+    out << b.m_map3d;
+
+    return out;
+}
+
 
 }
 }

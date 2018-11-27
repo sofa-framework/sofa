@@ -24,6 +24,10 @@
 
 #include "CudaTypes.h"
 #include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa

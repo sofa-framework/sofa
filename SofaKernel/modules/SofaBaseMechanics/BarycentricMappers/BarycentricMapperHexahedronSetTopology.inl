@@ -33,6 +33,32 @@ namespace component
 namespace mapping
 {
 
+template <class In, class Out>
+BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology()
+    : Inherit1(nullptr, nullptr),
+      m_fromContainer(nullptr),
+      m_fromGeomAlgo(nullptr)
+{}
+
+template <class In, class Out>
+BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
+                                                                                       topology::PointSetTopologyContainer* toTopology)
+    : Inherit1(fromTopology, toTopology),
+      m_fromContainer(fromTopology),
+      m_fromGeomAlgo(nullptr)
+{}
+
+template <class In, class Out>
+BarycentricMapperHexahedronSetTopology<In,Out>::~BarycentricMapperHexahedronSetTopology()
+{}
+
+template <class In, class Out>
+void BarycentricMapperHexahedronSetTopology<In,Out>::setTopology(topology::HexahedronSetTopologyContainer* topology)
+{
+    m_fromTopology  = topology;
+    m_fromContainer = topology;
+}
+
 
 template <class In, class Out>
 int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
@@ -178,11 +204,11 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
 
                         int index = -1;
                         // When smoothing a mesh, the element has to be found using the rest position of the point. Then, its position is set using this element.
-                        if( this->toTopology)
+                        if( this->m_toTopology)
                         {
                             typedef MechanicalState<Out> MechanicalStateT;
                             MechanicalStateT* mState;
-                            this->toTopology->getContext()->get( mState);
+                            this->m_toTopology->getContext()->get( mState);
                             if( !mState)
                             {
                                 msg_error() << "Can not find mechanical state." ;

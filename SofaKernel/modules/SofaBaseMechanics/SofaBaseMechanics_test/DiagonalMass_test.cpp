@@ -42,13 +42,16 @@ using sofa::simulation::Node ;
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <string>
 using std::string ;
 
-#include <gtest/gtest.h>
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<SReal>;
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -70,7 +73,7 @@ namespace sofa {
 // Given the positions and the topology, it then checks the expected values for
 // the mass.
 template <class TDataTypes, class TMassType>
-class DiagonalMass_test : public ::testing::Test
+class DiagonalMass_test : public BaseTest
 {
 public:
     typedef TDataTypes DataTypes;
@@ -88,6 +91,8 @@ public:
 
     virtual void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+
         component::initBaseMechanics();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");

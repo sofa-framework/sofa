@@ -22,7 +22,6 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP
 #include <SofaMiscMapping/BarycentricMappingRigid.inl>
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.inl>
-
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
