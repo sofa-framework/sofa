@@ -223,7 +223,11 @@ macro(sofa_add_generic_external directory name type)
 
         #execute script to get src
         message("Pulling ${name}... ")
-        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -G "${CMAKE_GENERATOR}" .
+        execute_process(COMMAND "${CMAKE_COMMAND}"
+                -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+                -G "${CMAKE_GENERATOR}" .
             WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
         execute_process(COMMAND "${CMAKE_COMMAND}" --build .
             WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
