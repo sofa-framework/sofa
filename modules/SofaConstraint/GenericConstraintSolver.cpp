@@ -80,7 +80,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 , currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
 , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
 , current_cp(&m_cpBuffer[0])
-, constraintForces(initData(&constraintForces,"constraintForces","Constraint forces"))
+, d_constraintForces(initData(&d_constraintForces,"constraintForces","Constraint forces"))
 , last_cp(NULL)
 {
     addAlias(&maxIt, "maxIt");
@@ -412,13 +412,13 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         printLCP(tmp, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
 	msg_info() << tmp.str() ;
 	
-	std::vector<double>* v = constraintForces.beginEdit();
+	std::vector<double>* v = d_constraintForces.beginEdit();
         v->resize(current_cp->getDimension());
         for(int i=0; i<current_cp->getDimension(); i++)
         {
             (*v)[i] = current_cp->getF()[i];
         }
-        constraintForces.endEdit();     
+        d_constraintForces.endEdit();     
     }
 
 	
