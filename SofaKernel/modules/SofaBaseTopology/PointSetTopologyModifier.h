@@ -46,7 +46,7 @@ public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
 
     typedef core::topology::BaseMeshTopology::PointID PointID;
-    Data<bool> d_propagateToDOF;
+    Data<bool> d_propagateToDOF; ///< propagate changes to Mechanical object DOFs
 
 protected:
     PointSetTopologyModifier()
