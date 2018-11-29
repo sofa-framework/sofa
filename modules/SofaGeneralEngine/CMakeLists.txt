@@ -17,8 +17,6 @@ list(APPEND HEADER_FILES
     ClusteringEngine.inl
     ComplementaryROI.h
     ComplementaryROI.inl
-    ComplementaryROI.h
-    ComplementaryROI.inl
     DilateEngine.h
     DilateEngine.inl
     DifferenceEngine.h
@@ -125,7 +123,6 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     AverageCoord.cpp
     ClusteringEngine.cpp
-    ComplementaryROI.cpp
     ComplementaryROI.cpp
     DilateEngine.cpp
     DifferenceEngine.cpp

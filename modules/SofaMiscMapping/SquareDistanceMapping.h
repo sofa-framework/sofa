@@ -138,7 +138,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API SquareDistanceMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
 extern template class SOFA_MISC_MAPPING_API SquareDistanceMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;

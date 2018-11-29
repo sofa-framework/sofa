@@ -280,7 +280,7 @@ inline TOBB<DataTypes>::TOBB(const core::CollisionElementIterator& i)
 typedef TOBBModel<sofa::defaulttype::Rigid3Types> OBBModel;
 typedef TOBB<sofa::defaulttype::Rigid3Types> OBB;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3dTypes>;
 extern template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3dTypes>;

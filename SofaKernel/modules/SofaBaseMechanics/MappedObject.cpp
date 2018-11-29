@@ -36,8 +36,6 @@ namespace container
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(MappedObject)
-
 int MappedObjectClass = core::RegisterObject("Mapped state vectors")
 #ifndef SOFA_FLOAT
         .add< MappedObject<Vec2dTypes> >()

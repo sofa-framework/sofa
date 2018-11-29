@@ -215,26 +215,12 @@ public:
 
 
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
-    ConstraintParams(const sofa::core::ExecParams& p = *sofa::core::ExecParams::defaultInstance())
-        : sofa::core::ExecParams(p)
-        , m_x(ConstVecCoordId::position())
-        , m_v(ConstVecDerivId::velocity())
-        , m_j(MatrixDerivId::constraintJacobian())
-        , m_dx(VecDerivId::dx())
-        , m_lambda(VecDerivId::externalForce())
-        , m_constOrder (POS_AND_VEL)
-		, m_smoothFactor (1)
-    {
-    }
+    ConstraintParams(const sofa::core::ExecParams& p = *sofa::core::ExecParams::defaultInstance());
 
     /// Get the default MechanicalParams, to be used to provide a default values for method parameters
     static const ConstraintParams* defaultInstance();
 
-    ConstraintParams& setExecParams(const core::ExecParams* params)
-    {
-        sofa::core::ExecParams::operator=(*params);
-        return *this;
-    }
+    ConstraintParams& setExecParams(const core::ExecParams* params);
 
 protected:
     /// Ids of position vector

@@ -58,7 +58,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     Data<VecIndex> f_in1; ///< first set of indices
     Data<VecIndex> f_in2; ///< second set of indices
@@ -66,7 +66,7 @@ public:
     Data<std::string> f_op; ///< name of operation to compute (union, intersection, difference, symmetric_difference)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
 extern template class SOFA_GENERAL_ENGINE_API MergeSets<int>;
 extern template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned int>;
 //extern template class SOFA_GENERAL_ENGINE_API MergeSets<long long>;

@@ -18,9 +18,6 @@ using namespace sofa::helper;
 using simulation::Node;
 using core::collision::Contact;
 
-SOFA_DECL_CLASS(FrictionCompliantContact)
-
-
 Creator<Contact::Factory, FrictionCompliantContact<PointModel, PointModel> > PointPointFrictionCompliantContactClass("FrictionCompliantContact",true);
 Creator<Contact::Factory, FrictionCompliantContact<LineModel, SphereModel> > LineSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
 Creator<Contact::Factory, FrictionCompliantContact<LineModel, PointModel> > LinePointFrictionCompliantContactClass("FrictionCompliantContact",true);

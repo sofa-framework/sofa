@@ -1,8 +1,8 @@
 #include "AnimationLoopParallelScheduler.h"
 
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 #include "AnimationLoopTasks.h"
-#include "InitTasks.h"
+#include <sofa/simulation/InitTasks.h>
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>
@@ -56,8 +56,6 @@ namespace sofa
 
 namespace simulation
 {
-
-    SOFA_DECL_CLASS(AnimationLoopParallelScheduler)
 
 	int AnimationLoopParallelSchedulerClass = core::RegisterObject("parallel animation loop, using intel tbb library")
 		.add< AnimationLoopParallelScheduler >()

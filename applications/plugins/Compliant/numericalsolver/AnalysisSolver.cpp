@@ -9,7 +9,6 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(AnalysisSolver)
 int AnalysisSolverClass = core::RegisterObject("Analysis solver: runs other KKTSolvers successively on a given problem and performs extra analysis on KKT system").add< AnalysisSolver >();
 
 AnalysisSolver::AnalysisSolver()

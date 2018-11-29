@@ -249,10 +249,6 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
                 if (m_turbulentFlow.getValue())		dragForce = - (Real)0.5f * m_fluidDensity.getValue() * normalArea.norm();
                 else //laminar flow
                 {
-                    //Coord circumcenter = m_geo->computeTriangleCircumcenter(triangleID);
-                    //Coord firstCorner = x[tri[0]];
-                    //Real circumradius = (circumcenter - firstCorner).norm();
-
                     Real	a = (x[tri[1]]-x[tri[0]]).norm() ,	b = (x[tri[2]]-x[tri[0]]).norm() ,	c = (x[tri[1]]-x[tri[2]]).norm() ;
                     Real circumradius = a*b*c / sqrt( (a+b+c)*(a+b-c)*(a-b+c)*(-a+b+c) ) ;
 
@@ -299,10 +295,6 @@ void BuoyantForceField<DataTypes>::addDForce(const core::MechanicalParams* mpara
             if (m_flipNormals.getValue())				normalArea = -normalArea;
             Deriv DcentreTriangle =  (dx[tri[0]] + dx[tri[1]] + dx[tri[2]]) / (Real) 3.0;
             Deriv dpointForcePressure = normalArea * m_fluidDensity.getValue() * m_gravityNorm * D_distanceFromFluidSurface(DcentreTriangle) / (Real)3.0;
-
-            // BG. adding this term is less stable due to non linearity ?
-            //Coord dnormalArea = ( (dx[tri[1]]-dx[tri[0]]).cross( x[tri[2]]-x[tri[0]]) + (x[tri[1]]-x[tri[0]]).cross( dx[tri[2]]-dx[tri[0]]) )*(Real)0.5;
-            //dpointForcePressure += dnormalArea * (m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * m_gravityNorm * distanceFromFluidSurface(centreTriangle) )  / (Real)3.0;
 
             for ( int j = 0 ; j < 3 ; j++) 	 df[tri[j]] += dpointForcePressure * kf;
         }
@@ -522,7 +514,6 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
             }
         }
     }
-
 
     if (vparams->displayFlags().getShowForceFields())
         if ( m_topology)

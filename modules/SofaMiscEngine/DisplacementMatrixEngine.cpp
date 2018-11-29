@@ -36,8 +36,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS( DisplacementTransformEngine )
-
 int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
     .add< DisplacementTransformEngine<Rigid3Types,Mat4x4f> >()
     .add< DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord> >()
@@ -73,8 +71,6 @@ void DisplacementTransformEngine<Rigid3Types,Mat4x4f>::mult( Mat4x4f& out, const
 }
 
 /////////////////////////////////////////
-
-SOFA_DECL_CLASS( DisplacementMatrixEngine )
 
 int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
     .add< DisplacementMatrixEngine<Rigid3Types> >()

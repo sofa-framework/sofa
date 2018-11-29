@@ -51,8 +51,6 @@ int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation lo
         .addAlias("MultiStepMasterSolver")
         ;
 
-SOFA_DECL_CLASS(MultiStepAnimationLoop);
-
 MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
     , collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )

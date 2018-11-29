@@ -215,7 +215,7 @@ public:
     std::ofstream* m_gnuplotFileEnergy;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API LinearSpring<double>;
 extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3dTypes>;

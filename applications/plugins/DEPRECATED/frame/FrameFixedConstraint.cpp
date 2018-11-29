@@ -38,8 +38,6 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameFixedConstraint);
-
 int FrameFixedConstraintClass = core::RegisterObject("Cancel some degrees of freedom in the frames")
 #ifndef SOFA_FLOAT
         .add< FrameFixedConstraint<Rigid3dTypes> >()

@@ -36,8 +36,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-SOFA_DECL_CLASS(OBB)
-
 int OBBModelClass = core::RegisterObject("Collision model which represents a set of OBBs")
 #ifndef SOFA_FLOAT
         .add<  TOBBModel<Rigid3dTypes> >()

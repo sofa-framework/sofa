@@ -35,7 +35,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(SofaDefaultPathSetting)
 int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
         .add< SofaDefaultPathSetting >()
         .addAlias("SofaDefaultPath")

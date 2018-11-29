@@ -34,8 +34,6 @@ namespace shapefunction
 
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(BezierShapeFunction)
-
 // Register in the Factory
 int BezierShapeFunctionClass = core::RegisterObject("Computes Bezier shape functions")
 #ifndef SOFA_FLOAT

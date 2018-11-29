@@ -37,8 +37,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(RayContact)
-
 Creator<core::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("ray",true);
 Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("ray",true);
 Creator<core::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("ray",true);

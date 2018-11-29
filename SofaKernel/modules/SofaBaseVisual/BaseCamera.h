@@ -49,7 +49,6 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
-    typedef defaulttype::Vec3Types::Real Real;
     typedef defaulttype::Vector3 Vec3;
     typedef defaulttype::Matrix3 Mat3;
     typedef defaulttype::Matrix4 Mat4;

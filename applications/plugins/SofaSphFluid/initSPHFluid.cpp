@@ -74,13 +74,6 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(SpatialGridContainer)
-SOFA_LINK_CLASS(SPHFluidForceField)
-SOFA_LINK_CLASS(SPHFluidSurfaceMapping)
-SOFA_LINK_CLASS(ParticleSink)
-SOFA_LINK_CLASS(ParticleSource)
-SOFA_LINK_CLASS(ParticlesRepulsionForceField)
-
 } // namespace component
 
 } // namespace sofa

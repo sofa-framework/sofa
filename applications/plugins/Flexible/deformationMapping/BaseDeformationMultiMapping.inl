@@ -305,11 +305,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::reinit
 {
     if(this->assemble.getValue()) { updateJ1(); updateJ2(); }
 
-    // force apply
-    // bg: do we need this ?
-    //    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel1->read(core::ConstVecCoordId::position()), *this->fromModel2->read(core::ConstVecCoordId::position()) );
-    //    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel1->read(core::ConstVecDerivId::velocity()), *this->fromModel2->read(core::ConstVecDerivId::velocity()));
-
     Inherit::reinit();
 }
 
@@ -331,8 +326,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
     }
 
     eigenJacobian1.compress();
-
-//    maskedEigenJacobian1.resize(0,0);
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
@@ -351,26 +344,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
     }
 
     eigenJacobian2.compress();
-
-//    maskedEigenJacobian2.resize(0,0);
 }
-
-//template <class JacobianBlockType1,class JacobianBlockType2>
-//void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateMaskedJ()
-//{
-//    size_t currentHash = this->maskTo[0]->getHash();
-//    if( previousMaskHash!=currentHash )
-//    {
-//        previousMaskHash = currentHash;
-//        maskedEigenJacobian1.resize(0,0);
-//        maskedEigenJacobian2.resize(0,0);
-//    }
-//    if( !maskedEigenJacobian1.rows() )
-//        this->maskTo[0]->maskedMatrix( maskedEigenJacobian1.compressedMatrix, eigenJacobian1.compressedMatrix, Out::deriv_total_size );
-//    if( !maskedEigenJacobian2.rows() )
-//        this->maskTo[0]->maskedMatrix( maskedEigenJacobian2.compressedMatrix, eigenJacobian2.compressedMatrix, Out::deriv_total_size );
-//}
-
 
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
@@ -382,43 +356,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
     // OTHERWISE CROSS-TERMS WILL BE LOST
 
     serr<<"The generic implementation of updateK has not be updated to the new BaseMapping::getK API\n";
-
-//    size_t size1 = this->getFromSize1();
-//    K1.resizeBlocks(size1,size1);
-//    vector<KBlock1> diagonalBlocks1; diagonalBlocks1.resize(size1);
-
-//    if( !this->maskTo || !this->maskTo->isInUse() )
-//    {
-//        for(size_t i=0; i<jacobian1.size(); i++)
-//        {
-//            for(size_t j=0; j<jacobian1[i].size(); j++)
-//            {
-//                unsigned int index = this->f_index1.getValue()[i][j];
-//                diagonalBlocks1[index] += jacobian1[i][j].getK(childForce[i]);
-//            }
-//        }
-//    }
-//    else
-//    {
-//        const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-//        for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-//        {
-//            size_t i= ( size_t ) ( *it );
-//            for(size_t j=0; j<jacobian1[i].size(); j++)
-//            {
-//                unsigned int index = this->f_index1.getValue()[i][j];
-//                diagonalBlocks1[index] += jacobian1[i][j].getK(childForce[i]);
-//            }
-//        }
-//    }
-
-//    for(size_t i=0; i<size1; i++)
-//    {
-//        K1.beginBlockRow(i);
-//        K1.createBlock(i,diagonalBlocks1[i]);
-//        K1.endBlockRow();
-//    }
-//    K1.compress();
 }
 
 
@@ -427,7 +364,6 @@ template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord1>& dIn1, const Data<InVecCoord2>& dIn2)
 {
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
-    //    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
 
     OutVecCoord& out = *dOut.beginWriteOnly();
     const InVecCoord1& in1 = dIn1.getValue();
@@ -475,17 +411,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         if( !eigenJacobian1.rows() ) updateJ1();
         if( !eigenJacobian2.rows() ) updateJ2();
 
-//        if( this->maskTo[0]->isActivated() )
-//        {
-//            updateMaskedJ();
-//            maskedEigenJacobian1.mult(dOut,dIn1);
-//            maskedEigenJacobian2.mult(dOut,dIn2);
-//        }
-//        else
-        {
-            eigenJacobian1.mult(dOut,dIn1);
-            eigenJacobian2.addMult(dOut,dIn2);
-        }
+        eigenJacobian1.mult(dOut,dIn1);
+        eigenJacobian2.addMult(dOut,dIn2);
+
     }
     else
     {
@@ -526,17 +454,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         if( !eigenJacobian1.rows() ) updateJ1();
         if( !eigenJacobian2.rows() ) updateJ2();
 
-//        if( this->maskTo[0]->isActivated() )
-//        {
-//            updateMaskedJ();
-//            maskedEigenJacobian1.addMultTranspose(dIn1,dOut);
-//            maskedEigenJacobian2.addMultTranspose(dIn2,dOut);
-//        }
-//        else
-        {
-            eigenJacobian1.addMultTranspose(dIn1,dOut);
-            eigenJacobian2.addMultTranspose(dIn2,dOut);
-        }
+        eigenJacobian1.addMultTranspose(dIn1,dOut);
+        eigenJacobian2.addMultTranspose(dIn2,dOut);
     }
     else
     {
@@ -576,92 +495,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 
     serr<<"applyDJT is not implemented\n";
     return;
-
-//    if(!this->isMechanical()) return;
-//    if(BlockType1::constant && BlockType2::constant) return;
-
-//    if(this->f_printLog.getValue()) sout<<":applyDJT"<<sendl;
-
-//    const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
-//    helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-
-//    // this does not compile for some reasons..
-////    Data<InVecDeriv1>& parentForceData1 = *parentDfId[this->fromModel1.get(mparams)].write();
-////    Data<InVecDeriv2>& parentForceData2 = *parentDfId[this->fromModel2.get(mparams)].write();
-//    // work around..
-//    helper::WriteAccessor<Data<InVecDeriv1> > parentForce1 (this->fromModel1->write(core::VecDerivId::force()));
-//    helper::WriteAccessor<Data<InVecDeriv2> > parentForce2 (this->fromModel2->write(core::VecDerivId::force()));
-
-//    const Data<InVecDeriv1>& parentDisplacementData1 = *mparams->readDx(this->fromModel1) ;
-//    helper::ReadAccessor<Data<InVecDeriv1> > parentDisplacement1 (parentDisplacementData1);
-//    const Data<InVecDeriv2>& parentDisplacementData2 = *mparams->readDx(this->fromModel2) ;
-//    helper::ReadAccessor<Data<InVecDeriv2> > parentDisplacement2 (parentDisplacementData2);
-
-//    if(this->assemble.getValue())
-//    {
-//        if(!BlockType1::constant)
-//        {
-//            K.addMult(parentForce1.wref(),parentDisplacementData1.getValue(),mparams->kFactor());
-//        }
-//    }
-//    else
-//    {
-//        if( !this->maskTo || !this->maskTo->isInUse() )
-//        {
-//            if(!BlockType1::constant)
-//            {
-//#ifdef _OPENMP
-//#pragma omp parallel for if (this->d_parallel.getValue())
-//#endif
-//                for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
-//                {
-//                    for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
-//                    {
-//                        size_t indexc=this->f_index_parentToChild1[i][j];
-//                        jacobian1[indexc][this->f_index_parentToChild1[i][j+1]].addDForce(parentForce1[i],parentDisplacement1[i],childForce[indexc], mparams->kFactor());
-//                    }
-//                }
-//            }
-//            if(!BlockType2::constant)
-//            {
-//#ifdef _OPENMP
-//#pragma omp parallel for if (this->d_parallel.getValue())
-//#endif
-//                for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
-//                {
-//                    for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
-//                    {
-//                        size_t indexc=this->f_index_parentToChild2[i][j];
-//                        jacobian2[indexc][this->f_index_parentToChild2[i][j+1]].addDForce(parentForce2[i],parentDisplacement2[i],childForce[indexc], mparams->kFactor());
-//                    }
-//                }
-//            }
-//        }
-//        else
-//        {
-//            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-//            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-//            {
-//                const int i= ( int ) ( *it );
-//                if(!BlockType1::constant)
-//                {
-//                    for(size_t j=0; j<jacobian1[i].size(); j++)
-//                    {
-//                        size_t index=this->f_index1.getValue()[i][j];
-//                        jacobian1[i][j].addDForce( parentForce1[index], parentDisplacement1[index], childForce[i], mparams->kFactor() );
-//                    }
-//                }
-//                if(!BlockType2::constant)
-//                {
-//                    for(size_t j=0; j<jacobian2[i].size(); j++)
-//                    {
-//                        size_t index=this->f_index2.getValue()[i][j];
-//                        jacobian2[i][j].addDForce( parentForce2[index], parentDisplacement2[index], childForce[i], mparams->kFactor() );
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
 
 
@@ -753,7 +586,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Backwa
 {
     if ( !_shapeFunction ) return;
 
-    // iterate: p0(n+1) = F0.F^-1 (p-p(n)) + p0(n)
     size_t count=0;
     mCoord mp0;
     MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
@@ -827,18 +659,6 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappin
 
     if( !eigenJacobian1.rows() ) updateJ1();
     if( !eigenJacobian2.rows() ) updateJ2();
-
-//    if( this->maskTo[0]->isActivated() )
-//    {
-//        updateMaskedJ();
-//        baseMatrices[0] = &maskedEigenJacobian1;
-//        baseMatrices[1] = &maskedEigenJacobian2;
-//    }
-//    else
-//    {
-//        baseMatrices[0] = &eigenJacobian1;
-//        baseMatrices[1] = &eigenJacobian2;
-//    }
 
     return &baseMatrices;
 }

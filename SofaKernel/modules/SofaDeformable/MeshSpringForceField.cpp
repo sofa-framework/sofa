@@ -37,8 +37,6 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(MeshSpringForceField)
-
 int MeshSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
 #ifndef SOFA_FLOAT
         .add< MeshSpringForceField<Vec3dTypes> >()

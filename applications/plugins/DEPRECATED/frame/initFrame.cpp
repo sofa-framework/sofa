@@ -77,17 +77,3 @@ const char* getModuleComponentList()
 } // namespace frame
 
 } // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(FrameBlendingMapping)
-SOFA_LINK_CLASS(FrameDiagonalMass)
-SOFA_LINK_CLASS(FrameConstantForceField)
-SOFA_LINK_CLASS(FrameFixedConstraint)
-SOFA_LINK_CLASS(FrameMechanicalObject)
-SOFA_LINK_CLASS(FrameRigidConstraint)
-SOFA_LINK_CLASS(HookeMaterial3)
-SOFA_LINK_CLASS(GridMaterial)
-SOFA_LINK_CLASS(CorotationalForceField)
-SOFA_LINK_CLASS(GreenLagrangeForceField)
-SOFA_LINK_CLASS(FrameVolumePreservationForceField)
-//SOFA_LINK_CLASS(TetrahedronFEMForceFieldWithExternalMaterial)

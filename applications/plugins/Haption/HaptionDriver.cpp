@@ -619,8 +619,6 @@ void HaptionDriver::handleEvent(core::objectmodel::Event *event)
 int HaptionDriverClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< HaptionDriver >();
 
-SOFA_DECL_CLASS(HaptionDriver)
-
 } // namespace controller
 
 } // namespace component

@@ -92,12 +92,10 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         const helper::SVector<helper::SVector<To> >& dat = this->VoxelData.getValue();
         raImagei in(this->inputImage);
-
-        cleanDirty();
 
         waImageo out(this->outputImage);
         imCoordi dim = in->getDimensions();

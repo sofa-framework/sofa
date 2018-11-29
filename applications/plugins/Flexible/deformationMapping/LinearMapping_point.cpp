@@ -38,8 +38,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping_point)
-
 using namespace defaulttype;
 
 // Register in the Factory

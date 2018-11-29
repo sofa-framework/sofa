@@ -45,6 +45,9 @@ namespace component
 namespace mass
 {
 
+using sofa::core::objectmodel::ComponentState;
+
+
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : d_vertexMass( initData(&d_vertexMass, "vertexMass", "Specify a vector giving the mass of each vertex. \n"
@@ -538,7 +541,7 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    if (m_dataTrackerTotal.isDirty() || m_dataTrackerDensity.isDirty() || m_dataTrackerVertex.isDirty())
+    if (m_dataTrackerTotal.hasChanged() || m_dataTrackerDensity.hasChanged() || m_dataTrackerVertex.hasChanged())
     {
         update();
     }
@@ -580,7 +583,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         {
             if(!hexaGeo)
             {
-                msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
+                msg_error() << "Hexahedron topology found but geometry algorithms are missing. Add the component HexahedronSetGeometryAlgorithms.";
                 return false;
             }
             else
@@ -593,7 +596,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         {
             if(!tetraGeo)
             {
-                msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
+                msg_error() << "Tetrahedron topology found but geometry algorithms are missing. Add the component TetrahedronSetGeometryAlgorithms.";
                 return false;
             }
             else
@@ -606,7 +609,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         {
             if(!quadGeo)
             {
-                msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
+                msg_error() << "Quad topology found but geometry algorithms are missing. Add the component QuadSetGeometryAlgorithms.";
                 return false;
             }
             else
@@ -619,7 +622,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         {
             if(!triangleGeo)
             {
-                msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
+                msg_error() << "Triangle topology found but geometry algorithms are missing. Add the component TriangleSetGeometryAlgorithms.";
                 return false;
             }
             else
@@ -632,7 +635,7 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         {
             if(!edgeGeo)
             {
-                msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
+                msg_error() << "Edge topology found but geometry algorithms are missing. Add the component EdgeSetGeometryAlgorithms.";
                 return false;
             }
             else
@@ -659,8 +662,10 @@ void DiagonalMass<DataTypes, MassType>::init()
 {
     if (!d_fileMass.getValue().empty())
     {
-        load(d_fileMass.getFullPath().c_str());
-
+        if(!load(d_fileMass.getFullPath().c_str())){
+            m_componentstate = ComponentState::Invalid;
+            return;
+        }
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
                       << "the topology won't be used to compute the mass" << msgendl
                       << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
@@ -675,12 +680,13 @@ void DiagonalMass<DataTypes, MassType>::init()
 
         if(!checkTopology())
         {
+            m_componentstate = ComponentState::Invalid;
             return;
         }
         Inherited::init();
         initTopologyHandlers();
 
-        // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
+        // TODO(dmarchal 2018-11-10): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
         if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
         {
             MassVector &masses= *d_vertexMass.beginEdit();
@@ -694,6 +700,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 
         massInitialization();
     }
+     m_componentstate = ComponentState::Valid;
 }
 
 
@@ -708,8 +715,8 @@ void DiagonalMass<DataTypes, MassType>::massInitialization()
         {
             if(d_vertexMass.isSet() || d_massDensity.isSet())
             {
-                msg_warning(this) << "totalMass value overriding other mass information (vertexMass or massDensity).\n"
-                                  << "To remove this warning you need to define only one single mass information data field.";
+                msg_warning() << "totalMass value overriding other mass information (vertexMass or massDensity).\n"
+                              << "To remove this warning you need to define only one single mass information data field.";
             }
             checkTotalMassInit();
             initFromTotalMass();
@@ -719,8 +726,8 @@ void DiagonalMass<DataTypes, MassType>::massInitialization()
         {
             if(d_vertexMass.isSet())
             {
-                msg_warning(this) << "massDensity value overriding the value of the attribute vertexMass.\n"
-                                  << "To remove this warning you need to set either vertexMass or massDensity data field, but not both.";
+                msg_warning() << "massDensity value overriding the value of the attribute vertexMass.\n"
+                              << "To remove this warning you need to set either vertexMass or massDensity data field, but not both.";
             }
             if(!checkMassDensity())
             {
@@ -984,8 +991,8 @@ bool DiagonalMass<DataTypes, MassType>::checkTotalMass()
     //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
     if(d_totalMass.getValue() <= 0.0)
     {
-        msg_warning(this) << "totalMass data can not have a negative value.\n"
-                          << "To remove this warning, you need to set a strictly positive value to the totalMass data";
+        msg_warning() << "totalMass data can not have a negative value.\n"
+                      << "To remove this warning, you need to set a strictly positive value to the totalMass data";
         return false;
     }
     else
@@ -1001,7 +1008,7 @@ void DiagonalMass<DataTypes, MassType>::checkTotalMassInit()
     //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
     if(!checkTotalMass())
     {
-        msg_warning(this) << "Switching back to default values: totalMass = 1.0\n";
+        msg_warning() << "Switching back to default values: totalMass = 1.0\n";
         d_totalMass.setValue(1.0) ;
     }
 }
@@ -1190,7 +1197,7 @@ bool DiagonalMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
-    if (m_dataTrackerTotal.isDirty())
+    if (m_dataTrackerTotal.hasChanged())
     {
         if(checkTotalMass())
         {
@@ -1199,7 +1206,7 @@ bool DiagonalMass<DataTypes, MassType>::update()
         }
         m_dataTrackerTotal.clean();
     }
-    else if(m_dataTrackerDensity.isDirty())
+    else if(m_dataTrackerDensity.hasChanged())
     {
         if(checkMassDensity())
         {
@@ -1208,7 +1215,7 @@ bool DiagonalMass<DataTypes, MassType>::update()
         }
         m_dataTrackerDensity.clean();
     }
-    else if(m_dataTrackerVertex.isDirty())
+    else if(m_dataTrackerVertex.hasChanged())
     {
         if(checkVertexMass())
         {
@@ -1323,7 +1330,6 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Real totalMass=0.0;
 
     std::vector<  sofa::defaulttype::Vector3 > points;
-//    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -1372,7 +1378,7 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
         Loader loader(this);
         return loader.load(filename);
     }
-    else return false;
+    return false;
 }
 
 

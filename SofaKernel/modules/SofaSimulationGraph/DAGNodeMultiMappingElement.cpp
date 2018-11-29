@@ -57,8 +57,6 @@ void DAGNodeMultiMappingElement::updateSceneGraph(
 }
 
 
-SOFA_DECL_CLASS(DAGNodeMultiMappingElement)
-
 helper::Creator<sofa::simulation::xml::BaseElement::NodeFactory, DAGNodeMultiMappingElement> DAGNodeMultiMappingClass("DAGNodeMultiMapping");
 
 const char* DAGNodeMultiMappingElement::getClass() const

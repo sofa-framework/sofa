@@ -39,8 +39,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(InputEventReader)
-
 // Register in the Factory
 int InputEventReaderClass = core::RegisterObject("Read events from file")
         .add< InputEventReader >();

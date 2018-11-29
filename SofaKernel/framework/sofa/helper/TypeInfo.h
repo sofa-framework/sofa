@@ -19,45 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef InitTasks_h__
-#define InitTasks_h__
+#ifndef SOFA_HELPER_TYPEINFO_H
+#define SOFA_HELPER_TYPEINFO_H
 
-#include "TaskScheduler.h"
+#include <typeinfo>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
-    namespace simulation
-    {
 
-        using namespace sofa;
+namespace helper
+{
 
+class TypeInfo
+{
+public:
+    const std::type_info* pt;
+    TypeInfo(const std::type_info& t) : pt(&t) { }
+    operator const std::type_info&() const { return *pt; }
+    bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
+    bool operator!=(const TypeInfo& t) const { return *pt != *t.pt; }
+    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
+};
 
+} /// namespace helper
 
-        class InitPerThreadDataTask : public Task
-        {
+} /// namespace sofa
 
-        public:
-
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
-
-            virtual ~InitPerThreadDataTask();
-
-            virtual bool run() override;
-
-        private:
-
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
-        };
-
-
-        // thread storage initialization
-        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
-        
-
-        
-    } // namespace simulation
-
-} // namespace sofa
-
-#endif // InitTasks_h__
+#endif /// SOFA_HELPER_TYPEINFO_H

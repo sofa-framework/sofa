@@ -46,7 +46,6 @@ float HeadlessRecorder::skipTime = 0;
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
-SOFA_DECL_CLASS(HeadlessRecorder)
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable, GLXContext);

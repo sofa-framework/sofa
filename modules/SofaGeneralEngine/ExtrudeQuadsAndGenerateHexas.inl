@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_INL
 #define SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/ExtrudeQuadsAndGenerateHexas.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -76,7 +72,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
+void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
 
@@ -88,8 +84,6 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
         msg_warning() << "initial mesh does not contain vertices or quads... No extruded mesh will be generated" ;
         return;
     }
-
-    cleanDirty();
 
     VecCoord* extrudedVertices = f_extrudedVertices.beginWriteOnly();
     extrudedVertices->clear();

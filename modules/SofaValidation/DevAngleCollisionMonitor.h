@@ -132,7 +132,7 @@ protected:
     typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_CPP)
+#if  !defined(SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_CPP)
 #ifndef SOFA_FLOAT
 extern template class DevAngleCollisionMonitor<defaulttype::Rigid3dTypes>;
 #endif

@@ -33,8 +33,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageTransform)
-
 int ImageTransformClass = core::RegisterObject("Read data from ImageContainer")
         .add<ImageTransform<ImageUC> >(true)
         .add<ImageTransform<ImageD> >()

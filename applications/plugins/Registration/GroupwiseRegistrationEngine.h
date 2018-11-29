@@ -98,11 +98,8 @@ protected:
     {
     }
 
-    virtual void update()
+    virtual void doUpdate()
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         const unsigned int M = vf_inputs.size();
         if(!M) return;
 

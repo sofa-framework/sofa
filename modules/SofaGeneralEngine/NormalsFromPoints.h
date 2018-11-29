@@ -61,7 +61,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     Data< VecCoord > position; ///< Vertices of the mesh
     Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles; ///< Triangles of the mesh
@@ -75,7 +75,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

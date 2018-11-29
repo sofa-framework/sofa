@@ -34,7 +34,7 @@
 
 #include <flowvr/render/mesh.h>
 
-#if defined(WIN32) || defined(_XBOX)
+#if defined(WIN32)
 #define strcasecmp stricmp
 #endif
 

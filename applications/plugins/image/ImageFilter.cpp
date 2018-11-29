@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageFilter)
-
 int ImageFilterClass = core::RegisterObject("Filter an image")
         .add<ImageFilter<ImageUC,ImageUC    > >(true)
         .add<ImageFilter<ImageD ,ImageD     > >()

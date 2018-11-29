@@ -178,7 +178,7 @@ protected:
     bool buttonDevice;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
+#if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec3dTypes>;
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec2dTypes>;

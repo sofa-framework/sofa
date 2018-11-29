@@ -123,11 +123,8 @@ protected:
         if(indices.find(index)!=indices.end()) return true; else return false;
     }
 
-    virtual void update()
+    virtual void doUpdate()
     {
-        this->updateAllInputsIfDirty();
-        cleanDirty();
-
         if( !parentTopology ) return;
 
         raPositions parent(f_inPosition);

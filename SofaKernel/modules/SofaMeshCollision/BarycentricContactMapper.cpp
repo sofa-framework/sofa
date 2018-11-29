@@ -34,8 +34,6 @@ namespace collision
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(BarycentricContactMapper)
-
 ContactMapperCreator< ContactMapper<LineModel> > LineContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<CapsuleModel> > CapsuleContactMapperClass("default",true);

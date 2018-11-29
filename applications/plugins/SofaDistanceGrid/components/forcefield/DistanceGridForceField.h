@@ -225,7 +225,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3dTypes>;
 //extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2dTypes>;

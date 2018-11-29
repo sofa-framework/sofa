@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_INL
 #define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/MeshBarycentricMapperEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -82,9 +78,8 @@ void MeshBarycentricMapperEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::update()
+void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 {
-
     using sofa::defaulttype::Vector3;
     using sofa::defaulttype::Matrix3;
     using sofa::defaulttype::Mat3x3d;
@@ -119,8 +114,6 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     const VecCoord* in = &InputPositions.getValue();
     const VecCoord* out = &MappedPointPositions.getValue();
 
-
-    cleanDirty();
 
 
     baryPos =  BarycentricPositions.beginWriteOnly();

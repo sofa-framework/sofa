@@ -74,7 +74,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::clean
             parent->removeObject(m_constraint);
 
         parent = NULL;
-        //delete m_constraint;
         m_constraint.reset();
 
         mapper1.cleanup();

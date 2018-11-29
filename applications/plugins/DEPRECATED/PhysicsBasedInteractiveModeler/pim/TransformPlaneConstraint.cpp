@@ -28,8 +28,6 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(TransformPlaneConstraint)
-
 int TransformPlaneConstraintClass = sofa::core::RegisterObject("")
         .add< TransformPlaneConstraint >()
         ;

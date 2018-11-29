@@ -41,6 +41,18 @@ namespace forcefield
 {
 
 template<class DataTypes>
+ConicalForceField<DataTypes>::ConicalForceField()
+    : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))
+    , coneHeight(initData(&coneHeight, "coneHeight", "cone height"))
+    , coneAngle(initData(&coneAngle, (Real)10, "coneAngle", "cone angle"))
+
+    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
+    , damping(initData(&damping, (Real)5, "damping", "force damping"))
+    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
+{
+}
+
+template<class DataTypes>
 void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
 {
     VecDeriv& f1 = *(dataF.beginEdit());
@@ -205,6 +217,26 @@ bool ConicalForceField<DataTypes>::isIn(Coord p)
         return false;
     }
     return true;
+}
+
+template<class DataTypes>
+void ConicalForceField<DataTypes>::setCone(const Coord& center, Coord height, Real angle)
+{
+    coneCenter.setValue( center );
+    coneHeight.setValue( height );
+    coneAngle.setValue( angle );
+}
+
+template<class DataTypes>
+void ConicalForceField<DataTypes>::setStiffness(Real stiff)
+{
+    stiffness.setValue( stiff );
+}
+
+template<class DataTypes>
+void ConicalForceField<DataTypes>::setDamping(Real damp)
+{
+    damping.setValue( damp );
 }
 
 } // namespace forcefield

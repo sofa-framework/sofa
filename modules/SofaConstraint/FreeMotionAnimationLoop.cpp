@@ -40,6 +40,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <SofaConstraint/LCPConstraintSolver.h>
 
 
 namespace sofa
@@ -193,7 +194,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     if (cparams.constOrder() == core::ConstraintParams::POS ||
         cparams.constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
-        // xfree = x + vfree*dt
         simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
         freePosEqPosPlusFreeVelDt.setMapped(true);
         this->getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
@@ -228,7 +228,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         if (cparams.constOrder() == core::ConstraintParams::VEL )
         {
             constraintSolver->solveConstraint(&cparams, vel);
-            // x_t+1 = x_t + ( vfree + dv ) * dt
             pos.eq(pos, vel, dt);
         }
         else
@@ -285,15 +284,11 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
 }
 
-
-SOFA_DECL_CLASS(FreeMotionAnimationLoop)
-
 int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
 The animation loop to use with constraints.
 You must add this loop at the beginning of the scene if you are using constraints.")")
         .add< FreeMotionAnimationLoop >()
-        .addAlias("FreeMotionMasterSolver")
-        ;
+        .addAlias("FreeMotionMasterSolver");
 
 } // namespace animationloop
 

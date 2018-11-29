@@ -52,8 +52,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(FastTriangularBendingSprings)
-
 // Register in the Factory
 int FastTriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
 #ifndef SOFA_FLOAT

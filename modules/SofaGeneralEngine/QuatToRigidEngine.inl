@@ -72,14 +72,11 @@ void QuatToRigidEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void QuatToRigidEngine<DataTypes>::update()
+void QuatToRigidEngine<DataTypes>::doUpdate()
 {
-
     const helper::vector<Vec3>& positions = f_positions.getValue();
     const helper::vector<Quat>& orientations = f_orientations.getValue();
     const helper::vector<Vec3>& colinearPositions = f_colinearPositions.getValue();
-
-    cleanDirty();
 
     helper::vector<RigidVec3>& rigids = *(f_rigids.beginWriteOnly());
 

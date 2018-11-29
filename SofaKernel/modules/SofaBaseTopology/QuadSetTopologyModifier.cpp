@@ -34,7 +34,6 @@ namespace component
 {
 namespace topology
 {
-SOFA_DECL_CLASS(QuadSetTopologyModifier)
 int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
         .add< QuadSetTopologyModifier >();
 
@@ -98,29 +97,28 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
 
 void QuadSetTopologyModifier::addQuadProcess(Quad t)
 {
-#ifndef NDEBUG
-    // check if the 4 vertices are different
-    if((t[0]==t[1]) || (t[0]==t[2]) || (t[0]==t[3])
-       || (t[1]==t[2]) || (t[1]==t[3]) || (t[2]==t[3]))
-    {
-        sout << "Error: [QuadSetTopologyModifier::addQuad] : invalid quad: "
-                << t[0] << ", " << t[1] << ", " << t[2] <<  ", " << t[3] <<  endl;
+	if (CHECK_TOPOLOGY)
+	{
+		// check if the 4 vertices are different
+		if ((t[0] == t[1]) || (t[0] == t[2]) || (t[0] == t[3])
+			|| (t[1] == t[2]) || (t[1] == t[3]) || (t[2] == t[3]))
+		{
+			msg_error() << "Invalid quad: "	<< t[0] << ", " << t[1] << ", " << t[2] << ", " << t[3];
 
-        return;
-    }
+			return;
+		}
 
-    // check if there already exists a quad with the same indices
-    // Important: getEdgeIndex creates the quad vertex shell array
-    if(m_container->hasQuadsAroundVertex())
-    {
-        if(m_container->getQuadIndex(t[0],t[1],t[2],t[3]) != -1)
-        {
-            sout << "Error: [QuadSetTopologyModifier::addQuad] : Quad "
-                    << t[0] << ", " << t[1] << ", " << t[2] <<  ", " << t[3] << " already exists." << endl;
-            return;
-        }
-    }
-#endif
+		// check if there already exists a quad with the same indices
+		// Important: getEdgeIndex creates the quad vertex shell array
+		if (m_container->hasQuadsAroundVertex())
+		{
+			if (m_container->getQuadIndex(t[0], t[1], t[2], t[3]) != -1)
+			{
+				msg_error() << "Quad " << t[0] << ", " << t[1] << ", " << t[2] << ", " << t[3] << " already exists.";
+				return;
+			}
+		}
+	}
 
     const QuadID quadIndex = (QuadID)m_container->getNumberOfQuads();
 
@@ -228,9 +226,9 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
 {
     if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
-#ifndef NDEBUG
-        sout << "Error. [QuadSetTopologyModifier::removeQuadsProcess] quad array is empty." << sendl;
-#endif
+		if (CHECK_TOPOLOGY)
+			msg_error() << "Quad array is empty.";
+
         return;
     }
 
@@ -468,7 +466,7 @@ void QuadSetTopologyModifier::removeQuads(const sofa::helper::vector< QuadID >& 
     for (size_t i = 0; i < quadIds.size(); i++)
     {
         if( quadIds[i] >= m_container->getNumberOfQuads())
-            std::cout << "Error: QuadSetTopologyModifier::removeQuads: quad: "<< quadIds[i] <<" is out of bound and won't be removed." << std::endl;
+			msg_error() << "Quad: "<< quadIds[i] <<" is out of bound and won't be removed.";
         else
             quadIds_filtered.push_back(quadIds[i]);
     }
@@ -516,9 +514,6 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            std::cout << "QuadSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
-#endif
             topoEngine->update();
         }
     }

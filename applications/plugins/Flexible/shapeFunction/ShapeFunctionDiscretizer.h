@@ -122,7 +122,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void doUpdate()
     {
         if( !_shapeFunction ) return;
 
@@ -131,8 +131,6 @@ protected:
         raTransform inT(this->f_transform);
         if(in->isEmpty())  { serr<<"Image not found"<<sendl; return; }
         const cimg_library::CImg<T>& inimg = in->getCImg(0);  // suppose time=0
-
-        cleanDirty();
 
         // init indices and weights images
         const unsigned int nbref=_shapeFunction->f_nbRef.getValue();

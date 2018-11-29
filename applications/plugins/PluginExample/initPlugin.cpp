@@ -56,6 +56,3 @@ SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(MyBehaviorModel)
-SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-SOFA_LINK_CLASS(MyProjectiveConstraintSet)
