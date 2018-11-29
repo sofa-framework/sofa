@@ -22,10 +22,6 @@ option(SOFA_NO_OPENGL
 "Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL
 macro.)" OFF)
 
-option(SOFA_NO_EXTERN_TEMPLATE
-"Compile Sofa without using the extern templates mechanism. (This will prevent
-the SOFA_EXTERN_TEMPLATE macro from being defined.)" OFF)
-
 option(SOFA_NO_UPDATE_BBOX
 "Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
 
@@ -214,7 +210,7 @@ elseif(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     target_compile_definitions(SofaHelper PUBLIC "NDEBUG")
 endif()
 
-if(WIN32 OR XBOX)
+if(WIN32)
     # Increase Number of Sections in .Obj file
     target_compile_options(SofaHelper PUBLIC "/bigobj")
 endif()

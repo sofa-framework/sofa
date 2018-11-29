@@ -38,8 +38,6 @@ using sofa::helper::Creator;
 using sofa::helper::fixed_array;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TableDataWidget);
-
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<int>, TABLE_HORIZONTAL > > DWClass_vectori("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<unsigned int>, TABLE_HORIZONTAL > > DWClass_vectoru("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<float>, TABLE_HORIZONTAL > > DWClass_vectorf("default",true);

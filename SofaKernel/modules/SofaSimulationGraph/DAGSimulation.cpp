@@ -80,7 +80,6 @@ Node::SPtr DAGSimulation::createNewNode(const std::string& name)
 
 
 
-SOFA_DECL_CLASS ( DAGSimulation );
 // Register in the Factory
 //int DAGSimulationClass = core::RegisterObject ( "Main simulation algorithm, based on tree graph" )
 //.add< DAGSimulation >()

@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(CompliantAttachButtonSetting)
 int CompliantAttachButtonSettingClass = core::RegisterObject("CompliantAttach (CompliantAttachButtonSetting)")
         .add< CompliantAttachButtonSetting >()
         .addAlias("CompliantAttachButton")

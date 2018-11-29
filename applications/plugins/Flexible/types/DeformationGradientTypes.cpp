@@ -115,9 +115,6 @@ void MechanicalObject<F332Types>::init()
 // ==========================================================================
 // Instanciation
 
-SOFA_DECL_CLASS ( DefGradientMechanicalObject )
-
-
 int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
 #ifndef SOFA_FLOAT
         .add< MechanicalObject<F331dTypes> >()

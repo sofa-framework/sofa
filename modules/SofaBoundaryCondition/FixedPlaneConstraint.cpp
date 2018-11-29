@@ -33,8 +33,10 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
+
 
 int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
 #ifdef SOFA_WITH_FLOAT

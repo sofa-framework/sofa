@@ -187,7 +187,7 @@ private:
     helper::vector<std::set<int> > neighborhood;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
 #endif

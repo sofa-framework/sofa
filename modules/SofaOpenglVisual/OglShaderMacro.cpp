@@ -30,8 +30,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglShaderDefineMacro)
-
 //Register OglIntVariable in the Object Factory
 int OglShaderDefineMacroClass = core::RegisterObject("OglShaderDefineMacro")
         .add< OglShaderDefineMacro >();

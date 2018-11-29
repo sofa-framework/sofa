@@ -44,8 +44,6 @@ using namespace sofa::core;
 using namespace sofa::helper::gl;
 using namespace sofa::simulation;
 
-SOFA_DECL_CLASS ( MeshGenerator );
-
 // Register in the Factory
 int MeshGeneratorClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology" )
 #ifndef SOFA_FLOAT   

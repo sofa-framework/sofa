@@ -315,20 +315,8 @@ inline void glMultMatrix(const float* p)
 
 inline void glMultMatrix(const double* p)
 {
-#ifdef PS3
-	float f[16];
-	
-	for(int i=0; i<16; i++)
-	{
-		f[i] = (float) p[i];
-	}
-	glMultMatrixf(f);
-#else
     glMultMatrixd(p);
-#endif
 }
-
-
 
 } // namespace gl
 

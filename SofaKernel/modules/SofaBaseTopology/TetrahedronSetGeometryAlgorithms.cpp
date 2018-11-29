@@ -32,7 +32,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(TetrahedronSetGeometryAlgorithms)
 int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
 #ifdef SOFA_FLOAT
         .add< TetrahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template

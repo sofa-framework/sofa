@@ -34,8 +34,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(VolumeMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory

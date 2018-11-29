@@ -34,7 +34,6 @@ namespace component
 {
 namespace topology
 {
-SOFA_DECL_CLASS(HexahedronSetTopologyModifier)
 int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
         .add< HexahedronSetTopologyModifier >();
 
@@ -99,19 +98,20 @@ void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexa
 
 void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 {
-#ifndef NDEBUG
-    // check if the 8 vertices are different
-    assert(t[0]!=t[1]); assert(t[0]!=t[2]); assert(t[0]!=t[3]); assert(t[0]!=t[4]); assert(t[0]!=t[5]); assert(t[0]!=t[6]); assert(t[0]!=t[7]);
-    assert(t[1]!=t[2]); assert(t[1]!=t[3]); assert(t[1]!=t[4]); assert(t[1]!=t[5]); assert(t[1]!=t[6]); assert(t[1]!=t[7]);
-    assert(t[2]!=t[3]); assert(t[2]!=t[4]); assert(t[2]!=t[5]); assert(t[2]!=t[6]); assert(t[2]!=t[7]);
-    assert(t[3]!=t[4]); assert(t[3]!=t[5]); assert(t[3]!=t[6]); assert(t[3]!=t[7]);
-    assert(t[4]!=t[5]); assert(t[4]!=t[6]); assert(t[4]!=t[7]);
-    assert(t[5]!=t[6]); assert(t[5]!=t[7]);
-    assert(t[6]!=t[7]);
+	if (CHECK_TOPOLOGY)
+	{
+		// check if the 8 vertices are different
+		assert(t[0] != t[1]); assert(t[0] != t[2]); assert(t[0] != t[3]); assert(t[0] != t[4]); assert(t[0] != t[5]); assert(t[0] != t[6]); assert(t[0] != t[7]);
+		assert(t[1] != t[2]); assert(t[1] != t[3]); assert(t[1] != t[4]); assert(t[1] != t[5]); assert(t[1] != t[6]); assert(t[1] != t[7]);
+		assert(t[2] != t[3]); assert(t[2] != t[4]); assert(t[2] != t[5]); assert(t[2] != t[6]); assert(t[2] != t[7]);
+		assert(t[3] != t[4]); assert(t[3] != t[5]); assert(t[3] != t[6]); assert(t[3] != t[7]);
+		assert(t[4] != t[5]); assert(t[4] != t[6]); assert(t[4] != t[7]);
+		assert(t[5] != t[6]); assert(t[5] != t[7]);
+		assert(t[6] != t[7]);
 
-    // check if there already exists a hexahedron with the same indices
-    assert(m_container->getHexahedronIndex(t[0],t[1],t[2],t[3],t[4],t[5],t[6],t[7])== -1);
-#endif
+		// check if there already exists a hexahedron with the same indices
+		assert(m_container->getHexahedronIndex(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]) == -1);
+	}
     const HexahedronID hexahedronIndex = (HexahedronID)m_container->getNumberOfHexahedra();
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
@@ -719,9 +719,6 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            msg_info() << "HexahedronSetTopologyModifier::performing: " << topoEngine->getName() ;
-#endif
             topoEngine->update();
         }
     }

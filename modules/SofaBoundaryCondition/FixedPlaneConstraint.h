@@ -72,9 +72,7 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
 public:
-    /// direction on which the constraint applies
-    Data<Coord> d_direction;
-
+    Data<Coord> d_direction; ///< direction on which the constraint applied
     Data<Real> d_dmin; ///< coordinates min of the plane for the vertex selection
     Data<Real> d_dmax; ///< coordinates max of the plane for the vertex selection
     SetIndex   d_indices; ///< the set of vertex indices

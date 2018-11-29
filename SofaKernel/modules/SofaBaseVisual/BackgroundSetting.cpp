@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(BackgroundSetting)
 int BackgroundSettingClass = core::RegisterObject("Backgrounds setting")
         .add< BackgroundSetting >()
         .addAlias("Background")

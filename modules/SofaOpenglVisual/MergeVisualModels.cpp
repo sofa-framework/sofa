@@ -31,8 +31,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(MergeVisualModels)
-
 int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
         .add< MergeVisualModels >(true);
 

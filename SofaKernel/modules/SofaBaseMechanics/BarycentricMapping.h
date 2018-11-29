@@ -1037,13 +1037,8 @@ protected:
     SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> mapper;
 
 public:
-
     Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping
 
-#ifdef SOFA_DEV
-    //--- partial mapping test
-    Data< bool > sleeping; ///< is the mapping sleeping (not computed)
-#endif
 protected:
     BarycentricMapping();
 
@@ -1105,7 +1100,7 @@ private:
     void createMapperFromTopology(BaseMeshTopology * topology);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;

@@ -414,8 +414,6 @@ void ArticulatedHierarchyController::applyController(void)
     }
 }
 
-SOFA_DECL_CLASS(ArticulatedHierarchyController)
-
 // Register in the Factory
 int ArticulatedHierarchyControllerClass = core::RegisterObject("Implements an user interaction handler that controls the values of the articulations of an articulated hierarchy container.")
         .add< ArticulatedHierarchyController >()

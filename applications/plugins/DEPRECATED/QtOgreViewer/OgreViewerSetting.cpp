@@ -32,7 +32,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(OgreViewerSetting)
 int OgreViewerSettingClass = core::RegisterObject("Configuration for the Ogre Viewer")
         .add< OgreViewerSetting >()
         .addAlias("OgreViewer")

@@ -37,8 +37,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FastTetrahedralCorotationalForceField)
-
 using namespace sofa::defaulttype;
 
 

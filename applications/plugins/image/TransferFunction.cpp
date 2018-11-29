@@ -33,8 +33,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(TransferFunction)
-
 int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
         .add<TransferFunction<ImageUC,ImageUC    > >(true)
         .add<TransferFunction<ImageD ,ImageD     > >()

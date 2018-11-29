@@ -31,8 +31,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(ReadTopology)
-
 using namespace defaulttype;
 
 int ReadTopologyClass = core::RegisterObject("Read topology containers informations from file at each timestep")

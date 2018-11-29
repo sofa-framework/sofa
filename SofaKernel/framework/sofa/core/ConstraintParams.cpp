@@ -31,6 +31,24 @@ namespace sofa
 namespace core
 {
 
+ConstraintParams::ConstraintParams(const sofa::core::ExecParams& p)
+    : sofa::core::ExecParams(p)
+    , m_x(ConstVecCoordId::position())
+    , m_v(ConstVecDerivId::velocity())
+    , m_j(MatrixDerivId::constraintJacobian())
+    , m_dx(VecDerivId::dx())
+    , m_lambda(VecDerivId::externalForce())
+    , m_constOrder (POS_AND_VEL)
+    , m_smoothFactor (1)
+{
+}
+
+ConstraintParams& ConstraintParams::setExecParams(const core::ExecParams* params)
+{
+    sofa::core::ExecParams::operator=(*params);
+    return *this;
+}
+
 /// Get the default ConstraintParams, to be used to provide a default values for method parameters
 const ConstraintParams* ConstraintParams::defaultInstance()
 {

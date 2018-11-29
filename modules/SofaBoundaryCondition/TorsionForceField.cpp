@@ -36,8 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TorsionForceField)
-
 int TorsionForceFieldClass = core::RegisterObject("Applies a torque to specified points")
 #ifndef SOFA_DOUBLE
 		.add< TorsionForceField<Vec3fTypes> >()

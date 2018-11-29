@@ -89,7 +89,7 @@ public:
 } // namespace collision
 } // namespace component
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP)
 namespace helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file.

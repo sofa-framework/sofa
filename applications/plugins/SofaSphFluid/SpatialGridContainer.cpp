@@ -37,8 +37,6 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(SpatialGridContainer)
-
 int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid container, used for SPH fluids for instance.")
 #ifndef SOFA_FLOAT
         .add< SpatialGridContainer<Vec3dTypes> >()

@@ -314,7 +314,6 @@ Node *SMPSimulation::getVisualRoot()
 
 
 
-SOFA_DECL_CLASS ( SMPSimulation );
 // Register in the Factory
 int SMPSimulationClass = core::RegisterObject ( "Main simulation algorithm" ) .add< SMPSimulation >();
 

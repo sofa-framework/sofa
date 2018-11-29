@@ -39,9 +39,6 @@ void initMiscSolver()
     }
 }
 
-SOFA_LINK_CLASS(NewmarkImplicitSolver)
-
-
 } // namespace component
 
 } // namespace sofa

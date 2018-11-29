@@ -25,9 +25,6 @@ using core::collision::Contact;
 //sofa::core::collision::DetectionOutput::ContactId Identifier::cpt=0;
 //std::list<sofa::core::collision::DetectionOutput::ContactId> Identifier::availableId;
 
-SOFA_DECL_CLASS(CompliantContact)
-
-
 Creator<Contact::Factory, CompliantContact<PointModel, PointModel> > PointPointCompliantContactClass("CompliantContact",true);
 Creator<Contact::Factory, CompliantContact<LineModel, SphereModel> > LineSphereCompliantContactClass("CompliantContact",true);
 Creator<Contact::Factory, CompliantContact<LineModel, PointModel> > LinePointCompliantContactClass("CompliantContact",true);

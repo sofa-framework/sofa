@@ -74,35 +74,7 @@ protected:
 
     void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
 
-
-    MeshSpringForceField()
-        : d_linesStiffness(initData(&d_linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines",true))
-        , d_linesDamping(initData(&d_linesDamping,Real(0),"linesDamping","Damping for the Lines",true))
-        , d_trianglesStiffness(initData(&d_trianglesStiffness,Real(0),"trianglesStiffness","Stiffness for the Triangles",true))
-        , d_trianglesDamping(initData(&d_trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles",true))
-        , d_quadsStiffness(initData(&d_quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads",true))
-        , d_quadsDamping(initData(&d_quadsDamping,Real(0),"quadsDamping","Damping for the Quads",true))
-        , d_tetrahedraStiffness(initData(&d_tetrahedraStiffness,Real(0),"tetrahedraStiffness","Stiffness for the Tetrahedra",true))
-        , d_tetrahedraDamping(initData(&d_tetrahedraDamping,Real(0),"tetrahedraDamping","Damping for the Tetrahedra",true))
-        , d_cubesStiffness(initData(&d_cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
-        , d_cubesDamping(initData(&d_cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
-        , d_noCompression( initData(&d_noCompression, false, "noCompression", "Only consider elongation", false))
-        , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
-        , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
-        , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-        , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-    {
-        this->ks.setDisplayed(false);
-        this->kd.setDisplayed(false);
-        this->addAlias(&d_linesStiffness,     "stiffness"); this->addAlias(&d_linesDamping,     "damping");
-        this->addAlias(&d_trianglesStiffness, "stiffness"); this->addAlias(&d_trianglesDamping, "damping");
-        this->addAlias(&d_quadsStiffness,     "stiffness"); this->addAlias(&d_quadsDamping,     "damping");
-        this->addAlias(&d_tetrahedraStiffness,"stiffness"); this->addAlias(&d_tetrahedraDamping, "damping");
-        this->addAlias(&d_cubesStiffness,     "stiffness"); this->addAlias(&d_cubesDamping,      "damping");
-        //Name changes: keep compatibility with old version
-        this->addAlias(&d_tetrahedraStiffness,"tetrasStiffness"); this->addAlias(&d_tetrahedraDamping, "tetrasDamping");
-    }
-
+    MeshSpringForceField() ;
     virtual ~MeshSpringForceField();
 public:
     Real getStiffness() const { return d_linesStiffness.getValue(); }
@@ -180,7 +152,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec2dTypes>;

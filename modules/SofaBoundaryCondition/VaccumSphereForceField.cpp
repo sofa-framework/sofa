@@ -37,8 +37,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(VaccumSphereForceField)
-
 int VaccumSphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere toward the exterior")
 #ifndef SOFA_FLOAT
         .add< VaccumSphereForceField<Vec3dTypes> >()

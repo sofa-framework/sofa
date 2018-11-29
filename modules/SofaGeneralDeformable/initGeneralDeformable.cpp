@@ -39,17 +39,6 @@ void initGeneralDeformable()
     }
 }
 
-SOFA_LINK_CLASS(QuadularBendingSprings);
-SOFA_LINK_CLASS(TriangularBendingSprings);
-SOFA_LINK_CLASS(TriangularBiquadraticSpringsForceField);
-SOFA_LINK_CLASS(TriangularQuadraticSpringsForceField);
-SOFA_LINK_CLASS(TriangularTensorMassForceField);
-SOFA_LINK_CLASS(FrameSpringForceField);
-SOFA_LINK_CLASS(QuadBendingSprings);
-SOFA_LINK_CLASS(RegularGridSpringForceField);
-SOFA_LINK_CLASS(TriangleBendingSprings);
-SOFA_LINK_CLASS(VectorSpringForceField);
-
 } // namespace component
 
 } // namespace sofa

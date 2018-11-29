@@ -105,26 +105,7 @@ const char* getModuleComponentList()
 } // namespace sofa
 
 ////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(DepthMapToMeshEngine)
-SOFA_LINK_CLASS(ImageAccumulator)
-SOFA_LINK_CLASS(ImageContainer)
-SOFA_LINK_CLASS(ImageDataDisplay)
-SOFA_LINK_CLASS(ImageExporter)
-SOFA_LINK_CLASS(ImageFilter)
-SOFA_LINK_CLASS(ImageOperation)
-SOFA_LINK_CLASS(ImageSampler)
-SOFA_LINK_CLASS(ImageTransform)
-SOFA_LINK_CLASS(ImageTransformEngine)
-SOFA_LINK_CLASS(ImageValuesFromPositions)
-SOFA_LINK_CLASS(ImageToRigidMassEngine)
 #ifndef SOFA_NO_OPENGL
-SOFA_LINK_CLASS(ImageViewer)
 #endif /* SOFA_NO_OPENGL */
-SOFA_LINK_CLASS(MarchingCubesEngine)
-SOFA_LINK_CLASS(VoronoiToMeshEngine)
-SOFA_LINK_CLASS(MergeImages)
-SOFA_LINK_CLASS(MeshToImageEngine)
-SOFA_LINK_CLASS(TransferFunction)
 #ifdef SOFA_HAVE_LIBFREENECT
-SOFA_LINK_CLASS(Kinect)
 #endif

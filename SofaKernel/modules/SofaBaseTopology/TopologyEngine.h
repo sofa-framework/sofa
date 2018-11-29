@@ -66,10 +66,7 @@ public:
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
-
 protected:
-    //TopologyEngineImpl();
-
     TopologyEngineImpl(t_topologicalData* _topologicalData,
             sofa::core::topology::BaseMeshTopology* _topology,
             sofa::core::topology::TopologyHandler* _topoHandler);
