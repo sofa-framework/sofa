@@ -129,6 +129,17 @@ static PyObject * Link_getLinkedBase(PyObject *self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
+
+static PyObject * Link_getLinkedData(PyObject *self, PyObject * /*args*/)
+{
+    BaseLink* link = get_baselink( self );
+
+    if( link->getLinkedData() )
+        return SP_BUILD_PYPTR(Data,BaseData,link->getLinkedData(),false);
+
+    Py_RETURN_NONE;
+}
+
 static PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link = get_baselink( self );
@@ -173,6 +184,7 @@ SP_CLASS_METHOD_DOC(Link,isPersistant, "Returns True if the PERSISTANT(STORE) fl
 SP_CLASS_METHOD_DOC(Link,setPersistant,  "Change the value of the PERSISTANT(STORE) flag. This is used to \n"
                                          "control if the field should be saved.")
 SP_CLASS_METHOD_DOC(Link,getLinkedBase,  "Return the sofa object pointed by the link")
+SP_CLASS_METHOD_DOC(Link,getLinkedData,  "Return the sofa data pointed by the link")
 
 
 SP_CLASS_METHOD(Link,getSize)
