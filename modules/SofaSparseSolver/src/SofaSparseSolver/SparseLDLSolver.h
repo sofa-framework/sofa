@@ -32,6 +32,7 @@
 #include <math.h>
 #include <SofaSparseSolver/SparseLDLSolverImpl.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -57,12 +58,14 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
 
-    void solve (Matrix& M, Vector& x, Vector& b) override ;
-    void invert(Matrix& M) override;
-    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
+    virtual void solve (Matrix& M, Vector& x, Vector& b) override ;
+    virtual void invert(Matrix& M) override;
+    virtual bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
     int numStep;
 
-    Data<bool> f_saveMatrixToFile; ///< save matrix to a text file (can be very slow, as full matrix is stored
+    Data<bool> f_saveMatrixToFile;      ///< save matrix to a text file (can be very slow, as full matrix is stored)
+    sofa::core::objectmodel::DataFileName d_filename;   ///< file where this matrix will be saved
+    Data<int> d_precision;      ///< number of digits used to save system's matrix, default is 6
 
     MatrixInvertData * createInvertData() override {
         return new InvertData();
