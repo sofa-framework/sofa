@@ -586,7 +586,7 @@ using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec3fTypes;
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3dTypes>;
@@ -597,7 +597,7 @@ extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3fTypes>;
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 } // namespace forcefield
 

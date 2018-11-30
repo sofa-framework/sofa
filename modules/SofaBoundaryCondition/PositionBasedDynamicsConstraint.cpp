@@ -40,8 +40,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(PositionBasedDynamicsConstraint)
-
 int PositionBasedDynamicsConstraintClass = core::RegisterObject("Position-based dynamics")
 
 #ifndef SOFA_FLOAT

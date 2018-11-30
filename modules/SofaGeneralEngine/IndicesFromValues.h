@@ -71,7 +71,7 @@ public:
     core::objectmodel::Data<bool> f_recursiveSearch; ///< if set to true, output are indices of the "global" data matching with one of the values
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<std::string>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<int>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<unsigned int>;

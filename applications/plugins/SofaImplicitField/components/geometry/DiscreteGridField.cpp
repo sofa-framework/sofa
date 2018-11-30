@@ -367,8 +367,6 @@ double DiscreteGridField::getValue( Vec3d &transformedPos )
 int DiscreteGridFieldClass = RegisterObject("A discrete scalar field from a regular grid storing field value with interpolation.")
         .add< DiscreteGridField >() ;
 
-SOFA_DECL_CLASS(DiscreteGridField)
-
 } ///namespace _discretegrid_
 
 } ///namespace geometry

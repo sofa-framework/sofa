@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
@@ -80,7 +78,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec2dTypes>;

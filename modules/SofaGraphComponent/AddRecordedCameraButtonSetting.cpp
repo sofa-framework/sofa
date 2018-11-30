@@ -33,14 +33,12 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(AddRecordedCameraButtonSetting)
 int AddRecordedCameraButtonSettingClass = core::RegisterObject("Save Camera's View Point Button configuration")
         .add< AddRecordedCameraButtonSetting >()
         .addAlias("AddRecordedCameraButton")
         ;
 
 
-SOFA_DECL_CLASS(StartNavigationButtonSetting)
 int StartNavigationButtonSettingClass = core::RegisterObject("Start Navigation Button configuration")
         .add< StartNavigationButtonSetting >()
         .addAlias("StartNavigationButton")

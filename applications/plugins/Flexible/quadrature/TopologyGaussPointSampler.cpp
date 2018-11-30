@@ -34,8 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(TopologyGaussPointSampler)
-
 int TopologyGaussPointSamplerClass = core::RegisterObject("Samples an object represented by a mesh")
         .add<TopologyGaussPointSampler>(true)
         ;

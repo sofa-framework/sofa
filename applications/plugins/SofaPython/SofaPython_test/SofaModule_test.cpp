@@ -27,6 +27,8 @@ using sofa::core::ExecParams ;
 #include <SofaPython/PythonScriptController.h>
 using sofa::component::controller::PythonScriptController ;
 
+#include <sofa/helper/AdvancedTimer.h>
+
 template <typename charType>
 void ReplaceSubstring(std::basic_string<charType>& subject,
     const std::basic_string<charType>& search,

@@ -155,9 +155,6 @@ public:
 
         rot.resize(this->clusters.size());
 
-        //#ifdef _OPENMP
-        //        #pragma omp parallel for
-        //#endif
         for (unsigned int i=0 ; i<this->clusters.size() ; ++i)
         {
             Mat3x3 M;
@@ -212,11 +209,6 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
     {
-        //        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
-        //        const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-        //        const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
-        //        helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        //        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
     }
 
 
@@ -269,7 +261,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 #endif

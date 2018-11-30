@@ -46,26 +46,20 @@ LocalMinDistanceFilter::LocalMinDistanceFilter()
     , m_revision(0)
     , m_rigid(initData(&m_rigid, false, "isRigid", "filters optimization for rigid case."))
 {
-
-
 }
 
 
 
 LocalMinDistanceFilter::~LocalMinDistanceFilter()
 {
-
 }
 
 // when object is rigid, bwdInit will look for the RigidMapping
 // to get a point on the MState of the rigid frame
 void LocalMinDistanceFilter::bwdInit()
 {
-    std::cout<<"+++++++ bwdInit called"<<std::endl;
-
     if(this->isRigid())
     {
-        std::cout<<"+++++++++++ is Rigid !!"<<std::endl;
         RigidMapping< Rigid3Types, Vec3Types > *r_mapping= NULL;
         r_mapping = this->getContext()->get< RigidMapping< Rigid3Types, Vec3Types > >();
 
@@ -81,21 +75,11 @@ void LocalMinDistanceFilter::bwdInit()
             this->setRigid(false);
             return;
         }
-
-
-        // TODO : Better way of accessing rigid position !!!!
-
-        //	pos = &r_mapping->rotatedPointsInput;
-
-        std::cout<<"rotation found "<<pos->getOrientation()<<std::endl;
-
-
     }
 }
 
 
 // invalidate function is called by PointModel, LineModel or TriangleModel each time a new computation of the BoundingTree is called
-//
 void LocalMinDistanceFilter::invalidate()
 {
 
@@ -103,11 +87,8 @@ void LocalMinDistanceFilter::invalidate()
         return;         // If the object is rigid, the filters are pre-built
 
     /// TODO: this does not do anything...
-    //m_revision = m_revision++;
-
     if (m_revision >= std::numeric_limits< unsigned int >::max())
         m_revision=0;
-
 }
 
 bool InfoFilter::isValid(void)
@@ -122,61 +103,11 @@ bool InfoFilter::isValid(void)
     return m_revision == m_lmdFilters->getRevision();
 }
 
-
-
 void InfoFilter::setValid()
 {
     assert(m_lmdFilters != 0);
     m_revision = m_lmdFilters->getRevision();
 }
-
-/*
-template<>
-bool LocalMinDistanceFilters::validate(const Point &p, const defaulttype::Vector3 &PQ)
-{
-    PointInfoMap::iterator it = m_pointInfoMap.find(p.getIndex());
-    if (it != m_pointInfoMap.end())
-    {
-        return it->second->validate(p, PQ);
-    }
-
-    std::pair< PointInfoMap::iterator, bool > ret = m_pointInfoMap.insert(std::make_pair(p.getIndex(), new PointInfo(this)));
-
-    return ret.first->second->validate(p, PQ);
-}
-
-
-
-template<>
-bool LocalMinDistanceFilters::validate(const Line &l, const defaulttype::Vector3 &PQ)
-{
-    LineInfoMap::iterator it = m_lineInfoMap.find(l.getIndex());
-    if (it != m_lineInfoMap.end())
-    {
-        return it->second->validate(l, PQ);
-    }
-
-    std::pair< LineInfoMap::iterator, bool > ret = m_lineInfoMap.insert(std::make_pair(l.getIndex(), new LineInfo(this)));
-
-    return ret.first->second->validate(l, PQ);
-}
-
-
-
-template<>
-bool LocalMinDistanceFilters::validate(const Triangle &t, const defaulttype::Vector3 &PQ)
-{
-    TriangleInfoMap::iterator it = m_triangleInfoMap.find(t.getIndex());
-    if (it != m_triangleInfoMap.end())
-    {
-        return it->second->validate(t, PQ);
-    }
-
-    std::pair< TriangleInfoMap::iterator, bool > ret = m_triangleInfoMap.insert(std::make_pair(t.getIndex(), new TriangleInfo(this)));
-
-    return ret.first->second->validate(t, PQ);
-}
-*/
 
 } // namespace collision
 

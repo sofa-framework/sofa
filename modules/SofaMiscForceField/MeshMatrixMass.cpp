@@ -129,31 +129,29 @@ Vector6 MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalP
 
 
 
-SOFA_DECL_CLASS(MeshMatrixMass)
-
 // Register in the Factory
 int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
 #ifndef SOFA_FLOAT
-        .add< MeshMatrixMass<Vec3dTypes,double> >()
-        .add< MeshMatrixMass<Vec2dTypes,double> >()
-        .add< MeshMatrixMass<Vec1dTypes,double> >()
+        .add< MeshMatrixMass<Vec3dTypes,Vec3dTypes::Real> >()
+        .add< MeshMatrixMass<Vec2dTypes,Vec2dTypes::Real> >()
+        .add< MeshMatrixMass<Vec1dTypes,Vec1dTypes::Real> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< MeshMatrixMass<Vec3fTypes,float> >()
-        .add< MeshMatrixMass<Vec2fTypes,float> >()
-        .add< MeshMatrixMass<Vec1fTypes,float> >()
+        .add< MeshMatrixMass<Vec3fTypes,Vec3fTypes::Real> >()
+        .add< MeshMatrixMass<Vec2fTypes,Vec2fTypes::Real> >()
+        .add< MeshMatrixMass<Vec1fTypes,Vec1fTypes::Real> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3dTypes,double>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2dTypes,double>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1dTypes,double>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3dTypes,Vec3dTypes::Real>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2dTypes,Vec2dTypes::Real>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1dTypes,Vec1dTypes::Real>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3fTypes,float>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2fTypes,float>;
-template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1fTypes,float>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3fTypes,Vec3fTypes::Real>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2fTypes,Vec2fTypes::Real>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1fTypes,Vec1fTypes::Real>;
 #endif
 
 

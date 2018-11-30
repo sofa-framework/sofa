@@ -34,7 +34,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(EdgeSetGeometryAlgorithms)
 int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry algorithms")
 
 #ifdef SOFA_FLOAT

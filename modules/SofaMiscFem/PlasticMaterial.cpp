@@ -129,8 +129,6 @@ void PlasticMaterial::computeStressOnSection(Vector3& Stress, Vector3 Strain, in
 
 }
 
-SOFA_DECL_CLASS(PlasticMaterial)
-
 int PlasticMaterialClass = core::RegisterObject("Plastic material")
 .add< PlasticMaterial >()
 ;

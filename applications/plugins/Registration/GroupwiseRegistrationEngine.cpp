@@ -34,8 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(GroupwiseRegistrationEngine)
-
 int GroupwiseRegistrationEngineClass = core::RegisterObject("Register a set of meshes of similar topology")
 #ifndef SOFA_FLOAT
         .add<GroupwiseRegistrationEngine< Vec3dTypes > >(true)

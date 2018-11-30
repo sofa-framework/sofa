@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(StatsSetting)
 int StatsSettingClass = core::RegisterObject("Stats settings")
         .add< StatsSetting >()
         .addAlias("Stats")

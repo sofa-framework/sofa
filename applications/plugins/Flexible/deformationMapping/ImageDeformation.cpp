@@ -34,8 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageDeformation)
-
 int ImageDeformationClass = core::RegisterObject("Deform an image based on an existing DeformationMapping")
         .add<ImageDeformation<ImageUC > >(true)
         .add<ImageDeformation<ImageD > >()

@@ -701,7 +701,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
+#if  !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageB>;
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUC>;
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUS>;

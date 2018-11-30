@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SPIRAL_INL
 #define SOFA_COMPONENT_ENGINE_SPIRAL_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/Spiral.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -87,7 +83,7 @@ void Spiral<DataTypes>::doUpdate()
         // t = t - l(t)/l'(t)
         for (int n=0; n<10; ++n)
         {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32)
             Real l_t = A/2 * ( t * sqrt(1+t*t) + asinh(t) );
 #else
             Real l_t = A/2 * ( t * sqrt(1+t*t) + log(t + sqrt(t * t + 1)));

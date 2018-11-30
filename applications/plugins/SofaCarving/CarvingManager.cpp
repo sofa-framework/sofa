@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(CarvingManager)
-
 int CarvingManagerClass = core::RegisterObject("Manager handling carving operations between a tool and an object.")
 .add< CarvingManager >()
 ;

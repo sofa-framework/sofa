@@ -37,8 +37,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PersistentContactBarycentricMapping)
-
 // Register in the Factory
 int PersistentContactBarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
 #ifndef SOFA_FLOAT

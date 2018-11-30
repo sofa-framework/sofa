@@ -39,8 +39,6 @@ namespace _beamfemforcefield_
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(BeamFEMForceField)
-
 // Register in the Factory
 int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements.")
 #ifndef SOFA_FLOAT

@@ -33,8 +33,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MeshSampler)
-
 int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
 #ifndef SOFA_FLOAT
         .add< MeshSampler<Vec3dTypes> >(true)

@@ -9,8 +9,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(BulletConvexHull)
-
 int BulletConvexHullModelClass = core::RegisterObject("collision model using a set of convex hulls")
 #ifndef SOFA_FLOAT
         .add< TBulletConvexHullModel< defaulttype::Rigid3dTypes> >()

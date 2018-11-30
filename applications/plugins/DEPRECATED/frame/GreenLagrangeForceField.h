@@ -101,7 +101,7 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_GREENLAGRANGEFORCEFIELD_CPP)
+#if  !defined(FRAME_GREENLAGRANGEFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332dTypes>;

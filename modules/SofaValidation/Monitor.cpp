@@ -32,8 +32,6 @@ namespace component
 {
 namespace misc
 {
-SOFA_DECL_CLASS(Monitor)
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory

@@ -41,8 +41,6 @@ int SingleComponentClass = core::RegisterObject("Load mesh of one shape, in the 
 
 template class SingleComponent<int>;
 
-SOFA_DECL_CLASS(SingleComponent);
-
 }
 
 }

@@ -48,8 +48,6 @@ public:
 
     typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
 
-    // Data<bool> useSphereTriangle;
-    // Data<bool> usePointPoint;
     Data<bool> filterIntersection; ///< Activate LMD filter
     Data<double> angleCone; ///< Filtering cone extension angle
     Data<double> coneFactor; ///< Factor for filtering cone angle computation
@@ -118,7 +116,7 @@ namespace core
 {
 namespace collision
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
 extern template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
 #endif
 }

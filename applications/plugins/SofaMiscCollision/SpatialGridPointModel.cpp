@@ -35,8 +35,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(SpatialGridPointModel)
-
 int SpatialGridPointModelClass = core::RegisterObject("Collision model which represents a set of points, spatially grouped using a SpatialGridContainer")
         .add< SpatialGridPointModel >()
         ;

@@ -43,7 +43,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::core;
 
-SOFA_DECL_CLASS(VoxelGridLoader);
 int VoxelGridLoaderClass = RegisterObject("Voxel loader based on RAW files").add<VoxelGridLoader>();
 
 VoxelGridLoader::VoxelGridLoader()

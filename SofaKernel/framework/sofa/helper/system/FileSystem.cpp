@@ -32,8 +32,6 @@
 # include <winerror.h>
 # include <strsafe.h>
 # include "Shlwapi.h"           // for PathFileExists()
-#elif defined(_XBOX)
-# include <xtl.h>
 #else
 # include <dirent.h>
 # include <sys/stat.h>
@@ -81,29 +79,13 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     return hFind;
 }
-#elif defined (_XBOX)
-static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
-{
-    char szDir[MAX_PATH];
-    HANDLE hFind = INVALID_HANDLE_VALUE;
-
-    // Prepare string for use with FindFile functions.  First, copy the
-    // string to a buffer, then append '\*' to the directory name.
-    strcpy_s(szDir, MAX_PATH, path.c_str());
-    strcat_s(szDir, MAX_PATH, "\\*");
-
-    // Find the first file in the directory.
-    hFind = FindFirstFile(szDir, ffd);
-
-    return hFind;
-}
 #endif
 
 
 bool FileSystem::listDirectory(const std::string& directoryPath,
                                std::vector<std::string>& outputFilenames)
 {
-#if defined(WIN32) || defined (_XBOX)
+#if defined(WIN32)
     // Find the first file in the directory.
     WIN32_FIND_DATA ffd;
     HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
@@ -114,11 +96,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 
     // Iterate over files and push them in the output vector
     do {
-# if defined (_XBOX)
-        std::string filename = ffd.cFileName;
-# else
         std::string filename = Utils::narrowString(ffd.cFileName);
-# endif
         if (filename != "." && filename != "..")
             outputFilenames.push_back(filename);
     } while (FindNextFile(hFind, &ffd) != 0);
@@ -206,9 +184,6 @@ bool FileSystem::exists(const std::string& path)
         return false;
     }
 
-#elif defined (_XBOX)
-    DWORD fileAttrib = GetFileAttributes(path.c_str());
-    return fileAttrib != -1;
 #else
     struct stat st_buf;
     if (stat(path.c_str(), &st_buf) == 0)
@@ -229,14 +204,6 @@ bool FileSystem::isDirectory(const std::string& path)
 #if defined(WIN32)
     DWORD fileAttrib = GetFileAttributes(Utils::widenString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
-        msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
-        return false;
-    }
-    else
-        return (fileAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
-#elif defined (_XBOX)
-    DWORD fileAttrib = GetFileAttributes(path.c_str());
-    if (fileAttrib == -1) {
         msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
         return false;
     }

@@ -38,19 +38,15 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TranslateTransformMatrixEngine)
 int TranslateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given translation")
         .add< TranslateTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(InvertTransformMatrixEngine)
 int InvertTransformMatrixEngineClass = core::RegisterObject("Inverts the input transform")
         .add< InvertTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(ScaleTransformMatrixEngine)
 int ScaleTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given scale transformation")
         .add< ScaleTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(RotateTransformMatrixEngine)
 int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given rotation")
         .add< RotateTransformMatrixEngine >();
 

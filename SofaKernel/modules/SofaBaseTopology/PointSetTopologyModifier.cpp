@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(PointSetTopologyModifier)
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
         .add< PointSetTopologyModifier >();
 
@@ -242,7 +241,7 @@ void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
                     break;
                 }
             default :
-                serr << "ERROR in PointSetTopologyModifier : Unsupported ancestor primitive type in addPointsWarning" << sendl;
+                msg_error() << "Unsupported ancestor primitive type in addPointsWarning";
                 break;
             }
         }
@@ -375,10 +374,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    //TODO: temporary code to test topology engine pipeline.
-#ifndef NDEBUG
-    sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
-#endif
     // Declare all engines to dirty:
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
@@ -392,17 +387,9 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     // security to avoid loops
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
         (*it)->cleanDirty();
-
-#ifndef NDEBUG
-    sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
-#endif
     
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
 
@@ -415,10 +402,6 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
 
@@ -439,19 +422,12 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     // get directly the list of engines created at init: case of removing.... for the moment
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
-#ifndef NDEBUG
-    dmsg_info() << "points is dirty" << msgendl
-                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
-#endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            std::cout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
-#endif
             topoEngine->update();
         }
     }

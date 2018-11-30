@@ -60,6 +60,72 @@ using namespace sofa::core::topology;
 using namespace sofa::core::loader;
 using helper::vector;
 
+ExtVec3fState::ExtVec3fState()
+    : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
+    , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
+    , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
+    , modified(false)
+{
+    m_positions.setGroup("Vector");
+    m_restPositions.setGroup("Vector");
+    m_vnormals.setGroup("Vector");
+}
+
+void ExtVec3fState::resize(size_t vsize)
+{
+    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+    if( positions.size() == vsize ) return;
+    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
+    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
+
+    positions.resize(vsize);
+    restPositions.resize(vsize); // todo allocate restpos only when it is necessary
+    normals.resize(vsize);
+
+    modified = true;
+}
+
+size_t ExtVec3fState::getSize() const { return m_positions.getValue().size(); }
+
+Data<ExtVec3fState::VecCoord>* ExtVec3fState::write(     core::VecCoordId  v )
+{
+    modified = true;
+
+    if( v == core::VecCoordId::position() )
+        return &m_positions;
+    if( v == core::VecCoordId::restPosition() )
+        return &m_restPositions;
+
+    return NULL;
+}
+
+const Data<ExtVec3fState::VecCoord>* ExtVec3fState::read(core::ConstVecCoordId  v )  const
+{
+    if( v == core::VecCoordId::position() )
+        return &m_positions;
+    if( v == core::VecCoordId::restPosition() )
+        return &m_restPositions;
+
+    return NULL;
+}
+
+Data<ExtVec3fState::VecDeriv>*	ExtVec3fState::write(core::VecDerivId v )
+{
+    if( v == core::VecDerivId::normal() )
+        return &m_vnormals;
+
+    return NULL;
+}
+
+const Data<ExtVec3fState::VecDeriv>* ExtVec3fState::read(core::ConstVecDerivId v ) const
+{
+    if( v == core::VecDerivId::normal() )
+        return &m_vnormals;
+
+    return NULL;
+}
+
+
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::visual::VisualModel::parse(arg);
@@ -109,8 +175,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
                                   (Real)arg->getAttributeAsFloat("sz",1.0)));
     }
 }
-
-SOFA_DECL_CLASS(VisualModelImpl)
 
 int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
         .add< VisualModelImpl >()

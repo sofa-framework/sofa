@@ -36,8 +36,6 @@ namespace linearsolver
 using namespace sofa::component::odesolver;
 using namespace sofa::component::linearsolver;
 
-SOFA_DECL_CLASS(PrecomputedLinearSolver)
-
 int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
         .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
         ;

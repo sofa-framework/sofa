@@ -165,7 +165,7 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class DOFBlockerLMConstraint<defaulttype::Rigid3dTypes>;
 extern template class DOFBlockerLMConstraint<defaulttype::Vec3dTypes>;

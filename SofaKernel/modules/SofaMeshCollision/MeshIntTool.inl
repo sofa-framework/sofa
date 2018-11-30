@@ -55,14 +55,9 @@ int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vect
 
     SReal alpha = 0.5;
 
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;//projection of the point on the capsule segment such as the projected point P = p1 + AB * alpha
-        //if (alpha < 0.000001 || alpha > 0.999999)
-        //        return 0;
-        if (alpha < 0.0) alpha = 0.0;//if the projection is out the segment, we associate it to a segment apex
-        else if (alpha > 1.0) alpha = 1.0;
-    }
+    alpha = b/A;//projection of the point on the capsule segment such as the projected point P = p1 + AB * alpha
+    if (alpha < 0.0) alpha = 0.0;//if the projection is out the segment, we associate it to a segment apex
+    else if (alpha > 1.0) alpha = 1.0;
 
     defaulttype::Vector3 p,pq;
     p = p1 + AB * alpha;

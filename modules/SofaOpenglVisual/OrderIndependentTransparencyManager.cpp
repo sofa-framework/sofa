@@ -52,7 +52,6 @@ using namespace helper::gl;
 using namespace simulation;
 using namespace core::visual;
 
-SOFA_DECL_CLASS(OrderIndependentTransparencyManager)
 //Register OrderIndependentTransparencyManager in the Object Factory
 int OrderIndependentTransparencyManagerClass = core::RegisterObject("OrderIndependentTransparencyManager")
         .add< OrderIndependentTransparencyManager >()

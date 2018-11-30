@@ -33,8 +33,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-SOFA_DECL_CLASS(TriangularConvexHull3D)
-
 using namespace sofa::defaulttype;
 using namespace cgal;
 

@@ -35,10 +35,18 @@ using sofa::core::objectmodel::BaseObjectDescription ;
 #include <sofa/simulation/XMLPrintVisitor.h>
 using sofa::simulation::XMLPrintVisitor ;
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
+
 namespace sofa
 {
 namespace simpleapi
 {
+
+bool importPlugin(const std::string& name)
+{
+    return PluginManager::getInstance().loadPlugin(name) ;
+}
 
 void dumpScene(Node::SPtr root)
 {

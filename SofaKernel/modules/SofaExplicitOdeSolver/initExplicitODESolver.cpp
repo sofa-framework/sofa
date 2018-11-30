@@ -39,8 +39,6 @@ void initExplicitODESolver()
     }
 }
 
-SOFA_LINK_CLASS(Euler)
-
 } // namespace component
 
 } // namespace sofa

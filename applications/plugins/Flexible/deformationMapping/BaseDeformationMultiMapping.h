@@ -230,19 +230,11 @@ public:
     virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)=0;
     //@}
 
-//    SparseMatrix& getJacobianBlocks()
-//    {
-//        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
-//        return jacobian;
-//    }
-
     Data<std::string> f_shapeFunction_name; ///< name of the shape function component (optional: if not specified, will searchup)
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     Data<VecVRef > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
     Data<VecVRef > f_index1;            ///< The numChildren * numRefs column indices. index1[i][j] is the index of the j-th parent of type 1 influencing child i.
     Data<VecVRef > f_index2;            ///< The numChildren * numRefs column indices. index2[i][j] is the index of the j-th parent of type 2 influencing child i.
-//    VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
-//    VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
     Data<VecVReal >       f_w; ///< influence weights of the Dofs
     Data<VecVGradient >   f_dw; ///< weight gradients
     Data<VecVHessian >    f_ddw; ///< weight Hessians
@@ -289,12 +281,9 @@ protected:
     void updateJ1();
     SparseMatrixEigen2 eigenJacobian2/*, maskedEigenJacobian2*/;  ///< Assembled Jacobian matrix
     void updateJ2();
-//    void updateMaskedJ();
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
-
-//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;

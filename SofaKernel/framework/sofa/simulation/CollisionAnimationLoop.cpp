@@ -106,14 +106,6 @@ const CollisionAnimationLoop::Solvers& CollisionAnimationLoop::getSolverSequence
     return gnode->solver;
 }
 
-// CollisionAnimationLoop::Pipeline* CollisionAnimationLoop::getPipeline()
-// {
-// 	simulation::Node* gnode = dynamic_cast<simulation::Node*>( getContext() );
-// 	assert( gnode );
-// 	return gnode->collisionPipeline;
-// }
-
-
 } // namespace simulation
 
 } // namespace sofa

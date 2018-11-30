@@ -51,8 +51,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaIndexValueMapper)
-
 int IndexValueMapperClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::engine::IndexValueMapper<CudaVec3fTypes> >()
         .add< component::engine::IndexValueMapper<CudaVec3f1Types> >()

@@ -36,8 +36,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(HausdorffDistance)
-
 int HausdorffDistanceClass = core::RegisterObject("Compute the Hausdorff distance of two point clouds")
 #ifndef SOFA_FLOAT
         .add< HausdorffDistance<Vec1dTypes> >()

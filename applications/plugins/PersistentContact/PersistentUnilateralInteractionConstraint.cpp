@@ -36,8 +36,6 @@ namespace constraintset
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PersistentUnilateralInteractionConstraint)
-
 #ifndef SOFA_FLOAT
 template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<Vec3dTypes>;
 #endif

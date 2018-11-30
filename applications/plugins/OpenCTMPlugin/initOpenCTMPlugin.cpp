@@ -76,5 +76,3 @@ const char* getModuleComponentList()
 
 }
 
-SOFA_LINK_CLASS(OpenCTMLoader)
-SOFA_LINK_CLASS(OpenCTMExporter)

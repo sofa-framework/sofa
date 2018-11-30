@@ -77,4 +77,3 @@ const char* getModuleComponentList()
 } // namespace sofa
 
 
-SOFA_LINK_CLASS(OmniDriverEmu)

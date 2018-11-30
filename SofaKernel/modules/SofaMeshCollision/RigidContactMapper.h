@@ -195,13 +195,12 @@ class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<Cylin
         }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP)
 extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel, defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel, defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel, defaulttype::Vec3Types>;
 
-#  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
 extern template SOFA_MESH_COLLISION_API void RigidContactMapper<CylinderModel, defaulttype::Vec3Types>::cleanup();
 extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderModel, defaulttype::Vec3Types>::createMapping(const char*);
@@ -211,7 +210,6 @@ extern template SOFA_MESH_COLLISION_API void RigidContactMapper<RigidSphereModel
 extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
 extern template SOFA_MESH_COLLISION_API void RigidContactMapper<OBBModel, defaulttype::Vec3Types>::cleanup();
 extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<OBBModel, defaulttype::Vec3Types>::createMapping(const char*);
-#  endif
 #endif
 
 } // namespace collision

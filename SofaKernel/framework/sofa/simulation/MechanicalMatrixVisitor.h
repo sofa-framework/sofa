@@ -22,9 +22,7 @@
 #ifndef SOFA_SIMULATION_MECHANICALMATRIXVISITOR_H
 #define SOFA_SIMULATION_MECHANICALMATRIXVISITOR_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -139,13 +137,13 @@ public:
 
     MechanicalIntegrateConstraintsVisitor(
         const core::ConstraintParams* cparams,
-        double pf, double vf, 
+        double pf, double vf,
         sofa::core::ConstMultiVecDerivId correction,
         sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::dx()),
         sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),
         sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()),
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        :BaseMechanicalVisitor(cparams) 
+        :BaseMechanicalVisitor(cparams)
         ,cparams(cparams)
         ,positionFactor(pf)
         ,velocityFactor(vf)
@@ -178,7 +176,7 @@ public:
             }
 
             const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintParams::ConstOrder::VEL ? velocityFactor : positionFactor;
-            
+
             //dx *= correctionFactor;
             ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);
         }

@@ -34,8 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(GaussPointContainer)
-
 int GaussPointContainerClass = core::RegisterObject("Container for user defined Gauss points (position and volume)")
         .add<GaussPointContainer>(true)
         ;

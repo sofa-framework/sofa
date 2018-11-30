@@ -592,16 +592,5 @@ SculptBodyPerformer<DataTypes>::SculptBodyPerformer(BaseMouseInteractor *i):TInt
 //           root->addObject(dynamic_cast<BaseObject*>(&eventManager));
 }
 
-#ifdef WIN32
-#ifdef SOFA_DEV
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3fTypes> >  SculptBodyPerformerVec3fClass("SculptBody",true);
-#endif
-#ifndef SOFA_FLOAT
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3dTypes> >  SculptBodyPerformerVec3dClass("SculptBody",true);
-#endif
-#endif
-#endif
-
 }
 }
