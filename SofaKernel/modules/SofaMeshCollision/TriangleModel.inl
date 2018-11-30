@@ -252,11 +252,12 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
         case core::topology::ENDING_EVENT:
         {
+            updateFromTopology();
+
             sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
             resize(_topology->getNbTriangles());
             needsUpdate=true;
-
-            updateFromTopology();
+            updateFlags();            
             break;
         }
         /*
