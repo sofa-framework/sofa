@@ -39,7 +39,6 @@ namespace topology
 using namespace std;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MultilevelHexahedronSetTopologyContainer)
 int MultilevelHexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
         .add< MultilevelHexahedronSetTopologyContainer >()
         ;

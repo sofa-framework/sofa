@@ -34,9 +34,6 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(TriangularFEMForceFieldOptim)
-
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory

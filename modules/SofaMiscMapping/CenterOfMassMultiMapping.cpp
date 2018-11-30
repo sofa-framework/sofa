@@ -35,8 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CenterOfMassMultiMapping)
-
 using namespace sofa::defaulttype;
 
 

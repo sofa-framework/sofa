@@ -38,8 +38,6 @@ namespace component
 namespace interactionforcefield
 {
 
-SOFA_DECL_CLASS(SpringForceField)
-
 using namespace sofa::defaulttype;
 
 

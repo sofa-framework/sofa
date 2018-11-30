@@ -58,8 +58,6 @@ namespace component
 namespace _stlexporter_
 {
 
-SOFA_DECL_CLASS(STLExporter)
-
 int STLExporterClass = core::RegisterObject("Save a topology in file")
         .add< STLExporter >();
 

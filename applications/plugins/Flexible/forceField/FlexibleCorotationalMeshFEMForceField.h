@@ -414,7 +414,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
+#if  !defined(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField<defaulttype::Vec3Types>;
 #endif
 

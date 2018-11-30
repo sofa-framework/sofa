@@ -10,7 +10,6 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(ConstraintValue)
 int ConstaintValueClass = core::RegisterObject("Constraint value abstraction").add< ConstraintValue >();
 
 

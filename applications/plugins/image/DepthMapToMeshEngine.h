@@ -147,15 +147,12 @@ protected:
     static const unsigned texture_res=256;
 #endif /* SOFA_NO_OPENGL */
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         raImage in(this->image);
         raTransform inT(this->transform);
         raTexture inTex(this->texImage);
         const unsigned int dimx=in->getDimensions()[0],dimy=in->getDimensions()[1];
-
-
-        cleanDirty();
 
         waPositions pos(this->position);
         waTexCoords tc(this->texCoord);

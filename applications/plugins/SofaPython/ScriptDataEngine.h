@@ -18,10 +18,10 @@ namespace controller
 {
 
 
-class SOFA_SOFAPYTHON_API ScriptDataEngine : public core::SimpleDataEngine
+class SOFA_SOFAPYTHON_API ScriptDataEngine : public core::DataEngine
 {
 public:
-    SOFA_CLASS(ScriptDataEngine,core::SimpleDataEngine);
+    SOFA_CLASS(ScriptDataEngine,core::DataEngine);
 
 protected:
     ScriptDataEngine();

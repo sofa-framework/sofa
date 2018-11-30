@@ -40,7 +40,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-// Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -54,7 +53,6 @@ bool ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
     }
 }
 
-// Define RemovalFunction
 template< class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
@@ -73,7 +71,6 @@ ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new ProjectToPlaneConstraintInternalData<DataTypes>())
 {
-    // default to index 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 
@@ -121,9 +118,6 @@ void ProjectToPlaneConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
-
     // Initialize functions and parameters
     f_indices.createTopologicalEngine(topology, pointHandler);
     f_indices.registerTopologicalData();
@@ -143,14 +137,11 @@ void ProjectToPlaneConstraint<DataTypes>::init()
 
     reinit();
 
-//  cerr<<"ProjectToPlaneConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 template <class DataTypes>
 void  ProjectToPlaneConstraint<DataTypes>::reinit()
 {
-//    cerr<<"ProjectToPlaneConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     // normalize the normal vector
     CPos n = f_normal.getValue();
@@ -173,12 +164,10 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
                 bProjection[i][j] =    - n[i]*n[j];
             }
         }
-//    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit() bProjection[0] = " << endl << bProjection[0] << endl;
 
     // get the indices sorted
     Indices tmp = f_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
-//    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), indices = " << tmp << endl;
 
     // resize the jacobian
     unsigned numBlocks = this->mstate->getSize();
@@ -193,7 +182,6 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
         if(  it!=tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.insertBackBlock(i,i,bProjection); // only one block to create
-//            cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), constrain index " << i << endl;
             it++;
         }
         else           // unconstrained particle: set diagonal to identity block
@@ -203,8 +191,6 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
         i++;
     }
     jacobian.compress();
-//    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
-
 }
 
 template <class DataTypes>
@@ -222,9 +208,7 @@ template <class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-//    cerr<< "ProjectToPlaneConstraint<DataTypes>::projectResponse input  = "<< endl << res.ref() << endl;
     jacobian.mult(res.wref(),res.ref());
-//    cerr<< "ProjectToPlaneConstraint<DataTypes>::projectResponse output = "<< endl << res.wref() << endl;
 }
 
 template <class DataTypes>
@@ -254,13 +238,11 @@ void ProjectToPlaneConstraint<DataTypes>::projectPosition(const core::Mechanical
 //        x[indices[i]] -= n * ((x[indices[i]]-o)*n);
         const CPos xi = DataTypes::getCPos( x[indices[i]] );
         DataTypes::setCPos( x[indices[i]], xi - n * ((xi-o)*n) );
-//        cerr<<"ProjectToPlaneConstraint<DataTypes>::projectPosition particle  "<<indices[i]<<endl;
     }
 
     xData.endEdit();
 }
 
-// Matrix Integration interface
 template <class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
@@ -288,7 +270,6 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"ProjectToPlaneConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)

@@ -85,7 +85,7 @@ public:
         update();
     }
 
-    void update() override
+    void doUpdate() override
     {
         waImage out(this->outputImage);
         raImage in(this->inputImage);
@@ -101,7 +101,6 @@ public:
 
         out->getCImg(0) = in->getCImg(0);
 //        std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override

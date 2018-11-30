@@ -753,7 +753,7 @@ namespace component
 namespace container
 {
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_StrainTYPES_CPP)
+#if  !defined(FLEXIBLE_StrainTYPES_CPP)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E331dTypes>;

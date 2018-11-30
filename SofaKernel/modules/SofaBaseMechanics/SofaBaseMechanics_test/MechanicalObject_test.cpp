@@ -22,7 +22,7 @@
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
 #include <SofaTest/Sofa_test.h>
-using BaseTest = sofa::Sofa_test<>;
+using BaseTest = sofa::Sofa_test<SReal>;
 
 namespace sofa
 {

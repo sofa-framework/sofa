@@ -57,7 +57,6 @@ struct GeneratePointID
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PointSetTopologyContainer)
 int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container")
         .add< PointSetTopologyContainer >()
         ;

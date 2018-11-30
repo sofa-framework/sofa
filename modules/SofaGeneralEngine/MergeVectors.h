@@ -66,7 +66,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -84,7 +84,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
 
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<int> >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<bool> >;

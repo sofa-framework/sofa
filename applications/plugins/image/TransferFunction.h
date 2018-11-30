@@ -157,10 +157,9 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         TransferFunctionSpecialization<InImageTypes,OutImageTypes>::update( *this );
-        cleanDirty();
     }
 
 

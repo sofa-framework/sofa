@@ -374,8 +374,6 @@ Vector6 DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalPa
 #endif
 
 
-SOFA_DECL_CLASS(DiagonalMass)
-
 // Register in the Factory
 int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
 #ifdef SOFA_WITH_DOUBLE

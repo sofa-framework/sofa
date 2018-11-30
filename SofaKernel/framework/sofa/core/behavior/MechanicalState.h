@@ -220,7 +220,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
+#if  !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2dTypes>;

@@ -22,7 +22,7 @@
 #ifndef AnimationLoopTasks_h__
 #define AnimationLoopTasks_h__
 
-#include "Task.h"
+#include <sofa/simulation/Task.h>
 
 
 namespace sofa

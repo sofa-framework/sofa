@@ -70,10 +70,8 @@ void GenerateGrid<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GenerateGrid<DataTypes>::update()
+void GenerateGrid<DataTypes>::doUpdate()
 {
-    cleanDirty();
-
     helper::WriteAccessor<Data<VecCoord> > out = d_outputX;
 
     Vec3 size=d_maxCorner.getValue()-d_minCorner.getValue();

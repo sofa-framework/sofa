@@ -144,7 +144,7 @@ public:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API BarycentricMapping< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperRegularGridTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;

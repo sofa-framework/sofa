@@ -34,8 +34,6 @@ namespace forcefield
 {
 
 
-SOFA_DECL_CLASS(ForceMaskOff)
-
 int ForceMaskOffClass = core::RegisterObject("ForceMask canceller")
         .add< ForceMaskOff >();
 

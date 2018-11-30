@@ -40,13 +40,6 @@ void initDeformable()
 }
 
 
-SOFA_LINK_CLASS(RestShapeSpringsForceField);
-SOFA_LINK_CLASS(MeshSpringForceField);
-SOFA_LINK_CLASS(SpringForceField);
-SOFA_LINK_CLASS(StiffSpringForceField);
-
-
-
 } // namespace component
 
 } // namespace sofa

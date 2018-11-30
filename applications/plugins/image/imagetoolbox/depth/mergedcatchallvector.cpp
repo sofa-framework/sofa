@@ -34,8 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(MergedCatchAllVector)
-
 int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
         .add<MergedCatchAllVector<float > >(true)
         //.add<MergedCatchAllVector<unsigned float> >()

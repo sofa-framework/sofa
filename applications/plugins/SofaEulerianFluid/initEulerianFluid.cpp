@@ -76,9 +76,6 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(Fluid2D)
-SOFA_LINK_CLASS(Fluid3D)
-
 } /// namespace component
 
 } /// namespace sofa

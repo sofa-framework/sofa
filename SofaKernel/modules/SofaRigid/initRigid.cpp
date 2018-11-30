@@ -39,10 +39,6 @@ void initRigid()
     }
 }
 
-SOFA_LINK_CLASS(RigidMapping)
-SOFA_LINK_CLASS(RigidRigidMapping)
-SOFA_LINK_CLASS(JointSpringForceField)
-
 } // namespace component
 
 } // namespace sofa

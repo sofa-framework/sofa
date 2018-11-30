@@ -37,6 +37,52 @@ namespace constraintset
 {
 
 template<class DataTypes>
+UnilateralInteractionConstraint<DataTypes>::UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
+    : Inherit(object1, object2)
+    , epsilon(Real(0.001))
+    , yetIntegrated(false)
+    , customTolerance(0.0)
+    , contactsStatus(NULL)
+{
+}
+
+template<class DataTypes>
+UnilateralInteractionConstraint<DataTypes>::~UnilateralInteractionConstraint()
+{
+    if(contactsStatus)
+        delete[] contactsStatus;
+}
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::clear(int reserve)
+{
+    contacts.clear();
+    if (reserve)
+        contacts.reserve(reserve);
+}
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+{
+    addContact(mu, norm, P, Q, contactDistance, m1, m2,
+            this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+            this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+            id, localid);
+}
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+{
+    addContact(mu, norm,
+            this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
+            this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
+            contactDistance, m1, m2,
+            this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+            this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+            id, localid);
+}
+
+template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
 {
     contacts.resize(contacts.size() + 1);
@@ -327,13 +373,11 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const c
         Contact& c = contacts[i];
         if(c.mu > 0.0)
         {
-//			bool& temp = contactsStatus.at(i);
             UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
             ucrwf->setTolerance(customTolerance);
             resTab[offset] = ucrwf;
 
             // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
-//			resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces, &contactsStatus[i]);
             offset += 3;
         }
         else

@@ -172,7 +172,7 @@ protected:
         Coord u;
     };
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         unsigned int nb = nbImages.getValue();
         inputImages.resize(nb);
@@ -321,7 +321,6 @@ protected:
         }
 
         sout << "Created merged image from " << nb << " input images." << sendl;
-        cleanDirty();
     }
 
     defaulttype::Vec<2,Coord> getBB(unsigned int i) // get image corners

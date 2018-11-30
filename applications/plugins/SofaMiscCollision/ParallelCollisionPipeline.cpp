@@ -46,8 +46,6 @@ using namespace core::objectmodel;
 using namespace core::collision;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ParallelCollisionPipeline)
-
 int ParallelCollisionPipelineClass = core::RegisterObject("A parallel version of the collision detection and modeling pipeline")
         .add< ParallelCollisionPipeline >()
         .addAlias("ParallelPipeline")

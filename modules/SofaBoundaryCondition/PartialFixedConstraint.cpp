@@ -39,8 +39,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(PartialFixedConstraint)
-
 int PartialFixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT
         .add< PartialFixedConstraint<Vec3dTypes> >()

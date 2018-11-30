@@ -142,53 +142,12 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
         detection->point[1] = projPoint;
         detection->point[0] = sph.getContactPointByNormal( detection->normal );
         detection->value = -distance;
-        //detection->elem.first = triangle;
-        //detection->elem.second = sph;
         detection->elem.first = sph;
         detection->elem.second = triangle;
         detection->id = sph.getIndex();
         return 1;
     }
 #undef SAMESIDE
-
-    //// The projected sphere center is not in the triangle. Verify if
-    //// the edges are colliding the sphere (check if they are secant to the sphere)
-    // RayModel edges;
-    ////Edge 0
-    // Vector3 dir = p1 - p0;
-    // double length = dir.norm();
-    // edges.addRay(p0,dir,length);
-    ////Edge1
-    // dir = p1 - p2;
-    // length = dir.norm();
-    // edges.addRay(p1,dir,length);
-    // //Edge2
-    // dir = p2 - p0;
-    // length = dir.norm();
-    // edges.addRay(p2,dir,length);
-    //
-    // detection = distCorrectionSingleSphereRay( sph,edges.getRay(0));
-    //if ( detection != NULL )
-    //{
-    //	detection->elem.first = triangle;
-    //	detection->elem.second = sph;
-    //	return detection;
-    //}
-
-    //detection = distCorrectionSingleSphereRay( sph,edges.getRay(1));
-    //if ( detection != NULL )
-    //{
-    //	detection->elem.first = triangle;
-    //	detection->elem.second = sph;
-    //	return detection;
-    //}
-    // detection = distCorrectionSingleSphereRay( sph,edges.getRay(2));
-    //	if ( detection != NULL )
-    //{
-    //	detection->elem.first = triangle;
-    //	detection->elem.second = sph;
-    //	return detection;
-    //}
 
     return 0; // No intersection: passed all tests for intersections !
 }

@@ -29,7 +29,6 @@ namespace sofa
 namespace component
 {
 
-
 void SOFA_SIMPLE_FEM_API initSimpleFEM();
 
 } // namespace component

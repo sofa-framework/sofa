@@ -37,8 +37,6 @@ namespace qt
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(HistogramDataWidget);
-
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<unsigned char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<double> >;
 #ifdef BUILD_ALL_IMAGE_TYPES

@@ -45,7 +45,6 @@ PositionBasedDynamicsConstraint<DataTypes>::PositionBasedDynamicsConstraint()
     , velocity(initData(&velocity,"velocity","Velocities."))
     , old_position(initData(&old_position,"old_position","Old positions."))
 {
-    // stiffness.setWidget("0to1RatioWidget");
 }
 
 
@@ -92,17 +91,6 @@ template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-
-    /*
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-    { // fix everything
-        while (rowIt != rowItEnd)
-        {
-            rowIt.row().clear();
-            ++rowIt;
-        }
-    }*/
 }
 
 

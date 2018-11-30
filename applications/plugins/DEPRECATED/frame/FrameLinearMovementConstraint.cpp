@@ -38,8 +38,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS ( FrameLinearMovementConstraint )
-
 using namespace sofa::defaulttype;
 
 int LinearMovementConstraintClass = core::RegisterObject ( "mechanical state vectors" )

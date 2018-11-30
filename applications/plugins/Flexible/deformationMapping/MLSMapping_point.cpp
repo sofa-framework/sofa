@@ -37,8 +37,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(MLSMapping_point)
-
 using namespace defaulttype;
 
 // Register in the Factory

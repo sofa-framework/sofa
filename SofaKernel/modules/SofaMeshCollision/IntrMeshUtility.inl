@@ -121,135 +121,6 @@ bool IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::Find (const Coord& axi
         triCfgFinal, boxCfgFinal, dmax,tfirst, config_modified);
 }
 
-
-//template <class DataTypes>
-//void IntrConfigManager<TTriangle<DataTypes> >::init (const Coord& axis,
-//    const IntrTri & triangle, IntrConfiguration<Real>& cfg)
-//{
-//    // Find projections of vertices onto potential separating axis.
-//    Real d0 = axis * triangle.p1();
-//    Real d1 = axis * triangle.p2();
-//    Real d2 = axis * triangle.p3();
-
-//    // Explicit sort of vertices to construct a IntrConfiguration.
-//    if (d0 <= d1)
-//    {
-//        if (d1 <= d2) // D0 <= D1 <= D2
-//        {
-//            if (d0 != d1)
-//            {
-//                if (d1 != d2)
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m111;
-//                }
-//                else
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m12;
-//                }
-//            }
-//            else // ( D0 == D1 )
-//            {
-//                if (d1 != d2)
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m21;
-//                }
-//                else
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m3;
-//                }
-//            }
-//            cfg.mIndex[0] = 0;
-//            cfg.mIndex[1] = 1;
-//            cfg.mIndex[2] = 2;
-//            cfg.mMin = d0;
-//            cfg.mMax = d2;
-//        }
-//        else if (d0 <= d2) // D0 <= D2 < D1
-//        {
-//            if (d0 != d2)
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m111;
-//                cfg.mIndex[0] = 0;
-//                cfg.mIndex[1] = 2;
-//                cfg.mIndex[2] = 1;
-//            }
-//            else
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m21;
-//                cfg.mIndex[0] = 2;
-//                cfg.mIndex[1] = 0;
-//                cfg.mIndex[2] = 1;
-//            }
-//            cfg.mMin = d0;
-//            cfg.mMax = d1;
-//        }
-//        else // D2 < D0 <= D1
-//        {
-//            if (d0 != d1)
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m111;
-//            }
-//            else
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m12;
-//            }
-
-//            cfg.mIndex[0] = 2;
-//            cfg.mIndex[1] = 0;
-//            cfg.mIndex[2] = 1;
-//            cfg.mMin = d2;
-//            cfg.mMax = d1;
-//        }
-//    }
-//    else if (d2 <= d1) // D2 <= D1 < D0
-//    {
-//        if (d2 != d1)
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m111;
-//            cfg.mIndex[0] = 2;
-//            cfg.mIndex[1] = 1;
-//            cfg.mIndex[2] = 0;
-//        }
-//        else
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m21;
-//            cfg.mIndex[0] = 1;
-//            cfg.mIndex[1] = 2;
-//            cfg.mIndex[2] = 0;
-
-//        }
-//        cfg.mMin = d2;
-//        cfg.mMax = d0;
-//    }
-//    else if (d2 <= d0) // D1 < D2 <= D0
-//    {
-//        if (d2 != d0)
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m111;
-//        }
-//        else
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m12;
-//        }
-
-//        cfg.mIndex[0] = 1;
-//        cfg.mIndex[1] = 2;
-//        cfg.mIndex[2] = 0;
-//        cfg.mMin = d1;
-//        cfg.mMax = d0;
-//    }
-//    else // D1 < D0 < D2
-//    {
-//        cfg.mMap = IntrConfiguration<Real>::m111;
-//        cfg.mIndex[0] = 1;
-//        cfg.mIndex[1] = 0;
-//        cfg.mIndex[2] = 2;
-//        cfg.mMin = d1;
-//        cfg.mMax = d2;
-//    }
-//}
-
-
 template <class DataTypes>
 void IntrConfigManager<TTriangle<DataTypes> >::init (const Coord& axis,
     const IntrTri & triangle, IntrConfiguration<Real>& cfg)
@@ -445,15 +316,10 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri - axis * tfirst;
-                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
-//                    triSeg[0] = tri.p(tIndex[0]);
-//                    triSeg[1] = tri.p(tIndex[1]);
-//                    IntrUtil<Real>::faceSegNearestPoints(boxFace,triSeg,pt_on_box,pt_on_tri);
                     IntrUtil<Real>::faceSegNearestPoints(boxFace,triSeg,pt_on_box,pt_on_tri);
                     pt_on_tri += tfirst * axis;
-                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }
@@ -519,14 +385,12 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             pt_on_tri = tri.p(tIndex[2]);
             pt_on_box = pt_on_tri;
             IntrUtil<Box>::project(pt_on_box,box);
-            //assert(box.onSurface(pt_on_box));
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)//box's vertex
         {
             pt_on_box = getPointFromIndex(bIndex[0], box);
             pt_on_tri = pt_on_box;
             IntrUtil<IntrTri>::project(pt_on_tri,tri);
-            //assert(box.onSurface(pt_on_box));
         }
         else if (triCfg.mMap == IntrConfiguration<Real>::m12)//triangle's edge
         {
@@ -540,7 +404,6 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 boxSeg[1] = getPointFromIndex(bIndex[1], box);
 
                 IntrUtil<Real>::segNearestPoints(triSeg,boxSeg,pt_on_tri,pt_on_box);
-                //assert(box.onSurface(pt_on_box));
             }
             else // boxCfg.mMap == IntrConfiguration<Real>::m44, box's face
             {
@@ -569,15 +432,10 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri + tfirst * axis;
-                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
-//                    triSeg[0] = tri[tIndex[1]];
-//                    triSeg[1] = tri[tIndex[2]];
-//                    IntrUtil<Real>::faceSegNearestPoints(boxFace,4,triSeg,pt_on_box,pt_on_tri);
                     IntrUtil<Real>::faceSegNearestPoints(boxFace,4,triSeg,pt_on_box,pt_on_tri);
                     pt_on_tri -= tfirst * axis;
-                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }
@@ -604,11 +462,9 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri + tfirst * axis;
-                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
                     IntrUtil<IntrTri>::triSegNearestPoints(tri,boxSeg,pt_on_tri,pt_on_box);
-                    //assert(box.onSurface(pt_on_box));
                 }
             }
             else
@@ -625,11 +481,9 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri + tfirst * axis;
-                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
                     IntrUtil<IntrTri>::triFaceNearestPoints(tri,boxFace,4,pt_on_tri,pt_on_box);
-                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }

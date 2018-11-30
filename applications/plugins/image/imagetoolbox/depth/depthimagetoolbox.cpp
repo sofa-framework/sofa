@@ -17,8 +17,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(DepthImageToolBox)
-
 int DepthImageToolBox_Class = core::RegisterObject("DepthImageToolBox")
 .add< DepthImageToolBox >()
 .addLicense("LGPL")

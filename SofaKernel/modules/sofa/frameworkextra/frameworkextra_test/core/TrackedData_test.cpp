@@ -75,7 +75,7 @@ public:
     {
         // true only iff the DataTracker associated to the Data 'input' is Dirty
         // that could only happen if 'input' was dirtied since last update
-        if( m_dataTracker.isDirty( input ) )
+        if( m_dataTracker.hasChanged( input ) )
         {
             depend_on_input.setValue(CHANGED);
             m_dataTracker.clean( input );

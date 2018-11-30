@@ -64,7 +64,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     Data<VecValue> f_in; ///< input values
     Data<VecIndex> f_indices; ///< Indices of the values
@@ -82,7 +82,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<std::string>;
 extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<int>;
 extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<unsigned int>;

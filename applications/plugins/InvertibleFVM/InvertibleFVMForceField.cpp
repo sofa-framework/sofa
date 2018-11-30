@@ -38,8 +38,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(InvertibleFVMForceField)
-
 // Register in the Factory
 int InvertibleFVMForceFieldClass = core::RegisterObject("Invertible Finite Volume Method")
 #ifndef SOFA_FLOAT

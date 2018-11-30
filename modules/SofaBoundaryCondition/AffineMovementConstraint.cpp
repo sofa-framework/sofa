@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_CPP
+#define SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
-#include <SofaBoundaryCondition/AffineMovementConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/Node.h>
+
+#include <SofaBoundaryCondition/AffineMovementConstraint.inl>
 
 namespace sofa
 {
@@ -37,29 +38,26 @@ namespace component
 namespace projectiveconstraintset
 {
 
-//declaration of the class, for the factory
-SOFA_DECL_CLASS(AffineMovementConstraint)
-
-
-int AffineMovementConstraintClass = core::RegisterObject("bilinear constraint")
-#ifndef SOFA_FLOAT
+int AffineMovementConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
+#ifdef SOFA_WITH_DOUBLE
         .add< AffineMovementConstraint<defaulttype::Vec3dTypes> >()
         .add< AffineMovementConstraint<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
+#endif // SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
         .add< AffineMovementConstraint<defaulttype::Vec3fTypes> >()
         .add< AffineMovementConstraint<defaulttype::Rigid3fTypes> >()
-#endif
+#endif // SOFA_WITH_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+#endif // SOFA_WITH_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#endif // SOFA_WITH_FLOAT
 
 } // namespace projectiveconstraintset
 

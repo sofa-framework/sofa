@@ -42,8 +42,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(DevMonitorManager)
-
 int DevMonitorManagerClass = sofa::core::RegisterObject("DevMonitorManager")
         .add< DevMonitorManager >()
         ;

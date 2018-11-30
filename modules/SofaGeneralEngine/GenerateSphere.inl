@@ -182,15 +182,12 @@ void GenerateSphere<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GenerateSphere<DataTypes>::update()
+void GenerateSphere<DataTypes>::doUpdate()
 {
     const Real radius = f_radius.getValue();
 	const size_t frequency = f_tessellationDegree.getValue();
 	const Coord origin = f_origin.getValue();
 	const PlatonicTriangulation solid=platonicSolid;
-
-
-    cleanDirty();
 
 	helper::WriteOnlyAccessor<Data<VecCoord> > posTrian = f_outputTrianglesPositions;
     helper::WriteOnlyAccessor<Data<SeqTriangles> > trians = f_triangles;

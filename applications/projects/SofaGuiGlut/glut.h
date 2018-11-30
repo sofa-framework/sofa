@@ -32,9 +32,7 @@
 #ifndef GLAPIENTRY
 #define GLAPIENTRY
 #endif
-#ifndef PS3
 #include <GL/glut.h>
-#endif
 #endif
 #endif
 

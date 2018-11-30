@@ -55,7 +55,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     // To see how many times update function is called
     int getCounterUpdate();

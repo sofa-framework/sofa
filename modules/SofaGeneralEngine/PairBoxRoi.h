@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/VecId.h>
@@ -73,7 +71,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams*) override;
 
@@ -137,7 +135,7 @@ public:
     Data<double> _drawSize; ///< Draw Size
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3dTypes>;

@@ -22,9 +22,7 @@
 #ifndef SOFA_SIMULATION_SOLVEACTION_H
 #define SOFA_SIMULATION_SOLVEACTION_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/behavior/OdeSolver.h>

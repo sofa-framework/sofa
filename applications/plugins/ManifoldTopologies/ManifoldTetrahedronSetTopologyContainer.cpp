@@ -41,7 +41,6 @@ namespace topology
 using namespace std;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ManidfoldTetrahedronSetTopologyContainer)
 int ManifoldTetrahedronSetTopologyContainerClass = core::RegisterObject("Manifold Tetrahedron set topology container")
         .add< ManifoldTetrahedronSetTopologyContainer >()
         ;

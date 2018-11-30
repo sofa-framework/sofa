@@ -60,7 +60,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -83,7 +83,7 @@ public:
     Data<bool>     f_noUpdate; ///< do not update the output at eacth time step (false)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;

@@ -67,7 +67,7 @@ void CylinderMesh<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void CylinderMesh<DataTypes>::update()
+void CylinderMesh<DataTypes>::doUpdate()
 {
     d = m_diameter.getValue();
     l = m_length.getValue();

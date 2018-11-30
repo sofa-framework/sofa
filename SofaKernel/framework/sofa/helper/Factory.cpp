@@ -22,11 +22,7 @@
 #include <sofa/helper/Factory.inl>
 #include <typeinfo>
 #ifdef __GNUC__
-#ifdef PS3
-#include <sofa/core/ps3/cxxabi.h>
-#else
 #include <cxxabi.h>
-#endif
 #endif
 #include <cstdlib>
 
@@ -86,7 +82,6 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
     return name;
 }
 
-//static std::string factoryLog;
 static std::string& getFactoryLog()
 {
     static std::string s;

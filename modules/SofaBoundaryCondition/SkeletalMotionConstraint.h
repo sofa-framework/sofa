@@ -89,15 +89,7 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-	void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override
-	{
-		unsigned blockSize = DataTypes::deriv_total_size;	
-		unsigned size = this->mstate->getSize();
-		for( unsigned i=0; i<size; i++ )
-		{
-			M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
-		}
-	}
+    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
@@ -152,14 +144,9 @@ struct SkeletonJoint
         , mTimes()
         , mPreviousMotionTime(0)
         , mNextMotionTime(0)
-    {
+    {}
 
-    }
-
-    virtual ~SkeletonJoint()
-    {
-
-    }
+    virtual ~SkeletonJoint(){}
 
 	void addChannel(Coord channel, double time)
 	{

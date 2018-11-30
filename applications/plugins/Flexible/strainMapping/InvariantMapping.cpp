@@ -35,8 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(InvariantMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory

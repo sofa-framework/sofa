@@ -35,8 +35,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TetrahedronRayContact)
-
 Creator<core::collision::Contact::Factory, RayContact<TetrahedronModel> > RayTetrahedronContactClass("ray",true);
 
 } // namespace collision

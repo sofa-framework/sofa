@@ -228,7 +228,7 @@ protected:
     }
 
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         raImage in(this->image);
         raImage inb(this->background);
@@ -387,7 +387,6 @@ protected:
         }
 
         if(this->f_printLog.getValue()) std::cout<<this->name<<": done"<<std::endl;
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override

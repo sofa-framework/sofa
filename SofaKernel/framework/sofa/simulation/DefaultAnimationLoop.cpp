@@ -33,7 +33,6 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-//#include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
@@ -47,8 +46,6 @@ namespace sofa
 
 namespace simulation
 {
-
-SOFA_DECL_CLASS(DefaultAnimationLoop)
 
 int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
         .add< DefaultAnimationLoop >()
@@ -134,11 +131,12 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    gnode->execute< UpdateBoundingBoxVisitor >(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
+        gnode->execute< UpdateBoundingBoxVisitor >(params);
+    }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

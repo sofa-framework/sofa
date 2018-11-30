@@ -171,7 +171,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
 extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec2dTypes >;

@@ -29,7 +29,7 @@
 #include <set>
 #include <vector>
 
-#if (defined(WIN32) || defined (_XBOX)) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
+#if defined(WIN32) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
 # include <float.h>
 # define isnan(x)  (_isnan(x))
 #else

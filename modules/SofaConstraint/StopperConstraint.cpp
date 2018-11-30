@@ -38,8 +38,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(StopperConstraint)
-
 int StopperConstraintClass = core::RegisterObject("TODO-StopperConstraint")
 #ifndef SOFA_FLOAT
         .add< StopperConstraint<Vec1dTypes> >()

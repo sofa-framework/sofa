@@ -39,9 +39,6 @@ void initLoader()
     }
 }
 
-SOFA_LINK_CLASS(MeshObjLoader)
-SOFA_LINK_CLASS(MeshVTKLoader)
-
 } // namespace component
 
 } // namespace sofa

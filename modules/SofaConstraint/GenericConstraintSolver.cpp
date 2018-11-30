@@ -327,7 +327,6 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
     {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
 			if (!cc->isActive()) continue;
-            //serr << "REBUILD " <<  cc->getName() << " m="<<massFactor << " f=" << forceFactor << sendl;
             cc->rebuildSystem(massFactor, forceFactor);
     }
 }
@@ -597,11 +596,8 @@ void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
     tolerance = tol;
     maxIterations = maxIt;
 
-// TODO : for the unbuild version to work in the haptic thread, we have to duplicate the ConstraintCorrections first...
-/*	if(unbuilt)
-        unbuiltGaussSeidel(timeout);
-    else
-*/		gaussSeidel(timeout);
+    // TODO : for the unbuild version to work in the haptic thread, we have to duplicate the ConstraintCorrections first...
+    gaussSeidel(timeout);
 
     tolerance = tempTol;
     maxIterations = tempMaxIt;
@@ -817,16 +813,6 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 		for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
             constraintsResolutions[i]->store(i, force, convergence);
     }
-
-/*
-    if(schemeCorrection)
-    {
-        ///////// scheme correction : step 3 => the corrective motion is only based on the diff of the force value: compute this diff
-        for(j=0; j<dim; j++)
-        {
-            df[j] += force[j];
-        }
-    }	*/
 
     if(showGraphs)
     {
@@ -1119,9 +1105,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
 .add< GenericConstraintSolver >();
-
-SOFA_DECL_CLASS(GenericConstraintSolver)
-
 
 } // namespace constraintset
 

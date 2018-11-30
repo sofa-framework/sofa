@@ -148,7 +148,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void doUpdate()
     {
         if(!deformationMapping) return;
 
@@ -311,7 +311,6 @@ protected:
             break;
         }
 
-        cleanDirty();
     }
 
 
