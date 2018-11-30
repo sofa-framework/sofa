@@ -26,6 +26,7 @@
 #include <sofa/config/build_option_dump_visitor.h>
 #include <sofa/config/build_option_opengl.h>
 #include <sofa/config/build_option_threading.h>
+#include <sofa/config/build_option_bbox.h>
 
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
@@ -49,8 +50,6 @@
 #cmakedefine SOFA_HAVE_BOOST_PROGRAM_OPTION
 
 #cmakedefine SOFA_HAVE_TINYXML
-
-#cmakedefine SOFA_NO_UPDATE_BBOX
 
 #cmakedefine DETECTIONOUTPUT_FREEMOTION
 

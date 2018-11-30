@@ -44,6 +44,12 @@ else()
     set(SOFA_WITH_DEPRECATED_COMPONENTS_ "0")
 endif()
 
+if(SOFA_NO_UPDATE_BBOX)
+    set(SOFA_NO_UPDATE_BBOX_ "1")
+else()
+    set(SOFA_NO_UPDATE_BBOX_ "0")
+endif()
+
 ### Dependencies
 
 set(SOFAFRAMEWORK_DEPENDENCY_LINK)
@@ -167,6 +173,7 @@ set(SOFA_BUILD_OPTIONS_SRC
         build_option_dump_visitor.h
         build_option_opengl.h
         build_option_threading.h
+        build_option_bbox.h
     )
 foreach(NAME ${SOFA_BUILD_OPTIONS_SRC})
     configure_file("${NAME}.in" "${CMAKE_BINARY_DIR}/include/sofa/config/${NAME}")
