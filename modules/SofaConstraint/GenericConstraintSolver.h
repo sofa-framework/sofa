@@ -130,7 +130,7 @@ public:
 	Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
 	Data<double> currentError; ///< OUTPUT: current error
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
-    Data<helper::vector< double >> d_constraintForces;
+    Data<helper::vector< double >> d_constraintForces; //The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
 
 
     virtual sofa::core::MultiVecDerivId getLambda() const override
