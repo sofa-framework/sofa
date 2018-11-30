@@ -43,7 +43,7 @@ typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 
 /////// Class allowing barycentric mapping computation on a EdgeSetTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData1D,Edge>
+class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData1D,Edge>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData1D MappingData;
 
@@ -85,7 +85,6 @@ protected:
     using Inherit1::m_matrixJ;
     using Inherit1::m_updateJ;
 };
-
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT

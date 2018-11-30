@@ -87,16 +87,8 @@ typedef typename sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrah
 typedef typename sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
 template <class TIn, class TOut>
-BarycentricMapping<TIn, TOut>::BarycentricMapping()
-    : Inherit()
-    , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"))
-    , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
-{
-}
-
-template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
-    : Inherit ( from, to )
+    : Inherit1 ( from, to )
     , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
 
 {
@@ -106,7 +98,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology )
-    : Inherit ( from, to )
+    : Inherit1 ( from, to )
     , m_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
 {
     if (topology)
@@ -116,17 +108,11 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
 }
 
 template <class TIn, class TOut>
-BarycentricMapping<TIn, TOut>::~BarycentricMapping()
-{
-}
-
-
-template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology * topology )
 {
     using sofa::core::behavior::BaseMechanicalState;
 
-    m_mapper = NULL;
+    m_mapper = nullptr;
 
     topology::PointSetTopologyContainer* toTopoCont;
     this->toModel->getContext()->get(toTopoCont);
@@ -234,7 +220,7 @@ void BarycentricMapping<TIn, TOut>::init()
     topology_from = this->fromModel->getContext()->getMeshTopology();
     topology_to = this->toModel->getContext()->getMeshTopology();
 
-    Inherit::init();
+    Inherit1::init();
 
     if ( m_mapper == NULL ) // try to create a mapper according to the topology of the In model
     {
@@ -281,9 +267,6 @@ void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams
         out.endEdit();
     }
 }
-
-
-
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mparams, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)

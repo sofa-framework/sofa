@@ -47,13 +47,17 @@ namespace component
 namespace mapping
 {
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
 template <class TIn, class TOut>
 class BarycentricMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut),
+               SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
     typedef In InDataTypes;
@@ -71,10 +75,12 @@ public:
 
     typedef core::topology::BaseMeshTopology BaseMeshTopology;
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename Inherit1::ForceMask ForceMask;
 
 public:
-    Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping
+    Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping    
+
+    SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> m_mapper;
 
     virtual void init() override;
     virtual void reinit() override;
@@ -88,7 +94,7 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
     virtual void handleTopologyChange(core::topology::Topology* t) override;
 
-    // interface for continuous friction contact
+    /// interface for continuous friction contact
     TopologyBarycentricMapper<InDataTypes,OutDataTypes> *getMapper()
     {
         return m_mapper.get();
@@ -97,20 +103,17 @@ public:
 protected:
     typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
 
-    // eigen matrix for use with Compliant plugin
-    eigen_type eigen;
-    helper::vector< defaulttype::BaseMatrix* > js;
-
-    BarycentricMapping();
     BarycentricMapping(core::State<In>* from, core::State<Out>* to,
                        typename Mapper::SPtr m_mapper);
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to,
+    BarycentricMapping(core::State<In>* from=nullptr, core::State<Out>* to=nullptr,
                        BaseMeshTopology * topology=nullptr );
 
-    SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> m_mapper;
-
-    virtual ~BarycentricMapping() override;
+    virtual ~BarycentricMapping() override {}
     virtual void updateForceMask() override;
+
+    /// eigen matrix for use with Compliant plugin
+    eigen_type eigen;
+    helper::vector< defaulttype::BaseMatrix* > js;
 
     sofa::core::topology::BaseMeshTopology* topology_from;
     sofa::core::topology::BaseMeshTopology* topology_to;
@@ -119,13 +122,7 @@ private:
     void createMapperFromTopology(BaseMeshTopology * topology);
 };
 
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
-
-#if  !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, ExtVec3fTypes >;

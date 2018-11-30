@@ -37,12 +37,14 @@ namespace mapping
 
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
-
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D, Quad>
+class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D, Quad>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 
@@ -75,12 +77,6 @@ protected:
     using Inherit1::m_matrixJ;
     using Inherit1::m_updateJ;
 };
-
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT

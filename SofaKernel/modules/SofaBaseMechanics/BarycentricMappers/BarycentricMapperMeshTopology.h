@@ -43,7 +43,7 @@ using sofa::defaulttype::ExtVec3fTypes;
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperMeshTopology,In,Out),
