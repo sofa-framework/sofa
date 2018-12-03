@@ -31,8 +31,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(WriteTopology)
-
 using namespace defaulttype;
 
 

@@ -36,8 +36,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(GraspingManager)
-
 int GraspingManagerClass = core::RegisterObject("Manager handling Grasping operations between a SphereModel and a TriangleSetModel relying on a TetrahedronSetTopology")
         .add< GraspingManager >()
         ;

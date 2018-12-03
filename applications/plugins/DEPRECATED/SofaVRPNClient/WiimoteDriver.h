@@ -78,7 +78,7 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_WIIMOTEDRIVER_CPP_)
+#if  !defined(SOFAVRPNCLIENT_WIIMOTEDRIVER_CPP_)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SOFAVRPNCLIENT_API WiimoteDriver<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

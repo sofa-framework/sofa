@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_MERGESETS_INL
 #define SOFA_COMPONENT_ENGINE_MERGESETS_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/MergeSets.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -71,15 +67,13 @@ void MergeSets<T>::reinit()
 }
 
 template <class T>
-void MergeSets<T>::update()
+void MergeSets<T>::doUpdate()
 {
     std::string op = f_op.getValue();
     if (op.empty()) op = "union";
 
     helper::ReadAccessor<Data<VecIndex> > in1 = f_in1;
     helper::ReadAccessor<Data<VecIndex> > in2 = f_in2;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecIndex> > out = f_out;
 

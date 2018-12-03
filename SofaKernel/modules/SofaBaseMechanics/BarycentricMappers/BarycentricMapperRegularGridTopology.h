@@ -36,12 +36,15 @@ namespace mapping
 
 using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
 using topology::RegularGridTopology;
 using topology::PointSetTopologyContainer;
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperRegularGridTopology,In,Out),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
@@ -88,10 +91,6 @@ protected:
     MatrixType* m_matrixJ                 {nullptr};
     bool m_updateJ                        {false};
 };
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT

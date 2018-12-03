@@ -41,8 +41,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(TetrahedronDiffusionFEMForceField)
-
 // Register in the Factory
 int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or anisotropic diffusion on Tetrahedral Meshes")
 #ifndef SOFA_FLOAT

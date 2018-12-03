@@ -23,12 +23,12 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_H
 #include "config.h"
 
+#include <set>
+
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <set>
 #include <SofaBaseTopology/TopologySubsetData.h>
-
 
 namespace sofa
 {
@@ -38,6 +38,12 @@ namespace component
 
 namespace projectiveconstraintset
 {
+using sofa::defaulttype::BaseVector;
+using sofa::core::MechanicalParams;
+using sofa::core::visual::VisualParams;
+using sofa::core::topology::BaseMeshTopology;
+using sofa::core::behavior::MultiMatrixAccessor;
+using sofa::core::behavior::ProjectiveConstraintSet;
 
 /// This class can be overriden if needed for additionnal storage within template specilizations.
 template <class DataTypes>
@@ -46,10 +52,11 @@ class FixedPlaneConstraintInternalData
 };
 
 template <class DataTypes>
-class FixedPlaneConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class FixedPlaneConstraint : public ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedPlaneConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedPlaneConstraint,DataTypes),
+               SOFA_TEMPLATE(ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -63,120 +70,86 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
 public:
-    /// direction on which the constraint applies
-    Data<Coord> direction;
+    Data<Coord> d_direction; ///< direction on which the constraint applied
+    Data<Real> d_dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> d_dmax; ///< coordinates max of the plane for the vertex selection
+    SetIndex   d_indices; ///< the set of vertex indices
 
-    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
-protected:
-    FixedPlaneConstraintInternalData<DataTypes> data;
-    friend class FixedPlaneConstraintInternalData<DataTypes>;
-
-    template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
-
-    SetIndex indices; ///< the set of vertex indices
-
-    /// whether vertices should be selected from 2 parallel planes
-    bool selectVerticesFromPlanes;
-
-
-    FixedPlaneConstraint();
-
-    ~FixedPlaneConstraint();
-public:
-    void addConstraint(int index);
-
-    void removeConstraint(int index);
-
-    // -- Constraint interface
-
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
-    // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-	// Implement applyConstraint for direct solvers
-    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-
+    /// inherited from the BaseObject interface
     virtual void init() override;
+    virtual void draw(const VisualParams* vparams) override;
+
+    /// -- Constraint interface
+    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
+    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
+    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
+
+    /// Implement projectMatrix for assembled solver of compliant
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset) override;
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
+
+    /// Implement applyConstraint for direct solvers
+    virtual void applyConstraint(const MechanicalParams* mparams,
+                                 const MultiMatrixAccessor* matrix) override;
+
+    virtual void applyConstraint(const MechanicalParams* mparams, BaseVector* vector,
+                                 const MultiMatrixAccessor* matrix) override;
 
     void setDirection (Coord dir);
     void selectVerticesAlongPlane();
-    void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesFromPlanes=true;}
+    void setDminAndDmax(const Real _dmin,const Real _dmax);
 
-    void draw(const core::visual::VisualParams* vparams) override;
-
-    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        FixedPlaneConstraint<DataTypes> *fc;
-    };
+    void addConstraint(int index);
+    void removeConstraint(int index);
 
 protected:
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    FixedPlaneConstraint();
+    ~FixedPlaneConstraint();
+
+    FixedPlaneConstraintInternalData<DataTypes> data;
+    friend class FixedPlaneConstraintInternalData<DataTypes>;
+
+    /// Forward class declaration, definition is in the .inl
+    class FCPointHandler;
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler {nullptr};
 
-    bool isPointInPlane(Coord p)
-    {
-        Real d=dot(p,direction.getValue());
-        if ((d>dmin.getValue())&& (d<dmax.getValue()))
-            return true;
-        else
-            return false;
-    }
+    /// whether vertices should be selected from 2 parallel planes
+    bool m_selectVerticesFromPlanes {false};
+
+    /// Pointer to the current topology
+    BaseMeshTopology* m_topology {nullptr};
+
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using ProjectiveConstraintSet<DataTypes>::mstate;
+    using ProjectiveConstraintSet<DataTypes>::getContext;
+
+    /// These two are implemented depending on the templates
+    bool isPointInPlane(Coord p) const ;
+
+    /// These two are implemented depending on the templates
+    template<class T>
+    void projectResponseImpl(const MechanicalParams* mparams, T& dx) const ;
 };
 
-#ifndef SOFA_FLOAT
-template <> template <class DataDeriv>
-void FixedPlaneConstraint<defaulttype::Rigid3dTypes>::projectResponseT(const core::MechanicalParams* mparams, DataDeriv& /*res*/);
-
-template <>
-bool FixedPlaneConstraint<defaulttype::Rigid3dTypes>::isPointInPlane(Coord /*p*/);
-#endif
-
-#ifndef SOFA_DOUBLE
-template <> template <class DataDeriv>
-void FixedPlaneConstraint<defaulttype::Rigid3fTypes>::projectResponseT(const core::MechanicalParams* mparams, DataDeriv& /*res*/);
-
-template <>
-bool FixedPlaneConstraint<defaulttype::Rigid3fTypes>::isPointInPlane(Coord /*p*/);
-#endif
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+#endif /// SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6fTypes>;
-#endif
+#endif /// SOFA_WITH_FLOAT
 #endif
 
 } // namespace projectiveconstraintset

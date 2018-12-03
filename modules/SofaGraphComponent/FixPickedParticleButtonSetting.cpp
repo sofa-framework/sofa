@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(FixPickedParticleButtonSetting)
 int FixPickedParticleButtonSettingClass = core::RegisterObject("Fix a picked particle in space")
         .add< FixPickedParticleButtonSetting >()
         .addAlias("FixPickedParticleButton")

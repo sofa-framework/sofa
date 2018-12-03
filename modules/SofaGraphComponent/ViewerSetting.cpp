@@ -36,7 +36,6 @@ namespace configurationsetting
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(ViewerSetting)
 int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")
         .add< ViewerSetting >()
         .addAlias("Viewer")

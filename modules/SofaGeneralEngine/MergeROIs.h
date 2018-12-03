@@ -23,9 +23,7 @@
 #define MergeROIs_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -103,7 +101,7 @@ protected:
 
     virtual ~MergeROIs() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
@@ -118,8 +116,6 @@ protected:
             outputIndices[j].resize(indices.size());
             for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
         }
-
-        cleanDirty();
     }
 
 };

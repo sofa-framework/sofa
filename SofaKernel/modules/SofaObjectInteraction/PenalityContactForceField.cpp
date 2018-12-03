@@ -38,8 +38,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(PenalityContactForceField)
-
 // Register in the Factory
 int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
 #ifndef SOFA_FLOAT

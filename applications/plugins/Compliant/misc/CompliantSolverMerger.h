@@ -3,6 +3,7 @@
 
 #include <Compliant/config.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/helper/FnDispatcher.h>
 
 namespace sofa
 {

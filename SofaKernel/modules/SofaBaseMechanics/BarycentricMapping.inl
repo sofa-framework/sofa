@@ -87,23 +87,10 @@ typedef typename sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrah
 typedef typename sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
 template <class TIn, class TOut>
-BarycentricMapping<TIn, TOut>::BarycentricMapping()
-    : Inherit()
-    , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"))
-    , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
-#ifdef SOFA_DEV
-    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
-{
-}
-
-template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
-    : Inherit ( from, to )
+    : Inherit1 ( from, to )
     , m_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
-#ifdef SOFA_DEV
-    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
+
 {
     if (mapper)
         this->addSlave(mapper.get());
@@ -111,11 +98,8 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology )
-    : Inherit ( from, to )
+    : Inherit1 ( from, to )
     , m_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
-#ifdef SOFA_DEV
-    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
 {
     if (topology)
     {
@@ -124,17 +108,11 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
 }
 
 template <class TIn, class TOut>
-BarycentricMapping<TIn, TOut>::~BarycentricMapping()
-{
-}
-
-
-template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology * topology )
 {
     using sofa::core::behavior::BaseMechanicalState;
 
-    m_mapper = NULL;
+    m_mapper = nullptr;
 
     topology::PointSetTopologyContainer* toTopoCont;
     this->toModel->getContext()->get(toTopoCont);
@@ -242,7 +220,7 @@ void BarycentricMapping<TIn, TOut>::init()
     topology_from = this->fromModel->getContext()->getMeshTopology();
     topology_to = this->toModel->getContext()->getMeshTopology();
 
-    Inherit::init();
+    Inherit1::init();
 
     if ( m_mapper == NULL ) // try to create a mapper according to the topology of the In model
     {
@@ -282,11 +260,7 @@ void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams
 {
     SOFA_UNUSED(mparams);
 
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        m_mapper != NULL)
+    if (m_mapper != NULL)
     {
         m_mapper->resize( this->toModel );
         m_mapper->apply(*out.beginWriteOnly(), in.getValue());
@@ -294,27 +268,17 @@ void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams
     }
 }
 
-
-
-
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mparams, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
 {
     SOFA_UNUSED(mparams);
 
-#ifdef SOFA_DEV
-    if ( sleeping.getValue()==false)
+    typename Out::VecDeriv* out = _out.beginEdit();
+    if (m_mapper != NULL)
     {
-#endif
-        typename Out::VecDeriv* out = _out.beginEdit();
-        if (m_mapper != NULL)
-        {
-            m_mapper->applyJ(*out, in.getValue());
-        }
-        _out.endEdit();
-#ifdef SOFA_DEV
+        m_mapper->applyJ(*out, in.getValue());
     }
-#endif
+    _out.endEdit();
 }
 
 
@@ -323,11 +287,7 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 {
     SOFA_UNUSED(mparams);
 
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        m_mapper != NULL)
+    if (m_mapper != NULL)
     {
         m_mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();
@@ -338,11 +298,7 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
 {
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        m_mapper!=NULL )
+    if (m_mapper!=NULL )
     {
         const size_t outStateSize = this->toModel->getSize();
         const size_t inStateSize = this->fromModel->getSize();
@@ -383,11 +339,7 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 {
     SOFA_UNUSED(cparams);
 
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        m_mapper!=NULL )
+    if (m_mapper!=NULL )
     {
         m_mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();

@@ -35,8 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(HexahedronCompositeFEMMapping)
-
 using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;

@@ -33,12 +33,17 @@ namespace component
 namespace mapping
 {
 
+/// Groupe the using as early as possible to make very obvious what are the
+/// external dependencies of the following code.
 using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperMeshTopology,In,Out),
@@ -107,12 +112,7 @@ private:
     void clearMap3dAndReserve(int size=0);
 };
 
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, ExtVec3fTypes >;

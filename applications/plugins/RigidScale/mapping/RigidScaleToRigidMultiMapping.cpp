@@ -17,8 +17,6 @@ namespace mapping
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(RigidScaleToRigidMultiMapping)
-
 int RigidScaleToRigidMultiMappingClass = core::RegisterObject("Convert a rigid in addition to a scale into a rigid, this mapping is designed to work with affine articulated systems constraint by rigid and scale.")
 #ifndef SOFA_FLOAT
 .add< RigidScaleToRigidMultiMapping<Rigid3dTypes, Vec3dTypes, Rigid3dTypes> >()

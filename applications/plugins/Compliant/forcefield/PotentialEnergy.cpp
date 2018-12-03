@@ -12,7 +12,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PotentialEnergy)
 int PotentialEnergyClass = core::RegisterObject("potential energy")
     
 #ifndef SOFA_FLOAT    

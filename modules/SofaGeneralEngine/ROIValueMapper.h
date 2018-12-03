@@ -23,9 +23,7 @@
 #define ROIValueMapper_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -114,7 +112,7 @@ protected:
 
     virtual ~ROIValueMapper() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
@@ -142,8 +140,6 @@ protected:
                 outputValues[ind] = value;
             }
         }
-
-        cleanDirty();
     }
 
 };

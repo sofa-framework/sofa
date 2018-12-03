@@ -71,11 +71,8 @@ protected:
         Deriv norm;         ///< contact normal, from m1 to m2
         Real dist;          ///< distance threshold below which a repulsion force is applied
         Real ks;            ///< spring stiffness
-//        Real mu_s;          ///< coulomb friction coefficient (currently unused)
-//        Real mu_v;          ///< viscous friction coefficient (currently unused)
         Real pen;           ///< current penetration depth
         int age;            ///< how old is this contact
-
 
         Contact(int _m1=0, int _m2=0, int _index1=0, int _index2=0, Deriv _norm=Deriv(), Real _dist=(Real)0, Real _ks=(Real)0, Real /*_mu_s*/=(Real)0, Real /*_mu_v*/=(Real)0, Real _pen=(Real)0, int _age=0)
             : m1(_m1),m2(_m2),index1(_index1),index2(_index2),norm(_norm),dist(_dist),ks(_ks),/*mu_s(_mu_s),mu_v(_mu_v),*/pen(_pen),age(_age)
@@ -136,7 +133,7 @@ public:
     virtual void updateForceMask() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
 #endif

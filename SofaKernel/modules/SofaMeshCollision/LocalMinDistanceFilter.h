@@ -41,7 +41,6 @@ class LocalMinDistanceFilter;
 /**
  * @brief LocalMinDistance cone information class for an unique collision primitive.
  */
-//template< class TCollisionElement >
 class SOFA_MESH_COLLISION_API InfoFilter
 {
 public:
@@ -136,10 +135,7 @@ protected:
      */
     virtual ~LocalMinDistanceFilter();
 public:
-    //virtual void init(){}
-
     void reinit() override { init(); bwdInit();}
-
     void reset() override {reinit();}
 
     /**

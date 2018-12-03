@@ -38,12 +38,44 @@ namespace constraintset
 {
 
 template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
+    : Inherit(object1, object2)
+    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+    , m_yetIntegrated(false)
+{
+}
+
+template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object)
+    : Inherit(object, object)
+    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+    , m_yetIntegrated(false)
+{
+}
+
+template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint()
+    : d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+    , m_yetIntegrated(false)
+{
+}
+
+template<class DataTypes>
 void SlidingConstraint<DataTypes>::init()
 {
     assert(this->mstate1);
     assert(this->mstate2);
 
-    thirdConstraint = 0;
+    m_thirdConstraint = 0;
 }
 
 
@@ -51,9 +83,9 @@ template<class DataTypes>
 void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
         , const DataVecCoord &x1, const DataVecCoord &x2)
 {
-    int tm1 = m1.getValue();
-    int tm2a = m2a.getValue();
-    int tm2b = m2b.getValue();
+    int tm1 = d_m1.getValue();
+    int tm2a = d_m2a.getValue();
+    int tm2b = d_m2b.getValue();
 
     MatrixDeriv &c1 = *c1_d.beginEdit();
     MatrixDeriv &c2 = *c2_d.beginEdit();
@@ -63,63 +95,63 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
     const Coord B = x2.getValue()[tm2b];
 
     // the axis
-    Coord uniAB = B - A;
-    const Real ab = uniAB.norm();
-    uniAB.normalize();
+    m_dirAxe = B - A;
+    const Real ab = m_dirAxe.norm();
+    m_dirAxe.normalize();
 
     // projection of the point on the axis
-    Real r = (P-A) * uniAB;
+    Real r = (P-A) * m_dirAxe;
     Real r2 = r / ab;
-    const Coord proj = A + uniAB * r;
+    const Deriv proj = A + m_dirAxe * r;
 
     // We move the constraint point onto the projection
-    Coord dir1 = P - proj;
-    m_dist = dir1.norm(); // constraint violation
-    dir1.normalize(); // direction of the constraint
+    m_dirProj = P - proj;
+    m_dist = m_dirProj.norm(); // constraint violation
+    m_dirProj.normalize(); // direction of the constraint
 
-    Coord dir2 = cross(dir1, uniAB);
-    dir2.normalize();
+    m_dirOrtho = cross(m_dirProj, m_dirAxe);
+    m_dirOrtho.normalize();
 
-    cid = cIndex;
+    m_cid = cIndex;
     cIndex += 2;
 
-    MatrixDerivRowIterator c1_it = c1.writeLine(cid);
-    c1_it.addCol(tm1, dir1);
+    MatrixDerivRowIterator c1_it = c1.writeLine(m_cid);
+    c1_it.addCol(tm1, m_dirProj);
 
-    MatrixDerivRowIterator c2_it = c2.writeLine(cid);
-    c2_it.addCol(tm2a, -dir1 * (1-r2));
-    c2_it.addCol(tm2b, -dir1 * r2);
+    MatrixDerivRowIterator c2_it = c2.writeLine(m_cid);
+    c2_it.addCol(tm2a, -m_dirProj * (1-r2));
+    c2_it.addCol(tm2b, -m_dirProj * r2);
 
-    c1_it = c1.writeLine(cid + 1);
-    c1_it.setCol(tm1, dir2);
+    c1_it = c1.writeLine(m_cid + 1);
+    c1_it.setCol(tm1, m_dirOrtho);
 
-    c2_it = c2.writeLine(cid + 1);
-    c2_it.addCol(tm2a, -dir2 * (1-r2));
-    c2_it.addCol(tm2b, -dir2 * r2);
+    c2_it = c2.writeLine(m_cid + 1);
+    c2_it.addCol(tm2a, -m_dirOrtho * (1-r2));
+    c2_it.addCol(tm2b, -m_dirOrtho * r2);
 
-    thirdConstraint = 0;
+    m_thirdConstraint = 0;
 
     if (r < 0)
     {
-        thirdConstraint = r;
+        m_thirdConstraint = r;
         cIndex++;
 
-        c1_it = c1.writeLine(cid + 2);
-        c1_it.setCol(tm1, uniAB);
+        c1_it = c1.writeLine(m_cid + 2);
+        c1_it.setCol(tm1, m_dirAxe);
 
-        c2_it = c2.writeLine(cid + 2);
-        c2_it.addCol(tm2a, -uniAB);
+        c2_it = c2.writeLine(m_cid + 2);
+        c2_it.addCol(tm2a, -m_dirAxe);
     }
     else if (r > ab)
     {
-        thirdConstraint = r - ab;
+        m_thirdConstraint = r - ab;
         cIndex++;
 
-        c1_it = c1.writeLine(cid + 2);
-        c1_it.setCol(tm1, -uniAB);
+        c1_it = c1.writeLine(m_cid + 2);
+        c1_it.setCol(tm1, -m_dirAxe);
 
-        c2_it = c2.writeLine(cid + 2);
-        c2_it.addCol(tm2b, uniAB);
+        c2_it = c2.writeLine(m_cid + 2);
+        c2_it.addCol(tm2b, m_dirAxe);
     }
 
     c1_d.endEdit();
@@ -131,15 +163,15 @@ template<class DataTypes>
 void SlidingConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
-    v->set(cid, m_dist);
-    v->set(cid+1, 0.0);
+    v->set(m_cid, m_dist);
+    v->set(m_cid+1, 0.0);
 
-    if(thirdConstraint)
+    if(m_thirdConstraint)
     {
-        if(thirdConstraint>0)
-            v->set(cid+2, -thirdConstraint);
+        if(m_thirdConstraint>0)
+            v->set(m_cid+2, -m_thirdConstraint);
         else
-            v->set(cid+2, thirdConstraint);
+            v->set(m_cid+2, m_thirdConstraint);
     }
 }
 
@@ -152,15 +184,35 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(const ConstraintParam
     resTab[offset++] = new BilateralConstraintResolution();
     resTab[offset++] = new BilateralConstraintResolution();
 
-    if(thirdConstraint)
+    if(m_thirdConstraint)
         resTab[offset++] = new UnilateralConstraintResolution();
 }
 
 
 template<class DataTypes>
+void SlidingConstraint<DataTypes>::storeLambda(const ConstraintParams* /*cParams*/, sofa::core::MultiVecDerivId /*res*/, const sofa::defaulttype::BaseVector* lambda)
+{
+    Real lamb1,lamb2, lamb3;
+
+    lamb1 = lambda->element(m_cid);
+    lamb2 = lambda->element(m_cid+1);
+
+    if(m_thirdConstraint)
+    {
+        lamb3 = lambda->element(m_cid+2);
+        d_force.setValue( m_dirProj* lamb1 + m_dirOrtho * lamb2 + m_dirAxe * lamb3);
+    }
+    else
+    {
+        d_force.setValue( m_dirProj* lamb1 + m_dirOrtho * lamb2 );
+    }
+}
+
+template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields())
+        return;
 
     vparams->drawTool()->saveLastState();
 
@@ -168,22 +220,22 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     sofa::defaulttype::RGBAColor color;
 
-    if(thirdConstraint<0)
+    if(m_thirdConstraint<0)
         color = sofa::defaulttype::RGBAColor::yellow();
-    else if(thirdConstraint>0)
+    else if(m_thirdConstraint>0)
         color = sofa::defaulttype::RGBAColor::green();
     else
         color = sofa::defaulttype::RGBAColor::magenta();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[m1.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[d_m1.getValue()]));
 
     vparams->drawTool()->drawPoints(vertices, 10, color);
     vertices.clear();
 
     color = sofa::defaulttype::RGBAColor::blue();
-    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2a.getValue()]));
-    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2b.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[d_m2a.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[d_m2b.getValue()]));
     vparams->drawTool()->drawLines(vertices, 1, color);
 
     vparams->drawTool()->restoreLastState();

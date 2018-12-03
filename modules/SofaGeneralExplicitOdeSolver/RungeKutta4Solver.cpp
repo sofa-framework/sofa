@@ -46,10 +46,6 @@ int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integ
         .addAlias("RungeKutta4")
         ;
 
-SOFA_DECL_CLASS(RungeKutta4);
-
-
-
 void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );

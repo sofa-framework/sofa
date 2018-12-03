@@ -18,8 +18,6 @@ namespace helper
 namespace io
 {
 
-SOFA_DECL_CLASS(ImageCImg)
-
 std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
 #ifdef CIMGPLUGIN_HAVE_PNG
     "png",

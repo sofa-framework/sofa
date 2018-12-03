@@ -40,10 +40,13 @@ namespace _barycentricmapper_
 
 using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
 
 /// Base class for barycentric mapping topology-specific mappers
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapper : public virtual core::objectmodel::BaseObject
+class BarycentricMapper : public virtual core::objectmodel::BaseObject
 {
 
 public:
@@ -135,13 +138,7 @@ private:
     BarycentricMapper& operator=(const BarycentricMapper& n) ;
 };
 
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, ExtVec3fTypes >;

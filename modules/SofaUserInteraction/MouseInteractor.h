@@ -138,7 +138,7 @@ protected:
     MouseContainer       *mouseInSofa;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
 #ifndef SOFA_DOUBLE
 extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2fTypes>;
 extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3fTypes>;

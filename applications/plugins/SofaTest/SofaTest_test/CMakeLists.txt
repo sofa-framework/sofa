@@ -2,11 +2,9 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaTest_test)
 
 set(HEADER_FILES
-    Regression_test.h
 )
 
 set(SOURCE_FILES
-    Regression_test.cpp
 )
 
 set(TEST_FILES

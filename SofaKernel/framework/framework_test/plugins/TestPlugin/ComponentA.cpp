@@ -40,8 +40,6 @@ ComponentA::~ComponentA()
 }
 
 
-SOFA_DECL_CLASS(ComponentA)
-
 int ComponentAClass = core::RegisterObject("Component A").add< ComponentA >();
 
 

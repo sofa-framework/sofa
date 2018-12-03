@@ -536,7 +536,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32)
     if (_realTimeCompensation.getValue())
     {
         if (timer == 0)
@@ -692,11 +692,12 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif
@@ -955,8 +956,6 @@ void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 
 }
 
-
-SOFA_DECL_CLASS ( ConstraintAnimationLoop )
 
 int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
         .add< ConstraintAnimationLoop >()

@@ -35,13 +35,17 @@ namespace component
 namespace mapping
 {
 
+
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
 typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In, Out>::MappingData3D,Hexahedron>
+class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In, Out>::MappingData3D,Hexahedron>
 {
     typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
 
@@ -81,10 +85,6 @@ protected:
     using Inherit1::m_updateJ;
     using Inherit1::m_fromTopology;
 };
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT

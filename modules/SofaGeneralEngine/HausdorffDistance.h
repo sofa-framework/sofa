@@ -65,7 +65,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     //Input
     Data<VecCoord> f_points_1; ///< Points belonging to the first point cloud
@@ -97,7 +97,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec1dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec2dTypes>;

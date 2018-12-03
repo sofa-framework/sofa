@@ -62,9 +62,6 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(ImageDensityMass)
-
-
 // Register in the Factory
 int ImageDensityMassClass = core::RegisterObject("Define a global mass matrix including non diagonal terms")
 #ifndef SOFA_FLOAT

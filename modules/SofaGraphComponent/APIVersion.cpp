@@ -89,7 +89,6 @@ const std::string& APIVersion::getApiLevel()
     return d_level.getValue() ;
 }
 
-SOFA_DECL_CLASS(APIVersion)
 int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
         .add< APIVersion >();
 

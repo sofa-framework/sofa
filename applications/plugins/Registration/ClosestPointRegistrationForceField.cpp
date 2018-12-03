@@ -35,8 +35,6 @@ namespace forcefield
 
     using namespace sofa::defaulttype;
 
-      SOFA_DECL_CLASS(ClosestPointRegistrationForceField)
-
       // Register in the Factory
       int ClosestPointRegistrationForceFieldClass = core::RegisterObject("Compute forces based on closest points from/to a target surface/point set")
     #ifndef SOFA_FLOAT

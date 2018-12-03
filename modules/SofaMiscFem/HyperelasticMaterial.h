@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FEM_HYPERELASTICMATERIAL_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/defaulttype/Vec.h>

@@ -26,7 +26,7 @@
 #include <SofaMiscMapping/BeamLinearMapping.h>
 
 
-#include "Task.h"
+#include <sofa/simulation/Task.h>
 
 
 

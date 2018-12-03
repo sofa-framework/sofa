@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_INL
 #define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <math.h>
@@ -384,7 +380,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 
 
 template <class DataTypes>
-void TransformPosition<DataTypes>::update()
+void TransformPosition<DataTypes>::doUpdate()
 {
     selectTransformationMethod();
 
@@ -399,8 +395,6 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
     helper::ReadAccessor< Data<long> > seed = f_seed;
     helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor< Data<VecCoord> > out = f_outputX;
 

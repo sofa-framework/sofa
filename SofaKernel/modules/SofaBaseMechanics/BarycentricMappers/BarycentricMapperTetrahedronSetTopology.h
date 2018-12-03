@@ -36,14 +36,16 @@ namespace mapping
 {
 
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
 typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
 
-
 /// Class allowing barycentric mapping computation on a TetrahedronSetTopology
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData3D,Tetrahedron>
+class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData3D,Tetrahedron>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData3D MappingData;
 
@@ -75,12 +77,6 @@ protected:
     using Inherit1::m_matrixJ;
     using Inherit1::m_updateJ;
 };
-
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT

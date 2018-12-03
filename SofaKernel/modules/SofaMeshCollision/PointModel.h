@@ -86,8 +86,6 @@ class SOFA_MESH_COLLISION_API TPointModel : public core::CollisionModel
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TPointModel, TDataTypes), core::CollisionModel);
 
-//    typedef Vec3Types InDataTypes;
-//    typedef Vec3Types DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef TPointModel<DataTypes> ParentModel;
@@ -112,6 +110,7 @@ public:
 
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
+    void draw(const core::visual::VisualParams*,int index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
@@ -121,15 +120,6 @@ public:
     Deriv getNormal(int index){ return (normals.size()) ? normals[index] : Deriv();}
 
     PointLocalMinDistanceFilter *getFilter() const;
-
-    //template< class TFilter >
-    //TFilter *getFilter() const
-    //{
-    //	if (m_lmdFilter != 0)
-    //		return m_lmdFilter;
-    //	else
-    //		return &m_emptyFilter;
-    //}
 
     void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
@@ -226,7 +216,7 @@ inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
 typedef TPointModel<sofa::defaulttype::Vec3Types> PointModel;
 typedef TPoint<sofa::defaulttype::Vec3Types> Point;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3dTypes>;
 #endif

@@ -1,11 +1,10 @@
 <!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
 <Node name="root" gravity="0 -9 1" dt="0.01">
-    <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline name="default0" verbose="0" />
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="default1" response="default" />
+    <CollisionResponse response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <TreeCollisionGroupManager name="default2" />
     <Node name="SquareGravity" gravity="0 -9.81 0">
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />

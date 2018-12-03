@@ -109,7 +109,7 @@ protected :
     VecReal k;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3dTypes>;

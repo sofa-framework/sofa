@@ -120,7 +120,7 @@ protected:
 
     unsigned int time;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         raTransform inT(this->transform);
         raImage in(this->image);
@@ -130,8 +130,6 @@ protected:
         Real d = d_density.getValue();
         bool mult = d_mult.getValue();
 
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< RigidCoord > > pos(this->d_position);
         helper::WriteOnlyAccessor<Data< RigidMass > > rigidMass(this->d_rigidMass);

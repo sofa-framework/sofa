@@ -228,8 +228,6 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTyp
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PrecomputedConstraintCorrection)
-
 int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component computing constraint forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< PrecomputedConstraintCorrection<Vec3dTypes> >()

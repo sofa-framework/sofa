@@ -58,7 +58,7 @@ protected:
     QuatToRigidEngine();
     virtual ~QuatToRigidEngine();
 public:
-    void update() override;
+    void doUpdate() override;
     void init() override;
     void reinit() override;
 
@@ -86,7 +86,7 @@ public:
     Data<helper::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(QUATTORIGIDENGINE_CPP)
+#if  !defined(QUATTORIGIDENGINE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

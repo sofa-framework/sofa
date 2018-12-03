@@ -35,8 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ClusteringEngine)
-
 int ClusteringEngineClass = core::RegisterObject("Group points into overlapping clusters according to a user defined number of clusters and radius")
 #ifndef SOFA_FLOAT
         .add< ClusteringEngine<Vec3dTypes> >()

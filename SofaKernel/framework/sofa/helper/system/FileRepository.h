@@ -57,7 +57,7 @@ class SOFA_HELPER_API FileRepository
 public:
 
     /// Initialize the set of paths from an environment variable.
-    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = 0);
+    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = 0, const char* iniFilePath = 0);
 
     ~FileRepository();
 
@@ -72,6 +72,9 @@ public:
 
     /// Remove a path of the set of paths.
     void removePath(const std::string& path);
+
+    /// Remove all known paths.
+    void clear();
 
     /// Get the first path into the set of paths
     std::string getFirstPath();

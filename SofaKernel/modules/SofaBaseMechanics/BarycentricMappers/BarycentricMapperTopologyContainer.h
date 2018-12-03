@@ -39,11 +39,18 @@ namespace _barycentricmappertopologycontainer_
 
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
-
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
+typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
+typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
 /// Template class for topology container mappers
 template<class In, class Out, class MappingDataType, class Element>
-class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer : public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperTopologyContainer : public TopologyBarycentricMapper<In,Out>
 {
 
 public:
@@ -121,17 +128,6 @@ protected:
     void computeBB(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
 };
-
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
-typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
-typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
-typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
-typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
-
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
 #ifndef SOFA_FLOAT

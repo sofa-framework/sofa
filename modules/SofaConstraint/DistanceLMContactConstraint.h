@@ -108,7 +108,6 @@ public:
             core::behavior::ConstraintGroup * group) override;
 
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const override;
-    //
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
@@ -178,7 +177,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3dTypes>;
 #endif

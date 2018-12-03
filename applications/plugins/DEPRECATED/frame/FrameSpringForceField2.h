@@ -188,7 +188,7 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
+#if  !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
 extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;

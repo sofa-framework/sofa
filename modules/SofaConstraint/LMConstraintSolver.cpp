@@ -930,9 +930,6 @@ void LMConstraintSolver::handleEvent(core::objectmodel::Event *e)
 int LMConstraintSolverClass = core::RegisterObject("A Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintSolver >();
 
-SOFA_DECL_CLASS(LMConstraintSolver);
-
-
 } // namespace constraintset
 
 } // namespace component

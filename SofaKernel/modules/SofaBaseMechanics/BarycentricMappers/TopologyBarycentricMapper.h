@@ -36,9 +36,13 @@ namespace mapping
 namespace _topologybarycentricmapper_
 {
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
 /// Template class for barycentric mapping topology-specific mappers.
 template<class In, class Out>
-class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper : public BarycentricMapper<In,Out>
+class TopologyBarycentricMapper : public BarycentricMapper<In,Out>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out),
@@ -89,12 +93,7 @@ protected:
     topology::PointSetTopologyContainer* m_toTopology;
 };
 
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, ExtVec3fTypes >;

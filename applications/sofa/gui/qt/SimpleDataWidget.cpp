@@ -38,8 +38,6 @@ using sofa::helper::Creator;
 using sofa::helper::fixed_array;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SimpleDataWidget);
-
 Creator<DataWidgetFactory, SimpleDataWidget<bool> > DWClass_bool("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget<char> > DWClass_char("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget<unsigned char> > DWClass_uchar("default",true);

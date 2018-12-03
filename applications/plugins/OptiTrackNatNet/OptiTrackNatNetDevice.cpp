@@ -871,8 +871,6 @@ void OptiTrackNatNetDevice::onBeginAnimationStep(const double /*dt*/)
     update();
 }
 
-SOFA_DECL_CLASS(OptiTrackNatNetDevice)
-
 int OptiTrackNatNetDeviceClass = sofa::core::RegisterObject("Tracked rigid device relying on OptiTrackNatNetClient")
         .add< OptiTrackNatNetDevice >()
         ;

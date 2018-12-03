@@ -74,7 +74,7 @@ public:
     virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class RepulsiveSpringForceField<defaulttype::Vec3dTypes>;
 extern template class RepulsiveSpringForceField<defaulttype::Vec2dTypes>;

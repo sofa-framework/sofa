@@ -81,11 +81,3 @@ const char* getModuleComponentList()
 
 }
 
-SOFA_LINK_CLASS(ManifoldEdgeSetGeometryAlgorithms)
-SOFA_LINK_CLASS(ManifoldEdgeSetTopologyAlgorithms)
-SOFA_LINK_CLASS(ManifoldEdgeSetTopologyContainer)
-SOFA_LINK_CLASS(ManifoldEdgeSetTopologyModifier)
-SOFA_LINK_CLASS(ManifoldTriangleSetTopologyContainer)
-SOFA_LINK_CLASS(ManifoldTriangleSetTopologyModifier)
-SOFA_LINK_CLASS(ManifoldTriangleSetTopologyAlgorithms)
-//SOFA_LINK_CLASS(ManifoldTetrahedronSetTopologyContainer)

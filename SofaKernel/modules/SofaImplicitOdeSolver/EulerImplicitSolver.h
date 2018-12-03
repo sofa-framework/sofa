@@ -127,24 +127,15 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    virtual double getVelocityIntegrationFactor() const override
-    {
-        return 1.0; // getContext()->getDt();
-    }
+    virtual double getVelocityIntegrationFactor() const override { return 1.0; }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the position
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    virtual double getPositionIntegrationFactor() const override
-    {
-        return getPositionIntegrationFactor(getContext()->getDt());
-    }
+    virtual double getPositionIntegrationFactor() const override ;
 
-    virtual double getPositionIntegrationFactor(double dt ) const
-    {
-        return dt;
-    }
+    virtual double getPositionIntegrationFactor(double dt ) const { return dt; }
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
@@ -161,40 +152,15 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
-    {
-        return getIntegrationFactor(inputDerivative, outputDerivative, getContext()->getDt());
-    }
+    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
 
-    double getIntegrationFactor(int inputDerivative, int outputDerivative, double dt) const
-    {
-        double matrix[3][3] =
-        {
-            { 1, dt, 0},
-            { 0, 1, 0},
-            { 0, 0, 0}
-        };
-        if (inputDerivative >= 3 || outputDerivative >= 3)
-            return 0;
-        else
-            return matrix[outputDerivative][inputDerivative];
-    }
+    double getIntegrationFactor(int inputDerivative, int outputDerivative, double dt) const ;
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const override
-    {
-        return getSolutionIntegrationFactor(outputDerivative, getContext()->getDt());
-    }
+    double getSolutionIntegrationFactor(int outputDerivative) const override ;
 
-    double getSolutionIntegrationFactor(int outputDerivative, double dt) const
-    {
-        double vect[3] = { dt, 1, 1/dt};
-        if (outputDerivative >= 3)
-            return 0;
-        else
-            return vect[outputDerivative];
-    }
+    double getSolutionIntegrationFactor(int outputDerivative, double dt) const ;
 
 protected:
 

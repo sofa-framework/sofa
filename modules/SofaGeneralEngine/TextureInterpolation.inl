@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_INL
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
@@ -86,14 +82,12 @@ void TextureInterpolation<DataTypes>::reinit()
 
 
 template <class DataTypes>
-void TextureInterpolation<DataTypes>::update()
+void TextureInterpolation<DataTypes>::doUpdate()
 {
     if (!_inputField.isSet())
         return;
 
     const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
-
-    cleanDirty();
 
     ResizableExtVector2D& outputs = *(_outputCoord.beginWriteOnly());
     outputs.resize (realInputs.size());

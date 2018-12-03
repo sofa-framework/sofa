@@ -53,7 +53,7 @@ public:
     void init();
     void reinit();
     // Update the engine
-    void update();
+    void doUpdate();
 
 protected:
 

@@ -40,8 +40,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(MLSMapping_quadratic)
-
 using namespace defaulttype;
 
 // Register in the Factory

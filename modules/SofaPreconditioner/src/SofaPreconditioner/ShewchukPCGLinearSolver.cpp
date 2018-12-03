@@ -231,8 +231,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
 }
 
-SOFA_DECL_CLASS(ShewchukPCGLinearSolver)
-
 int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
 .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
 .addAlias("PCGLinearSolver");

@@ -68,9 +68,6 @@ int PythonScriptDataEngineClass = core::RegisterObject("A Sofa DataEngine script
         .add< PythonScriptDataEngine>()
         ;
 
-SOFA_DECL_CLASS(PythonScriptController)
-
-
 PythonScriptDataEngine::PythonScriptDataEngine()
     :ScriptDataEngine()
     , m_ScriptDataEngineClass(0)
