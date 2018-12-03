@@ -118,23 +118,6 @@ public:
 
     /// Animation flag
     virtual bool getAnimate() const;
-
-
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCurrentLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCoarsestLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    virtual int getFinestLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    //     virtual unsigned int nbLevels() const;
-#endif
-
     /// @}
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -412,21 +395,6 @@ public:
     /// Sleeping state change of the context
     virtual void setChangeSleepingState(bool /*val*/)
     { }
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
-    virtual bool setCurrentLevel(int )
-    {
-        return false;
-    }
-
-    /// Multiresolution support (UNSTABLE)
-    virtual void setCoarsestLevel(int ) {}
-
-    /// Multiresolution support (UNSTABLE)
-    virtual void setFinestLevel(int ) {}
-#endif
-
     /// @}
 
     /// @name Variables Setters

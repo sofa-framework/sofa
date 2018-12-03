@@ -99,30 +99,6 @@ bool BaseContext::getAnimate() const
     return true;
 }
 
-
-
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-/// Multiresolution
-int BaseContext::getCurrentLevel() const
-{
-    return 0;
-}
-int BaseContext::getCoarsestLevel() const
-{
-    return 0;
-}
-int BaseContext::getFinestLevel() const
-{
-    return 0;
-}
-// unsigned int BaseContext::nbLevels() const
-// {
-// 	return getCoarsestLevel() - getFinestLevel() + 1;
-// }
-#endif
-
-
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 //////////////////////////////
 // Local Coordinates System //

@@ -39,11 +39,6 @@ Context::Context()
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
 	, d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
 	, d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
-    , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
-    , finestLevel_(initData(&finestLevel_,0,"finestLevel","Finest level of details"))
-#endif
 {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
@@ -192,40 +187,7 @@ void Context::setAnimate(bool val)
     animate_.setValue(val);
 }
 
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-// Multiresolution
-
-bool Context::setCurrentLevel(int l)
-{
-    if( l > coarsestLevel_.getValue() )
-    {
-        currentLevel_.setValue(coarsestLevel_.getValue());
-        return false;
-    }
-    else if( l < 0 /*finestLevel_.getValue()*/ )
-    {
-// 		currentLevel_.setValue(finestLevel_.getValue());
-        currentLevel_.setValue( 0 );
-        return false;
-    }
-    currentLevel_.setValue(l);
-    if( l == coarsestLevel_.getValue() ) return false;
-    return true;
-}
-void Context::setCoarsestLevel(int l)
-{
-    coarsestLevel_.setValue( l );
-}
-void Context::setFinestLevel(int l)
-{
-    finestLevel_.setValue( l );
-}
-#endif
-
 //======================
-
-
 void Context::copyContext(const Context& c)
 {
     // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
@@ -249,14 +211,6 @@ void Context::copySimulationContext(const Context& c)
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 #endif
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    // for multiresolution
-// 	finestLevel_ = c.finestLevel_;
-// 	coarsestLevel_ = c.coarsestLevel_;
-// 	currentLevel_ = c.currentLevel_;
-#endif
-
 
 }
 
