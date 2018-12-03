@@ -40,12 +40,6 @@ Context::Context()
 	, d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
 	, d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
 {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
-    setGravity(objectmodel::BaseContext::getLocalGravity());
-    setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
-    setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
-#endif
 
 }
 
@@ -82,51 +76,6 @@ void Context::setChangeSleepingState(bool val)
 	d_canChangeSleepingState.setValue(val);
 }
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-/// Projection from the local coordinate system to the world coordinate system.
-const Context::Frame& Context::getPositionInWorld() const
-{
-    return localFrame_;
-}
-/// Projection from the local coordinate system to the world coordinate system.
-void Context::setPositionInWorld(const Frame& f)
-{
-    localFrame_ = f;
-}
-
-/// Spatial velocity (linear, angular) of the local frame with respect to the world
-const Context::SpatialVector& Context::getVelocityInWorld() const
-{
-    return spatialVelocityInWorld_;
-}
-/// Spatial velocity (linear, angular) of the local frame with respect to the world
-void Context::setVelocityInWorld(const SpatialVector& v)
-{
-    spatialVelocityInWorld_ = v;
-}
-
-/// Linear acceleration of the origin induced by the angular velocity of the ancestors
-const Context::Vec3& Context::getVelocityBasedLinearAccelerationInWorld() const
-{
-    return velocityBasedLinearAccelerationInWorld_;
-}
-/// Linear acceleration of the origin induced by the angular velocity of the ancestors
-void Context::setVelocityBasedLinearAccelerationInWorld(const Vec3& a )
-{
-    velocityBasedLinearAccelerationInWorld_ = a;
-}
-/// Gravity vector in local coordinates
-// const Context::Vec3& Context::getGravity() const
-// {
-// 	return gravity_;
-// }
-
-/// Gravity vector in local coordinates
-Context::Vec3 Context::getLocalGravity() const
-{
-    return getPositionInWorld().backProjectVector(worldGravity_.getValue());
-}
-#endif
 
 
 /// Simulation timestep
@@ -206,11 +155,6 @@ void Context::copySimulationContext(const Context& c)
     setAnimate(c.getAnimate());
 
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    setPositionInWorld( c.getPositionInWorld());
-    spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
-    velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
-#endif
 
 }
 
