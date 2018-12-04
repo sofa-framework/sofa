@@ -576,26 +576,15 @@ protected:
     void computeForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 };
 
-#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec2dTypes;
-#endif
 
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec2fTypes;
-using sofa::defaulttype::Vec3fTypes;
-#endif
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3dTypes>;
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3fTypes>;
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2fTypes>;
-#endif
+extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3Types>;
+extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2Types>;
+
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 

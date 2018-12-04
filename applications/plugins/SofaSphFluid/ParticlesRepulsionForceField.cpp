@@ -40,24 +40,14 @@ using namespace core::behavior;
 
 
 int ParticlesRepulsionForceFieldClass = core::RegisterObject("ForceField using SpatialGridContainer to compute repulsion forces in a set of spheres")
-#ifndef SOFA_FLOAT
-        .add< ParticlesRepulsionForceField<Vec3dTypes> >()
-        .add< ParticlesRepulsionForceField<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ParticlesRepulsionForceField<Vec3fTypes> >()
-        .add< ParticlesRepulsionForceField<Vec2fTypes> >()
-#endif
+        .add< ParticlesRepulsionForceField<Vec3Types> >()
+        .add< ParticlesRepulsionForceField<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3dTypes>;
-template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3fTypes>;
-template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2fTypes>;
-#endif
+template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3Types>;
+template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2Types>;
+
 
 
 } // namespace forcefield

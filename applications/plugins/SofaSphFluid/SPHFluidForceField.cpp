@@ -40,24 +40,14 @@ using namespace core::behavior;
 
 
 int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamics")
-#ifndef SOFA_FLOAT
-        .add< SPHFluidForceField<Vec3dTypes> >()
-//.add< SPHFluidForceField<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SPHFluidForceField<Vec3fTypes> >()
-//.add< SPHFluidForceField<Vec2fTypes> >()
-#endif
+        .add< SPHFluidForceField<Vec3Types> >()
+//.add< SPHFluidForceField<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3dTypes>;
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3fTypes>;
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2fTypes>;
-#endif
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3Types>;
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2Types>;
+
 
 
 } // namespace forcefield

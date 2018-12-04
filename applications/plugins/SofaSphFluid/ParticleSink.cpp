@@ -34,14 +34,9 @@ namespace misc
 {
 
 int ParticleSinkClass = core::RegisterObject("Parametrable particle generator")
-#ifndef SOFA_FLOAT
-        .add< ParticleSink<defaulttype::Vec3dTypes> >()
-        .add< ParticleSink<defaulttype::Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ParticleSink<defaulttype::Vec3fTypes> >()
-        .add< ParticleSink<defaulttype::Vec2fTypes> >()
-#endif
+        .add< ParticleSink<defaulttype::Vec3Types> >()
+        .add< ParticleSink<defaulttype::Vec2Types> >()
+
         ;
 
 }
