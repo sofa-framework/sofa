@@ -87,7 +87,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
     if(!this->getFromModels2().empty())
     {
         m_fromRootModel = this->getFromModels2()[0];
-        sout << "Root Model found : Name = " << m_fromRootModel->getName() ;
+        msg_info() << "Root Model found : Name = " << m_fromRootModel->getName() ;
     }
 
     Inherit::init();
