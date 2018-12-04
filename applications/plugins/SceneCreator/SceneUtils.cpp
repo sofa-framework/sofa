@@ -50,6 +50,8 @@ using sofa::core::ObjectFactory ;
 namespace sofa
 {
 namespace modeling {
+using sofa::defaulttype::Vec3Types;
+
 using sofa::component::interactionforcefield::StiffSpringForceField ;
 typedef StiffSpringForceField<Vec3Types>   StiffSpringForceField3;
 
