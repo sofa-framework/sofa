@@ -46,12 +46,8 @@ namespace linearsolver
 
 
 int WarpPreconditionerClass = core::RegisterObject("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix")
-#ifndef SOFA_FLOAT
 .add< WarpPreconditioner< RotationMatrix<double>, FullVector<double>, NoThreadManager > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< WarpPreconditioner< RotationMatrix<float>, FullVector<float>,NoThreadManager > > ()
-#endif
+
 ;
 ;
 

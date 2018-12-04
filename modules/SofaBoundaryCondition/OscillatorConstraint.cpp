@@ -39,24 +39,14 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
-#ifndef SOFA_FLOAT
-        .add< OscillatorConstraint<Vec3dTypes> >()
-        .add< OscillatorConstraint<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< OscillatorConstraint<Vec3fTypes> >()
-        .add< OscillatorConstraint<Rigid3fTypes> >()
-#endif
+        .add< OscillatorConstraint<Vec3Types> >()
+        .add< OscillatorConstraint<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class OscillatorConstraint<Rigid3dTypes>;
-template class OscillatorConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class OscillatorConstraint<Rigid3fTypes>;
-template class OscillatorConstraint<Vec3fTypes>;
-#endif
+template class OscillatorConstraint<Rigid3Types>;
+template class OscillatorConstraint<Vec3Types>;
+
 
 } // namespace projectiveconstraintset
 

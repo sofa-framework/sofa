@@ -37,18 +37,11 @@ int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on
         .add< MeshSubsetEngine<defaulttype::Vec3fTypes> >(true) // default template
 #else
         .add< MeshSubsetEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< MeshSubsetEngine<defaulttype::Vec3fTypes> >()
-#endif
 #endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

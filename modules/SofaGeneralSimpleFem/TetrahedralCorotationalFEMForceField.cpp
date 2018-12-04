@@ -42,20 +42,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TetrahedralCorotationalFEMForceFieldClass = core::RegisterObject("Corotational FEM Tetrahedral finite elements")
-#ifndef SOFA_FLOAT
-        .add< TetrahedralCorotationalFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TetrahedralCorotationalFEMForceField<Vec3fTypes> >()
-#endif
+        .add< TetrahedralCorotationalFEMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3fTypes>;
-#endif
+template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

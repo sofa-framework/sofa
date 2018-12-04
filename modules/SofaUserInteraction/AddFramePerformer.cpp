@@ -35,20 +35,12 @@ namespace component
 namespace collision
 {
 
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3dTypes>;
-#endif
+template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
 
 
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3fTypes> >  AddFramePerformerVec3fClass("AddFrame",true);
-#endif
-#ifndef SOFA_FLOAT
+
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3dTypes> >  AddFramePerformerVec3dClass("AddFrame",true);
-#endif
+
 }
 }
 }

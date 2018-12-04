@@ -40,50 +40,21 @@ using namespace sofa::defaulttype;
 // Register in the Factory
 int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
 
-#ifndef SOFA_FLOAT
-        .add< CenterOfMassMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< CenterOfMassMapping< Rigid2dTypes, Vec2dTypes > >()
-        .add< CenterOfMassMapping< Rigid3dTypes, ExtVec3fTypes > >()
-        .add< CenterOfMassMapping< Rigid3dTypes, ExtVec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CenterOfMassMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< CenterOfMassMapping< Rigid2fTypes, Vec2fTypes > >()
-        .add< CenterOfMassMapping< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< CenterOfMassMapping< Rigid3Types, Vec3dTypes > >()
+        .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >()
+        .add< CenterOfMassMapping< Rigid3Types, ExtVec3Types > >()
+        .add< CenterOfMassMapping< Rigid3Types, ExtVec3Types > >()
+
 //
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< CenterOfMassMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< CenterOfMassMapping< Rigid3fTypes, Vec3dTypes > >()
-        .add< CenterOfMassMapping< Rigid2dTypes, Vec2fTypes > >()
-        .add< CenterOfMassMapping< Rigid2fTypes, Vec2dTypes > >()
-        .add< CenterOfMassMapping< Rigid3fTypes, ExtVec3dTypes > >()
-#endif
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2dTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2fTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2Types, Vec2Types >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3Types, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2fTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3fTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2dTypes >;
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3dTypes >;
-#endif
-#endif
+
+
 
 
 } // namespace mapping

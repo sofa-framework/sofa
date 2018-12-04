@@ -162,14 +162,9 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace constraintset

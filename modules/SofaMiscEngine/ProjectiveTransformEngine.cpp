@@ -37,20 +37,13 @@ namespace engine
         .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template
 #else
         .add< ProjectiveTransformEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >()
-#endif
 #endif
 
         .add< ProjectiveTransformEngine<defaulttype::ExtVec3fTypes> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+ //SOFA_FLOAT
 template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
 

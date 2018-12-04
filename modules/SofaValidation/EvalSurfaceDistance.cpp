@@ -38,20 +38,12 @@ using namespace defaulttype;
 
 
 int EvalSurfaceDistanceClass = core::RegisterObject("Periodically compute the distance between 2 set of points")
-#ifndef SOFA_FLOAT
-        .add< EvalSurfaceDistance<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EvalSurfaceDistance<Vec3fTypes> >()
-#endif
+        .add< EvalSurfaceDistance<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_VALIDATION_API EvalSurfaceDistance<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_VALIDATION_API EvalSurfaceDistance<Vec3fTypes>;
-#endif
+template class SOFA_VALIDATION_API EvalSurfaceDistance<Vec3Types>;
+
 
 } // namespace misc
 

@@ -125,12 +125,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3Types>;
+ //SOFA_FLOAT
 #endif
 
 } // namespace engine

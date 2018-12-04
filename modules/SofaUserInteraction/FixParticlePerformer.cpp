@@ -35,14 +35,9 @@ namespace component
 
 namespace collision
 {
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API FixParticlePerformer<defaulttype::Vec3fTypes>;
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API FixParticlePerformer<defaulttype::Vec3dTypes>;
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
-#endif
+template class SOFA_USER_INTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3Types> >  FixParticlePerformerVec3dClass("FixParticle",true);
+
 }
 }
 }

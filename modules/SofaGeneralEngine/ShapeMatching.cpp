@@ -39,45 +39,25 @@ namespace engine
 using namespace defaulttype;
 
 int ShapeMatchingClass = core::RegisterObject("Compute target positions using shape matching deformation method by Mueller et al.")
-#ifndef SOFA_FLOAT
-        .add< ShapeMatching<Vec3dTypes> >()
-        .add< ShapeMatching<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ShapeMatching<Vec3fTypes> >()
-        .add< ShapeMatching<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ShapeMatching<Vec3Types> >()
+        .add< ShapeMatching<Rigid3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3Types>;
+ //SOFA_FLOAT
 
 
 // specialization for rigids
 
-#ifndef SOFA_FLOAT
 template <>
-void ShapeMatching<Rigid3dTypes>::doUpdate()
+void ShapeMatching<Rigid3Types>::doUpdate()
 {
     // TO DO: shape matching for rigids as in [Muller11]
 }
 
-#endif
 
-#ifndef SOFA_DOUBLE
-template <>
-void ShapeMatching<Rigid3fTypes>::doUpdate()
-{
-    // TO DO: shape matching for rigids as in [Muller11]
-}
-
-#endif
 
 
 } //

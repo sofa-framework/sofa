@@ -37,20 +37,12 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 int VectorSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
-#ifndef SOFA_FLOAT
-        .add< VectorSpringForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< VectorSpringForceField<Vec3fTypes> >()
-#endif
+        .add< VectorSpringForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<Vec3fTypes>;
-#endif
+template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<Vec3Types>;
+
 
 
 } // namespace interactionforcefield

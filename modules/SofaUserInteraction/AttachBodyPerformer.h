@@ -91,29 +91,16 @@ protected:
 };
 
 
-#ifndef SOFA_FLOAT
 template<>
-bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked);
-#endif
+bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPicked& picked);
 
-#ifndef SOFA_DOUBLE
-template<>
-bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked);
-#endif
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2fTypes>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3fTypes>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3fTypes>;
+extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
+extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2dTypes>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3dTypes>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3dTypes>;
-#endif
 #endif
 
 

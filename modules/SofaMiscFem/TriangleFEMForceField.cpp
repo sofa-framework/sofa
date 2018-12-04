@@ -40,20 +40,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
-#ifndef SOFA_FLOAT
-        .add< TriangleFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangleFEMForceField<Vec3fTypes> >()
-#endif
+        .add< TriangleFEMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FEM_API TriangleFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FEM_API TriangleFEMForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FEM_API TriangleFEMForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

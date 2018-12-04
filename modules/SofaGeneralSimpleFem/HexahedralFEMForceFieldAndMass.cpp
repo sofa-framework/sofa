@@ -39,20 +39,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int HexahedralFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finite elements with mass")
-#ifndef SOFA_FLOAT
-        .add< HexahedralFEMForceFieldAndMass<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedralFEMForceFieldAndMass<Vec3fTypes> >()
-#endif
+        .add< HexahedralFEMForceFieldAndMass<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<Vec3fTypes>;
-#endif
+template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<Vec3Types>;
+
 
 } // namespace forcefield
 

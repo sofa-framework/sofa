@@ -54,20 +54,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int FastTriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
-#ifndef SOFA_FLOAT
-        .add< FastTriangularBendingSprings<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FastTriangularBendingSprings<Vec3fTypes> >()
-#endif
+        .add< FastTriangularBendingSprings<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<Vec3fTypes>;
-#endif
+template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<Vec3Types>;
+
 
 
 } // namespace forcefield

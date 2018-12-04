@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int ExtrudeEdgesAndGenerateQuadsClass = core::RegisterObject("This engine extrudes an edge-based curve into a quad surface patch")
-#ifdef SOFA_WITH_DOUBLE
-        .add< ExtrudeEdgesAndGenerateQuads<Vec3dTypes> >(true) // default template
-#endif //SOFA_WITH_DOUBLE
-#ifdef SOFA_WITH_FLOAT
-        .add< ExtrudeEdgesAndGenerateQuads<Vec3fTypes> >()
-#endif //SOFA_WITH_FLOAT
+        .add< ExtrudeEdgesAndGenerateQuads<Vec3Types> >(true) // default template
+ //SOFA_WITH_DOUBLE
         ;
 
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3dTypes>;
-#endif //SOFA_WITH_DOUBLE
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3fTypes>;
-#endif //SOFA_WITH_FLOAT
+template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3Types>;
+ //SOFA_WITH_DOUBLE
 
 
 } // namespace constraint

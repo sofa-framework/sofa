@@ -84,12 +84,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3Types>;
+ //SOFA_FLOAT
 #endif
 
 } // namespace engine

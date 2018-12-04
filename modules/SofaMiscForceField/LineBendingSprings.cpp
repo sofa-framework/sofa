@@ -52,24 +52,14 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline to prevent bending")
-#ifndef SOFA_FLOAT
-        .add< LineBendingSprings<Vec3dTypes> >()
-        .add< LineBendingSprings<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LineBendingSprings<Vec3fTypes> >()
-        .add< LineBendingSprings<Vec2fTypes> >()
-#endif
+        .add< LineBendingSprings<Vec3Types> >()
+        .add< LineBendingSprings<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3dTypes>;
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3fTypes>;
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2fTypes>;
-#endif
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3Types>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2Types>;
+
 
 } // namespace interactionforcefield
 

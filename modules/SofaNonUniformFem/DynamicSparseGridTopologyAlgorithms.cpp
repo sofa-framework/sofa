@@ -38,30 +38,15 @@ int DynamicSparseGridTopologyAlgorithmsClass = core::RegisterObject("Hexahedron 
         .add< DynamicSparseGridTopologyAlgorithms<Vec3fTypes> >(true) // default template
 #else
         .add< DynamicSparseGridTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< DynamicSparseGridTopologyAlgorithms<Vec3fTypes> >() // default template
 #endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< DynamicSparseGridTopologyAlgorithms<Vec2dTypes> >()
-        .add< DynamicSparseGridTopologyAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DynamicSparseGridTopologyAlgorithms<Vec2fTypes> >()
-        .add< DynamicSparseGridTopologyAlgorithms<Vec1fTypes> >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class DynamicSparseGridTopologyAlgorithms<Vec3dTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec2dTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec1dTypes>;
-#endif
+        .add< DynamicSparseGridTopologyAlgorithms<Vec2Types> >()
+        .add< DynamicSparseGridTopologyAlgorithms<Vec1Types> >()
 
-#ifndef SOFA_DOUBLE
-template class DynamicSparseGridTopologyAlgorithms<Vec3fTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec2fTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec1fTypes>;
-#endif
+        ;
+template class DynamicSparseGridTopologyAlgorithms<Vec3Types>;
+template class DynamicSparseGridTopologyAlgorithms<Vec2Types>;
+template class DynamicSparseGridTopologyAlgorithms<Vec1Types>;
+
 
 } // namespace topology
 

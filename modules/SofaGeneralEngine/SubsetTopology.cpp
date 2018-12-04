@@ -37,24 +37,14 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int SubsetTopologyClass = core::RegisterObject("Engine used to create subset topology given box, sphere, plan, ...")
-#ifndef SOFA_FLOAT
-        .add< SubsetTopology<Vec3dTypes> >()
-        .add< SubsetTopology<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< SubsetTopology<Vec3fTypes> >()
-        .add< SubsetTopology<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< SubsetTopology<Vec3Types> >()
+        .add< SubsetTopology<Rigid3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API SubsetTopology<Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API SubsetTopology<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API SubsetTopology<Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API SubsetTopology<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API SubsetTopology<Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API SubsetTopology<Rigid3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

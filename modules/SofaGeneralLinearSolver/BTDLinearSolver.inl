@@ -862,23 +862,13 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     return true;
 }
 
-#ifndef SOFA_FLOAT
 template<> const char* BTDMatrix<1,double>::Name() { return "BTDMatrix1d"; }
 template<> const char* BTDMatrix<2,double>::Name() { return "BTDMatrix2d"; }
 template<> const char* BTDMatrix<3,double>::Name() { return "BTDMatrix3d"; }
 template<> const char* BTDMatrix<4,double>::Name() { return "BTDMatrix4d"; }
 template<> const char* BTDMatrix<5,double>::Name() { return "BTDMatrix5d"; }
 template<> const char* BTDMatrix<6,double>::Name() { return "BTDMatrix6d"; }
-#endif
 
-#ifndef SOFA_DOUBLE
-template<> const char* BTDMatrix<1,float>::Name() { return "BTDMatrix1f"; }
-template<> const char* BTDMatrix<2,float>::Name() { return "BTDMatrix2f"; }
-template<> const char* BTDMatrix<3,float>::Name() { return "BTDMatrix3f"; }
-template<> const char* BTDMatrix<4,float>::Name() { return "BTDMatrix4f"; }
-template<> const char* BTDMatrix<5,float>::Name() { return "BTDMatrix5f"; }
-template<> const char* BTDMatrix<6,float>::Name() { return "BTDMatrix6f"; }
-#endif
 
 } // namespace linearsolver
 

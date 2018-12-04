@@ -38,27 +38,15 @@ using namespace sofa::defaulttype;
 
 
 int VaccumSphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere toward the exterior")
-#ifndef SOFA_FLOAT
-        .add< VaccumSphereForceField<Vec3dTypes> >()
-        .add< VaccumSphereForceField<Vec2dTypes> >()
-        .add< VaccumSphereForceField<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< VaccumSphereForceField<Vec3fTypes> >()
-        .add< VaccumSphereForceField<Vec2fTypes> >()
-        .add< VaccumSphereForceField<Vec1fTypes> >()
-#endif
+        .add< VaccumSphereForceField<Vec3Types> >()
+        .add< VaccumSphereForceField<Vec2Types> >()
+        .add< VaccumSphereForceField<Vec1Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1Types>;
+
 
 } // namespace forcefield
 

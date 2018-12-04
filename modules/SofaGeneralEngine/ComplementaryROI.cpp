@@ -37,21 +37,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int ComplementaryROIClass = core::RegisterObject("Find the points that are NOT in the input sets")
-#ifdef SOFA_WITH_FLOAT
-        .add<ComplementaryROI<Vec3fTypes> >()
-#endif //SOFA_WITH_FLOAT
-#ifdef SOFA_WITH_DOUBLE
-        .add<ComplementaryROI<Vec3dTypes> >()
-#endif //SOFA_WITH_DOUBLE
+        .add<ComplementaryROI<Vec3Types> >()
+ //SOFA_WITH_DOUBLE
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3fTypes>;
-#endif //SOFA_WITH_FLOAT
-
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3dTypes>;
-#endif //SOFA_WITH_DOUBLE
+template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3Types>;
+ //SOFA_WITH_DOUBLE
 
 } // namespace engine
 

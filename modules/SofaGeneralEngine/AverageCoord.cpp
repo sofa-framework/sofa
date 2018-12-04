@@ -37,33 +37,19 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int AverageCoordClass = core::RegisterObject("Compute the average of coordinates")
-#ifndef SOFA_FLOAT
-        .add< AverageCoord<Vec2dTypes> >()
-        .add< AverageCoord<Vec3dTypes> >()
-        .add< AverageCoord<Rigid2dTypes> >()
-        .add< AverageCoord<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< AverageCoord<Vec2fTypes> >()
-        .add< AverageCoord<Rigid2fTypes> >()
-        .add< AverageCoord<Vec3fTypes> >()
-        .add< AverageCoord<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< AverageCoord<Vec2Types> >()
+        .add< AverageCoord<Vec3Types> >()
+        .add< AverageCoord<Rigid2Types> >()
+        .add< AverageCoord<Rigid3Types> >()
+ //SOFA_FLOAT
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec2dTypes>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid2dTypes>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec2fTypes>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid2fTypes>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec2Types>;
+template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid2Types>;
+template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid3Types>;
+ //SOFA_FLOAT
 
 
 } //

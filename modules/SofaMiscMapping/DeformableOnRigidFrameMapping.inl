@@ -488,15 +488,14 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
 //     }
 // }
-//#ifndef SOFA_FLOAT
+////template<>
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 //template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
 //template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
-//#endif
-//#ifndef SOFA_DOUBLE
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
+//
+//#ifdef SOFA_WITH_FLOAT
 //template<>
 //    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 //template<>
@@ -505,21 +504,20 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
 //#endif
 //
-//#ifndef SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
+////#ifdef SOFA_WITH_FLOAT
 //template<>
-//void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+//void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 //template<>
-//void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+//void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 //template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
 //template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
 //template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
 //template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
-//#endif
+//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2Types >, core::behavior::MechanicalState< defaulttype::Vec2Types > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
+//
 //#endif
 /// Template specialization for 2D rigids
 // template<typename real1, typename real2>

@@ -39,25 +39,14 @@ namespace projectiveconstraintset
 {
 
 int AffineMovementConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
-#ifdef SOFA_WITH_DOUBLE
-        .add< AffineMovementConstraint<defaulttype::Vec3dTypes> >()
-        .add< AffineMovementConstraint<defaulttype::Rigid3dTypes> >()
-#endif // SOFA_WITH_DOUBLE
-#ifdef SOFA_WITH_FLOAT
-        .add< AffineMovementConstraint<defaulttype::Vec3fTypes> >()
-        .add< AffineMovementConstraint<defaulttype::Rigid3fTypes> >()
-#endif // SOFA_WITH_FLOAT
+        .add< AffineMovementConstraint<defaulttype::Vec3Types> >()
+        .add< AffineMovementConstraint<defaulttype::Rigid3Types> >()
+ // SOFA_WITH_DOUBLE
         ;
 
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif // SOFA_WITH_DOUBLE
-
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif // SOFA_WITH_FLOAT
+template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3Types>;
+ // SOFA_WITH_DOUBLE
 
 } // namespace projectiveconstraintset
 

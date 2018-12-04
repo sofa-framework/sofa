@@ -57,12 +57,8 @@ int EdgeSetControllerClass = core::RegisterObject("")
 //.add< EdgeSetController<Vec2fTypes> >()
 //.add< EdgeSetController<Vec1dTypes> >()
 //.add< EdgeSetController<Vec1fTypes> >()
-#ifndef SOFA_FLOAT
-        .add< EdgeSetController<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EdgeSetController<Rigid3fTypes> >()
-#endif
+        .add< EdgeSetController<Rigid3Types> >()
+
 //.add< EdgeSetController<Rigid2dTypes> >()
 //.add< EdgeSetController<Rigid2fTypes> >()
         ;
@@ -73,12 +69,8 @@ int EdgeSetControllerClass = core::RegisterObject("")
 //template class SOFA_USER_INTERACTION_API EdgeSetController<Vec2fTypes>;
 //template class SOFA_USER_INTERACTION_API EdgeSetController<Vec1dTypes>;
 //template class SOFA_USER_INTERACTION_API EdgeSetController<Vec1fTypes>;
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API EdgeSetController<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API EdgeSetController<Rigid3fTypes>;
-#endif
+template class SOFA_USER_INTERACTION_API EdgeSetController<Rigid3Types>;
+
 //template class EdgeSetController<Rigid2dTypes>;
 //template class EdgeSetController<Rigid2fTypes>;
 

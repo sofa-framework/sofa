@@ -38,24 +38,14 @@ namespace projectiveconstraintset
 
 //declaration of the class, for the factory
 int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint")
-#ifndef SOFA_FLOAT
-        .add< PatchTestMovementConstraint<defaulttype::Vec3dTypes> >()
-        .add< PatchTestMovementConstraint<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PatchTestMovementConstraint<defaulttype::Vec3fTypes> >()
-        .add< PatchTestMovementConstraint<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< PatchTestMovementConstraint<defaulttype::Vec3Types> >()
+        .add< PatchTestMovementConstraint<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+
 
 } // namespace projectiveconstraintset
 

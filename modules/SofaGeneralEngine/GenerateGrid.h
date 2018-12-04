@@ -98,14 +98,9 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec2fTypes>;
-#endif
+extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace engine

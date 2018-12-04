@@ -38,20 +38,12 @@ using namespace sofa;
 using namespace sofa::defaulttype;
 
 int IndexValueMapperClass = core::RegisterObject("Input values to output values mapper. Includes indices rules, such as replacement, resize")
-#ifndef SOFA_FLOAT
-        .add< IndexValueMapper<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< IndexValueMapper<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< IndexValueMapper<Vec3Types> >(true)
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace engine

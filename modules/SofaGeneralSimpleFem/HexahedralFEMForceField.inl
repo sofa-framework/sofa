@@ -597,7 +597,8 @@ template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     // Build Matrix Block for this ForceField
-    int i,j,n1, n2, e;
+    int i,j,n1, n2;
+    size_t e;
 
     Index node1, node2;
 
@@ -648,7 +649,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Hexahedron &t=_topology->getHexahedron(i);
 

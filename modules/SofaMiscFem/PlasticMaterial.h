@@ -26,9 +26,6 @@
 
 
 //#define SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-#define SOFA_DOUBLE
-#endif
 
 #include <SofaMiscFem/BaseMaterial.h>
 #include <newmat/newmat.h>

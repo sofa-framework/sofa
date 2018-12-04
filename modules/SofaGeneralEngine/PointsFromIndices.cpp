@@ -37,24 +37,14 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
-#ifndef SOFA_FLOAT
-        .add< PointsFromIndices<Vec3dTypes> >()
-// .add< PointsFromIndices<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PointsFromIndices<Vec3fTypes> >()
-// .add< PointsFromIndices<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< PointsFromIndices<Vec3Types> >()
+// .add< PointsFromIndices<Rigid3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Vec3dTypes>;
-// template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Vec3fTypes>;
-// template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Vec3Types>;
+// template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Rigid3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

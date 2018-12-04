@@ -38,20 +38,12 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 int QuadPressureForceFieldClass = core::RegisterObject("QuadPressure")
-#ifndef SOFA_FLOAT
-        .add< QuadPressureForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< QuadPressureForceField<Vec3fTypes> >()
-#endif
+        .add< QuadPressureForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

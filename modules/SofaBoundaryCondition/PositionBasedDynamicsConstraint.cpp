@@ -42,47 +42,28 @@ using namespace sofa::helper;
 
 int PositionBasedDynamicsConstraintClass = core::RegisterObject("Position-based dynamics")
 
-#ifndef SOFA_FLOAT
-        .add< PositionBasedDynamicsConstraint<Vec3dTypes> >(true)
-        .add< PositionBasedDynamicsConstraint<Vec2dTypes> >()
-        .add< PositionBasedDynamicsConstraint<Vec1dTypes> >()
-        .add< PositionBasedDynamicsConstraint<Vec6dTypes> >()
-        .add< PositionBasedDynamicsConstraint<Rigid3dTypes> >()
-//.add< PositionBasedDynamicsConstraint<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PositionBasedDynamicsConstraint<Vec3fTypes> >(true)
-        .add< PositionBasedDynamicsConstraint<Vec2fTypes> >()
-        .add< PositionBasedDynamicsConstraint<Vec1fTypes> >()
-        .add< PositionBasedDynamicsConstraint<Vec6fTypes> >()
-        .add< PositionBasedDynamicsConstraint<Rigid3fTypes> >()
-//.add< PositionBasedDynamicsConstraint<Rigid2fTypes> >()
-#endif
+        .add< PositionBasedDynamicsConstraint<Vec3Types> >(true)
+        .add< PositionBasedDynamicsConstraint<Vec2Types> >()
+        .add< PositionBasedDynamicsConstraint<Vec1Types> >()
+        .add< PositionBasedDynamicsConstraint<Vec6Types> >()
+        .add< PositionBasedDynamicsConstraint<Rigid3Types> >()
+//.add< PositionBasedDynamicsConstraint<Rigid2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid3dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid3fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid3Types>;
+//template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid2Types>;
+
 
 
 // specialization for rigids
 
-#ifndef SOFA_FLOAT
 template <>
-void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
+void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
@@ -118,47 +99,7 @@ void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::
     }
 }
 
-#endif
 
-#ifndef SOFA_DOUBLE
-template <>
-void PositionBasedDynamicsConstraint<Rigid3fTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
-{
-    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
-    helper::ReadAccessor<DataVecCoord> tpos = position ;
-	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
-	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
-    if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
-
-    Real dt =  (Real)this->getContext()->getDt();
-    if(!dt) return;
-
-    vel.resize(res.size());
-
-	if(old_pos.size() != res.size()) {
-		old_pos.resize(res.size());
-		std::copy(res.begin(),res.end(),old_pos.begin());
-	}
-
-    Vec<3,Real> a; Real phi;
-
-    Real s = stiffness.getValue();
-    for( size_t i=0; i<res.size(); i++ )
-    {
-        res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
-
-        if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
-        else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
-
-        getLinear(vel[i]) = (res[i].getCenter() - old_pos[i].getCenter())/dt;
-        ( res[i].getOrientation() * old_pos[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
-        getAngular(vel[i]) = a * phi / dt;
-
-        old_pos[i] = res[i];
-    }
-}
-
-#endif
 
 } // namespace projectiveconstraintset
 

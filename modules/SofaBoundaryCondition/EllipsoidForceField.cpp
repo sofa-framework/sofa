@@ -38,27 +38,15 @@ using namespace sofa::defaulttype;
 
 int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
 
-#ifndef SOFA_FLOAT
-        .add< EllipsoidForceField<Vec3dTypes> >()
-        .add< EllipsoidForceField<Vec2dTypes> >()
-        .add< EllipsoidForceField<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EllipsoidForceField<Vec3fTypes> >()
-        .add< EllipsoidForceField<Vec2fTypes> >()
-        .add< EllipsoidForceField<Vec1fTypes> >()
-#endif
+        .add< EllipsoidForceField<Vec3Types> >()
+        .add< EllipsoidForceField<Vec2Types> >()
+        .add< EllipsoidForceField<Vec1Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1Types>;
+
 
 } // namespace forcefield
 

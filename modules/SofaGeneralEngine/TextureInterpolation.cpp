@@ -36,28 +36,16 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int TextureInterpolationClass = core::RegisterObject("Create texture coordinate for a given field")
-#ifndef SOFA_FLOAT
-        .add< TextureInterpolation <Vec1dTypes> >()
-        .add< TextureInterpolation <Vec2dTypes> >()
-        .add< TextureInterpolation <Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< TextureInterpolation <Vec1fTypes> >()
-        .add< TextureInterpolation <Vec2fTypes> >()
-        .add< TextureInterpolation <Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< TextureInterpolation <Vec1Types> >()
+        .add< TextureInterpolation <Vec2Types> >()
+        .add< TextureInterpolation <Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec1dTypes>;
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec2dTypes>;
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec1fTypes>;
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec2fTypes>;
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec1Types>;
+template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec2Types>;
+template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

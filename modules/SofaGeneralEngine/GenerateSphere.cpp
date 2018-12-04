@@ -35,21 +35,13 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) Tetrahedral and Triangular Mesh")
-#ifndef SOFA_FLOAT
-        .add< GenerateSphere<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< GenerateSphere<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< GenerateSphere<Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

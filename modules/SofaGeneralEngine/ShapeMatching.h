@@ -107,14 +107,9 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3Types>;
+ //SOFA_FLOAT
 #endif
 
 } // namespace engine

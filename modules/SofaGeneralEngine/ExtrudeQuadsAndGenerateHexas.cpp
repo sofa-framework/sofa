@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int ExtrudeQuadsAndGenerateHexasClass = core::RegisterObject("This engine extrudes a quad-based surface into a set of hexahedral elements")
-#ifndef SOFA_FLOAT
-        .add< ExtrudeQuadsAndGenerateHexas<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ExtrudeQuadsAndGenerateHexas<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ExtrudeQuadsAndGenerateHexas<Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API ExtrudeQuadsAndGenerateHexas<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ExtrudeQuadsAndGenerateHexas<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API ExtrudeQuadsAndGenerateHexas<Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

@@ -55,12 +55,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
+
 #endif
 
 

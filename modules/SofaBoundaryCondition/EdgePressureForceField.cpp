@@ -37,20 +37,12 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 int EdgePressureForceFieldClass = core::RegisterObject("EdgePressure")
-#ifndef SOFA_FLOAT
-        .add< EdgePressureForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EdgePressureForceField<Vec3fTypes> >()
-#endif
+        .add< EdgePressureForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

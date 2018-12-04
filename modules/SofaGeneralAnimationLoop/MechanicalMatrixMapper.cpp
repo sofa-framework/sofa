@@ -40,33 +40,19 @@ using namespace sofa::defaulttype;
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to map the stiffness (and mass) matrix through a mapping.")
-#ifdef SOFA_WITH_FLOAT
-        .add< MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes> >()
-        .add< MechanicalMatrixMapper<Vec3fTypes, Vec3fTypes> >()
-        .add< MechanicalMatrixMapper<Vec1fTypes, Rigid3fTypes> >()
-        .add< MechanicalMatrixMapper<Vec1fTypes, Vec1fTypes> >()
-#endif
-#ifdef SOFA_WITH_DOUBLE
-        .add< MechanicalMatrixMapper<Vec3dTypes, Rigid3dTypes> >(true)
-        .add< MechanicalMatrixMapper<Vec3dTypes, Vec3dTypes> >(true)
-        .add< MechanicalMatrixMapper<Vec1dTypes, Rigid3dTypes> >(true)
-        .add< MechanicalMatrixMapper<Vec1dTypes, Vec1dTypes> >(true)
-#endif
+        .add< MechanicalMatrixMapper<Vec3Types, Rigid3Types> >(true)
+        .add< MechanicalMatrixMapper<Vec3Types, Vec3Types> >(true)
+        .add< MechanicalMatrixMapper<Vec1Types, Rigid3Types> >(true)
+        .add< MechanicalMatrixMapper<Vec1Types, Vec1Types> >(true)
+
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef SOFA_WITH_DOUBLE
-template class MechanicalMatrixMapper<Vec3dTypes, Rigid3dTypes>;
-template class MechanicalMatrixMapper<Vec3dTypes, Vec3dTypes>;
-template class MechanicalMatrixMapper<Vec1dTypes, Rigid3dTypes>;
-template class MechanicalMatrixMapper<Vec1dTypes, Vec1dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes>;
-template class MechanicalMatrixMapper<Vec3fTypes, Vec3fTypes>;
-template class MechanicalMatrixMapper<Vec1fTypes, Rigid3fTypes>;
-template class MechanicalMatrixMapper<Vec1fTypes, Vec1fTypes>;
-#endif
+template class MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
+template class MechanicalMatrixMapper<Vec3Types, Vec3Types>;
+template class MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
+template class MechanicalMatrixMapper<Vec1Types, Vec1Types>;
+
 
 } // namespace forcefield
 

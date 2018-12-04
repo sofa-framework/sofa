@@ -9,14 +9,9 @@ namespace constraint
 {
 
 int GeometricStiffnessForceFieldClass = sofa::core::RegisterObject("A ForceField that assembles the geometric stiffness stored in a Mapping")
-#ifndef SOFA_FLOAT
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Vec3dTypes> >()
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Vec3fTypes> >()
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3fTypes> >()
-#endif
+.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Vec3Types> >()
+.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3Types> >()
+
 ;
 
 

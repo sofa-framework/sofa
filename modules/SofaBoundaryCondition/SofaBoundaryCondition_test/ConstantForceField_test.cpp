@@ -222,23 +222,13 @@ struct ConstantForceField_test : public Sofa_test<>
 using testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
-#ifdef SOFA_WITH_DOUBLE
 ,TypeTuple<Vec1dTypes, double>
 ,TypeTuple<Vec2dTypes, double>
 ,TypeTuple<Vec3dTypes, double>
 ,TypeTuple<Vec6dTypes, double>
 ,TypeTuple<Rigid3dTypes, Rigid3dMass>
 ,TypeTuple<Rigid2dTypes, Rigid2dMass>
-#endif
-#ifdef SOFA_WITH_FLOAT
-,TypeTuple<Vec1fTypes, float>
-,TypeTuple<Vec2fTypes, float>
-,TypeTuple<Vec3fTypes, float>
-,TypeTuple<Vec6fTypes, float>
-,TypeTuple<Rigid3fTypes, Rigid3fMass>
-,TypeTuple<Rigid2fTypes, Rigid2fMass>
-#
-#endif
+
 > DataTypes;
 
 // Test suite for all the instanciations

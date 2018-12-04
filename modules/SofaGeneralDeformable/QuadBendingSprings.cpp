@@ -41,25 +41,15 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
-#ifndef SOFA_FLOAT
-        .add< QuadBendingSprings<Vec3dTypes> >()
-        .add< QuadBendingSprings<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< QuadBendingSprings<Vec3fTypes> >()
-        .add< QuadBendingSprings<Vec2fTypes> >()
-#endif
+        .add< QuadBendingSprings<Vec3Types> >()
+        .add< QuadBendingSprings<Vec2Types> >()
+
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec3dTypes>;
-template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec3fTypes>;
-template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec2fTypes>;
-#endif
+template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec3Types>;
+template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec2Types>;
+
 
 
 } // namespace interactionforcefield

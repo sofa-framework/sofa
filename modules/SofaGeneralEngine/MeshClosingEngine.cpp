@@ -37,18 +37,11 @@ int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
         .add< MeshClosingEngine<defaulttype::Vec3fTypes> >(true) // default template
 #else
         .add< MeshClosingEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< MeshClosingEngine<defaulttype::Vec3fTypes> >()
-#endif
 #endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

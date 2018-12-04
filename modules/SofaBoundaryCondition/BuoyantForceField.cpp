@@ -37,20 +37,12 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 int BuoyantForceFieldClass = core::RegisterObject("Upward acting force exerted by a fluid, that opposes an object's weight")
-#ifndef SOFA_FLOAT
-        .add< BuoyantForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BuoyantForceField<Vec3fTypes> >()
-#endif
+        .add< BuoyantForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

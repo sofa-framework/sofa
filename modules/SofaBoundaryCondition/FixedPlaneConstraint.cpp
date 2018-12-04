@@ -39,28 +39,16 @@ using namespace sofa::helper;
 
 
 int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
-#ifdef SOFA_WITH_FLOAT
-        .add< FixedPlaneConstraint<Vec3fTypes> >()
-        .add< FixedPlaneConstraint<Vec6fTypes> >()
-        .add< FixedPlaneConstraint<Rigid3fTypes> >()
-#endif /// SOFA_WITH_FLOAT
-#ifdef SOFA_WITH_DOUBLE
-        .add< FixedPlaneConstraint<Rigid3dTypes> >()
-        .add< FixedPlaneConstraint<Vec3dTypes> >()
-        .add< FixedPlaneConstraint<Vec6dTypes> >()
-#endif /// SOFA_WITH_DOUBLE
+        .add< FixedPlaneConstraint<Rigid3Types> >()
+        .add< FixedPlaneConstraint<Vec3Types> >()
+        .add< FixedPlaneConstraint<Vec6Types> >()
+ /// SOFA_WITH_DOUBLE
         ;
 
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6dTypes>;
-#endif /// SOFA_WITH_DOUBLE
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6fTypes>;
-#endif /// SOFA_WITH_FLOAT
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
+ /// SOFA_WITH_DOUBLE
 
 } /// namespace projectiveconstraintset
 

@@ -37,24 +37,14 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 int TorsionForceFieldClass = core::RegisterObject("Applies a torque to specified points")
-#ifndef SOFA_DOUBLE
-		.add< TorsionForceField<Vec3fTypes> >()
-		.add< TorsionForceField<Rigid3fTypes> >()
-#endif
-#ifndef SOFA_FLOAT
-		.add< TorsionForceField<Vec3dTypes> >()
-		.add< TorsionForceField<Rigid3dTypes> >()
-#endif
+		.add< TorsionForceField<Vec3Types> >()
+		.add< TorsionForceField<Rigid3Types> >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3Types>;
+
 
 } // namespace forcefield
 } // namespace component

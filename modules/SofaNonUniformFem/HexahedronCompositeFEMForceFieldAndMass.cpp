@@ -39,20 +39,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int HexahedronCompositeFEMForceFieldAndMassClass = core::RegisterObject("Non uniform Hexahedral finite elements")
-#ifndef SOFA_FLOAT
-        .add< HexahedronCompositeFEMForceFieldAndMass<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedronCompositeFEMForceFieldAndMass<Vec3fTypes> >()
-#endif
+        .add< HexahedronCompositeFEMForceFieldAndMass<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<Vec3fTypes>;
-#endif
+template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<Vec3Types>;
+
 
 } // namespace forcefield
 

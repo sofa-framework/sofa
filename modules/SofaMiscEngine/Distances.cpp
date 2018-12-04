@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
-#ifndef SOFA_FLOAT
-        .add< Distances<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< Distances<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< Distances<Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_ENGINE_API Distances<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API Distances<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_MISC_ENGINE_API Distances<Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace engine

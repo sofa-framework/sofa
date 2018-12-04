@@ -41,18 +41,11 @@ int TransformPositionClass = core::RegisterObject("Transform position of 3d poin
         .add< TransformPosition<Vec3fTypes> >(true)
 #else
         .add< TransformPosition<Vec3dTypes> >(true)
-#ifndef SOFA_DOUBLE
-        .add< TransformPosition<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
 #endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3Types>;
+ //SOFA_FLOAT
 
 
 } // namespace constraint

@@ -47,12 +47,8 @@ int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
 #endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3fTypes>;
-#endif
+template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3Types>;
+
 
 } // namespace constraintset
 
