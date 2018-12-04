@@ -61,7 +61,6 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
     using Inherit::m_hashTableSize;
     using Inherit::m_gridCellSize;
     using Inherit::m_convFactor;
-    using Inherit::m_computeDistances;
     using Inherit::m_fromTopology;
     using Inherit::d_map;
 
@@ -90,7 +89,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
         m_fromTopology = m_topology.get();
         m_fromTopology->addTriangle(0, 1, 2);
 
-        initHashing(m_out,m_in);
+        initHashing(m_in);
     }
 
     void scene_test(){
@@ -119,8 +118,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
     void init_test()
     {
         init(m_out,m_in);
-        EXPECT_TRUE(m_computeDistances);
-        EXPECT_EQ(d_map.getValue().size(),(unsigned int)2);
+        EXPECT_EQ(d_map.getValue().size(),2);
     }
 
     void initHashing_test()
@@ -140,15 +138,15 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
         m_hashTable[0].resize(2);
 
         addToHashTable(0, 12);
-        EXPECT_EQ(m_hashTable[0].size(), (unsigned int)3);
-        EXPECT_EQ(m_hashTable[0][1], (unsigned int)0);
-        EXPECT_EQ(m_hashTable[0][2], (unsigned int)12);
+        EXPECT_EQ(m_hashTable[0].size(), 3);
+        EXPECT_EQ(m_hashTable[0][1], 0);
+        EXPECT_EQ(m_hashTable[0][2], 12);
 
         addToHashTable(1, 12);
-        EXPECT_EQ(m_hashTable[0].size(), (unsigned int)3);
+        EXPECT_EQ(m_hashTable[0].size(), 3);
 
         addToHashTable(-1, 12);
-        EXPECT_EQ(m_hashTable[0].size(), (unsigned int)3);
+        EXPECT_EQ(m_hashTable[0].size(), 3);
     }
 
 };
