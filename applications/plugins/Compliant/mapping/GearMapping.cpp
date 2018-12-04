@@ -12,8 +12,6 @@ namespace mapping
 {
 
 
-SOFA_DECL_CLASS(GearMultiMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory

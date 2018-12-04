@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SPHEREROI_INL
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/SphereROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
@@ -181,7 +177,6 @@ void SphereROI<DataTypes>::init()
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
     addOutput(&f_quadIndices);
-//    addOutput(&f_tetrahedronIndices);
     addOutput(&f_pointsInROI);
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
@@ -1102,7 +1097,7 @@ void SphereROI<defaulttype::Rigid3fTypes>::doUpdate()
 	f_tetrahedronIndices.endEdit();
 }
 
-#endif //#ifndef SOFA_DOUBLE
+#endif //SOFA_DOUBLE
 
 
 } // namespace engine

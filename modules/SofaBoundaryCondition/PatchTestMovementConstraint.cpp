@@ -37,9 +37,6 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(PatchTestMovementConstraint)
-
-
 int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint")
 #ifndef SOFA_FLOAT
         .add< PatchTestMovementConstraint<defaulttype::Vec3dTypes> >()

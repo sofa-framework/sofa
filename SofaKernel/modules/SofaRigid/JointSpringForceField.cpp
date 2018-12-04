@@ -41,8 +41,6 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(JointSpringForceField)
-
 // Register in the Factory
 int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
 #ifndef SOFA_FLOAT

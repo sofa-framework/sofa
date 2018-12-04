@@ -130,6 +130,13 @@ void TPointModel<DataTypes>::init()
 }
 
 template<class DataTypes>
+void TPointModel<DataTypes>::draw(const core::visual::VisualParams*,int index)
+{
+    //TODO(fred roy 2018-06-21)...please implement.
+}
+
+
+template<class DataTypes>
 void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())

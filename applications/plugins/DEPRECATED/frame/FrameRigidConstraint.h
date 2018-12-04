@@ -88,7 +88,7 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FrameRigidConstraint_CPP)
+#if  !defined(FRAME_FrameRigidConstraint_CPP)
 extern template class SOFA_FRAME_API FrameRigidConstraint<Affine3dTypes>;
 extern template class SOFA_FRAME_API FrameRigidConstraint<Quadratic3dTypes>;
 extern template class SOFA_FRAME_API FrameRigidConstraint<Affine3fTypes>;

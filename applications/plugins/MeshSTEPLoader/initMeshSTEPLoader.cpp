@@ -88,6 +88,3 @@ const char* getModuleComponentList()
 
 }
 
-SOFA_LINK_CLASS(MeshSTEPLoader)
-SOFA_LINK_CLASS(SingleComponent)
-

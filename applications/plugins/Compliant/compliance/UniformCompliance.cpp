@@ -33,8 +33,6 @@ int UniformComplianceClass = core::RegisterObject("Uniform compliance")
 #endif
         ;
 
-SOFA_DECL_CLASS(UniformCompliance)
-
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API UniformCompliance<Vec1dTypes>;
 template class SOFA_Compliant_API UniformCompliance<Vec2dTypes>;

@@ -23,9 +23,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include "initMiscFEM.h"
 #include <sofa/core/behavior/ForceField.h>
@@ -229,7 +227,7 @@ public:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3dTypes>;
@@ -238,7 +236,7 @@ extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<
 extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 

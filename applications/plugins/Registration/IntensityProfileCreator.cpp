@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(IntensityProfileCreator)
-
 int IntensityProfileCreatorClass = core::RegisterObject("Create reference intensity profiles from custom values")
         .add<IntensityProfileCreator<ImageUC> >(true)
         .add<IntensityProfileCreator<ImageUS> >()

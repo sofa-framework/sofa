@@ -13,8 +13,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS( ComputeWeightEngine )
-
 using namespace defaulttype;
 
 int ComputeWeightEngineClass = core::RegisterObject("Computes the weight and indices of a set of vertices of an VisualModelImpl using a given shape function.")

@@ -112,13 +112,6 @@ void SurfacePressureForceField<DataTypes>::verifyDerivative(VecDeriv& v_plus, Ve
         }
         std::cout<<" DVana["<<i<<"] = "<<DV<<" DVval[i].size() = "<<DVval[i].size()<<std::endl;
 
-        /*
-                for(unsigned int j=0; j<DVval[i].size(); j++)
-                {
-                    std::cout<<" M["<<DVind[i][j]<<"] ="<<DVval[i][j]<<std::endl;
-                }
-         */
-
     }
 
 }
@@ -130,13 +123,6 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
-    /*
-        VecCoord xPlus = x;
-        VecDeriv fplus = f;
-      */
-
-//    const Data<VecCoord>* xRest= this->mstate->read(core::ConstVecCoordId::restPosition()) ;
-//    const VecCoord &x0 = xRest->getValue();
 
     m_f.resize(f.size());  for(unsigned int i=0;i<m_f.size();i++) m_f[i].clear(); // store forces for visualization
 
@@ -187,27 +173,6 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
                 }
             }
 
-            /*
-
-                        VecDeriv Din;
-                        Din.resize(x.size());
-                       for (unsigned int i=0; i<Din.size(); i++)
-                       {
-                           Real i1,i2,i3;
-                           i1=(Real)(i%3+1);
-                           i2=-(Real)(i%2)+0.156;
-                           i3=(Real)(i%5+2);
-                           Din[i]=Deriv(0.0000123*i1,0.0000152*i2,0.00000981*i3);
-                           xPlus[i]=x[i]+Din[i];
-                       }
-                       addTriangleSurfacePressure(fplus,xPlus,v,p, false);
-
-
-                       verifyDerivative(fplus, f,  derivTriNormalValues,derivTriNormalIndices, Din);
-
-            */
-
-
         }
 
         // Quads
@@ -241,9 +206,6 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
-
-
-	//    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 	Real kFactor = (Real)mparams->kFactor();
 	if (m_useTangentStiffness.getValue()) {
 		VecDeriv& df       = *(d_df.beginEdit());
@@ -260,9 +222,6 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 			}
 
 		} 
-		//			for (unsigned int i=0;i<df.size();++i) {
-		//			msg_info()<<"df["<<i<<"]= "<<df[i]<<std::endl;
-		//		}
 		d_df.endEdit();
 	}
 
@@ -304,6 +263,19 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 			}
 		}
 	}
+}
+
+template<class DataTypes>
+SReal SurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
+
+template<class DataTypes>
+void SurfacePressureForceField<DataTypes>::setPressure(const Real _pressure)
+{
+    this->m_pressure.setValue(_pressure);
 }
 
 template <class DataTypes>

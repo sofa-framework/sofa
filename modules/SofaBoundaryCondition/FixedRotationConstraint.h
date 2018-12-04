@@ -78,7 +78,8 @@ protected :
     helper::vector<defaulttype::Quat> previousOrientation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class FixedRotationConstraint<defaulttype::Rigid3dTypes>;
 #endif

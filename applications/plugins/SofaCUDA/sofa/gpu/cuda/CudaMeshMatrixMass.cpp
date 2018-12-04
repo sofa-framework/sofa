@@ -70,8 +70,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
-
 int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::mass::MeshMatrixMass<CudaVec3fTypes, float > >(true)
         .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >()

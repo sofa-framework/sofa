@@ -114,7 +114,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_CUBOIDMESH_CPP)
+#if  !defined(CGALPLUGIN_CUBOIDMESH_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

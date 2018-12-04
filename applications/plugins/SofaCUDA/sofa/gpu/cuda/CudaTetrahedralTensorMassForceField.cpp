@@ -32,7 +32,6 @@ namespace gpu
 
 namespace cuda
 {
-SOFA_DECL_CLASS(CudaTetrahedralTensorMassForceField)
 int TetrahedralTensorMassForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 .add< sofa::component::forcefield::TetrahedralTensorMassForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE

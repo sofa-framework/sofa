@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageCoordValuesFromPositions)
-
 int ImageCoordValuesFromPositionsClass = core::RegisterObject("Get interpolated coordinates at sample locations in an image with 3 channels")
         .add<ImageCoordValuesFromPositions<ImageD> >(true)
         .add<ImageCoordValuesFromPositions<ImageF> >()

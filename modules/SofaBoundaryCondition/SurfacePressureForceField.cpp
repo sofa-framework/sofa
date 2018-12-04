@@ -36,8 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SurfacePressureForceField)
-
 int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
 #ifndef SOFA_FLOAT
         .add< SurfacePressureForceField<Vec3dTypes> >()

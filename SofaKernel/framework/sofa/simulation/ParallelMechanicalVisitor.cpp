@@ -38,7 +38,6 @@ Visitor::Result ParallelMechanicalVOpVisitor::fwdMechanicalState(Node* /*node*/,
 }
 Visitor::Result ParallelMechanicalVOpVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
 {
-    //mm->vOp(v,a,b,f);
     return RESULT_CONTINUE;
 }
 
@@ -55,7 +54,6 @@ Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMechanicalState(Node* /*node
 
 Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
 {
-    //mm->vOp(v,a,b,f);
     return RESULT_CONTINUE;
 }
 Visitor::Result ParallelMechanicalVDotVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)

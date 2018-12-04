@@ -29,7 +29,6 @@ namespace sofa
 namespace component
 {
 
-
 void initSimpleFEM()
 {
     static bool first = true;
@@ -38,19 +37,6 @@ void initSimpleFEM()
         first = false;
     }
 }
-
-// SOFA_LINK_CLASS(BeamFEMForceField)
-// SOFA_LINK_CLASS(HexahedralFEMForceField)
-// SOFA_LINK_CLASS(HexahedralFEMForceFieldAndMass)
-SOFA_LINK_CLASS(HexahedronFEMForceField)
-// SOFA_LINK_CLASS(HexahedronFEMForceFieldAndMass)
-// SOFA_LINK_CLASS(TetrahedralCorotationalFEMForceField)
-SOFA_LINK_CLASS(TetrahedronFEMForceField)
-//SOFA_LINK_CLASS(TriangularAnisotropicFEMForceField)
-//SOFA_LINK_CLASS(TriangleFEMForceField)
-//SOFA_LINK_CLASS(TriangularFEMForceField)
-// SOFA_LINK_CLASS(TriangularFEMForceFieldOptim)
-
 
 } // namespace component
 

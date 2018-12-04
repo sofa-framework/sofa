@@ -610,8 +610,6 @@ Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalPar
 /// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
 /// 2-RegisterObject("description") + .add<> : Register the component
 /// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(UniformMass)
-
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
 

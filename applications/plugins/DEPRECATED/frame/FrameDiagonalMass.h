@@ -22,9 +22,7 @@
 #ifndef FRAME_FRAMEDIAGONALMASS_H
 #define FRAME_FRAMEDIAGONALMASS_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/Mass.h>
 #include "FrameMass.h"
@@ -146,7 +144,7 @@ private:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
+#if  !defined(FRAME_FRAMEDIAGONALMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3dMass>;
 extern template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;

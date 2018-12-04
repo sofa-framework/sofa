@@ -35,8 +35,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(StereoCamera)
-
 int StereoCameraClass = core::RegisterObject("StereoCamera")
         .add< StereoCamera >()
         ;

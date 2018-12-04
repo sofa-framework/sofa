@@ -35,7 +35,6 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaDiagonalMass)
 // Register in the Factory
 int DiagonalMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 #ifndef SOFA_FLOAT

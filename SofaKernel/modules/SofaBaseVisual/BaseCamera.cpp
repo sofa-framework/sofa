@@ -776,8 +776,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     if (!root)
         result = false;
 
-    //std::string camVersion;
-    //root->QueryStringAttribute ("version", &camVersion);
     if(result)
     {
         BaseCameraXMLImportSingleParameter(root, p_position, this);

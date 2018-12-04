@@ -107,7 +107,6 @@ namespace qt
 
 namespace viewer
 {
-SOFA_DECL_CLASS (QtOgreViewer);
 helper::SofaViewerCreator<QtOgreViewer> QtOgreViewer_class("ogre",false);
 int QtOGREGUIClass = GUIManager::RegisterGUI ( "ogre", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 1 );
 

@@ -74,8 +74,6 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaSubsetMapping)
-
 int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()

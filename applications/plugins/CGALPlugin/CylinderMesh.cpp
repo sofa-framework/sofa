@@ -33,8 +33,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-SOFA_DECL_CLASS(CylinderMesh)
-
 using namespace sofa::defaulttype;
 namespace cgal
 {

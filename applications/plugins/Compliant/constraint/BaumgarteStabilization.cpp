@@ -8,7 +8,6 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(BaumgarteStabilization)
 int BaumgarteStabilizationClass = core::RegisterObject("Constraint value for Baumgarte stabilization").add< BaumgarteStabilization >();
 
 

@@ -64,9 +64,6 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping()
     : Inherit()
     , mapper(initLink("mapper","Internal mapper created depending on the type of topology"))
     , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
-#ifdef SOFA_DEV
-    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
 {
 }
 
@@ -74,9 +71,6 @@ template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
     : Inherit ( from, to )
     , mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
-#ifdef SOFA_DEV
-    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
 {
     if (mapper)
         this->addSlave(mapper.get());
@@ -86,9 +80,6 @@ template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology )
     : Inherit ( from, to )
     , mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
-#ifdef SOFA_DEV
-    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
 {
     if (topology)
     {
@@ -1127,11 +1118,7 @@ void BarycentricMapping<TIn, TOut>::reinit()
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
 {
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        mapper != NULL)
+    if (mapper != NULL)
     {
         mapper->resize( this->toModel );
         mapper->apply(*out.beginWriteOnly(), in.getValue());
@@ -1463,19 +1450,12 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const unsign
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mparams*/, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
 {
-#ifdef SOFA_DEV
-    if ( sleeping.getValue()==false)
-    {
-#endif
         typename Out::VecDeriv* out = _out.beginEdit();
         if (mapper != NULL)
         {
             mapper->applyJ(*out, in.getValue());
         }
         _out.endEdit();
-#ifdef SOFA_DEV
-    }
-#endif
 }
 
 template <class In, class Out>
@@ -1745,11 +1725,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * /*mparams*/, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in)
 {
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        mapper != NULL)
+    if (mapper != NULL)
     {
         mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();
@@ -2110,11 +2086,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::VecD
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
 {
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        mapper!=NULL )
+    if (mapper!=NULL )
     {
         const size_t outStateSize = this->toModel->getSize();
         const size_t inStateSize = this->fromModel->getSize();
@@ -2906,11 +2878,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw  (const core::visual::
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in)
 {
-    if (
-#ifdef SOFA_DEV
-        sleeping.getValue()==false &&
-#endif
-        mapper!=NULL )
+    if (mapper!=NULL )
     {
         mapper->applyJT(*out.beginEdit(), in.getValue());
         out.endEdit();

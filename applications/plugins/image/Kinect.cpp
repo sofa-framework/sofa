@@ -36,7 +36,6 @@ namespace container
 using namespace defaulttype;
 
 
-SOFA_DECL_CLASS (Kinect);
 // Register in the Factory
 
 int KinectClass = core::RegisterObject ( "Container for color and depth images from Kinect device" )

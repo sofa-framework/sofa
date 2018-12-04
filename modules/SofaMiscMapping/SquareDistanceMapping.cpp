@@ -33,9 +33,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SquareDistanceMapping)
-
-
 using namespace defaulttype;
 
 

@@ -135,7 +135,7 @@ public:
     void updateForceMask() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_REGISTRATION_API RegistrationContactForceField<defaulttype::Vec3dTypes>;
 #endif

@@ -12,7 +12,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(CompliantPenaltyForceField)
 int CompliantPenaltyForceFieldClass = core::RegisterObject("Penalty ForceField")
     
 #ifndef SOFA_FLOAT    

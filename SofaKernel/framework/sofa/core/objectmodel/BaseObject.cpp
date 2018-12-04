@@ -128,11 +128,6 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     std::multimap < std::string, BaseData*> dataLoaderMap(loader->m_aliasData);
     std::multimap < std::string, BaseData*>::iterator it_map;
 
-    //for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
-    //{
-    //	dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
-    //}
-
     if (attributeList != 0)
     {
         for (unsigned int j = 0; j<attributeList->size(); ++j)
@@ -162,7 +157,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
         {
             if (!(*it_map).second->isAutoLink())
             {
-                msg_info() << "Disabling autolink for Data " << data->getName();
+                msg_info() << "Disabling autolink for Data '" << data->getName() << "'";
             }
             else
             {
@@ -243,12 +238,6 @@ void BaseObject::copyAspect(int destAspect, int srcAspect)
 {
     Base::copyAspect(destAspect, srcAspect);
     // copyAspect is no longer recursive to slave objects
-    /*
-        for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
-        {
-            (*iSlaves)->copyAspect(destAspect, srcAspect);
-        }
-    */
 }
 
 /// Release memory allocated for the specified aspect.
@@ -256,12 +245,6 @@ void BaseObject::releaseAspect(int aspect)
 {
     Base::releaseAspect(aspect);
     // releaseAspect is no longer recursive to slave objects
-    /*
-        for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
-        {
-            (*iSlaves)->releaseAspect(aspect);
-        }
-    */
 }
 
 void BaseObject::init()
@@ -269,8 +252,8 @@ void BaseObject::init()
 	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
 	{
 		if ((*iData)->isRequired() && !(*iData)->isSet())
-        {
-            msg_error() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")";
+		{
+        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
 		}
 	}
 }

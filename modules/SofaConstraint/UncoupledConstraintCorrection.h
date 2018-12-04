@@ -137,8 +137,6 @@ private:
     VecDeriv constraint_disp, constraint_force;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
 
-    //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
-
 protected:
 
     sofa::core::behavior::OdeSolver* m_pOdeSolver;
@@ -159,7 +157,7 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::defaulttype::BaseMatrix * /*m*/) const;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3dTypes>;
 extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2dTypes>;

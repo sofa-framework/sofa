@@ -35,8 +35,6 @@ namespace topology
 
 
 
-SOFA_DECL_CLASS(SparseGridMultipleTopology)
-
 int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .addAlias("SparseGridMultiple")
         .add< SparseGridMultipleTopology >()

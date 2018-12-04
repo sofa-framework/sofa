@@ -159,7 +159,7 @@ protected :
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CLOSESTPOINTREGISTRATIONFORCEFIELD_CPP)
+#if  !defined(CLOSESTPOINTREGISTRATIONFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_REGISTRATION_API ClosestPointRegistrationForceField<defaulttype::Vec3dTypes>;
 #endif

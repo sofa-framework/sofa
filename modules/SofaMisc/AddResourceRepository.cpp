@@ -36,9 +36,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(AddResourceRepository)
-
-
 int AddResourceRepositoryClass = core::RegisterObject("Add a repository to the pool of resources")
 .add< AddResourceRepository >();
 

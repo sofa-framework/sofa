@@ -55,8 +55,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(TopologicalChangeProcessor)
-
 using namespace defaulttype;
 
 

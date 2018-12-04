@@ -47,7 +47,6 @@ namespace visualmodel
 using namespace helper::gl;
 using namespace simulation;
 
-SOFA_DECL_CLASS(OglRenderingSRGB)
 //Register RenderingSRGB in the Object Factory
 int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
         .add< OglRenderingSRGB >()

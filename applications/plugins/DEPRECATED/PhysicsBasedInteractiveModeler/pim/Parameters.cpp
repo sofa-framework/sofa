@@ -29,8 +29,6 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(Parameters)
-
 int ParametersClass = sofa::core::RegisterObject("")
         .add< Parameters >()
         ;

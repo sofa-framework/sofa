@@ -184,7 +184,7 @@ protected:
                                const sofa::defaulttype::BaseVector* lambda);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
+#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2dTypes>;

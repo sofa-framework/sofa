@@ -76,7 +76,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3d>;

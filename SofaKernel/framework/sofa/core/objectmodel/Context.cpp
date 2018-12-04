@@ -159,26 +159,6 @@ bool Context::getAnimate() const
     return animate_.getValue();
 }
 
-
-#ifdef SOFA_DEV
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-// Multiresolution
-
-int Context::getCurrentLevel() const
-{
-    return currentLevel_.getValue();
-}
-int Context::getCoarsestLevel() const
-{
-    return coarsestLevel_.getValue();
-}
-int Context::getFinestLevel() const
-{
-    return finestLevel_.getValue();
-}
-#endif
-#endif // SOFA_DEV
-
 //===============================================================================
 
 /// Simulation timestep

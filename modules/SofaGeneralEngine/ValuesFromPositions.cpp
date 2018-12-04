@@ -35,8 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ValuesFromPositions)
-
 int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives (vertex/edge/triangle/tetrahedron) based on a linear interpolation of values along a direction")
 #ifndef SOFA_FLOAT
         .add< ValuesFromPositions<Vec3dTypes> >()

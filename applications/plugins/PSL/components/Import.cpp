@@ -61,7 +61,6 @@ Import::Import() : BaseObject()
 
 Import::~Import(){}
 
-SOFA_DECL_CLASS(Import)
 int ImportClass = core::RegisterObject("Import a library of shapes.")
         .add< Import >();
 

@@ -204,6 +204,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (!checkOutOfBoundsIndices())
     {
+        msg_error() << "The dimension of the source and the targeted points are different ";
         m_indices.clear();
     }
     else
@@ -269,7 +270,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         recomputeIndices();
     }
 
-    const VecReal& k = stiffness.getValue();
     if ( k.size()!= m_indices.size() )
     {
         // Stiffness is not defined on each point, first stiffness is used

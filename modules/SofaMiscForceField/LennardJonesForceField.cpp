@@ -38,8 +38,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(LennardJonesForceField)
-
 int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
 #ifndef SOFA_FLOAT
         .add< LennardJonesForceField<Vec3dTypes> >()

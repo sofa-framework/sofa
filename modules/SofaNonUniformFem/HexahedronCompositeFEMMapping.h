@@ -151,7 +151,7 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class HexahedronCompositeFEMMapping< core::Mapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes > >;
 extern template class HexahedronCompositeFEMMapping< core::Mapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes > >;

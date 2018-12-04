@@ -117,7 +117,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
@@ -209,7 +209,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 #endif

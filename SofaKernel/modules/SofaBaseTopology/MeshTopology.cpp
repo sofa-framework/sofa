@@ -507,8 +507,6 @@ using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
 
-SOFA_DECL_CLASS(MeshTopology)
-
 int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
         .addAlias("Mesh")
         .add< MeshTopology >()

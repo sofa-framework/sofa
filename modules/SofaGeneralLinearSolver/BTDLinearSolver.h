@@ -868,7 +868,7 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
 #endif

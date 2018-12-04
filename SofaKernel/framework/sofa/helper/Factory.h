@@ -163,14 +163,7 @@ public:
     }
 
 };
-/*
-/// Generic object creator. Can be specialized for custom objects creation
-template<class Object, class Argument>
-Object create(Object* obj, Argument arg)
-{
-    return new Object(arg);
-}
-*/
+
 template <class Factory, class RealObject>
 class CreatorFn : public Factory::Creator, public Factory::Key
 {

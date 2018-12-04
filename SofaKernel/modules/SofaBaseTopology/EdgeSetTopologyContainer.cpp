@@ -49,7 +49,6 @@ namespace topology
 
 using namespace std;
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(EdgeSetTopologyContainer)
 int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology container")
         .add< EdgeSetTopologyContainer >()
         ;

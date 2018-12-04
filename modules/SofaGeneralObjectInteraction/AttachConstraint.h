@@ -193,7 +193,7 @@ protected :
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP)
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec2dTypes>;

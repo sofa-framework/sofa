@@ -11,8 +11,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(MaskMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory

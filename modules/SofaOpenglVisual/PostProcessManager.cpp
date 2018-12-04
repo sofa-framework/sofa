@@ -40,7 +40,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(PostProcessManager)
 //Register PostProcessManager in the Object Factory
 int PostProcessManagerClass = core::RegisterObject("PostProcessManager")
         .add< PostProcessManager >()
