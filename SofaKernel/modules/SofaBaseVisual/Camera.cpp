@@ -31,8 +31,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(Camera)
-
 int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
                     .add<Camera>() ;
 

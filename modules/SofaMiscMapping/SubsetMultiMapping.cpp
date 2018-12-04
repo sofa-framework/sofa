@@ -37,8 +37,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SubsetMultiMapping)
-
 // Register in the Factory
 int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
 #ifndef SOFA_FLOAT

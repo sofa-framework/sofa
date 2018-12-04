@@ -49,8 +49,6 @@ namespace gpu
 namespace opencl
 {
 
-SOFA_DECL_CLASS(OpenCLBoxROI)
-
 int BoxROIOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< component::engine::boxroi::BoxROI<OpenCLVec3fTypes> >()
         .add< component::engine::boxroi::BoxROI<OpenCLVec3f1Types> >()

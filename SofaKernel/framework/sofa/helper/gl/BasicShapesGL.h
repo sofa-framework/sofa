@@ -126,12 +126,12 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
+#if  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
+#endif //  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 
 } //gl
 

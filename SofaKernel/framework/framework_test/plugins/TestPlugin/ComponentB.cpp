@@ -24,7 +24,7 @@
 #include "ComponentB.h"
 
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -42,8 +42,6 @@ template<class T>
 ComponentB<T>::~ComponentB()
 {
 }
-
-SOFA_DECL_CLASS(ComponentB)
 
 int ComponentBClass = sofa::core::RegisterObject("Component B")
 #ifndef SOFA_FLOAT

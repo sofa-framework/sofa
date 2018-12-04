@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_INL
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>

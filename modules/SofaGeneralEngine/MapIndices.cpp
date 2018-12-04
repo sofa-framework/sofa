@@ -34,8 +34,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MapIndices)
-
 int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
         .add< MapIndices<int> >()
         .add< MapIndices<unsigned int> >()

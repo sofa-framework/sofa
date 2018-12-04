@@ -20,9 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseClass.h>
-#ifdef __GNUC__
-#include <sofa/core/ps3/cxxabi.h>
-#endif
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

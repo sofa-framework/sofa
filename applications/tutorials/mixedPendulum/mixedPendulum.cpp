@@ -193,13 +193,9 @@ int main(int, char** argv)
     /*    groot->setAnimate(false);
     */
 
-#ifdef PS3
     groot->setAnimate(true);
-#endif
-
 
     //=========================== Run the main loop
-
     sofa::gui::GUIManager::MainLoop(groot);
 
     sofa::simulation::tree::cleanup();

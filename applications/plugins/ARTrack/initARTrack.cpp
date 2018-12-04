@@ -92,5 +92,3 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(ARTrackDriver)
-SOFA_LINK_CLASS(ARTrackController)

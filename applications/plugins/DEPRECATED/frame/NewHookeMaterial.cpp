@@ -34,7 +34,6 @@ namespace material
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS (HookeMaterial3);
 // Register in the Factory
 
 int HookeMaterial3Class = core::RegisterObject ( "Hooke material for deformable objects" )

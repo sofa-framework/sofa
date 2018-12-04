@@ -258,7 +258,7 @@ protected:
     InRootCoord rootX;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
 #endif

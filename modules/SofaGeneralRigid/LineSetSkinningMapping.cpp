@@ -35,8 +35,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(LineSetSkinningMapping)
-
 // Register in the Factory
 int HandMappingClass = core::RegisterObject("skin a model from a set of rigid lines")
 #ifndef SOFA_FLOAT

@@ -36,8 +36,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(CenterPointMechanicalMapping)
-
 int CenterPointMechanicalMappingClass = core::RegisterObject("TODO-CenterPointMechanicalMappingClass")
 #ifndef SOFA_FLOAT
         .add< CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes > >()

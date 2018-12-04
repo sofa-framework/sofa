@@ -41,7 +41,6 @@ public:
 
 };
 
-SOFA_DECL_CLASS(ComponentDeprecated)
 int ComponentDeprecatedClassId = sofa::core::RegisterObject("")
         .add< ComponentDeprecated >();
 

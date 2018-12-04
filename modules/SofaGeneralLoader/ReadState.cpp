@@ -31,8 +31,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(ReadState)
-
 using namespace defaulttype;
 
 int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")

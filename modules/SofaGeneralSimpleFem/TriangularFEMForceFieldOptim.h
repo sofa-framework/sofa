@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -105,14 +103,6 @@ public:
     typedef sofa::helper::Quater<Real> Quat;
 
 protected:
-
-//    typedef Vec<6, Real> Displacement;					    ///< the displacement vector
-//    typedef Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
-//    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
-//    typedef Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
-//    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
-//    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
-//    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
     typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
@@ -122,7 +112,6 @@ protected:
 
 protected:
     /// ForceField API
-    //{
     TriangularFEMForceFieldOptim();
 
     virtual ~TriangularFEMForceFieldOptim();
@@ -136,7 +125,6 @@ public:
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams) override;
-    //}
 
     // parse method attribute (for compatibility with non-optimized version)
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
@@ -348,7 +336,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3dTypes>;
@@ -358,7 +346,7 @@ extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<d
 extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
 } // namespace forcefield
 

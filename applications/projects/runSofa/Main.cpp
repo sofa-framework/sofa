@@ -93,6 +93,8 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
+#include <sofa/helper/AdvancedTimer.h>
+
 #ifdef WIN32
 #include <windows.h>
 #endif

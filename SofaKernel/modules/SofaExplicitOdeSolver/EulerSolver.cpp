@@ -55,8 +55,6 @@ int EulerSolverClass = core::RegisterObject("A simple explicit time integrator")
         .addAlias("ExplicitEulerSolver")
         ;
 
-SOFA_DECL_CLASS(Euler);
-
 EulerSolver::EulerSolver()
     : symplectic( initData( &symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
@@ -107,10 +105,6 @@ void EulerSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::Mu
     }
 #else // single-operation optimization
     {
-//        cerr<<"EulerSolver::solve, x = " << pos << endl;
-//        cerr<<"EulerSolver::solve, v = " << vel << endl;
-//        cerr<<"EulerSolver::solve, a = " << acc << endl;
-
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
@@ -128,12 +122,41 @@ void EulerSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::Mu
 
         mop.solveConstraint(vel2,core::ConstraintParams::VEL);
         mop.solveConstraint(pos2,core::ConstraintParams::POS);
-
-//        cerr<<"EulerSolver::solve, new x = " << pos << endl;
-//        cerr<<"EulerSolver::solve, new v = " << vel << endl;
     }
 #endif
 }
+
+double EulerSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+{
+    const SReal dt = getContext()->getDt();
+    double matrix[3][3] =
+    {
+        { 1, dt, ((symplectic.getValue())?dt*dt:0.0)},
+        { 0, 1, dt},
+        { 0, 0, 0}
+    };
+    if (inputDerivative >= 3 || outputDerivative >= 3)
+        return 0;
+    else
+        return matrix[outputDerivative][inputDerivative];
+}
+
+double EulerSolver::getSolutionIntegrationFactor(int outputDerivative) const
+{
+    const SReal dt = getContext()->getDt();
+    double vect[3] = {((symplectic.getValue()) ? dt * dt : 0.0), dt, 1};
+    if (outputDerivative >= 3)
+        return 0;
+    else
+        return vect[outputDerivative];
+}
+
+void EulerSolver::init()
+{
+    OdeSolver::init();
+    reinit();
+}
+
 
 } // namespace odesolver
 

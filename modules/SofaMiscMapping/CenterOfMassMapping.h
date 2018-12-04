@@ -114,7 +114,7 @@ protected :
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >;

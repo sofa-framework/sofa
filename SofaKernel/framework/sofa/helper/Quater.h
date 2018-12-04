@@ -351,7 +351,7 @@ public:
 //typedef Quater<float> Quatf; ///< alias
 //typedef Quater<double> Quaternion; ///< alias
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_QUATER_CPP)
+#if  !defined(SOFA_HELPER_QUATER_CPP)
 extern template class SOFA_HELPER_API Quater<double>;
 extern template class SOFA_HELPER_API Quater<float>;
 #endif

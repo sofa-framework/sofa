@@ -232,10 +232,6 @@ public:
     bool getWireFrameEnabled() {return mWireFrameEnabled;}
 };
 
-//#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_DRAWTOOLGL_CPP)
-//extern template class SOFA_CORE_API BasicShapesGL_Sphere < sofa::defaulttype::Vector3 >;
-//#endif // defined(SOFA_EXTERN_TEMPLATE)
-
 }//namespace visual
 
 }//namespace core

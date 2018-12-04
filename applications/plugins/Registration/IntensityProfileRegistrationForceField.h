@@ -184,7 +184,7 @@ protected :
     Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
 };
 
-//#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INTENSITYPROFILEREGISTRATIONFORCEFIELD_CPP)
+//#if  !defined(INTENSITYPROFILEREGISTRATIONFORCEFIELD_CPP)
 //#ifndef SOFA_FLOAT
 //extern template class SOFA_REGISTRATION_API IntensityProfileRegistrationForceField<Vec3dTypes>;
 //#endif

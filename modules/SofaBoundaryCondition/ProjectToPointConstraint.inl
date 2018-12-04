@@ -40,7 +40,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-// Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -54,7 +53,6 @@ bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
     }
 }
 
-// Define RemovalFunction
 template< class DataTypes>
 void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
@@ -73,7 +71,6 @@ ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new ProjectToPointConstraintInternalData<DataTypes>())
 {
-    // default to indice 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 
@@ -121,9 +118,6 @@ void ProjectToPointConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
-
     // Initialize functions and parameters
     f_indices.createTopologicalEngine(topology, pointHandler);
     f_indices.registerTopologicalData();
@@ -151,44 +145,6 @@ void  ProjectToPointConstraint<DataTypes>::reinit()
     // get the indices sorted
     SetIndexArray tmp = f_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
-
-//    // resize the jacobian
-//    unsigned numBlocks = this->mstate->getSize();
-//    unsigned blockSize = DataTypes::deriv_total_size;
-//    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
-
-//    // fill the jacobian is ascending order
-//    SetIndexArray::const_iterator it= tmp.begin();
-//    unsigned i=0;
-//    for(SetIndexArray::const_iterator it= tmp.begin(); i<numBlocks && it!=tmp.end(); i++ )
-//    {
-//        if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
-//        {
-//            it++;
-//            for( unsigned j=0; j<blockSize; j++ )
-//            {
-//                jacobian.beginRow(blockSize*i+j );
-//                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // constrained particle: set the diagonal to
-//            }
-//        }
-//        else
-//            for( unsigned j=0; j<blockSize; j++ )
-//            {
-//                jacobian.beginRow(blockSize*i+j );
-//                jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
-//            }
-//    }
-//    // Set the matrix to identity beyond the last constrained particle
-//    for(; i<numBlocks && it!=tmp.end(); i++ )
-//    {
-//        for( unsigned j=0; j<blockSize; j++ )
-//        {
-//            jacobian.beginRow( blockSize*i+j );
-//            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
-//        }
-//    }
-//    jacobian.compress();
-
 }
 
 template <class DataTypes>
@@ -202,16 +158,6 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
         M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
     }
 }
-
-
-
-///// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
-//template <class DataTypes>
-//const sofa::defaulttype::BaseMatrix*  ProjectToPointConstraint<DataTypes>::getJ(const core::MechanicalParams* )
-//{
-//    return &jacobian;
-//}
-
 
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
@@ -302,7 +248,6 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
     }
 }
 
-// Matrix Integration interface
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {

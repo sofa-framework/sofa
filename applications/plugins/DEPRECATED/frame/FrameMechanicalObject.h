@@ -37,7 +37,7 @@ namespace component
 namespace container
 {
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
+#if  !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3dTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3dTypes>;

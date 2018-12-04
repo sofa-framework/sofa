@@ -101,8 +101,6 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
     const SeqEdges &edges =  pointPairs.getValue();
 
-    //if (this->l0.size() != edges.size()) updateRestLength();
-
     scalarConstraintsIndices.clear();
     constraintGroupToContact.clear();
     edgeToContact.clear();
@@ -224,13 +222,12 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
         Contact &out=*(this->constraintGroupToContact[group]);
         ContactDescription &contact=this->getContactDescription(group);
 
-        //                        //The force cannot be attractive!
+        //The force cannot be attractive!
         if (Lambda[0] <= 0)
         {
             contact.state=VANISHING;
             group->setActive(false);
             out.contactForce=Deriv();
-            //                            msg_info()<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, deactivate attractive force"<<std::endl;
             return;
         }
 
@@ -276,9 +273,6 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
             Lambda[0]=out.contactForce*out.n;
             Lambda[1]=out.contactForce*out.t1;
             Lambda[2]=out.contactForce*out.t2;
-
-            //                                msg_info()<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, , friction = "<<contactFriction.getValue()<<std::endl<<", cut excessive friction force, bounded Lambda = "<<std::endl<<Lambda<<std::endl;
-
         }
         else contact.state=STICKING;
 
@@ -322,8 +316,6 @@ bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDO
 template <class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    //if (this->l0.size() != pointPairs.getValue().size()) updateRestLength();
-
     if (vparams->displayFlags().getShowBehaviorModels())
     {
         vparams->drawTool()->saveLastState();

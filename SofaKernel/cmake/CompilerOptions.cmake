@@ -39,10 +39,6 @@ if(WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
-## XBox-specific
-if(XBOX)
-    add_definitions("-wd4250 -wd4231 /GR /EHsc")
-endif()
 
 ## SOFA_DEBUG preprocessor macro
 if(WIN32 OR APPLE)

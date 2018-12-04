@@ -89,10 +89,6 @@ const char* getModuleComponentList()
            "SphericalField DiscreteGridField";
 }
 
-SOFA_LINK_CLASS(SphericalField)
-SOFA_LINK_CLASS(DiscreteGridField)
-
-
 } /// component
 
 } /// sofa

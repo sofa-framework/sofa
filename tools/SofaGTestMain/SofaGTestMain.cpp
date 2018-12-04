@@ -9,11 +9,6 @@
 
 #include <gtest/gtest.h>
 
-using sofa::helper::system::PluginRepository;
-using sofa::helper::system::DataRepository;
-using sofa::helper::system::FileSystem;
-using sofa::helper::Utils;
-
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);

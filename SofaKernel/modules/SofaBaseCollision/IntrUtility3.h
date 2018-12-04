@@ -322,7 +322,7 @@ template <typename TDataTypes>
 defaulttype::Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataTypes>& box);
 //----------------------------------------------------------------------------
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP)
 
 extern template struct SOFA_BASE_COLLISION_API IntrUtil<SReal>;
 
@@ -356,9 +356,5 @@ extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
 }
 }
 }
-
-#ifndef SOFA_EXTERN_TEMPLATE
-#include <SofaBaseCollision/IntrUtility3.inl>
-#endif
 
 #endif

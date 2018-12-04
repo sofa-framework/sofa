@@ -146,7 +146,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
+#if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1dTypes>;
 extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3dTypes>;

@@ -125,8 +125,6 @@ protected:
     void computeLumpedMasses();
 
 protected:
-    //HFFHexahedronHandler* hexahedronHandler;
-
     Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
@@ -137,7 +135,7 @@ protected:
     topology::PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3dTypes>;
 #endif

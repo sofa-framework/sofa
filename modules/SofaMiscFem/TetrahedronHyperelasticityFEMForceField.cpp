@@ -39,8 +39,6 @@ using namespace sofa::defaulttype;
 
 //////////****************To register in the factory******************
 
-SOFA_DECL_CLASS(TetrahedronHyperelasticityFEMForceField)
-
 // Register in the Factory
 int TetrahedronHyperelasticityFEMForceFieldClass = core::RegisterObject("Generic Tetrahedral finite elements")
 #ifndef SOFA_FLOAT

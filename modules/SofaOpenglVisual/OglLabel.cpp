@@ -191,8 +191,6 @@ void OglLabel::setColor(float r, float g, float b, float a)
 }
 
 
-SOFA_DECL_CLASS(OglLabel)
-
 int OglLabelClass = core::RegisterObject("Display 2D text in the viewport.")
         .add< OglLabel >()
         ;

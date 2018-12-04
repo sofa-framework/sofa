@@ -34,8 +34,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ShapeFunctionDiscretizer)
-
 // Register in the Factory
 int ShapeFunctionDiscretizerClass = core::RegisterObject("Discretize shape functions in an image")
         .add< ShapeFunctionDiscretizer<ImageUC> >(true)

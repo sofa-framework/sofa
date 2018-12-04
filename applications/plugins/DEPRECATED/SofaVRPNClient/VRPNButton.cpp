@@ -41,8 +41,6 @@ namespace client
 int VRPNButtonClass = sofa::core::RegisterObject("VRPN Tracker")
         .add< VRPNButton >();
 
-SOFA_DECL_CLASS(VRPNButton)
-
 void handle_button(void * /*userdata*/, const vrpn_BUTTONCB b)
 {
     printf("\nButton %3d is in state: %d                      \n",

@@ -38,8 +38,6 @@ using namespace core;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(ManualLinearMapping)
-
 // Register in the Factory
 int ManualLinearMappingClass = core::RegisterObject("Maps displacement from subspace with basis given by J")
 #ifndef SOFA_FLOAT

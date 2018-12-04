@@ -39,8 +39,6 @@ namespace gpu
 namespace opencl
 {
 
-SOFA_DECL_CLASS(OpenCLUniformMass)
-
 int UniformMassOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
 #ifndef SOFA_DOUBLE
         .add< component::mass::UniformMass<OpenCLVec3fTypes,float> >()

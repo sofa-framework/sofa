@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
 #define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/Vertex2Frame.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>

@@ -104,7 +104,6 @@ void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::Con
 }
 
 }
-
 }
 
 #endif // SOFA_CONSTRAINT_UNIFORMCONSTRAINT_INL

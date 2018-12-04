@@ -25,7 +25,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/defaulttype/VecTypes.h>
 namespace sofa
 {
 
@@ -158,7 +158,7 @@ public:
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_STATE_CPP)
+#if  !defined(SOFA_CORE_STATE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec2dTypes>;

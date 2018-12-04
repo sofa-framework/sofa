@@ -41,9 +41,7 @@ protected:
     UniformConstraint();
 };
 
-
 }
-
 }
 
 #endif // SOFA_CONSTRAINT_UNIFORMCONSTRAINT_H

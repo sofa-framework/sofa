@@ -37,8 +37,6 @@ namespace container
 // ==========================================================================
 // Instanciation
 
-SOFA_DECL_CLASS ( StrainMechanicalObject )
-
 using namespace sofa::defaulttype;
 
 int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )

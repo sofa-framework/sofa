@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(CollisionToCarvingEngine)
-
 int CollisionToCarvingEngineClass = core::RegisterObject("Filter an image")
         .add<CollisionToCarvingEngine<ImageUC,ImageUC    > >(true)
         .add<CollisionToCarvingEngine<ImageD ,ImageD     > >()

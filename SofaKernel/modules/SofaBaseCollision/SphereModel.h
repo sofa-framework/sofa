@@ -237,7 +237,7 @@ typedef TSphere<sofa::defaulttype::Vec3Types> Sphere;
 typedef TSphereModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
 typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_SPHEREMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_SPHEREMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;

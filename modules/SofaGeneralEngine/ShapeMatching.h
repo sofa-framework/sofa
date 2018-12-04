@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -108,7 +106,7 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3dTypes>;

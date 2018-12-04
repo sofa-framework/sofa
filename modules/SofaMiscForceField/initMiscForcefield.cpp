@@ -39,8 +39,6 @@ void initMiscForcefield()
     }
 }
 
-SOFA_LINK_CLASS(MeshMatrixMass)
-
 } // namespace component
 
 } // namespace sofa

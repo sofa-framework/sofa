@@ -32,8 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OgreShaderParameter);
-
 int OgreShaderParameterClass = core::RegisterObject("Shader configuration for Ogre Visual Models")
         .add< OgreShaderParameter<1> >()
         .add< OgreShaderParameter<2> >()

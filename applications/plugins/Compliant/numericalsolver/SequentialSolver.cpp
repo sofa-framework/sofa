@@ -355,7 +355,6 @@ void BaseSequentialSolver::solve_impl(vec& res,
 
 
 
-SOFA_DECL_CLASS(SequentialSolver)
 int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
 
 

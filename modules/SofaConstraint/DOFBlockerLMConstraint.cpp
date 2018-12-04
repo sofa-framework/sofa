@@ -37,8 +37,6 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(DOFBlockerLMConstraint)
-
 int DOFBlockerLMConstraintClass = core::RegisterObject("Constrain the rotation of a given set of Rigid Bodies")
 #ifndef SOFA_FLOAT
         .add< DOFBlockerLMConstraint<Rigid3dTypes> >()

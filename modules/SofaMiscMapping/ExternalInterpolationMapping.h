@@ -114,7 +114,7 @@ private:
     bool doNotMap;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec2dTypes >;

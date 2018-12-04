@@ -33,9 +33,6 @@ namespace component
 namespace controller
 {
 
-SOFA_DECL_CLASS(PaceMaker)
-
-
 using namespace sofa::helper::system::thread;
 
 const double PaceMaker::time_scale = 1000 / (double)CTime::getRefTicksPerSec();
