@@ -47,6 +47,12 @@ int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for ga
         ;
 
 template <class Container>
+DefaultCollisionGroupManager::DefaultCollisionGroupManage(){}
+
+template <class Container>
+DefaultCollisionGroupManager::~DefaultCollisionGroupManage(){}
+
+template <class Container>
 void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,
                                               simulation::Node::SPtr group)
 {
