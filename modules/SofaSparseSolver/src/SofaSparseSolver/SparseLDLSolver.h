@@ -58,9 +58,9 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
 
-    virtual void solve (Matrix& M, Vector& x, Vector& b) override ;
-    virtual void invert(Matrix& M) override;
-    virtual bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
+    void solve (Matrix& M, Vector& x, Vector& b) override ;
+    void invert(Matrix& M) override;
+    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
     int numStep;
 
     Data<bool> f_saveMatrixToFile;      ///< save matrix to a text file (can be very slow, as full matrix is stored)
