@@ -576,16 +576,12 @@ protected:
     void computeForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 };
 
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec2dTypes;
-
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::Vec2Types;
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
-
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3Types>;
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2Types>;
-
-
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 } // namespace forcefield
