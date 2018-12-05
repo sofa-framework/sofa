@@ -287,7 +287,13 @@ void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
             initPlasticityMatrix(i, a, b);
     }
 
-    initLarge(i,a,b);
+    // Initialisation of the beam element orientation
+    //TO DO: is necessary ?
+    beamQuat(i) = x0[a].getOrientation();
+    beamQuat(i).normalize();
+
+    beamsData.endEdit();
+
 }
 
 template< class DataTypes>
@@ -319,7 +325,6 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
             Element edge= (*_indexedElements)[i];
             Index a = edge[0];
             Index b = edge[1];
-            initLarge(i,a,b);
 
             if (!_isDeformingPlastically)
                 accumulateForceLarge(f, p, i, a, b);
@@ -335,8 +340,6 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
 
             Index a = (*it)[0];
             Index b = (*it)[1];
-
-            initLarge(i,a,b);
             
             if (!_isDeformingPlastically)
                 accumulateForceLarge(f, p, i, a, b);
@@ -485,48 +488,6 @@ inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
     defaulttype::Quat q = b.inverse() * a;
     //sout << "qDiff("<<a<<","<<b<<")="<<q<<", bq="<<(b*q)<<sendl;
     return q;
-}
-
-////////////// large displacements method
-template<class DataTypes>
-void MultiBeamForceField<DataTypes>::initLarge(int i, Index a, Index b)
-{
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    defaulttype::Quat quatA, quatB, dQ;
-    Vec3 dW;
-
-    quatA = x[a].getOrientation();
-    quatB = x[b].getOrientation();
-
-    quatA.normalize();
-    quatB.normalize();
-
-    dQ = qDiff(quatB, quatA);
-    dQ.normalize();
-
-    dW = dQ.quatToRotationVector();     // Use of quatToRotationVector instead of toEulerVector:
-                                        // this is done to keep the old behavior (before the
-                                        // correction of the toEulerVector  function). If the
-                                        // purpose was to obtain the Eulerian vector and not the
-                                        // rotation vector please use the following line instead
-//    dW = dQ.toEulerVector();
-
-    SReal Theta = dW.norm();
-
-
-    if(Theta>(SReal)0.0000001)
-    {
-        dW.normalize();
-
-        beamQuat(i) = quatA*dQ.axisToQuat(dW, Theta/2);
-        beamQuat(i).normalize();
-    }
-    else
-        beamQuat(i)= quatA;
-
-
-    beamsData.endEdit();
 }
 
 template<class DataTypes>
