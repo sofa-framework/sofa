@@ -46,10 +46,7 @@ int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for ga
         .addAlias( "TreeCollisionGroupManager" ) // for backward compatibility with old scene files but could be removed
         ;
 
-template <class Container>
 DefaultCollisionGroupManager::DefaultCollisionGroupManager(){}
-
-template <class Container>
 DefaultCollisionGroupManager::~DefaultCollisionGroupManager(){}
 
 template <class Container>
