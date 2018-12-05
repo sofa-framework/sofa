@@ -224,7 +224,7 @@ void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsign
 template<class DataTypes>
 Quat& BeamFEMForceField<DataTypes>::beamQuat(int i)
 {
-    vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     return bd[i].quat;
 }
 

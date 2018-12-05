@@ -48,7 +48,6 @@ namespace forcefield
 namespace _beamfemforcefield_ {
 
 using topology::TopologyDataHandler;
-using helper::vector;
 using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
@@ -79,8 +78,7 @@ public:
 
     typedef unsigned int Index;
     typedef BaseMeshTopology::Edge Element;
-    typedef vector<BaseMeshTopology::Edge> VecElement;
-    typedef vector<unsigned int> VecIndex;
+    typedef helper::vector<BaseMeshTopology::Edge> VecElement;
     typedef Vec<3, Real> Vec3;
 
 protected:
@@ -151,17 +149,17 @@ protected:
         }
     };
 
-    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, vector<BeamInfo> >
+    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
     {
     public:
         typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<vector<BeamInfo> >* data)
-            :TopologyDataHandler<BaseMeshTopology::Edge, vector<BeamInfo> >(data),ff(ff) {}
+        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<helper::vector<BeamInfo> >* data)
+            :TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >(data),ff(ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
                                  const BaseMeshTopology::Edge& e,
-                                 const vector<unsigned int> &,
-                                 const vector< double > &);
+                                 const helper::vector<unsigned int> &,
+                                 const helper::vector< double > &);
 
     protected:
         BeamFEMForceField<DataTypes>* ff;
@@ -170,7 +168,7 @@ protected:
 
     //just for draw forces
     VecDeriv m_forces;
-    EdgeData<vector<BeamInfo> > m_beamsData; ///< Internal element data
+    EdgeData<helper::vector<BeamInfo> > m_beamsData; ///< Internal element data
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> m_matS;
 
     const VecElement *m_indexedElements;
@@ -178,7 +176,7 @@ protected:
     Data<Real> d_youngModulus; ///< Young Modulus
     Data<Real> d_radius; ///< radius of the section
     Data<Real> d_radiusInner; ///< inner radius of the section for hollow beams
-    Data< VecIndex > d_listSegment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
+    Data< BaseMeshTopology::SetIndex > d_listSegment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
     Data< bool> d_useSymmetricAssembly; ///< use symmetric assembly of the matrix K
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
@@ -222,7 +220,7 @@ protected:
     void computeStiffness(int i, Index a, Index b);
 
     /// Large displacements method
-    vector<Transformation> _nodeRotations;
+    helper::vector<Transformation> _nodeRotations;
     void initLarge(int i, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
