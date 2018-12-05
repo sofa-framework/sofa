@@ -47,10 +47,10 @@ int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for ga
         ;
 
 template <class Container>
-DefaultCollisionGroupManager::DefaultCollisionGroupManage(){}
+DefaultCollisionGroupManager::DefaultCollisionGroupManager(){}
 
 template <class Container>
-DefaultCollisionGroupManager::~DefaultCollisionGroupManage(){}
+DefaultCollisionGroupManager::~DefaultCollisionGroupManager(){}
 
 template <class Container>
 void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,

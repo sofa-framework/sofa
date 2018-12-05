@@ -51,8 +51,8 @@ public:
     virtual void clearGroups(core::objectmodel::BaseContext* scene) override;
 
 protected:
-    DefaultCollisionGroupManage();
-    virtual ~DefaultCollisionGroupManage();
+    DefaultCollisionGroupManager();
+    virtual ~DefaultCollisionGroupManager();
 
     //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
     virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
