@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaBarycentricMapping.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP
+
+#include "BarycentricMapperEdgeSetTopology.inl"
 
 namespace sofa
 {
@@ -34,42 +34,22 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::gpu::cuda;
 
-
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
-
-// Instantiations involving both CudaVec3fTypes and Vec3dTypes
 #ifndef SOFA_FLOAT
-template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes>;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, ExtVec3fTypes>;
 #endif
-} // namespace mapping
-
-} // namespace component
-
-namespace gpu
-{
-
-namespace cuda
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::component::mapping;
-
-int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3fTypes>;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3fTypes, ExtVec3fTypes>;
+#endif
 #ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3fTypes>;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3dTypes>;
 #endif
-        ;
+#endif
 
-} // namespace cuda
+}}}
 
-} // namespace gpu
-
-} // namespace sofa
+#endif

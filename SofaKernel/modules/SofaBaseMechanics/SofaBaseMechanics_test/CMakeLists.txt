@@ -19,7 +19,8 @@ endif()
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
+
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
