@@ -35,11 +35,7 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 #include <fstream>
 #include <iomanip>      // std::setprecision
-
-//
 #include <string>
-using namespace std;
-//
 
 namespace sofa {
 
