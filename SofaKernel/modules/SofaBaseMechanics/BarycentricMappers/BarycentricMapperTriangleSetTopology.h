@@ -53,12 +53,13 @@ public:
                SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
     typedef typename Inherit1::Real Real;
 
-    virtual ~BarycentricMapperTriangleSetTopology() {}
+    virtual ~BarycentricMapperTriangleSetTopology() override {}
 
     virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
 
 protected:
+    BarycentricMapperTriangleSetTopology();
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
                                          topology::PointSetTopologyContainer* toTopology);
 

@@ -377,12 +377,12 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
     const typename MechanicalState< In >::VecCoord& in = *(mStateFrom->getX0());
     const typename MechanicalState< Out >::VecCoord& out = *(mStateTo->getX0());
 
-	for (std::list< const TopologyChange *>::const_iterator it = this->fromTopology->beginChange(), itEnd = this->fromTopology->endChange(); it != itEnd; ++it)
-	{
-		const core::topology::TopologyChangeType& changeType = (*it)->getChangeType();
+    for (std::list< const TopologyChange *>::const_iterator it = this->fromTopology->beginChange(), itEnd = this->fromTopology->endChange(); it != itEnd; ++it)
+    {
+        const core::topology::TopologyChangeType& changeType = (*it)->getChangeType();
 
-		switch ( changeType )
-		{
+        switch ( changeType )
+        {
         case core::topology::ENDING_EVENT :
         {
             const helper::vector< topology::Triangle >& triangles = this->fromTopology->getTriangles();
@@ -423,10 +423,10 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
             }
             break;
         }
-		default:
-			break;
-		}
-	}
+        default:
+            break;
+        }
+    }
 }
 
 #endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
