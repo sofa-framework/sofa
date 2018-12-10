@@ -1467,12 +1467,12 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
         if (!extForces_rA.empty())
         {
             helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(fId) );
-
             for (unsigned int i=0; i < extForces_rA.size(); i++)
             {
                 if( extForces_rA[i] != Deriv() )
                 {
                     f_wA[i] += extForces_rA[i];
+                    f_wA[i] *= 0.0000001;
                     this->forceMask.insertEntry(i); // if an external force is applied on the dofs, it must be added to the mask
                 }
             }
@@ -1992,8 +1992,9 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                         if (vb.size() > vv.size())
                             vv.resize(vb.size());
 
-                        for (unsigned int i=0; i<vb.size(); i++)
-                            vv[i] += vb[i]*(Real)f;
+                        for (unsigned int i = 0; i < vb.size(); i++) {
+                            vv[i] += vb[i] * (Real)f * (Real)1.0001;
+                        }
                     }
                     else
                     {
