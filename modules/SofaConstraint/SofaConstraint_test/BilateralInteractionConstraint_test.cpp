@@ -30,6 +30,8 @@
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 #include <sofa/helper/logging/Message.h>
 
@@ -66,6 +68,8 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
     /// Create the context for the tests.
     void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents");
+        sofa::simpleapi::importPlugin("SofaMiscCollision");
         if(simulation==nullptr)
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
     }

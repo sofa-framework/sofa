@@ -22,6 +22,8 @@
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 using sofa::helper::testing::BaseSimulationTest;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/CleanupVisitor.h>
 using namespace sofa::simulation;
@@ -35,11 +37,12 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
     /// create a component and replace it with an other one
     void objectRemovalThenStep()
     {
-        SceneInstance sceneinstance("xml"
+        SceneInstance sceneinstance("xml",
                     "<Node>\n"
-                    "   <LCPConstraintSolver maxIt='1000' tol='0.001' />\n"
+                    "   <RequiredPlugin name='SofaAllCommonComponents'/>"
+                    "   <RequiredPlugin name='SofaMiscCollision'/>"
+                    "   <LCPConstraintSolver maxIt='1000' tolerance='0.001' />\n"
                     "   <FreeMotionAnimationLoop />\n"
-                    "   <UncoupledConstraintCorrection />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
                     "         <UncoupledConstraintCorrection />\n"
@@ -50,7 +53,9 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
         sceneinstance.initScene();
 
         /// removal
-        sofa::core::sptr<sofa::simulation::Node> nodeToRemove = sceneinstance.root->getTreeNode("collision");
+        sofa::core::sptr<sofa::simulation::Node> nodeToRemove = sceneinstance.root->getChild("collision");
+        ASSERT_NE(nodeToRemove.get(), nullptr);
+
         nodeToRemove->detachFromGraph();
         nodeToRemove->execute<sofa::simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
         nodeToRemove->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
@@ -59,7 +64,8 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
 };
 
 /// run the tests
-TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep) {
+TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep)
+{
     EXPECT_MSG_NOEMIT(Error) ;
     objectRemovalThenStep();
 }
