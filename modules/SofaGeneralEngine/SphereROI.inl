@@ -838,7 +838,7 @@ void SphereROI<defaulttype::Rigid3dTypes>::doUpdate()
 	f_quadIndices.endEdit();
 	f_tetrahedronIndices.endEdit();
 }
-#endif //#ifndef SOFA_FLOAT
+#endif //SOFA_FLOAT
 
 
 ////////////////////////////////////////////////////////////////////////////////////////

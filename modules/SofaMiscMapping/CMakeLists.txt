@@ -15,32 +15,20 @@ list(APPEND HEADER_FILES
     BarycentricMappingRigid.inl
     BeamLinearMapping.h
     BeamLinearMapping.inl
-    #CatmullRomSplineMapping.h
-    #CatmullRomSplineMapping.inl
     CenterOfMassMapping.h
     CenterOfMassMapping.inl
     CenterOfMassMulti2Mapping.h
     CenterOfMassMulti2Mapping.inl
     CenterOfMassMultiMapping.h
     CenterOfMassMultiMapping.inl
-    #CenterPointMechanicalMapping.h
-    #CenterPointMechanicalMapping.inl
-    #CurveMapping.h
-    #CurveMapping.inl
     DeformableOnRigidFrameMapping.h
     DeformableOnRigidFrameMapping.inl
     DistanceFromTargetMapping.h
     DistanceFromTargetMapping.inl
     DistanceMapping.h
     DistanceMapping.inl
-    #ExternalInterpolationMapping.h
-    #ExternalInterpolationMapping.inl
     IdentityMultiMapping.h
     IdentityMultiMapping.inl
-    #ProjectionToLineMapping.h
-    #ProjectionToLineMapping.inl
-    #ProjectionToPlaneMapping.h
-    #ProjectionToPlaneMapping.inl
     SquareDistanceMapping.h
     SquareDistanceMapping.inl
     SquareMapping.h
@@ -54,19 +42,13 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     BarycentricMappingRigid.cpp
     BeamLinearMapping.cpp
-    #CatmullRomSplineMapping.cpp
     CenterOfMassMapping.cpp
     CenterOfMassMulti2Mapping.cpp
     CenterOfMassMultiMapping.cpp
-    #CenterPointMechanicalMapping.cpp
-    #CurveMapping.cpp
     DeformableOnRigidFrameMapping.cpp
     DistanceFromTargetMapping.cpp
     DistanceMapping.cpp
-    #ExternalInterpolationMapping.cpp
     IdentityMultiMapping.cpp
-    #ProjectionToLineMapping.cpp
-    #ProjectionToPlaneMapping.cpp
     SquareDistanceMapping.cpp
     SquareMapping.cpp
     SubsetMultiMapping.cpp

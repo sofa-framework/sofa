@@ -19,51 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//===--------------------------- cxxabi.h ---------------------------------===//
-//
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
-//
-//===----------------------------------------------------------------------===//
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP
+#include "BarycentricMapperTriangleSetTopology.inl"
 
-#ifndef __CXXABI_H
-#define __CXXABI_H 
+namespace sofa
+{
 
-/*
- * This header provides the interface to the C++ ABI as defined at:
- *       http://www.codesourcery.com/cxx-abi/
- */
+namespace component
+{
 
-#include <stddef.h>
-#include <stdint.h>
+namespace mapping
+{
 
-#define _LIBCPPABI_VERSION 1001
-#define LIBCXXABI_NORETURN  __attribute__((noreturn))
+using namespace sofa::defaulttype;
 
-#ifdef __cplusplus
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3fTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3dTypes >;
+#endif
+#endif
 
-namespace std {
-    class type_info; // forward declaration
-}
-
-
-// runtime routines use C calling conventions, but are in __cxxabiv1 namespace
-namespace __cxxabiv1 {  
-  extern "C"  {
-
-// 3.4 Demangler API
-extern char* __cxa_demangle(const char* mangled_name, 
-                            char*       output_buffer,
-                            size_t*     length, 
-                            int*        status);
-
-  } // extern "C"
-} // namespace __cxxabiv1
-
-#endif // __cplusplus
-
-namespace abi = __cxxabiv1;
-
-#endif // __CXXABI_H 
+}}}
+#endif
