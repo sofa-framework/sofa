@@ -223,7 +223,6 @@ public:
 protected:
     virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateHexahedra() override;
 
     sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
