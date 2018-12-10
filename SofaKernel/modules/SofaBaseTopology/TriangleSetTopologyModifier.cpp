@@ -308,7 +308,7 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<Tri
         /// add the topological changes in the queue
         removeTrianglesWarning(triangleIds_filtered);
         // inform other objects that the triangles are going to be removed
-        propagateTopologicalChanges();
+        //propagateTopologicalChanges();
         // now destroy the old triangles.
         removeTrianglesProcess(triangleIds_filtered ,removeIsolatedEdges, removeIsolatedPoints);
 
