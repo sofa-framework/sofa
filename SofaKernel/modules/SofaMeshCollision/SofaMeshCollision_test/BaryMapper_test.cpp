@@ -22,7 +22,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/PrimitiveCreation.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 
 namespace sofa {
 
@@ -34,6 +34,7 @@ typedef sofa::simulation::Node::SPtr NodePtr;
 typedef sofa::component::collision::TriangleModel TriangleModel;
 typedef sofa::defaulttype::Vec3Types DataTypes;
 typedef DataTypes::VecCoord VecCoord;
+
 struct BaryMapperTest  : public ::testing::Test{
 
 

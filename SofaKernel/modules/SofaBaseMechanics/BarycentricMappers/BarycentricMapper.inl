@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaBarycentricMapping.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
+
+#include "BarycentricMapper.h"
 
 namespace sofa
 {
@@ -33,43 +33,37 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::gpu::cuda;
-
-
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
-
-// Instantiations involving both CudaVec3fTypes and Vec3dTypes
-#ifndef SOFA_FLOAT
-template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
-#endif
-} // namespace mapping
-
-} // namespace component
-
-namespace gpu
+namespace _barycentricmapper_
 {
 
-namespace cuda
+using sofa::component::linearsolver::CompressedRowSparseMatrix;
+
+template<class In, class Out>
+void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, int row, int col, Real value)
 {
+    MBloc* b = m->wbloc(row, col, true); // get write access to a matrix bloc, creating it if not found
+    for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
+        (*b)[i][i] += value;
+}
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::component::mapping;
 
-int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
+template<class In, class Out>
+const sofa::defaulttype::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize, int inSize)
+{
+    SOFA_UNUSED(outSize);
+    SOFA_UNUSED(inSize);
+    dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) ;
+    return nullptr;
+}
+
+template<class In, class Out>
+void BarycentricMapper<In,Out>::applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in)
+{
+    SOFA_UNUSED(hexaId);
+    SOFA_UNUSED(out);
+    SOFA_UNUSED(in);
+}
+
+}}}}
+
 #endif
-        ;
-
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
