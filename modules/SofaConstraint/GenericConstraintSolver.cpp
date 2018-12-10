@@ -84,9 +84,10 @@ GenericConstraintSolver::GenericConstraintSolver()
     , currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
     , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
     , current_cp(&m_cpBuffer[0])
-    , d_constraintForces(initData(&d_constraintForces,"constraintForces","Constraint forces"))
-    , d_constraintForcesIndices(initData(&d_constraintForcesIndices,"constraintForcesIndices",
-                                         "The indices of the constraint forces to store in the constraintForce data field."))
+    , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
+    , d_constraintForcesEnable(initData(&d_constraintForcesEnable,false,
+                                        "computeConstraintForces",
+                                        "enable the storage of the constraintForces (default = False)."))
     , last_cp(NULL)
 {
     addAlias(&maxIt, "maxIt");
@@ -332,9 +333,9 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
 {
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-			if (!cc->isActive()) continue;
-            cc->rebuildSystem(massFactor, forceFactor);
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        if (!cc->isActive()) continue;
+        cc->rebuildSystem(massFactor, forceFactor);
     }
 }
 
@@ -418,8 +419,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         msg_info() << tmp.str() ;
     }
 
-    ReadAccessor<Data<helper::vector<size_t>>> indices = d_constraintForcesIndices;
-    if(indices.empty())
+    if(d_constraintForcesEnable.getValue())
     {
         WriteOnlyAccessor<Data<helper::vector<double>>> constraints = d_constraintForces;
         constraints.resize(current_cp->getDimension());
@@ -615,13 +615,7 @@ void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
     tolerance = tol;
     maxIterations = maxIt;
 
-==== BASE ====
-// TODO : for the unbuild version to work in the haptic thread, we have to duplicate the ConstraintCorrections first...
-/*	if(unbuilt)
-        unbuiltGaussSeidel(timeout);
-    else
-*/		gaussSeidel(timeout);
-==== BASE ====
+    gaussSeidel(timeout);
 
     tolerance = tempTol;
     maxIterations = tempMaxIt;
@@ -664,7 +658,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         {
             if(!constraintsResolutions[i])
             {
-                msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+                msg_error(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
 
                 dimension = i;
                 break;
@@ -814,7 +808,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 break;
             }
         }
-        else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
+        else if(error < tol) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
@@ -838,18 +832,6 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
             constraintsResolutions[i]->store(i, force, convergence);
     }
 
-==== BASE ====
-/*
-    if(schemeCorrection)
-    {
-        ///////// scheme correction : step 3 => the corrective motion is only based on the diff of the force value: compute this diff
-        for(j=0; j<dim; j++)
-        {
-            df[j] += force[j];
-        }
-    }	*/
-
-==== BASE ====
     if(showGraphs)
     {
         solver->graphErrors.endEdit();
@@ -1136,8 +1118,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         solver->graphForces.endEdit();
     }
 }
-
-
 
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
         .add< GenericConstraintSolver >();
