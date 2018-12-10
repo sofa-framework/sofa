@@ -51,35 +51,35 @@ class SOFA_CONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
     sofa::component::linearsolver::FullVector<double> _d;
-	std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-	bool scaleTolerance, allVerified, unbuilt;
-	double sor;
-	double sceneTime;
+    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
+    bool scaleTolerance, allVerified, unbuilt;
+    double sor;
+    double sceneTime;
     double currentError;
     int currentIterations;
 
-	// For unbuilt version :
+    // For unbuilt version :
     sofa::component::linearsolver::SparseMatrix<double> Wdiag;
     std::list<unsigned int> constraints_sequence;
-	bool change_sequence;
+    bool change_sequence;
 
-	typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
-	typedef std::vector< core::behavior::BaseConstraintCorrection* >::iterator ConstraintCorrectionIterator;
+    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
+    typedef std::vector< core::behavior::BaseConstraintCorrection* >::iterator ConstraintCorrectionIterator;
 
-	std::vector< ConstraintCorrections > cclist_elems;
-	
+    std::vector< ConstraintCorrections > cclist_elems;
 
-	GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
-        , sceneTime(0.0), currentError(0.0), currentIterations(0)
-		, change_sequence(false) {}
-	~GenericConstraintProblem() { freeConstraintResolutions(); }
 
-	void clear(int nbConstraints);
-	void freeConstraintResolutions();
-	void solveTimed(double tol, int maxIt, double timeout);
+    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
+      , sceneTime(0.0), currentError(0.0), currentIterations(0)
+      , change_sequence(false) {}
+    ~GenericConstraintProblem() { freeConstraintResolutions(); }
 
-	void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
-	void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
+    void clear(int nbConstraints);
+    void freeConstraintResolutions();
+    void solveTimed(double tol, int maxIt, double timeout);
+
+    void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
+    void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
 
     int getNumConstraints();
     int getNumConstraintGroups();
@@ -87,51 +87,51 @@ public:
 
 class SOFA_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 {
-	typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
-	typedef std::vector<list_cc> VecListcc;
-	typedef sofa::core::MultiVecId MultiVecId;
+    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
+    typedef std::vector<list_cc> VecListcc;
+    typedef sofa::core::MultiVecId MultiVecId;
 
 public:
-	SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
+    SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
 protected:
-	GenericConstraintSolver();
-	virtual ~GenericConstraintSolver();
+    GenericConstraintSolver();
+    virtual ~GenericConstraintSolver();
 public:
-	void init() override;
+    void init() override;
 
     void cleanup() override;
 
-	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void rebuildSystem(double massFactor, double forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = 0) override;
     virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-	Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.
-	Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
-	Data<double> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
-	Data<double> sor; ///< Successive Over Relaxation parameter (0-2)
-	Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
-	Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-	Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
-	Data<bool> unbuilt; ///< Compliance is not fully built
-	Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
+    Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.
+    Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<double> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+    Data<double> sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
+    Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
+    Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+    Data<bool> unbuilt; ///< Compliance is not fully built
+    Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
 
-	Data<int> currentNumConstraints; ///< OUTPUT: current number of constraints
-	Data<int> currentNumConstraintGroups; ///< OUTPUT: current number of constraints
-	Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
-	Data<double> currentError; ///< OUTPUT: current error
+    Data<int> currentNumConstraints; ///< OUTPUT: current number of constraints
+    Data<int> currentNumConstraintGroups; ///< OUTPUT: current number of constraints
+    Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
+    Data<double> currentError; ///< OUTPUT: current error
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
     Data<helper::vector< double >> d_constraintForces; ///< The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
-
+    Data<helper::vector< size_t >> d_constraintForcesIndices; ///< The indices of the constraintForces to store in the constraintForce data field.
 
     virtual sofa::core::MultiVecDerivId getLambda() const override
     {
@@ -150,12 +150,12 @@ protected:
     enum { CP_BUFFER_SIZE = 10 };
     sofa::helper::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
     sofa::helper::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
-	GenericConstraintProblem *current_cp, *last_cp;
-	std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
+    GenericConstraintProblem *current_cp, *last_cp;
+    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
+    std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
 
-	simulation::Node *context;
+    simulation::Node *context;
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
@@ -163,9 +163,9 @@ protected:
     sofa::helper::system::thread::CTime timer;
     sofa::helper::system::thread::CTime timerTotal;
 
-	double time;
-	double timeTotal;
-	double timeScale;
+    double time;
+    double timeTotal;
+    double timeScale;
 };
 
 
@@ -173,25 +173,25 @@ class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simu
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res)
-    : simulation::BaseMechanicalVisitor(params)
-	, cparams(params)
-	, _res(res)
-	, _offset(0)
-	{
+        : simulation::BaseMechanicalVisitor(params)
+        , cparams(params)
+        , _res(res)
+        , _offset(0)
+    {
 #ifdef SOFA_DUMP_VISITOR_INFO
-      setReadWriteVectors();
+        setReadWriteVectors();
 #endif
     }
 
     virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
     {
-      if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
-      {
-        ctime_t t0 = begin(node, c);
-        c->getConstraintResolution(cparams, _res, _offset);
-        end(node, c, t0);
-      }
-      return RESULT_CONTINUE;
+        if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
+        {
+            ctime_t t0 = begin(node, c);
+            c->getConstraintResolution(cparams, _res, _offset);
+            end(node, c, t0);
+        }
+        return RESULT_CONTINUE;
     }
 
     /// Return a class name for this visitor
@@ -216,8 +216,8 @@ public:
     void setReadWriteVectors() { }
 #endif
 private:
-	/// Constraint parameters
-	const sofa::core::ConstraintParams *cparams;
+    /// Constraint parameters
+    const sofa::core::ConstraintParams *cparams;
 
     std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
