@@ -17,4 +17,5 @@ Components/collision/RuleBasedContactManager.scn 100 1e-4
 Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4
 
 Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4
+Components/topology/SparseGridTopology.scn 100 1e-4
 Components/topology/SparseGridRamificationTopology.scn 100 1e-4
