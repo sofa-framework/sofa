@@ -34,8 +34,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(ClipPlane)
-
 int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
         .add< ClipPlane >()
         ;
@@ -79,7 +77,6 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
     if(m_componentstate==ComponentState::Invalid)
         return ;
 
-#ifndef PS3
     wasActive = glIsEnabled(GL_CLIP_PLANE0+id.getValue());
     if (active.getValue())
     {
@@ -96,26 +93,10 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
         if (wasActive)
             glDisable(GL_CLIP_PLANE0+id.getValue());
     }
-#else
-    ///\todo save clip plane in this class and restore it because PS3 SDK doesn't have glGetClipPlane
-    if (active.getValue())
-    {
-        sofa::defaulttype::Vector3 p = position.getValue();
-        sofa::defaulttype::Vector3 n = normal.getValue();
-        GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
-        glClipPlanef(GL_CLIP_PLANE0+id.getValue(), c);
-        glEnable(GL_CLIP_PLANE0+id.getValue());
-    }
-    else
-    {
-        glDisable(GL_CLIP_PLANE0+id.getValue());
-    }
-#endif
 }
 
 void ClipPlane::bwdDraw(core::visual::VisualParams*)
 {
-#ifndef PS3
     if (active.getValue())
     {
         glClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);
@@ -127,16 +108,6 @@ void ClipPlane::bwdDraw(core::visual::VisualParams*)
         if (wasActive)
             glEnable(GL_CLIP_PLANE0+id.getValue());
     }
-#else
-    if(active.getValue())
-    {
-        glDisable(GL_CLIP_PLANE0+id.getValue());
-    }
-    else
-    {
-        glEnable(GL_CLIP_PLANE0+id.getValue());
-    }
-#endif
 }
 
 } // namespace visualmodel

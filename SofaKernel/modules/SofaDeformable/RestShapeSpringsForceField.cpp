@@ -38,8 +38,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(RestShapeSpringsForceField)
-
 ///////////// SPECIALIZATION FOR RIGID TYPES //////////////
 
 

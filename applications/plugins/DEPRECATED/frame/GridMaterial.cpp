@@ -32,7 +32,6 @@ namespace material
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS (GridMaterial);
 // Register in the Factory
 
 int GridMaterialClass = core::RegisterObject ( "Grid representation of deformable materials" )

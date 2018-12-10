@@ -1,4 +1,5 @@
 #include "CoulombConstraint.inl"
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
 namespace component {

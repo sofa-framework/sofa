@@ -35,8 +35,6 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PlaneROI)
-
 int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
 #ifndef SOFA_FLOAT
         .add< PlaneROI<Vec3dTypes> >()

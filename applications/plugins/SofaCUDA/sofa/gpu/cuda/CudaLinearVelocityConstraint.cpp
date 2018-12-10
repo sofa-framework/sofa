@@ -48,8 +48,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaLinearVelocityConstraint)
-
 int LinearVelocityConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaVec6fTypes> >()
         .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaRigid3fTypes> >()

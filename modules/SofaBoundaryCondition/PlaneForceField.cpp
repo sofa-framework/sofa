@@ -37,8 +37,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PlaneForceField)
-
 int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane toward the exterior (half-space)")
 #ifdef SOFA_WITH_DOUBLE
 .add< PlaneForceField<Vec3dTypes> >()

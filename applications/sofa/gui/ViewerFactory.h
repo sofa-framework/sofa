@@ -162,7 +162,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SOFAGUI)
+#if  !defined(SOFA_BUILD_SOFAGUI)
 extern template class SOFA_SOFAGUI_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
 #endif
 

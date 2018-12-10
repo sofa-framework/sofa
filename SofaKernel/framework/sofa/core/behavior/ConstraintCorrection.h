@@ -189,7 +189,7 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP)
+#if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3dTypes >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec2dTypes >;

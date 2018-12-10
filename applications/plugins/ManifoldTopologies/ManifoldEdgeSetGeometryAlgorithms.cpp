@@ -33,7 +33,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(ManifoldEdgeSetGeometryAlgorithms)
 int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge set geometry algorithms")
 #ifdef SOFA_FLOAT
         .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template

@@ -48,8 +48,6 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using sofa::component::visualmodel::OglColorMap;
 
-SOFA_DECL_CLASS(DataDisplay)
-
 int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data")
         .add< DataDisplay >()
         ;

@@ -332,10 +332,9 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
 {
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        if (!cc->isActive()) continue;
-        //serr << "REBUILD " <<  cc->getName() << " m="<<massFactor << " f=" << forceFactor << sendl;
-        cc->rebuildSystem(massFactor, forceFactor);
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+			if (!cc->isActive()) continue;
+            cc->rebuildSystem(massFactor, forceFactor);
     }
 }
 
@@ -616,11 +615,13 @@ void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
     tolerance = tol;
     maxIterations = maxIt;
 
-    // TODO : for the unbuild version to work in the haptic thread, we have to duplicate the ConstraintCorrections first...
-    /*	if(unbuilt)
+==== BASE ====
+// TODO : for the unbuild version to work in the haptic thread, we have to duplicate the ConstraintCorrections first...
+/*	if(unbuilt)
         unbuiltGaussSeidel(timeout);
     else
 */		gaussSeidel(timeout);
+==== BASE ====
 
     tolerance = tempTol;
     maxIterations = tempMaxIt;
@@ -837,7 +838,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
             constraintsResolutions[i]->store(i, force, convergence);
     }
 
-    /*
+==== BASE ====
+/*
     if(schemeCorrection)
     {
         ///////// scheme correction : step 3 => the corrective motion is only based on the diff of the force value: compute this diff
@@ -847,6 +849,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         }
     }	*/
 
+==== BASE ====
     if(showGraphs)
     {
         solver->graphErrors.endEdit();
@@ -1138,9 +1141,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
         .add< GenericConstraintSolver >();
-
-SOFA_DECL_CLASS(GenericConstraintSolver)
-
 
 } // namespace constraintset
 

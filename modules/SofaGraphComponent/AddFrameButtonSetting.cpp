@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(AddFrameButtonSetting)
 int AddFrameButtonSettingClass = core::RegisterObject("Add a frame to a skinned model")
         .add< AddFrameButtonSetting >()
         .addAlias("AddFrameButton")

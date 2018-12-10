@@ -38,6 +38,38 @@ namespace constraintset
 {
 
 template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
+    : Inherit(object1, object2)
+    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+    , m_yetIntegrated(false)
+{
+}
+
+template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object)
+    : Inherit(object, object)
+    , d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+    , m_yetIntegrated(false)
+{
+}
+
+template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint()
+    : d_m1(initData(&d_m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , d_m2a(initData(&d_m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
+    , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
+    , m_yetIntegrated(false)
+{
+}
+
+template<class DataTypes>
 void SlidingConstraint<DataTypes>::init()
 {
     assert(this->mstate1);

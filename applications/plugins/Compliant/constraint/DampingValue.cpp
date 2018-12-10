@@ -8,7 +8,6 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(DampingValue)
 int DampingValueClass = core::RegisterObject("Constraint value for damping compliance").add< DampingValue >();
 
 

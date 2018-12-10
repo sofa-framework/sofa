@@ -51,7 +51,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(EdgeSetTopologyModifier)
 int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modifier")
         .add< EdgeSetTopologyModifier >();
 
@@ -273,7 +272,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<Edge
         removePointsWarning(vertexToBeRemoved);
         // inform other objects that the points are going to be removed
         propagateTopologicalChanges();
-        removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved, d_propagateToDOF.getValue());
     }
 }
 

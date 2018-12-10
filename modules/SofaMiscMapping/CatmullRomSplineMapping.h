@@ -123,7 +123,7 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
@@ -138,7 +138,7 @@ extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype
 extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
 #endif
 #endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)
+#endif // !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)
 
 
 

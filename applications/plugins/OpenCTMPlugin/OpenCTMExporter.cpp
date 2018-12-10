@@ -38,8 +38,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(OpenCTMExporter)
-
 int OpenCTMExporterClass = core::RegisterObject("Export current topology under OpenCTM file format")
         .add< OpenCTMExporter >()
         ;

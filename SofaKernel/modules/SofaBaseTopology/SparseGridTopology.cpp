@@ -49,8 +49,6 @@ namespace component
 namespace topology
 {
 
-SOFA_DECL_CLASS(SparseGridTopology)
-
 int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .addAlias("SparseGrid")
         .add< SparseGridTopology >()

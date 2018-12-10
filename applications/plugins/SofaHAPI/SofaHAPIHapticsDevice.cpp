@@ -501,7 +501,5 @@ namespace sofa
 				.addAlias("DefaultHapticsDevice")
 				;
 
-		SOFA_DECL_CLASS(SofaHAPIHapticsDevice)
-
 	} // namespace SofaHAPI
 }

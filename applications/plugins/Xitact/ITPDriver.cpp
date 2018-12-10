@@ -74,7 +74,6 @@ int initDeviceITP(XiToolDataITP& /*data*/)
     return 0;
 }
 
-SOFA_DECL_CLASS(ITPDriver)
 int ITPDriverClass = core::RegisterObject("Driver and Controller of ITP Xitact Device")
         .add< ITPDriver >();
 

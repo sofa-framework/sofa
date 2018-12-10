@@ -32,9 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglTexture)
-SOFA_DECL_CLASS(OglTexture2D)
-
 // Register the OglTexture* objects in the Object Factory
 int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
 int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();

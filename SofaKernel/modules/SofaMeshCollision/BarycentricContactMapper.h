@@ -219,7 +219,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
 extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;
@@ -232,7 +232,7 @@ extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<TriangleMo
 extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TriangleModel, defaulttype::Vec3Types>::createMapping(const char*);
 extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<CapsuleModel, defaulttype::Vec3Types>::cleanup();
 extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<CapsuleModel, defaulttype::Vec3Types>::createMapping(const char*);
-#  endif
+#  endif // _MSC_VER
 #endif
 
 } // namespace collision

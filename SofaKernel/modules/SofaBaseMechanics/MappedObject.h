@@ -129,7 +129,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
+#if  !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
 #ifndef SOFA_FLOAT
 extern template class MappedObject<defaulttype::Vec3dTypes>;
 extern template class MappedObject<defaulttype::Vec2dTypes>;

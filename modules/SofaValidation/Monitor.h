@@ -132,7 +132,7 @@ protected:
     sofa::helper::vector < sofa::helper::vector<Coord> > m_savedPos; ///< store all the monitored positions, for trajectories display
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
+#if  !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3dTypes>;
 extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6dTypes>;

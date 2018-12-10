@@ -39,9 +39,6 @@ void initEigen2Solver()
     }
 }
 
-SOFA_LINK_CLASS(SVDLinearSolver)
-
-
 } // namespace component
 
 } // namespace sofa

@@ -179,9 +179,6 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
     mstate2 = mstateCollision;
 
-//    helper::ReadAccessor<Data <VecCoord> > x1 = *mstate1->read(core::VecCoordId::position());
-//    helper::ReadAccessor<Data <VecCoord> > x2 = *mstate2->read(core::VecCoordId::position());
-
     defaulttype::Vec3d point1;
     defaulttype::Vec3d point2;
 

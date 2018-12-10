@@ -32,8 +32,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OgreShaderTextureUnit);
-
 int OgreShaderTextureUnitClass = core::RegisterObject("Shader configuration for Ogre Visual Models")
         .add< OgreShaderTextureUnit >();
 

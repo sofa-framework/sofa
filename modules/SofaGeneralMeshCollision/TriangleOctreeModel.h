@@ -47,14 +47,9 @@ public:
 protected:
     TriangleOctreeModel();
 public:
-#if 0
-    /// the triangles associated to a point
-    helper::vector<helper::vector<int> > pTri;
-#endif
 
     /// the normals for each point
     helper::vector<defaulttype::Vector3> pNorms;
-    //vector < defaulttype::Vector4 > octreeVec;
     void draw(const core::visual::VisualParams* vparams) override;
     virtual void computeBoundingTree(int maxDepth=0) override;
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;

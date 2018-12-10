@@ -57,13 +57,10 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
-        //serr<<"creation of the visitor"<<sendl;
     }
 
     virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
     {
-        //serr<<"fwdConstraint called on "<<c->getName()<<sendl;
-
         if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
         {
             ctime_t t0 = begin(node, c);
@@ -198,7 +195,7 @@ class SOFA_CONSTRAINT_API ConstraintProblem
 {
 protected:
     sofa::component::linearsolver::LPtrFullMatrix<double> _W;
-    sofa::component::linearsolver::FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
+    sofa::component::linearsolver::FullVector<double> _dFree, _force, _d, _df;// cf. These Duriez + _df for scheme correction
     std::vector<core::behavior::ConstraintResolution*> _constraintsResolutions;
     double _tol;
     int _dim;
@@ -237,9 +234,6 @@ protected:
 public:
 
     virtual void step(const core::ExecParams* params, SReal dt) override;
-
-    //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
-
     virtual void init() override;
 
     Data<bool> displayTime; ///< Display time for each important step of ConstraintAnimationLoop.

@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(GenerateImage)
-
 int GenerateImageClass = core::RegisterObject("Create an image with custom dimensions")
         .add<GenerateImage<ImageUC> >(true)
         .add<GenerateImage<ImageD> >()

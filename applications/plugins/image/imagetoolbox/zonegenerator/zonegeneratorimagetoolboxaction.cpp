@@ -381,8 +381,6 @@ void ZoneGeneratorImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec
 
 
 
-SOFA_DECL_CLASS(ZoneGeneratorImageToolBoxAction);
-
 //template class SOFA_IMAGE_API ImageToolBox<ImageUS>;
 
 

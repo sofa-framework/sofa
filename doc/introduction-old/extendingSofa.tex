@@ -227,7 +227,6 @@ Creator< XML::DynamicNode::Factory, MassObject<Vec1dTypes> >
 
 This command will register our class to the Factory during the initialization of the program. For this to work we must still ensure our code is linked in the final binary. To do this we must add the following line in the .cpp file containing the Creator command:
 \begin{code_cpp}
-SOFA_DECL_CLASS(MassObject1d)
 \end{code_cpp}
 and then add a corresponding line in a .cpp file used during the execution of the program (such as the file containing the main() function, or in Sofa/Components/init.cpp if the new class is integrated in \sofa{}):
 \begin{code_cpp}
@@ -359,8 +358,6 @@ void create(LineMapping*& obj, XML::Node<Sofa::Core::BasicMapping>* arg)
     obj->dx[2] = atof(arg->getAttribute("dz","0"));
   }
 } } } }
-
-SOFA_DECL_CLASS(LineMapping)
 
 Creator< XML::MappingNode::Factory, LineMapping > LineMappingClass("LineMapping", true);
 \end{code_cpp}
@@ -735,8 +732,6 @@ void create(LennardJonesForceField<DataTypes>*& obj, XML::Node<Sofa::Core::Force
     if (arg->getAttribute("p0"))  obj->setP0(atof(arg->getAttribute("p0")));
   }
 } } } }
-
-SOFA_DECL_CLASS(LennardJonesForceField)
 
 // Each instance of our class must be compiled
 template class LennardJonesForceField<Vec3fTypes>;

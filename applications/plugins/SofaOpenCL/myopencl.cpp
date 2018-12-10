@@ -45,9 +45,6 @@ namespace opencl
 {
 #endif
 
-SOFA_LINK_CLASS(OpenCLMouseInteractor)
-
-
 //private data
 int _numDevices = 0;
 cl_context _context = NULL;

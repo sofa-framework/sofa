@@ -35,8 +35,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaTetrahedronTLEDForceField)
-
 int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetrahedron forcefield using CUDA")
         .add< CudaTetrahedronTLEDForceField >()
         ;

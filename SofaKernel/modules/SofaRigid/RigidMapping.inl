@@ -189,16 +189,12 @@ void RigidMapping<TIn, TOut>::reinit()
 {
     if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
     {
-//        serr<<"reinit(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << sendl;
         const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         helper::WriteOnlyAccessor<Data<VecCoord> > points = this->points;
         points.resize(xTo.size());
         unsigned int i = 0;
         if (globalToLocalCoords.getValue())
         {
-            //            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
-//            const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-//            points.resize(xTo.size());
             unsigned int i = 0;
             const InVecCoord& xFrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
@@ -214,20 +210,13 @@ void RigidMapping<TIn, TOut>::reinit()
             {
                 points[i] = xTo[i];
             }
-            //            cerr<<"globalToLocal is false, points in local coordinates : " << points << endl;
         }
-    }
-    else
-    {
-        //        cerr << "RigidMapping<TIn, TOut>::init(), points not empty or toModel is null or useX0" << endl;
     }
 }
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::init()
 {
-    //    rigidMappingDummyFunction();
-
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
 
@@ -238,20 +227,6 @@ void RigidMapping<TIn, TOut>::init()
 
     this->Inherit::init();
 }
-
-/*
-template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::disable()
-{
- if (!this->points.getValue().empty() && this->toModel!=NULL)
- {
-  VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-  x.resize(points.getValue().size());
-  for (unsigned int i=0;i<points.getValue().size();i++)
-   x[i] = points.getValue()[i];
- }
-}
-*/
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::clear(int reserve)
@@ -350,11 +325,6 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, 
         rotatedPoints[i] = in[rigidIndex].rotate( pts[i] );
         out[i] = in[rigidIndex].translate( rotatedPoints[i] );
     }
-
-    //    cerr<<"RigidMapping<TIn, TOut>::apply, " << this->getName() << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::apply, in = " << dIn << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::apply, points = " << pts << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::apply, out = " << dOut << endl;
 }
 
 template <class TIn, class TOut>
@@ -397,39 +367,6 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
 }
 
-//            using defaulttype::Vec;
-//
-//            /** Symmetric cross cross product.
-//              Let [a×(.×c)] be the linear operator such that: a×(b×c) = [a×(.×c)]b, where × denotes the cross product.
-//              This operator is not symmetric, and can mess up conjugate gradient solutions.
-//              This method computes sym([a×(.×c)])b , where sym(M) = (M+M^T)/2
-//              */
-//            template<class Rp, class Rc>  // p for parent, c for child
-//            Vec<3,Rp> symCrossCross( const Vec<3,Rc>& a,  const Vec<3,Rp>& b,  const Vec<3,Rc>& c  )
-//            {
-////                Rp m00 = a[1]*c[1]+a[2]*c[2], m01= -0.5*(a[1]*c[0]+a[0]*c[1]), m02 = -0.5*(a[2]*c[0]+a[0]*c[2]) ;
-////                Rp                            m11=  a[0]*c[0]+a[2]*c[2],       m12 = -0.5*(a[2]*c[1]+a[1]*c[2]) ;
-////                Rp                                                             m22=  a[0]*c[0]+a[1]*c[1];
-//                Rp m00 = a[1]*c[1]+a[2]*c[2], m01= 0, m02 = 0 ;
-//                Rp                            m11=  a[0]*c[0]+a[2]*c[2],       m12 = 0 ;
-//                Rp                                                             m22=  a[0]*c[0]+a[1]*c[1];
-//                return Vec<3,Rp>(
-//                        m00*b[0] + m01*b[1] + m02*b[2],
-//                        m01*b[0] + m11*b[1] + m12*b[2],
-//                        m02*b[0] + m12*b[1] + m22*b[2]
-//                        );
-//            }
-//
-//            /** Symmetric cross cross product in 2D (see doc in 3D)
-//              In 2D, this operator is a scalar so it is symmetric.
-//              */
-//            template<class Rp, class Rc> // p for parent, c for child
-//            Rp symCrossCross( const Vec<2,Rc>& a,  const Rp& b,  const Vec<2,Rc>& c  )
-//            {
-//                return (a*c)*b;
-//            }
-
-
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId childForceId)
 {
@@ -460,11 +397,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
             helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
-            //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent displacements = "<< parentDisplacements << endl;
-            //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent forces = "<< parentForces << endl;
-
             InReal kfactor = (InReal)mparams->kFactor();
-            //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, kfactor = "<< kfactor << endl;
 
             for( size_t i=0 ; i<this->maskTo->size() ; ++i)
             {
@@ -474,7 +407,6 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
 
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
                 const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[rigidIndex]);
-                //  const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
                 const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
                 parentTorque -=  torqueDecrement;
             }
@@ -501,9 +433,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
     const unsigned int numDofs = this->getFromModel()->getSize();
 
-
     // TODO the implementation on the new data structure could maybe be optimized
-
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
@@ -640,9 +570,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
                     if( block(i, j) != 0 ) {
 
                         J.insertBack(row, col) = block(i, j);
-
                     }
-
                 }
             }
         }
@@ -795,7 +723,6 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
-    //    cerr<<"RigidMapping<TIn, TOut>::setJMatrixBlock, outIdx = " << outIdx << ", inIdx = " << inIdx << endl;
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }

@@ -38,8 +38,6 @@ namespace linearsolver
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(MinResLinearSolver)
-
 int MinResLinearSolverClass = core::RegisterObject("Linear system solver using the MINRES iterative algorithm")
         .add< MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)
 #ifndef SOFA_FLOAT

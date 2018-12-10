@@ -32,21 +32,15 @@ namespace component
 namespace container
 {
 
-SOFA_DECL_CLASS(ArticulatedHierarchyContainer)
-
 // Register in the Factory
 int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
         .add< ArticulatedHierarchyContainer >()
         ;
 
-SOFA_DECL_CLASS(ArticulationCenter)
-
 // Register in the Factory
 int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
         .add< ArticulationCenter >()
         ;
-
-SOFA_DECL_CLASS(Articulation)
 
 // Register in the Factory
 int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")

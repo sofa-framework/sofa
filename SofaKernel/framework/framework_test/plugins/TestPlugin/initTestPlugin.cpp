@@ -64,5 +64,3 @@ SOFA_TESTPLUGIN_API const char* getModuleComponentList()
 } // extern "C"
 
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)

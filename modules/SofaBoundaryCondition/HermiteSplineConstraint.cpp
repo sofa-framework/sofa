@@ -35,9 +35,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS(HermiteSplineConstraint)
-
-
 int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
 #ifndef SOFA_FLOAT
         .add< HermiteSplineConstraint<defaulttype::Vec3dTypes> >()

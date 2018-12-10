@@ -32,8 +32,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(Triangle)
-
 int TriangleModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology")
 #ifndef SOFA_FLOAT
         .add< TTriangleModel<defaulttype::Vec3dTypes> >()

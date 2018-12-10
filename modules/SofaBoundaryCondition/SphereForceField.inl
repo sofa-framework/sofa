@@ -55,6 +55,19 @@ namespace forcefield
 // df = -stiffness * ( (x-c)/|x-c| * dot(dx,(x-c)/|x-c|) * r/|x-c|   + dx * (1 - r/|x-c|) )
 
 template<class DataTypes>
+SphereForceField<DataTypes>::SphereForceField()
+    : contacts(initData(&contacts,"contacts", "Contacts"))
+    , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
+    , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
+    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
+    , damping(initData(&damping, (Real)5, "damping", "force damping"))
+    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
+    , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , bilateral( initData(&bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
+{
+}
+
+template<class DataTypes>
 void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f1 = *d_f.beginEdit();
@@ -190,6 +203,31 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     vparams->drawTool()->restoreLastState();
 }
 
+template<class DataTypes>
+SReal SphereForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
+
+template<class DataTypes>
+void SphereForceField<DataTypes>::setSphere(const Coord& center, Real radius)
+{
+    sphereCenter.setValue( center );
+    sphereRadius.setValue( radius );
+}
+
+template<class DataTypes>
+void SphereForceField<DataTypes>::setStiffness(Real stiff)
+{
+    stiffness.setValue( stiff );
+}
+
+template<class DataTypes>
+void SphereForceField<DataTypes>::setDamping(Real damp)
+{
+    damping.setValue( damp );
+}
 
 } // namespace forcefield
 

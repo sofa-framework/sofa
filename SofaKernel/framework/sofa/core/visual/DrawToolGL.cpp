@@ -626,25 +626,13 @@ void DrawToolGL::drawPlus ( const float& radius, const Vec<4,float>& colour, con
 
 void DrawToolGL::internalDrawPoint(const Vector3 &p, const Vec<4,float> &c)
 {
-#ifdef PS3
-    // bit of a hack we force to enter our emulation of draw immediate
-    // because glColor4f already exists in OGL ES.
-    glColor3f(c[0],c[1],c[2]);
-#else
     glColor4f(c[0],c[1],c[2],c[3]);
-#endif
     glVertexNv<3>(p.ptr());
 }
 
 void DrawToolGL::internalDrawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float> &c)
 {
-#ifdef PS3
-    // bit of a hack we force to enter our emulation of draw immediate
-    // because glColor4f already exists in OGL ES.
-    glColor3f(c[0],c[1],c[2]);
-#else
     glColor4f(c[0],c[1],c[2],c[3]);
-#endif
     glNormalT(n);
     glVertexNv<3>(p.ptr());
 }
@@ -1249,8 +1237,6 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glTranslated(x,y,0);
 
     glScalef( scale, scale, scale );
-
-//    glLineWidth( fontSize/20.0f );
 
     helper::gl::GlText::textureDraw_Overlay(text);
 

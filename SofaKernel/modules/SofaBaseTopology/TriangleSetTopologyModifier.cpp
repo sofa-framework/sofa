@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(TriangleSetTopologyModifier)
 int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
         .add< TriangleSetTopologyModifier >()
         ;
@@ -453,7 +452,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         removePointsWarning(vertexToBeRemoved);
         /// propagate to all components
         propagateTopologicalChanges();
-        removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved, d_propagateToDOF.getValue());
     }
 }
 

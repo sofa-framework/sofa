@@ -1,5 +1,7 @@
+<?xml version="1.0"?>
 <!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
 	<GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
@@ -41,7 +43,7 @@
     </Node>
 	
     <Node name="Torus3">
-		<EulerImplicit />
+		<EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-25" dy="0" />
         <UniformMass filename="BehaviorModels/torus2.rigid"/>
@@ -62,7 +64,7 @@
     </Node>
 	
     <Node name="Torus4">
-		<EulerImplicit />
+		<EulerImplicit rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-38" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>

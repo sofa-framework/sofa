@@ -109,11 +109,7 @@ public:
     virtual void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Compute the force derivative
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override
-    {
-        //TODO: remove this line (avoid warning message) ...
-        mparams->setKFactorUsed(true);
-    }
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
 
@@ -149,8 +145,8 @@ template <>
 SReal LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec2dTypes>;
@@ -168,8 +164,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::default
 // extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
-
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 
 } // namespace forcefield
 

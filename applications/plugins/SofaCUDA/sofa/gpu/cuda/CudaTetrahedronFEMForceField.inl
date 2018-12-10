@@ -24,11 +24,6 @@
 
 #include "CudaTetrahedronFEMForceField.h"
 #include <SofaSimpleFem/TetrahedronFEMForceField.inl>
-#if 0 //defined(SOFA_DEV)
-#include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
-#include <sofa/gpu/cuda/CudaRotationMatrix.h>
-#include <sofa/core/behavior/RotationMatrix.h>
-#endif // SOFA_DEV
 namespace sofa
 {
 
@@ -835,41 +830,10 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 {
     Data& data = m->data;
 
-#if 0 //defined(SOFA_DEV)
-    if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
-    {
-        data.getRotations(m,diagd->getVector());
-    }
-    else
-#endif // SOFA_DEV
     {
         data.vecTmpRotation.resize(data.nbVertex*9);
         data.getRotations(m,data.vecTmpRotation);
 
-
-#if 0 //defined(SOFA_DEV)
-        if (CudaRotationMatrix<float> * diagd = dynamic_cast<CudaRotationMatrix<float> * >(rotations))   //if the test with real didn pass that mean that rotation are different than real so we test both float and double
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        }
-        else if (CudaRotationMatrix<double> * diagd = dynamic_cast<CudaRotationMatrix<double> * >(rotations))
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#endif
-        }
-        else if (component::linearsolver::RotationMatrix<float> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<float> * >(rotations))
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        }
-        else if (component::linearsolver::RotationMatrix<double> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<double> * >(rotations))
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#endif
-        }
-        else
-#endif // SOFA_DEV
         {
             for (int i=0; i<data.nbVertex; i++)
             {
