@@ -37,20 +37,9 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory (XML read/write...)
 int FEMGridBehaviorModelModelClass = core::RegisterObject("FEMGridBehaviorModel Example")
-#ifndef SOFA_FLOAT
-        .add< FEMGridBehaviorModel<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FEMGridBehaviorModel<Vec3fTypes> >()
-#endif
-        ;
+        .add< FEMGridBehaviorModel<Vec3Types> >();
 
-#ifndef SOFA_FLOAT
-template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<Vec3fTypes>;
-#endif
+template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<Vec3Types>;
 
 
 } // namespace externalBehaviorModel
