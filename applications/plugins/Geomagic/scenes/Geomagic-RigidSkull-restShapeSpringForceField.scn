@@ -30,38 +30,20 @@
     <Node name="Omni">
         <MechanicalObject template="Rigid" name="DOFs" position="@GeomagicDevice.positionDevice"/>
         <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
-        <Node name="VisuAvatar" activated="false" >
-            <OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
-            <RigidMapping input="@.." output="@Visual" index="0"/>
-        </Node>
-        <Node name="RefModel">
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-            <Mesh src="@loader"  />
-            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-            <RigidMapping />
-        </Node>
-        <Node name="RefModelRight" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-            <Mesh src="@loader" name="InstrumentCollisionModel"  />
-            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
-            <RigidMapping />
-        </Node>
-        <Node name="RefModelLeft" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-            <Mesh src="@loader" name="InstrumentCollisionModel"  />
-            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
-            <RigidMapping />
-        </Node>
     </Node>
 
     <Node name="Instrument" >
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
-        <MechanicalObject name="instrumentState" template="Rigid" />
-        <UniformMass name="mass" totalMass="0.05" />
+        
+		<MechanicalObject name="instrumentState" template="Rigid" />
+		<UniformMass name="mass" totalMass="0.05" />
+		
+		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0' />
         <LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection/>
-        <Node name="VisualModel" >
+        
+		<Node name="VisualModel" >
             <OglModel name="InstrumentVisualModel" fileMesh="Demos/Dentistry/data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
             <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
@@ -72,22 +54,7 @@
             <Line name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" /> 
             <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
-        </Node>
-        <Node name="RefModelRight" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-            <Mesh src="@loader" name="InstrumentCollisionModel" />
-            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
-            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
-        </Node>
-        <Node name="RefModelLeft" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
-            <Mesh src="@loader" name="InstrumentCollisionModel"  />
-            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
-            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
-        </Node>
-        <VectorSpringForceField  template="Vec3d" object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
-        <VectorSpringForceField  template="Vec3d" object1="@Omni/RefModelRight/instrumentCollisionState" object2="@Instrument/RefModelRight/instrumentCollisionState" stiffness="10" viscosity="0" />
-        <VectorSpringForceField  template="Vec3d" object1="@Omni/RefModelLeft/instrumentCollisionState" object2="@Instrument/RefModelLeft/instrumentCollisionState" stiffness="10" viscosity="0" />
+        </Node>        
     </Node>  
 
 </Node>
