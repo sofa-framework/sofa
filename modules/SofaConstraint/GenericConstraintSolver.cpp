@@ -186,8 +186,8 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 
     if ( displayTime.getValue() )
     {
-        time = (double) timer.getTime();
-        timeTotal = (double) timerTotal.getTime();
+        time = (SReal) timer.getTime();
+        timeTotal = (SReal) timerTotal.getTime();
     }
 
     return true;
@@ -300,8 +300,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
     if ( displayTime.getValue() )
     {
-        msg_info() << " build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
+        msg_info() << " build_LCP " << ( (SReal) timer.getTime() - time)*timeScale<<" ms" ;
+        time = (SReal) timer.getTime();
     }
 
     return true;
@@ -385,8 +385,8 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
     if ( displayTime.getValue() )
     {
-        msg_info() <<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
+        msg_info() <<" TOTAL solve_LCP " <<( (SReal) timer.getTime() - time)*timeScale<<" ms" ;
+        time = (SReal) timer.getTime();
     }
 
     if(notMuted())
@@ -478,7 +478,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
     msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
 
-    msg_info_when(displayTime.getValue()) << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" ;
+    msg_info_when(displayTime.getValue()) << " TotalTime " << ((SReal) timerTotal.getTime() - timeTotal) * timeScale << " ms" ;
     AdvancedTimer::stepBegin("Store Constraint Lambdas");
 
     /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
@@ -492,7 +492,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
 	if (displayTime.getValue())
     {
-        msg_info() << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms";
+        msg_info() << " TotalTime " << ((SReal) timerTotal.getTime() - timeTotal) * timeScale << " ms";
     }
 
     return true;
