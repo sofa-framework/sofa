@@ -19,34 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
+#include "StringUtils.h"
 
-#include <string>
-#include <cstring>
-#include "init.h"
 namespace sofa
 {
 
 namespace helper
 {
 
-///@brief returns a copy of the string given in argument.
-SOFA_HELPER_API char* getAStringCopy(const char *c);
+char* getAStringCopy(const char *c)
+{
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
 
-///@brief replace all occurence of "search" by the "replace" string.
-SOFA_HELPER_API void replaceAll(std::string& str,
-                                const std::string& search,
-                                const std::string& replace);
+void replaceAll(std::string& str, const std::string& search, const std::string& replace)
+{
+    size_t pos = 0;
+    while((pos = str.find(search, pos)) != std::string::npos)
+    {
+        str.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+}
 
-///@brief returns true if the prefix if located at the beginning of the "full" string.
-SOFA_HELPER_API bool starts_with(const std::string& prefix, const std::string& full);
+bool ends_with(const std::string& suffix, const std::string& full)
+{
+    const std::size_t lf = full.length();
+    const std::size_t ls = suffix.length();
 
-///@brief returns true if the suffix if located at the end of the "full" string.
-SOFA_HELPER_API bool ends_with(const std::string& suffix, const std::string& full);
+    if(lf < ls) return false;
+
+    return (0 == full.compare(lf - ls, ls, suffix));
+}
+
+bool starts_with(const std::string& prefix, const std::string& full)
+{
+    const std::size_t lf = full.length();
+    const std::size_t lp = prefix.length();
+
+    if(lf < lp) return false;
+
+    return (0 == full.compare(0, lp, prefix));
+}
 
 } // namespace helper
 
 } // namespace sofa
 
-#endif //SOFA_HELPER_STRING_UTILS_H

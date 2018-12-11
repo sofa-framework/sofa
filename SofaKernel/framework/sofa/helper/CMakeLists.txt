@@ -141,6 +141,7 @@ set(SOURCE_FILES
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
     StateMask.cpp
+    StringUtils.cpp
     SVector.cpp
     Polynomial_LD.cpp
     Quater.cpp
