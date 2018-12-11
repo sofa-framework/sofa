@@ -118,9 +118,6 @@ protected :
 extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::ExtVec3Types >;
-
-
-
 #endif
 
 } // namespace mapping
