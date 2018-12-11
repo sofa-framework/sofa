@@ -209,7 +209,9 @@ void SparseGridTopology::buildAsFinest(  )
         {
             if (_filename.empty())
             {
-                msg_error() << "SparseGridTopology: no filename specified.";
+                if (this->seqPoints.getValue().empty())
+                    msg_warning() << "SparseGridTopology: no filename specified nor vertices given as parameters.";
+
                 return;
             }
 
