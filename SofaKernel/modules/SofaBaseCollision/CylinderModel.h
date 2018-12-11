@@ -94,17 +94,19 @@ public:
 
     typedef TCylinder<DataTypes> Element;
     friend class TCylinder<DataTypes>;
+
+    Data<VecReal> d_cylinder_radii; ///< Radius of each cylinder
+    Data<VecReal> d_cylinder_heights; ///< The cylinder heights
+    Data<VecAxisCoord> d_cylinder_local_axes;
+
+    Data<Real> d_default_radius; ///< The default radius
+    Data<Real> d_default_height; ///< The default height
+    Data<Coord> d_default_local_axis; ///< The default local axis cylinder is modeled around
+
 protected:
-    Data<VecReal> _cylinder_radii; ///< Radius of each cylinder
-    Data<VecReal> _cylinder_heights; ///< The cylinder heights
-    Data<VecAxisCoord> _cylinder_local_axes;
-
-    Data<Real> _default_radius; ///< The default radius
-    Data<Real> _default_height; ///< The default height
-    Data<Coord> _default_local_axis; ///< The default local axis cylinder is modeled around
-
     TCylinderModel();
     TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate );
+
 public:
     virtual void init() override;
 
@@ -118,7 +120,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
     Real radius(int index) const;
 
@@ -156,7 +158,7 @@ public:
     Data<VecAxisCoord>& writeLocalAxes();
 
 protected:
-    core::behavior::MechanicalState<DataTypes>* _mstate;
+    core::behavior::MechanicalState<DataTypes>* m_mstate;
 };
 
 

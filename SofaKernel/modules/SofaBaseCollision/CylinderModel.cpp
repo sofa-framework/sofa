@@ -57,8 +57,6 @@ template class SOFA_BASE_COLLISION_API TCylinderModel<Rigid3fTypes>;
 #endif
 
 
-
-
 }
 }
 }

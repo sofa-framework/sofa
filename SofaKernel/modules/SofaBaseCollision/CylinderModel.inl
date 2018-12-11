@@ -40,25 +40,21 @@ using sofa::core::objectmodel::ComponentState;
 
 template<class DataTypes>
 TCylinderModel<DataTypes>::TCylinderModel():
-      _cylinder_radii(initData(&_cylinder_radii, "radii","Radius of each cylinder")),
-      _cylinder_heights(initData(&_cylinder_heights,"heights","The cylinder heights")),
-      _default_radius(initData(&_default_radius,Real(0.5),"defaultRadius","The default radius")),
-      _default_height(initData(&_default_height,Real(2),"defaultHeight","The default height")),
-      _default_local_axis(initData(&_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
-      _mstate(NULL)
+      d_cylinder_radii(initData(&d_cylinder_radii, "radii","Radius of each cylinder")),
+      d_cylinder_heights(initData(&d_cylinder_heights,"heights","The cylinder heights")),
+      d_default_radius(initData(&d_default_radius,Real(0.5),"defaultRadius","The default radius")),
+      d_default_height(initData(&d_default_height,Real(2),"defaultHeight","The default height")),
+      d_default_local_axis(initData(&d_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
+      m_mstate(NULL)
 {
     enum_type = CYLINDER_TYPE;
 }
 
 template<class DataTypes>
-TCylinderModel<DataTypes>::TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate):
-    _cylinder_radii(initData(&_cylinder_radii, "radii","Radius of each cylinder")),
-    _cylinder_heights(initData(&_cylinder_heights,"heights","The cylinder heights")),
-    _default_radius(initData(&_default_radius,Real(0.5),"defaultRadius","The default radius")),
-    _default_height(initData(&_default_height,Real(2),"dafaultHeight","The default height")),
-    _default_local_axis(initData(&_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
-    _mstate(mstate)
+TCylinderModel<DataTypes>::TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate)
+    : TCylinderModel()
 {
+    m_mstate = mstate;
     enum_type = CYLINDER_TYPE;
 }
 
@@ -67,14 +63,14 @@ void TCylinderModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
-    VecReal & Cylinder_radii = *_cylinder_radii.beginEdit();
-    VecReal & Cylinder_heights = *_cylinder_heights.beginEdit();
-    VecAxisCoord & Cylinder_local_axes = *_cylinder_local_axes.beginEdit();
+    VecReal & Cylinder_radii = *d_cylinder_radii.beginEdit();
+    VecReal & Cylinder_heights = *d_cylinder_heights.beginEdit();
+    VecAxisCoord & Cylinder_local_axes = *d_cylinder_local_axes.beginEdit();
 
     if (int(Cylinder_radii.size()) < size)
     {
         while(int(Cylinder_radii.size())< size)
-            Cylinder_radii.push_back(_default_radius.getValue());
+            Cylinder_radii.push_back(d_default_radius.getValue());
     }
     else
     {
@@ -84,7 +80,7 @@ void TCylinderModel<DataTypes>::resize(int size)
     if (int(Cylinder_heights.size()) < size)
     {
         while(int(Cylinder_heights.size()) < size)
-            Cylinder_heights.push_back(_default_height.getValue());
+            Cylinder_heights.push_back(d_default_height.getValue());
     }
     else
     {
@@ -94,31 +90,31 @@ void TCylinderModel<DataTypes>::resize(int size)
     if (int(Cylinder_local_axes.size()) < size)
     {
         while(int(Cylinder_local_axes.size()) < size)
-            Cylinder_local_axes.push_back(_default_local_axis.getValue());
+            Cylinder_local_axes.push_back(d_default_local_axis.getValue());
     }
     else
     {
         Cylinder_local_axes.reserve(size);
     }
 
-    _cylinder_radii.endEdit();
-    _cylinder_heights.endEdit();
-    _cylinder_local_axes.endEdit();
+    d_cylinder_radii.endEdit();
+    d_cylinder_heights.endEdit();
+    d_cylinder_local_axes.endEdit();
 }
 
 template<class DataTypes>
 void TCylinderModel<DataTypes>::init()
 {
     this->CollisionModel::init();
-    _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (_mstate==NULL)
+    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    if (m_mstate==NULL)
     {
         msg_error() << "TCylinderModel requires a Rigid Mechanical Model";
         m_componentstate = ComponentState::Invalid;
         return;
     }
 
-    resize(_mstate->getSize());
+    resize(m_mstate->getSize());
 }
 
 
@@ -127,7 +123,7 @@ void TCylinderModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncyl = _mstate->getSize();
+    const int ncyl = m_mstate->getSize();
 
     bool updated = false;
     if (ncyl != size)
@@ -216,18 +212,18 @@ void TCylinderModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template<class DataTypes>
 typename TCylinderModel<DataTypes>::Real TCylinderModel< DataTypes >::defaultRadius() const
 {
-    return this->_default_radius.getValue();
+    return this->d_default_radius.getValue();
 }
 
 template<class DataTypes>
 const typename TCylinderModel<DataTypes>::Coord & TCylinderModel< DataTypes >::center(int i)const{
-    return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
+    return DataTypes::getCPos((m_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template<class DataTypes>
 typename TCylinderModel<DataTypes>::Real TCylinderModel< DataTypes >::radius(int i) const
 {
-    return this->_cylinder_radii.getValue()[i];
+    return this->d_cylinder_radii.getValue()[i];
 }
 
 template<class DataTypes>
@@ -263,7 +259,7 @@ typename TCylinder<DataTypes>::Real TCylinder<DataTypes >::radius() const
 
 template<class DataTypes>
 const typename TCylinderModel<DataTypes>::Coord & TCylinderModel<DataTypes >::velocity(int index) const {
-    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
+    return DataTypes::getDPos(((m_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 
@@ -272,12 +268,12 @@ const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {r
 
 template<class DataTypes>
 const sofa::defaulttype::Quaternion TCylinderModel<DataTypes >::orientation(int index)const{
-    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
+    return m_mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>
 typename TCylinderModel<DataTypes>::Coord TCylinderModel<DataTypes >::axis(int index) const {
-    Coord ax = _cylinder_local_axes.getValue()[index];
+    Coord ax = d_cylinder_local_axes.getValue()[index];
 
     const sofa::defaulttype::Quaternion & ori = orientation(index);
     return ori.rotate(ax);
@@ -285,13 +281,13 @@ typename TCylinderModel<DataTypes>::Coord TCylinderModel<DataTypes >::axis(int i
 
 template<class DataTypes>
 typename TCylinderModel<DataTypes>::Coord TCylinderModel<DataTypes>::local_axis(int index) const {
-    Coord ax = _cylinder_local_axes.getValue()[index];
+    Coord ax = d_cylinder_local_axes.getValue()[index];
     return ax;
 }
 
 template<class DataTypes>
 typename TCylinderModel<DataTypes>::Real TCylinderModel<DataTypes>::height(int index) const {
-    return ((_cylinder_heights.getValue()))[index];
+    return ((d_cylinder_heights.getValue()))[index];
 }
 
 template<class DataTypes>
@@ -301,17 +297,17 @@ template<class DataTypes>
 
 template<class DataTypes>
 Data< typename TCylinderModel<DataTypes>::VecReal> & TCylinderModel<DataTypes >::writeRadii(){
-    return _cylinder_radii;
+    return d_cylinder_radii;
 }
 
 template<class DataTypes>
 Data< typename TCylinderModel<DataTypes>::VecReal > & TCylinderModel<DataTypes >::writeHeights(){
-    return _cylinder_heights;
+    return d_cylinder_heights;
 }
 
 template<class DataTypes>
 Data< typename TCylinderModel<DataTypes>::VecAxisCoord > & TCylinderModel<DataTypes >::writeLocalAxes(){
-    return _cylinder_local_axes;
+    return d_cylinder_local_axes;
 }
 
 }
