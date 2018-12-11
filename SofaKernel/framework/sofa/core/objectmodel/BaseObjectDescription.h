@@ -116,7 +116,7 @@ public:
     virtual int getAttributeAsInt(const std::string& attr, const int defaultVal=0.0) ;
 
     /// Set an attribute. Override any existing value
-    virtual void setAttribute(const std::string& attr, const char* val);
+    virtual void setAttribute(const std::string& attr, const std::string& val);
 
     /// Remove an attribute given its name
     virtual bool removeAttribute(const std::string& attr);
