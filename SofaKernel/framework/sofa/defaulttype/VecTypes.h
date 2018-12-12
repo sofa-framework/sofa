@@ -557,13 +557,10 @@ public:
     }
 };
 
-
-
-#ifndef SOFA_FLOAT
-
 /// 3D DOFs, double precision
 typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
 template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
+
 /// 3D external DOFs, double precision
 typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
 template<> inline const char* ExtVec3dTypes::Name() { return "ExtVec3d"; }
@@ -588,11 +585,6 @@ template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
 /// 6D external DOFs, double precision
 typedef ExtVectorTypes<Vec6d,Vec6d,double> ExtVec6dTypes;
 template<> inline const char* ExtVec6dTypes::Name() { return "ExtVec6d"; }
-
-
-#endif
-
-/*#ifndef SOFA_DOUBLE*/
 
 /// 3f DOFs, single precision
 typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
@@ -622,45 +614,23 @@ template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
 typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
 template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
 
-//#endif
 
-
-
-#ifdef SOFA_FLOAT
-/// 6D DOFs, single precision (default)
-typedef Vec6fTypes Vec6Types;
-/// 3D DOFs, single precision (default)
-typedef Vec3fTypes Vec3Types;
-/// 2D DOFs, single precision (default)
-typedef Vec2fTypes Vec2Types;
-/// 1D DOFs, single precision (default)
-typedef Vec1fTypes Vec1Types;
-/// 6D external DOFs, single precision (default)
-typedef ExtVec6fTypes ExtVec6Types;
-/// 3D external DOFs, single precision (default)
-typedef ExtVec3fTypes ExtVec3Types;
-/// 2D external DOFs, single precision (default)
-typedef ExtVec2fTypes ExtVec2Types;
-/// 1D external DOFs, single precision (default)
-typedef ExtVec1fTypes ExtVec1Types;
-#else
 /// 6D DOFs, double precision (default)
-typedef Vec6dTypes Vec6Types;
+typedef StdVectorTypes<Vec6, Vec6, Vec6::value_type> Vec6Types;
 /// 3D DOFs, double precision (default)
-typedef Vec3dTypes Vec3Types;
+typedef StdVectorTypes<Vec3, Vec3, Vec3::value_type> Vec3Types;
 /// 2D DOFs, double precision (default)
-typedef Vec2dTypes Vec2Types;
+typedef StdVectorTypes<Vec2, Vec2, Vec2::value_type> Vec2Types;
 /// 1D DOFs, double precision (default)
-typedef Vec1dTypes Vec1Types;
+typedef StdVectorTypes<Vec1, Vec1, Vec1::value_type> Vec1Types;
 /// 6D external DOFs, double precision (default)
-typedef ExtVec6dTypes ExtVec6Types;
+typedef ExtVectorTypes<Vec6,Vec6,Vec6::value_type> ExtVec6Types;
 /// 3D external DOFs, double precision (default)
-typedef ExtVec3dTypes ExtVec3Types;
+typedef ExtVectorTypes<Vec3,Vec3,Vec3::value_type> ExtVec3Types;
 /// 2D external DOFs, double precision (default)
-typedef ExtVec2dTypes ExtVec2Types;
+typedef ExtVectorTypes<Vec2,Vec2,Vec2::value_type> ExtVec2Types;
 /// 1D external DOFs, double precision (default)
-typedef ExtVec1dTypes ExtVec1Types;
-#endif
+typedef ExtVectorTypes<Vec1,Vec1,Vec1::value_type> ExtVec1Types;
 
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
