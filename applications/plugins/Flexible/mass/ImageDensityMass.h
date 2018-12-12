@@ -80,11 +80,10 @@ public:
 
     /** @name Image map stuff */
     //@{
-#ifndef SOFA_FLOAT
     Data< defaulttype::ImageD > f_densityImage; ///< the density map
 #else
 	Data< defaulttype::ImageF > f_densityImage; ///< A density map (ratio kg/dm^3)
-#endif 
+ 
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     Data< TransformType > f_transform;   ///< transform of the density map
@@ -179,14 +178,9 @@ protected:
 
 
 #if  !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunctiond,defaulttype::Rigid3dMass>; // rigid frame
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunctionf,defaulttype::Mat3x3f>;
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunctionf,defaulttype::Rigid3fMass>; // rigid frame
-#endif
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
+//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3Types,core::behavior::ShapeFunctiond,defaulttype::Rigid3Mass>; // rigid frame
+
 #endif
 
 } // namespace mass

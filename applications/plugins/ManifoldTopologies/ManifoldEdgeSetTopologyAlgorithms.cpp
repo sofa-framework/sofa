@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "ManifoldEdgeSetTopologyAlgorithms.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
@@ -39,38 +39,19 @@ int ManifoldEdgeSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldEdge 
         .add< ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
 #else
         .add< ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes> >() // default template
 #endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1dTypes> >()
-        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3dTypes> >()
-        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1fTypes> >()
-        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3fTypes> >()
-        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2fTypes> >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec1dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid3dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid2dTypes>;
-#endif
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2Types> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1Types> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3Types> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2Types> >()
 
-#ifndef SOFA_DOUBLE
-template class ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec2fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec1fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid3fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid2fTypes>;
-#endif
+        ;
+template class ManifoldEdgeSetTopologyAlgorithms<Vec3Types>;
+template class ManifoldEdgeSetTopologyAlgorithms<Vec2Types>;
+template class ManifoldEdgeSetTopologyAlgorithms<Vec1Types>;
+template class ManifoldEdgeSetTopologyAlgorithms<Rigid3Types>;
+template class ManifoldEdgeSetTopologyAlgorithms<Rigid2Types>;
+
 
 } // namespace topology
 

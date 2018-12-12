@@ -26,7 +26,7 @@
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMass.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {

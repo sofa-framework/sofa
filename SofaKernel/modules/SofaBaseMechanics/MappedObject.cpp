@@ -37,49 +37,29 @@ namespace container
 using namespace defaulttype;
 
 int MappedObjectClass = core::RegisterObject("Mapped state vectors")
-#ifndef SOFA_FLOAT
-        .add< MappedObject<Vec2dTypes> >()
-        .add< MappedObject<Vec1dTypes> >()
-        .add< MappedObject<Vec6dTypes> >()
-        .add< MappedObject<Rigid3dTypes> >()
-        .add< MappedObject<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MappedObject<Vec2fTypes> >()
-        .add< MappedObject<Vec1fTypes> >()
-        .add< MappedObject<Vec6fTypes> >()
-        .add< MappedObject<Rigid3fTypes> >()
-        .add< MappedObject<Rigid2fTypes> >()
-#endif
+        .add< MappedObject<Vec2Types> >()
+        .add< MappedObject<Vec1Types> >()
+        .add< MappedObject<Vec6Types> >()
+        .add< MappedObject<Rigid3Types> >()
+        .add< MappedObject<Rigid2Types> >()
+
 
 #ifdef SOFA_FLOAT
         .add< MappedObject<Vec3fTypes> >(true) // default template
 #else
-#ifndef SOFA_DOUBLE
-        .add< MappedObject<Vec3fTypes> >() // default template
-#endif
         .add< MappedObject<Vec3dTypes> >(true) // default template
 #endif
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-#ifndef SOFA_FLOAT
-template class MappedObject<Vec3dTypes>;
-template class MappedObject<Vec2dTypes>;
-template class MappedObject<Vec1dTypes>;
-template class MappedObject<Vec6dTypes>;
-template class MappedObject<Rigid3dTypes>;
-template class MappedObject<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class MappedObject<Vec3fTypes>;
-template class MappedObject<Vec2fTypes>;
-template class MappedObject<Vec1fTypes>;
-template class MappedObject<Vec6fTypes>;
-template class MappedObject<Rigid3fTypes>;
-template class MappedObject<Rigid2fTypes>;
-#endif
+template class MappedObject<Vec3Types>;
+template class MappedObject<Vec2Types>;
+template class MappedObject<Vec1Types>;
+template class MappedObject<Vec6Types>;
+template class MappedObject<Rigid3Types>;
+template class MappedObject<Rigid2Types>;
+
 
 }
 

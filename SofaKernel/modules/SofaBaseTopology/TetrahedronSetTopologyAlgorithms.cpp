@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP
 #include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -39,31 +39,16 @@ int TetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("Tetrahedron se
         .add< TetrahedronSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
 #else
         .add< TetrahedronSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< TetrahedronSetTopologyAlgorithms<Vec3fTypes> >() // default template
 #endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< TetrahedronSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< TetrahedronSetTopologyAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TetrahedronSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< TetrahedronSetTopologyAlgorithms<Vec1fTypes> >()
-#endif
+        .add< TetrahedronSetTopologyAlgorithms<Vec2Types> >()
+        .add< TetrahedronSetTopologyAlgorithms<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1dTypes>;
-#endif
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1Types>;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1fTypes>;
-#endif
 
 } // namespace topology
 

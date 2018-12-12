@@ -37,35 +37,18 @@ int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry a
         .add< PointSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
 #else
         .add< PointSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< PointSetGeometryAlgorithms<Vec3fTypes> >() // default template
 #endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< PointSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< PointSetGeometryAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PointSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< PointSetGeometryAlgorithms<Vec1fTypes> >()
-#endif
+        .add< PointSetGeometryAlgorithms<Vec2Types> >()
+        .add< PointSetGeometryAlgorithms<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec1dTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid2dTypes>;
-#endif
+template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec1fTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid2fTypes>;
-#endif
 
 } // namespace topology
 

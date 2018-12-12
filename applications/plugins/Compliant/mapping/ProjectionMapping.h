@@ -119,13 +119,9 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_API ProjectionMapping<  sofa::defaulttype::Vec6dTypes, sofa::defaulttype::Vec1dTypes >;
-#endif
+extern template class SOFA_Compliant_API ProjectionMapping<  sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_API ProjectionMapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::Vec1fTypes >;
-#endif
+
 #endif
 
 

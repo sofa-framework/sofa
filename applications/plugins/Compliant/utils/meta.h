@@ -212,11 +212,7 @@ namespace meta {
 #define __SOFA_FLOAT 0
 #endif
 
-#ifdef SOFA_DOUBLE
 #define __SOFA_DOUBLE 1
-#else
-#define __SOFA_DOUBLE 0
-#endif
 
 
   

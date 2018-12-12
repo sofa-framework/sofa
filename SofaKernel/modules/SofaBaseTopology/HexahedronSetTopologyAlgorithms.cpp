@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_CPP
 #include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,30 +36,15 @@ int HexahedronSetTopologyAlgorithmsClass = core::RegisterObject("Hexahedron set 
         .add< HexahedronSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
 #else
         .add< HexahedronSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetTopologyAlgorithms<Vec3fTypes> >() // default template
 #endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< HexahedronSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< HexahedronSetTopologyAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< HexahedronSetTopologyAlgorithms<Vec1fTypes> >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1dTypes>;
-#endif
+        .add< HexahedronSetTopologyAlgorithms<Vec2Types> >()
+        .add< HexahedronSetTopologyAlgorithms<Vec1Types> >()
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1fTypes>;
-#endif
+        ;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1Types>;
+
 
 } // namespace topology
 

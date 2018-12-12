@@ -27,7 +27,7 @@
 #include <string>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 /// @warning this can only manage one scene at a time
 /// (root singleton)

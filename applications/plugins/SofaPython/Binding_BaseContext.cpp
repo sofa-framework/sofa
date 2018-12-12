@@ -27,7 +27,7 @@
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using namespace sofa::defaulttype;
 
 #include <sofa/core/ObjectFactory.h>

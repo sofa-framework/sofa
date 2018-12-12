@@ -13,11 +13,10 @@ namespace defaulttype
 {
 
 
-#ifndef SOFA_FLOAT
 RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
 #else
 RegisterTemplateAlias ImageRAlias("ImageR", "ImageF");
-#endif
+
 
 #ifdef WITH_MULTITHREADING
 // Register in the Factory

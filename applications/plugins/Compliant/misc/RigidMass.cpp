@@ -17,22 +17,12 @@ using namespace defaulttype;
 int RigidMassClass = core::RegisterObject("Mass for rigid bodies")
 
 
-#ifndef SOFA_FLOAT
-.add< RigidMass< Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< RigidMass< Rigid3fTypes > >()
-#endif
+.add< RigidMass< Rigid3Types > >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API RigidMass<  Rigid3dTypes >;
-#endif
+template class SOFA_Compliant_API RigidMass<  Rigid3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API RigidMass< Rigid3fTypes >;
-
-#endif
 
 }
 }

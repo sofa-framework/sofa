@@ -30,24 +30,16 @@
 #include <CGALPlugin/config.h>
 #include "DecimateMesh.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
 int DecimateMeshClass = sofa::core::RegisterObject("Simplification of a mesh by the process of reducing the number of faces")
-#ifndef SOFA_FLOAT
-        .add< DecimateMesh<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< DecimateMesh<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< DecimateMesh<Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3Types>;
+ //SOFA_FLOAT

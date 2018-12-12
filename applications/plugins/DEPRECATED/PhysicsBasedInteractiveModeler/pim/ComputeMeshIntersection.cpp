@@ -23,7 +23,7 @@
 #include "ComputeMeshIntersection.inl"
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace plugins
@@ -33,20 +33,12 @@ namespace pim
 {
 
 int ComputeMeshIntersectionClass = sofa::core::RegisterObject("Compute Mesh Intersection")
-#ifndef SOFA_FLOAT
-        .add< ComputeMeshIntersection<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ComputeMeshIntersection<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ComputeMeshIntersection<Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3Types>;
+ //SOFA_FLOAT
 
 } // namespace pim
 

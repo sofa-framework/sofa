@@ -615,10 +615,9 @@ void SparseGridTopology::updateMesh()
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
     sofa::helper::vector< Data< sofa::defaulttype::Vec3fTypes::VecCoord >* > list_Xf;
 
-#ifndef SOFA_FLOAT
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
     sofa::helper::vector< Data< sofa::defaulttype::Vec3dTypes::VecCoord >* > list_Xd;
-#endif
+
 
     //Get Collision Model
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
@@ -632,7 +631,6 @@ void SparseGridTopology::updateMesh()
 
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
-#ifndef SOFA_FLOAT
         core::behavior::MechanicalState< sofa::defaulttype::Vec3dTypes > *mecha_tempd =
                 collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3dTypes > >();
         if (mecha_tempd != NULL && mecha_tempd->getSize() < 2) //a triangle mesh has minimum 3elements
@@ -640,24 +638,13 @@ void SparseGridTopology::updateMesh()
             list_meshd.push_back(collisionTopology);
             list_Xd.push_back(mecha_tempd->write(core::VecCoordId::position()));
         }
-#endif
-#ifndef SOFA_DOUBLE
-        core::behavior::MechanicalState< sofa::defaulttype::Vec3fTypes > *mecha_tempf =
-                collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3fTypes > >();
-        if (mecha_tempf != NULL && mecha_tempf->getSize() < 2) //a triangle mesh has minimum 3elements
-        {
 
-            list_meshf.push_back(collisionTopology);
-            list_Xf.push_back(mecha_tempf->write(core::VecCoordId::position()));
-        }
-#endif
     }
 
     if (
         list_meshf.empty()
-#ifndef SOFA_FLOAT
         && list_meshd.empty()
-#endif
+
         )
         return;				 //No Marching Cube to run
 
@@ -672,10 +659,9 @@ void SparseGridTopology::updateMesh()
 
     if (! list_meshf.empty())
         constructCollisionModels(list_meshf, list_Xf);
-#ifndef SOFA_FLOAT
     else
         constructCollisionModels(list_meshd, list_Xd);
-#endif
+
 }
 
 

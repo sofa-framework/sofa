@@ -216,20 +216,12 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API LinearSpring<double>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API LinearSpring<float>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6fTypes>;
-#endif
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
+
 #endif
 
 } // namespace interactionforcefield

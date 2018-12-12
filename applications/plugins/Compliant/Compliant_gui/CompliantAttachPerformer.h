@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/gui/MouseOperations.h>
 

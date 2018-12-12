@@ -26,7 +26,7 @@ using sofa::core::VecId;
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::ExtVec3Types;
 using Coord3 = sofa::defaulttype::Vector3;
 using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <sofa/gui/GUIManager.h>

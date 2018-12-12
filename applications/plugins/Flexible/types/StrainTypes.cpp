@@ -40,7 +40,6 @@ namespace container
 using namespace sofa::defaulttype;
 
 int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
         .add< MechanicalObject<E331dTypes> >()
         .add< MechanicalObject<E321dTypes> >()
         .add< MechanicalObject<E311dTypes> >()
@@ -59,30 +58,9 @@ int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vecto
 
         .add< MechanicalObject<U331dTypes> >()
         .add< MechanicalObject<U321dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<E331fTypes> >()
-        .add< MechanicalObject<E321fTypes> >()
-        .add< MechanicalObject<E311fTypes> >()
-        .add< MechanicalObject<E332fTypes> >()
-        .add< MechanicalObject<E333fTypes> >()
-        .add< MechanicalObject<E221fTypes> >()
 
-//        .add< MechanicalObject<D331fTypes> >()
-//        .add< MechanicalObject<D321fTypes> >()
-//        .add< MechanicalObject<D332fTypes> >()
-//        .add< MechanicalObject<D333fTypes> >()
-
-        .add< MechanicalObject<I331fTypes> >()
-//.add< MechanicalObject<I332fTypes> >()
-//.add< MechanicalObject<I333fTypes> >()
-
-        .add< MechanicalObject<U331fTypes> >()
-        .add< MechanicalObject<U321fTypes> >()
-#endif
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_Flexible_API MechanicalObject<E331dTypes>;
 template class SOFA_Flexible_API MechanicalObject<E321dTypes>;
 template class SOFA_Flexible_API MechanicalObject<E311dTypes>;
@@ -101,27 +79,7 @@ template class SOFA_Flexible_API MechanicalObject<I331dTypes>;
 
 template class SOFA_Flexible_API MechanicalObject<U331dTypes>;
 template class SOFA_Flexible_API MechanicalObject<U321dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<E331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E321fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E311fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E332fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E333fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E221fTypes>;
 
-//template class SOFA_Flexible_API MechanicalObject<D331fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D321fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D332fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D333fTypes>;
-
-template class SOFA_Flexible_API MechanicalObject<I331fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<I332fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<I333fTypes>;
-
-template class SOFA_Flexible_API MechanicalObject<U331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<U321fTypes>;
-#endif
 
 } // namespace container
 } // namespace component

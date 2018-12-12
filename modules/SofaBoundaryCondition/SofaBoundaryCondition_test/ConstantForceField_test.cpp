@@ -41,7 +41,7 @@ using sofa::simulation::Simulation ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 using namespace sofa::defaulttype;
 

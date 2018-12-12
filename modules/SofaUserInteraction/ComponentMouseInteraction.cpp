@@ -24,7 +24,7 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
 

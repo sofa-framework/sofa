@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
@@ -37,31 +37,16 @@ int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set 
         .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
 #else
         .add< HexahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
 #endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< HexahedronSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< HexahedronSetGeometryAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< HexahedronSetGeometryAlgorithms<Vec1fTypes> >()
-#endif
+        .add< HexahedronSetGeometryAlgorithms<Vec2Types> >()
+        .add< HexahedronSetGeometryAlgorithms<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1dTypes>;
-#endif
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1Types>;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1fTypes>;
-#endif
 
 } // namespace topology
 

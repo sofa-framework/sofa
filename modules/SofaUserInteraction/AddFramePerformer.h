@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <../applications/plugins/frame/Blending.h>
 
 

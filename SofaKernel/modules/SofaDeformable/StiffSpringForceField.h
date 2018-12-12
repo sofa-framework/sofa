@@ -107,18 +107,11 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec6fTypes>;
-#endif
+extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec6Types>;
+
 #endif
 
 } // namespace interactionforcefield

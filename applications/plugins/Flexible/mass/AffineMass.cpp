@@ -36,21 +36,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int AffineMassClass = core::RegisterObject("Mass for affine frames")
-        #ifndef SOFA_FLOAT
-        .add< AffineMass< Affine3dTypes > >()
-        #endif
-        #ifndef SOFA_DOUBLE
-        .add< AffineMass< Affine3fTypes > >()
-        #endif
+                .add< AffineMass< Affine3dTypes > >()
+        
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_Flexible_API AffineMass<  Affine3dTypes >;
-#endif
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API AffineMass< Affine3fTypes >;
-#endif
 
 
 } // namespace mass

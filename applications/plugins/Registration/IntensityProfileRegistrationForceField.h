@@ -185,10 +185,9 @@ protected :
 };
 
 //#if  !defined(INTENSITYPROFILEREGISTRATIONFORCEFIELD_CPP)
-//#ifndef SOFA_FLOAT
-//extern template class SOFA_REGISTRATION_API IntensityProfileRegistrationForceField<Vec3dTypes>;
-//#endif
-//#ifndef SOFA_DOUBLE
+////extern template class SOFA_REGISTRATION_API IntensityProfileRegistrationForceField<Vec3Types>;
+//
+//#ifdef SOFA_WITH_FLOAT
 //extern template class SOFA_REGISTRATION_API IntensityProfileRegistrationForceField<Vec3fTypes>;
 //#endif
 //#endif

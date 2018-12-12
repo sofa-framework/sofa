@@ -24,7 +24,7 @@
 #define SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP
 
 #include <SofaUserInteraction/FixParticlePerformer.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

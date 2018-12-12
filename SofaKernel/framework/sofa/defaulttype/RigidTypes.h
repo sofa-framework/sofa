@@ -1859,22 +1859,13 @@ struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArray
 /// \cond TEMPLATE_OVERRIDES
 
 
-#ifndef SOFA_FLOAT
-template<> struct DataTypeName< defaulttype::Rigid2dTypes::Coord > { static const char* name() { return "Rigid2dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2dTypes::Deriv > { static const char* name() { return "Rigid2dTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dTypes::Coord > { static const char* name() { return "Rigid3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dTypes::Deriv > { static const char* name() { return "Rigid3dTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2dMass > { static const char* name() { return "Rigid2dMass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* name() { return "Rigid3dMass"; } };
-#endif
-#ifndef SOFA_DOUBLE
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Coord > { static const char* name() { return "Rigid2fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Coord > { static const char* name() { return "Rigid3fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Deriv > { static const char* name() { return "Rigid3fTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fMass > { static const char* name() { return "Rigid2fMass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fMass > { static const char* name() { return "Rigid3fMass"; } };
-#endif
+template<> struct DataTypeName< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
+
 
 
 

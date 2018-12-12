@@ -30,31 +30,20 @@
 #include <CGALPlugin/config.h>
 #include "CylinderMesh.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 namespace cgal
 {
 int CylinderMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cylinder")
-#ifndef SOFA_FLOAT
-    .add<CylinderMesh<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-    .add<CylinderMesh<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+    .add<CylinderMesh<Vec3Types> >()
+ //SOFA_FLOAT
 ;
 
-#ifndef SOFA_FLOAT
 
 template
-class SOFA_CGALPLUGIN_API CylinderMesh<Vec3dTypes>;
+class SOFA_CGALPLUGIN_API CylinderMesh<Vec3Types>;
 
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-
-template
-class SOFA_CGALPLUGIN_API CylinderMesh<Vec3fTypes>;
-
-#endif //SOFA_DOUBLE
+ //SOFA_FLOAT
 }

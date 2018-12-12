@@ -108,14 +108,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3Types>;
+ //SOFA_FLOAT
 #endif
 
 } // namespace pim

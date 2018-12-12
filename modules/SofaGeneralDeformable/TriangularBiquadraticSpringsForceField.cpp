@@ -23,7 +23,7 @@
 
 #include <SofaGeneralDeformable/TriangularBiquadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 

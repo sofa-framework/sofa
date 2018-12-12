@@ -24,24 +24,16 @@
 #include <CGALPlugin/config.h>
 #include "MeshGenerationFromImage.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
 int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahedral mesh from image")
-#ifndef SOFA_FLOAT
-        .add< MeshGenerationFromImage<Vec3dTypes,ImageUC> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< MeshGenerationFromImage<Vec3fTypes, ImageUC> >()
-#endif //SOFA_DOUBLE
+        .add< MeshGenerationFromImage<Vec3Types,ImageUC> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3dTypes, ImageUC>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3fTypes, ImageUC>;
-#endif //SOFA_DOUBLE
+template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3Types, ImageUC>;
+ //SOFA_FLOAT

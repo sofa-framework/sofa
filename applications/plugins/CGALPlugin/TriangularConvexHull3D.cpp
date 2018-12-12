@@ -30,24 +30,16 @@
 #include <CGALPlugin/config.h>
 #include "TriangularConvexHull3D.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
 int TriangularConvexHull3DClass = sofa::core::RegisterObject("Generate triangular convex hull around points")
-#ifndef SOFA_FLOAT
-        .add< TriangularConvexHull3D<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< TriangularConvexHull3D<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< TriangularConvexHull3D<Vec3Types> >()
+ //SOFA_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3Types>;
+ //SOFA_FLOAT
