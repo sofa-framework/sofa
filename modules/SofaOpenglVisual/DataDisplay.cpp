@@ -122,8 +122,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    Real& min=0;
-    Real& max=0;
+    Real min=0;
+    Real max=0;
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
         min = *i;
