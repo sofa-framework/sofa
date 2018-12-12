@@ -52,10 +52,10 @@ namespace visualmodel
 
 
 // I have no idea what is Ogl in this component ?...
-class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public ExtVec3fState
+class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public ExtVec3State
 {
 public:
-    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,ExtVec3fState);
+    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,ExtVec3State);
 protected:
     OglCylinderModel();
     virtual ~OglCylinderModel();

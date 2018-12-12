@@ -122,9 +122,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    float& min = *d_currentMin.beginWriteOnly();
-    float& max = *d_currentMax.beginWriteOnly();
-    min = max = 0;
+    Real& min=0;
+    Real& max=0;
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
         min = *i;
@@ -200,8 +199,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         max = oldMax;
         min = oldMin;
     }
-    d_currentMin.endEdit();
-    d_currentMax.endEdit();
+    d_currentMin.setValue(min);
+    d_currentMax.setValue(max);
 
     glPushAttrib ( GL_LIGHTING_BIT );
 
