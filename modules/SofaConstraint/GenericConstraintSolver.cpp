@@ -85,7 +85,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
     , current_cp(&m_cpBuffer[0])
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
-    , d_constraintForcesEnable(initData(&d_constraintForcesEnable,false,
+    , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
                                         "enable the storage of the constraintForces (default = False)."))
     , last_cp(NULL)
@@ -419,7 +419,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         msg_info() << tmp.str() ;
     }
 
-    if(d_constraintForcesEnable.getValue())
+    if(d_computeConstraintForces.getValue())
     {
         WriteOnlyAccessor<Data<helper::vector<double>>> constraints = d_constraintForces;
         constraints.resize(current_cp->getDimension());
