@@ -93,7 +93,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
-    typedef sofa::defaulttype::ExtVec3fTypes DataTypes;
+    typedef ExtVec3State::DataTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::VecCoord VecCoord;
