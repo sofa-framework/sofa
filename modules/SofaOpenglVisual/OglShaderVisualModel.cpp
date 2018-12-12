@@ -195,7 +195,7 @@ void OglShaderVisualModel::computeRestPositions()
     }
 
 
-    sofa::defaulttype::ResizableExtVector<Coord>& vrestpos = * ( vrestpositions->beginEdit() );
+    auto& vrestpos = * ( vrestpositions->beginEdit() );
     vrestpos.resize ( restpositions.size() );
 
     for ( unsigned int i = 0; i < restpositions.size(); i++ )
@@ -252,10 +252,10 @@ void OglShaderVisualModel::fwdDraw(core::visual::VisualParams* /*vp*/)
 void OglShaderVisualModel::computeRestNormals()
 {
     if (!vrestpositions || !vrestnormals) return;
-    const sofa::defaulttype::ResizableExtVector<Coord>& vrestpos = vrestpositions->getValue();
-    const sofa::defaulttype::ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
-    const sofa::defaulttype::ResizableExtVector<Quad>& quads = m_quads.getValue();
-    sofa::defaulttype::ResizableExtVector<Coord>& restNormals = * ( vrestnormals->beginEdit() );
+    auto& vrestpos = vrestpositions->getValue();
+    auto& triangles = m_triangles.getValue();
+    auto& quads = m_quads.getValue();
+    auto& restNormals = * ( vrestnormals->beginEdit() );
     restNormals.resize(vrestpos.size());
     for (unsigned int i = 0; i < restNormals.size(); i++)
     {

@@ -73,20 +73,17 @@ private:
     void setColor(std::string color);
 
 private:
-    Data<float>		radius; ///< Radius of the cylinder.
-    // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color; ///< Color of the cylinders.
+    Data<float>                     radius; ///< Radius of the cylinder.
+    Data<defaulttype::RGBAColor>	color;  ///< Color of the cylinders.
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges; ///< List of edge indices
 
-
     float r,g,b,a;
-    // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 
-    typedef defaulttype::ExtVec3fTypes::Coord Coord;
-    typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
-    typedef defaulttype::ExtVec3fTypes::Real Real;
+    using ExtVec3State::Coord;
+    using ExtVec3State::VecCoord;
+    using ExtVec3State::Real;
 
 public:
     virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
