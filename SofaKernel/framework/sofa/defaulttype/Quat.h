@@ -47,7 +47,6 @@ struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa
 
 template<> struct DataTypeName<defaulttype::Quatf> { static const char* name() { return "Quatf"; } };
 template<> struct DataTypeName<defaulttype::Quatd> { static const char* name() { return "Quatd"; } };
-template<> struct DataTypeName<defaulttype::Quat> { static const char* name() { return "Quat"; } };
 
 /// \endcond
 
