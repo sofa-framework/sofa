@@ -32,15 +32,10 @@ namespace defaulttype
 {
 typedef helper::Quater<double> Quatd; ///< alias
 typedef helper::Quater<float>  Quatf; ///< alias
-#ifdef SOFA_FLOAT
-typedef Quatf Quat; ///< alias
-#else
-typedef Quatd Quat; ///< alias
-#endif
+typedef helper::Quater<SReal> Quat;   ///< alias
 typedef Quat Quaternion; ///< alias
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-
 template<class T>
 struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
 {
@@ -52,6 +47,7 @@ struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa
 
 template<> struct DataTypeName<defaulttype::Quatf> { static const char* name() { return "Quatf"; } };
 template<> struct DataTypeName<defaulttype::Quatd> { static const char* name() { return "Quatd"; } };
+template<> struct DataTypeName<defaulttype::Quat> { static const char* name() { return "Quat"; } };
 
 /// \endcond
 
