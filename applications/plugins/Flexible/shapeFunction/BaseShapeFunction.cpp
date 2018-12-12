@@ -35,15 +35,10 @@ namespace core
 namespace behavior
 {
 
-#ifndef SOFA_FLOAT
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunctiond>;
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2d>;
-#endif
-#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunctionf>;
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2f>;
-#endif
-
 
 }
 }
