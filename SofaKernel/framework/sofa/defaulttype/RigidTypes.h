@@ -1000,34 +1000,19 @@ public:
 
 };
 
-
-#ifndef SOFA_FLOAT
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef RigidMass<3,double> Rigid3dMass;
-#endif
 
 typedef StdRigidTypes<3,float> Rigid3fTypes;
-//#ifndef SOFA_DOUBLE
 typedef RigidMass<3,float> Rigid3fMass;
-//#endif
 
 /// We now use template aliases so we do not break backward compatibility.
-#ifndef SOFA_FLOAT
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
-#endif
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
-
-#ifdef SOFA_FLOAT
-typedef Rigid3fTypes Rigid3Types;
-typedef Rigid3fMass Rigid3Mass;
-#else
-typedef Rigid3dTypes Rigid3Types;
-typedef Rigid3dMass Rigid3Mass;
-#endif
-
-typedef Rigid3Types RigidTypes;
-
+typedef Rigid3dTypes Rigid3Types; ///< alias
+typedef Rigid3dMass Rigid3Mass;   ///< alias
+typedef Rigid3Types RigidTypes;   ///< alias
 
 //=============================================================================
 // 2D Rigids
