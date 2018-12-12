@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP
 
 #include "CompliantAttachPerformer.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/gui/PickHandler.h>
 #include <SofaUserInteraction/ComponentMouseInteraction.h>

@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP
 
 #include <SofaBoundaryCondition/TorsionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

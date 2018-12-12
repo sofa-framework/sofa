@@ -1,5 +1,5 @@
 #include "LennardJonesForceField.inl"
-#include "Sofa/Components/Common/Vec3Types.h"
+#include "Sofa/Components/Common/VecTypes.h"
 #include "Sofa/Components/XML/ForceFieldNode.h"
 
 using namespace Sofa::Components;

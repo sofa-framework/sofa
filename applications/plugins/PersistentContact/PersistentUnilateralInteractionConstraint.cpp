@@ -23,7 +23,7 @@
 
 #include "PersistentUnilateralInteractionConstraint.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {

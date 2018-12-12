@@ -24,7 +24,7 @@
 // Copyright: See COPYING file that comes with this distribution
 #define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
 #include <SofaDeformable/SpringForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 

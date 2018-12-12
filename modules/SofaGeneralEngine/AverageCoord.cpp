@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_AverageCoord_CPP
 #include "AverageCoord.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

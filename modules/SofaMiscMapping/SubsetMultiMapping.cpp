@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
 
 #include <SofaMiscMapping/SubsetMultiMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 

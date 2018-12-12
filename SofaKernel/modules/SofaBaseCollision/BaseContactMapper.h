@@ -26,7 +26,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {

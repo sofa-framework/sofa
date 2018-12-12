@@ -23,7 +23,7 @@
 #define PLUGINS_PIM_SCULPTBODYPERFORMER_CPP
 
 #include "SculptBodyPerformer.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
 namespace plugins

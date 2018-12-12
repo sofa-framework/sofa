@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP
 
 #include <SofaBoundaryCondition/VaccumSphereForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

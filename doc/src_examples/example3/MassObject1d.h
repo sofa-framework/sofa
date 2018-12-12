@@ -1,5 +1,5 @@
 #include "Sofa/Components/MassObject.h"
-#include "Sofa/Components/Common/Vec3Types.h"
+#include "Sofa/Components/Common/VecTypes.h"
 
 using namespace Sofa::Components;
 using namespace Sofa::Components::Common;

@@ -37,7 +37,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/visual/Shader.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>

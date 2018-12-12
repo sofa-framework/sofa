@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/VecId.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

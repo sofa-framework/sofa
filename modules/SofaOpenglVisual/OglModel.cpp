@@ -30,6 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <string.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/helper/gl/template.h>
 
 //#define NO_VBO
 //#define DEBUG_DRAW

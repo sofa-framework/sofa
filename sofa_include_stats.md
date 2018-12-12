@@ -2529,7 +2529,7 @@
 - sofa/SofaKernel/framework/sofa/core/ConstraintParams.h is loaded 561 times. 3.50592899323 MB
 - /opt/Qt/5.7/gcc_64/include/QtCore/qtypetraits.h is loaded 573 times. 11.7919607162 MB
 - sofa/SofaKernel/framework/sofa/core/objectmodel/BaseNode.h is loaded 583 times. 4.76985645294 MB
-- sofa/SofaKernel/framework/sofa/defaulttype/Vec3Types.h is loaded 609 times. 1.03670597076 MB
+- sofa/SofaKernel/framework/sofa/defaulttype/VecTypes.h is loaded 609 times. 1.03670597076 MB
 - sofa/SofaKernel/framework/sofa/core/behavior/MechanicalState.h is loaded 633 times. 6.16775608063 MB
 - sofa/SofaKernel/framework/sofa/core/topology/BaseMeshTopology.h is loaded 634 times. 10.6100387573 MB
 - sofa/SofaKernel/framework/sofa/core/topology/BaseTopologyEngine.h is loaded 634 times. 2.55395507812 MB

@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP
 #include <SofaGeneralDeformable/VectorSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP
 #include <SofaConstraint/StopperConstraint.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 

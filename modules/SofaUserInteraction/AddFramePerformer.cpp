@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP
 #include <SofaUserInteraction/AddFramePerformer.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

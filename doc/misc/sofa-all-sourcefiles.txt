@@ -118,7 +118,7 @@ Sofa/Components/Common/SolidTypes.cpp
 Sofa/Components/Common/SolidTypes.h
 Sofa/Components/Common/SolidTypes_inst.cpp
 Sofa/Components/Common/static_assert.h
-Sofa/Components/Common/Vec3Types.h
+Sofa/Components/Common/VecTypes.h
 Sofa/Components/Common/Vec.h
 Sofa/Components/Common/vector.h
 Sofa/Components/ContactManagerSofa.cpp

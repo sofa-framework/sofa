@@ -29,7 +29,7 @@
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaOpenglVisual/OglVariable.h>
 #include <SofaOpenglVisual/OglAttribute.h>
 
