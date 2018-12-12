@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_CORE_MULTIMAPPING_CPP
 #include <sofa/core/MultiMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
