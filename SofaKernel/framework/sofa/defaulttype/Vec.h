@@ -881,20 +881,11 @@ typedef Vec<6,double> Vec6d;
 typedef Vec<6,int> Vec6i;
 typedef Vec<6,unsigned> Vec6u;
 
-
-#ifdef SOFA_FLOAT
-typedef Vec1f Vector1; ///< alias
-typedef Vec2f Vector2; ///< alias
-typedef Vec3f Vector3; ///< alias
-typedef Vec4f Vector4; ///< alias
-typedef Vec6f Vector6; ///< alias
-#else
 typedef Vec1d Vector1; ///< alias
 typedef Vec2d Vector2; ///< alias
 typedef Vec3d Vector3; ///< alias
 typedef Vec4d Vector4; ///< alias
 typedef Vec6d Vector6; ///< alias
-#endif
 
 } // namespace defaulttype
 
