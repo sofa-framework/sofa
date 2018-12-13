@@ -103,6 +103,8 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     _coarserSparseGrid = NULL;
     _usingMC = false;
 
+    addAlias(&seqPoints, "vertices");
+
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
 
 }
@@ -111,7 +113,8 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
     : SparseGridTopology(_isVirtual)
 {
     //Add alias to use MeshLoader
-    
+    addAlias(&seqPoints, "vertices");
+
     setN(numVertices);
     setMin(box.minBBox());
     setMax(box.maxBBox());
