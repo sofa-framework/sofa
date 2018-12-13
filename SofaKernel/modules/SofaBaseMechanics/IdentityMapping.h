@@ -153,6 +153,7 @@ extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigi
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2dTypes, defaulttype::Rigid2dTypes >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid3dTypes, defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3Types, defaulttype::ExtVec3Types >;
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Rigid2dTypes, defaulttype::Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE

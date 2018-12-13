@@ -100,6 +100,7 @@ template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec3dTypes >
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3Types, ExtVec3Types >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
