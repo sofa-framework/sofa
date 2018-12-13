@@ -19,44 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CYLINDERMODEL_CPP
-#include "CylinderModel.inl"
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest;
 
-namespace sofa
+#include <SofaSimulationGraph/SimpleApi.h>
+using namespace sofa::simpleapi;
+
+namespace
 {
 
-namespace component
+/** Test the UncoupledConstraintCorrection class
+*/
+struct GenericConstraintSolver_test : BaseSimulationTest
 {
+    void SetUp()
+    {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents");
+        sofa::simpleapi::importPlugin("SofaMiscCollision");
+    }
 
-namespace collision
+    void enableConstraintForce()
+    {
+        SceneInstance sceneinstance("xml",
+                    "<Node>\n"
+                    "   <RequiredPlugin name='SofaAllCommonComponents'/>"
+                    "   <RequiredPlugin name='SofaMiscCollision'/>"
+                    "   <FreeMotionAnimationLoop />\n"
+                    "   <GenericConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
+                    "   <Node name='collision'>\n"
+                    "         <MechanicalObject />\n"
+                    "         <UncoupledConstraintCorrection />\n"
+                    "   </Node>\n"
+                    "</Node>\n"
+                    );
+
+        sceneinstance.initScene();
+        sceneinstance.simulate(0.01);
+        auto solver = sceneinstance.root->getObject("solver");
+        ASSERT_NE(solver, nullptr);
+        ASSERT_STREQ(solver->findData("constraintForces")->getValueString().c_str(), "");
+    }
+};
+
+/// run the tests
+TEST_F(GenericConstraintSolver_test, checkConstraintForce)
 {
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-static int RigidCylinderModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
-#ifndef SOFA_FLOAT
-        .add<  TCylinderModel<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add < TCylinderModel<Rigid3fTypes> >()
-#endif
-        //TODO(dmarchal): Fix deprecated management...
-        .addAlias("Cylinder")
-        .addAlias("CylinderModel")
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TCylinder<Rigid3dTypes>;
-template class SOFA_BASE_COLLISION_API TCylinderModel<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TCylinder<Rigid3fTypes>;
-template class SOFA_BASE_COLLISION_API TCylinderModel<Rigid3fTypes>;
-#endif
-
-
+    EXPECT_MSG_NOEMIT(Error);
+    enableConstraintForce();
 }
-}
-}
+
+
+} /// namespace sofa
+
+
+
+
+
+
+
