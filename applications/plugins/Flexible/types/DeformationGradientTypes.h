@@ -212,9 +212,6 @@ struct DefGradientTypes
 
 
 // ==========================================================================
-
-
-
 typedef DefGradientTypes<3, 3, 0, double> F331dTypes;
 typedef DefGradientTypes<3, 3, 1, double> F332dTypes;
 typedef DefGradientTypes<3, 2, 0, double> F321dTypes; // for planar deformations
@@ -226,35 +223,18 @@ template<> struct DataTypeInfo< F321dTypes::Deriv > : public FixedArrayTypeInfo<
 template<> struct DataTypeInfo< F311dTypes::Deriv > : public FixedArrayTypeInfo< F311dTypes::Deriv, F311dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F311<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< F221dTypes::Deriv > : public FixedArrayTypeInfo< F221dTypes::Deriv, F221dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F221<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 
+typedef DefGradientTypes<3, 3, 0, SReal> F331Types;
+typedef DefGradientTypes<3, 3, 1, SReal> F332Types;
+typedef DefGradientTypes<3, 2, 0, SReal> F321Types; // for planar deformations
+typedef DefGradientTypes<3, 1, 0, SReal> F311Types; // for linear deformations
+typedef DefGradientTypes<2, 2, 0, SReal> F221Types; // 2d planar deformations
 
+template<> inline const char* F331Types::Name() { return "F331"; }
+template<> inline const char* F332Types::Name() { return "F332"; }
+template<> inline const char* F321Types::Name() { return "F321"; }
+template<> inline const char* F311Types::Name() { return "F311"; }
+template<> inline const char* F221Types::Name() { return "F221"; }
 
-#ifdef SOFA_FLOAT
-template<> inline const char* F331fTypes::Name() { return "F331"; }
-template<> inline const char* F332fTypes::Name() { return "F332"; }
-template<> inline const char* F321fTypes::Name() { return "F321"; }
-template<> inline const char* F311fTypes::Name() { return "F311"; }
-template<> inline const char* F221fTypes::Name() { return "F221"; }
-#else
-template<> inline const char* F331dTypes::Name() { return "F331"; }
-template<> inline const char* F332dTypes::Name() { return "F332"; }
-template<> inline const char* F321dTypes::Name() { return "F321"; }
-template<> inline const char* F311dTypes::Name() { return "F311"; }
-template<> inline const char* F221dTypes::Name() { return "F221"; }
-#endif
-
-#ifdef SOFA_FLOAT
-typedef F331fTypes F331Types;
-typedef F332fTypes F332Types;
-typedef F321fTypes F321Types;
-typedef F311fTypes F311Types;
-typedef F221fTypes F221Types;
-#else
-typedef F331dTypes F331Types;
-typedef F332dTypes F332Types;
-typedef F321dTypes F321Types;
-typedef F311dTypes F311Types;
-typedef F221dTypes F221Types;
-#endif
 
 
 

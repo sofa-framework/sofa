@@ -36,14 +36,11 @@ using namespace core::behavior;
 
 // Register in the Factory
 int BarycentricShapeFunctionClass = core::RegisterObject("Computes Barycentric shape functions")
-        .add< BarycentricShapeFunction<ShapeFunctiond> >(true)
-        .add< BarycentricShapeFunction<ShapeFunction2d> >()
+        .add< BarycentricShapeFunction<ShapeFunction3d> >(true)
+        .add< BarycentricShapeFunction<ShapeFunction2d> >();
 
-        ;
-
-template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunctiond>;
+template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction3d>;
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction2d>;
-
 
 }
 }

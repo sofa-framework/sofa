@@ -408,12 +408,12 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
 #ifdef SOFA_HAVE_IMAGE
 
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
-    .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass> >()
+    .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass> >()
 
             ;
 
 
-    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass>;
+    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass>;
 
 
 

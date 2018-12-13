@@ -423,26 +423,10 @@ template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv > : publ
     static std::string name() { std::ostringstream o; o << "AffineDeriv<" << sofa::defaulttype::Affine3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::name() << ">"; return o.str(); }
 };
 
+typedef Affine3dTypes Affine3Types;
 
 /// Note: Many scenes use Affine as template for 3D double-precision rigid type. Changing it to Affine3d would break backward compatibility.
-#ifdef SOFA_FLOAT
-template<> inline const char* Affine3fTypes::Name() { return "Affine"; }
-#else
 template<> inline const char* Affine3dTypes::Name() { return "Affine"; }
-#endif
-
-#ifdef SOFA_FLOAT
-typedef Affine3fTypes Affine3Types;
-#else
-typedef Affine3dTypes Affine3Types;
-#endif
-//typedef Affine3Types AffineTypes;
-
-
-
-
-
-
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
@@ -463,13 +447,7 @@ template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static con
 
 typedef DeformableFrameMass<3, StdAffineTypes<3,double>::deriv_total_size, double> Affine3dMass;
 
-
-#ifdef SOFA_FLOAT
-typedef Affine3fMass Affine3Mass;
-#else
-typedef Affine3dMass Affine3Mass;
-#endif
-
+typedef DeformableFrameMass<3, StdAffineTypes<3,SReal>::deriv_total_size,SReal> Affine3Mass;
 
 
 // The next line hides all those methods from the doxygen documentation

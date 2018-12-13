@@ -560,22 +560,10 @@ static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
 
 
 typedef StdQuadraticTypes<3, double> Quadratic3dTypes;
-
+typedef StdQuadraticTypes<3, SReal> Quadratic3Types;
 
 /// Note: Many scenes use Quadratic as template for 3D double-precision rigid type. Changing it to Quadratic3d would break backward compatibility.
-#ifdef SOFA_FLOAT
-template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic"; }
-#else
 template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic"; }
-#endif
-
-#ifdef SOFA_FLOAT
-typedef Quadratic3fTypes Quadratic3Types;
-#else
-typedef Quadratic3dTypes Quadratic3Types;
-#endif
-//typedef Quadratic3Types QuadraticTypes;
-
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
@@ -603,15 +591,10 @@ template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static 
 // ====================================================================
 // QuadraticMass
 
+
+typedef DeformableFrameMass<3, StdQuadraticTypes<3,float>::deriv_total_size, float> Quadratic3fMass;
 typedef DeformableFrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, double> Quadratic3dMass;
-
-
-
-#ifdef SOFA_FLOAT
-typedef Quadratic3fMass Quadratic3Mass;
-#else
-typedef Quadratic3dMass Quadratic3Mass;
-#endif
+typedef DeformableFrameMass<3, StdQuadraticTypes<3,SReal>::deriv_total_size, SReal> Quadratic3Mass;
 
 
 

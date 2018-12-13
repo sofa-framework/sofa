@@ -19,7 +19,7 @@ using namespace sofa::defaulttype;
 
 
 ////template <> SOFA_BASE_MECHANICS_API
-//SReal ImageDensityMass<Rigid3Types,core::behavior::ShapeFunctiond,Rigid3Mass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+//SReal ImageDensityMass<Rigid3Types,core::behavior::ShapeFunction3d,Rigid3Mass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 //{
 //    const VecCoord& _x = vx.getValue();
 
@@ -63,12 +63,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int ImageDensityMassClass = core::RegisterObject("Define a global mass matrix including non diagonal terms")
-        .add< ImageDensityMass<Vec3Types,core::behavior::ShapeFunctiond,Mat3x3d> >( true )
-//        .add< ImageDensityMass<Rigid3Types,core::behavior::ShapeFunctiond,Rigid3Mass> >()
+        .add< ImageDensityMass<Vec3Types,core::behavior::ShapeFunction3d,Mat3x3d> >( true )
+//        .add< ImageDensityMass<Rigid3Types,core::behavior::ShapeFunction3d,Rigid3Mass> >()
 
         ;
-template class SOFA_Flexible_API ImageDensityMass<Vec3Types,core::behavior::ShapeFunctiond,Mat3x3d>;
-//template class SOFA_Flexible_API ImageDensityMass<Rigid3Types,core::behavior::ShapeFunctiond,Rigid3Mass>;
+template class SOFA_Flexible_API ImageDensityMass<Vec3Types,core::behavior::ShapeFunction3d,Mat3x3d>;
+//template class SOFA_Flexible_API ImageDensityMass<Rigid3Types,core::behavior::ShapeFunction3d,Rigid3Mass>;
 
 
 

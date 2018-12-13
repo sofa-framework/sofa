@@ -42,12 +42,12 @@ namespace forcefield
 /// @author Matthieu Nesme
 ///
 template<class DataTypes>
-class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
+class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3>
 {
 public:
 
 
-    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalMeshFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction));
+    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalMeshFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
 
     virtual std::string getTemplateName() const { return templateName(this); }
     static std::string templateName( const FlexibleCorotationalMeshFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
@@ -309,7 +309,7 @@ public:
 
 
     typedef core::behavior::ForceField<DataTypes> ForceField;
-    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction> ShapeFunction;
+    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3> ShapeFunction;
     typedef engine::TopologyGaussPointSampler GaussPointSampler;
     typedef mapping::LinearMapping< DataTypes, defaulttype::F331Types > LinearDeformationMapping;
     typedef mapping::CorotationalMeshMapping< DataTypes, DataTypes > CorotationalDeformationMapping;
