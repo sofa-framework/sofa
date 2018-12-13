@@ -537,28 +537,28 @@ protected:
 
     
 public:
-    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
+    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns UINT_MAX if no edge exists
      *
      */
-    int getEdgeIndex(PointID v1, PointID v2) override;
+    EdgeID getEdgeIndex(PointID v1, PointID v2) override;
 
-    /** Returns the indices of a triangle given three vertex indices : returns -1 if none */
-    int getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
+    /** Returns the indices of a triangle given three vertex indices : returns UINT_MAX if none */
+    TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 
-    /** \brief Returns the index of the quad joining vertex v1, v2, v3 and v4; returns -1 if no edge exists
+    /** \brief Returns the index of the quad joining vertex v1, v2, v3 and v4; returns UINT_MAX if none
      *
      */
-    int getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4) override;
+    QuadID getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4) override;
 
-    /** \brief Returns the index of the tetrahedron given four vertex indices; returns -1 if no edge exists
+    /** \brief Returns the index of the tetrahedron given four vertex indices; returns UINT_MAX if none
      *
      */
-    int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
+    TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
-    /** \brief Returns the index of the hexahedron given eight vertex indices; returns -1 if no edge exists
+    /** \brief Returns the index of the hexahedron given eight vertex indices; returns UINT_MAX if none
      *
      */
-    int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8) override;
+    HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8) override;
 
     /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
     *

@@ -24,6 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/list.h>
+#include <limits.h>
 
 namespace sofa
 {
@@ -69,7 +70,6 @@ public:
     typedef index_type                 PentahedronID;
     typedef index_type                 PentaID;
     typedef index_type                 PyramidID;
-
 
     typedef sofa::helper::vector<index_type>                  SetIndex;
     typedef sofa::helper::vector<index_type>                  SetIndices;

@@ -175,8 +175,8 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 		// Important: getEdgeIndex creates the quad vertex shell array
 		if (m_container->hasTrianglesAroundVertex())
 		{
-			int previd = m_container->getTriangleIndex(t[0], t[1], t[2]);
-			if (previd != -1)
+            TriangleID previd = m_container->getTriangleIndex(t[0], t[1], t[2]);
+            if (previd != UINT_MAX)
 			{
 				msg_error() << "Triangle " << t[0] << ", " << t[1] << ", " << t[2] << " already exists with index " << previd << ".";
 			}
@@ -197,9 +197,9 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
     for(unsigned int j=0; j<3; ++j)
     {
-        int edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
+        EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
 
-        if(edgeIndex == -1)
+        if(edgeIndex == UINT_MAX)
         {
             // first create the edges
             sofa::helper::vector< Edge > v(1);
@@ -209,6 +209,8 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
             addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
+            assert (edgeIndex != UINT_MAX);
+
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
             addEdgesWarning( v.size(), v, edgeIndexList);

@@ -97,9 +97,9 @@ public:
      *
      * @param the four vertex indices.
      * @return the ID of the corresponding quad.
-     * @return -1 if none
+     * @return UINT_MAX if none
      */
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
+    virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
 
     /** \brief Returns the set of edges adjacent to a given quad.

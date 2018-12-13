@@ -151,7 +151,7 @@ const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyConta
     return d_edge.getValue();
 }
 
-int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
+EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
 {
     if(!hasEdges()) // this method should only be called when edges exist
     {
@@ -167,13 +167,17 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
     const sofa::helper::vector< EdgeID > &es1 = getEdgesAroundVertex(v1) ;
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
-    int result = -1;
+    int result = UINT_MAX;
     for(size_t i=0; (i < es1.size()) && (result == -1); ++i)
     {
         const Edge &e = m_edge[ es1[i] ];
         if ((e[0] == v2) || (e[1] == v2))
             result = (int) es1[i];
     }
+
+    if (result == UINT_MAX)
+        msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
+
     return result;
 }
 

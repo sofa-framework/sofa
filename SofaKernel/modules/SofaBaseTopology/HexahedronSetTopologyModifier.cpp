@@ -110,19 +110,19 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 		assert(t[6] != t[7]);
 
 		// check if there already exists a hexahedron with the same indices
-		assert(m_container->getHexahedronIndex(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]) == -1);
+        assert(m_container->getHexahedronIndex(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]) == UINT_MAX);
 	}
     const HexahedronID hexahedronIndex = (HexahedronID)m_container->getNumberOfHexahedra();
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
     if(m_container->hasQuadsInHexahedron())
     {
-        int quadIndex;
+        QuadID quadIndex;
 
         // Quad 0 :
         quadIndex=m_container->getQuadIndex(t[0],t[3],t[2],t[1]);
-        //assert(quadIndex!= -1);
-        if(quadIndex == -1)
+
+        if(quadIndex == UINT_MAX)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
@@ -132,6 +132,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addQuadsProcess((const sofa::helper::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(t[0],t[3],t[2],t[1]);
+            assert(quadIndex != UINT_MAX);
+
             sofa::helper::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
@@ -141,17 +143,19 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 
         // Quad 1 :
         quadIndex=m_container->getQuadIndex(t[4],t[5],t[6],t[7]);
-        //assert(quadIndex!= -1);
-        if(quadIndex == -1)
+
+        if(quadIndex == UINT_MAX)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
             Quad e1 (t[4],t[5],t[6],t[7]);
             v.push_back(e1);
 
-            addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+            addQuadsProcess((const sofa::helper::vector< Quad > &) v);            
 
             quadIndex=m_container->getQuadIndex(t[4],t[5],t[6],t[7]);
+            assert(quadIndex != UINT_MAX);
+
             sofa::helper::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
@@ -161,8 +165,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 
         // Quad 2 :
         quadIndex=m_container->getQuadIndex(t[0],t[1],t[5],t[4]);
-        //assert(quadIndex!= -1);
-        if(quadIndex == -1)
+        if(quadIndex == UINT_MAX)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
@@ -172,6 +175,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addQuadsProcess((const sofa::helper::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(t[0],t[1],t[5],t[4]);
+            assert(quadIndex != UINT_MAX);
+
             sofa::helper::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
@@ -182,7 +187,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         // Quad 3 :
         quadIndex=m_container->getQuadIndex(t[1],t[2],t[6],t[5]);
         //assert(quadIndex!= -1);
-        if(quadIndex == -1)
+        if(quadIndex == UINT_MAX)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
@@ -192,6 +197,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addQuadsProcess((const sofa::helper::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(t[1],t[2],t[6],t[5]);
+            assert(quadIndex != UINT_MAX);
+
             sofa::helper::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
@@ -201,8 +208,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 
         // Quad 4 :
         quadIndex=m_container->getQuadIndex(t[2],t[3],t[7],t[6]);
-        //assert(quadIndex!= -1);
-        if(quadIndex == -1)
+        if(quadIndex == UINT_MAX)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
@@ -212,6 +218,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addQuadsProcess((const sofa::helper::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(t[2],t[3],t[7],t[6]);
+            assert(quadIndex != UINT_MAX);
+
             sofa::helper::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
@@ -221,8 +229,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 
         // Quad 5 :
         quadIndex=m_container->getQuadIndex(t[3],t[0],t[4],t[7]);
-        //assert(quadIndex!= -1);
-        if(quadIndex == -1)
+        if(quadIndex == UINT_MAX)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
@@ -232,6 +239,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addQuadsProcess((const sofa::helper::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(t[3],t[0],t[4],t[7]);
+            assert(quadIndex != UINT_MAX);
+
             sofa::helper::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
@@ -257,10 +266,10 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             EdgeID p0 = edgesInHexahedronArray[edgeIdx][0];
             EdgeID p1 = edgesInHexahedronArray[edgeIdx][1];
 
-            int edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+            EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
 
             // we must create the edge
-            if (edgeIndex==-1)
+            if (edgeIndex == UINT_MAX)
             {
                 sofa::helper::vector< Edge > v;
                 Edge e1(t[p0],t[p1]);
@@ -268,8 +277,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 
                 addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
-                edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
-
+                edgeIndex = m_container->getEdgeIndex(t[p0],t[p1]);
+                assert(edgeIndex != UINT_MAX);
                 sofa::helper::vector< EdgeID > edgeIndexList;
                 edgeIndexList.push_back(edgeIndex);
                 addEdgesWarning(v.size(), v, edgeIndexList);

@@ -80,7 +80,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 		// Important: getEdgeIndex creates the edge vertex shell array
 		if (m_container->hasEdgesAroundVertex())
 		{
-			if (m_container->getEdgeIndex(e[0], e[1]) != -1)
+            if (m_container->getEdgeIndex(e[0], e[1]) != UINT_MAX)
 			{
 				msg_error() << "Edge " << e[0] << ", " << e[1] << " already exists.";
 				return;

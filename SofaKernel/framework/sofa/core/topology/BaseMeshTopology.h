@@ -184,16 +184,16 @@ public:
     /// @}
 
 
-    /// Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
-    virtual int getEdgeIndex(PointID v1, PointID v2);
-    /// Returns the index of the triangle given three vertex indices; returns -1 if no triangle exists
-    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
-    /// Returns the index of the quad given four vertex indices; returns -1 if no quad exists
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the tetrahedron given four vertex indices; returns -1 if no tetrahedron exists
-    virtual int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the hexahedron given eight vertex indices; returns -1 if no hexahedron exists
-    virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
+    /// Returns the index of the edge joining vertex v1 and vertex v2; returns UINT_MAX if no edge exists
+    virtual EdgeID getEdgeIndex(PointID v1, PointID v2);
+    /// Returns the index of the triangle given three vertex indices; returns UINT_MAX if no triangle exists
+    virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3);
+    /// Returns the index of the quad given four vertex indices; returns UINT_MAX if no quad exists
+    virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    /// Returns the index of the tetrahedron given four vertex indices; returns UINT_MAX if no tetrahedron exists
+    virtual TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    /// Returns the index of the hexahedron given eight vertex indices; returns UINT_MAX if no hexahedron exists
+    virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
 
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */

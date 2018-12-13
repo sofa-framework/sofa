@@ -229,7 +229,8 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
         // adding edge i in the edge shell of both points
         for (size_t j=0; j<4; ++j)
         {
-            const int edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+            EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+            assert(edgeIndex != UINT_MAX);
             m_edgesInQuad[i][j]=edgeIndex;
         }
     }
@@ -260,7 +261,7 @@ const QuadSetTopologyContainer::Quad QuadSetTopologyContainer::getQuad (QuadID i
 }
 
 
-int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasQuadsAroundVertex())
         createQuadsAroundVertexArray();
@@ -291,15 +292,15 @@ int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, P
     result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
     out3.erase(result3,out3.end());
 
-	if (CHECK_TOPOLOGY)
-		if(out3.size() > 1)
-			msg_warning() << "More than one quad found";
-
+    if (CHECK_TOPOLOGY && out3.size() > 1)
+        msg_warning() << "More than one Quad found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
 
     if(out3.size()==1)
         return (int) (out3[0]);
-    else
-        return -1;
+    else {
+        msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
+        return UINT_MAX;
+    }
 }
 
 size_t QuadSetTopologyContainer::getNumberOfQuads() const

@@ -404,34 +404,34 @@ void BaseMeshTopology::addTopologyEngine(TopologyEngine* _topologyEngine)
     (void)_topologyEngine;
 }
 
-int BaseMeshTopology::getEdgeIndex(PointID, PointID)
+Topology::EdgeID BaseMeshTopology::getEdgeIndex(PointID, PointID)
 {
     msg_error() << "getEdgeIndex() not supported.";
-    return 0;
+    return UINT_MAX;
 }
 
-int BaseMeshTopology::getTriangleIndex(PointID, PointID, PointID)
+Topology::TriangleID BaseMeshTopology::getTriangleIndex(PointID, PointID, PointID)
 {
     msg_error() << "getTriangleIndex() not supported.";
-    return 0;
+    return UINT_MAX;
 }
 
-int BaseMeshTopology::getQuadIndex(PointID, PointID, PointID, PointID)
+Topology::QuadID BaseMeshTopology::getQuadIndex(PointID, PointID, PointID, PointID)
 {
     msg_error() << "getQuadIndex() not supported.";
-    return 0;
+    return UINT_MAX;
 }
 
-int BaseMeshTopology::getTetrahedronIndex(PointID, PointID, PointID, PointID)
+Topology::TetrahedronID BaseMeshTopology::getTetrahedronIndex(PointID, PointID, PointID, PointID)
 {
     msg_error() << "getTetrahedronIndex() not supported.";
-    return 0;
+    return UINT_MAX;
 }
 
-int BaseMeshTopology::getHexahedronIndex(PointID, PointID, PointID, PointID, PointID, PointID, PointID, PointID)
+Topology::HexahedronID BaseMeshTopology::getHexahedronIndex(PointID, PointID, PointID, PointID, PointID, PointID, PointID, PointID)
 {
     msg_error() << "getHexahedronIndex() not supported.";
-    return 0;
+    return UINT_MAX;
 }
 
 int BaseMeshTopology::getVertexIndexInTriangle(const Triangle &, PointID) const

@@ -447,7 +447,7 @@ const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTr
 
 
 
-int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
+TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 {
     if(!hasTrianglesAroundVertex())
         createTrianglesAroundVertexArray();
@@ -473,13 +473,15 @@ int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, Point
 
 	if (CHECK_TOPOLOGY)
 		if(out2.size() > 1)
-			msg_warning() << "More than one triangle found";
+            msg_warning() << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
 
 
     if (out2.size()==1)
         return (int) (out2[0]);
-    else
-        return -1;
+    else {
+        msg_warning() << "Triangle with indices: [" << v1 << "; " << v2 << "; " << v3 << "] not found.";
+        return UINT_MAX;
+    }
 }
 
 size_t TriangleSetTopologyContainer::getNumberOfTriangles() const

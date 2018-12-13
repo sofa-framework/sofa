@@ -104,9 +104,9 @@ public:
      *
      * @param the three vertex indices.
      * @return the ID of the corresponding triangle.
-     * @return -1 if none
+     * @return UINT_MAX if none
      */
-    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
+    virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 
 
     /** \brief Returns the 3 edges adjacent to a given triangle.
