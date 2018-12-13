@@ -81,10 +81,7 @@ public:
     /** @name Image map stuff */
     //@{
     Data< defaulttype::ImageD > f_densityImage; ///< the density map
-#else
-	Data< defaulttype::ImageF > f_densityImage; ///< A density map (ratio kg/dm^3)
  
-
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     Data< TransformType > f_transform;   ///< transform of the density map
     //@}
@@ -179,8 +176,6 @@ protected:
 
 #if  !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3Types,core::behavior::ShapeFunctiond,defaulttype::Rigid3Mass>; // rigid frame
-
 #endif
 
 } // namespace mass
