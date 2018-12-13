@@ -14,6 +14,7 @@ namespace sofa
 using namespace component;
 using namespace modeling;
 using helper::vector;
+using sofa::defaulttype::Vec1;
 
 
 /**
