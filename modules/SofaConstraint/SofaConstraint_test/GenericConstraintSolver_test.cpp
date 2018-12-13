@@ -23,26 +23,29 @@
 using sofa::helper::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
-
-#include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/simulation/CleanupVisitor.h>
-using namespace sofa::simulation;
+using namespace sofa::simpleapi;
 
 namespace
 {
 
-/** Test the UncoupledConstraintCorrection class */
-struct UncoupledConstraintCorrection_test: public BaseSimulationTest
+/** Test the UncoupledConstraintCorrection class
+*/
+struct GenericConstraintSolver_test : BaseSimulationTest
 {
-    /// create a component and replace it with an other one
-    void objectRemovalThenStep()
+    void SetUp()
+    {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents");
+        sofa::simpleapi::importPlugin("SofaMiscCollision");
+    }
+
+    void enableConstraintForce()
     {
         SceneInstance sceneinstance("xml",
                     "<Node>\n"
                     "   <RequiredPlugin name='SofaAllCommonComponents'/>"
                     "   <RequiredPlugin name='SofaMiscCollision'/>"
-                    "   <LCPConstraintSolver maxIt='1000' tolerance='0.001' />\n"
                     "   <FreeMotionAnimationLoop />\n"
+                    "   <GenericConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
                     "         <UncoupledConstraintCorrection />\n"
@@ -51,26 +54,22 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
                     );
 
         sceneinstance.initScene();
-
-        /// removal
-        sofa::core::sptr<sofa::simulation::Node> nodeToRemove = sceneinstance.root->getChild("collision");
-        ASSERT_NE(nodeToRemove.get(), nullptr);
-
-        nodeToRemove->detachFromGraph();
-        nodeToRemove->execute<sofa::simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
-        nodeToRemove->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        sceneinstance.simulate(0.04);
+        sceneinstance.simulate(0.01);
+        auto solver = sceneinstance.root->getObject("solver");
+        ASSERT_NE(solver, nullptr);
+        ASSERT_STREQ(solver->findData("constraintForces")->getValueString().c_str(), "");
     }
 };
 
 /// run the tests
-TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep)
+TEST_F(GenericConstraintSolver_test, checkConstraintForce)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-    objectRemovalThenStep();
+    EXPECT_MSG_NOEMIT(Error);
+    enableConstraintForce();
 }
 
-}/// namespace sofa
+
+} /// namespace sofa
 
 
 

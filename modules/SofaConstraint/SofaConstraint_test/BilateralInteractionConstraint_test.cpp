@@ -20,11 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -32,9 +27,12 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/testing/NumericTest.h>
+using sofa::helper::testing::NumericTest;
+
+#include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
-#include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/Message.h>
 
 #include <SofaConstraint/GenericConstraintSolver.h>
@@ -51,7 +49,7 @@ using namespace component;
 using namespace defaulttype;
 
 template <typename _DataTypes>
-struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct BilateralInteractionConstraint_test : public NumericTest<>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -70,6 +68,8 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
     /// Create the context for the tests.
     void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents");
+        sofa::simpleapi::importPlugin("SofaMiscCollision");
         if(simulation==nullptr)
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
     }
@@ -221,7 +221,7 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
 
     component::constraintset::GenericConstraintSolver *test;
     root->get(test);
-    if( vectorMaxDiff(points[0],points[1])<test->tolerance.getValue()) return true;
+    if(vectorMaxDiff(points[0],points[1])<test->tolerance.getValue()) return true;
     else
     {
         ADD_FAILURE() << "Error while testing if two positions are correctly constrained" << std::endl;
