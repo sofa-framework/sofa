@@ -80,11 +80,7 @@ public:
 
     /** @name Image map stuff */
     //@{
-#ifndef SOFA_FLOAT
-    Data< defaulttype::ImageD > f_densityImage; ///< the density map
-#else
-	Data< defaulttype::ImageF > f_densityImage; ///< A density map (ratio kg/dm^3)
-#endif 
+    Data< defaulttype::ImageR > f_densityImage; ///< the density map
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     Data< TransformType > f_transform;   ///< transform of the density map
