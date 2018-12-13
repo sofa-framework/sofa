@@ -34,18 +34,20 @@ namespace component
 namespace forcefield
 {
 
+namespace _beamfemforcefield_
+{
+
 using namespace sofa::defaulttype;
-
-
 
 // Register in the Factory
 int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
         .add< BeamFEMForceField<Rigid3Types> >()
-
         ;
 
 template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3Types>;
 
+
+} // namespace _beamfemforcefield_
 
 } // namespace forcefield
 
