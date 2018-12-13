@@ -873,7 +873,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 					// node used for visualization
 					std::stringstream visuNameStream;
-					visuNameStream << "visualization " << (int)meshId;
+                    visuNameStream << "visualization " << meshId;
 
 					Node::SPtr visuNode = getSimulation()->createNewNode(visuNameStream.str());
 					currentSubNode->addChild(visuNode);
@@ -893,7 +893,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                         if(0 != currentAiMesh->mNumVertices)
                         {
-                            ResizableExtVector<Vec3f> normals;
+                            ResizableExtVector<OglModel::Deriv> normals;
                             normals.resize(currentAiMesh->mNumVertices);
                             memcpy(&normals[0], currentAiMesh->mNormals, currentAiMesh->mNumVertices * sizeof(aiVector3D));
                             currentOglModel->setVnormals(&normals);
@@ -965,7 +965,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 //                         }
                     }
 
-                    IdentityMapping<Vec3Types, ExtVec3fTypes>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, ExtVec3fTypes> >();
+                    IdentityMapping<Vec3Types, ExtVec3Types>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, ExtVec3Types> >();
 					{
 						// adding the generated IdentityMapping to its parent Node
 						currentSubNode->addObject(currentIdentityMapping);
