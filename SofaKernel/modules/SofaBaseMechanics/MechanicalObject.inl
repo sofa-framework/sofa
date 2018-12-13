@@ -1483,10 +1483,6 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(core::VecCoordId v)
 {
-    if (v.isNull())
-    {
-        msg_error() << "Accessing null VecCoord";
-    }
 
     if (v.index >= vectorsCoord.size())
     {
@@ -1511,20 +1507,15 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
         }
     }
     Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-    if(d!=NULL)
-    {
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
         const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
         if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
-            msg_error() << "Writing to VecCoord State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            msg_error() << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
         }
 #endif
     }
-    else
-    {
-        msg_error() << "Writing to VecCoord State vector using a NULL pointer";
-    }
+
     return d;
 }
 
@@ -1535,26 +1526,19 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
 {
     if (v.isNull())
     {
-        msg_error() << "Reading null VecCoord";
+        msg_error() << "Accessing null VecCoord";
     }
 
     if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != NULL)
     {
         const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-        if(d!=NULL)
-        {
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
-            const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
-            if (!val.empty() && val.size() != (unsigned int)this->getSize())
-            {
-                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
-            }
-#endif
-        }
-        else
+        const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
+        if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
-            msg_error() << "Reading State vector using a NULL pointer";
+            msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
         }
+#endif
         return d;
     }
     else
@@ -1567,10 +1551,6 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(core::VecDerivId v)
 {
-    if (v.isNull())
-    {
-        msg_error() << "Accessing null VecDeriv";
-    }
 
     if (v.index >= vectorsDeriv.size())
     {
@@ -1595,48 +1575,32 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
         }
     }
     Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
-    if(d!=NULL)
-    {
+
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
-        {
-            msg_error() << "Writing to VecDeriv State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
-        }
-#endif
-    }
-    else
+    const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+    if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
-        msg_error() << "Writing to VecDeriv State vector using a NULL pointer";
+        msg_error() << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
     }
+#endif
     return d;
 }
 
 template <class DataTypes>
 const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(core::ConstVecDerivId v) const
 {
-    if (v.isNull())
-    {
-        msg_error() << "Reading null VecDeriv";
-    }
 
     if (v.index < vectorsDeriv.size())
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
-        if(d!=NULL)
-        {
+
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
-            const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-            if (!val.empty() && val.size() != (unsigned int)this->getSize())
-            {
-                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
-            }
-#endif
-        }
-        else
+        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+        if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
-            msg_error() << "Accessing State vector which returns a NULL pointer";
+            msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
         }
+#endif
         return d;
     }
     else
@@ -1649,10 +1613,6 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(core::MatrixDerivId v)
 {
-    if (v.isNull())
-    {
-        msg_error() << "Accessing null MatrixDeriv";
-    }
 
     if (v.index >= vectorsMatrixDeriv.size())
     {
@@ -1673,10 +1633,6 @@ Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTy
 template <class DataTypes>
 const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(core::ConstMatrixDerivId v) const
 {
-    if (v.isNull())
-    {
-        msg_error() << "Reading null MatrixDeriv";
-    }
 
     if (v.index < vectorsMatrixDeriv.size())
         return vectorsMatrixDeriv[v.index];
