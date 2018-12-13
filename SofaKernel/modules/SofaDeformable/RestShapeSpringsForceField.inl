@@ -262,6 +262,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     WriteAccessor< DataVecDeriv > f1 = f;
     ReadAccessor< DataVecCoord > p1 = x;
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    const VecReal& k = stiffness.getValue();
 
     f1.resize(p1.size());
 

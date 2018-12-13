@@ -1508,14 +1508,12 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
     }
     Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
-        {
-            msg_error() << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
-        }
-#endif
+    const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
+    if (!val.empty() && val.size() != (unsigned int)this->getSize())
+    {
+        msg_error() << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
     }
-
+#endif
     return d;
 }
 
