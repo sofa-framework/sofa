@@ -36,6 +36,7 @@ namespace sofa
 namespace modeling
 {
 using sofa::core::objectmodel::BaseObject ;
+using sofa::defaulttype::Vec3;
 
 typedef SReal Scalar;
 typedef sofa::defaulttype::Vec3Types::Deriv Deriv3;
