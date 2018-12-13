@@ -102,6 +102,13 @@ RegisterTemplateAlias Vec6Alias("Vec6", "Vec6d");
 RegisterTemplateAlias Rigid2Alias("Rigid2", "Rigid2d");
 RegisterTemplateAlias Rigid3Alias("Rigid3", "Rigid3d");
 RegisterTemplateAlias RigidAlias("Rigid", "Rigid3d");
+RegisterTemplateAlias Rigid2fAlias("Rigid2f", "Rigid2d");
+RegisterTemplateAlias Rigid3fAlias("Rigid3f", "Rigid3d");
+RegisterTemplateAlias Vec1fAlias("Vec1f", "Vec1d");
+RegisterTemplateAlias Vec2fAlias("Vec2f", "Vec2d");
+RegisterTemplateAlias Vec3fAlias("Vec3f", "Vec3d");
+RegisterTemplateAlias Vec4fAlias("Vec4f", "Vec4d");
+RegisterTemplateAlias Vec6fAlias("Vec6f", "Vec6d");
 
 }// defaulttype
 
