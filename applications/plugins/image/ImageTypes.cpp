@@ -13,9 +13,7 @@ namespace defaulttype
 {
 
 
-RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
-#else
-RegisterTemplateAlias ImageRAlias("ImageR", "ImageF");
+static RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
 
 
 #ifdef WITH_MULTITHREADING
@@ -31,11 +29,8 @@ int DataExchangeClass = core::RegisterObject("DataExchange")
 .add< DataExchange<sofa::defaulttype::ImageUS>>()
 .add< DataExchange<sofa::defaulttype::ImageL>>()
 .add< DataExchange<sofa::defaulttype::ImageUL>>()
-#ifdef SOFA_FLOAT
 .add< DataExchange<sofa::defaulttype::ImageF>>()
-#else
 .add< DataExchange<sofa::defaulttype::ImageD>>()
-#endif  // SOFA_FLOAT
 ;
 }  // namespace defaulttype
 
@@ -50,11 +45,8 @@ template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageS>;
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUS>;
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageL>;
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUL>;
-#ifdef SOFA_FLOAT
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageF>;
-#else
 template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageD>;
-#endif  // SOFA_FLOAT
 #endif  // WITH_MULTITHREADING
 }
 }  // namespace sofa
