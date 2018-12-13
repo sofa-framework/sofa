@@ -35,9 +35,6 @@
 #include <iostream>
 #include <string.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/core/behavior/InertiaForce.h>
-#endif
 
 
 
@@ -485,17 +482,11 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
 }
 
 template <class DataTypes, class MassType>
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v )
-#else
 void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
-#endif
 {
-#ifndef SOFA_SUPPORT_MOVING_FRAMES
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if ( this->m_separateGravity.getValue() )
         return;
-#endif
 
     helper::WriteAccessor<DataVecDeriv> f = vf;
 
@@ -510,32 +501,16 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = getContext()->getPositionInWorld() / vframe;
-    aframe = getContext()->getPositionInWorld().backProjectVector ( aframe );
-#endif
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     // add weight and inertia force
     if (this->m_separateGravity.getValue()) for ( unsigned int i=0; i<indices.size(); i++ )
     {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-        f[indices[i]] += core::behavior::inertiaForce ( vframe,aframe,m,x[indices[i]],v[indices[i]] );
-#endif
     }
     else for ( unsigned int i=0; i<indices.size(); i++ )
     {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-        f[indices[i]] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[indices[i]],v[indices[i]] );
-#else
         f[indices[i]] += mg;
-#endif
     }
 }
 
