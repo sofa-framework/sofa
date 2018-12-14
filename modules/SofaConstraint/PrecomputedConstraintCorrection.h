@@ -80,6 +80,8 @@ protected:
 public:
     virtual void bwdInit() override;
 
+    virtual void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override {}
+
     virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W) override;
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const override;

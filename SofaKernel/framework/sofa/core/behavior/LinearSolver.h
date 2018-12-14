@@ -140,11 +140,11 @@ public:
     ///        each mechanical object. 
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
+    virtual bool computeComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
     {
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(fact);
-        serr << "Error buildComplianceMatrix has not been implemented" << sendl;
+        serr << "Error computeComplianceMatrix has not been implemented" << sendl;
         return false;
     }
 
@@ -160,7 +160,7 @@ public:
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
-        serr << "Error buildComplianceMatrix has not been implemented" << sendl;
+        serr << "Error addComplianceMatrix has not been implemented" << sendl;
         return false;
     }
 

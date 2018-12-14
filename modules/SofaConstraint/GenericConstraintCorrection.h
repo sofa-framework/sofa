@@ -60,6 +60,8 @@ public:
 
     virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
 
+    virtual void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override {};
+
     virtual void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
