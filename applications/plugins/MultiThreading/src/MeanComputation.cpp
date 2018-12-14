@@ -8,53 +8,22 @@
 namespace sofa
 {
 
-    namespace component
-    {
+namespace component
+{
 
-        namespace engine
-        {
+namespace engine
+{
 
-                int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-#ifdef SOFA_FLOAT
-                .add< MeanComputationEngine<defaulttype::Vec3fTypes> >(true) // default template
-#else
-                .add< MeanComputation<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-                .add< MeanComputation<defaulttype::Vec3fTypes> >()
-#endif
-#endif
-#ifndef SOFA_FLOAT
-                .add< MeanComputation<defaulttype::Vec1dTypes> >()
-                .add< MeanComputation<defaulttype::Vec2dTypes> >()
-                .add< MeanComputation<defaulttype::Rigid2dTypes> >()
-                .add< MeanComputation<defaulttype::Rigid3dTypes> >()
-#endif 
-#ifndef SOFA_DOUBLE
-                .add< MeanComputation<defaulttype::Vec1fTypes> >()
-                .add< MeanComputation<defaulttype::Vec2fTypes> >()
-                .add< MeanComputation<defaulttype::Rigid2fTypes> >()
-                .add< MeanComputation<defaulttype::Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
-                ;
+int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
+        .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
+        .add< MeanComputation<defaulttype::Vec1Types> >()
+        .add< MeanComputation<defaulttype::Vec2Types> >()
+        .add< MeanComputation<defaulttype::Rigid2Types> >()
+        .add< MeanComputation<defaulttype::Rigid3Types> >()
+        ;
 
-#ifndef SOFA_FLOAT
-            template class MeanComputation<defaulttype::Vec1dTypes>;
-            template class MeanComputation<defaulttype::Vec2dTypes>;
-            template class MeanComputation<defaulttype::Vec3dTypes>;
-            template class MeanComputation<defaulttype::Rigid2dTypes>;
-            template class MeanComputation<defaulttype::Rigid3dTypes>;
-#endif 
-#ifndef SOFA_DOUBLE
-            template class MeanComputation<defaulttype::Vec1fTypes>;
-            template class MeanComputation<defaulttype::Vec2fTypes>;
-            template class MeanComputation<defaulttype::Vec3fTypes>;
-            template class MeanComputation<defaulttype::Rigid2fTypes>;
-            template class MeanComputation<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+} // namespace constraint
 
-
-        } // namespace constraint
-
-    } // namespace component
+} // namespace component
 
 } // namespace sofa
