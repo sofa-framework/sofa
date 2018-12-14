@@ -336,17 +336,7 @@ extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::ExtVec3Types >;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::ExtVec3Types >;
 
-// This is needed even if only SOFA_DOUBLE is selected
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::ExtVec2Types >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3Types >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::ExtVec3Types >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::ExtVec3Types >;
-
-
-
 // cross templates
- //SOFA_WITH_DOUBLE
-
 #endif
 
 } // namespace core
