@@ -35,24 +35,13 @@ namespace topology
 
 using namespace sofa::defaulttype;
 int ManifoldTriangleSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldTriangle set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#endif
-
+        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3Types> >(true) // default template
         .add< ManifoldTriangleSetTopologyAlgorithms<Vec2Types> >()
         .add< ManifoldTriangleSetTopologyAlgorithms<Vec1Types> >()
-        //	.add< ManifoldTriangleSetTopologyAlgorithms<Rigid3Types> >()
-        //	.add< ManifoldTriangleSetTopologyAlgorithms<Rigid2Types> >()
-
         ;
 template class ManifoldTriangleSetTopologyAlgorithms<Vec3Types>;
 template class ManifoldTriangleSetTopologyAlgorithms<Vec2Types>;
 template class ManifoldTriangleSetTopologyAlgorithms<Vec1Types>;
-//      template class ManifoldTriangleSetTopologyAlgorithms<Rigid3Types>;
-//      template class ManifoldTriangleSetTopologyAlgorithms<Rigid2Types>;
-
 
 } // namespace topology
 
