@@ -188,7 +188,7 @@ void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualPar
 }
 
 
- // SOFA_FLOAT
+ 
 
 
 int RestShapeSpringsForceFieldClass = core::RegisterObject("Elastic springs generating forces on degrees of freedom between their current and rest shape position")

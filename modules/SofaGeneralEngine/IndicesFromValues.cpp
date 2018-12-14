@@ -49,7 +49,7 @@ int IndicesFromValuesClass = core::RegisterObject("Find the indices of a list of
         // .add< IndicesFromValues<defaulttype::Rigid2Types::Deriv> >()
         // .add< IndicesFromValues<defaulttype::Rigid3Types::Coord> >()
         // .add< IndicesFromValues<defaulttype::Rigid3Types::Deriv> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API IndicesFromValues<std::string>;
@@ -66,7 +66,7 @@ template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
 // template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
 // template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
 // template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
- //SOFA_FLOAT
+ 
 
 } // namespace constraint
 

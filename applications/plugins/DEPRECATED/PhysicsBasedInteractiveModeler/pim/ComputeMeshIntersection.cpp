@@ -34,11 +34,11 @@ namespace pim
 
 int ComputeMeshIntersectionClass = sofa::core::RegisterObject("Compute Mesh Intersection")
         .add< ComputeMeshIntersection<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 } // namespace pim
 

@@ -37,11 +37,11 @@ using namespace sofa::defaulttype;
 
 int NormalsFromPointsClass = core::RegisterObject("Compute vertex normals by averaging face normals")
         .add< NormalsFromPoints<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API NormalsFromPoints<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } //

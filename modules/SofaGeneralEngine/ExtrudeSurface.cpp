@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 
 int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
         .add< ExtrudeSurface<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API ExtrudeSurface<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

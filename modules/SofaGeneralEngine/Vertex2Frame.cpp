@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 
 int Vertex2FrameClass = core::RegisterObject("")
         .add< Vertex2Frame<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API Vertex2Frame<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

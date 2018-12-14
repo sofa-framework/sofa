@@ -45,7 +45,7 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
     .add< MergeVectors< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MergeVectors< defaulttype::Rigid3Types::VecCoord > >()
     .add< MergeVectors< defaulttype::Rigid3Types::VecDeriv > >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<int> >;
@@ -61,7 +61,7 @@ template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::V
 template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
 template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

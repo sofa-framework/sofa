@@ -28,7 +28,7 @@ namespace sofa
                 .add< MeanComputation<defaulttype::Vec2dTypes> >()
                 .add< MeanComputation<defaulttype::Rigid2dTypes> >()
                 .add< MeanComputation<defaulttype::Rigid3dTypes> >()
-#endif //SOFA_FLOAT
+#endif 
 #ifndef SOFA_DOUBLE
                 .add< MeanComputation<defaulttype::Vec1fTypes> >()
                 .add< MeanComputation<defaulttype::Vec2fTypes> >()
@@ -43,7 +43,7 @@ namespace sofa
             template class MeanComputation<defaulttype::Vec3dTypes>;
             template class MeanComputation<defaulttype::Rigid2dTypes>;
             template class MeanComputation<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
+#endif 
 #ifndef SOFA_DOUBLE
             template class MeanComputation<defaulttype::Vec1fTypes>;
             template class MeanComputation<defaulttype::Vec2fTypes>;

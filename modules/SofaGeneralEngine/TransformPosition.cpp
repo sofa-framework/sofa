@@ -45,7 +45,7 @@ int TransformPositionClass = core::RegisterObject("Transform position of 3d poin
         ;
 
 template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

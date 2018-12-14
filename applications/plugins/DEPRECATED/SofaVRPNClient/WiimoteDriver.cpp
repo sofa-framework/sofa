@@ -38,8 +38,8 @@ using namespace sofavrpn::client;
 
 int WiimoteDriverClass = sofa::core::RegisterObject("Wiimote Driver")
         .add< WiimoteDriver<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_SOFAVRPNCLIENT_API WiimoteDriver<Vec3Types>;
- //SOFA_FLOAT
+ 

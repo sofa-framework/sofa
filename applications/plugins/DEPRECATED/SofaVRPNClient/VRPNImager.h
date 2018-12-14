@@ -133,7 +133,7 @@ private:
 
 #if  !defined(SOFAVRPNCLIENT_VRPNIMAGER_CPP_)
 extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 }

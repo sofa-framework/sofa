@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 
 int MeshBarycentricMapperEngineClass = core::RegisterObject("This class maps a set of points in a topological model and provide barycentric coordinates")
         .add< MeshBarycentricMapperEngine<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshBarycentricMapperEngine<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 

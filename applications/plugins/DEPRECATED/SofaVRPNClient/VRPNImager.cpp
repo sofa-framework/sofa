@@ -169,12 +169,12 @@ using namespace sofavrpn::client;
 int VRPNImagerClass = sofa::core::RegisterObject("VRPN Imager")
         .add< VRPNImager<Vec3Types> >()
         .add< VRPNImager<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Vec3Types>;
 template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 }
 

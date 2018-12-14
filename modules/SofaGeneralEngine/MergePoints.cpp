@@ -42,7 +42,7 @@ int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
         .add< MergePoints<defaulttype::Vec2Types> >()
         .add< MergePoints<defaulttype::Rigid2Types> >()
         .add< MergePoints<defaulttype::Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1Types>;
@@ -50,7 +50,7 @@ template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2Types>;
 template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2Types>;
 template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

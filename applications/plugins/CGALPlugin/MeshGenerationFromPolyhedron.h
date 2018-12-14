@@ -204,7 +204,7 @@ public:
 
 #if  !defined(CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP)
 extern template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<sofa::defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } //cgal

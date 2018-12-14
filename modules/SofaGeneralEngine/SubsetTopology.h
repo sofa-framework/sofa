@@ -194,7 +194,7 @@ public:
 #if  !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
 extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

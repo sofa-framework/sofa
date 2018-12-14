@@ -39,12 +39,12 @@ using namespace sofa::defaulttype;
 int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
         .add< PointsFromIndices<Vec3Types> >()
 // .add< PointsFromIndices<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Vec3Types>;
 // template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

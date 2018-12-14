@@ -97,7 +97,7 @@ extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::
 extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
 extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

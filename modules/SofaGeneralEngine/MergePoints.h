@@ -89,7 +89,7 @@ extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2Types
 extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2Types>;
 extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

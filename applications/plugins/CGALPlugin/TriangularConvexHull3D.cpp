@@ -38,8 +38,8 @@ using namespace cgal;
 
 int TriangularConvexHull3DClass = sofa::core::RegisterObject("Generate triangular convex hull around points")
         .add< TriangularConvexHull3D<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3Types>;
- //SOFA_FLOAT
+ 

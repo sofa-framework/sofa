@@ -38,12 +38,12 @@ using namespace sofa::defaulttype;
 int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives (vertex/edge/triangle/tetrahedron) based on a linear interpolation of values along a direction")
         .add< ValuesFromPositions<Vec3Types> >()
         .add< ValuesFromPositions<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

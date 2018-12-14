@@ -91,7 +91,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API ExtrudeSurface<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

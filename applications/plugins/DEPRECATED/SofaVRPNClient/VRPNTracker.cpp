@@ -45,12 +45,12 @@ using namespace sofavrpn::client;
 int VRPNTrackerClass = sofa::core::RegisterObject("VRPN Tracker")
         .add< VRPNTracker<Vec3Types> >()
         .add< VRPNTracker<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Vec3Types>;
 template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 }
 

@@ -39,11 +39,11 @@ using namespace sofa::defaulttype;
 
 int IndexValueMapperClass = core::RegisterObject("Input values to output values mapper. Includes indices rules, such as replacement, resize")
         .add< IndexValueMapper<Vec3Types> >(true)
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace engine

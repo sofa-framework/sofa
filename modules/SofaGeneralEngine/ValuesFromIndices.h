@@ -99,7 +99,7 @@ extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<defaulttype::Rig
 extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;
 extern template class SOFA_GENERAL_ENGINE_API ValuesFromIndices<defaulttype::Rigid3Types::Deriv>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

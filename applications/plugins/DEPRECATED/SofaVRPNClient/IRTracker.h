@@ -88,7 +88,7 @@ private:
 
 #if  !defined(SOFAVRPNCLIENT_IRTRACKER_CPP_)
 extern template class SOFA_SOFAVRPNCLIENT_API IRTracker<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 }

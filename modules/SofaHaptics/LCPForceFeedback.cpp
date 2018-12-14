@@ -126,7 +126,7 @@ void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::Sol
     //W_tool_world.setForce(Force);
 }
 
- // SOFA_FLOAT
+ 
 
 
 

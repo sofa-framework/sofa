@@ -43,7 +43,7 @@ namespace engine
         ;
 
 template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
 

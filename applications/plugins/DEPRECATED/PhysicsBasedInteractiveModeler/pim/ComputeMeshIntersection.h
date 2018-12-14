@@ -101,7 +101,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
 extern template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace pim

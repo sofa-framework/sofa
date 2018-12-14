@@ -468,7 +468,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_CPP)
 extern template class SOFA_FRAME_API GridMaterial<Material3d>;
- //SOFA_FLOAT
+ 
 #endif // !defined(SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_CPP)
 
 

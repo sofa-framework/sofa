@@ -93,7 +93,7 @@ private:
 
 #if  !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
 extern template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 }

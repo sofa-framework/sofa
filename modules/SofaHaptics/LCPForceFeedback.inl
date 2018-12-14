@@ -422,7 +422,7 @@ void SOFA_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::comput
         const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world );
 
- // SOFA_FLOAT
+ 
 
 
 } // namespace controller

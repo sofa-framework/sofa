@@ -109,7 +109,7 @@ private:
 #if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
 extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

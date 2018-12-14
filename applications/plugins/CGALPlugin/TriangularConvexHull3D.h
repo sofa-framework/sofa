@@ -89,7 +89,7 @@ public:
 
 #if  !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)
 extern template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } //cgal

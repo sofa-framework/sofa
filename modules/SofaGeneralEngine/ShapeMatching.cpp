@@ -41,12 +41,12 @@ using namespace defaulttype;
 int ShapeMatchingClass = core::RegisterObject("Compute target positions using shape matching deformation method by Mueller et al.")
         .add< ShapeMatching<Vec3Types> >()
         .add< ShapeMatching<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 // specialization for rigids

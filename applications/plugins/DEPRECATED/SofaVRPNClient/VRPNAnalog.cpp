@@ -66,8 +66,8 @@ using namespace sofavrpn::client;
 
 int VRPNAnalogClass = sofa::core::RegisterObject("VRPN Analog")
         .add< VRPNAnalog<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<Vec3Types>;
- //SOFA_FLOAT
+ 

@@ -41,7 +41,7 @@ int AverageCoordClass = core::RegisterObject("Compute the average of coordinates
         .add< AverageCoord<Vec3Types> >()
         .add< AverageCoord<Rigid2Types> >()
         .add< AverageCoord<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 
@@ -49,7 +49,7 @@ template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec2Types>;
 template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid2Types>;
 template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } //

@@ -39,13 +39,13 @@ int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triang
         .add< MeshROI<Vec3Types> >(true) //default template
         .add< MeshROI<Rigid3Types> >()
         .add< MeshROI<Vec6Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshROI<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API MeshROI<Rigid3Types>;
 template class SOFA_GENERAL_ENGINE_API MeshROI<Vec6Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

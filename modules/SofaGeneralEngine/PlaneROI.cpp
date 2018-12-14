@@ -38,12 +38,12 @@ using namespace sofa::defaulttype;
 int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
         .add< PlaneROI<Vec3Types> >()
         .add< PlaneROI<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API PlaneROI<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API PlaneROI<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

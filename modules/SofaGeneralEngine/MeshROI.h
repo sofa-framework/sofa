@@ -174,7 +174,7 @@ public:
 extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3Types>;
 extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6Types>; //Phuoc
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

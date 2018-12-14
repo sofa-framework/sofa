@@ -42,7 +42,7 @@ int MathOpClass = core::RegisterObject("Apply a math operation to combine severa
     .add< MathOp< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MathOp< defaulttype::Rigid3Types::VecCoord > >()
     .add< MathOp< defaulttype::Rigid3Types::VecDeriv > >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<int> >;
@@ -55,7 +55,7 @@ template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecCoor
 template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
 template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

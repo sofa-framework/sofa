@@ -195,7 +195,7 @@ public:
 
 #if  !defined(CGALPLUGIN_SIMPLIFICATIONMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API DecimateMesh<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } //cgal

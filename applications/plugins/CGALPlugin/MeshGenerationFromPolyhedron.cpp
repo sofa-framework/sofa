@@ -39,8 +39,8 @@ using namespace cgal;
 
 int MeshGenerationFromPolyhedronClass = sofa::core::RegisterObject("Generate tetrahedral mesh from triangular mesh")
         .add< MeshGenerationFromPolyhedron<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromPolyhedron<Vec3Types>;
- //SOFA_FLOAT
+ 

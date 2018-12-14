@@ -103,7 +103,7 @@ extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec
 extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid2Types>;
 extern template class SOFA_GENERAL_ENGINE_API HausdorffDistance<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

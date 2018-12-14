@@ -83,7 +83,7 @@ public:
 
 #if  !defined(INDEXVALUEMAPPER_CPP_)
 extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

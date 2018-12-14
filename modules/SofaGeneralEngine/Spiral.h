@@ -84,7 +84,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
 extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

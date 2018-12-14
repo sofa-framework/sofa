@@ -41,7 +41,7 @@ int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

@@ -37,11 +37,11 @@ namespace engine
 
 int QuatToRigidEngineClass = core::RegisterObject("Transform a vector of Rigids into two independant vectors for positions (Vec3) and orientations (Quat).")
         .add< QuatToRigidEngine<sofa::defaulttype::Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace engine

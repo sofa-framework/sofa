@@ -39,13 +39,13 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
         .add< BoxROI<Vec3Types> >()
         .add< BoxROI<Rigid3Types> >()
         .add< BoxROI<Vec6Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_ENGINE_API BoxROI<Vec3Types>;
 template class SOFA_ENGINE_API BoxROI<Rigid3Types>;
 template class SOFA_ENGINE_API BoxROI<Vec6Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

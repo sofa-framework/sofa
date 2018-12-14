@@ -35,12 +35,12 @@ namespace pim
 int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
         .add< ProgressiveScaling<Vec3Types> >()
 //.add< ProgressiveScaling<Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3Types>;
 //template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 } // namespace pim
 

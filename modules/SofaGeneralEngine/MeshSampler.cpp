@@ -35,11 +35,11 @@ namespace engine
 
 int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
         .add< MeshSampler<Vec3Types> >(true)
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshSampler<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 

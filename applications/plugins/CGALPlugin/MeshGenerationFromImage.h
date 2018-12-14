@@ -176,7 +176,7 @@ public:
 
 #if  !defined(CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP)
 extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3Types, sofa::defaulttype::ImageUC>;
- //SOFA_FLOAT
+ 
 #endif
 
 } //cgal

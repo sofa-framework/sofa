@@ -85,7 +85,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
 extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

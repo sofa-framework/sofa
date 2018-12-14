@@ -38,8 +38,8 @@ using namespace cgal;
 
 int DecimateMeshClass = sofa::core::RegisterObject("Simplification of a mesh by the process of reducing the number of faces")
         .add< DecimateMesh<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3Types>;
- //SOFA_FLOAT
+ 

@@ -42,7 +42,7 @@ int TransformEngineClass = core::RegisterObject("Transform position of 3d points
         .add< TransformEngine<defaulttype::Vec2Types> >()
         .add< TransformEngine<defaulttype::Rigid2Types> >()
         .add< TransformEngine<defaulttype::Rigid3Types> >()
- //SOFA_FLOAT
+ 
         .add< TransformEngine<defaulttype::ExtVec3fTypes> >()
         ;
 
@@ -51,7 +51,7 @@ template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 
 

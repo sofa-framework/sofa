@@ -39,11 +39,11 @@ using namespace sofa::defaulttype;
 
 int Indices2ValuesMapperClass = core::RegisterObject("?")
         .add< Indices2ValuesMapper<Vec3Types> >(true)
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace engine

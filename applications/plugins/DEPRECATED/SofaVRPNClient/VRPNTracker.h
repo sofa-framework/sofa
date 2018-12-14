@@ -89,7 +89,7 @@ private:
 
 #if  !defined(SOFAVRPNCLIENT_VRPNTRACKER_CPP_)
 extern template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 }

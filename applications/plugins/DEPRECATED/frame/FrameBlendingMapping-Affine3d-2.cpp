@@ -57,8 +57,8 @@ int FrameBlendingMappingClass_Affine3d_2 = core::RegisterObject("skin a model fr
 //            template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Rigid3Types >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
- //SOFA_FLOAT
- //SOFA_FLOAT
+ 
+ 
 
 
 } // namespace mapping

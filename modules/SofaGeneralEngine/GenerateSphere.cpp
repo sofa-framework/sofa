@@ -36,12 +36,12 @@ using namespace sofa::defaulttype;
 
 int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) Tetrahedral and Triangular Mesh")
         .add< GenerateSphere<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 
 template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

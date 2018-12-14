@@ -160,7 +160,7 @@ private:
 #if  !defined(SOFA_COMPONENT_ENGINE_PLANEROI_CPP)
 extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Vec3Types>;
 extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

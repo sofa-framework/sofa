@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 
 int SpiralClass = core::RegisterObject("This class truns on spiral any topological model")
         .add< Spiral<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API Spiral<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

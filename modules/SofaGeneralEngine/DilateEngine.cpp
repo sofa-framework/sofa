@@ -39,7 +39,7 @@ int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving ver
 // TriangleOctree implemented with double only
 //#ifdef SOFA_WITH_FLOAT
 //.add< DilateEngine<Vec3fTypes>>(true)
-//#endif //SOFA_FLOAT
+//#endif 
 .add< DilateEngine<Vec3Types>>(true) // default template
  //SOFA_DOUBLE
         ;

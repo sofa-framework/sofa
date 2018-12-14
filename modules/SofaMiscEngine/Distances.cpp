@@ -37,11 +37,11 @@ using namespace sofa::defaulttype;
 
 int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
         .add< Distances<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_MISC_ENGINE_API Distances<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace engine

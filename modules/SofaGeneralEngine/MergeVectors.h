@@ -98,7 +98,7 @@ extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2T
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

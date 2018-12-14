@@ -41,7 +41,7 @@ int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

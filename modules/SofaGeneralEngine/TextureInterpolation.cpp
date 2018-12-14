@@ -39,13 +39,13 @@ int TextureInterpolationClass = core::RegisterObject("Create texture coordinate 
         .add< TextureInterpolation <Vec1Types> >()
         .add< TextureInterpolation <Vec2Types> >()
         .add< TextureInterpolation <Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec1Types>;
 template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec2Types>;
 template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

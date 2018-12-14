@@ -172,7 +172,7 @@ public:
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3Types>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

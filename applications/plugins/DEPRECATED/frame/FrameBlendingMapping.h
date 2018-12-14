@@ -239,7 +239,7 @@ using sofa::defaulttype::DeformationGradient332dTypes;
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3Types, ExtVec3Types >;
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3Types, DeformationGradient331dTypes >;
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3Types, DeformationGradient332dTypes >;
-// //SOFA_FLOAT
+// 
 //#ifdef SOFA_WITH_FLOAT
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3fTypes >;
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3fTypes >;
@@ -250,7 +250,7 @@ using sofa::defaulttype::DeformationGradient332dTypes;
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3Types >;
 //            extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3Types, ExtVec3Types >;
 // //SOFA_DOUBLE
-//#endif //SOFA_FLOAT
+//#endif 
 //#endif // !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 

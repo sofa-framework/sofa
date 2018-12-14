@@ -101,7 +101,7 @@ private:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

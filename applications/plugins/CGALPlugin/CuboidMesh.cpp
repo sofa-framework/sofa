@@ -38,8 +38,8 @@ using namespace cgal;
 
 int CuboidMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cuboid")
         .add< CuboidMesh<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_CGALPLUGIN_API CuboidMesh<Vec3Types>;
- //SOFA_FLOAT
+ 

@@ -37,13 +37,13 @@ using namespace sofa::defaulttype;
 int GenerateGridClass = core::RegisterObject("Generate a Grid Tetrahedral or Hexahedral Mesh")
         .add< GenerateGrid<Vec3Types> >()
         .add< GenerateGrid<Vec2Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 
 template class SOFA_GENERAL_ENGINE_API GenerateGrid<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API GenerateGrid<Vec2Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

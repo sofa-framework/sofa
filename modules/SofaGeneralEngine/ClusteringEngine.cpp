@@ -37,11 +37,11 @@ using namespace sofa::defaulttype;
 
 int ClusteringEngineClass = core::RegisterObject("Group points into overlapping clusters according to a user defined number of clusters and radius")
         .add< ClusteringEngine<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API ClusteringEngine<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 

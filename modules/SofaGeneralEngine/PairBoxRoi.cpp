@@ -39,13 +39,13 @@ int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/tri
         .add< PairBoxROI<Vec3Types> >()
         .add< PairBoxROI<Rigid3Types> >()
         .add< PairBoxROI<Vec6Types> >() //Phuoc
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3Types>;
 template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6Types>; //Phuoc
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

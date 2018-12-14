@@ -37,11 +37,11 @@ using namespace sofa::defaulttype;
 
 int RandomPointDistributionInSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
         .add< RandomPointDistributionInSurface<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

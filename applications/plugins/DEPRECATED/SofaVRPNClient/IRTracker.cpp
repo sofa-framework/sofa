@@ -38,8 +38,8 @@ using namespace sofavrpn::client;
 
 int IRTrackerClass = sofa::core::RegisterObject("Infrared Tracker")
         .add< IRTracker<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_SOFAVRPNCLIENT_API IRTracker<Vec3Types>;
- //SOFA_FLOAT
+ 

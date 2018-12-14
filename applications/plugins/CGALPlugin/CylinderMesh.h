@@ -115,7 +115,7 @@ public:
 
 #if  !defined(CGALPLUGIN_CYLINDERMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } //cgal

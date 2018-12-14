@@ -36,12 +36,12 @@ using namespace sofa::defaulttype;
 
 int GenerateCylinderClass = core::RegisterObject("Generate a Cylindrical Tetrahedral Mesh")
         .add< GenerateCylinder<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 
 template class SOFA_GENERAL_ENGINE_API GenerateCylinder<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

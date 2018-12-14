@@ -41,7 +41,7 @@ int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

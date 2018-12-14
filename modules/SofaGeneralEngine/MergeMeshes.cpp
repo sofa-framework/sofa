@@ -42,7 +42,7 @@ int MergeMeshesClass = core::RegisterObject("Merge several meshes")
         .add< MergeMeshes<defaulttype::Vec2Types> >()
         .add< MergeMeshes<defaulttype::Rigid2Types> >()
         .add< MergeMeshes<defaulttype::Rigid3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec1Types>;
@@ -50,7 +50,7 @@ template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec2Types>;
 template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec3Types>;
 template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid2Types>;
 template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace engine

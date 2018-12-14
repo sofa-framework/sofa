@@ -126,7 +126,7 @@ private:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

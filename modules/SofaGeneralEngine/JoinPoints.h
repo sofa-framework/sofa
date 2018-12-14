@@ -91,7 +91,7 @@ private:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP)
 extern template class SOFA_GENERAL_ENGINE_API JoinPoints<sofa::defaulttype::Vec3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

@@ -38,8 +38,8 @@ using namespace sofavrpn::client;
 
 int ToolTrackerClass = sofa::core::RegisterObject("Specific engine to compute positions and orientations from 3 3D points")
         .add< ToolTracker<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_SOFAVRPNCLIENT_API ToolTracker<Vec3Types>;
- //SOFA_FLOAT
+ 

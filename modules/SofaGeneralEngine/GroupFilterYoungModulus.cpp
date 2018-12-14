@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 
 int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vector of young modulus according of a list of defined groups")
         .add< GroupFilterYoungModulus<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace engine

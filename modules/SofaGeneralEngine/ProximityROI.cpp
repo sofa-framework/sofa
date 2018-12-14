@@ -38,12 +38,12 @@ using namespace sofa::defaulttype;
 
 int ProximityROIClass = core::RegisterObject("Find the N closest primitives from a given position")
         .add< ProximityROI<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API ProximityROI<Vec3Types>;
 //template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3Types>;
- //SOFA_FLOAT
+ 
 
 
 } // namespace constraint

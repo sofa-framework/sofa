@@ -86,7 +86,7 @@ extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec
 // extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
 // extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
 // extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace engine

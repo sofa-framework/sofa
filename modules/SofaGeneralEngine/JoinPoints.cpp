@@ -37,11 +37,11 @@ using namespace sofa::defaulttype;
 
 int JoinPointsClass = core::RegisterObject("?")
         .add< JoinPoints<Vec3Types> >()
- //SOFA_FLOAT
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3Types>;
- //SOFA_FLOAT
+ 
 
 } // namespace engine
 

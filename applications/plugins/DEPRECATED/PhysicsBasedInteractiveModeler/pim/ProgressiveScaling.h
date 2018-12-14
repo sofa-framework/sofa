@@ -110,7 +110,7 @@ public:
 #if  !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
 extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3Types>;
- //SOFA_FLOAT
+ 
 #endif
 
 } // namespace pim
