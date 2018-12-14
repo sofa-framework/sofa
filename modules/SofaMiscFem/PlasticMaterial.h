@@ -23,10 +23,6 @@
 #define SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
 #include "config.h"
 
-
-
-//#define SOFA_FLOAT
-
 #include <SofaMiscFem/BaseMaterial.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>

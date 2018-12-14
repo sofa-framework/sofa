@@ -40,12 +40,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
-#ifdef SOFA_FLOAT
-        .add< SlidingConstraint<Vec3fTypes> >(true)
-#else
-        .add< SlidingConstraint<Vec3dTypes> >(true)
-#endif
-        ;
+        .add< SlidingConstraint<Vec3Types> >(true);
 
 template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3Types>;
 

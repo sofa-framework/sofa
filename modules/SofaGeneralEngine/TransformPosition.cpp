@@ -37,11 +37,7 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int TransformPositionClass = core::RegisterObject("Transform position of 3d points")
-#ifdef SOFA_FLOAT
-        .add< TransformPosition<Vec3fTypes> >(true)
-#else
-        .add< TransformPosition<Vec3dTypes> >(true)
-#endif
+        .add< TransformPosition<Vec3Types> >(true)
         ;
 
 template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3Types>;

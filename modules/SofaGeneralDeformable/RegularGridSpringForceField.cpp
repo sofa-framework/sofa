@@ -39,11 +39,7 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int RegularGridSpringForceFieldClass = core::RegisterObject("Spring acting on the edges and faces of a regular grid")
-#ifdef SOFA_FLOAT
-        .add< RegularGridSpringForceField<Vec3fTypes> >(true) // default template
-#else
-        .add< RegularGridSpringForceField<Vec3dTypes> >(true) // default template
-#endif
+        .add< RegularGridSpringForceField<Vec3Types> >(true) // default template
         .add< RegularGridSpringForceField<Vec2Types> >()
         .add< RegularGridSpringForceField<Vec1Types> >()
         .add< RegularGridSpringForceField<Vec6Types> >()

@@ -45,12 +45,6 @@ namespace component
 namespace misc
 {
 
-#ifdef SOFA_FLOAT
-typedef float Real; ///< alias
-#else
-typedef double Real; ///< alias
-#endif
-
 class TriangleIncisionInformation;
 
 /** Read file containing topological modification. Or apply input modifications
@@ -83,8 +77,8 @@ public:
 
     Data <bool> m_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
 
-    Data<Real>  m_epsilonSnapPath; ///< epsilon snap path
-    Data<Real>  m_epsilonSnapBorder; ///< epsilon snap path
+    Data<SReal>  m_epsilonSnapPath; ///< epsilon snap path
+    Data<SReal>  m_epsilonSnapBorder; ///< epsilon snap path
 
     Data<bool>  m_draw; ///< draw information
 
@@ -149,7 +143,7 @@ protected:
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
-    int findIndexInListOfTime(Real time);
+    int findIndexInListOfTime(SReal time);
 };
 
 
@@ -158,7 +152,7 @@ class TriangleIncisionInformation
 public:
     std::vector<unsigned int>      triangleIndices;
     std::vector<defaulttype::Vector3>                barycentricCoordinates;
-    Real                                           timeToIncise;
+    SReal                                           timeToIncise;
 
     std::vector<defaulttype::Vector3>                coordinates;
 

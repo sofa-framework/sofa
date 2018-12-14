@@ -33,11 +33,7 @@ namespace engine
 {
 
 int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in multiple parts, based on selected vertices or cells.")
-#ifdef SOFA_FLOAT
-        .add< MeshSplittingEngine<defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< MeshSplittingEngine<defaulttype::Vec3dTypes> >(true) // default template
-#endif
+        .add< MeshSplittingEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
 template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;

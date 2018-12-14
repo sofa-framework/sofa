@@ -34,11 +34,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 int DynamicSparseGridTopologyAlgorithmsClass = core::RegisterObject("Hexahedron set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< DynamicSparseGridTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< DynamicSparseGridTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#endif
+        .add< DynamicSparseGridTopologyAlgorithms<Vec3Types> >(true) // default template
         .add< DynamicSparseGridTopologyAlgorithms<Vec2Types> >()
         .add< DynamicSparseGridTopologyAlgorithms<Vec1Types> >()
 
