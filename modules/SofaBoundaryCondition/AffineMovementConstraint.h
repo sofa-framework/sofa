@@ -189,7 +189,7 @@ private:
 #if !defined(SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP)
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3Types>;
- //SOFA_WITH_DOUBLE
+ 
 #endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
 

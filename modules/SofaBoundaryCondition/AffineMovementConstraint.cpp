@@ -41,12 +41,12 @@ namespace projectiveconstraintset
 int AffineMovementConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
         .add< AffineMovementConstraint<defaulttype::Vec3Types> >()
         .add< AffineMovementConstraint<defaulttype::Rigid3Types> >()
- // SOFA_WITH_DOUBLE
+ 
         ;
 
 template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3Types>;
 template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3Types>;
- // SOFA_WITH_DOUBLE
+ 
 
 } // namespace projectiveconstraintset
 

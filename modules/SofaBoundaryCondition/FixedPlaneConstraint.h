@@ -143,7 +143,7 @@ protected:
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
- /// SOFA_WITH_DOUBLE
+
 #endif
 
 } // namespace projectiveconstraintset

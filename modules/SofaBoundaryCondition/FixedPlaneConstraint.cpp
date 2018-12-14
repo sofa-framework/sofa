@@ -42,13 +42,13 @@ int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a giv
         .add< FixedPlaneConstraint<Rigid3Types> >()
         .add< FixedPlaneConstraint<Vec3Types> >()
         .add< FixedPlaneConstraint<Vec6Types> >()
- /// SOFA_WITH_DOUBLE
+
         ;
 
 template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
 template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
 template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
- /// SOFA_WITH_DOUBLE
+
 
 } /// namespace projectiveconstraintset
 

@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 
 int ComplementaryROIClass = core::RegisterObject("Find the points that are NOT in the input sets")
         .add<ComplementaryROI<Vec3Types> >()
- //SOFA_WITH_DOUBLE
+ 
         ;
 
 template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3Types>;
- //SOFA_WITH_DOUBLE
+ 
 
 } // namespace engine
 
