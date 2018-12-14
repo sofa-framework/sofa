@@ -34,6 +34,7 @@
 #include <sofa/helper/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <set>
+#include <sofa/core/DataEngine.h>
 
 namespace sofa
 {
@@ -53,10 +54,10 @@ class AttachConstraintInternalData
 /** Attach given pair of particles, projecting the positions of the second particles to the first ones.
 */
 template <class DataTypes>
-class AttachConstraint : public core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>
+class AttachConstraint : public core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>, public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::PairInteractionProjectiveConstraintSet,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::PairInteractionProjectiveConstraintSet,DataTypes), sofa::core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -98,7 +99,7 @@ public:
     helper::vector<bool> constraintReleased;
     helper::vector<Real> lastDist;
     helper::vector<defaulttype::Quat> restRotations;
-    int dirtyHack;
+
 protected:
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     AttachConstraint();
@@ -109,6 +110,7 @@ public:
 
     // -- Constraint interface
     void init() override;
+    void reinit() override;
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/) override;
     void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
     void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
@@ -120,6 +122,12 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    virtual void doUpdate() override;
+
+    template<class T>
+    static std::string templateName(const T* ptr= nullptr) {
+        return core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::templateName(ptr);
+    }
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 

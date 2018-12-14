@@ -251,7 +251,7 @@ AttachConstraint<DataTypes>::AttachConstraint()
 template <class DataTypes>
 AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2)
     : core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>(mm1,mm2)
-    ,f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
+    , f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
     , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
     , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
@@ -266,13 +266,8 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
     , d_velocityFactor(initData(&d_velocityFactor, (Real)1.0, "velocityFactor", "IN: Factor applied to projection of velocity"))
     , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
     , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
-    , dirtyHack(0)
 {
-    // default to indice 0
-//     f_indices1.beginEdit()->push_back(0);
-//     f_indices1.endEdit();
-//     f_indices2.beginEdit()->push_back(0);
-//     f_indices2.endEdit();
+
 }
 
 #if 0
@@ -315,85 +310,29 @@ template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
-
     topology = this->getContext()->getMeshTopology();
+
+    addInput(this->mstate1->findData("rest_position"));
+    addInput(this->mstate2->findData("rest_position"));
+    addOutput(&f_indices1);
+    addOutput(&f_indices2);
 
     f_indices1.createTopologicalEngine(topology);
     f_indices1.registerTopologicalData();
 
     f_indices2.createTopologicalEngine(topology);
     f_indices2.registerTopologicalData();
-    //constraintReleased.resize(f_indices2.getValue().size());
 
-    if (dirtyHack == 1 && f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
-    {
-        const Real maxR = f_radius.getValue();
-        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-        for (unsigned int i2=0; i2<x2.size(); ++i2)
-        {
-            int best = -1;
-            Real bestR = maxR;
-            for (unsigned int i1=0; i1<x1.size(); ++i1)
-            {
-                Real r = (x2[i2]-x1[i1]).norm();
-                if (r <= bestR)
-                {
-                    best = i1;
-                    bestR = r;
-                }
-            }
-            if (best >= 0)
-            {
-                addConstraint(best, i2);
-            }
-        }
-        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
+    reinit();
 
-        // constraintFactor default behavior
-        // if NOT set : initialize all constraints active
-        //if(!d_constraintFactor.isSet())
-        if(true)
-        {
-            unsigned int size = f_indices2.getValue().size();
 
-            constraintFactor.clear();
-            constraintFactor.resize(size);
+}
 
-            for (unsigned int j=0; j<size; ++j)
-            {
-                constraintFactor[j] = 1.0;
-            }
-        }
-        // if set : check size
-        else
-        {
-            if(constraintFactor.size() != f_indices2.getValue().size())
-            {
-                msg_error() << "Size of vector constraintFactor, do not fit number of indices attached";
-            }
-            else
-            {
-                for (unsigned int j=0; j<constraintFactor.size(); ++j)
-                {
-                    if((constraintFactor[j] > 1.0) || (constraintFactor[j] < 0.0))
-                    {
-                        msg_warning() << "Value of vector constraintFactor at indice "<<j<<" is out of bounds [0.0 - 1.0]";
-                    }
-                }
-            }
-        }
-        d_constraintFactor.endEdit();
-    }
+template <class DataTypes>
+void AttachConstraint<DataTypes>::reinit()
+{
+    doUpdate();
 
-    // Moved after, so that f_indices2 can be filled in case of radius option
-    constraintReleased.resize(f_indices2.getValue().size());
-
-    // Check coherency of size between indices vectors 1 and 2
-    if(f_indices1.getValue().size() != f_indices2.getValue().size())
-    {
-        msg_error() << "Size mismatch between indices1 and indices2";
-    }
 
     constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
@@ -401,8 +340,6 @@ void AttachConstraint<DataTypes>::init()
     if (f_restRotations.getValue())
         calcRestRotations();
 }
-
-
 template <class DataTypes>
 void AttachConstraint<DataTypes>::calcRestRotations()
 {
@@ -421,14 +358,10 @@ void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPa
 template <class DataTypes>
 void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/, DataVecCoord& res1_d, DataVecCoord& res2_d)
 {
-    if (dirtyHack == 0)
-    {
-        dirtyHack = 1;
-        init();
-        dirtyHack = 2;
-    }
+
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
+
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);
@@ -679,6 +612,76 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     }
 }
 
+template <class DataTypes>
+void AttachConstraint<DataTypes>::doUpdate()
+{
+    Coord pt2;
+    auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm(); };
+    auto cmp = [&pt2, &dist](const Coord& a, const Coord& b) {
+        return dist(a, pt2) < dist(b, pt2);
+    };
+
+    if (f_radius.getValue() >= 0 /*&& f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0*/ && this->mstate1 && this->mstate2)
+    {
+        clearConstraints();
+        const Real maxR = f_radius.getValue();
+        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+        for (unsigned int i2=0; i2<x2.size(); ++i2)
+        {
+            pt2 = x2[i2];
+            auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
+            if(dist(*el, pt2) < maxR) {
+                addConstraint(std::distance(std::begin(x1), el), i2);
+            }
+        }
+        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
+
+        // constraintFactor default behavior
+        // if NOT set : initialize all constraints active
+        //if(!d_constraintFactor.isSet())
+        if(true)
+        {
+            unsigned int size = f_indices2.getValue().size();
+
+            constraintFactor.clear();
+            constraintFactor.resize(size);
+
+            for (unsigned int j=0; j<size; ++j)
+            {
+                constraintFactor[j] = 1.0;
+            }
+        }
+        // if set : check size
+        else
+        {
+            if(constraintFactor.size() != f_indices2.getValue().size())
+            {
+                msg_error() << "Size of vector constraintFactor, do not fit number of indices attached";
+            }
+            else
+            {
+                for (unsigned int j=0; j<constraintFactor.size(); ++j)
+                {
+                    if((constraintFactor[j] > 1.0) || (constraintFactor[j] < 0.0))
+                    {
+                        msg_warning() << "Value of vector constraintFactor at indice "<<j<<" is out of bounds [0.0 - 1.0]";
+                    }
+                }
+            }
+        }
+        d_constraintFactor.endEdit();
+    }
+    // Moved after, so that f_indices2 can be filled in case of radius option
+    constraintReleased.resize(f_indices2.getValue().size());
+
+    // Check coherency of size between indices vectors 1 and 2
+    if(f_indices1.getValue().size() != f_indices2.getValue().size())
+    {
+        msg_error() << "Size mismatch between indices1 and indices2";
+    }
+}
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
