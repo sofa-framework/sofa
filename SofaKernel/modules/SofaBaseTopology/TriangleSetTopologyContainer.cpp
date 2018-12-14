@@ -72,7 +72,7 @@ void TriangleSetTopologyContainer::reinit()
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {
 	if (CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createTriangleSetArray method must be implemented by a child topology.";
 }
 
 void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()

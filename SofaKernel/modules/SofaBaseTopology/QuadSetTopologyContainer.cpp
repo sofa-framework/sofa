@@ -67,7 +67,7 @@ void QuadSetTopologyContainer::init()
 void QuadSetTopologyContainer::createQuadSetArray()
 {
 	if (CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createQuadSetArray method must be implemented by a child topology.";
 
 }
 

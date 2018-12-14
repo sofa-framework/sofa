@@ -134,7 +134,7 @@ void EdgeSetTopologyContainer::reinit()
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
 	if(CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createEdgeSetArray method must be implemented by a child topology.";
 
 }
 
