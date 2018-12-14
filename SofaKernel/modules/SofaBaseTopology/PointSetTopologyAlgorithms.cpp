@@ -35,11 +35,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 int PointSetTopologyAlgorithmsClass = core::RegisterObject("Point set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< PointSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< PointSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#endif
+        .add< PointSetTopologyAlgorithms<Vec3Types> >(true) // default template
         .add< PointSetTopologyAlgorithms<Vec2Types> >()
         .add< PointSetTopologyAlgorithms<Vec1Types> >()
 

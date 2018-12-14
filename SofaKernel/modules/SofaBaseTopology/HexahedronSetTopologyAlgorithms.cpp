@@ -32,11 +32,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 int HexahedronSetTopologyAlgorithmsClass = core::RegisterObject("Hexahedron set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< HexahedronSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< HexahedronSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#endif
+        .add< HexahedronSetTopologyAlgorithms<Vec3Types> >(true) // default template
         .add< HexahedronSetTopologyAlgorithms<Vec2Types> >()
         .add< HexahedronSetTopologyAlgorithms<Vec1Types> >()
 

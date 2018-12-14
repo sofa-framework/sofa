@@ -38,11 +38,7 @@ using namespace core::behavior;
 using namespace defaulttype;
 
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
-#ifdef SOFA_FLOAT
-        .add< MechanicalObject<Vec3fTypes> >(true) // default template
-#else
-        .add< MechanicalObject<Vec3dTypes> >(true) // default template
-#endif
+        .add< MechanicalObject<Vec3Types> >(true) // default template
         .add< MechanicalObject<Vec2Types> >()
         .add< MechanicalObject<Vec1Types> >()
         .add< MechanicalObject<Vec6Types> >()

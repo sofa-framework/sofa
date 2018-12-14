@@ -34,11 +34,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 int QuadSetTopologyAlgorithmsClass = core::RegisterObject("Quad set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< QuadSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
         .add< QuadSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#endif
         .add< QuadSetTopologyAlgorithms<Vec2Types> >()
         .add< QuadSetTopologyAlgorithms<Vec1Types> >()
 

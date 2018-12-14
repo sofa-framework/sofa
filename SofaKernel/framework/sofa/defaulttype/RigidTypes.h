@@ -1834,14 +1834,8 @@ typedef StdRigidTypes<2,float> Rigid2fTypes;
 typedef RigidMass<2,float> Rigid2fMass;
 template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 
-#ifdef SOFA_FLOAT
-typedef Rigid2fTypes Rigid2Types;
-typedef Rigid2fMass Rigid2Mass;
-#else
-typedef Rigid2dTypes Rigid2Types;
-typedef Rigid2dMass Rigid2Mass;
-#endif
-
+typedef StdRigidTypes<2,SReal> Rigid2Types;
+typedef RigidMass<2,SReal> Rigid2Mass;
 
 template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
