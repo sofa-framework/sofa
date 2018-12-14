@@ -46,14 +46,13 @@ int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implici
         .add< StiffSpringForceField<Vec2Types> >()
         .add< StiffSpringForceField<Vec1Types> >()
         .add< StiffSpringForceField<Vec6Types> >()
-
+        .add< StiffSpringForceField<Rigid3Types> >()
         ;
 template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec3Types>;
 template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec2Types>;
 template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec1Types>;
 template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec6Types>;
-
-
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Rigid3Types>;
 
 } // namespace interactionforcefield
 

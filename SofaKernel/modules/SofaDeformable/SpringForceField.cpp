@@ -47,7 +47,7 @@ int SpringForceFieldClass = core::RegisterObject("Springs")
         .add< SpringForceField<Vec2Types> >()
         .add< SpringForceField<Vec1Types> >()
         .add< SpringForceField<Vec6Types> >()
-
+        .add< SpringForceField<Rigid3Types> >()
         ;
 
 template class SOFA_DEFORMABLE_API LinearSpring<double>;
@@ -55,8 +55,7 @@ template class SOFA_DEFORMABLE_API SpringForceField<Vec3Types>;
 template class SOFA_DEFORMABLE_API SpringForceField<Vec2Types>;
 template class SOFA_DEFORMABLE_API SpringForceField<Vec1Types>;
 template class SOFA_DEFORMABLE_API SpringForceField<Vec6Types>;
-
-
+template class SOFA_DEFORMABLE_API SpringForceField<Rigid3Types>;
 
 } // namespace interactionforcefield
 

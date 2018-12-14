@@ -151,9 +151,9 @@ extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rig
 #if !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
 namespace helper
 {
+//extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec2Types>, core::CollisionModel* >;
 extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
 extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
-
 } // namespace helper
 #endif
 

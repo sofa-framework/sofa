@@ -221,7 +221,7 @@ extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3Type
 extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
 extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
-
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace interactionforcefield

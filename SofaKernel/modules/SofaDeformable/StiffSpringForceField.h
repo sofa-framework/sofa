@@ -111,7 +111,7 @@ extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec1Types>;
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec6Types>;
-
+extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace interactionforcefield

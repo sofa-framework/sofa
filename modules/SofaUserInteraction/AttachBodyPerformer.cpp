@@ -45,12 +45,11 @@ template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2T
 template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
 template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 
+static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2Types> >  AttachBodyPerformerVec2dClass("AttachBody",true);
+static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3Types> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
 
-
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2Types> >  AttachBodyPerformerVec2dClass("AttachBody",true);
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3dClass("AttachBody",true);
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3Types> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
-
+/*
 template <>
 bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPicked& picked)
 {
@@ -82,6 +81,7 @@ bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPick
 
     return true;
 }
+*/
 
 
 

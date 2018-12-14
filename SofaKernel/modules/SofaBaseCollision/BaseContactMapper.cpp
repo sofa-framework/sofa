@@ -49,7 +49,7 @@ std::string GenerateStringID::generate(){
 }
 
 
-
+//template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec2Types>;
 template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
 template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3Types>;
 
@@ -60,9 +60,9 @@ template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3Type
 
 namespace helper
 {
+//template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec2Types>, core::CollisionModel* >;
 template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
 template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
-
 } // namespace helper
 
 } // namespace sofa
