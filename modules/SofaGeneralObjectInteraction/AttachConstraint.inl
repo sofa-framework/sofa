@@ -639,9 +639,9 @@ void AttachConstraint<DataTypes>::doUpdate()
 
         // constraintFactor default behavior
         // if NOT set : initialize all constraints active
+        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
         if(!d_constraintFactor.isSet())
         {
-            helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
             unsigned int size = f_indices2.getValue().size();
 
             constraintFactor.clear();
@@ -651,7 +651,6 @@ void AttachConstraint<DataTypes>::doUpdate()
             {
                 constraintFactor[j] = 1.0;
             }
-            d_constraintFactor.endEdit();
         }
         // if set : check size
         else
@@ -671,6 +670,7 @@ void AttachConstraint<DataTypes>::doUpdate()
                 }
             }
         }
+        d_constraintFactor.endEdit();
 
     }
     // Moved after, so that f_indices2 can be filled in case of radius option
