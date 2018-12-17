@@ -24,6 +24,7 @@
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {
@@ -115,9 +116,38 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
-    std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
-    std::string userresolved = templatename; // Copy in case we change for the default one
     ClassEntry::SPtr entry ;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Process the template aliases.
+    ///  (1) split in a vector the user provided templates by ','
+    ///  (2) for each entry search if there is an alias
+    ///  (3) if there is none then keep value as is
+    ///      otherwise replace the value with the alias.
+    ///      if there is one and it is "undefined" generate a warning.
+    ///      and "undefined" behavior means that the template is converting a specifically given
+    ///      type precision into a different one.
+    ///  (4) rebuild the template string by joining them all with ','.
+    std::vector<std::string> usertemplatenames = sofa::helper::split(usertemplatename, ',');
+    for(auto& name : usertemplatenames)
+    {
+        const sofa::defaulttype::TemplateAlias* alias;
+        if( (alias=sofa::defaulttype::TemplateAliases::getTemplateAlias(name)) != nullptr )
+        {
+            assert(alias != nullptr);
+            /// This alias results in "undefined" behavior.
+            if( alias->second )
+            {
+                arg->logError("For backward compatibility, the template '"+usertemplatename+"' has been replaced with "+alias->first+" which may result in undefined behavior.");
+            }
+            name = alias->first;
+        }
+    }
+    std::string templatename = sofa::helper::join(usertemplatenames, ",");
+    std::string userresolved = templatename; // Copy in case we change for the default one
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname

@@ -29,6 +29,8 @@ namespace sofa
 namespace defaulttype
 {
 
+typedef std::pair<std::string, bool> TemplateAlias;
+
 /**
  *  \brief Class used to store and resolve template aliases.
  *
@@ -42,10 +44,13 @@ public:
     ///
     /// \param name     name of the new alias
     /// \param result   real template pointed to
-    static bool addAlias(const std::string& name, const std::string& result);
+    static bool addAlias(const std::string& name, const std::string& result, const bool doWarnUser);
 
 	/// Get the template pointed to by the alias. Returns the input if there is no alias.
-	static std::string resolveAlias(const std::string& name);
+    static std::string resolveAlias(const std::string& name);
+
+    /// Get the alias template associated with a given name. Return false & nullptr if none;
+    static const TemplateAlias* getTemplateAlias(const std::string& name);
 };
 
 /**
@@ -61,7 +66,7 @@ class SOFA_DEFAULTTYPE_API RegisterTemplateAlias
 {
 public:
     /// Register an alias
-    RegisterTemplateAlias(const std::string& alias, const std::string& result);
+    RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser=false);
 };
 
 }// defaulttype
