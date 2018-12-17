@@ -42,7 +42,8 @@ template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2>;
 }
 
 namespace defaulttype {
-RegisterTemplateAlias ShapeFunctionAlias3("ShapeFunction3", core::behavior::ShapeFunction3::Name() );
+RegisterTemplateAlias ShapeFunctionAlias0("ShapeFunctiond", core::behavior::ShapeFunction3d::Name(), true);
+RegisterTemplateAlias ShapeFunctionAlias1("ShapeFunction3", core::behavior::ShapeFunction3::Name() );
 RegisterTemplateAlias ShapeFunctionAlias2("ShapeFunction2", core::behavior::ShapeFunction2::Name() );
 }
 

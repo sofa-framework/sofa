@@ -286,8 +286,6 @@ template<> inline const char* E221dTypes::Name() { return "E221d"; }
 template<> inline const char* E221fTypes::Name() { return "E221f"; }
 
 
-
-
 template<> struct DataTypeInfo< E331fTypes::Deriv > : public FixedArrayTypeInfo< E331fTypes::Deriv, E331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< E331dTypes::Deriv > : public FixedArrayTypeInfo< E331dTypes::Deriv, E331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< E321fTypes::Deriv > : public FixedArrayTypeInfo< E321fTypes::Deriv, E321fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E321<" << DataTypeName<float>::name() << ">"; return o.str(); } };

@@ -217,6 +217,12 @@ typedef DefGradientTypes<3, 3, 1, double> F332dTypes;
 typedef DefGradientTypes<3, 2, 0, double> F321dTypes; // for planar deformations
 typedef DefGradientTypes<3, 1, 0, double> F311dTypes; // for linear deformations
 typedef DefGradientTypes<2, 2, 0, double> F221dTypes; // 2d planar deformations
+template<> inline const char* F331dTypes::Name() { return "F331d"; }
+template<> inline const char* F332dTypes::Name() { return "F332d"; }
+template<> inline const char* F321dTypes::Name() { return "F321d"; }
+template<> inline const char* F311dTypes::Name() { return "F311d"; }
+template<> inline const char* F221dTypes::Name() { return "F221d"; }
+
 template<> struct DataTypeInfo< F331dTypes::Deriv > : public FixedArrayTypeInfo< F331dTypes::Deriv, F331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< F332dTypes::Deriv > : public FixedArrayTypeInfo< F332dTypes::Deriv, F332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< F321dTypes::Deriv > : public FixedArrayTypeInfo< F321dTypes::Deriv, F321dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F321<" << DataTypeName<double>::name() << ">"; return o.str(); } };
@@ -229,11 +235,6 @@ typedef DefGradientTypes<3, 2, 0, SReal> F321Types; // for planar deformations
 typedef DefGradientTypes<3, 1, 0, SReal> F311Types; // for linear deformations
 typedef DefGradientTypes<2, 2, 0, SReal> F221Types; // 2d planar deformations
 
-template<> inline const char* F331Types::Name() { return "F331"; }
-template<> inline const char* F332Types::Name() { return "F332"; }
-template<> inline const char* F321Types::Name() { return "F321"; }
-template<> inline const char* F311Types::Name() { return "F311"; }
-template<> inline const char* F221Types::Name() { return "F221"; }
 
 
 

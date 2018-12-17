@@ -37,13 +37,9 @@ using namespace core::behavior;
 // Register in the Factory
 int BezierShapeFunctionClass = core::RegisterObject("Computes Bezier shape functions")
         .add< BezierShapeFunction<ShapeFunctiond> >(true)
-//        .add< BezierShapeFunction<ShapeFunction2d> >()
-
         ;
 
 template class SOFA_Flexible_API BezierShapeFunction<ShapeFunctiond>;
-//template class SOFA_Flexible_API BezierShapeFunction<ShapeFunction2d>;
-
 
 }
 }
