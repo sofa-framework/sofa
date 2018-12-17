@@ -35,7 +35,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using sofa::helper::vector;
 using sofa::defaulttype::Vec4f;
 using sofa::defaulttype::Vector3;
 
@@ -118,7 +117,7 @@ void JointSpringForceField<DataTypes>::bwdInit()
     const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 
     const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    vector<Spring> &springsVector=*(d_springs.beginEdit());
+    helper::vector<Spring> &springsVector=*(d_springs.beginEdit());
     for (unsigned int i=0; i<d_springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
@@ -334,7 +333,7 @@ void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    vector<Spring>& springs = *d_springs.beginEdit();
+    helper::vector<Spring>& springs = *d_springs.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -363,7 +362,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    vector<Spring>& springs = *d_springs.beginEdit();
+    helper::vector<Spring>& springs = *d_springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
@@ -385,10 +384,10 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->setLightingEnabled(true);
 
     bool external = (this->mstate1!=this->mstate2);
-    const vector<Spring>& springs = d_springs.getValue();
+    const helper::vector<Spring>& springs = d_springs.getValue();
 
-    vector<Vector3> vertices;
-    vector<Vec4f> colors;
+    helper::vector<Vector3> vertices;
+    helper::vector<Vec4f> colors;
 
     Vec4f yellow(1.0,1.0,0.0,1.0);
 
@@ -476,7 +475,7 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    const vector<Spring>& springs = d_springs.getValue();
+    const helper::vector<Spring>& springs = d_springs.getValue();
 
     for (unsigned int i = 0, iend = springs.size(); i<iend; ++i)
     {
@@ -499,7 +498,7 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::updateForceMask()
 {
-    const vector<Spring>& springs= d_springs.getValue();
+    const helper::vector<Spring>& springs= d_springs.getValue();
 
     for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
     {
@@ -512,7 +511,7 @@ void JointSpringForceField<DataTypes>::updateForceMask()
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::clear(int reserve)
 {
-    vector<Spring>& springs = *d_springs.beginEdit();
+    helper::vector<Spring>& springs = *d_springs.beginEdit();
     springs.clear();
     if (reserve) springs.reserve(reserve);
     d_springs.endEdit();
