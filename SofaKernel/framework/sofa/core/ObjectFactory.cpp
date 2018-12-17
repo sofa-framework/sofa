@@ -138,7 +138,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                arg->logError("For backward compatibility, the template '"+usertemplatename+"' has been replaced with "+alias->first+" which may result in undefined behavior.");
+                arg->logError("For backward compatibility, the template '"+usertemplatename+"' has been replaced with "+alias->first+" which have a different precision, this may result in undefined behavior.");
             }
             name = alias->first;
         }

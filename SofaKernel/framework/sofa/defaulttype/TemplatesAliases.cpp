@@ -104,6 +104,7 @@ RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std
     TemplateAliases::addAlias(alias, result, doWarnUser);
 }
 
+/// The following types are the generic 'precision'
 static RegisterTemplateAlias Vec1Alias("Vec1", sofa::defaulttype::Vec1Types::Name());
 static RegisterTemplateAlias Vec2Alias("Vec2", sofa::defaulttype::Vec2Types::Name());
 static RegisterTemplateAlias Vec3Alias("Vec3", sofa::defaulttype::Vec3Types::Name());

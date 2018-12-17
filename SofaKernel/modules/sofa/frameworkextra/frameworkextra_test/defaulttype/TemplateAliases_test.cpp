@@ -19,59 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_TEMPLATESALIASES_H
-#define SOFA_HELPER_TEMPLATESALIASES_H
-#include <sofa/defaulttype/defaulttype.h>
-#include <string>
+#include <sofa/defaulttype/TemplatesAliases.h>
+using sofa::defaulttype::TemplateAliases;
+using sofa::defaulttype::TemplateAlias;
 
-namespace sofa
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest ;
+
+namespace sofa {
+
+class TemplateAliasTest : public BaseSimulationTest
 {
+protected:
+    bool registerAlias(const std::string& alias, const std::string& target, bool warn)
+    {
+        TemplateAliases::addAlias(alias, target, warn);
+        EXPECT_TRUE((TemplateAliases::resolveAlias(alias) == target));
 
-namespace defaulttype
-{
-
-typedef std::pair<std::string, bool> TemplateAlias;
-
-/**
- *  \brief Class used to store and resolve template aliases.
- *
- *  \see RegisterTemplateAlias for how new aliases should be registered.
- *
- */
-class SOFA_DEFAULTTYPE_API TemplateAliases
-{
-public:
-	/// Add an alias for a template
-    ///
-    /// \param name     name of the new alias
-    /// \param result   real template pointed to
-    static bool addAlias(const std::string& name, const std::string& result, const bool doWarnUser);
-
-	/// Get the template pointed to by the alias. Returns the input if there is no alias.
-    static std::string resolveAlias(const std::string& name);
-
-    /// Get the alias template associated with a given name. Return false & nullptr if none;
-    static const TemplateAlias* getTemplateAlias(const std::string& name);
+        const TemplateAlias* re = TemplateAliases::getTemplateAlias(alias);
+        EXPECT_TRUE((re->first == target));
+        EXPECT_TRUE((re->second == warn));
+    }
 };
 
-/**
- *  \brief Helper class used to register a template alias in the TemplateAliases class.
- *
- *  It should be used as a temporary object. For example :
- *  \code
- *    core::RegisterTemplateAlias Vec3Alias("Vec3", "Vec3d");
- *  \endcode
- *
- */
-class SOFA_DEFAULTTYPE_API RegisterTemplateAlias
+TEST_F(TemplateAliasTest, Register)
 {
-public:
-    /// Register an alias
-    RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser=false);
-};
+    registerAlias("TheAlias1", "TheResult1", true);
+    registerAlias("TheAlias2", "TheResult2", false);
+    registerAlias("TheAlias2", "TheResult2", true);
+}
 
-}// defaulttype
 
-}// sofa
-
-#endif // SOFA_HELPER_TEMPLATESALIASES_H
+} //namespace sofa
