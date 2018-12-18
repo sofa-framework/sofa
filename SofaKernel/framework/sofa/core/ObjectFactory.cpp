@@ -138,8 +138,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                arg->logError("For backward compatibility, the template '"+usertemplatename+"' has been replaced with "+alias->first+" which have a different precision, this may result in undefined behavior.");
+                arg->logError("For backward compatibility, the template '"+name+"' has been replaced with "+alias->first+" which have a different precision, this may result in undefined behavior.");
             }
+
             name = alias->first;
         }
     }
@@ -474,19 +475,6 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     }
     return *this;
 }
-
-//template<class RealObject>
-//RegisterObject& RegisterObject::add(bool defaultTemplate)
-//{
-//    RealObject* p = NULL;
-//    std::string classname = RealObject::className(p);
-//    std::string templatename = RealObject::templateName(p);
-
-//    if (defaultTemplate)
-//        entry.defaultTemplate = templatename;
-
-//    return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
-//}
 
 RegisterObject::operator int()
 {
