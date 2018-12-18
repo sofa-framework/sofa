@@ -78,11 +78,11 @@ class RigidBody:
         ## create the rigid body by manually giving its inertia
         self.frame = Frame.Frame( offset )
         self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
-        #self.mass = self.node.createObject('RigidMass',
-        #                        name = 'mass',
-        #                        mass = mass,
-        #                        inertia = concat(inertia),
-        #                        inertia_forces = inertia_forces )
+        self.mass = self.node.createObject('RigidMass',
+                                name = 'mass',
+                                mass = mass,
+                                inertia = concat(inertia),
+                                inertia_forces = inertia_forces )
 
     def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix=''):
         ## adding a collision mesh to the rigid body with a relative offset
