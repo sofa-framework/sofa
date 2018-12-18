@@ -46,11 +46,6 @@ BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
 
 BaseObjectDescription::~BaseObjectDescription()
 {
-//     for (std::map<std::string,std::string*>::iterator it = attributes.begin();
-//         it != attributes.end(); ++it)
-//     {
-//         delete it->second;
-//     }
     attributes.clear();
 }
 
@@ -165,6 +160,12 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
     }
 
     return retval ;
+}
+
+void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
+{
+    std::string s = val;
+    return setAttribute(attr, s);
 }
 
 
