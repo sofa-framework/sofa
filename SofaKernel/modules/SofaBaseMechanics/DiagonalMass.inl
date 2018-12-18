@@ -43,7 +43,7 @@ namespace mass
 {
 
 using sofa::core::objectmodel::ComponentState;
-
+using namespace sofa::core::topology;
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
@@ -815,7 +815,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=(Real)0;
             Real total_mass=(Real)0;
 
-            for (int i=0; i<_topology->getNbHexahedra(); ++i)
+            for (Topology::HexahedronID i=0; i<_topology->getNbHexahedra(); ++i)
             {
                 const Hexahedron &h=_topology->getHexahedron(i);
                 if (hexaGeo)
@@ -854,9 +854,8 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=(Real)0;
             Real total_mass=(Real)0;
 
-            for (int i=0; i<_topology->getNbTetrahedra(); ++i)
+            for (Topology::TetrahedronID i=0; i<_topology->getNbTetrahedra(); ++i)
             {
-
                 const Tetrahedron &t=_topology->getTetrahedron(i);
                 if(tetraGeo)
                 {
@@ -889,7 +888,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=(Real)0;
             Real total_mass=(Real)0;
 
-            for (int i=0; i<_topology->getNbQuads(); ++i)
+            for (Topology::QuadID i=0; i<_topology->getNbQuads(); ++i)
             {
                 const Quad &t=_topology->getQuad(i);
                 if(quadGeo)
@@ -924,7 +923,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=(Real)0;
             Real total_mass=(Real)0;
 
-            for (int i=0; i<_topology->getNbTriangles(); ++i)
+            for (Topology::TriangleID i=0; i<_topology->getNbTriangles(); ++i)
             {
                 const Triangle &t=_topology->getTriangle(i);
                 if(triangleGeo)
@@ -960,7 +959,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             Real mass=(Real)0;
             Real total_mass=(Real)0;
 
-            for (int i=0; i<_topology->getNbEdges(); ++i)
+            for (Topology::EdgeID i=0; i<_topology->getNbEdges(); ++i)
             {
                 const Edge &e=_topology->getEdge(i);
                 if(edgeGeo)

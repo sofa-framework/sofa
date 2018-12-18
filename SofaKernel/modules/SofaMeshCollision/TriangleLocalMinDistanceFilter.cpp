@@ -111,7 +111,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-        int i;
+        unsigned int i;
         for (i=0; i<bmt->getNbPoints(); i++)
         {
             pInfo[i].setLMDFilters(this);
@@ -140,7 +140,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
         tInfo.resize(bmt->getNbTriangles());
-        for (i=0; i<bmt->getNbTriangles(); i++)
+        for (sofa::core::topology::Topology::TriangleID i=0; i<bmt->getNbTriangles(); i++)
         {
             tInfo[i].setLMDFilters(this);
             tInfo[i].setBaseMeshTopology(bmt);
