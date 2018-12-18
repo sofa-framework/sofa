@@ -15,10 +15,7 @@ using namespace defaulttype;
 
 // Register in the Factory
 int RigidMassClass = core::RegisterObject("Mass for rigid bodies")
-
-
-.add< RigidMass< Rigid3Types > >()
-
+.add< RigidMass< Rigid3Types > >(true)
 ;
 
 template class SOFA_Compliant_API RigidMass<  Rigid3Types >;
