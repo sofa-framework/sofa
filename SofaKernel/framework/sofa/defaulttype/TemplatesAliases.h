@@ -30,6 +30,15 @@ namespace sofa
 namespace defaulttype
 {
 
+template<class T>
+constexpr bool isDouble(){return false;}
+
+template<>
+constexpr bool isDouble<double>(){return true;}
+
+constexpr bool isSRealDouble(){ return isDouble<SReal>(); }
+constexpr bool isSRealFloat(){ return !isDouble<SReal>(); }
+
 typedef std::pair<std::string, bool> TemplateAlias;
 
 /**
