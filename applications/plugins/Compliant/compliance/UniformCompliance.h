@@ -76,12 +76,11 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_CPP)
+#if !defined(SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_CPP)
 extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec6Types>;
-
 #endif
 
 }

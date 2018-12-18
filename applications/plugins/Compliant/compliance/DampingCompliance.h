@@ -114,11 +114,10 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP)
+#if !defined(SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP)
 extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec6Types>;
 extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec1Types>;
-
 #endif
 
 }

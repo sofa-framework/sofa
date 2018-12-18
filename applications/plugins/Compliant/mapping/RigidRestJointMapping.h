@@ -177,10 +177,8 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP)
+#if !defined(SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP)
 extern template class SOFA_Compliant_API RigidRestJointMapping<  Rigid3Types, Vec6Types >;
-
-
 #endif
 }
 }

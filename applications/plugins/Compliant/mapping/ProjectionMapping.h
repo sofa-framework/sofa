@@ -118,10 +118,8 @@ protected:
 	
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP)
 extern template class SOFA_Compliant_API ProjectionMapping<  sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
-
-
 #endif
 
 
