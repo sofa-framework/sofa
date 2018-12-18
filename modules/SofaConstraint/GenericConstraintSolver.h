@@ -24,17 +24,8 @@
 #include "config.h"
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
-#include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
-
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-
-#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -133,15 +124,8 @@ public:
     Data<helper::vector< double >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
-    virtual sofa::core::MultiVecDerivId getLambda() const override
-    {
-        return m_lambdaId;
-    }
-
-    virtual sofa::core::MultiVecDerivId getDx() const override
-    {
-        return m_dxId;
-    }
+    virtual sofa::core::MultiVecDerivId getLambda() const override;
+    virtual sofa::core::MultiVecDerivId getDx() const override;
 
 protected:
 
@@ -172,45 +156,17 @@ protected:
 class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res)
-        : simulation::BaseMechanicalVisitor(params)
-        , cparams(params)
-        , _res(res)
-        , _offset(0)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-    {
-        if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
-        {
-            ctime_t t0 = begin(node, c);
-            c->getConstraintResolution(cparams, _res, _offset);
-            end(node, c, t0);
-        }
-        return RESULT_CONTINUE;
-    }
+    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const
-    {
-        return "MechanicalGetConstraintResolutionVisitor";
-    }
+    virtual const char* getClassName() const;
 
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
-
+    virtual bool isThreadSafe() const;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
+    virtual bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors() { }

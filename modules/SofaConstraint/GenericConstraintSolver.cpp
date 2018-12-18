@@ -20,22 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/logging/Messaging.h>
-
 #include <SofaConstraint/GenericConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/VectorOperations.h>
-
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/helper/system/thread/CTime.h>
-#include <math.h>
-
 #include <sofa/core/ObjectFactory.h>
-
 #include "ConstraintStoreLambdaVisitor.h"
 
 namespace sofa
@@ -205,8 +194,8 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 
     if ( displayTime.getValue() )
     {
-        time = (double) timer.getTime();
-        timeTotal = (double) timerTotal.getTime();
+        time = (SReal) timer.getTime();
+        timeTotal = (SReal) timerTotal.getTime();
     }
 
     return true;
@@ -220,9 +209,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor(cParams).execute(context);
     // calling buildConstraintMatrix
-    //simulation::MechanicalAccumulateConstraint(&cparams, cParams->j(), numConstraints).execute(context);
-
     simulation::MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
+
     simulation::MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
 
     // suppress the constraints that are on DOFS currently concerned by projective constraint
@@ -287,7 +275,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             }
 
             if (!foundCC)
-                serr << "WARNING: no constraintCorrection found for constraint" << c_id << sendl;
+                msg_error() << "WARNING: no constraintCorrection found for constraint" << c_id ;
 
             double** w =  current_cp->getW();
             for(unsigned int m = c_id; m < c_id + l; m++)
@@ -319,11 +307,10 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         msg_info() << " computeCompliance_done "  ;
     }
 
-
     if ( displayTime.getValue() )
     {
-        msg_info() << " build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
+        msg_info() << " build_LCP " << ( (SReal) timer.getTime() - time)*timeScale<<" ms" ;
+        time = (SReal) timer.getTime();
     }
 
     return true;
@@ -407,8 +394,8 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
     if ( displayTime.getValue() )
     {
-        msg_info() <<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
+        msg_info() <<" TOTAL solve_LCP " <<( (SReal) timer.getTime() - time)*timeScale<<" ms" ;
+        time = (SReal) timer.getTime();
     }
 
     if(notMuted())
@@ -511,7 +498,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
     msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
 
-    msg_info_when(displayTime.getValue()) << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" ;
+    msg_info_when(displayTime.getValue()) << " TotalTime " << ((SReal) timerTotal.getTime() - timeTotal) * timeScale << " ms" ;
     AdvancedTimer::stepBegin("Store Constraint Lambdas");
 
     /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
@@ -525,7 +512,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
     if (displayTime.getValue())
     {
-        sout << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" << sendl;
+        msg_info() << " TotalTime " << ((SReal) timerTotal.getTime() - timeTotal) * timeScale << " ms";
     }
 
     return true;
@@ -564,7 +551,7 @@ void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::Bas
         }
     }
     // All constraint problems are locked
-    serr << "All constraint problems are locked, request from " << (from ? from->getName() : "NULL") << " ignored" << sendl;
+    msg_error() << "All constraint problems are locked, request from " << (from ? from->getName() : "NULL") << " ignored";
 }
 
 void GenericConstraintProblem::clear(int nbC)
@@ -1069,7 +1056,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                 break;
             }
         }
-        else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
+        else if(error < tol)
         {
             convergence = true;
             break;
@@ -1118,6 +1105,58 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         solver->graphForces.endEdit();
     }
 }
+
+sofa::core::MultiVecDerivId GenericConstraintSolver::getLambda()  const
+{
+    return m_lambdaId;
+}
+
+sofa::core::MultiVecDerivId GenericConstraintSolver::getDx() const
+{
+    return m_dxId;
+}
+
+MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res)
+: simulation::BaseMechanicalVisitor(params)
+, cparams(params)
+, _res(res)
+, _offset(0)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+  setReadWriteVectors();
+#endif
+}
+
+MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResolutionVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
+{
+  if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
+  {
+    ctime_t t0 = begin(node, c);
+    c->getConstraintResolution(cparams, _res, _offset);
+    end(node, c, t0);
+  }
+  return RESULT_CONTINUE;
+}
+
+/// Return a class name for this visitor
+/// Only used for debugging / profiling purposes
+const char* MechanicalGetConstraintResolutionVisitor::getClassName() const
+{
+    return "MechanicalGetConstraintResolutionVisitor";
+}
+
+bool MechanicalGetConstraintResolutionVisitor::isThreadSafe() const
+{
+    return false;
+}
+
+bool MechanicalGetConstraintResolutionVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    {
+        SOFA_UNUSED(node);
+        SOFA_UNUSED(map);
+        return false;
+    }
+
 
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
         .add< GenericConstraintSolver >();
