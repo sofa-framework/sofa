@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -37,6 +38,8 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
+using sofa::simulation::Node ;
 
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
@@ -310,17 +313,16 @@ template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
-    topology = this->getContext()->getMeshTopology();
 
     addInput(this->mstate1->findData("rest_position"));
     addInput(this->mstate2->findData("rest_position"));
     addOutput(&f_indices1);
     addOutput(&f_indices2);
 
-    f_indices1.createTopologicalEngine(topology);
+    f_indices1.createTopologicalEngine(static_cast<Node*>(this->mstate1->getContext())->getMeshTopology());
     f_indices1.registerTopologicalData();
 
-    f_indices2.createTopologicalEngine(topology);
+    f_indices2.createTopologicalEngine(static_cast<Node*>(this->mstate2->getContext())->getMeshTopology());
     f_indices2.registerTopologicalData();
 
     reinit();
@@ -640,7 +642,8 @@ void AttachConstraint<DataTypes>::doUpdate()
         // constraintFactor default behavior
         // if NOT set : initialize all constraints active
         helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
-        if(!d_constraintFactor.isSet())
+        //if(!d_constraintFactor.isSet())
+        if(true)
         {
             unsigned int size = f_indices2.getValue().size();
 

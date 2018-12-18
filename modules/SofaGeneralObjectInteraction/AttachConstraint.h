@@ -75,9 +75,6 @@ public:
 protected:
     AttachConstraintInternalData<DataTypes> data;
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
