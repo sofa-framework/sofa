@@ -110,7 +110,7 @@ static RegisterTemplateAlias Vec2Alias("Vec2", sofa::defaulttype::Vec2Types::Nam
 static RegisterTemplateAlias Vec3Alias("Vec3", sofa::defaulttype::Vec3Types::Name());
 static RegisterTemplateAlias Vec6Alias("Vec6", sofa::defaulttype::Vec6Types::Name());
 static RegisterTemplateAlias Rigid2Alias("Rigid2", sofa::defaulttype::Rigid2Types::Name());
-static RegisterTemplateAlias Rigid3Alias("Rigid3", sofa::defaulttype::Rigid2Types::Name());
+static RegisterTemplateAlias Rigid3Alias("Rigid3", sofa::defaulttype::Rigid3Types::Name());
 
 /// Compatibility aliases for niceness.
 static RegisterTemplateAlias RigidAlias("Rigid", sofa::defaulttype::Rigid3Types::Name(), true);

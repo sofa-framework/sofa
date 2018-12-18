@@ -112,6 +112,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
+    std::stringstream availabletemplate;
     objectmodel::BaseObject::SPtr object = NULL;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
@@ -138,7 +139,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                arg->logError("For backward compatibility, the template '"+name+"' has been replaced with "+alias->first+" which have a different precision, this may result in undefined behavior.");
+                arg->logError("For backward compatibility, the deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to remove the use of deprecated templates.");
             }
 
             name = alias->first;
@@ -176,6 +177,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
                 }
+                else
+                {
+                    availabletemplate << it3->first << ", ";
+                }
             }
         }
     }
@@ -197,7 +202,11 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
         else
         {
-            arg->logError("The object is in the factory but cannot be created.");
+            std::stringstream tmp;
+            tmp << "The object is in the factory but cannot be created." << msgendl;
+            tmp << "Requested template: " << templatename << "(" << usertemplatename << ")" << msgendl;
+            tmp << "Available templates: " << availabletemplate.rdbuf() ;
+            arg->logError(tmp.str());
         }
     }
     else
@@ -254,6 +263,17 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             }
             object->parse(&newdesc);
         }
+    }
+
+    /// We managed to create an object but there is error message in the log. Thus we emit them
+    /// as warning to this object.
+    if(!arg->getErrors().empty())
+    {
+        std::stringstream msg;
+        for (std::vector< std::string >::const_iterator it = arg->getErrors().begin(); it != arg->getErrors().end(); ++it)
+            msg << " " << *it << msgendl ;
+
+        msg_deprecated(object.get()) << msg.str() ;
     }
 
     return object;

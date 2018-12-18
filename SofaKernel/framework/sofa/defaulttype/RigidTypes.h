@@ -1010,9 +1010,9 @@ typedef RigidMass<3,float> Rigid3fMass;
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
-typedef Rigid3dTypes Rigid3Types; ///< alias
-typedef Rigid3dMass Rigid3Mass;   ///< alias
-typedef Rigid3Types RigidTypes;   ///< alias
+typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
+typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
+typedef RigidMass<3,SReal>     Rigid3Mass;   ///< un-defined precision type
 
 //=============================================================================
 // 2D Rigids
