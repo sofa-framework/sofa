@@ -73,19 +73,8 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getVoxelVolume( const TransformType& transform ) const
 {
-/*    if( ShapeFunctionTypes::material_dimensions == 2 ) // for 2D shape functions, it should return an area
-    {
-        // todo how to find the right directions to compute the area? Would need the topology or at least the voxel neighbourhood.
-        Real volume = transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
-        volume = pow( volume, Real(1.0/3.0) );
-        return volume * volume;
-    }
-    else
-*/
-    {
-        // by default, it returns the voxel volume
-        return transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
-    }
+    // by default, it returns the voxel volume
+    return transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
 }
 
 
@@ -312,7 +301,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( cons
             int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
             const typename MassMatrix::Bloc& b = m_massMatrix.getColsValue()[m_massMatrix.getRowBegin()[rowId]];
             for( int bi = 0; bi < m_massMatrix.getBlockRows(); ++bi )
-                    _acc[i][bi] = _f[i][bi] / b[bi][bi];
+                _acc[i][bi] = _f[i][bi] / b[bi][bi];
         }
 
         acc.endEdit();
@@ -446,7 +435,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
 {
     // warning the mass needs to be diagonal-lumped per dof
 
-//    std::cerr<<"ImageDensityMass::getElementMass "<<std::endl;
+    //    std::cerr<<"ImageDensityMass::getElementMass "<<std::endl;
 
     static const BaseMatrix::Index dimension = (BaseMatrix::Index) DataTypes::deriv_total_size;
 
@@ -454,8 +443,8 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
 
     m->clear();
 
-//    for( unsigned i=0 ; i<dimension; ++i )
-//        m->set( i,i,1);
+    //    for( unsigned i=0 ; i<dimension; ++i )
+    //        m->set( i,i,1);
 
     int i = index;
     int bi = 0;
@@ -470,18 +459,18 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
             const typename MassMatrix::Bloc& b = m_massMatrix.getColsValue()[xj];
             for ( int bi = 0; bi < m_massMatrix.getBlockRows() ; ++bi )
                 for ( int bj = 0; bj < m_massMatrix.getBlockCols() ; ++bj )
-                        m->add( bi, bi, b[bi][bj] ); // diagonal lumping
-//                      m->add( bi, bj, b[bi][bj] ); // block lumping
+                    m->add( bi, bi, b[bi][bj] ); // diagonal lumping
+            //                      m->add( bi, bj, b[bi][bj] ); // block lumping
         }
     }
 
 
-//    for( unsigned i=0 ; i<dimension; ++i )
-//        if( m->element( i , i ) == 0 )
-//        {
-//            m->set( i, i, 1 );
-//            std::cerr<<"ImageDensityMass::getElementMass wtf?"<<std::endl;
-//        }
+    //    for( unsigned i=0 ; i<dimension; ++i )
+    //        if( m->element( i , i ) == 0 )
+    //        {
+    //            m->set( i, i, 1 );
+    //            std::cerr<<"ImageDensityMass::getElementMass wtf?"<<std::endl;
+    //        }
 }
 
 ///////////////////////

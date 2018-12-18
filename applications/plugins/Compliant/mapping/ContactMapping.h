@@ -61,7 +61,6 @@ protected:
                        const typename self::in_pos_type& in) {
 		
 		// local frames have been computed in assemble
-
         (void)in;
         assert( in.size() == out.size() || (size_t)std::count( mask.begin(),mask.end(),true)==out.size() );
 
@@ -105,11 +104,7 @@ protected:
 		
         for(unsigned i = 0, activatedIndex=0; i < n; ++i)
         {
-//          assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
-
-
             if( !mask.empty() && !mask[i] ) continue; // not activated
-
 
             if( self::Nout==2 )
             {

@@ -139,7 +139,6 @@ protected:
         , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeForceField()     {    }
@@ -255,7 +254,6 @@ protected:
         , _shearModulusZX(initData(&_shearModulusZX,helper::vector<Real>((int)1,(Real)1500),"shearModulusZX","Shear Modulus about ZX plane"))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeOrthotropicForceField()     {    }
@@ -331,7 +329,6 @@ protected:
         , _shearModulusXY(initData(&_shearModulusXY,helper::vector<Real>((int)1,(Real)1500),"shearModulusXY","Shear Modulus about XY plane"))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeTransverseForceField()     {    }

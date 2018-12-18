@@ -180,57 +180,6 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectToPointConstraintClass) = core::RegisterOb
         ;
 template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3dTypes>;
 
-
-
-// TODO: jacobians need to be adjusted to complex types for following projective constaints
-
-//// ==========================================================================
-//// ProjectToLineConstraint
-//int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
-////.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-//
-//#ifdef SOFA_WITH_FLOAT
-//.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-//#endif
-//;
-////template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3dTypes>;
-//
-//#ifdef SOFA_WITH_FLOAT
-//template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3fTypes>;
-//#endif
-
-//// ==========================================================================
-//// ProjectToPlaneConstraint
-//int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
-////.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-//
-//#ifdef SOFA_WITH_FLOAT
-//.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-//#endif
-//;
-
-////template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3dTypes>;
-//
-//#ifdef SOFA_WITH_FLOAT
-//template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3fTypes>;
-//#endif
-
-//// ==========================================================================
-//// ProjectDirectionConstraint
-//int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
-////.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-//
-//#ifdef SOFA_WITH_FLOAT
-//.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-//#endif
-//    ;
-////template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3dTypes>;
-//
-//#ifdef SOFA_WITH_FLOAT
-//template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3fTypes>;
-//#endif
-
-
 } // namespace projectiveconstraintset
 } // namespace component
 } // namespace sofa
@@ -320,37 +269,6 @@ int EVALUATOR(TYPEABSTRACTNAME,MechanicalObjectClass) = core::RegisterObject ( "
 namespace mass
 {
 
-////template<> SOFA_Flexible_API
-//void UniformMass<TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dMass>::reinit()
-//{
-//    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
-//    {
-//        MassType* m = this->mass.beginWriteOnly();
-//        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
-//        this->mass.endEdit();
-//    }
-//    else
-//    {
-//        this->totalMass.setValue( this->mstate->getSize() * this->mass.getValue().getUniformValue() );
-//    }
-//}
-//
-//#ifdef SOFA_WITH_FLOAT
-//template<> SOFA_Flexible_API
-//void UniformMass<TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fMass>::reinit()
-//{
-//    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
-//    {
-//        MassType* m = this->mass.beginWriteOnly();
-//        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
-//        this->mass.endEdit();
-//    }
-//    else
-//    {
-//        this->totalMass.setValue( this->mstate->getSize() * this->mass.getValue().getUniformValue() );
-//    }
-//}
-//#endif
 
 template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::constructor_message()
