@@ -57,6 +57,8 @@ namespace component
 namespace forcefield
 {
 
+using namespace sofa::core::topology;
+
 // --------------------------------------------------------------------------------------
 // ---  Topology Creation/Destruction functions
 // --------------------------------------------------------------------------------------
@@ -313,7 +315,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
     vertexInfo.endEdit();
 
 
-    for (int i=0; i<_topology->getNbTriangles(); ++i)
+    for (Topology::TriangleID i=0; i<_topology->getNbTriangles(); ++i)
     {
         triangleHandler->applyCreateFunction(i, triangleInf[i],  _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
     }
