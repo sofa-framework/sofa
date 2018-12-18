@@ -271,17 +271,16 @@ namespace container
 {
 
 #if  !defined(FLEXIBLE_DeformationGradientTYPES_CPP)
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F321dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F321dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F311dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F311dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F221dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F221dTypes>;
-
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F331Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331Types>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332Types>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F321Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F321Types>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F311Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F311Types>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F221Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F221Types>;
 #endif
 
 } // namespace container

@@ -281,7 +281,7 @@ template<> inline const char* E311fTypes::Name() { return "E311f"; }
 template<> inline const char* E332dTypes::Name() { return "E332d"; }
 template<> inline const char* E332fTypes::Name() { return "E332f"; }
 template<> inline const char* E333dTypes::Name() { return "E333d"; }
-template<> inline const char* E333fTypes::Name() { return "E333fd"; }
+template<> inline const char* E333fTypes::Name() { return "E333f"; }
 template<> inline const char* E221dTypes::Name() { return "E221d"; }
 template<> inline const char* E221fTypes::Name() { return "E221f"; }
 
@@ -444,13 +444,6 @@ static inline Mat<3,3, Real> StrainVoigtToMat( const Vec<6, Real>& s )
     static const unsigned int material_dimensions=3;
     Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
 
-    /*unsigned int ei=0;
-    for(unsigned int j=0; j<material_dimensions; j++){
-        for( unsigned int k=0; k<material_dimensions-j; k++ )
-            if(0!=j) f[k][k+j] = f[k+j][k] = s[ei++] * (Real)0.5; // shear
-            else f[k][k] = s[ei++];// stretch
-    }*/
-
     f[0][0] = s[0];
     f[1][1] = s[1];
     f[2][2] = s[2];
@@ -467,13 +460,6 @@ static inline Mat<2,2, Real> StrainVoigtToMat( const Vec<3, Real>& s )
 {
     static const unsigned int material_dimensions=2;
     Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
-
-    /*unsigned int ei=0;
-    for(unsigned int j=0; j<material_dimensions; j++){
-        for( unsigned int k=0; k<material_dimensions-j; k++ )
-            if(0!=j) f[k][k+j] = f[k+j][k] = s[ei++] * (Real)0.5; // shear
-            else f[k][k] = s[ei++];// stretch
-    }*/
 
     f[0][0] = s[0];
     f[1][1] = s[1];
@@ -535,11 +521,7 @@ static inline Mat<3,3, Real> StressVoigtToMat( const Vec<6, Real>& s )
 {
     static const unsigned int material_dimensions=3;
     Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
-    /*unsigned int ei=0;
-    for(unsigned int j=0; j<material_dimensions; j++){
-        for( unsigned int k=0; k<material_dimensions-j; k++ )
-            f[k][k+j] = f[k+j][k] = s[ei++] ;
-    }*/
+
     f[0][0] = s[0];
     f[1][1] = s[1];
     f[2][2] = s[2];
@@ -615,37 +597,16 @@ namespace container
 {
 
 #if  !defined(FLEXIBLE_StrainTYPES_CPP)
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E331dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E332dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E333dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E321dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E321dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E311dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E311dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E221dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E221dTypes>;
-
-
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331dTypes>;
-
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::U331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U331dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::U321dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U321dTypes>;
-
-
-
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E331Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E332Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E321Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E311Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E221Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U331Types>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U321Types>;
 #endif
-
-
-
-
-
-
 
 } // namespace container
 

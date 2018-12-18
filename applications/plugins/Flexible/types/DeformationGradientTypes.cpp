@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 namespace core
 {
 
-template class SOFA_Flexible_API State<F331dTypes>;
-template class SOFA_Flexible_API State<F321dTypes>;
-template class SOFA_Flexible_API State<F311dTypes>;
-template class SOFA_Flexible_API State<F332dTypes>;
-template class SOFA_Flexible_API State<F221dTypes>;
+template class SOFA_Flexible_API State<F331Types>;
+template class SOFA_Flexible_API State<F321Types>;
+template class SOFA_Flexible_API State<F311Types>;
+template class SOFA_Flexible_API State<F332Types>;
+template class SOFA_Flexible_API State<F221Types>;
 
 } // namespace core
 
@@ -55,26 +55,35 @@ namespace container
 // ==========================================================================
 // Instanciation
 
-int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
+int DefGradientMechanicalObjectClass = core::RegisterObject ("Mechanical state vectors")
         .add< MechanicalObject<F331Types> >()
+        .add< MechanicalObject<F332Types> >()
         .add< MechanicalObject<F321Types> >()
         .add< MechanicalObject<F311Types> >()
-        .add< MechanicalObject<F332Types> >()
         .add< MechanicalObject<F221Types> >()
 		;
 
 template class SOFA_Flexible_API MechanicalObject<F331Types>;
+template class SOFA_Flexible_API MechanicalObject<F332Types>;
 template class SOFA_Flexible_API MechanicalObject<F321Types>;
 template class SOFA_Flexible_API MechanicalObject<F311Types>;
-template class SOFA_Flexible_API MechanicalObject<F332Types>;
 template class SOFA_Flexible_API MechanicalObject<F221Types>;
 
 static RegisterTemplateAlias alias0("F331", F331Types::Name() );
-static RegisterTemplateAlias alias1("F332", F332Types::Name() );
-static RegisterTemplateAlias alias2("F321", F321Types::Name() );
-static RegisterTemplateAlias alias3("F311", F331Types::Name() );
 static RegisterTemplateAlias alias4("F332", F332Types::Name() );
+static RegisterTemplateAlias alias2("F321", F321Types::Name() );
+static RegisterTemplateAlias alias3("F311", F311Types::Name() );
 static RegisterTemplateAlias alias5("F221", F221Types::Name() );
+
+namespace deprecated
+{
+static RegisterTemplateAlias alias0("F331f", F331Types::Name(), true);
+static RegisterTemplateAlias alias1("F332f", F332Types::Name(), true );
+static RegisterTemplateAlias alias2("F321f", F321Types::Name(), true );
+static RegisterTemplateAlias alias3("F311f", F331Types::Name(), true );
+static RegisterTemplateAlias alias4("F332f", F332Types::Name(), true );
+static RegisterTemplateAlias alias5("F221f", F221Types::Name(), true );
+}
 
 } // namespace container
 } // namespace component
