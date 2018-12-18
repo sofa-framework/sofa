@@ -446,16 +446,14 @@ template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static con
 
 
 typedef DeformableFrameMass<3, StdAffineTypes<3,double>::deriv_total_size, double> Affine3dMass;
-
+typedef DeformableFrameMass<3, StdAffineTypes<3,float>::deriv_total_size, float> Affine3fMass;
 typedef DeformableFrameMass<3, StdAffineTypes<3,SReal>::deriv_total_size,SReal> Affine3Mass;
 
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
-
 template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
-
-
+template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "Affine3fMass"; } };
 /// \endcond
 
 

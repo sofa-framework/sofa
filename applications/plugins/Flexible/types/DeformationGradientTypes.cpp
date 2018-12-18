@@ -75,14 +75,25 @@ static RegisterTemplateAlias alias2("F321", F321Types::Name() );
 static RegisterTemplateAlias alias3("F311", F311Types::Name() );
 static RegisterTemplateAlias alias5("F221", F221Types::Name() );
 
-namespace deprecated
+namespace f
 {
-static RegisterTemplateAlias alias0("F331f", F331Types::Name(), true);
-static RegisterTemplateAlias alias1("F332f", F332Types::Name(), true );
-static RegisterTemplateAlias alias2("F321f", F321Types::Name(), true );
-static RegisterTemplateAlias alias3("F311f", F311Types::Name(), true );
-static RegisterTemplateAlias alias5("F221f", F221Types::Name(), true );
+static RegisterTemplateAlias alias0("F331f", F331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias1("F332f", F332Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias2("F321f", F321Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias3("F311f", F311Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias5("F221f", F221Types::Name(), isSRealDouble());
 }
+
+namespace d
+{
+static RegisterTemplateAlias alias0("F331d", F331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias1("F332d", F332Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias2("F321d", F321Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias3("F311d", F311Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias5("F221d", F221Types::Name(), isSRealFloat());
+}
+
+
 
 } // namespace container
 } // namespace component

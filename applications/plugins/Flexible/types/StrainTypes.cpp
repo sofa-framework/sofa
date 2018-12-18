@@ -64,8 +64,6 @@ template class SOFA_Flexible_API MechanicalObject<I331Types>;
 template class SOFA_Flexible_API MechanicalObject<U331Types>;
 template class SOFA_Flexible_API MechanicalObject<U321Types>;
 
-namespace deprecated
-{
 static RegisterTemplateAlias alias1("E331", E331Types::Name());
 static RegisterTemplateAlias alias2("E321", E321Types::Name());
 static RegisterTemplateAlias alias3("E311", E311Types::Name());
@@ -75,6 +73,31 @@ static RegisterTemplateAlias alias6("E221", E221Types::Name());
 static RegisterTemplateAlias alias7("I331", I331Types::Name());
 static RegisterTemplateAlias alias8("U331", U331Types::Name());
 static RegisterTemplateAlias alias9("U321", U321Types::Name());
+
+namespace f
+{
+static RegisterTemplateAlias alias1("E331f", E331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias2("E321f", E321Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias3("E311f", E311Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias4("E332f", E332Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias5("E333f", E333Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias6("E221f", E221Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias7("I331f", I331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias8("U331f", U331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias9("U321f", U321Types::Name(), isSRealDouble());
+}
+
+namespace d
+{
+static RegisterTemplateAlias alias1("E331d", E331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias2("E321d", E321Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias3("E311d", E311Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias4("E332d", E332Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias5("E333d", E333Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias6("E221d", E221Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias7("I331d", I331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias8("U331d", U331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias9("U321d", U321Types::Name(), isSRealFloat());
 }
 
 } // namespace container
