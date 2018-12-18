@@ -615,22 +615,21 @@ typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
 template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
 
 /// 6D DOFs, double precision (default)
-typedef Vec6dTypes Vec6Types;
+typedef StdVectorTypes<Vec6,Vec6,Vec6::value_type> Vec6Types;
 /// 3D DOFs, double precision (default)
-typedef Vec3dTypes Vec3Types;
+typedef StdVectorTypes<Vec3,Vec3,Vec3::value_type> Vec3Types;
 /// 2D DOFs, double precision (default)
-typedef Vec2dTypes Vec2Types;
+typedef StdVectorTypes<Vec2,Vec2,Vec2::value_type> Vec2Types;
 /// 1D DOFs, double precision (default)
-typedef Vec1dTypes Vec1Types;
+typedef StdVectorTypes<Vec1,Vec1,Vec1::value_type> Vec1Types;
 /// 6D external DOFs, double precision (default)
-typedef ExtVec6dTypes ExtVec6Types;
+typedef ExtVectorTypes<Vec6,Vec6,Vec6::value_type> ExtVec6Types;
 /// 3D external DOFs, double precision (default)
-typedef ExtVec3dTypes ExtVec3Types;
+typedef ExtVectorTypes<Vec3,Vec3,Vec3::value_type> ExtVec3Types;
 /// 2D external DOFs, double precision (default)
-typedef ExtVec2dTypes ExtVec2Types;
+typedef ExtVectorTypes<Vec2,Vec2,Vec2::value_type> ExtVec2Types;
 /// 1D external DOFs, double precision (default)
-typedef ExtVec1dTypes ExtVec1Types;
-
+typedef ExtVectorTypes<Vec1,Vec1,Vec1::value_type> ExtVec1Types;
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 

@@ -856,30 +856,31 @@ typedef Vec<1,float> Vec1f;
 typedef Vec<1,double> Vec1d;
 typedef Vec<1,int> Vec1i;
 typedef Vec<1,unsigned> Vec1u;
-
+typedef Vec<1,SReal> Vec1;
 
 typedef Vec<2,float> Vec2f;
 typedef Vec<2,double> Vec2d;
 typedef Vec<2,int> Vec2i;
 typedef Vec<2,unsigned> Vec2u;
-
+typedef Vec<2,SReal> Vec2;
 
 typedef Vec<3,float> Vec3f;
 typedef Vec<3,double> Vec3d;
 typedef Vec<3,int> Vec3i;
 typedef Vec<3,unsigned> Vec3u;
-
+typedef Vec<3,SReal> Vec3;
 
 typedef Vec<4,float> Vec4f;
 typedef Vec<4,double> Vec4d;
 typedef Vec<4,int> Vec4i;
 typedef Vec<4,unsigned> Vec4u;
-
+typedef Vec<4,SReal> Vec4;
 
 typedef Vec<6,float> Vec6f;
 typedef Vec<6,double> Vec6d;
 typedef Vec<6,int> Vec6i;
 typedef Vec<6,unsigned> Vec6u;
+typedef Vec<6,SReal> Vec6;
 
 typedef Vec1d Vector1; ///< alias
 typedef Vec2d Vector2; ///< alias
