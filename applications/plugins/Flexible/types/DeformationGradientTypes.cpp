@@ -80,8 +80,7 @@ namespace deprecated
 static RegisterTemplateAlias alias0("F331f", F331Types::Name(), true);
 static RegisterTemplateAlias alias1("F332f", F332Types::Name(), true );
 static RegisterTemplateAlias alias2("F321f", F321Types::Name(), true );
-static RegisterTemplateAlias alias3("F311f", F331Types::Name(), true );
-static RegisterTemplateAlias alias4("F332f", F332Types::Name(), true );
+static RegisterTemplateAlias alias3("F311f", F311Types::Name(), true );
 static RegisterTemplateAlias alias5("F221f", F221Types::Name(), true );
 }
 
