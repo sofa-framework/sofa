@@ -31,22 +31,29 @@ namespace sofa {
 class TemplateAliasTest : public BaseSimulationTest
 {
 protected:
-    bool registerAlias(const std::string& alias, const std::string& target, bool warn)
+    bool registerAlias(const std::string& alias, const std::string& target, bool succeed, bool warn)
     {
-        TemplateAliases::addAlias(alias, target, warn);
-        EXPECT_TRUE((TemplateAliases::resolveAlias(alias) == target));
+        if(TemplateAliases::addAlias(alias, target, warn))
+        {
+            EXPECT_TRUE((TemplateAliases::resolveAlias(alias) == target));
 
-        const TemplateAlias* re = TemplateAliases::getTemplateAlias(alias);
-        EXPECT_TRUE((re->first == target));
-        EXPECT_TRUE((re->second == warn));
+            const TemplateAlias* re = TemplateAliases::getTemplateAlias(alias);
+            EXPECT_TRUE((re->first == target));
+            EXPECT_TRUE((re->second == warn));
+            EXPECT_TRUE(succeed);
+        }else
+        {
+            EXPECT_FALSE(succeed);
+        }
+        return true;
     }
 };
 
 TEST_F(TemplateAliasTest, Register)
 {
-    registerAlias("TheAlias1", "TheResult1", true);
-    registerAlias("TheAlias2", "TheResult2", false);
-    registerAlias("TheAlias2", "TheResult2", true);
+    registerAlias("TheAlias1", "TheResult1", true, true);
+    registerAlias("TheAlias2", "TheResult2", true, false);
+    registerAlias("TheAlias2", "TheResult2", false, true);
 }
 
 
