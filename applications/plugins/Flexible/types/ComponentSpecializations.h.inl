@@ -43,10 +43,9 @@ template <> SOFA_Flexible_API
 void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams);
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
+#if !defined(FLEXIBLE_COMPILING_CPP)
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::TYPEABSTRACTNAME3dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>;
-
 #endif
 
 
@@ -76,7 +75,7 @@ public:
             for( unsigned j=0; j<TYPEABSTRACTNAMEMass::VSize; ++j )
             {
                 mat->add(pos+i, pos+j, mass[i][j]*fact);
-//            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
+                //            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
             }
     }
 };
@@ -93,13 +92,12 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
+#if !defined(FLEXIBLE_COMPILING_CPP)
+#ifdef SOFA_HAVE_IMAGE
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,defaulttype::TYPEABSTRACTNAME3dMass>;
 
-            #ifdef SOFA_HAVE_IMAGE
-            extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,defaulttype::TYPEABSTRACTNAME3dMass>;
-        
-        extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::TYPEABSTRACTNAME3dMass>;
-    #endif
+extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::TYPEABSTRACTNAME3dMass>;
+#endif
 
 #endif
 
@@ -119,12 +117,11 @@ namespace core
 namespace behavior
 {
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
+#if !defined(FLEXIBLE_COMPILING_CPP)
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
 extern template class SOFA_Flexible_API Mass<defaulttype::TYPEABSTRACTNAME3dTypes>;
 extern template class SOFA_Flexible_API ConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
 extern template class SOFA_Flexible_API ProjectiveConstraintSet<defaulttype::TYPEABSTRACTNAME3dTypes>;
-
 #endif
 
 
@@ -132,7 +129,7 @@ extern template class SOFA_Flexible_API ProjectiveConstraintSet<defaulttype::TYP
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
+#if !defined(FLEXIBLE_COMPILING_CPP)
 extern template class SOFA_Flexible_API Mapping<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::Rigid3Types>;
 
 #endif
