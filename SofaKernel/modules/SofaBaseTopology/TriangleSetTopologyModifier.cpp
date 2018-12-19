@@ -705,12 +705,12 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
- //   for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
-	 for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
+
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
-        {
+        {            
             topoEngine->update();
         }
     }
