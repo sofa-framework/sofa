@@ -161,7 +161,7 @@ TEST_F(PluginManager_test, pluginEntriesValues)
 
     std::string testModuleName = "TestPlugin";
     std::string testModuleVersion = "0.7";
-    std::string testModuleLicence = "LicenceTest";
+    std::string testModuleLicense = "LicenseTest";
     std::string testModuleDescription = "Description of the Test Plugin";
     std::string testModuleComponentList = "ComponentA, ComponentB";
 
@@ -171,8 +171,8 @@ TEST_F(PluginManager_test, pluginEntriesValues)
     ASSERT_EQ(0, std::string(p.getModuleVersion()).compare(testModuleVersion));
     ASSERT_NE(0, std::string(p.getModuleVersion()).compare(testModuleVersion + "77777"));
 
-    ASSERT_EQ(0, std::string(p.getModuleLicense()).compare(testModuleLicence));
-    ASSERT_NE(0, std::string(p.getModuleLicense()).compare(testModuleLicence + "GPLBSDProprio"));
+    ASSERT_EQ(0, std::string(p.getModuleLicense()).compare(testModuleLicense));
+    ASSERT_NE(0, std::string(p.getModuleLicense()).compare(testModuleLicense + "GPLBSDProprio"));
 
     ASSERT_EQ(0, std::string(p.getModuleDescription()).compare(testModuleDescription));
     ASSERT_NE(0, std::string(p.getModuleDescription()).compare(testModuleDescription + "blablablabalbal"));

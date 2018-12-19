@@ -31,7 +31,6 @@ using sofa::helper::system::PluginRepository ;
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::PluginRepository;
-using sofa::helper::system::DataRepository;
 using sofa::helper::system::FileSystem;
 
 #include <sofa/helper/Utils.h>

@@ -38,10 +38,8 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(FixedConstraint)
-
 int FixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
         .add< FixedConstraint<Vec3dTypes> >()
         .add< FixedConstraint<Vec2dTypes> >()
         .add< FixedConstraint<Vec1dTypes> >()
@@ -49,7 +47,7 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         .add< FixedConstraint<Rigid3dTypes> >()
         .add< FixedConstraint<Rigid2dTypes> >()
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
         .add< FixedConstraint<Vec3fTypes> >()
         .add< FixedConstraint<Vec2fTypes> >()
         .add< FixedConstraint<Vec1fTypes> >()
@@ -59,7 +57,23 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
 #endif
         ;
 
-#ifndef SOFA_FLOAT
+
+// methods specilizations declaration
+#ifdef SOFA_WITH_DOUBLE
+template <> SOFA_BOUNDARY_CONDITION_API
+void FixedConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+template <> SOFA_BOUNDARY_CONDITION_API
+void FixedConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
+#ifdef SOFA_WITH_FLOAT
+template <> SOFA_BOUNDARY_CONDITION_API
+void FixedConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+template <> SOFA_BOUNDARY_CONDITION_API
+void FixedConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
+
+
+#ifdef SOFA_WITH_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec2dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec1dTypes>;
@@ -67,7 +81,7 @@ template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec6dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid2dTypes>;
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec2fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec1fTypes>;
@@ -76,7 +90,9 @@ template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid2fTypes>;
 #endif
 
-#ifndef SOFA_FLOAT
+
+// methods specilizations definition
+#ifdef SOFA_WITH_DOUBLE
 template <>
 void FixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -149,7 +165,7 @@ void FixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vpara
 }
 #endif
 
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template <>
 void FixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {

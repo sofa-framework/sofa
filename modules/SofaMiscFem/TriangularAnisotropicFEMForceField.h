@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -108,12 +106,16 @@ public:
         TriangularAnisotropicFEMForceField<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    /// Inherited member
+    /// Bring inherited member in the current lookup context.
+    /// otherwise any access to the Inherit1::member would require "this->".
+    /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    using Inherit1::_topology;
 
     TRQSTriangleHandler* triangleHandler;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<defaulttype::Vec3dTypes>;
 #endif

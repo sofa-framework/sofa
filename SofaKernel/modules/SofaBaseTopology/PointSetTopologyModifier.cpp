@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(PointSetTopologyModifier)
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
         .add< PointSetTopologyModifier >();
 
@@ -64,18 +63,18 @@ void PointSetTopologyModifier::swapPoints(const int i1, const int i2)
 }
 
 
-void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
+void PointSetTopologyModifier::addPointsProcess(const size_t nPoints)
 {
     m_container->addPoints(nPoints);
 }
 
-void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
+void PointSetTopologyModifier::addPointsWarning(const size_t nPoints, const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
-    const unsigned int startIndex = m_container->getNbPoints()-nPoints;
-    sofa::helper::vector <unsigned int> indices; indices.resize(nPoints);
-    for(unsigned int i=0; i<nPoints; ++i)
-        indices[i] = startIndex+i;
+    const size_t startIndex = m_container->getNbPoints()-nPoints;
+    sofa::helper::vector <PointID> indices; indices.resize(nPoints);
+    for(size_t i=0; i<nPoints; ++i)
+        indices[i] = PointID(startIndex+i);
 
     if(addDOF)
     {
@@ -90,16 +89,16 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, cons
 }
 
 
-void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
+        const sofa::helper::vector< sofa::helper::vector< PointID > > &ancestors,
         const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
         const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
-    const unsigned int startIndex = m_container->getNbPoints()-nPoints;
-    sofa::helper::vector <unsigned int> indices; indices.resize(nPoints);
-    for(unsigned int i=0; i<nPoints; ++i)
-        indices[i] = startIndex+i;
+    const size_t startIndex = m_container->getNbPoints()-nPoints;
+    sofa::helper::vector <PointID> indices; indices.resize(nPoints);
+    for(size_t i=0; i<nPoints; ++i)
+        indices[i] = PointID(startIndex+i);
 
     if(addDOF)
     {
@@ -114,7 +113,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 }
 
 
-void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
+void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
         const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
         const bool addDOF)
 {
@@ -127,20 +126,20 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     // Compute standard points construction info based on ancestor points
     // related to topology elems and local coordinates
 
-    const unsigned int startIndex = m_container->getNbPoints() - nPoints;
+    const size_t startIndex = m_container->getNbPoints() - nPoints;
 
-    helper::vector< unsigned int > newPointIndices;
-    helper::vector< helper::vector< unsigned int > > ancestorPointIndices;
+    helper::vector< PointID > newPointIndices;
+    helper::vector< helper::vector< PointID > > ancestorPointIndices;
     helper::vector< helper::vector< double       > > baryCoefs;
 
     newPointIndices.resize(nPoints);
     ancestorPointIndices.resize(nPoints);
     baryCoefs.resize(nPoints);
 
-    for(unsigned int i = 0; i < nPoints; ++i)
+    for(size_t i = 0; i < nPoints; ++i)
     {
-        newPointIndices[i] = startIndex + i;
-        unsigned int ancestorIndex = ancestorElems[i].index;
+        newPointIndices[i] = PointID(startIndex + i);
+        PointID ancestorIndex = ancestorElems[i].index;
         // check if this new point has indeed an ancestor.
         if (ancestorIndex != core::topology::BaseMeshTopology::InvalidID )
         {
@@ -242,7 +241,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
                     break;
                 }
             default :
-                serr << "ERROR in PointSetTopologyModifier : Unsupported ancestor primitive type in addPointsWarning" << sendl;
+                msg_error() << "Unsupported ancestor primitive type in addPointsWarning";
                 break;
             }
         }
@@ -263,7 +262,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 }
 
 
-void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
+void PointSetTopologyModifier::addPoints(const size_t nPoints,
                                          const bool addDOF)
 {
     addPointsProcess(nPoints);
@@ -271,8 +270,8 @@ void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
     propagateTopologicalChanges();
 }
 
-void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
-     const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+void PointSetTopologyModifier::addPoints(const size_t nPoints,
+     const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
      const sofa::helper::vector< sofa::helper::vector< double> >& coefs,
      const bool addDOF)
 {
@@ -281,7 +280,7 @@ void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
     propagateTopologicalChanges();
 }
 
-void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
+void PointSetTopologyModifier::addPoints(const size_t nPoints,
      const sofa::helper::vector< core::topology::PointAncestorElem >& srcElems,
      const bool addDOF)
 {
@@ -290,8 +289,8 @@ void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
     propagateTopologicalChanges();
 }
 
-void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <PointID>& id,
+        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
@@ -314,13 +313,13 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <un
 
 
 
-void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned int> &indices,
+void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,
         const bool removeDOF)
 {
     m_container->setPointTopologyToDirty();
 
     // sort points so that they are removed in a descending order
-    std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
+    std::sort( indices.begin(), indices.end(), std::greater<PointID>() );
 
     // Warning that these vertices will be deleted
     PointsRemoved *e = new PointsRemoved(indices);
@@ -334,19 +333,19 @@ void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned
 }
 
 
-void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> & indices,
+void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<PointID> & indices,
         const bool removeDOF)
 {
     if(removeDOF)
     {
         propagateStateChanges();
     }
-    m_container->removePoints((unsigned int)indices.size());
+    m_container->removePoints(indices.size());
 }
 
 
-void PointSetTopologyModifier::renumberPointsWarning( const sofa::helper::vector<unsigned int> &index,
-        const sofa::helper::vector<unsigned int> &inv_index,
+void PointSetTopologyModifier::renumberPointsWarning( const sofa::helper::vector<PointID> &index,
+        const sofa::helper::vector<PointID> &inv_index,
         const bool renumberDOF)
 {
     // Warning that these vertices will be deleted
@@ -361,8 +360,8 @@ void PointSetTopologyModifier::renumberPointsWarning( const sofa::helper::vector
 }
 
 
-void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<unsigned int> &/*index*/,
-        const sofa::helper::vector<unsigned int> &/*inv_index*/,
+void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<PointID> &/*index*/,
+        const sofa::helper::vector<PointID> &/*inv_index*/,
         const bool renumberDOF)
 {
     if(renumberDOF)
@@ -375,10 +374,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    //TODO: temporary code to test topology engine pipeline.
-#ifndef NDEBUG
-    sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
-#endif
     // Declare all engines to dirty:
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
@@ -392,17 +387,9 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     // security to avoid loops
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
         (*it)->cleanDirty();
-
-#ifndef NDEBUG
-    sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
-#endif
     
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
 
@@ -415,10 +402,6 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
 
@@ -439,19 +422,12 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     // get directly the list of engines created at init: case of removing.... for the moment
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
-#ifndef NDEBUG
-    dmsg_info() << "points is dirty" << msgendl
-                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
-#endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            std::cout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
-#endif
             topoEngine->update();
         }
     }

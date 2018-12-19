@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP
+
 #include "LinearDiagonalCompliance.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -22,8 +24,6 @@ int LinearDiagonalComplianceClass = core::RegisterObject("Linear Diagonal compli
         .add< LinearDiagonalCompliance< Vec3fTypes > >()
 #endif
         ;
-
-SOFA_DECL_CLASS(LinearDiagonalCompliance)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API LinearDiagonalCompliance<Vec1dTypes>;

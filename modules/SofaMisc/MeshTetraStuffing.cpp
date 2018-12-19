@@ -43,8 +43,6 @@ namespace misc
 using namespace sofa::defaulttype;
 using helper::vector;
 
-SOFA_DECL_CLASS(MeshTetraStuffing)
-
 int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
         .add< MeshTetraStuffing >()
         ;

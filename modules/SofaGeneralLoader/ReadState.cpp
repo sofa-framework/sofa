@@ -31,8 +31,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(ReadState)
-
 using namespace defaulttype;
 
 int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")
@@ -99,7 +97,7 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Deactivated only called by extern functions
+        rs->d_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rs->init();
 
         ++counterReadState;

@@ -61,7 +61,6 @@ Python::Python() : BaseObject()
 
 Python::~Python(){}
 
-SOFA_DECL_CLASS(Python)
 int ImportClass = core::RegisterObject("Store a Python code fragment.")
         .add< Python >();
 

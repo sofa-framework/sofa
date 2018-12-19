@@ -296,8 +296,6 @@ void GenericConstraintCorrection::resetContactForce()
 }
 
 
-SOFA_DECL_CLASS(GenericConstraintCorrection)
-
 int GenericConstraintCorrectionClass = RegisterObject("")
 .add< GenericConstraintCorrection >()
 ;

@@ -41,8 +41,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS ( CenterPointTopologicalMapping )
-
 // Register in the Factory
 int CenterPointTopologicalMappingClass = core::RegisterObject ( "" )
         .add< CenterPointTopologicalMapping >()
@@ -90,7 +88,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
             {
             case core::topology::HEXAHEDRAADDED:
             {
-                const unsigned int nbHexaAdded = ( static_cast< const HexahedraAdded *>( *changeIt ) )->getNbAddedHexahedra();
+                const size_t nbHexaAdded = ( static_cast< const HexahedraAdded *>( *changeIt ) )->getNbAddedHexahedra();
                 to_pstm->addPointsProcess(nbHexaAdded);
                 to_pstm->addPointsWarning(nbHexaAdded, true);
                 to_pstm->propagateTopologicalChanges();

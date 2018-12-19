@@ -284,51 +284,57 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_MULTIMAPPING_CPP)
+#if !defined(SOFA_CORE_MULTIMAPPING_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec2dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec2dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec6dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec6dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec2dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec6dTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec6dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
 
-
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec2fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec2fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec6fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec6fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes >;
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec2fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec6fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
 #endif
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec1fTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec2fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec2dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec6fTypes >;
-extern template class SOFA_CORE_API MultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec6dTypes >;
+#ifdef SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec2fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec2dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec6fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec6dTypes >;
+template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
 #endif
+
 
 #endif
 

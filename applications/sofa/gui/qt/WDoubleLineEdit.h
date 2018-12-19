@@ -30,8 +30,6 @@
 #include <QKeyEvent>
 
 /* -------------------------------------------------------- */
-
-
 class SOFA_SOFAGUIQT_API WDoubleLineEdit : public QLineEdit
 {
     Q_OBJECT
@@ -50,8 +48,16 @@ protected:
     QDoubleValidator *m_DblValid;
     double            m_bInternal;
 
+    bool              m_isDragging ;
+    QPoint            m_prevMousePosition ;
+
     void              checkValue();
     virtual void      keyPressEvent(QKeyEvent *);
+
+    virtual void      mouseMoveEvent(QMouseEvent *) ;
+    virtual void      mousePressEvent(QMouseEvent *) ;
+    virtual void      mouseReleaseEvent(QMouseEvent *) ;
+
 public:
 
     WDoubleLineEdit(QWidget *parent,const char *name);
@@ -80,14 +86,14 @@ public:
     int     getIntDisplayedValue() {return static_cast<int>(text().toDouble());}
 
 signals:
-
-    void ValueChanged(double);
+    void valueEdited(double) ;
+    void valueChanged(double);
     void valuePercentChanged(int);
 
 protected slots:
 
     void slotCalcValue(const QString&);
-    void slotCalcValue(double);
+    void slotCalcValue(double, bool isEditted=false);
     void slotReturnPressed();
 
 public slots:

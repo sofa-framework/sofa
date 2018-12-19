@@ -120,7 +120,7 @@ public:
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem, const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
+    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem, const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
 protected:
     /** the object where the mechanical DOFs are stored */
@@ -132,7 +132,7 @@ protected:
     Data<std::string> d_tagMechanics;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2dTypes>;

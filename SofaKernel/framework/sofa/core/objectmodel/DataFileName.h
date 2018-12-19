@@ -22,10 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_DATAFILENAME_H
 #define SOFA_CORE_OBJECTMODEL_DATAFILENAME_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/SVector.h>
 
@@ -110,6 +106,11 @@ public:
         this->updateIfDirty();
         return m_fullpath;
     }
+    virtual const std::string& getExtension() const
+    {
+        this->updateIfDirty();
+        return m_extension;
+    }
 
     virtual void update()
     {
@@ -122,6 +123,7 @@ protected:
 
     std::string m_fullpath;
     std::string m_relativepath;
+    std::string m_extension;
 
 private:
     DataFileName(const Inherit& d);

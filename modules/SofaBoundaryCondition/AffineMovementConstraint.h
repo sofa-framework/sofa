@@ -186,17 +186,16 @@ private:
     void transform(const SetIndexArray & indices, VecCoord& x0 , VecCoord& xf);
 };
 
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
+#if !defined(SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP)
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+#endif //SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
-#endif
+#endif //SOFA_WITH_FLOAT
+#endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
 
 } // namespace projectiveconstraintset

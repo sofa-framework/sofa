@@ -27,7 +27,6 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/behavior/BaseController.h>
@@ -44,6 +43,12 @@ namespace component
 namespace collision
 {
 
+/**
+* The CarvingManager class will perform topological resection on a triangle surface (could be on top of tetrahedron topology)
+* The tool performing the carving need to be represented by a collision model @sa toolCollisionModel
+* The surface to be carved are also mapped on collision models @sa surfaceCollisionModels
+* Detecting the collision is done using the scene Intersection and NarrowPhaseDetection pipeline.
+*/
 class SOFA_SOFACARVING_API CarvingManager : public core::behavior::BaseController
 {
 public:
@@ -53,41 +58,65 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Real Real;
     
-	typedef core::CollisionModel ToolModel;
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
-
-    Data < std::string > f_modelTool; ///< Tool model path
-    Data < std::string > f_modelSurface; ///< TriangleSetModel or SphereModel path
-    Data < Real > f_minDistance;
-    Data < Real > f_maxDistance;
-    Data < Real > f_edgeDistance;
     
-    
-    Data < bool > active; ///< Activate this object. Note that this can be dynamically controlled by using a key
-    Data < char > keyEvent; ///< key to press to activate this object until the key is released
-    Data < char > keySwitchEvent; ///< key to activate this object until the key is pressed again
-    Data < bool > mouseEvent; ///< Activate carving with middle mouse button
-    Data < bool > omniEvent; ///< Activate carving with omni button
-    
-protected:
-    ToolModel* modelTool;
-    core::CollisionModel* modelSurface;
-    core::collision::Intersection* intersectionMethod;
-    core::collision::NarrowPhaseDetection* detectionNP;
-
-
-    CarvingManager();
-
-    virtual ~CarvingManager();
-public:
+    /// Sofa API init method of the component
     virtual void init() override;
-
+    /// Sofa API reset method of the component
     virtual void reset() override;
-    
+
+    /// Method to handle various event like keyboard or omni.
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
+    /// Impl method that will compute the intersection and check if some element have to be removed.
     virtual void doCarve();
 
+
+protected:
+    /// Default constructor
+    CarvingManager();
+
+    /// Default destructor
+    virtual ~CarvingManager();
+
+
+public:
+    /// Tool model path
+    Data < std::string > d_toolModelPath; 
+    /// TriangleSetModel or SphereModel path
+    Data < std::string > d_surfaceModelPath;
+
+    /// Collision distance at which cavring will start. Equal to contactDistance by default.
+    Data < Real > d_carvingDistance;
+    
+    ///< Activate this object. Note that this can be dynamically controlled by using a key
+    Data < bool > d_active;
+    ///< key to press to activate this object until the key is released
+    Data < char > d_keyEvent;
+    ///< key to activate this object until the key is pressed again
+    Data < char > d_keySwitchEvent;
+    ///< Activate carving with middle mouse button
+    Data < bool > d_mouseEvent;
+    ///< Activate carving with omni button
+    Data < bool > d_omniEvent;
+    ///< Activate carving with string Event, the activator name has to be inside the script event. Will look for 'pressed' or 'release' keyword. For example: 'button1_pressed'
+    Data < std::string > d_activatorName;
+    
+protected:
+    /// Pointer to the tool collision model
+    core::CollisionModel* m_toolCollisionModel;
+
+    // Pointer to the target object collision model
+    std::vector<core::CollisionModel*> m_surfaceCollisionModels;
+
+    // Pointer to the scene intersection Method component
+    core::collision::Intersection* m_intersectionMethod;
+    // Pointer to the scene detection Method component (Narrow phase only)
+    core::collision::NarrowPhaseDetection* m_detectionNP;
+
+    // Bool to store the information if component has well be init and can be used.
+    bool m_carvingReady;
+    
 };
 
 } // namespace collision

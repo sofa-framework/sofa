@@ -52,8 +52,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(Hexa2TetraTopologicalMapping)
-
 // Register in the Factory
 int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to TetrahedronSetTopology")
         .add< Hexa2TetraTopologicalMapping >()
@@ -101,7 +99,7 @@ void Hexa2TetraTopologicalMapping::init()
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
 
-            int nbcubes = fromModel->getNbHexahedra();
+            size_t nbcubes = fromModel->getNbHexahedra();
 
             // These values are only correct if the mesh is a grid topology
             int nx = 2;
@@ -178,7 +176,7 @@ void Hexa2TetraTopologicalMapping::init()
                 }
                 for(int j=0; j<6; j++)
                     Loc2GlobVec.push_back(i);
-                Glob2LocMap[i]=Loc2GlobVec.size()-1;
+                Glob2LocMap[i] = (unsigned int)Loc2GlobVec.size()-1;
             }
 
             //to_tstm->propagateTopologicalChanges();

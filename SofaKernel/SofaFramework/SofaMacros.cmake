@@ -173,81 +173,88 @@ endmacro()
 # See plugins/SofaHighOrder for example
 #
 macro(sofa_add_generic_external directory name type)
-    message("Adding EXTERNAL ${type} ${name}")
-
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-        set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-
-        string(TOUPPER "EXTERNAL_${type}_${name}" option)
-
-        # optional parameter to activate/desactivate the option
-        set(active OFF)
-        if(${ARGV4})
-            if( ${ARGV4} STREQUAL ON )
-                set(active ON)
-            endif()
-        endif()
-
-        option(${option}_FORCE_FETCH "Force ${name} fetch." OFF)
-        if(${option}_FORCE_FETCH)
-            set(${option}_FORCE_FETCH OFF CACHE BOOL "Force ${name} fetch." FORCE)
-            set(${option}_RUN_ONCE FALSE CACHE INTERNAL "run only once the fetching process" FORCE)
-        endif()
-
-        # Setup temporary directory
-        set(${name}_TEMP_DIR "${CMAKE_BINARY_DIR}/externals/${name}/" )
-
-        # Fetch
-        if(NOT ${option}_RUN_ONCE)
-            set(${option}_RUN_ONCE TRUE CACHE INTERNAL "run only once the fetching process" FORCE)
-
-            message("Checking for ${${name}_TEMP_DIR}")
-            if(NOT EXISTS ${${name}_TEMP_DIR})
-                message("Creating ${${name}_TEMP_DIR}")
-                file(MAKE_DIRECTORY ${${name}_TEMP_DIR})
-            endif()
-
-            # Download and unpack  at configure time
-            configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
-            file(COPY ${location}/ExternalProjectConfig.cmake.in DESTINATION ${${name}_TEMP_DIR})
-
-            #execute script to get src
-            message("Pulling ${name}... ")
-            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
-            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-                WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
-
-            if(EXISTS "${location}/.git")
-                message("... Done")
-                # add .gitignore for Sofa
-                file(WRITE "${location}/.gitignore" "*")
-                file(COPY ${${name}_TEMP_DIR}/ExternalProjectConfig.cmake.in DESTINATION ${location})
-            else()
-                message("... error while pulling ${name}")
-            endif()
-        endif()
-
-        # Add
-        if(EXISTS "${location}/.git" AND IS_DIRECTORY "${location}/.git")
-            configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
-            if("${type}" STREQUAL "subdirectory")
-                add_subdirectory("${location}" "${name}")
-            elseif("${type}" STREQUAL "plugin")
-                sofa_add_plugin("${name}" "${name}" ${active})
-            endif()
-        endif()
-    else()
+    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" OR NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         message("(${CMAKE_CURRENT_LIST_DIR}/${location}) does not exist and will be ignored.")
+        return()
+    endif()
+
+    set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+
+    string(TOUPPER ${type}_${name} option)
+
+    # optional parameter to activate/desactivate the option
+    set(active OFF)
+    if(${ARGV3})
+        set(active ON)
+    endif()
+
+    if("${type}" STREQUAL "Subdirectory")
+        string(TOUPPER MODULE_${PROJECT_NAME} module_name)
+        string(TOUPPER plugin_${PROJECT_NAME} plugin_name)
+        string(TOUPPER ${name} uppername)
+        if(DEFINED ${module_name})
+            set(option ${module_name}_FETCH_${uppername})
+        elseif(DEFINED ${plugin_name})
+            set(option ${plugin_name}_FETCH_${uppername})
+        else()
+            set(option SOFA_FETCH_${uppername})
+        endif()
+        option(${option} "Fetch ${name} repository." ${active})
+    else()
+        option(${option} "Fetch and build the ${name} ${type}." ${active})
+    endif()
+
+    # Setup temporary directory
+    set(${name}_TEMP_DIR "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}/" )
+
+    # Fetch
+    if(${option})
+        message("Fetching ${type} ${name}")
+
+        message("Checking for ${${name}_TEMP_DIR}")
+        if(NOT EXISTS ${${name}_TEMP_DIR})
+            message("Creating ${${name}_TEMP_DIR}")
+            file(MAKE_DIRECTORY ${${name}_TEMP_DIR})
+        endif()
+
+        # Download and unpack  at configure time
+        configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+        file(COPY ${location}/ExternalProjectConfig.cmake.in DESTINATION ${${name}_TEMP_DIR})
+
+        #execute script to get src
+        message("Pulling ${name}... ")
+        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -G "${CMAKE_GENERATOR}" .
+            WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
+        execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+            WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
+
+        if(EXISTS "${location}/.git")
+            message("... Done")
+            # add .gitignore for Sofa
+            file(WRITE "${location}/.gitignore" "*")
+            file(COPY ${${name}_TEMP_DIR}/ExternalProjectConfig.cmake.in DESTINATION ${location})
+        else()
+            message("... error while pulling ${name}")
+        endif()
+    endif()
+
+    # Add
+    if(EXISTS "${location}/.git" AND IS_DIRECTORY "${location}/.git")
+        configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+        if("${type}" STREQUAL "Subdirectory")
+            add_subdirectory("${location}" "${name}")
+        elseif("${type}" STREQUAL "Plugin")
+            sofa_add_plugin("${name}" "${name}" ${active})
+        endif()
     endif()
 endmacro()
 
 macro(sofa_add_subdirectory_external directory name)
-    sofa_add_generic_external(${directory} ${name} "subdirectory")
+    sofa_add_generic_external(${directory} ${name} "Subdirectory" ${ARGV2})
 endmacro()
 
 macro(sofa_add_plugin_external directory name)
-    sofa_add_generic_external(${directory} ${name} "plugin" ${ARGV3})
+    sofa_add_generic_external(${directory} ${name} "Plugin" ${ARGV2})
 endmacro()
 
 
@@ -277,7 +284,7 @@ macro(sofa_set_python_directory plugin_name directory)
 
     ## Python configuration file (build tree)
     file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${plugin_name}"
-         "${CMAKE_CURRENT_SOURCE_DIR}/python")
+         "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
     ## Python configuration file (install tree)
      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
          "lib/python2.7/site-packages")
@@ -398,27 +405,16 @@ endmacro()
 macro(sofa_install_libraries)
     foreach(library ${ARGN})
         if(EXISTS ${library})
-            get_filename_component(LIB_NAME ${library} NAME_WE)
-            get_filename_component(LIB_PATH ${library} PATH)
-
             get_filename_component(LIBREAL ${library} REALPATH)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
             get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
 
-            file(GLOB_RECURSE SHARED_LIBS FOLLOW_SYMLINKS
-                "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-                "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-                "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-
+            file(GLOB_RECURSE SHARED_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
             )
-            file(GLOB_RECURSE STATIC_LIBS FOLLOW_SYMLINKS
-                "${LIB_PATH}/${LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-                "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-                "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-
+            file(GLOB_RECURSE STATIC_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
@@ -473,8 +469,15 @@ endmacro()
 
 macro(sofa_copy_libraries_from_targets)
     foreach(target ${ARGN})
-        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-        sofa_copy_libraries(${target_location})
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                get_target_property(target_location ${target} LOCATION_${CONFIG})
+                sofa_copy_libraries(${target_location})
+            endforeach()
+        else() # Single-config generator (nmake)
+            get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+            sofa_copy_libraries(${target_location})
+        endif()
     endforeach()
 endmacro()
 

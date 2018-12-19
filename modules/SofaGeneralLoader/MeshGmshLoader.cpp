@@ -40,8 +40,6 @@ using namespace sofa::defaulttype;
 using std::string;
 using std::stringstream;
 
-SOFA_DECL_CLASS(MeshGmshLoader)
-
 int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh file format.")
         .add< MeshGmshLoader >()
         ;
@@ -76,7 +74,7 @@ bool MeshGmshLoader::load()
 
         if (endMesh != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
         {
-            msg_error() << "Closing File";
+            msg_error() << "No $EndMeshFormat flag found at the end of the file. Closing File";
             file.close();
             return false;
         }
@@ -107,7 +105,7 @@ bool MeshGmshLoader::load()
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
-        msg_error() << "Error: MeshGmshLoader: File '" << m_filename << "' finally appears not to be a Gmsh file.";
+        msg_error() << "File '" << m_filename << "' finally appears not to be a Gmsh file.";
         file.close();
         return false;
     }
@@ -140,7 +138,7 @@ void MeshGmshLoader::normalizeGroup(helper::vector< sofa::core::loader::Primitiv
 
 bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
 {
-	dmsg_info() << "Reading Gmsh file: " << gmshFormat;
+    dmsg_info() << "Reading Gmsh file: " << gmshFormat;
 
     string cmd;
 
@@ -177,7 +175,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ENDNOD" && cmd != "$EndNodes")
     {
-        msg_error() << "Error: MeshGmshLoader: '$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
+        msg_error() << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
@@ -187,7 +185,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ELM" && cmd != "$Elements")
     {
-        msg_error() << "Error: MeshGmshLoader: '$ELM' or '$Elements' expected, found '" << cmd << "'";
+        msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
@@ -259,7 +257,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 nnodes = 10;
                 break;
             default:
-                msg_error() << "Error: MeshGmshLoader: Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found.";
+                msg_warning() << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found.";
                 nnodes = 0;
             }
         }
@@ -392,7 +390,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")
     {
-        msg_error() << "Error: MeshGmshLoader: '$ENDELM' or '$EndElements' expected, found '" << cmd << "'";
+        msg_error() << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'";
         file.close();
         return false;
     }

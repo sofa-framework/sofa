@@ -1,3 +1,4 @@
+#define SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP
 #include "RigidRestJointMapping.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -10,8 +11,6 @@ namespace component
 
 namespace mapping
 {
-
-SOFA_DECL_CLASS(RigidRestJointMapping)
 
 using namespace defaulttype;
 

@@ -179,7 +179,6 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         {
             dmsg_info() <<"_result unbuilt:"<<(*_result) ;
 
-            /////// debug
             _result->resize(_numConstraints);
 
             double _tol = tol.getValue();
@@ -190,8 +189,6 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
             dmsg_info() <<"\n_result nlcp :"<<(*_result);
         }
-
-        ////////
     }
 
     if ( displayTime.getValue() )
@@ -230,7 +227,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
 }
 
 #define MAX_NUM_CONSTRAINTS 3000
-//#define DISPLAY_TIME
 
 LCPConstraintSolver::LCPConstraintSolver()
     : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
@@ -421,7 +417,6 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    /////// Analyse des contacts �  regrouper //////
     double criterion=0.0;
     int numContacts = _numConstraints/3;
 
@@ -844,7 +839,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     if(!_numConstraints)
         return 0;
 
-    //helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     if ( displayTime.getValue() )
@@ -859,26 +853,19 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         return 0;
     }
 
-    /////// test: numContacts = _numConstraints/3 (must be dividable by 3)
     if (_numConstraints%3 != 0)
     {
         serr<<" WARNING dim should be dividable by 3 in nlcp_gaussseidel"<<sendl;
         return 0;
     }
     int numContacts =  _numConstraints/3;
-    //////////////////////////////////////////////
-    // iterators
+
     int it,c1;
 
-    //////////////////////////////////////////////
     // data for iterative procedure
     double _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
     double _mu = mu.getValue();
-
-    //debug
-    //std::cout<<"data are set"<<std::endl;
-
 
     /// each constraintCorrection has an internal force vector that is set to "0"
 
@@ -903,10 +890,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         }
     }
 
-
-
-
-    // return 1;
     if ( displayTime.getValue() )
     {
         dmsg_info() << " build_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
@@ -952,7 +935,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     // memory allocation of vector d
     unbuilt_d.resize(_numConstraints);
     double *d = &(unbuilt_d[0]);
-    //d = (double*)malloc(_numConstraints*sizeof(double));
 
     if ( displayTime.getValue() )
     {
@@ -993,10 +975,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     unbuilt_W33.clear();
     unbuilt_W33.resize(numContacts);
     helper::LocalBlock33 *W33 = &(unbuilt_W33[0]); //new helper::LocalBlock33[numContacts];
-    //3 = (helper::LocalBlock33 **) malloc (_numConstraints*sizeof(helper::LocalBlock33));
     for (c1=0; c1<numContacts; c1++)
     {
-        //3[c1] = new helper::LocalBlock33();
         double w[6];
         w[0] = _Wdiag->element(3*c1  , 3*c1  );
         w[1] = _Wdiag->element(3*c1  , 3*c1+1);
@@ -1007,11 +987,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         W33[c1].compute(w[0], w[1] , w[2], w[3], w[4] , w[5]);
     }
 
-    // debug
     dmsg_info() <<" Compliance In constraint Space : \n W ="<<(* _W)<<msgendl
                 <<"getBlockDiagonalCompliance   \n Wdiag = "<<(* _Wdiag) ;
 
-    // return 1;
     if (displayTime.getValue())
     {
         dmsg_info() <<" build_diagonal " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
@@ -1026,15 +1004,11 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         std::list<unsigned int>::iterator it_c ;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; ++it_c )
+        //constraints are treated 3x3 (friction contact)
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; std::advance(it_c, 3) )
         {
             int constraint = *it_c;
             c1 = constraint/3;
-
-            //constraints are treated 3x3 (friction contact)
-            ++it_c;
-            if(it_c != contact_sequence.end())
-                ++it_c;
 
             // compute the current violation :
 
@@ -1075,7 +1049,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             f[3*c1+1] = ft - f[3*c1+1];
             f[3*c1+2] = fs - f[3*c1+2];
 
-            //std::cout<<"fn = "<< fn<<" -  ft = "<< ft<<" -  fs = "<<fs<<std::endl;
             ///////// verifier si Delta force vaut 0 => pas la peine d'ajouter la force
 
             // set Delta force on object 1 for evaluating the followings displacement
@@ -1125,7 +1098,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* /*residuals*/)
 {
-    //helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1.0;
     if ( displayTime.getValue() )
@@ -1142,11 +1114,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     }
 
     int numContacts =  _numConstraints;
-    //////////////////////////////////////////////
-    // iterators
     int it,c1;
 
-    //////////////////////////////////////////////
     // data for iterative procedure
     double _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
@@ -1231,16 +1200,12 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
             _cclist_elem2[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
         }
     }
-    // std::cout<<"getBlockDiagonalCompliance  Wdiag = "<<(* _Wdiag)<<std::endl;
 
     unbuilt_W11.resize(numContacts);
-    //unbuilt_invW11.resize(numContacts);
     double *W11 = &(unbuilt_W11[0]);
-    //double *invW11 = &(unbuilt_invW11[0]);
     for (c1=0; c1<numContacts; c1++)
     {
         W11[c1] = _Wdiag->element(c1, c1);
-        //invW11[c1] = 1.0 / W11[c1];
     }
 
     if ( displayTime.getValue() )
@@ -1453,9 +1418,6 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 
 int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")
         .add< LCPConstraintSolver >();
-
-SOFA_DECL_CLASS(LCPConstraintSolver);
-
 
 } // namespace constraintset
 

@@ -26,11 +26,6 @@
 # if _MSC_VER >= 1400
 #  include <intrin.h>
 # endif
-#elif defined(_XBOX)
-#include <xtl.h>
-#elif defined(PS3)
-#include <sys/sys_time.h>
-#include <sys/timer.h>
 #else
 # include <unistd.h>
 # include <sys/time.h>
@@ -56,7 +51,7 @@ namespace system
 
 namespace thread
 {
-#if defined(WIN32) || defined(_XBOX)
+#if defined(WIN32)
 
 ctime_t CTime::getRefTime()
 {
@@ -81,14 +76,9 @@ void CTime::sleep(double a)
 
 ctime_t CTime::getRefTime()
 {
-#ifndef PS3
     struct timeval tv;
     gettimeofday(&tv,0);
     return ((ctime_t)tv.tv_sec)*1000000 + ((ctime_t)tv.tv_usec);
-#else
-    system_time_t time = sys_time_get_system_time();
-    return (ctime_t)time;
-#endif
 }
 
 ctime_t CTime::getRefTicksPerSec()

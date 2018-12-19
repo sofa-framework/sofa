@@ -22,10 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 
@@ -90,6 +86,8 @@ public:
         const char* group;
         const char* widget;
     };
+
+    virtual BaseData* getNewInstance() { return nullptr; }
 
     /** Constructor used via the Base::initData() methods. */
     explicit BaseData(const BaseInitData& init);

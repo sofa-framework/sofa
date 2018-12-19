@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 
 #include <sofa/core/DataEngine.h>
@@ -64,7 +62,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -95,7 +93,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API Vertex2Frame<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT

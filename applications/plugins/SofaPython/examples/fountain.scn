@@ -1,0 +1,23 @@
+
+<Node name="root" dt="0.02">
+  <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+  <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
+  <CollisionPipeline verbose="0" depth="10" draw="0" />
+  <BruteForceDetection name="N2" />
+  <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.33" />
+  <CollisionResponse name="Response" response="default" />
+  <CollisionGroup name="Group" />
+
+  <Node name="Floor">
+    <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
+    <Mesh src="@loader" />
+    <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
+    <Triangle name="Floor" simulated="0" moving="0"  group='2'/>
+    <Line name="Floor" simulated="0" moving="0" group='2'/>
+    <Point name="Floor" simulated="0" moving="0" group='2'/>
+    <OglModel name="FloorV" src="@loader" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
+  </Node>
+
+  <PythonScriptController name="Fountain" filename="fountain.py" classname="Fountain"/>
+  
+</Node>

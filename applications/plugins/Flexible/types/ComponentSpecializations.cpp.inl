@@ -243,7 +243,6 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
 #endif
 
 
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,FixedConstraint) )
 int EVALUATOR(TYPEABSTRACTNAME,FixedConstraintClass) = core::RegisterObject ( "Attach given dofs to their initial positions" )
         #ifndef SOFA_FLOAT
                 .add< FixedConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
@@ -261,167 +260,8 @@ template class SOFA_Flexible_API FixedConstraint<TYPEABSTRACTNAME3fTypes>;
 
 
 
-
-
-
-
-// ==========================================================================
-// PartialFixedConstraint
-
-
-#ifndef SOFA_FLOAT
-template <>
-void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    const SetIndexArray & indices = d_indices.getValue();
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    if( d_drawSize.getValue() == 0) // old classical drawing by points
-    {
-        std::vector< Vector3 > points;
-
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-                points.push_back(x[i].getCenter());
-        else
-        {
-            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-        }
-
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    }
-    else
-//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
-    {
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[i].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        else
-        {
-            if( x.size() < indices.size() )
-                for (unsigned i=0; i<x.size(); i++ )
-                {
-                    vparams->drawTool()->pushMatrix();
-                    float glTransform[16];
-                    x[indices[i]].writeOpenGlMatrix ( glTransform );
-                    vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( d_drawSize.getValue() );
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                    vparams->drawTool()->popMatrix();
-                }
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[*it].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        }
-    }
-}
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    const SetIndexArray & indices = d_indices.getValue();
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    if( d_drawSize.getValue() == 0) // old classical drawing by points
-    {
-        std::vector< Vector3 > points;
-
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-                points.push_back(x[i].getCenter());
-        else
-        {
-            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-        }
-
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    }
-    else
-//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
-    {
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[i].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        else
-        {
-            if( x.size() < indices.size() )
-                for (unsigned i=0; i<x.size(); i++ )
-                {
-                    vparams->drawTool()->pushMatrix();
-                    float glTransform[16];
-                    x[indices[i]].writeOpenGlMatrix ( glTransform );
-                    vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( d_drawSize.getValue() );
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                    vparams->drawTool()->popMatrix();
-                }
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[*it].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        }
-    }
-}
-#endif
-
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraintClass) = core::RegisterObject ( "Attach given cinematic dofs to their initial positions" )
-        #ifndef SOFA_FLOAT
-        .add< PartialFixedConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-    #endif
-    #ifndef SOFA_DOUBLE
-        .add< PartialFixedConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-    #endif
-;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
-
-
-
-
 // ==========================================================================
 // ProjectToPointConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPointConstraint) )
 int EVALUATOR(TYPEABSTRACTNAME,ProjectToPointConstraintClass) = core::RegisterObject ( "Project particles to a point" )
 #ifndef SOFA_FLOAT
         .add< ProjectToPointConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
@@ -442,7 +282,6 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fType
 
 //// ==========================================================================
 //// ProjectToLineConstraint
-//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraint) )
 //int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
 //#ifndef SOFA_FLOAT
 //.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
@@ -460,7 +299,6 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fType
 
 //// ==========================================================================
 //// ProjectToPlaneConstraint
-//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraint) )
 //int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
 //#ifndef SOFA_FLOAT
 //.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
@@ -479,7 +317,6 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fType
 
 //// ==========================================================================
 //// ProjectDirectionConstraint
-//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraint) )
 //int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
 //#ifndef SOFA_FLOAT
 //.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
@@ -614,8 +451,6 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
 #endif
 // ==========================================================================
 // Instanciation
-
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,MechanicalObject) )
 
 using namespace sofa::defaulttype;
 
@@ -767,8 +602,6 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 
     using namespace sofa::defaulttype;
 
-    SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,UniformMass) )
-
     int EVALUATOR(TYPEABSTRACTNAME,UniformMassClass) = core::RegisterObject ( "Define the same mass for all the particles" )
 #ifndef SOFA_FLOAT
     .add< UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass> >()
@@ -780,8 +613,6 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 
 
 #ifdef SOFA_HAVE_IMAGE
-
-    SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ImageDensityMass) )
 
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
 #ifndef SOFA_FLOAT
@@ -818,7 +649,6 @@ namespace misc
 {
 
 
-SOFA_DECL_CLASS( EVALUATOR(TYPEABSTRACTNAME,Monitor) )
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,MonitorClass) = core::RegisterObject("Monitoring of particles")
 #ifndef SOFA_FLOAT
@@ -840,7 +670,6 @@ int EVALUATOR(TYPEABSTRACTNAME,MonitorClass) = core::RegisterObject("Monitoring 
 
 
 
-SOFA_DECL_CLASS( EVALUATOR(TYPEABSTRACTNAME,ExtraMonitor) )
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,ExtraMonitorClass) = core::RegisterObject("Monitoring of particles")
 #ifndef SOFA_FLOAT
@@ -937,7 +766,6 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >::init
 }
 #endif
 
-SOFA_DECL_CLASS( EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrection) )
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
@@ -961,8 +789,6 @@ int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::Regis
 namespace mapping
 {
 
-
-SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,IdentityMapping))
 
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
@@ -1018,8 +844,6 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMapping))
-
 int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
 #ifndef SOFA_FLOAT
     .add< SubsetMultiMapping< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dTypes > >()
@@ -1042,8 +866,6 @@ int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("
 
 namespace engine
 {
-    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,BoxROI))
-
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,BoxROIClass) = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
 #ifndef SOFA_FLOAT
@@ -1067,8 +889,6 @@ namespace engine
 namespace forcefield
 {
 
-    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,RestShapeSpringsForceField))
-
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,RestShapeSpringsForceFieldClass) = core::RegisterObject("Spring attached to rest position")
     #ifndef SOFA_FLOAT
@@ -1090,8 +910,6 @@ namespace forcefield
 
 
 
-    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,ConstantForceField))
-
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,ConstantForceFieldClass) = core::RegisterObject("Constant forces applied to given degrees of freedom")
     #ifndef SOFA_FLOAT
@@ -1108,8 +926,6 @@ namespace forcefield
     #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     #endif
-
-    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceField))
 
     // Register in the Factory
     int EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceFieldClass) = core::RegisterObject("Uniform velocity damping")

@@ -212,7 +212,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)
+#if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1dTypes, defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1dTypes, defaulttype::Rigid3dTypes>;

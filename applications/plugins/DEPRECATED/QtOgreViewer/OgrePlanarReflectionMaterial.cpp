@@ -35,7 +35,6 @@ namespace visualmodel
 
 /*ObjectFactory code */
 
-SOFA_DECL_CLASS(OgrePlanarReflectionMaterial);
 int OgreReflectionTextureClass = core::RegisterObject("Generate a reflection texture with respect to a plane.")
         .add< OgrePlanarReflectionMaterial >()
         .addAlias("OgreReflectionTexture");

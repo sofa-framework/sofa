@@ -119,7 +119,7 @@ protected:
 
     unsigned int time;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         raImage in(this->image);
 		raTransform inT(this->transform);
@@ -150,7 +150,6 @@ protected:
         else
             cimglist_for(faces,l) tri[l]=Triangle(faces(l,0),faces(l,1),faces(l,2));
 
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override

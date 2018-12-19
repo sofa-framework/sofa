@@ -31,8 +31,6 @@ namespace component
 namespace loader
 {
 
-SOFA_DECL_CLASS(OgreMeshLoader)
-
 int OgreMeshLoaderClass = core::RegisterObject("Specific mesh loader for Ogre compiled mesh files.")
         .add< OgreMeshLoader >()
         ;

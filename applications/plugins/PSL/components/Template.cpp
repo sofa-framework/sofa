@@ -87,7 +87,6 @@ void Template::addDataToTrack(BaseData* d)
     m_trackedDatas.push_back(d);
 }
 
-SOFA_DECL_CLASS(Template)
 int TemplateClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
         .add< Template >();
 

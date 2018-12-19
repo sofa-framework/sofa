@@ -56,6 +56,8 @@ using sofa::simulation::Node;
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
@@ -90,6 +92,8 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
+
+#include <sofa/helper/AdvancedTimer.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -146,7 +150,18 @@ void addGUIParameters(ArgumentParser* argumentParser)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/runSofa/resources").c_str()) ;
+    // Add resources dir to GuiDataRepository
+    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/runSofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
+    {
+        std::string iniFileValue = iniFileValues["RESOURCES_DIR"];
+        if (!FileSystem::isAbsolute(iniFileValue))
+            iniFileValue = etcDir + "/" + iniFileValue;
+        sofa::gui::GuiDataRepository.addFirstPath(iniFileValue);
+    }
+
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
@@ -328,10 +343,11 @@ int main(int argc, char** argv)
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
-
-    // Add the plugin directory to PluginRepository
-    const std::string& pluginDir = Utils::getPluginDirectory();
-    PluginRepository.addFirstPath(pluginDir);
+    // Output FileRepositories
+    msg_info("runSofa") << "PluginRepository paths:";
+    PluginRepository.print();
+    msg_info("runSofa") << "DataRepository paths:";
+    DataRepository.print();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
@@ -343,6 +359,7 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
+    const std::string& pluginDir = Utils::getPluginDirectory();
     std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
     std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 

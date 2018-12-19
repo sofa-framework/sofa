@@ -13,7 +13,6 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(CompliantNLImplicitSolver)
 int CompliantNLImplicitSolverClass = core::RegisterObject("Implicit solver with pre-inversed matrix and Newton iterations")
         .add< CompliantNLImplicitSolver >()
         .addAlias("CompliantNonLinearImplicitSolver")

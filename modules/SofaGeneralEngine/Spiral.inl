@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SPIRAL_INL
 #define SOFA_COMPONENT_ENGINE_SPIRAL_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/Spiral.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -66,11 +62,9 @@ void Spiral<DataTypes>::reinit()
 
 
 template <class DataTypes>
-void Spiral<DataTypes>::update()
+void Spiral<DataTypes>::doUpdate()
 {
     const VecCoord x0 = f_X0.getValue();
-
-    cleanDirty();
 
     VecCoord* x = f_X.beginWriteOnly();
     x->clear();
@@ -89,7 +83,7 @@ void Spiral<DataTypes>::update()
         // t = t - l(t)/l'(t)
         for (int n=0; n<10; ++n)
         {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32)
             Real l_t = A/2 * ( t * sqrt(1+t*t) + asinh(t) );
 #else
             Real l_t = A/2 * ( t * sqrt(1+t*t) + log(t + sqrt(t * t + 1)));

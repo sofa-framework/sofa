@@ -76,7 +76,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP)
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP)
 
 extern template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 #ifndef SOFA_FLOAT

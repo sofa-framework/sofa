@@ -33,8 +33,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(ProjectionToTargetPlaneMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
@@ -60,8 +58,6 @@ template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Rigid3fType
 #endif
 
 ///////////////////
-
-SOFA_DECL_CLASS(ProjectionToPlaneMultiMapping)
 
 using namespace defaulttype;
 

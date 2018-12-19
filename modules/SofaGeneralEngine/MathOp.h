@@ -65,7 +65,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -86,7 +86,7 @@ protected:
     void createInputs(int nb = -1);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
 
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<int> >;
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<bool> >;

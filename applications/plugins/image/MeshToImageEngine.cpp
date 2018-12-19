@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(MeshToImageEngine)
-
 int MeshToImageEngineClass = core::RegisterObject("Compute a rasterization image from several meshes")
         .add<MeshToImageEngine<ImageB> >(true)
         .add<MeshToImageEngine<ImageUC> >()

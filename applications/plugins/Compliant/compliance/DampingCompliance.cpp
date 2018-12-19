@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP
 #include "DampingCompliance.h"
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -25,8 +26,6 @@ int DampingComplianceClass = core::RegisterObject("Damping Compliance")
     .add< DampingCompliance< Vec1fTypes > >()
 #endif
 	;
-
-SOFA_DECL_CLASS(DampingCompilance)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API DampingCompliance<Vec6dTypes>;

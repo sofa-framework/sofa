@@ -112,13 +112,6 @@ void SurfacePressureForceField<DataTypes>::verifyDerivative(VecDeriv& v_plus, Ve
         }
         std::cout<<" DVana["<<i<<"] = "<<DV<<" DVval[i].size() = "<<DVval[i].size()<<std::endl;
 
-        /*
-                for(unsigned int j=0; j<DVval[i].size(); j++)
-                {
-                    std::cout<<" M["<<DVind[i][j]<<"] ="<<DVval[i][j]<<std::endl;
-                }
-         */
-
     }
 
 }
@@ -130,13 +123,6 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
-    /*
-        VecCoord xPlus = x;
-        VecDeriv fplus = f;
-      */
-
-//    const Data<VecCoord>* xRest= this->mstate->read(core::ConstVecCoordId::restPosition()) ;
-//    const VecCoord &x0 = xRest->getValue();
 
     m_f.resize(f.size());  for(unsigned int i=0;i<m_f.size();i++) m_f[i].clear(); // store forces for visualization
 
@@ -187,27 +173,6 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
                 }
             }
 
-            /*
-
-                        VecDeriv Din;
-                        Din.resize(x.size());
-                       for (unsigned int i=0; i<Din.size(); i++)
-                       {
-                           Real i1,i2,i3;
-                           i1=(Real)(i%3+1);
-                           i2=-(Real)(i%2)+0.156;
-                           i3=(Real)(i%5+2);
-                           Din[i]=Deriv(0.0000123*i1,0.0000152*i2,0.00000981*i3);
-                           xPlus[i]=x[i]+Din[i];
-                       }
-                       addTriangleSurfacePressure(fplus,xPlus,v,p, false);
-
-
-                       verifyDerivative(fplus, f,  derivTriNormalValues,derivTriNormalIndices, Din);
-
-            */
-
-
         }
 
         // Quads
@@ -241,9 +206,6 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
-
-
-	//    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 	Real kFactor = (Real)mparams->kFactor();
 	if (m_useTangentStiffness.getValue()) {
 		VecDeriv& df       = *(d_df.beginEdit());
@@ -260,9 +222,6 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 			}
 
 		} 
-		//			for (unsigned int i=0;i<df.size();++i) {
-		//			msg_info()<<"df["<<i<<"]= "<<df[i]<<std::endl;
-		//		}
 		d_df.endEdit();
 	}
 
@@ -306,6 +265,19 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 	}
 }
 
+template<class DataTypes>
+SReal SurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
+
+template<class DataTypes>
+void SurfacePressureForceField<DataTypes>::setPressure(const Real _pressure)
+{
+    this->m_pressure.setValue(_pressure);
+}
+
 template <class DataTypes>
 typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
 {
@@ -313,29 +285,68 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
     typedef core::topology::BaseMeshTopology::Quad Quad;
 
     Real volume = 0;
-    int i = 0;
-
-    for (i = 0; i < m_topology->getNbTriangles(); i++)
+    unsigned int nTriangles = 0;
+    const VecIndex& triangleIndices = m_triangleIndices.getValue();
+    if (!triangleIndices.empty())
     {
-        Triangle t = m_topology->getTriangle(i);
-        Deriv ab = x[t[1]] - x[t[0]];
-        Deriv ac = x[t[2]] - x[t[0]];
-        volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
+        nTriangles = triangleIndices.size();
+    }
+    else
+    {
+        nTriangles = m_topology->getNbTriangles();
     }
 
-    for (i = 0; i < m_topology->getNbQuads(); i++)
+    unsigned int triangleIdx = 0;
+    for (unsigned int i = 0; i < nTriangles; i++)
     {
-        Quad q = m_topology->getQuad(i);
-
-        Deriv ab = x[q[1]] - x[q[0]];
-        Deriv ac = x[q[2]] - x[q[0]];
-        Deriv ad = x[q[3]] - x[q[0]];
-
-        volume += ab.cross(ac)[2] * (x[q[0]][2] + x[q[1]][2] + x[q[2]][2]) / static_cast<Real>(6.0);
-        volume += ac.cross(ad)[2] * (x[q[0]][2] + x[q[2]][2] + x[q[3]][2]) / static_cast<Real>(6.0);
+        if (!triangleIndices.empty())
+        {
+            triangleIdx = triangleIndices[i];
+        }
+        else
+        {
+            triangleIdx = i;
+        }
+        Triangle t = m_topology->getTriangle(triangleIdx);
+        const Coord a = x[t[0]];
+        const Coord b = x[t[1]];
+        const Coord c = x[t[2]];
+        volume += dot(cross(a,b),c);
     }
 
-    return volume;
+    unsigned int nQuads = 0;
+    const VecIndex& quadIndices = m_quadIndices.getValue();
+    if (!quadIndices.empty())
+    {
+        nQuads = quadIndices.size();
+    }
+    else
+    {
+        nQuads = m_topology->getNbQuads();
+    }
+
+    unsigned int quadIdx = 0;
+    for (unsigned int i = 0; i < nQuads; i++)
+    {
+        if (!quadIndices.empty())
+        {
+            quadIdx = quadIndices[i];
+        }
+        else
+        {
+            quadIdx = i;
+        }
+        Quad q = m_topology->getQuad(quadIdx);
+        const Coord a = x[q[0]];
+        const Coord b = x[q[1]];
+        const Coord c = x[q[2]];
+        const Coord d = x[q[3]];
+        volume += dot(cross(a,b),c);
+        volume += dot(cross(a,c),d);
+    }
+
+    // Divide by 6 when computing tetrahedron volume
+    return volume / 6.0;
 }
 
 
@@ -546,33 +557,73 @@ void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addDForce(const core:
 template <>
 SurfacePressureForceField<defaulttype::Rigid3dTypes>::Real SurfacePressureForceField<defaulttype::Rigid3dTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
 {
-	typedef core::topology::BaseMeshTopology::Triangle Triangle;
-	typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
 
-	Real volume = 0;
-	int i = 0;
+    Real volume = 0;
 
-	for (i = 0; i < m_topology->getNbTriangles(); i++)
-	{
-		Triangle t = m_topology->getTriangle(i);
-		defaulttype::Rigid3dTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
-		defaulttype::Rigid3dTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
-		volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
-	}
+    unsigned int nTriangles = 0;
+    const VecIndex& triangleIndices = m_triangleIndices.getValue();
+    if (!triangleIndices.empty())
+    {
+        nTriangles = triangleIndices.size();
+    }
+    else
+    {
+        nTriangles = m_topology->getNbTriangles();
+    }
 
-	for (i = 0; i < m_topology->getNbQuads(); i++)
-	{
-		Quad q = m_topology->getQuad(i);
+    unsigned int triangleIdx = 0;
+    for (unsigned int i = 0; i < nTriangles; i++)
+    {
+        if (!triangleIndices.empty())
+        {
+            triangleIdx = triangleIndices[i];
+        }
+        else
+        {
+            triangleIdx = i;
+        }
+        Triangle t = m_topology->getTriangle(triangleIdx);
+        const defaulttype::Rigid3dTypes::CPos a = x[t[0]].getCenter();
+        const defaulttype::Rigid3dTypes::CPos b = x[t[1]].getCenter();
+        const defaulttype::Rigid3dTypes::CPos c = x[t[2]].getCenter();
+        volume += dot(cross(a,b),c);
+    }
 
-		defaulttype::Rigid3dTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
-		defaulttype::Rigid3dTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
-		defaulttype::Rigid3dTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+    unsigned int nQuads = 0;
+    const VecIndex& quadIndices = m_quadIndices.getValue();
+    if (!quadIndices.empty())
+    {
+        nQuads = quadIndices.size();
+    }
+    else
+    {
+        nQuads = m_topology->getNbQuads();
+    }
 
-		volume += ab.cross(ac)[2] * (x[q[0]][2] + x[q[1]][2] + x[q[2]][2]) / static_cast<Real>(6.0);
-		volume += ac.cross(ad)[2] * (x[q[0]][2] + x[q[2]][2] + x[q[3]][2]) / static_cast<Real>(6.0);
-	}
+    unsigned int quadIdx = 0;
+    for (unsigned int i = 0; i < nQuads; i++)
+    {
+        if (!quadIndices.empty())
+        {
+            quadIdx = quadIndices[i];
+        }
+        else
+        {
+            quadIdx = i;
+        }
+        Quad q = m_topology->getQuad(quadIdx);
+        const defaulttype::Rigid3dTypes::CPos a = x[q[0]].getCenter();
+        const defaulttype::Rigid3dTypes::CPos b = x[q[1]].getCenter();
+        const defaulttype::Rigid3dTypes::CPos c = x[q[2]].getCenter();
+        const defaulttype::Rigid3dTypes::CPos d = x[q[3]].getCenter();
+        volume += dot(cross(a,b),c);
+        volume += dot(cross(a,c),d);
+    }
 
-	return volume;
+    // Divide by 6 when computing tetrahedron volume
+    return volume / 6.0;
 }
 
 template <>
@@ -695,32 +746,72 @@ template <>
 SurfacePressureForceField<defaulttype::Rigid3fTypes>::Real SurfacePressureForceField<defaulttype::Rigid3fTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
 {
 	typedef core::topology::BaseMeshTopology::Triangle Triangle;
-	typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
 
 	Real volume = 0;
-	int i = 0;
 
-	for (i = 0; i < m_topology->getNbTriangles(); i++)
-	{
-		Triangle t = m_topology->getTriangle(i);
-		defaulttype::Rigid3fTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
-		defaulttype::Rigid3fTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
-		volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
-	}
+    unsigned int nTriangles = 0;
+    const VecIndex& triangleIndices = m_triangleIndices.getValue();
+    if (!triangleIndices.empty())
+    {
+        nTriangles = triangleIndices.size();
+    }
+    else
+    {
+        nTriangles = m_topology->getNbTriangles();
+    }
 
-	for (i = 0; i < m_topology->getNbQuads(); i++)
-	{
-		Quad q = m_topology->getQuad(i);
+    unsigned int triangleIdx = 0;
+    for (unsigned int i = 0; i < nTriangles; i++)
+    {
+        if (!triangleIndices.empty())
+        {
+            triangleIdx = triangleIndices[i];
+        }
+        else
+        {
+            triangleIdx = i;
+        }
+        Triangle t = m_topology->getTriangle(triangleIdx);
+        const defaulttype::Rigid3fTypes::CPos a = x[t[0]].getCenter();
+        const defaulttype::Rigid3fTypes::CPos b = x[t[1]].getCenter();
+        const defaulttype::Rigid3fTypes::CPos c = x[t[2]].getCenter();
+        volume += dot(cross(a,b),c);
+    }
 
-		defaulttype::Rigid3fTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
-		defaulttype::Rigid3fTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
-		defaulttype::Rigid3fTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+    unsigned int nQuads = 0;
+    const VecIndex& quadIndices = m_quadIndices.getValue();
+    if (!quadIndices.empty())
+    {
+        nQuads = quadIndices.size();
+    }
+    else
+    {
+        nQuads = m_topology->getNbQuads();
+    }
 
-		volume += ab.cross(ac)[2] * (x[q[0]][2] + x[q[1]][2] + x[q[2]][2]) / static_cast<Real>(6.0);
-		volume += ac.cross(ad)[2] * (x[q[0]][2] + x[q[2]][2] + x[q[3]][2]) / static_cast<Real>(6.0);
-	}
+    unsigned int quadIdx = 0;
+    for (unsigned int i = 0; i < nQuads; i++)
+    {
+        if (!quadIndices.empty())
+        {
+            quadIdx = quadIndices[i];
+        }
+        else
+        {
+            quadIdx = i;
+        }
+        Quad q = m_topology->getQuad(quadIdx);
+        const defaulttype::Rigid3fTypes::CPos a = x[q[0]].getCenter();
+        const defaulttype::Rigid3fTypes::CPos b = x[q[1]].getCenter();
+        const defaulttype::Rigid3fTypes::CPos c = x[q[2]].getCenter();
+        const defaulttype::Rigid3fTypes::CPos d = x[q[3]].getCenter();
+        volume += dot(cross(a,b),c);
+        volume += dot(cross(a,c),d);
+    }
 
-	return volume;
+    // Divide by 6 when computing tetrahedron volume
+        return volume / 6.0;
 }
 
 template <>

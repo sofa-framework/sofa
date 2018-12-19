@@ -135,7 +135,7 @@ void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
 }
 
 template <class DataTypes, class _ImageTypes>
-void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
+void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
 {
     helper::WriteAccessor< Data<VecCoord> > newPoints = d_newX0;
     helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = d_tetrahedra;

@@ -98,8 +98,6 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     m_componentstate = ComponentState::Valid ;
 }
 
-SOFA_DECL_CLASS(MakeDataAliasComponent)
-
 int MakeDataAliasComponentClass = RegisterObject("This object create an alias to a data field. ")
         .add< MakeDataAliasComponent >()
         ;

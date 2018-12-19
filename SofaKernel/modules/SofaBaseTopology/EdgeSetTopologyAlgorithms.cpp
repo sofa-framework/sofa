@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP
-#include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetTopologyAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -37,7 +36,6 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(EdgeSetTopologyAlgorithms)
 int EdgeSetTopologyAlgorithmsClass = core::RegisterObject("Edge set topology algorithms")
 #ifdef SOFA_FLOAT
         .add< EdgeSetTopologyAlgorithms<Vec3fTypes> >(true) // default template

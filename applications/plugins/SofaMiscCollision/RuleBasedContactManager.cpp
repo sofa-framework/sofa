@@ -32,8 +32,6 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(RuleBasedContactManager)
-
 int RuleBasedContactManagerClass = core::RegisterObject("Create different response to the collisions based on a set of rules")
         .add< RuleBasedContactManager >()
         .addAlias("RuleBasedCollisionResponse")

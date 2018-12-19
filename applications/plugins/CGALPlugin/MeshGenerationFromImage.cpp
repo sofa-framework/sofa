@@ -21,15 +21,11 @@
 ******************************************************************************/
 #define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
 
-#define CGAL_MESH_3_VERBOSE
-
 #include <CGALPlugin/config.h>
 #include "MeshGenerationFromImage.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
-SOFA_DECL_CLASS(MeshGenerationFromImage)
 
 using namespace sofa::defaulttype;
 using namespace cgal;

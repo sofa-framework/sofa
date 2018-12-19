@@ -123,6 +123,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                                 if (!this->d_vertexMass.isSet())
                                 {
                                     this->d_vertexMass.forceSet();
+                                    this->d_totalMass.unset();
                                 }
                             }
                             else
@@ -430,8 +431,8 @@ template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::constructor_message()
 {
     d_filenameMass.setDisplayed(true) ;
-    d_filenameMass.setReadOnly(false) ;
-    d_filenameMass.setValue("") ;
+    d_filenameMass.setReadOnly(true) ;
+    d_filenameMass.setValue("unused") ;
 }
 
 template<> SOFA_BASE_MECHANICS_API
@@ -609,8 +610,6 @@ Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalPar
 /// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
 /// 2-RegisterObject("description") + .add<> : Register the component
 /// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(UniformMass)
-
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
 

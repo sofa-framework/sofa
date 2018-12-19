@@ -22,7 +22,7 @@
 #ifndef AnimationLoopTasks_h__
 #define AnimationLoopTasks_h__
 
-#include "Tasks.h"
+#include <sofa/simulation/Task.h>
 
 
 namespace sofa
@@ -52,37 +52,13 @@ namespace sofa
             
             virtual ~StepTask();
             
-            virtual bool run(WorkerThread* );
+            virtual bool run() final;
             
             
         private:
             
             core::behavior::BaseAnimationLoop* animationloop;
             const double dt;
-            
-        };
-        
-        
-        
-        
-        class InitPerThreadDataTask : public Task
-        {
-            
-        public:
-            
-            //InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus );
-            
-            virtual ~InitPerThreadDataTask();
-            
-            virtual bool run(WorkerThread* );
-            
-            
-        private:
-            
-            std::mutex*     IdFactorygetIDMutex;
-            
-            std::atomic<int>* _atomicCounter;
             
         };
         

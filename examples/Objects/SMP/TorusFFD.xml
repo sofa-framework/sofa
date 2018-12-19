@@ -8,7 +8,7 @@
 			zmin="-2" zmax="2"
 		/>
 	<MechanicalObject dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
-	<UniformMass totalmass="5" />
+	<UniformMass totalMass="5" />
 	<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
 	<Node name="Visu">
 		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow"  dx="0" dy="0" dz="0" scale="1.0"/>

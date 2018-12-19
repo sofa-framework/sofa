@@ -39,9 +39,6 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/core/behavior/InertiaForce.h>
-#endif
 
 namespace sofa
 {
@@ -1293,7 +1290,7 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::reinit()
 {
-    if (m_dataTrackerTotal.isDirty() || m_dataTrackerDensity.isDirty() || m_dataTrackerVertex.isDirty())
+    if (m_dataTrackerTotal.hasChanged() || m_dataTrackerDensity.hasChanged() || m_dataTrackerVertex.hasChanged())
     {
         update();
     }
@@ -1305,7 +1302,7 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
-    if (m_dataTrackerTotal.isDirty())
+    if (m_dataTrackerTotal.hasChanged())
     {
         if(checkTotalMass())
         {
@@ -1314,7 +1311,7 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
         }
         m_dataTrackerTotal.clean();
     }
-    else if(m_dataTrackerDensity.isDirty())
+    else if(m_dataTrackerDensity.hasChanged())
     {
         if(checkMassDensity())
         {
@@ -1323,9 +1320,9 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
         }
         m_dataTrackerDensity.clean();
     }
-    else if(m_dataTrackerVertex.isDirty())
+    else if(m_dataTrackerVertex.hasChanged())
     {
-        if(m_dataTrackerEdge.isDirty())
+        if(m_dataTrackerEdge.hasChanged())
         {
             if(checkVertexMass() && checkEdgeMass() )
             {
@@ -1335,7 +1332,7 @@ bool MeshMatrixMass<DataTypes, MassType>::update()
             m_dataTrackerVertex.clean();
             m_dataTrackerEdge.clean();
         }
-        else if(d_lumping.getValue() && (!m_dataTrackerEdge.isDirty()))
+        else if(d_lumping.getValue() && (!m_dataTrackerEdge.hasChanged()))
         {
             if(checkVertexMass())
             {
@@ -1839,37 +1836,6 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
 }
 
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& vx, const DataVecDeriv& vv)
-{
-    helper::WriteAccessor< DataVecDeriv > f = vf;
-    helper::ReadAccessor< DataVecCoord > x = vx;
-    helper::ReadAccessor< DataVecDeriv > v = vv;
-
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-
-    // gravity
-    Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
-
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
-
-    // add weight and inertia force
-    if(this->m_separateGravity.getValue())
-        for (unsigned int i=0; i<x.size(); ++i)
-            f[i] += m_massLumpingCoeff + core::behavior::inertiaForce(vframe,aframe,vertexMass[i] * m_massLumpingCoeff ,x[i],v[i]);
-    else for (unsigned int i=0; i<x.size(); ++i)
-            f[i] += theGravity * vertexMass[i] * m_massLumpingCoeff + core::behavior::inertiaForce(vframe,aframe,vertexMass[i] * m_massLumpingCoeff ,x[i],v[i]);
-}
-#else
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& , const DataVecDeriv& )
 {
@@ -1891,7 +1857,6 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
     for (unsigned int i=0; i<f.size(); ++i)
         f[i] += theGravity * vertexMass[i] * m_massLumpingCoeff;
 }
-#endif
 
 
 template <class DataTypes, class MassType>

@@ -113,7 +113,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API SquareMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
 #endif

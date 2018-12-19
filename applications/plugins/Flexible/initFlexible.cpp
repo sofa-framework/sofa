@@ -81,52 +81,8 @@ const char* getModuleComponentList()
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 
 #ifdef SOFA_HAVE_IMAGE
-SOFA_LINK_CLASS(VoronoiShapeFunction)
-SOFA_LINK_CLASS(ImageGaussPointSampler)
-SOFA_LINK_CLASS(ImageDensityMass)
-SOFA_LINK_CLASS(MassFromDensity)
-SOFA_LINK_CLASS(ImageShapeFunctionContainer)
-SOFA_LINK_CLASS(ShapeFunctionDiscretizer)
-SOFA_LINK_CLASS(DiffusionShapeFunction)
 #endif
 
 #ifdef SOFA_HAVE_SofaHighOrderTopology
-SOFA_LINK_CLASS(BezierShapeFunction)
 #endif
-
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping_point)
-SOFA_LINK_CLASS(LinearMapping_affine)
-SOFA_LINK_CLASS(LinearMapping_rigid)
-SOFA_LINK_CLASS(LinearMapping_quadratic)
-SOFA_LINK_CLASS(LinearMultiMapping_rigidaffine)
-SOFA_LINK_CLASS(CorotationalMeshMapping)
-SOFA_LINK_CLASS(VolumeMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(CauchyStrainMapping)
-SOFA_LINK_CLASS(GreenStrainMapping)
-SOFA_LINK_CLASS(CorotationalStrainMapping)
-SOFA_LINK_CLASS(PrincipalStretchesMapping)
-SOFA_LINK_CLASS(InvariantMapping)
-SOFA_LINK_CLASS(HookeForceField)
-SOFA_LINK_CLASS(StabilizedHookeForceField)
-SOFA_LINK_CLASS(NeoHookeanForceField)
-SOFA_LINK_CLASS(StabilizedNeoHookeanForceField)
-SOFA_LINK_CLASS(MooneyRivlinForceField)
-SOFA_LINK_CLASS(OgdenForceField)
-SOFA_LINK_CLASS(PolynomialMaterialForceField)
-SOFA_LINK_CLASS(VolumePreservationForceField)
-SOFA_LINK_CLASS(MuscleMaterialForceField)
-SOFA_LINK_CLASS(ProjectiveForceField)
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(GaussPointContainer)
-SOFA_LINK_CLASS(AffineMechanicalObject)
-SOFA_LINK_CLASS(QuadraticMechanicalObject)
-SOFA_LINK_CLASS(RigidConstraint)
-SOFA_LINK_CLASS(AffineMass)
-
-
-
 

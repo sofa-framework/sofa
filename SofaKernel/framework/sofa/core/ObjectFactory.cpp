@@ -223,8 +223,6 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             }
             object->parse(&newdesc);
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-
     }
 
     return object;
@@ -446,6 +444,19 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     }
     return *this;
 }
+
+//template<class RealObject>
+//RegisterObject& RegisterObject::add(bool defaultTemplate)
+//{
+//    RealObject* p = NULL;
+//    std::string classname = RealObject::className(p);
+//    std::string templatename = RealObject::templateName(p);
+
+//    if (defaultTemplate)
+//        entry.defaultTemplate = templatename;
+
+//    return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
+//}
 
 RegisterObject::operator int()
 {

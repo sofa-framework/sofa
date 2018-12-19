@@ -37,8 +37,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(RayDistanceGridContact)
-
 Creator<core::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass("ray",true);
 Creator<core::collision::Contact::Factory, RayContact<FFDDistanceGridCollisionModel> > RayFFDDistanceGridContactClass("ray",true);
 

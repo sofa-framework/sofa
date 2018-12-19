@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseCollision/CubeModel.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
@@ -34,8 +35,6 @@ namespace component
 
 namespace collision
 {
-
-SOFA_DECL_CLASS(Cube)
 
 using namespace sofa::defaulttype;
 

@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_INL
 #define SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
@@ -203,7 +199,7 @@ bool RandomPointDistributionInSurface<DataTypes>::testDistance(Coord p)
 }
 
 template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::update()
+void RandomPointDistributionInSurface<DataTypes>::doUpdate()
 {
     const VecCoord& vertices = f_vertices.getValue();
     const helper::vector<sofa::core::topology::BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
@@ -213,8 +209,6 @@ void RandomPointDistributionInSurface<DataTypes>::update()
         serr << "Error in input data (number of vertices of triangles is less than 1)." << sendl;
         return;
     }
-
-    cleanDirty();
 
     VecCoord* inPoints = f_inPoints.beginWriteOnly();
     inPoints->clear();

@@ -44,8 +44,6 @@ namespace collision
 using namespace defaulttype;
 using simulation::Node;
 
-SOFA_DECL_CLASS(RegistrationContact)
-
 Creator<Contact::Factory, RegistrationContact<SphereModel, SphereModel> > SphereSphereRegistrationContactClass("registration",true);
 Creator<Contact::Factory, RegistrationContact<SphereModel, PointModel> > SpherePointRegistrationContactClass("registration",true);
 //Creator<Contact::Factory, RegistrationContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeRegistrationContactClass("registration", true);

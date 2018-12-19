@@ -64,8 +64,6 @@ void handle_analog(void *userdata, const vrpn_ANALOGCB a)
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-SOFA_DECL_CLASS(VRPNAnalog)
-
 int VRPNAnalogClass = sofa::core::RegisterObject("VRPN Analog")
 #ifndef SOFA_FLOAT
         .add< VRPNAnalog<Vec3dTypes> >()

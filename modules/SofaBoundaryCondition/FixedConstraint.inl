@@ -125,35 +125,38 @@ void FixedConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
+      if (!topology)
+        msg_warning() << "Can not find the topology, won't be able to handle topological changes";
 
-    // Initialize functions and parameters
+    // Initialize topological functions
     d_indices.createTopologicalEngine(topology, pointHandler);
     d_indices.registerTopologicalData();
 
-    const SetIndexArray & indices = d_indices.getValue();
-
-    unsigned int maxIndex=this->mstate->getSize();
-    for (unsigned int i=0; i<indices.size(); ++i)
-    {
-        const unsigned int index=indices[i];
-        if (index >= maxIndex)
-        {
-            serr << "Index " << index << " not valid!" << sendl;
-            removeConstraint(index);
-        }
-    }
-
-    reinit();
-
-//  cerr<<"FixedConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
+    this->checkIndices();
 }
 
 template <class DataTypes>
 void  FixedConstraint<DataTypes>::reinit()
 {
+    this->checkIndices();
+}
+
+template <class DataTypes>
+void  FixedConstraint<DataTypes>::checkIndices()
+{
+    // Check value of given indices
+    unsigned int maxIndex=this->mstate->getSize();
+
+    const SetIndexArray & indices = d_indices.getValue();
+    for (unsigned int i=0; i<indices.size(); ++i)
+    {
+        const unsigned int index=indices[i];
+        if (index >= maxIndex)
+        {
+            msg_warning() << "Index " << index << " not valid, should be [0,"<< maxIndex <<"]";
+            removeConstraint(index);
+        }
+    }
 }
 
 template <class DataTypes>
@@ -161,7 +164,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
-    if( d_fixAll.getValue()==true )
+    if( d_fixAll.getValue() )
     {
         unsigned size = this->mstate->getSize();
         for( unsigned i=0; i<size; i++ )
@@ -183,12 +186,10 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-//    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
-//    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = d_indices.getValue(mparams);
-    //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
-    if( d_fixAll.getValue(mparams) )
+
+    if( d_fixAll.getValue() )
     {
         // fix everything
         typename VecDeriv::iterator it;
@@ -199,13 +200,11 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
     }
     else
     {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             res[*it] = Deriv();
         }
     }
-    //cerr<<"FixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -217,7 +216,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
-    if( d_fixAll.getValue(mparams) )
+    if( d_fixAll.getValue() )
     {
         // fix everything
         while (rowIt != rowItEnd)
@@ -230,15 +229,13 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     {
         while (rowIt != rowItEnd)
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<rowIt.row().size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 rowIt.row().erase(*it);
             }
             ++rowIt;
         }
     }
-    //cerr<<"FixedConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
@@ -252,15 +249,14 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
-    if( this->d_fixAll.getValue()==true )    // fix everyting
+    if( d_fixAll.getValue() )    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
             res[i] = Deriv();
     }
     else
     {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             res[*it] = Deriv();
         }
@@ -281,22 +277,34 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
     if(r)
     {
-        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
         const unsigned int N = Deriv::size();
-        const SetIndexArray & indices = d_indices.getValue();
 
-        //TODO take f_fixAll into account
-
-
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        if( d_fixAll.getValue() )
         {
-            // Reset Fixed Row and Col
-            for (unsigned int c=0; c<N; ++c)
-                r.matrix->clearRowCol(r.offset + N * (*it) + c);
-            // Set Fixed Vertex
-            for (unsigned int c=0; c<N; ++c)
-                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+            unsigned size = this->mstate->getSize();
+            for(unsigned int i=0; i<size; i++)
+            {
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->clearRowCol(r.offset + N * i + c);
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->set(r.offset + N * i + c, r.offset + N * i + c, 1.0);
+            }
+        }
+        else
+        {
+            const SetIndexArray & indices = d_indices.getValue();
+
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                    r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+            }
         }
     }
 }
@@ -308,19 +316,24 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;
-
-        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-        //sout << "applyConstraint in Vector with offset = " << offset << sendl;
         const unsigned int N = Deriv::size();
 
-        //TODO take f_fixAll into account
-
-
-        const SetIndexArray & indices = d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        if( d_fixAll.getValue() )
         {
-            for (unsigned int c=0; c<N; ++c)
-                vect->clear(offset + N * (*it) + c);
+            for( int i=0; i<vect->size(); i++ )
+            {
+                for (unsigned int c=0; c<N; ++c)
+                    vect->clear(offset + N * i + c);
+            }
+        }
+        else
+        {
+            const SetIndexArray & indices = d_indices.getValue();
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                for (unsigned int c=0; c<N; ++c)
+                    vect->clear(offset + N * (*it) + c);
+            }
         }
     }
 }
@@ -334,18 +347,17 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
     vparams->drawTool()->saveLastState();
 
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = d_indices.getValue();
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
+
         if( d_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -354,8 +366,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         else
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
@@ -377,8 +388,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         else
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);

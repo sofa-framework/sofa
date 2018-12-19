@@ -52,6 +52,7 @@ StaticSolver::StaticSolver()
     , dampingCoef( initData(&dampingCoef,(SReal)0.0,"dampingCoef","factor associated with the mass matrix in the equation system") )
     , stiffnessCoef( initData(&stiffnessCoef,(SReal)1.0,"stiffnessCoef","factor associated with the mass matrix in the equation system") )
     , applyIncrementFactor( initData(&applyIncrementFactor,false,"applyIncrementFactor","multiply the solution by dt before adding it to the current state") )
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
@@ -68,7 +69,7 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     MultiVecDeriv x(&vop);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     mop->setImplicit(true); // this solver is implicit
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 
@@ -102,11 +103,37 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
 
 }
 
+/// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
+/// how much will it affect the output derivative of the given order.
+double StaticSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+{
+    double matrix[3][3] =
+    {
+        { 1, 0, 0},
+        { 0, 1, 0},
+        { 0, 0, 0}
+    };
+    if (inputDerivative >= 3 || outputDerivative >= 3)
+        return 0;
+    else
+        return matrix[outputDerivative][inputDerivative];
+}
+
+/// Given a solution of the linear system,
+/// how much will it affect the output derivative of the given order.
+double StaticSolver::getSolutionIntegrationFactor(int outputDerivative) const
+{
+    double vect[3] = { 1, 0, 0};
+    if (outputDerivative >= 3)
+        return 0;
+    else
+        return vect[outputDerivative];
+}
+
+
+
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")
         .add< StaticSolver >();
-
-SOFA_DECL_CLASS(StaticSolver)
-
 
 } // namespace odesolver
 

@@ -62,16 +62,25 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     core::objectmodel::Data<VecValue> f_values; ///< input values
     core::objectmodel::Data<VecValue> f_global; ///< Global values, in which the input values are searched
     core::objectmodel::Data<VecIndex> f_indices; ///< Output indices of the given values, searched in global
     core::objectmodel::Data<VecIndex> f_otherIndices; ///< Output indices of the other values, (NOT the given ones) searched in global
     core::objectmodel::Data<bool> f_recursiveSearch; ///< if set to true, output are indices of the "global" data matching with one of the values
+
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const IndicesFromValues<T>* = NULL)
+    {
+        return sofa::defaulttype::DataTypeName<T>::name();
+    }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<std::string>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<int>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<unsigned int>;

@@ -933,7 +933,7 @@ bool LegacyVTKReader::readFile(const char* filename)
         }
         if (swapped)
         {
-            sout << "Binary data is byte-swapped." << sendl;
+            msg_info() << "Binary data is byte-swapped.";
             if (inputPoints)
             {
                 inputPoints->swap();
@@ -1270,8 +1270,6 @@ bool XMLVTKReader::loadImageData(TiXmlHandle datasetFormatHandle)
 /// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
 /// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
 /// 2-RegisterObject("description") + .add<> : Register the component
-SOFA_DECL_CLASS(MeshVTKLoader)
-
 int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK/VTU file format.")
                          .add< MeshVTKLoader >()
                          ;

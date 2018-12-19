@@ -129,9 +129,10 @@ public:
 protected :
 
     void recomputeIndices();
+    bool checkOutOfBoundsIndices();
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension);
 
     VecIndex m_indices;
-    VecReal k;
     VecIndex m_ext_indices;
     helper::vector<CPos> m_pivots;
 
@@ -142,7 +143,7 @@ private :
     bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;

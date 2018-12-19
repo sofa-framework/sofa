@@ -48,8 +48,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(VTKExporter)
-
 int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
         .add< VTKExporter >();
 
@@ -407,7 +405,7 @@ void VTKExporter::writeVTKSimple()
 
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
 
-    const int nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
+    const size_t nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
 
     //Write header
     *outfile << "# vtk DataFile Version 2.0" << std::endl;
@@ -450,7 +448,7 @@ void VTKExporter::writeVTKSimple()
     *outfile << std::endl;
 
     //Write Cells
-    unsigned int numberOfCells, totalSize;
+    size_t numberOfCells, totalSize;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
             +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
@@ -467,29 +465,29 @@ void VTKExporter::writeVTKSimple()
 
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << 2 << " " << topology->getEdge(i) << std::endl;
     }
 
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << 3 << " " <<  topology->getTriangle(i) << std::endl;
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << 4 << " " << topology->getQuad(i) << std::endl;
     }
 
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << 4 << " " <<  topology->getTetra(i) << std::endl;
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << 8 << " " <<  topology->getHexa(i) << std::endl;
     }
 
@@ -499,29 +497,29 @@ void VTKExporter::writeVTKSimple()
 
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << 3 << std::endl;
     }
 
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << 5 << std::endl;
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << 9 << std::endl;
     }
 
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << 10 << std::endl;
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << 12 << std::endl;
     }
 
@@ -579,9 +577,9 @@ void VTKExporter::writeVTKXML()
 
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
 
-    const int nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
+    const size_t nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
 
-    unsigned int numberOfCells;
+    size_t numberOfCells;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
             +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
@@ -651,28 +649,28 @@ void VTKExporter::writeVTKXML()
     *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << std::endl;
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << "          " << topology->getEdge(i) << std::endl;
     }
 
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << "          " <<  topology->getTriangle(i) << std::endl;
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << "          " << topology->getQuad(i) << std::endl;
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << "          " <<  topology->getTetra(i) << std::endl;
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << "          " <<  topology->getHexa(i) << std::endl;
     }
     *outfile << "        </DataArray>" << std::endl;
@@ -682,7 +680,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "          ";
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
         {
             num += 2;
             *outfile << num << " ";
@@ -690,7 +688,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
         {
             num += 3;
             *outfile << num << " ";
@@ -698,7 +696,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
         {
             num += 4;
             *outfile << num << " ";
@@ -706,7 +704,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
         {
             num += 4;
             *outfile << num << " ";
@@ -714,7 +712,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
         {
             num += 8;
             *outfile << num << " ";
@@ -727,27 +725,27 @@ void VTKExporter::writeVTKXML()
     *outfile << "          ";
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << 3 << " ";
     }
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << 5 << " ";
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << 9 << " ";
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << 10 << " ";
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << 12 << " ";
     }
     *outfile << std::endl;

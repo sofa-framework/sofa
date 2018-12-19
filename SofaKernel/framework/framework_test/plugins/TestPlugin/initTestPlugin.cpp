@@ -48,7 +48,7 @@ SOFA_TESTPLUGIN_API const char* getModuleVersion()
 
 SOFA_TESTPLUGIN_API const char* getModuleLicense()
 {
-    return "LicenceTest";
+    return "LicenseTest";
 }
 
 SOFA_TESTPLUGIN_API const char* getModuleDescription()
@@ -64,5 +64,3 @@ SOFA_TESTPLUGIN_API const char* getModuleComponentList()
 } // extern "C"
 
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)

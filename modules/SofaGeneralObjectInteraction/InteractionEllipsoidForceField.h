@@ -173,7 +173,7 @@ protected:
     } vars;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>;
 #endif

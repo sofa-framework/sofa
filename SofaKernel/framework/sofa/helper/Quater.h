@@ -87,6 +87,9 @@ public:
         return this->_q;
     }
 
+    /// Returns true if norm of Quaternion is one, false otherwise.
+    bool isNormalized();
+
     /// Normalize a quaternion
     void normalize();
 
@@ -327,6 +330,7 @@ public:
         out<<v._q[0]<<" "<<v._q[1]<<" "<<v._q[2]<<" "<<v._q[3];
         return out;
     }
+
     /// read from an input stream
     inline friend std::istream& operator >> ( std::istream& in, Quater& v )
     {
@@ -347,7 +351,7 @@ public:
 //typedef Quater<float> Quatf; ///< alias
 //typedef Quater<double> Quaternion; ///< alias
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_QUATER_CPP)
+#if  !defined(SOFA_HELPER_QUATER_CPP)
 extern template class SOFA_HELPER_API Quater<double>;
 extern template class SOFA_HELPER_API Quater<float>;
 #endif

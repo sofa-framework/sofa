@@ -40,9 +40,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(LinearVelocityConstraint)
-
-
 int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to given particles")
 #ifndef SOFA_FLOAT
         .add< LinearVelocityConstraint<Vec3dTypes> >()

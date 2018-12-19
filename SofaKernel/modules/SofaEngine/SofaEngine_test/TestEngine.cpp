@@ -62,7 +62,7 @@ void TestEngine::reinit()
     update();
 }
 
-void TestEngine::update()
+void TestEngine::doUpdate()
 {
     // Count how many times the update method is called
     counter ++;

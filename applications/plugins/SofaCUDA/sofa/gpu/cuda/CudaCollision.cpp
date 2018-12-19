@@ -95,8 +95,6 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaMouseInteractor)
-
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
         .add< component::collision::MouseInteractor<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -104,8 +102,6 @@ int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction 
 #endif
         ;
 
-
-SOFA_DECL_CLASS(CudaCollision)
 
 using namespace sofa::component::collision;
 

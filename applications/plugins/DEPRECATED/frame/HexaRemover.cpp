@@ -32,8 +32,6 @@ namespace component
 namespace topology
 {
 
-SOFA_DECL_CLASS ( HexaRemover );
-
 int HexaRemoverClass = core::RegisterObject ( "Hexahedra removing using volumetric collision detection." )
 #ifdef SOFA_FLOAT
         .add< HexaRemover<defaulttype::Vec3fTypes> >(true)

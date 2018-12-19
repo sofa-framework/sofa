@@ -171,7 +171,7 @@ protected:
     Real edgeTLength;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_CPP)
+#if  !defined(SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_CPP)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec3dTypes>;
 //extern template class SOFA_USER_INTERACTION_API EdgeSetController<defaulttype::Vec2dTypes>;

@@ -145,7 +145,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;

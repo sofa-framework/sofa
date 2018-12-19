@@ -30,8 +30,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(CudaOglTetrahedralModel)
-
 int CudaOglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
         .add< OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes> >()
         ;

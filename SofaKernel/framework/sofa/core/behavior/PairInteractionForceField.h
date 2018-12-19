@@ -253,7 +253,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
+#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec6dTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec3dTypes>;

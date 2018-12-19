@@ -643,6 +643,15 @@ public:
     inline friend std::istream& operator >> ( std::istream& in, RigidCoord<3,real>& v )
     {
         in>>v.center>>v.orientation;
+        if (!v.orientation.isNormalized())
+        {
+            std::stringstream text;
+            text << "Rigid Object with invalid quaternion (non-unitary norm)! Normalising quaternion value... " << msgendl;
+            text << "Previous value was: " << v.orientation << msgendl ;
+            v.orientation.normalize();
+            text << "New value is: " << v.orientation;
+            msg_warning("Rigid") << text.str();
+        }
         return in;
     }
     static int max_size()

@@ -1,5 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_DIAGONALCOMPLIANCE_CPP
 #include "DiagonalCompliance.inl"
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -24,8 +24,6 @@ int DiagonalComplianceClass = core::RegisterObject("Diagonal compliance")
         .add< DiagonalCompliance< Vec6fTypes > >()
 #endif
         ;
-
-SOFA_DECL_CLASS(DiagonalCompliance)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API DiagonalCompliance<Vec1dTypes>;

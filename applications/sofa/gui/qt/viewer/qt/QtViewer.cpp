@@ -77,8 +77,6 @@ using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 
 helper::SofaViewerCreator< QtViewer> QtViewer_class("qt",false);
-SOFA_DECL_CLASS ( QTGUI )
-
 //Q:Why would the QtViewer write its .view file with the qglviewer (a GPL library) extension?
 //A:The new QtViewer has the same parameters as QGLViewer.
 //  Consequently, the old .view file is now totally incorrect.
@@ -103,9 +101,11 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    //VSync
-    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
-    f.setSwapInterval(0); // disable vertical refresh sync
+    if(!SOFA_GUI_VSYNC)
+    {
+        std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+        f.setSwapInterval(0); // disable vertical refresh sync
+    }
 
     int vmajor = 3, vminor = 2;
     f.setVersion(vmajor,vminor);

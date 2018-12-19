@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP
+
 #include "ProjectionMapping.h"
 
 #include <sofa/core/ObjectFactory.h>
@@ -10,8 +12,6 @@ namespace component
 
 namespace mapping
 {
-
-SOFA_DECL_CLASS(ProjectionMapping)
 
 using namespace defaulttype;
 

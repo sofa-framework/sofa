@@ -47,6 +47,8 @@ public:
 
     typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef sofa::core::topology::BaseMeshTopology::QuadID QuadID;
+    typedef sofa::core::topology::BaseMeshTopology::ElemID ElemID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
@@ -126,30 +128,30 @@ public:
      *
      */
     sofa::helper::vector< double > compute3PointsBarycoefs( const sofa::defaulttype::Vec<3,double> &p,
-            unsigned int ind_p1,
-            unsigned int ind_p2,
-            unsigned int ind_p3,
+            PointID ind_p1,
+            PointID ind_p2,
+            PointID ind_p3,
             bool bRest=false) const;
 
     /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
      *
      */
     void computeClosestIndexPair(const TriangleID ind_ta, const TriangleID ind_tb,
-            unsigned int &ind1, unsigned int &ind2) const;
+        PointID &ind1, PointID &ind2) const;
 
     /** \brief Tests if a point is included in the triangle indexed by ind_t
      *
      */
-    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test, bool bRest=false) const;
+    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, TriangleID &ind_t_test, bool bRest=false) const;
 
-    bool isPointInTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test) const;
+    bool isPointInTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, TriangleID &ind_t_test) const;
 
 
 
     /** \brief Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
      *
      */
-    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(unsigned int p0, unsigned int p1, double coord_p) const;
+    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(PointID p0, PointID p1, double coord_p) const;
     sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(Edge e, double coord_p) const
     {
         return computeBaryEdgePoint(e[0], e[1], coord_p);
@@ -158,7 +160,7 @@ public:
     /** \brief Computes the point defined by 3 indices of vertex and 1 barycentric coordinate
      *
      */
-    sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(unsigned int p0, unsigned int p1, unsigned int p2, sofa::defaulttype::Vec<3,double>& coord_p) const;
+    sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::defaulttype::Vec<3,double>& coord_p) const;
     sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(Triangle& t, sofa::defaulttype::Vec<3,double>& coord_p) const
     {
         return computeBaryTrianglePoint(t[0], t[1], t[2], coord_p);
@@ -175,7 +177,7 @@ public:
     */
     bool isQuadDeulaunayOriented(const typename DataTypes::Coord& p_q1,
             const typename DataTypes::Coord& p_q2,
-            unsigned int ind_q3, unsigned int ind_q4);
+            QuadID ind_q3, QuadID ind_q4);
 
     /** \brief Tests how to triangularize a quad whose vertices are defined by (p1, p2, p3, p4) according to the Delaunay criterion
      *
@@ -198,23 +200,23 @@ public:
     /** \brief Computes the opposite point to ind_p
      *
      */
-    sofa::defaulttype::Vec<3,double> getOppositePoint(unsigned int ind_p, const Edge& indices, double coord_p) const;
+    sofa::defaulttype::Vec<3,double> getOppositePoint(PointID ind_p, const Edge& indices, double coord_p) const;
 
     /** \brief Tests if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
      *
     */
-    bool isTriangleInPlane(const TriangleID ind_t, const unsigned int ind_p,
+    bool isTriangleInPlane(const TriangleID ind_t, const PointID ind_p,
             const sofa::defaulttype::Vec<3,Real>& plane_vect) const;
 
     /** \brief Prepares the duplication of a vertex
      *
      */
-    void prepareVertexDuplication(const unsigned int ind_p,
+    void prepareVertexDuplication(const PointID ind_p,
             const TriangleID ind_t_from, const TriangleID ind_t_to,
             const Edge& indices_from, const double &coord_from,
             const Edge& indices_to, const double &coord_to,
-            sofa::helper::vector< unsigned int > &triangles_list_1,
-            sofa::helper::vector< unsigned int > &triangles_list_2) const;
+            sofa::helper::vector< TriangleID > &triangles_list_1,
+            sofa::helper::vector< TriangleID > &triangles_list_2) const;
 
     /** \brief Computes the intersection of the vector from point a to point b and the triangle indexed by t
      *
@@ -229,7 +231,7 @@ public:
             const sofa::defaulttype::Vec<3,double>& a,
             const sofa::defaulttype::Vec<3,double>& b,
             const TriangleID ind_t,
-            sofa::helper::vector<unsigned int> &indices,
+            sofa::helper::vector<PointID> &indices,
             double &baryCoef, double& coord_kmin) const;
 
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
@@ -238,9 +240,9 @@ public:
     bool computeIntersectedPointsList(const PointID last_point,
             const sofa::defaulttype::Vec<3,double>& a,
             const sofa::defaulttype::Vec<3,double>& b,
-            unsigned int& ind_ta, unsigned int& ind_tb,
-            sofa::helper::vector< unsigned int > &triangles_list,
-            sofa::helper::vector< unsigned int > &edges_list,
+            TriangleID& ind_ta, TriangleID& ind_tb,
+            sofa::helper::vector< TriangleID > &triangles_list,
+            sofa::helper::vector< EdgeID > &edges_list,
             sofa::helper::vector< double >& coords_list,
             bool& is_on_boundary) const;
 
@@ -253,9 +255,9 @@ public:
      */
     bool computeIntersectedObjectsList (const PointID last_point,
             const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
-            unsigned int& ind_ta, unsigned int& ind_tb,
+            TriangleID& ind_ta, TriangleID& ind_tb,
             sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-            sofa::helper::vector<unsigned int>& indices_list,
+            sofa::helper::vector<ElemID>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list) const;
 
 
@@ -275,7 +277,7 @@ public:
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
+    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
 
     /// return a pointer to the container of cubature points
@@ -328,7 +330,7 @@ inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Ve
 template< class Real>
 inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  );
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2dTypes>;

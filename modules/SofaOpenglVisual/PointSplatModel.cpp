@@ -47,8 +47,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(PointSplatModel)
-
 int PointSplatModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
         .add< PointSplatModel >()
         .addAlias("PointSplat")

@@ -50,7 +50,7 @@ namespace collision
 {
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_GPU_CUDA)
+#if  !defined(SOFA_BUILD_GPU_CUDA)
 extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3fTypes>;
 extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE

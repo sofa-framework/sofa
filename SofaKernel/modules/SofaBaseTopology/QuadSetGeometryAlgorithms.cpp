@@ -33,7 +33,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(QuadSetGeometryAlgorithms)
 int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
 #ifdef SOFA_FLOAT
         .add< QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template

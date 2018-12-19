@@ -49,8 +49,6 @@ namespace component
 namespace topology
 {
 
-SOFA_DECL_CLASS(SparseGridTopology)
-
 int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .addAlias("SparseGrid")
         .add< SparseGridTopology >()
@@ -388,7 +386,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
 
     _regularGrid->setSize(getNx(), getNy(), getNz());
     _regularGrid->setPos(getXmin(), getXmax(), getYmin(), getYmax(), getZmin(), getZmax());
-    int nbCubesRG = _regularGrid->getNbHexahedra();
+    size_t nbCubesRG = _regularGrid->getNbHexahedra();
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
     vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
@@ -441,7 +439,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
 
     _regularGrid->setSize(getNx(), getNy(), getNz());
     _regularGrid->setPos(getXmin(), getXmax(), getYmin(), getYmax(), getZmin(), getZmax());
-    int nbCubesRG = _regularGrid->getNbHexahedra();
+    size_t nbCubesRG = _regularGrid->getNbHexahedra();
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
     vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
@@ -476,7 +474,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
 void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 {
     _regularGrid->setSize(getNx(),getNy(),getNz());
-    const int nbCubesRG = _regularGrid->getNbHexahedra();
+    const size_t nbCubesRG = _regularGrid->getNbHexahedra();
 
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
@@ -545,7 +543,7 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
     _min.setValue( Vector3(0,0,0) );
     _max.setValue( Vector3(width*vsize[0],height*vsize[1],depth*vsize[2]) );
 
-    const int nbCubesRG = _regularGrid->getNbHexahedra();
+    const size_t nbCubesRG = _regularGrid->getNbHexahedra();
 
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)

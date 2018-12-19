@@ -33,9 +33,7 @@
 #ifndef SOFA_SIMULATION_GetAssembledSizeVisitor_H
 #define SOFA_SIMULATION_GetAssembledSizeVisitor_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <SceneCreator/config.h>
 #include <sofa/simulation/Visitor.h>

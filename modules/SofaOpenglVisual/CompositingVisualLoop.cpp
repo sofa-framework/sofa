@@ -43,8 +43,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(CompositingVisualLoop)
-
 int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
         .add< CompositingVisualLoop >()
         ;

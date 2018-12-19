@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP
-#include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -35,7 +34,6 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(TetrahedronSetTopologyAlgorithms)
 int TetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("Tetrahedron set topology algorithms")
 #ifdef SOFA_FLOAT
         .add< TetrahedronSetTopologyAlgorithms<Vec3fTypes> >(true) // default template

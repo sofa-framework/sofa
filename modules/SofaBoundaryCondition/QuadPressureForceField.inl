@@ -45,8 +45,20 @@ template <class DataTypes> QuadPressureForceField<DataTypes>::~QuadPressureForce
 {
 }
 
+template <class DataTypes>
+QuadPressureForceField<DataTypes>::QuadPressureForceField()
+    : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    , quadList(initData(&quadList,"quadList", "Indices of quads separated with commas where a pressure is applied"))
+    , normal(initData(&normal,"normal", "Normal direction for the plane selection of quads"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
+    , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
+{
+}
 
-template <class DataTypes> void QuadPressureForceField<DataTypes>::init()
+template <class DataTypes>
+void QuadPressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
 
@@ -78,7 +90,6 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     Deriv force;
 
-    //edgePressureMap.activateSubsetData();
     const sofa::helper::vector <unsigned int>& my_map = quadPressureMap.getMap2Elements();
     const sofa::helper::vector<QuadPressureInformation>& my_subset = quadPressureMap.getValue();
 
@@ -202,6 +213,15 @@ void QuadPressureForceField<DataTypes>::selectQuadsFromString()
     return;
 }
 
+template <class DataTypes>
+bool QuadPressureForceField<DataTypes>::isPointInPlane(Coord p)
+{
+    Real d=dot(p,normal.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+        return true;
+    else
+        return false;
+}
 
 template<class DataTypes>
 void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)

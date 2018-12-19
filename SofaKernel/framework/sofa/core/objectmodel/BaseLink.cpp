@@ -43,14 +43,12 @@ BaseLink::BaseLink(LinkFlags flags)
     : m_flags(flags)
 {
     m_counters.assign(0);
-    //m_isSets.assign(false);
 }
 
 BaseLink::BaseLink(const BaseInitLink& init, LinkFlags flags)
     : m_flags(flags), m_name(init.name), m_help(init.help)
 {
     m_counters.assign(0);
-    //m_isSets.assign(false);
 }
 
 BaseLink::~BaseLink()
@@ -60,9 +58,9 @@ BaseLink::~BaseLink()
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {
-    std::size_t size = getSize();
+    unsigned int size = (unsigned int)getSize();
     bool first = true;
-    for (std::size_t i = 0; i<size; ++i)
+    for (unsigned int i = 0; i<size; ++i)
     {
         std::string path = getLinkedPath(i);
         if (path.empty()) continue;
@@ -99,7 +97,6 @@ std::string BaseLink::getValueTypeString() const
 void BaseLink::copyAspect(int destAspect, int srcAspect)
 {
     m_counters[destAspect] = m_counters[srcAspect];
-    //m_isSets[destAspect] = m_isSets[srcAspect];
 }
 
 /// Release memory allocated for the specified aspect.

@@ -35,8 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CenterOfMassMapping)
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory

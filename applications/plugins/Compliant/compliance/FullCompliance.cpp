@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_FULLCOMPLIANCE_CPP
+
 #include "FullCompliance.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -24,8 +26,6 @@ int FullComplianceClass = core::RegisterObject("User provided full compliance or
         .add< FullCompliance< Vec6fTypes > >()
 #endif
         ;
-
-SOFA_DECL_CLASS(FullCompliance)
 
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API FullCompliance<Vec1dTypes>;

@@ -71,7 +71,7 @@ private:
     public:
         SOFA_CLASS(EdgeUpdate,PrimitiveUpdate);
         EdgeUpdate(MeshTopology* t);
-        void update() override;
+        void doUpdate() override;
     protected:
         void updateFromVolume();
         void updateFromSurface();
@@ -84,7 +84,7 @@ private:
 
         SOFA_CLASS(TriangleUpdate,PrimitiveUpdate);
         TriangleUpdate(MeshTopology* t);
-        void update() override;
+        void doUpdate() override;
     };
 
     class QuadUpdate : public PrimitiveUpdate
@@ -92,7 +92,7 @@ private:
     public:
         SOFA_CLASS(QuadUpdate,PrimitiveUpdate);
         QuadUpdate(MeshTopology* t);
-        void update() override;
+        void doUpdate() override;
     };
 protected:
     MeshTopology();
@@ -183,7 +183,7 @@ public:
     virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const helper::vector<unsigned int> getConnectedElement(unsigned int elem) override;

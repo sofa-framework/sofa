@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(runSofa)
 
-option(RUNSOFA_INSTALL_AS_BUNDLE "Create a bundle containing all the installation files (Only Mac OS X for now)" OFF)
-
 set(RESOURCE_FILES
     resources/docs/runsofa.html
     )
@@ -30,7 +28,7 @@ if(APPLE)
     set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
-if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp )
 else()
     add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp)
@@ -53,15 +51,21 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
-install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
+# Create build and install versions of .ini file for resources finding
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
+set(RESOURCES_DIR "../share/sofa/gui/runSofa")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
+
+install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 
-if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
     find_package(CImgPlugin REQUIRED)
     find_package(SofaMiscCollision REQUIRED)
     find_package(SofaPython REQUIRED)
-    target_link_libraries(${PROJECT_NAME} SofaAllCommonComponents CImgPlugin SofaMiscCollision SofaPython)
+    target_link_libraries(${PROJECT_NAME} SofaAllCommonComponents CImgPlugin SofaMiscCollision SofaPython SofaSparseSolver SofaPreconditioner)
     set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
     include(cmake/bundle.cmake)
 else()
