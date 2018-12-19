@@ -75,7 +75,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointI
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath not implemented";
     return 0;
 }
 
@@ -86,7 +86,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointI
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath not implemented";
     return 0;
 }
 

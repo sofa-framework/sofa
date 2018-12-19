@@ -246,7 +246,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
             sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
             if (data)
             {
-                sout << "Warning: Data alone linked: " << data->getName() << sendl;
+                msg_warning() << "Warning: Data alone linked: " << data->getName();
             }
         }
 
@@ -297,7 +297,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
     // check good loop escape
     if (cpt_security >= 1000)
-        serr << "Error: PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security." << sendl;
+        msg_error() << "Error: PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security.";
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
