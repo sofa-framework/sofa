@@ -39,8 +39,8 @@ using sofa::core::objectmodel::BaseObject ;
 
 typedef SReal Scalar;
 typedef sofa::defaulttype::Vec3Types::Deriv Deriv3;
-typedef sofa::defaulttype::Vec<3,SReal> Vec3;
-typedef sofa::defaulttype::Vec<1,SReal> Vec1;
+using sofa::defaulttype::Vec3;
+using sofa::defaulttype::Vec1;
 
 typedef enum
 {
