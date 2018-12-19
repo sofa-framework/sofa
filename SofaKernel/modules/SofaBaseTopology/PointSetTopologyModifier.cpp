@@ -443,6 +443,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isPointTopologyDirty()) // triangle Data has not been touched
         return;
 
+    sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
     // get directly the list of engines created at init: case of removing.... for the moment
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
@@ -457,6 +458,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     }
 
     m_container->cleanPointTopologyFromDirty();
+    sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
 void PointSetTopologyModifier::propagateStateChanges()

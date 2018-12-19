@@ -111,7 +111,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(Point
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath not implemented";
     return 0;
 }
 
@@ -122,7 +122,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(Point
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath not implemented";
     return 0;
 }
 
@@ -138,7 +138,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(Point
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented";
     return 0;
 }
 template<>
@@ -148,7 +148,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(Point
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath not implemented";
     return 0;
 }
 
