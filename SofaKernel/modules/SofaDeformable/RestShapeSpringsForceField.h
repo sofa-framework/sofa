@@ -129,9 +129,10 @@ public:
 protected :
 
     void recomputeIndices();
+    bool checkOutOfBoundsIndices();
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension);
 
     VecIndex m_indices;
-    VecReal k;
     VecIndex m_ext_indices;
     helper::vector<CPos> m_pivots;
 
