@@ -153,7 +153,7 @@ public:
     bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
     int m_errorDevice; ///< Int detecting any error coming from device / detection
     bool m_simulationStarted; /// <Boolean storing hte information if Sofa has started the simulation (changed by AnimateBeginEvent)
-
+    bool m_isInContact;
 private:
     void handleEvent(core::objectmodel::Event *) override;
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;

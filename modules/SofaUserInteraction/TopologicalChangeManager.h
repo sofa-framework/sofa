@@ -32,7 +32,7 @@
 #include <SofaBaseCollision/SphereModel.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/Node.h>

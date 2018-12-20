@@ -43,24 +43,14 @@ using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
 int VRPNTrackerClass = sofa::core::RegisterObject("VRPN Tracker")
-#ifndef SOFA_FLOAT
-        .add< VRPNTracker<Vec3dTypes> >()
-        .add< VRPNTracker<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< VRPNTracker<Vec3fTypes> >()
-        .add< VRPNTracker<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< VRPNTracker<Vec3Types> >()
+        .add< VRPNTracker<Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Vec3dTypes>;
-template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Vec3fTypes>;
-template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Vec3Types>;
+template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Rigid3Types>;
+ 
 
 }
 

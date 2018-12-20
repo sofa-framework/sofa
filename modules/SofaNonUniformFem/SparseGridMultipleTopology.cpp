@@ -51,7 +51,6 @@ SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : Spar
 }
 
 
-
 void SparseGridMultipleTopology::buildAsFinest()
 {
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
@@ -157,7 +156,7 @@ void SparseGridMultipleTopology::buildAsFinest()
     _stiffnessCoefs.resize( this->getNbHexahedra());
     _massCoefs.resize( this->getNbHexahedra());
 
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         _stiffnessCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
         _massCoefs[i] = regularMassCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
@@ -192,7 +191,6 @@ void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, u
 }
 
 
-
 void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs)
 {
     _regularGrid->setSize(getNx(),getNy(),getNz());
@@ -203,9 +201,9 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
     regularStiffnessCoefs.resize( _regularGridTypes[0].size() );
     regularMassCoefs.resize( _regularGridTypes[0].size() );
 
-    for(unsigned i=0; i<_regularGrids.size(); ++i)
+    for(size_t i=0; i<_regularGrids.size(); ++i)
     {
-        for(int w=0; w<_regularGrids[i]->getNbHexahedra(); ++w)
+        for(size_t w=0; w<_regularGrids[i]->getNbHexahedra(); ++w)
         {
             if( _regularGridTypes[i][w] == INSIDE || (_regularGridTypes[i][w] == BOUNDARY && !this->_fillWeighted.getValue()) )
             {
@@ -223,8 +221,6 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
         }
     }
 }
-
-
 
 
 void SparseGridMultipleTopology::buildVirtualFinerLevels()

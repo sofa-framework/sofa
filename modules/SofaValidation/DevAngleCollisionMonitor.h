@@ -133,12 +133,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_CPP)
-#ifndef SOFA_FLOAT
-extern template class DevAngleCollisionMonitor<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class DevAngleCollisionMonitor<defaulttype::Rigid3fTypes>;
-#endif
+extern template class DevAngleCollisionMonitor<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace misc

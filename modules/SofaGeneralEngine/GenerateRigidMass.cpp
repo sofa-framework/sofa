@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int GenerateRigidMassClass = core::RegisterObject("An engine computing the RigidMass of a mesh : mass, volume and inertia matrix.")
-#ifndef SOFA_FLOAT
-        .add< GenerateRigidMass<Rigid3dTypes, Rigid3dMass> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< GenerateRigidMass<Rigid3fTypes, Rigid3fMass> >()
-#endif
+        .add< GenerateRigidMass<Rigid3Types, Rigid3Mass> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3dTypes, Rigid3dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3fTypes, Rigid3fMass>;
-#endif
+template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
+
 
 } // namespace loader
 

@@ -37,40 +37,20 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
-#ifndef SOFA_FLOAT
         .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< ImplicitSurfaceMapping< Vec3dTypes, ExtVec3Types > >()
 
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
+
+
         ;
 
 
-#ifndef SOFA_FLOAT
 template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
+template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 
 } // namespace mapping

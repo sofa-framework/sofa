@@ -23,7 +23,7 @@
 
 #include "GroupwiseRegistrationEngine.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -35,19 +35,11 @@ namespace engine
 using namespace defaulttype;
 
 int GroupwiseRegistrationEngineClass = core::RegisterObject("Register a set of meshes of similar topology")
-#ifndef SOFA_FLOAT
-        .add<GroupwiseRegistrationEngine< Vec3dTypes > >(true)
-#endif
-#ifndef SOFA_DOUBLE
-        .add<GroupwiseRegistrationEngine< Vec3fTypes > >()
-#endif
+        .add<GroupwiseRegistrationEngine< Vec3Types > >(true)
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_REGISTRATION_API GroupwiseRegistrationEngine< Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_REGISTRATION_API GroupwiseRegistrationEngine< Vec3fTypes >;
-#endif
+template class SOFA_REGISTRATION_API GroupwiseRegistrationEngine< Vec3Types >;
+
 
 } //
 } // namespace component

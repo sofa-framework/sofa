@@ -95,8 +95,6 @@ protected:
         , f_C03(initData(&f_C03,helper::vector<Real>((int)1,(Real)0),"C03","weight of (~I2-3)^3 term in energy"))
         , f_C11(initData(&f_C11,helper::vector<Real>((int)1,(Real)0),"C11","weight of (~I1-3)(~I2-3) term in energy"))
         , f_bulk(initData(&f_bulk,helper::vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
-//        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
-//        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
     }
 

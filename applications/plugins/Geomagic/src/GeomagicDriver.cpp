@@ -128,6 +128,13 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         Vector3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
 
         driver->m_forceFeedback->computeForce(pos_in_world[0],pos_in_world[1],pos_in_world[2], 0, 0, 0, 0, currentForce[0], currentForce[1], currentForce[2]);
+        driver->m_isInContact = false;
+        for (int i=0; i<3; i++)
+            if (currentForce[i] != 0.0)
+            {
+                driver->m_isInContact = true;
+                break;
+            }
     }
     else
     {
@@ -193,6 +200,7 @@ GeomagicDriver::GeomagicDriver()
     , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
     , m_simulationStarted(false)
     , m_errorDevice(0)
+    , m_isInContact(false)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
