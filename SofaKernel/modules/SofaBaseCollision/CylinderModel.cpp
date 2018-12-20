@@ -35,26 +35,19 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-static int RigidCylinderModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
-#ifndef SOFA_FLOAT
-        .add<  TCylinderModel<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add < TCylinderModel<Rigid3fTypes> >()
-#endif
+int RigidCylinderModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
+        .add<  TCylinderModel<defaulttype::Rigid3Types> >()
+
         //TODO(dmarchal): Fix deprecated management...
         .addAlias("Cylinder")
         .addAlias("CylinderModel")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TCylinder<Rigid3dTypes>;
-template class SOFA_BASE_COLLISION_API TCylinderModel<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TCylinder<Rigid3fTypes>;
-template class SOFA_BASE_COLLISION_API TCylinderModel<Rigid3fTypes>;
-#endif
+template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3Types>;
+template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3Types>;
+
+
+
 
 
 }

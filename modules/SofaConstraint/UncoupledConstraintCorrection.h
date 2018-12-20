@@ -158,18 +158,11 @@ void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplia
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2dTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1dTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2fTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1fTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2Types>;
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1Types>;
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace constraintset

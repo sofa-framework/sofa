@@ -222,7 +222,6 @@ public:
     void addForce_method1( Deriv& f , const Coord& x , const Deriv& /*v*/)  const
     {
         Real J = x.getStrain()[0]*x.getStrain()[1]*x.getStrain()[2];
-//        if( J<MIN_DETERMINANT() ) J=MIN_DETERMINANT();
         Real Jm1 = J-1;
         Real KVolJm1 = KVol * Jm1;
 

@@ -90,26 +90,15 @@ extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<int> 
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<bool> >;
 //extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<std::string> >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
-#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<double> >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
 extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2dTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2dTypes::VecDeriv >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3dTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3dTypes::VecDeriv >;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<float> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2f> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3f> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4f> >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2fTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2fTypes::VecDeriv >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3fTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3fTypes::VecDeriv >;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
+extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
+extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
+extern template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
+ 
 #endif
 
 } // namespace engine

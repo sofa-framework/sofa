@@ -262,12 +262,8 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-#endif
+extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+
 
 #endif
 

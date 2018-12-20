@@ -30,7 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -91,9 +91,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace engine

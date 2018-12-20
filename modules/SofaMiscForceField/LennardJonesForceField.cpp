@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
 
 #include <SofaMiscForceField/LennardJonesForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -39,20 +39,12 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
-#ifndef SOFA_FLOAT
-        .add< LennardJonesForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LennardJonesForceField<Vec3fTypes> >()
-#endif
+        .add< LennardJonesForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

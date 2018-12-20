@@ -75,16 +75,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class RepulsiveSpringForceField<defaulttype::Vec3dTypes>;
-extern template class RepulsiveSpringForceField<defaulttype::Vec2dTypes>;
-extern template class RepulsiveSpringForceField<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class RepulsiveSpringForceField<defaulttype::Vec3fTypes>;
-extern template class RepulsiveSpringForceField<defaulttype::Vec2fTypes>;
-extern template class RepulsiveSpringForceField<defaulttype::Vec1fTypes>;
-#endif
+extern template class RepulsiveSpringForceField<defaulttype::Vec3Types>;
+extern template class RepulsiveSpringForceField<defaulttype::Vec2Types>;
+extern template class RepulsiveSpringForceField<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace interactionforcefield

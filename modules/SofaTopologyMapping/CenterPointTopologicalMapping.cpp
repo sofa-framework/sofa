@@ -57,13 +57,7 @@ void CenterPointTopologicalMapping::init()
     {
         toModel->setNbPoints(fromModel->getNbHexahedra());
 
-#ifdef SOFA_FLOAT
-        typedef Vec3fTypes DataTypes;
-#else
-        typedef Vec3dTypes DataTypes;
-#endif
-
-        PointSetGeometryAlgorithms<DataTypes> *geomAlgo = NULL;
+        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = NULL;
         toModel->getContext()->get(geomAlgo);
 
         geomAlgo->getDOF()->resize(fromModel->getNbHexahedra());

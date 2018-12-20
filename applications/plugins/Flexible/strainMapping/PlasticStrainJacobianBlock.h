@@ -116,11 +116,9 @@ public:
         // elasticStrain = totalStrain - plasticStrain
         InCoord elasticStrain = data - _plasticStrain;
 
-        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
         if( elasticStrain.getStrain().norm2() > squaredYield )
             _plasticStrain += elasticStrain * creep;
 
-        // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
         Real plasticStrainNorm2 = _plasticStrain.getStrain().norm2();
         if( plasticStrainNorm2 > max*max )
             _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
@@ -156,142 +154,6 @@ public:
     }
 
 }; // class PlasticStrainJacobianBlock
-
-
-
-
-
-
-
-///** Template class used to implement one jacobian block for PlasticStrainMapping for PrincipalStretchesStrainTypes*/
-///// @warning @todo only implemented for principal stretches see as strain
-///// @TODO it not working because the principal stretches are not ordered
-//template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-//class PlasticStrainJacobianBlock_U : public BaseJacobianBlock< PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real>,PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real> >
-//{
-
-//public:
-
-//    typedef PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real> TStrain;
-//    typedef BaseJacobianBlock<TStrain,TStrain> Inherit;
-//    typedef typename Inherit::InCoord InCoord;
-//    typedef typename Inherit::InDeriv InDeriv;
-//    typedef typename Inherit::OutCoord OutCoord;
-//    typedef typename Inherit::OutDeriv OutDeriv;
-//    typedef typename Inherit::MatBlock MatBlock;
-//    typedef typename Inherit::KBlock KBlock;
-//    typedef typename Inherit::Real Real;
-
-//    enum { strain_size = TStrain::strain_size };
-//    enum { order = TStrain::order };
-//    enum { spatial_dimensions = TStrain::spatial_dimensions };
-
-//    typedef Mat<strain_size,strain_size,Real> StrainMat;  ///< Matrix representing a strain
-//    typedef typename TStrain::StrainVec StrainVec;  ///< Vec representing a strain (Voigt notation)
-
-//    static const bool constant = true;
-
-
-//    /**
-//    Mapping:   ADDITION       -> \f$ E_elastic = E_total - E_plastic \f$
-//               MULTIPLICATION -> \f$ E_elastic = E_total * E_plastic^-1 \f$
-//    Jacobian:                    \f$  dE = Id \f$
-//    */
-
-
-//    InCoord _plasticStrain;
-
-//    void reset()
-//    {
-//        _plasticStrain.clear();
-//    }
-
-
-//    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
-
-//    void addapply_multiplication( OutCoord& result, const InCoord& data, Real max, Real squaredYield, Real creep )
-//    {
-//        // eventually remove a part of the strain to simulate plasticity
-
-//        // could be optimized by storing the computation of the previous time step
-//        StrainMat plasticStrainMat = PrincipalStretchesToMat( _plasticStrain.getStrain() ) + StrainMat::s_identity;
-//        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
-
-//        // elasticStrain = totalStrain * plasticStrain^-1
-//        StrainMat elasticStrainMat = ( PrincipalStretchesToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
-//        StrainVec elasticStrainVec = MatToPrincipalStretches( elasticStrainMat - StrainMat::s_identity );
-
-//        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
-//        if( elasticStrainVec.norm2() > squaredYield )
-//            _plasticStrain.getStrain() += creep * elasticStrainVec;
-
-//        // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
-//        Real plasticStrainNorm2 = _plasticStrain.getStrain().norm2();
-//        if( plasticStrainNorm2 > max*max )
-//            _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
-
-//        plasticStrainMat = PrincipalStretchesToMat( _plasticStrain.getStrain() ) + StrainMat::s_identity;
-
-//        // remaining elasticStrain = totalStrain * plasticStrain^-1
-//        plasticStrainMatInverse.invert( plasticStrainMat );
-//        elasticStrainMat = ( PrincipalStretchesToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
-//        elasticStrainVec = MatToPrincipalStretches( elasticStrainMat - StrainMat::s_identity );
-
-//        result.getStrain() += elasticStrainVec;
-//    }
-
-//    void addapply_addition( OutCoord& result, const InCoord& data, Real max, Real squaredYield, Real creep )
-//    {
-//        // eventually remove a part of the strain to simulate plasticity
-
-//        // elasticStrain = totalStrain - plasticStrain
-//        InCoord elasticStrain = data - _plasticStrain;
-
-//        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
-//        if( elasticStrain.getStrain().norm2() > squaredYield )
-//            _plasticStrain += elasticStrain * creep;
-
-//        // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
-//        Real plasticStrainNorm2 = _plasticStrain.getStrain().norm2();
-//        if( plasticStrainNorm2 > max*max )
-//            _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
-
-//        // remaining elasticStrain = totatStrain - plasticStrain
-//        elasticStrain = data - _plasticStrain;
-
-//        result += elasticStrain;
-//    }
-
-//    void addmult( OutDeriv& result,const InDeriv& data )
-//    {
-//        result += data;
-//    }
-
-//    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-//    {
-//        result += data;
-//    }
-
-//    MatBlock getJ()
-//    {
-//        return MatBlock::Identity();
-//    }
-
-//    KBlock getK(const OutDeriv& /*childForce*/, bool=false)
-//    {
-//        return KBlock();
-//    }
-
-//    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor */)
-//    {
-//    }
-
-//}; // class PlasticStrainJacobianBlock_U
-//template<typename Real> class PlasticStrainJacobianBlock<U331(Real)>: public PlasticStrainJacobianBlock_U<3,3,0,Real> {};
-//template<typename Real> class PlasticStrainJacobianBlock<U321(Real)>: public PlasticStrainJacobianBlock_U<3,2,0,Real> {};
-
-
-
 
 
 } // namespace defaulttype

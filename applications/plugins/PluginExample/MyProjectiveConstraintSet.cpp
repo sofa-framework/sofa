@@ -37,25 +37,15 @@ using namespace sofa::defaulttype;
 
 
 int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of templated component")
-#ifndef SOFA_FLOAT
-    .add< MyProjectiveConstraintSet<Vec3dTypes> >()
-    .add< MyProjectiveConstraintSet<Vec1dTypes> >()
-    .add< MyProjectiveConstraintSet<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< MyProjectiveConstraintSet<Vec3fTypes> >()
-    .add< MyProjectiveConstraintSet<Rigid3fTypes> >()
-#endif
+    .add< MyProjectiveConstraintSet<Vec3Types> >()
+    .add< MyProjectiveConstraintSet<Vec1Types> >()
+    .add< MyProjectiveConstraintSet<Rigid3Types> >()
+
     ;
 
-#ifndef SOFA_FLOAT
-template class MyProjectiveConstraintSet<Rigid3dTypes>;
-template class MyProjectiveConstraintSet<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class MyProjectiveConstraintSet<Rigid3fTypes>;
-template class MyProjectiveConstraintSet<Vec3fTypes>;
-#endif
+template class MyProjectiveConstraintSet<Rigid3Types>;
+template class MyProjectiveConstraintSet<Vec3Types>;
+
 
 
 } // namespace projectiveconstraintset

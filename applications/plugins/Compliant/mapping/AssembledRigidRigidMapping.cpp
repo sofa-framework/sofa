@@ -17,22 +17,12 @@ using namespace defaulttype;
 // Register in the Factory
 int AssembledRigidRigidMappingClass = core::RegisterObject("Assembled rigid displacement mapping")
 
-#ifndef SOFA_FLOAT
-.add< AssembledRigidRigidMapping< Rigid3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< AssembledRigidRigidMapping< Rigid3fTypes, Rigid3fTypes > >()
-#endif
+.add< AssembledRigidRigidMapping< Rigid3Types, Rigid3Types > >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API AssembledRigidRigidMapping<  Rigid3dTypes, Rigid3dTypes >;
-#endif
+template class SOFA_Compliant_API AssembledRigidRigidMapping<  Rigid3Types, Rigid3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API AssembledRigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
-
-#endif
 
 
 

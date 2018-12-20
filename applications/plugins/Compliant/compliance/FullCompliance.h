@@ -74,16 +74,10 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_FULLCOMPLIANCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec1dTypes>;
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec3dTypes>;
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec1fTypes>;
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec3fTypes>;
-extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec6fTypes>;
-#endif
+extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_Compliant_API FullCompliance<sofa::defaulttype::Vec6Types>;
+
 #endif
 
 }

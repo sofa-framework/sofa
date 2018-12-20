@@ -104,7 +104,6 @@ struct DilateEngine_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using testing::Types;
-#ifdef SOFA_WITH_DOUBLE
 typedef Types<Vec3Types> DataTypes;
 
 TYPED_TEST_CASE(DilateEngine_test, DataTypes);
@@ -117,6 +116,6 @@ TYPED_TEST(DilateEngine_test, UpdateTest) {
     EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
-#endif
+
 
 }

@@ -286,13 +286,12 @@ void FrameFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
 }
 
 //            // Specialization for rigids
-//#ifndef SOFA_FLOAT
+////            template <>
+//                    void FrameFixedConstraint<Rigid3Types >::draw();
 //            template <>
-//                    void FrameFixedConstraint<Rigid3dTypes >::draw();
-//            template <>
-//                    void FrameFixedConstraint<Rigid2dTypes >::draw();
-//#endif
-//#ifndef SOFA_DOUBLE
+//                    void FrameFixedConstraint<Rigid2Types >::draw();
+//
+//#ifdef SOFA_WITH_FLOAT
 //            template <>
 //                    void FrameFixedConstraint<Rigid3fTypes >::draw();
 //            template <>

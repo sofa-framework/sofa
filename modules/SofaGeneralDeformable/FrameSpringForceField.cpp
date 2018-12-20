@@ -41,20 +41,12 @@ using namespace sofa::defaulttype;
 // Register in the Factory
 
 int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" )
-#ifndef SOFA_FLOAT
-        .add< FrameSpringForceField<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FrameSpringForceField<Rigid3fTypes> >()
-#endif
+        .add< FrameSpringForceField<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3fTypes>;
-#endif
+template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3Types>;
+
 
 } // namespace interactionforcefield
 

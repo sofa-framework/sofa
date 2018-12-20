@@ -37,6 +37,7 @@
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/core/CategoryLibrary.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -563,6 +564,36 @@ static PyObject * Sofa_path(PyObject * /*self*/, PyObject * /*args*/) {
     return PyString_FromString(Utils::getSofaPathPrefix().c_str());
 }
 
+static PyObject * Sofa_getCategories(PyObject * self, PyObject * args)
+{
+    SOFA_UNUSED(self) ;
+    char* className;
+    if (!PyArg_ParseTuple(args, "s", &className)) {
+        return nullptr;
+    }
+
+    std::vector<std::string> categories;
+    ObjectFactory* factory = ObjectFactory::getInstance();
+
+    if (factory->hasCreator(className))
+    {
+        ObjectFactory::ClassEntry entry = factory->getEntry(className);
+        ObjectFactory::CreatorMap::iterator it2 = entry.creatorMap.begin();
+
+        if( it2 != entry.creatorMap.end())
+        {
+                ObjectFactory::Creator::SPtr c = it2->second;
+                const objectmodel::BaseClass* objClass = c->getClass();
+                CategoryLibrary::getCategories(objClass,categories);
+        }
+    }
+
+    PyObject *pyList = PyList_New(categories.size());
+    for (unsigned int i=0; i<categories.size(); ++i)
+        PyList_SetItem(pyList,i, PyString_FromString(categories[i].c_str())) ;
+
+    return pyList ;
+}
 
 static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * args)
 {
@@ -888,6 +919,7 @@ SP_MODULE_METHOD(Sofa,unload)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa,path)
+SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (className) a list of categories it belongs to")
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")

@@ -146,19 +146,10 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_CURVEMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API CurveMapping< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CurveMapping< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
-#endif
+extern template class SOFA_MISC_MAPPING_API CurveMapping< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CurveMapping< defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CurveMapping< defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes >;
-#endif
-#endif
+
+
 #endif
 
 } // namespace mapping

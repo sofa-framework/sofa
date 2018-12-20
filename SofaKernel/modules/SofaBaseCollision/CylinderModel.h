@@ -25,7 +25,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -177,16 +177,11 @@ inline TCylinder<DataTypes>::TCylinder(const core::CollisionElementIterator& i)
 typedef TCylinderModel<sofa::defaulttype::Rigid3Types> CylinderModel;
 typedef TCylinder<sofa::defaulttype::Rigid3Types> Cylinder;
 
-#if !defined(SOFA_COMPONENT_COLLISION_CYLINDERMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3dTypes>;
+#if  !defined(SOFA_COMPONENT_COLLISION_CYLINDERMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3Types>;
 #endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
-#endif
+
 } // namespace collision
 
 } // namespace component

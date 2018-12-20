@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP
 
 #include <SofaUserInteraction/RemovePrimitivePerformer.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa
@@ -35,19 +35,11 @@ namespace component
 namespace collision
 {
 
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3dTypes>;
-#endif
+template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3fTypes> >  RemovePrimitivePerformerVec3fClass("RemovePrimitive",true);
-#endif
-#ifndef SOFA_FLOAT
+
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);
-#endif
+
 
 }
 }

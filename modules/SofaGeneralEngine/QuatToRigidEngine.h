@@ -87,12 +87,8 @@ public:
 };
 
 #if  !defined(QUATTORIGIDENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

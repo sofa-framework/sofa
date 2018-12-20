@@ -307,7 +307,9 @@ endif()
 ################
 # Package config
 include(CPackComponent)
-include(CPackNSIS)
+if(WIN32)
+    include(CPackNSIS)
+endif()
 include(CPackIFW)
 set(CPACK_PACKAGE_VERSION "${Sofa_VERSION}")
 set(CPACK_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")

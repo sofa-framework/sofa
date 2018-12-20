@@ -17,7 +17,7 @@ UniformStiffness<DataTypes>::UniformStiffness( core::behavior::MechanicalState<D
     : Inherit(mm)
     , stiffness( initData(&stiffness, (Real)0, "stiffness", "stiffness value uniformly applied to all the DOF."))
     , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
-    , resizable( initData(&resizable, false, "resizable", "can the associated dofs can be resized? (in which case the matrices must be updated)")) 
+    , resizable( initData(&resizable, false, "resizable", "can the associated dofs can be resized? (in which case the matrices must be updated)"))
 {
 }
 
@@ -51,44 +51,31 @@ void UniformStiffness<DataTypes>::reinit()
         matC.compressedMatrix.finalize();
     }
     else matC.compressedMatrix.resize(0,0);
+    matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
-    // matK must be computed since it is used by MechanicalComputeStiffnessForceVisitor to compute the Stiffness forces
-//    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
-//    {
-        matK.resize(state->getMatrixSize(), state->getMatrixSize());
-
-        if( k )
-        {
-            for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-                matK.beginRow(i);
-                matK.insertBack(i, i, -k);
-            }
-
-            matK.compressedMatrix.finalize();
+    if( k )
+    {
+        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+            matK.beginRow(i);
+            matK.insertBack(i, i, -k);
         }
 
-//    }
-//    else matK.compressedMatrix.resize(0,0);
+        matK.compressedMatrix.finalize();
+    }
 
-
-    // TODO if(this->isStiffness.getValue() && this->rayleighStiffness.getValue()) mettre rayleigh dans B mais attention à kfactor avec/sans rayleigh factor
-
-
-	if( damping.getValue() > 0 ) {
+    if( damping.getValue() > 0 ) {
         const SReal& d = damping.getValue();
-		
-		matB.resize(state->getMatrixSize(), state->getMatrixSize());
-		
-		for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+
+        matB.resize(state->getMatrixSize(), state->getMatrixSize());
+
+        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
             matB.beginRow(i);
             matB.insertBack(i, i, -d);
-		}
+        }
 
-		matB.compressedMatrix.finalize();
-	}
+        matB.compressedMatrix.finalize();
+    }
     else matB.compressedMatrix.resize(0,0);
-	
-//    std::cerr<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
 }
 
 template<class DataTypes>
@@ -129,21 +116,14 @@ void UniformStiffness<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * 
 template<class DataTypes>
 void UniformStiffness<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset )
 {
-//	if( damping.getValue() > 0 ) // B is empty in that case
-    {
-		matB.addToBaseMatrix( matrix, bFact, offset );
-	}
+    matB.addToBaseMatrix( matrix, bFact, offset );
 }
 
 template<class DataTypes>
 void UniformStiffness<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
     if( resizable.getValue() &&  (defaulttype::BaseMatrix::Index)x.getValue().size() != matK.compressedMatrix.rows() ) reinit();
-
-//    if( matK.compressedMatrix.nonZeros() )
-        matK.addMult( f, x  );
-
-//    cerr<<SOFA_CLASS_METHOD<< f << endl;
+    matK.addMult( f, x  );
 }
 
 template<class DataTypes>
