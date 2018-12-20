@@ -32,17 +32,6 @@ namespace component
 namespace interactionforcefield
 {
 
-/// see Template friend operators
-/// in https://en.cppreference.com/w/cpp/language/friend
-template<typename DataTypes>
-class JointSpring; // forward declare to make function declaration possible
-
-template<typename DataTypes>
-std::istream& operator>> ( std::istream& in, JointSpring<DataTypes>& s );
-template<typename DataTypes>
-std::ostream& operator<< ( std::ostream& out, const JointSpring<DataTypes>& s );
-//////////////////////////////////////////////////////////
-
 /// JOINTSPRING
 template<typename DataTypes>
 class JointSpring
@@ -130,11 +119,102 @@ public:
     }
     void setDamping(Real _kd) {  kd = _kd;	  }
 
-    /// see https://en.cppreference.com/w/cpp/language/friend
-    friend std::istream& operator>> <>( std::istream& in, JointSpring& s );
-    friend std::ostream& operator<< <>( std::ostream& out, const JointSpring& s );
-    //////////////////////////////////////////////////////////
+    friend std::istream& operator >> ( std::istream& in, JointSpring<DataTypes>& s )
+    {
+        //default joint is a free rotation joint --> translation is bloqued, rotation is free
+        s.freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
+        s.initTrans = Vector(0,0,0);
+        s.initRot = defaulttype::Quat(0,0,0,1);
+        s.blocStiffnessRot = 0.0;
+        //by default no angle limitation is set (bi values for initialisation)
+        s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
+        bool initTransFound=false;
 
+        std::string str;
+        in>>str;
+        if(str == "BEGIN_SPRING")
+        {
+            in>>s.m1>>s.m2; //read references
+            in>>str;
+            while(str != "END_SPRING")
+            {
+                if(str == "FREE_AXIS")
+                    in>>s.freeMovements;
+                else if(str == "KS_T")
+                    in>>s.softStiffnessTrans>>s.hardStiffnessTrans;
+                else if(str == "KS_R")
+                    in>>s.softStiffnessRot>>s.hardStiffnessRot;
+                else if(str == "KS_B")
+                    in>>s.blocStiffnessRot;
+                else if(str == "KD")
+                    in>>s.kd;
+                else if(str == "R_LIM_X")
+                    in>>s.limitAngles[0]>>s.limitAngles[1];
+                else if(str == "R_LIM_Y")
+                    in>>s.limitAngles[2]>>s.limitAngles[3];
+                else if(str == "R_LIM_Z")
+                    in>>s.limitAngles[4]>>s.limitAngles[5];
+                else if(str == "REST_T")
+                {
+                    in>>s.initTrans;
+                    initTransFound=true;
+                }
+                else if(str == "REST_R")
+                {
+                    in>>s.initRot;
+                }
+                else
+                {
+                    msg_error("JointSprintForceField")<<"Unknown Attribute while parsing '"<<str<<"'" ;
+                    return in;
+                }
+
+                in>>str;
+            }
+        }
+
+        s.needToInitializeTrans = initTransFound;
+        s.needToInitializeRot = initTransFound;
+
+        if(s.blocStiffnessRot == 0.0)
+            s.blocStiffnessRot = s.hardStiffnessRot/100;
+
+        for (unsigned int i=0; i<3; i++)
+        {
+            if(s.limitAngles[2*i]==s.limitAngles[2*i+1])
+                s.freeMovements[3+i] = false;
+        }
+
+        return in;
+    }
+    friend std::ostream& operator << ( std::ostream& out, const JointSpring<DataTypes>& s )
+    {
+        out<<"BEGIN_SPRING  "<<s.m1<<" "<<s.m2<<"  ";
+
+        if (s.freeMovements[0]!=false || s.freeMovements[1]!=false || s.freeMovements[2]!=false || s.freeMovements[3]!=true || s.freeMovements[4]!=true || s.freeMovements[5]!=true)
+            out<<"FREE_AXIS "<<s.freeMovements<<"  ";
+        if (s.softStiffnessTrans != 0.0 || s.hardStiffnessTrans != 10000.0)
+            out<<"KS_T "<<s.softStiffnessTrans<<" "<<s.hardStiffnessTrans<<"  ";
+        if (s.softStiffnessRot != 0.0 || s.hardStiffnessRot != 10000.0)
+            out<<"KS_R "<<s.softStiffnessRot<<" "<<s.hardStiffnessRot<<"  ";
+        if (s.blocStiffnessRot != s.hardStiffnessRot/100)
+            out<<"KS_B "<<s.blocStiffnessRot<<"  ";
+        if (s.kd != 0.0)
+            out<<"KD "<<s.kd<<"  ";
+        if (s.limitAngles[0]!=-100000 || s.limitAngles[1] != 100000)
+            out<<"R_LIM_X "<<s.limitAngles[0]<<" "<<s.limitAngles[1]<<"  ";
+        if (s.limitAngles[2]!=-100000 || s.limitAngles[3] != 100000)
+            out<<"R_LIM_Y "<<s.limitAngles[2]<<" "<<s.limitAngles[3]<<"  ";
+        if (s.limitAngles[4]!=-100000 || s.limitAngles[5] != 100000)
+            out<<"R_LIM_Z "<<s.limitAngles[4]<<" "<<s.limitAngles[5]<<"  ";
+        if (s.initTrans!= Vector(0,0,0))
+            out<<"REST_T "<<s.initTrans<<"  ";
+        if (s.initRot[3]!= 1)
+            out<<"REST_R "<<s.initRot<<"  ";
+
+        out<<"END_SPRING"<<std::endl;
+        return out;
+}
 };
 
 #if  !defined(SOFA_JOINTSPRING_CPP)

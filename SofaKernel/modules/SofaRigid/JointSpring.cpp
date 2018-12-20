@@ -36,13 +36,9 @@ using namespace sofa::defaulttype;
 
 #ifndef SOFA_FLOAT
 template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
-template SOFA_RIGID_API std::istream& operator >>( std::istream& in, JointSpring<defaulttype::Rigid3dTypes>& s );
-template SOFA_RIGID_API std::ostream& operator <<( std::ostream& out, const JointSpring<defaulttype::Rigid3dTypes>& s );
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3fTypes>;
-template SOFA_RIGID_API std::istream& operator >>( std::istream& in, JointSpring<defaulttype::Rigid3fTypes>& s );
-template SOFA_RIGID_API std::ostream& operator <<( std::ostream& out, const JointSpring<defaulttype::Rigid3fTypes>& s );
 #endif
 
 } // namespace interactionforcefield
