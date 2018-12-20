@@ -55,19 +55,6 @@ int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
         ;
 
 
-// 	  const float SparseGridTopology::WEIGHT[8][8] =
-// 	  {
-// 		  { 1, .5, .5, .25,  .5,.25,.25, .125 }, // fine cube 0 from coarser corner 0 -> what weight for a vertex?
-// 		  { .5,1,.25,.5,.25,.5,.125,.25 },
-// 		  {.5,.25,1,.5,.25,.125,.5,.25},
-// 		  {.25,.5,.5,1,.125,.25,.25,.5},
-// 		  {.5,.25,.25,.125,1,.5,.5,.25},
-// 		  {.25,.5,.125,.25,.5,1,.25,.5},
-// 		  {.25,.125,.5,.25,.5,.25,1,.5},
-// 		  {.125,.25,.25,.5,.25,.5,.5,1}
-// 	  };
-
-
 const float SparseGridTopology::WEIGHT27[8][27] =
 {
     // each weight of the jth fine vertex to the ith coarse vertex
@@ -97,22 +84,18 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 
 
 SparseGridTopology::SparseGridTopology(bool _isVirtual)
-    :
-    _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)")),
-    d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)")),
-    n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
-    _min(initData(&_min, Vector3(0,0,0), "min","Min")),
-    _max(initData(&_max, Vector3(0,0,0), "max","Max")),
-    _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
-    _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
-    dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
-    voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
-    marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm")),
-    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.")),
-    vertices(initData(&vertices, "vertices", "Input mesh vertices")),
-    facets(initData(&facets, "facets", "Input mesh facets")),
-    input_triangles(initData(&input_triangles, "input_triangles", "Input mesh triangles")),
-    input_quads(initData(&input_quads, "input_quads", "Input mesh quads"))
+    : _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)"))
+    , d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)"))
+    , n(initData(&n, Vec3i(2,2,2), "n", "grid resolution"))
+    , _min(initData(&_min, Vector3(0,0,0), "min","Min"))
+    , _max(initData(&_max, Vector3(0,0,0), "max","Max"))
+    , _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+    , _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)"))
+    , dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File"))
+    , voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel"))
+    , marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm"))
+    , convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
+    , facets(initData(&facets, "facets", "Input mesh facets"))
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
@@ -121,44 +104,11 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     _usingMC = false;
 
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
-
-    //Add alias to use MeshLoader
-    addAlias(&vertices,"position");
-    addAlias(&input_triangles,"triangles");
-    addAlias(&input_quads,"quads");
 }
 
 SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool _isVirtual)
-    :
-    _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)")),
-    d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)")),
-    n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
-    _min(initData(&_min, Vector3(0,0,0), "min","Min")),
-    _max(initData(&_max, Vector3(0,0,0), "max","Max")),
-    _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
-    _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
-    dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
-    voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
-    marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm")),
-    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.")),
-    vertices(initData(&vertices, "vertices", "Input mesh vertices")),
-    facets(initData(&facets, "facets", "Input mesh facets")),
-    input_triangles(initData(&input_triangles, "input_triangles", "Input mesh triangles")),
-    input_quads(initData(&input_quads, "input_quads", "Input mesh quads"))
+    : SparseGridTopology(_isVirtual)
 {
-    isVirtual = _isVirtual;
-    _alreadyInit = false;
-    _finerSparseGrid = NULL;
-    _coarserSparseGrid = NULL;
-    _usingMC = false;
-
-    _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
-
-    //Add alias to use MeshLoader
-    addAlias(&vertices,"position");
-    addAlias(&input_triangles,"triangles");
-    addAlias(&input_quads,"quads");
-
     setN(numVertices);
     setMin(box.minBBox());
     setMax(box.maxBBox());
@@ -242,8 +192,6 @@ void SparseGridTopology::init()
 
 void SparseGridTopology::buildAsFinest(  )
 {
-    //	serr<<"SparseGridTopology::buildAsFinest(  )"<<sendl;
-
     VoxelLoader *loader;
     getContext()->get(loader);
     if( loader )
@@ -254,11 +202,13 @@ void SparseGridTopology::buildAsFinest(  )
     {
         std::string _filename = fileTopology.getFullPath();
 
-        if (vertices.getValue().empty() )
+        if (seqPoints.getValue().empty() )
         {
             if (_filename.empty())
             {
-                serr << "SparseGridTopology: no filename specified." << sendl;
+                if (this->seqPoints.getValue().empty())
+                    msg_warning() << "SparseGridTopology: no filename specified nor vertices given as parameters.";
+
                 return;
             }
 
@@ -293,7 +243,7 @@ void SparseGridTopology::buildAsFinest(  )
             }
             else
             {
-                serr << "SparseGridTopology::buildAsFinest: extension unrecognized " << sendl;
+                msg_error() << "SparseGridTopology::buildAsFinest: extension unrecognized ";
                 return;
             }
         }
@@ -306,7 +256,7 @@ void SparseGridTopology::buildAsFinest(  )
         _stiffnessCoefs.resize( this->getNbHexahedra());
         _massCoefs.resize( this->getNbHexahedra());
 
-        for(int i=0; i<this->getNbHexahedra(); ++i)
+        for(size_t i=0; i<this->getNbHexahedra(); ++i)
         {
             if( getType(i)==BOUNDARY && _fillWeighted.getValue() )
             {
@@ -330,7 +280,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
         std::ifstream file( filename.c_str() );
         if ( file.fail() )
         {
-            serr << "SparseGridTopology: failed to open file " << filename << sendl;
+            msg_error() << "SparseGridTopology: failed to open file " << filename;
             return;
         }
 
@@ -393,7 +343,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
 
     // fill the regularGridTypes vector
     // at the moment, no BOUNDARY type voxels are generated at the finest level
-    for(int i=0; i<nbCubesRG; ++i)
+    for(size_t i=0; i<nbCubesRG; ++i)
     {
         if(dataVoxels.getValue()[i] != 0.0f)
         {
@@ -446,7 +396,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
 
     // fill the regularGridTypes vector
     // at the moment, no BOUNDARY type voxels are generated at the finest level
-    for(int i=0; i<nbCubesRG; ++i)
+    for(size_t i=0; i<nbCubesRG; ++i)
     {
         if(dataVoxels.getValue()[i] != 0.0f)
         {
@@ -458,7 +408,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
 
     _stiffnessCoefs.resize( this->getNbHexahedra());
     _massCoefs.resize( this->getNbHexahedra());
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         _stiffnessCoefs[i] = _massCoefs[i] = 1.0;
     }
@@ -483,7 +433,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     if (dataVoxels.getValue().size() == 0)
     {
         FILE *file = fopen( filename.c_str(), "r" );
-        if (!file) { serr<< "FILE " << filename << " not found"<<sendl; return;}
+        if (!file) { msg_error()<< "FILE " << filename << " not found"; return;}
         //Get the voxels from the file
         dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2], (unsigned char)0);
 
@@ -550,7 +500,7 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 
     vector<float> regularstiffnessCoef(nbCubesRG, 0.0);
 
-    for(int i=0; i<nbCubesRG; ++i)
+    for(size_t i=0; i<nbCubesRG; ++i)
     {
         const Vec3i& hexacoord = _regularGrid->getCubeCoordinate(i);
         const RegularGridTopology::Hexa& hexa = _regularGrid->getHexahedron( hexacoord[0],hexacoord[1], hexacoord[2] );
@@ -588,7 +538,7 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 
     _stiffnessCoefs.resize( this->getNbHexahedra());
     _massCoefs.resize( this->getNbHexahedra());
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         if( _fillWeighted.getValue() )
         {
@@ -612,12 +562,8 @@ void SparseGridTopology::updateMesh()
 
     //Creating if needed collision models and visual models
     // 	    using sofa::simulation::Node;
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
-    sofa::helper::vector< Data< sofa::defaulttype::Vec3fTypes::VecCoord >* > list_Xf;
-
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
-    sofa::helper::vector< Data< sofa::defaulttype::Vec3dTypes::VecCoord >* > list_Xd;
-
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_mesh;
+    sofa::helper::vector< Data< sofa::defaulttype::Vec3Types::VecCoord >* > list_X;
 
     //Get Collision Model
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
@@ -631,21 +577,16 @@ void SparseGridTopology::updateMesh()
 
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
-        core::behavior::MechanicalState< sofa::defaulttype::Vec3dTypes > *mecha_tempd =
-                collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3dTypes > >();
-        if (mecha_tempd != NULL && mecha_tempd->getSize() < 2) //a triangle mesh has minimum 3elements
+        core::behavior::MechanicalState< sofa::defaulttype::Vec3Types > *mecha_temp =
+                collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3Types > >();
+        if (mecha_temp != NULL && mecha_temp->getSize() < 2) //a triangle mesh has minimum 3elements
         {
-            list_meshd.push_back(collisionTopology);
-            list_Xd.push_back(mecha_tempd->write(core::VecCoordId::position()));
+            list_mesh.push_back(collisionTopology);
+            list_X.push_back(mecha_temp->write(core::VecCoordId::position()));
         }
-
     }
 
-    if (
-        list_meshf.empty()
-        && list_meshd.empty()
-
-        )
+    if (list_mesh.empty())
         return;				 //No Marching Cube to run
 
     //Configuration of the Marching Cubes algorithm
@@ -657,11 +598,7 @@ void SparseGridTopology::updateMesh()
     marchingCubes.setStep(marchingCubeStep.getValue());
     marchingCubes.setConvolutionSize(convolutionSize.getValue()); //apply Smoothing if convolutionSize > 0
 
-    if (! list_meshf.empty())
-        constructCollisionModels(list_meshf, list_Xf);
-    else
-        constructCollisionModels(list_meshd, list_Xd);
-
+    constructCollisionModels(list_mesh, list_X);
 }
 
 
@@ -721,11 +658,11 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     if (filename.empty())
     {
         mesh = new helper::io::Mesh();
-        for (unsigned int i=0; i<vertices.getValue().size(); ++i)
-            mesh->getVertices().push_back(vertices.getValue()[i]);
+        for (unsigned int i=0; i<seqPoints.getValue().size(); ++i)
+            mesh->getVertices().push_back(seqPoints.getValue()[i]);
         const vector < vector <int> >& facets = this->facets.getValue();
-        const SeqTriangles& triangles = this->input_triangles.getValue();
-        const SeqQuads& quads = this->input_quads.getValue();
+        const SeqTriangles& triangles = this->seqTriangles.getValue();
+        const SeqQuads& quads = this->seqQuads.getValue();
         mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
         for (size_t i=0; i<facets.size(); ++i)
             mesh->getFacets()[i].push_back(facets[i]);
@@ -754,7 +691,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 
     if(mesh == NULL)
     {
-        serr << "SparseGridTopology: loading mesh " << filename << " failed." <<sendl;
+        msg_error() << "SparseGridTopology: loading mesh " << filename << " failed." ;
         return;
     }
 
@@ -765,9 +702,13 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         SReal xMin, xMax, yMin, yMax, zMin, zMax;
         computeBoundingBox(mesh->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
 
-        _min.setValue(Vector3( xMin, yMin, zMin ));
-        _max.setValue(Vector3( xMax, yMax, zMax ));
-        msg_info() << "BBox size: " << (_max.getValue() - _min.getValue());
+        // increase the box a little
+        Vector3 diff ( xMax-xMin, yMax - yMin, zMax - zMin );
+        diff /= 100.0;
+
+        _min.setValue(Vector3( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
+        _max.setValue(Vector3( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
+        dmsg_info() << "BBox size: " << (_max.getValue() - _min.getValue());
     }
 
     // if cellWidth is given, update n
@@ -776,7 +717,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         SReal w = _cellWidth.getValue();
         Vector3 diff = _max.getValue() - _min.getValue();
         setN(Vec3i((int)ceil(diff[0] / w)+1, (int)ceil(diff[1] / w)+1, (int)ceil(diff[2] / w)+1));
-        msg_info() << "Grid size: " << n.getValue();
+        dmsg_info() << "Grid size: " << n.getValue();
     }
 
     _regularGrid->setSize(getNx(),getNy(),getNz());
@@ -787,7 +728,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 
-    msg_info() << "Mesh Loaded";
+    dmsg_info() << "Mesh Loaded";
 
     delete mesh;
 }
@@ -798,20 +739,6 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
         vector<Type>& regularGridTypes) const
 {
     regularGridTypes.resize(regularGrid->getNbHexahedra(), INSIDE);
-
-    //// find all initial mesh edges to compute intersection with cubes
-    //const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
-    //std::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
-    //for (unsigned int i=0;i<facets.size();i++)
-    //{
-    //	const helper::vector<int>& facet = facets[i][0];
-    //	for (unsigned int j=2; j<facet.size(); j++) // Triangularize
-    //	{
-    //		segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[0]],vertices[facet[j]] ) );
-    //		segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[0]],vertices[facet[j-1]] ) );
-    //		segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[j]],vertices[facet[j-1]] ) );
-    //	}
-    //}
 
     const helper::vector< Vector3 >& vertices = mesh->getVertices();
     const size_t vertexSize = vertices.size();
@@ -997,7 +924,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     int cubeCntr = 0;
 
     // add BOUNDARY cubes to valid cells
-    for(int w=0; w<regularGrid->getNbHexahedra(); ++w)
+    for(size_t w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
         if( regularGridTypes[w] == BOUNDARY && !d_bOnlyInsideCells.getValue())
         {
@@ -1018,7 +945,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     }
 
     // add INSIDE cubes to valid cells
-    for(int w=0; w<regularGrid->getNbHexahedra(); ++w)
+    for(size_t w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
         if( regularGridTypes[w] == INSIDE )
         {
@@ -1099,10 +1026,8 @@ void SparseGridTopology::computeBoundingBox(const helper::vector<Vector3>& verti
 }
 
 
-void SparseGridTopology::buildFromFiner(  )
+void SparseGridTopology::buildFromFiner()
 {
-    //	serr<<"SparseGridTopology::buildFromFiner(  )"<<sendl;
-
     setNx( _finerSparseGrid->getNx()/2+1 );
     setNy( _finerSparseGrid->getNy()/2+1 );
     setNz( _finerSparseGrid->getNz()/2+1 );
@@ -1241,7 +1166,7 @@ void SparseGridTopology::buildFromFiner(  )
             for(int vertex=0; vertex<8; ++vertex)
             {
                 // 					if( fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]!=-1 && fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]!=cube[vertex] )
-                // 						serr<<"couille fineCorners"<<sendl;
+                // 						msg_error()<<"couille fineCorners";
                 fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]=cube[vertex];
             }
 
@@ -1267,8 +1192,8 @@ void SparseGridTopology::buildFromFiner(  )
                     if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] == 1.0 )
                     {
                         _finerSparseGrid->_inversePointMap[fineVertexGlobalIndice] = coarseCornerGlobalIndice;
-                        // 							serr<<getPX(coarseCornerGlobalIndice)<<" "<<getPY(coarseCornerGlobalIndice)<<" "<<getPZ(coarseCornerGlobalIndice)<<" ----- ";
-                        // 							serr<<_finerSparseGrid->getPX(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPY(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPZ(fineVertexGlobalIndice)<<sendl;
+                        // 							msg_error()<<getPX(coarseCornerGlobalIndice)<<" "<<getPY(coarseCornerGlobalIndice)<<" "<<getPZ(coarseCornerGlobalIndice)<<" ----- ";
+                        // 							msg_error()<<_finerSparseGrid->getPX(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPY(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPZ(fineVertexGlobalIndice);
                     }
                 }
             }
@@ -1280,65 +1205,6 @@ void SparseGridTopology::buildFromFiner(  )
         if(_finerSparseGrid->_inversePointMap[i] != -1)
             _pointMap[ _finerSparseGrid->_inversePointMap[i] ] = i;
     }
-
-    // 		for(unsigned i=0;i<_finerSparseGrid->seqPoints.size();++i)
-    // 		{
-    // 			serr<<i<<" : "<<_finerSparseGrid->seqPoints[i]<<sendl;
-    // 		}
-    //
-    // 		for(unsigned i=0;i<_finerSparseGrid->seqHexahedra.getValue().size();++i)
-    // 		{
-    // 			serr<<i<<" : "<<_finerSparseGrid->seqHexahedra.getValue()[i]<<sendl;
-    //
-    // 		}
-
-
-
-
-    // // 		afficher la _hierarchicalPointMap
-    // 		for(unsigned i=0;i<_hierarchicalPointMap.size();++i)
-    // 		{
-    // 			serr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_hierarchicalPointMap[i].size()<<" : ";
-    // 			for(std::map<int,float>::iterator it = _hierarchicalPointMap[i].begin();it != _hierarchicalPointMap[i].end() ; ++it )
-    // 			{
-    // 				serr<<(*it).first<<", "<<(*it).second<<" # ";
-    // 			}
-    // 			serr<<sendl;
-    // 		}
-    // //
-    // // 		// // 		afficher la _inverseHierarchicalPointMap
-
-    // 		serr<<"_inverseHierarchicalPointMap :"<<sendl;
-    // 		for(unsigned i=0;i<_finerSparseGrid->_inverseHierarchicalPointMap.size();++i)
-    // 		{
-    // 			serr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_finerSparseGrid->_inverseHierarchicalPointMap[i].size()<<" : ";
-    // 			for(std::map<int,float>::iterator it = _finerSparseGrid->_inverseHierarchicalPointMap[i].begin();it != _finerSparseGrid->_inverseHierarchicalPointMap[i].end() ; ++it )
-    // 			{
-    // 				serr<<(*it).first<<", "<<(*it).second<<" # ";
-    // 			}
-    // 			serr<<sendl;
-    // 		}
-
-    // 		serr<<"_inversePointMap :"<<sendl;
-    // 		for(unsigned i=0;i<_finerSparseGrid->_inversePointMap.size();++i)
-    // 		{
-    // 			serr<<"POINT "<<i<<" -> "<<_finerSparseGrid->_inversePointMap[i]<<sendl;
-    // 		}
-
-
-    // 		for(int o=0;o<_hierarchicalPointMap.size();++o)
-    // 		{
-    // 			serr<<o<<" : ";
-    // 			for(std::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
-    // 				serr<<*it<<" ";
-    // 			serr<<sendl;
-    // 		}
-
-
-    // 		serr<<"seqHexahedra.getValue() : "<<seqHexahedra.getValue()<<sendl;
-    // 		serr<<"seqPoints : "<<seqPoints<<sendl;
-
-
 
     _finerSparseGrid->_coarserSparseGrid = this;
     _finerSparseGrid->_inverseHierarchicalCubeMap.resize( _finerSparseGrid->seqHexahedra.getValue().size(), -1);
@@ -1354,7 +1220,7 @@ void SparseGridTopology::buildFromFiner(  )
     // compute stiffness coefficient from children
     _stiffnessCoefs.resize( this->getNbHexahedra() );
     _massCoefs.resize( this->getNbHexahedra() );
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
         unsigned nbchildren = 0;
@@ -1397,18 +1263,18 @@ void SparseGridTopology::buildVirtualFinerLevels()
     const std::string& fileTopology = this->fileTopology.getValue();
     if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
     {
-        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+        _virtualFinerLevels[0]->seqPoints.setParent(&this->seqPoints);
         _virtualFinerLevels[0]->facets.setParent(&this->facets);
-        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
-        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
+        _virtualFinerLevels[0]->seqTriangles.setParent(&this->seqTriangles);
+        _virtualFinerLevels[0]->seqQuads.setParent(&this->seqQuads);
     }
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
 
-    msg_info()<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : "
-             << "(" << newnx << "y" << newny << "z" << newnz << ") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , " << msgendl;
+    dmsg_info()<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    dmsg_info()<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -1419,7 +1285,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
         _virtualFinerLevels[i]->init();
 
-        msg_info()<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
+        dmsg_info()<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
@@ -1488,14 +1354,11 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
 helper::fixed_array<int,6> SparseGridTopology::findneighboorCubes( int indice )
 {
-    msg_info()<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice];
-    msg_info()<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ];
-
+    dmsg_info()<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice];
+    dmsg_info()<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] ;
     helper::fixed_array<int,6> result;
     Vector3 c = _regularGrid->getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
-
-    msg_info()<<c;
-
+    dmsg_info()<<c;
     result[0] = c[0]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];
     result[1] = c[0]>=getNx()-2 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]+1,(int)c[1],(int)c[2] )];
     result[2] = c[1]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0],(int)c[1]-1,(int)c[2] )];
@@ -1585,76 +1448,6 @@ void SparseGridTopology::updateQuads()
         quads.push_back( Quad( (*it).first[0],  (*it).first[1],(*it).first[2],(*it).first[3] ));
     seqQuads.endEdit();
 }
-
-
-void SparseGridTopology::updateHexahedra()
-{
-    //	seqHexahedra.getValue().clear();
-    //	seqHexahedra.getValue().reserve(_cubes.size());
-    //	seqHexahedra.getValue().push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
-    //		point(x  ,y+1,z  ),point(x+1,y+1,z  ),
-    //		point(x  ,y  ,z+1),point(x+1,y  ,z+1),
-    //		point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
-}
-
-
-//bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  )
-//{
-//	Vector3 afAWdU, afADdU, afAWxDdU;
-//	SReal fRhs;
-//
-//
-//	Vector3 kDiff = seg.center - cube.center;
-//
-//	afAWdU[0] = fabs( seg.dir* cube.dir[0]);
-//	afADdU[0] = fabs( kDiff * cube.dir[0] );
-//	fRhs = cube.norm[0] + seg.norm*afAWdU[0];
-//	if (afADdU[0] > fRhs)
-//	{
-//		return false;
-//	}
-//
-//	afAWdU[1] = fabs(seg.dir*cube.dir[1]);
-//	afADdU[1] = fabs(kDiff*cube.dir[1]);
-//	fRhs = cube.norm[1] + seg.norm*afAWdU[1];
-//	if (afADdU[1] > fRhs)
-//	{
-//		return false;
-//	}
-//
-//	afAWdU[2] = fabs(seg.dir*cube.dir[2]);
-//	afADdU[2] = fabs(kDiff*cube.dir[2]);
-//	fRhs = cube.norm[2] + seg.norm*afAWdU[2];
-//	if (afADdU[2] > fRhs)
-//	{
-//		return false;
-//	}
-//
-//	Vector3 kWxD = seg.dir.cross(kDiff);
-//
-//	afAWxDdU[0] = fabs(kWxD*cube.dir[0]);
-//	fRhs = cube.norm[1]*afAWdU[2] + cube.norm[2]*afAWdU[1];
-//	if (afAWxDdU[0] > fRhs)
-//	{
-//		return false;
-//	}
-//
-//	afAWxDdU[1] = fabs(kWxD*cube.dir[1]);
-//	fRhs = cube.norm[0]*afAWdU[2] + cube.norm[2]*afAWdU[0];
-//	if (afAWxDdU[1] > fRhs)
-//	{
-//		return false;
-//	}
-//
-//	afAWxDdU[2] = fabs(kWxD*cube.dir[2]);
-//	fRhs = cube.norm[0]*afAWdU[1] +cube.norm[1]*afAWdU[0];
-//	if (afAWxDdU[2] > fRhs)
-//	{
-//		return false;
-//	}
-//
-//	return true;
-//}
 
 
 void SparseGridTopology::propagateFrom( const Vec3i &point,
