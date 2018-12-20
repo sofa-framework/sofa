@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP
 #include <SofaObjectInteraction/PenalityContactForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -40,20 +40,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
-#ifndef SOFA_FLOAT
-        .add< PenalityContactForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PenalityContactForceField<Vec3fTypes> >()
-#endif
+        .add< PenalityContactForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<Vec3fTypes>;
-#endif
+template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<Vec3Types>;
+
 
 } // namespace interactionforcefield
 

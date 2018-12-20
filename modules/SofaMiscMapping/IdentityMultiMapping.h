@@ -98,14 +98,9 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes >;
-#endif
+extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+
 #endif
 
 } // namespace mapping

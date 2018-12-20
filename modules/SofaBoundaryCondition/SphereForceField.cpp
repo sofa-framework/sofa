@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP
 #include <SofaBoundaryCondition/SphereForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -37,27 +37,15 @@ using namespace sofa::defaulttype;
 
 
 int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere toward the exterior")
-#ifndef SOFA_FLOAT
-        .add< SphereForceField<Vec3dTypes> >()
-        .add< SphereForceField<Vec2dTypes> >()
-        .add< SphereForceField<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SphereForceField<Vec3fTypes> >()
-        .add< SphereForceField<Vec2fTypes> >()
-        .add< SphereForceField<Vec1fTypes> >()
-#endif
+        .add< SphereForceField<Vec3Types> >()
+        .add< SphereForceField<Vec2Types> >()
+        .add< SphereForceField<Vec1Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec1fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec1Types>;
+
 
 } // namespace forcefield
 

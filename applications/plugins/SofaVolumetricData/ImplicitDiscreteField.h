@@ -4,7 +4,7 @@
 #include <iostream>
 #include <SofaVolumetricData/ImplicitShape.h>
 #include <SofaVolumetricData/DistanceGrid.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/ObjectFactory.h>

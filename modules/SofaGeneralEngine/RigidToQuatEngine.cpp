@@ -24,7 +24,7 @@
 #include <SofaGeneralEngine/RigidToQuatEngine.inl>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,21 +36,13 @@ namespace engine
 {
 
 int RigidToQuatEngineClass = core::RegisterObject("Transform a couple of Vec3 and Quaternion in Rigid")
-#ifndef SOFA_FLOAT
-        .add< RigidToQuatEngine<sofa::defaulttype::Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< RigidToQuatEngine<sofa::defaulttype::Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< RigidToQuatEngine<sofa::defaulttype::Vec3Types> >()
+ 
         .addAlias("RigidEngine")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3Types>;
+ 
 
 
 } // namespace engine

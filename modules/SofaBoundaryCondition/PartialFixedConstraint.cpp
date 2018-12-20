@@ -40,40 +40,22 @@ using namespace sofa::helper;
 
 
 int PartialFixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
-        .add< PartialFixedConstraint<Vec3dTypes> >()
-        .add< PartialFixedConstraint<Vec2dTypes> >()
-        .add< PartialFixedConstraint<Vec1dTypes> >()
-        .add< PartialFixedConstraint<Vec6dTypes> >()
-        .add< PartialFixedConstraint<Rigid3dTypes> >()
-        .add< PartialFixedConstraint<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PartialFixedConstraint<Vec3fTypes> >()
-        .add< PartialFixedConstraint<Vec2fTypes> >()
-        .add< PartialFixedConstraint<Vec1fTypes> >()
-        .add< PartialFixedConstraint<Vec6fTypes> >()
-        .add< PartialFixedConstraint<Rigid3fTypes> >()
-        .add< PartialFixedConstraint<Rigid2fTypes> >()
-#endif
+        .add< PartialFixedConstraint<Vec3Types> >()
+        .add< PartialFixedConstraint<Vec2Types> >()
+        .add< PartialFixedConstraint<Vec1Types> >()
+        .add< PartialFixedConstraint<Vec6Types> >()
+        .add< PartialFixedConstraint<Rigid3Types> >()
+        .add< PartialFixedConstraint<Rigid2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid3Types>;
+template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid2Types>;
+
 
 
 

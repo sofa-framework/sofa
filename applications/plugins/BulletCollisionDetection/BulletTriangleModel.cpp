@@ -13,12 +13,8 @@ namespace collision
 {
 
 int BulletTriangleModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology, it can be used in the bullet collision pipeline")
-#ifndef SOFA_FLOAT
-        .add< TBulletTriangleModel<defaulttype::Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TBulletTriangleModel<defaulttype::Vec3fTypes> >()
-#endif
+        .add< TBulletTriangleModel<defaulttype::Vec3Types> >()
+
         .addAlias("BulletTriangleModel")
         .addAlias("BulletTriangleMeshModel")
         .addAlias("BulletTriangleSetModel")
@@ -28,12 +24,8 @@ int BulletTriangleModelClass = core::RegisterObject("collision model using a tri
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3fTypes>;
-#endif
+template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3Types>;
+
 
 } // namespace collision
 

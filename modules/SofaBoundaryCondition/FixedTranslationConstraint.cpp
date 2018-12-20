@@ -38,28 +38,16 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids to their initial positions but they still can have rotations")
-#ifndef SOFA_FLOAT
-        .add< FixedTranslationConstraint<Rigid3dTypes> >()
-        .add< FixedTranslationConstraint<Rigid2dTypes> >()
-        .add< FixedTranslationConstraint<Vec6dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FixedTranslationConstraint<Rigid3fTypes> >()
-        .add< FixedTranslationConstraint<Rigid2fTypes> >()
-        .add< FixedTranslationConstraint<Vec6fTypes> >()
-#endif
+        .add< FixedTranslationConstraint<Rigid3Types> >()
+        .add< FixedTranslationConstraint<Rigid2Types> >()
+        .add< FixedTranslationConstraint<Vec6Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3Types>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2Types>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6Types>;
+
 
 } // namespace projectiveconstraintset
 

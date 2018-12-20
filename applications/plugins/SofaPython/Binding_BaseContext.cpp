@@ -27,7 +27,7 @@
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using namespace sofa::defaulttype;
 
 #include <sofa/core/ObjectFactory.h>
@@ -132,8 +132,8 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             msg << " " << *it << msgendl ;
 
-        //todo(STC4) do it or remove it ?
-        //todo(dmarchal 2017/10/01) I don't like that because it is weird to have error reporting
+        //todo(STC6) do it or remove it ?
+        //todo(dmarchal 2018/10/01) I don't like that because it is weird to have error reporting
         //strategy into the createObject implementation instead of into a dedicated exception.
         //in addition this is the first time we are not using the macro from msg_*
         BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
@@ -143,7 +143,7 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
                                          sofa::helper::logging::Message::Error) ;
         m << msg.str() ;
         obj->addMessage(  m ) ;
-        //todo(STC4) end of do it or remove it.
+        //todo(STC6) end of do it or remove it.
 
         PyErr_SetString(PyExc_RuntimeError, msg.str().c_str()) ;
         return NULL;

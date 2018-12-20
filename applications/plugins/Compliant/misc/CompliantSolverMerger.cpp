@@ -42,7 +42,6 @@ namespace collision
     core::behavior::BaseLinearSolver::SPtr createLDLTSolver(linearsolver::LDLTSolver& /*solver1*/, linearsolver::LDLTSolver& /*solver2*/)
     {
         linearsolver::LDLTSolver::SPtr lsolver = sofa::core::objectmodel::New<linearsolver::LDLTSolver>();
-//        lsolver->damping.setValue( std::max(solver1.damping.getValue(),solver2.damping.getValue())  );
         return lsolver;
     }
 

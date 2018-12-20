@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP
 
 #include "CompliantAttachPerformer.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/gui/PickHandler.h>
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
@@ -32,70 +32,18 @@ namespace sofa
 {
 using namespace component::collision;
 
-namespace gui
-{
-//*******************************************************************************************
-//void CompliantAttachOperation::start()
-//{
-//    //Creation
-//    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("CompliantAttach", pickHandle->getInteraction()->mouseInteractor.get());
-//    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-//    configurePerformer(performer);
-//    //Start
-//    performer->start();
-//}
-
-//void CompliantAttachOperation::execution()
-//{
-//    //do nothing
-//}
-
-//void CompliantAttachOperation::end()
-//{
-//    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-//    delete performer; performer=0;
-//}
-
-//void CompliantAttachOperation::endOperation()
-//{
-//    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-//}
-
-
-//void CompliantAttachOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
-//{
-//    Operation::configurePerformer(p);
-//}
-
-
-}// gui
-
-
 namespace component
 {
 
 namespace collision
 {
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3fTypes>;
-template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3dTypes>;
-template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3dTypes>;
-#endif
+template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3Types>;
+template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3Types>;
 
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3Types> >  CompliantAttachPerformerVec3dClass("CompliantAttach",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Rigid3Types> >  CompliantAttachPerformerRigid3Class("CompliantAttach",true);
 
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3fTypes> >  CompliantAttachPerformerVec3fClass("CompliantAttach",true);
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Rigid3fTypes> >  CompliantAttachPerformerRigid3fClass("CompliantAttach",true);
-
-#endif
-#ifndef SOFA_FLOAT
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3dTypes> >  CompliantAttachPerformerVec3dClass("CompliantAttach",true);
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Rigid3dTypes> >  CompliantAttachPerformerRigid3dClass("CompliantAttach",true);
-#endif
 }
 }
 }

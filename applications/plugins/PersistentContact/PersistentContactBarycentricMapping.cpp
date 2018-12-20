@@ -39,32 +39,14 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int PersistentContactBarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-#ifndef SOFA_FLOAT
-        .add< PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes > >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
+        .add< PersistentContactBarycentricMapping< Vec3Types, Vec3Types > >()
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3Types, Vec3Types >;
+
+
 
 } // namespace mapping
 

@@ -84,7 +84,6 @@ namespace sofa {
 				virtual void applyJT(const core::MechanicalParams*,			     
 				                     Data<typename self::InVecDeriv>& in, 
 				                     const Data<typename self::OutVecDeriv>& out) {
-					// debug();
 					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
                         jacobian.addMultTranspose(in, out);
                     }
@@ -93,8 +92,6 @@ namespace sofa {
 				virtual void applyJT(const core::ConstraintParams*,
 				                     Data< typename self::InMatrixDeriv>& , 
 				                     const Data<typename self::OutMatrixDeriv>& ) {
-					// throw std::logic_error("not implemented");
-					// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
 				}
 
 
@@ -120,7 +117,6 @@ namespace sofa {
                         const Data<typename self::InVecDeriv>& inDx =
                             *mparams->readDx(this->fromModel);
                         
-//                        const core::State<In>* from_read = this->getFromModel();
                         core::State<In>* from_write = this->getFromModel();
 
                         // TODO does this even make sense ?

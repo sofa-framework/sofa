@@ -38,18 +38,11 @@ namespace container
 {
 
 #if  !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
-#ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3dTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3dTypes>;
 extern template class SOFA_FRAME_API MechanicalObjectInternalData<defaulttype::DeformationGradient332dTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3fTypes>;
-extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3fTypes>;
-extern template class SOFA_FRAME_API MechanicalObjectInternalData<defaulttype::DeformationGradient332fTypes>;
-extern template class SOFA_FRAME_API MechanicalObject<defaulttype::DeformationGradient332fTypes>;
-#endif
+
 #endif
 
 } // namespace container
