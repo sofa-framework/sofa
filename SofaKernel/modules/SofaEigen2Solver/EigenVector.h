@@ -174,12 +174,8 @@ public:
 
 };
 
-#ifndef SOFA_FLOAT
-template<> const char* EigenVector<defaulttype::Vec3dTypes>::Name();
-#endif
-#ifndef SOFA_DOUBLE
-template<> const char* EigenVector<defaulttype::Vec3fTypes>::Name();
-#endif
+template<> const char* EigenVector<defaulttype::Vec3Types>::Name();
+
 
 
 

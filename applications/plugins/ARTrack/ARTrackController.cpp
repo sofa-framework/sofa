@@ -42,28 +42,16 @@ int ARTrackVirtualTimeControllerClass = core::RegisterObject("Provides ARTtrack 
 
 // Register in the Factory
 int ARTrackControllerClass = core::RegisterObject("Provides ARTrack user control on a Mechanical State.")
-#ifndef SOFA_FLOAT
-        .add< ARTrackController<Vec1dTypes> >()
-        .add< ARTrackController<Vec3dTypes> >()
-        .add< ARTrackController<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ARTrackController<Vec1fTypes> >()
-        .add< ARTrackController<Vec3fTypes> >()
-        .add< ARTrackController<Rigid3fTypes> >()
-#endif
+        .add< ARTrackController<Vec1Types> >()
+        .add< ARTrackController<Vec3Types> >()
+        .add< ARTrackController<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class ARTrackController<defaulttype::Vec1dTypes>;
-template class ARTrackController<defaulttype::Vec3dTypes>;
-template class ARTrackController<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class ARTrackController<defaulttype::Vec1fTypes>;
-template class ARTrackController<defaulttype::Vec3fTypes>;
-template class ARTrackController<defaulttype::Rigid3fTypes>;
-#endif
+template class ARTrackController<defaulttype::Vec1Types>;
+template class ARTrackController<defaulttype::Vec3Types>;
+template class ARTrackController<defaulttype::Rigid3Types>;
+
 
 
 ARTrackVirtualTimeController::ARTrackVirtualTimeController()

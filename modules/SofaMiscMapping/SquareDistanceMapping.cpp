@@ -38,25 +38,14 @@ using namespace defaulttype;
 
 // Register in the Factory
 int SquareDistanceMappingClass = core::RegisterObject("Compute square edge extensions")
-#ifndef SOFA_FLOAT
-        .add< SquareDistanceMapping< Vec3dTypes, Vec1dTypes > >()
-        .add< SquareDistanceMapping< Rigid3dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SquareDistanceMapping< Vec3fTypes, Vec1fTypes > >()
-        .add< SquareDistanceMapping< Rigid3fTypes, Vec1fTypes > >()
-#endif
+        .add< SquareDistanceMapping< Vec3Types, Vec1Types > >()
+        .add< SquareDistanceMapping< Rigid3Types, Vec1Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Vec3dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Rigid3dTypes, Vec1dTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Rigid3Types, Vec1Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Vec3fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Rigid3fTypes, Vec1fTypes >;
-#endif
 
 
 

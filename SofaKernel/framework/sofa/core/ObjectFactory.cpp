@@ -24,6 +24,7 @@
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {
@@ -111,13 +112,44 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
+    std::stringstream availabletemplate;
     objectmodel::BaseObject::SPtr object = NULL;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
-    std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
-    std::string userresolved = templatename; // Copy in case we change for the default one
     ClassEntry::SPtr entry ;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Process the template aliases.
+    ///  (1) split in a vector the user provided templates by ','
+    ///  (2) for each entry search if there is an alias
+    ///  (3) if there is none then keep value as is
+    ///      otherwise replace the value with the alias.
+    ///      if there is one and it is "undefined" generate a warning.
+    ///      and "undefined" behavior means that the template is converting a specifically given
+    ///      type precision into a different one.
+    ///  (4) rebuild the template string by joining them all with ','.
+    std::vector<std::string> usertemplatenames = sofa::helper::split(usertemplatename, ',');
+    for(auto& name : usertemplatenames)
+    {
+        const sofa::defaulttype::TemplateAlias* alias;
+        if( (alias=sofa::defaulttype::TemplateAliases::getTemplateAlias(name)) != nullptr )
+        {
+            assert(alias != nullptr);
+            /// This alias results in "undefined" behavior.
+            if( alias->second )
+            {
+                arg->logError("The deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to remove the use templates.");
+            }
+
+            name = alias->first;
+        }
+    }
+    std::string templatename = sofa::helper::join(usertemplatenames, ",");
+    std::string userresolved = templatename; // Copy in case we change for the default one
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
@@ -145,6 +177,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
                 }
+                else
+                {
+                    availabletemplate << it3->first << ", ";
+                }
             }
         }
     }
@@ -166,63 +202,78 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
         else
         {
-            arg->logError("The object is in the factory but cannot be created.");
+            std::stringstream tmp;
+            tmp << "The object is in the factory but cannot be created." << msgendl;
+            tmp << "Requested template: " << templatename << "(" << usertemplatename << ")" << msgendl;
+            tmp << "Available templates: " << availabletemplate.rdbuf() ;
+            arg->logError(tmp.str());
+        }
+        return nullptr;
+    }
+
+    object = creators[0].second->createInstance(context, arg);
+    assert(object!=nullptr);
+
+    /// The object has been created, but not with the template given by the user
+    if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
+    {
+        std::string w = "Template " + usertemplatename + std::string(" incorrect, used ") + object->getTemplateName();
+        msg_warning(object.get()) << w;
+    }
+    else if (creators.size() > 1)
+    {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
+        std::string w = "Template " + templatename + std::string(" incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
+        for(unsigned int i = 0; i < creators.size(); ++i)
+            w += std::string("\n\t* ") + creators[i].first;
+        msg_warning(object.get()) << w;
+    }
+
+    ////////////////////////// This code is emitting a warning messages if the scene is loaded
+    if( m_callbackOnCreate )
+        m_callbackOnCreate(object.get(), arg);
+
+    ///////////////////////// All this code is just there to implement the MakeDataAlias component.
+    std::vector<std::string> todelete;
+    for(auto& kv : entry->m_dataAlias)
+    {
+        if(object->findData(kv.first)==nullptr)
+        {
+            msg_warning("ObjectFactoy") << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
+                                        << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
+
+            todelete.push_back(kv.first);
         }
     }
-    else
+
+    for(auto& todeletename : todelete)
     {
-        object = creators[0].second->createInstance(context, arg);
+        entry->m_dataAlias.erase( entry->m_dataAlias.find(todeletename) ) ;
+    }
 
-        /// The object has been created, but not with the template given by the user
-        if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
-        {
-            std::string w = "Template " + usertemplatename + std::string(" incorrect, used ") + object->getTemplateName();
-            msg_warning(object.get()) << w;
-        }
-        else if (creators.size() > 1)
-        {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
-            std::string w = "Template " + templatename + std::string(" incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
-            for(unsigned int i = 0; i < creators.size(); ++i)
-                w += std::string("\n\t* ") + creators[i].first;
-            msg_warning(object.get()) << w;
-        }
+    for(auto& kv : entry->m_dataAlias)
+    {
+        objectmodel::BaseObjectDescription newdesc;
+        for(std::string& alias : kv.second){
+            object->addAlias(object->findData(kv.first), alias.c_str()) ;
 
-        ////////////////////////// This code is emitting a warning messages if the scene is loaded
-        if( m_callbackOnCreate )
-            m_callbackOnCreate(object.get(), arg);
-
-        ///////////////////////// All this code is just there to implement the MakeDataAlias component.
-        std::vector<std::string> todelete;
-        for(auto& kv : entry->m_dataAlias)
-        {
-            if(object->findData(kv.first)==nullptr)
-            {
-                msg_warning("ObjectFactoy") << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
-                                            << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
-
-                todelete.push_back(kv.first);
+            /// The Alias is used in the argument
+            const char* val = arg->getAttribute(alias) ;
+            if( val ){
+                newdesc.setAttribute( alias, val );
             }
         }
+        object->parse(&newdesc);
+    }
 
-        for(auto& todeletename : todelete)
-        {
-            entry->m_dataAlias.erase( entry->m_dataAlias.find(todeletename) ) ;
-        }
+    /// We managed to create an object but there is error message in the log. Thus we emit them
+    /// as warning to this object.
+    if(!arg->getErrors().empty())
+    {
+        std::stringstream msg;
+        for (std::vector< std::string >::const_iterator it = arg->getErrors().begin(); it != arg->getErrors().end(); ++it)
+            msg << " " << *it << msgendl ;
 
-        for(auto& kv : entry->m_dataAlias)
-        {
-            objectmodel::BaseObjectDescription newdesc;
-            for(std::string& alias : kv.second){
-                object->addAlias(object->findData(kv.first), alias.c_str()) ;
-
-                /// The Alias is used in the argument
-                const char* val = arg->getAttribute(alias) ;
-                if( val ){
-                    newdesc.setAttribute( alias, val );
-                }
-            }
-            object->parse(&newdesc);
-        }
+        msg_deprecated(object.get()) << msg.str() ;
     }
 
     return object;
@@ -444,19 +495,6 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     }
     return *this;
 }
-
-//template<class RealObject>
-//RegisterObject& RegisterObject::add(bool defaultTemplate)
-//{
-//    RealObject* p = NULL;
-//    std::string classname = RealObject::className(p);
-//    std::string templatename = RealObject::templateName(p);
-
-//    if (defaultTemplate)
-//        entry.defaultTemplate = templatename;
-
-//    return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
-//}
 
 RegisterObject::operator int()
 {

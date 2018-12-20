@@ -9,7 +9,7 @@
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
     <CollisionResponse name="Response" response="FrictionContact" />
     <CollisionGroup />
-    <LCPConstraintSolver tolerance="0.001" maxIterations="1000"/>
+    <LCPConstraintSolver maxIt="1000" tolerance="0.001" maxIterations="1000"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube">
         <EulerImplicit name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />

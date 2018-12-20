@@ -163,16 +163,10 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
 #pragma warning(disable : 4231)
-#ifndef SOFA_FLOAT
-extern template class ARTrackController<defaulttype::Vec1dTypes>;
-extern template class ARTrackController<defaulttype::Vec3dTypes>;
-extern template class ARTrackController<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class ARTrackController<defaulttype::Vec1fTypes>;
-extern template class ARTrackController<defaulttype::Vec3fTypes>;
-extern template class ARTrackController<defaulttype::Rigid3fTypes>;
-#endif
+extern template class ARTrackController<defaulttype::Vec1Types>;
+extern template class ARTrackController<defaulttype::Vec3Types>;
+extern template class ARTrackController<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace controller

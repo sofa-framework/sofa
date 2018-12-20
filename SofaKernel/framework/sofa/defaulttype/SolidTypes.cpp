@@ -28,12 +28,8 @@ namespace sofa
 namespace defaulttype
 {
 
-#ifndef SOFA_FLOAT
 template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
-#endif
+
 
 }// defaulttype
 

@@ -336,7 +336,7 @@ void VoxelGridLoader::addBackgroundValue ( const int value )
     helper::vector<int>& vecVal = ( *backgroundValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // keep only unique values
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     backgroundValue.endEdit();
     reinit();
 }
@@ -355,7 +355,7 @@ void VoxelGridLoader::addActiveDataValue(const int value)
     helper::vector<int>& vecVal = ( *activeValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // keep only unique values
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     activeValue.endEdit();
     reinit();
 }

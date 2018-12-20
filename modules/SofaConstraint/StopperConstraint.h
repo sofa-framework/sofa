@@ -113,12 +113,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class StopperConstraint<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class StopperConstraint<defaulttype::Vec1fTypes>;
-#endif
+extern template class StopperConstraint<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace constraintset

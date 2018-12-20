@@ -82,6 +82,11 @@ typedef float SReal;
 typedef double SReal;
 #endif
 
+// The SOFA_EXTERN_TEMPLATE macro was used to control the use of extern templates in Sofa.
+// It has been cleaned out in 41e0ab98bbb6e22b053b24e7bbdd31c8636336c9 "[ALL] Remove SOFA_EXTERN_TEMPLATE".
+// Macro definition is kept to avoid breaking all external plugins.
+#define SOFA_EXTERN_TEMPLATE
+
 #ifdef SOFA_BUILD_HELPER
 #   define SOFA_TARGET SofaHelper
 #	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY

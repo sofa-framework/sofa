@@ -102,14 +102,9 @@ protected :
 };
 
 #if  !defined(FRAME_GREENLAGRANGEFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331fTypes>;
-extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332fTypes>;
-#endif
+
 #endif
 
 } //

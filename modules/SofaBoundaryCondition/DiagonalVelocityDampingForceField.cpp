@@ -38,41 +38,22 @@ namespace sofa
             using namespace sofa::defaulttype;
 
                 int DiagonalVelocityDampingForceFieldClass = core::RegisterObject("Diagonal velocity damping")
-#ifndef SOFA_FLOAT
-                .add< DiagonalVelocityDampingForceField<Vec3dTypes> >()
-                .add< DiagonalVelocityDampingForceField<Vec2dTypes> >()
-                .add< DiagonalVelocityDampingForceField<Vec1dTypes> >()
-                .add< DiagonalVelocityDampingForceField<Vec6dTypes> >()
-                .add< DiagonalVelocityDampingForceField<Rigid3dTypes> >()
-                .add< DiagonalVelocityDampingForceField<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-                .add< DiagonalVelocityDampingForceField<Vec3fTypes> >()
-                .add< DiagonalVelocityDampingForceField<Vec2fTypes> >()
-                .add< DiagonalVelocityDampingForceField<Vec1fTypes> >()
-                .add< DiagonalVelocityDampingForceField<Vec6fTypes> >()
-                .add< DiagonalVelocityDampingForceField<Rigid3fTypes> >()
-                .add< DiagonalVelocityDampingForceField<Rigid2fTypes> >()
-                
-#endif
+                .add< DiagonalVelocityDampingForceField<Vec3Types> >()
+                .add< DiagonalVelocityDampingForceField<Vec2Types> >()
+                .add< DiagonalVelocityDampingForceField<Vec1Types> >()
+                .add< DiagonalVelocityDampingForceField<Vec6Types> >()
+                .add< DiagonalVelocityDampingForceField<Rigid3Types> >()
+                .add< DiagonalVelocityDampingForceField<Rigid2Types> >()
+
                 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid3Types>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid2Types>;
+
 
         } // namespace forcefield
 

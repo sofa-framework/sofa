@@ -123,16 +123,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1fTypes>;
-#endif
+extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace forcefield
