@@ -117,7 +117,7 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
             {
                 std::stringstream s;
                 pythonToSofaDataString(value, s) ;
-                desc.setAttribute(PyString_AsString(key),s.str().c_str());
+                desc.setAttribute(PyString_AsString(key),s.str());
             }
         }
         Py_DecRef(keys);

@@ -147,11 +147,11 @@ public:
             std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
-                arg->setAttribute("object1", object1.c_str());
+                arg->setAttribute("object1", object1);
             }
             if (!object2.empty())
             {
-                arg->setAttribute("object2", object2.c_str());
+                arg->setAttribute("object2", object2);
             }
             obj->parse(arg);
         }
