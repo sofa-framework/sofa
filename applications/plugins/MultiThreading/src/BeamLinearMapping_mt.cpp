@@ -37,38 +37,18 @@ namespace mapping
 // Register in the Factory
 int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-#ifndef SOFA_FLOAT
-        .add< BeamLinearMapping_mt< Rigid3dTypes, Vec3dTypes > >()
-        .add< BeamLinearMapping_mt< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping_mt< Rigid3fTypes, Vec3fTypes > >()
-        .add< BeamLinearMapping_mt< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+        .add< BeamLinearMapping_mt< Rigid3Types, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping_mt< Rigid3dTypes, Vec3fTypes > >()
-        .add< BeamLinearMapping_mt< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class BeamLinearMapping_mt< Rigid3dTypes, Vec3dTypes >;
-template class BeamLinearMapping_mt< Rigid3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class BeamLinearMapping_mt< Rigid3fTypes, Vec3fTypes >;
-template class BeamLinearMapping_mt< Rigid3fTypes, ExtVec3fTypes >;
-#endif
+template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
+template class BeamLinearMapping_mt< Rigid3Types, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class BeamLinearMapping_mt< Rigid3dTypes, Vec3fTypes >;
-template class BeamLinearMapping_mt< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

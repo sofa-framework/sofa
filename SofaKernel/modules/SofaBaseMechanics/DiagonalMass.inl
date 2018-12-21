@@ -32,9 +32,6 @@
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/core/behavior/InertiaForce.h>
-#endif
 
 namespace sofa
 {
@@ -1256,40 +1253,6 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
 }
 
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
-{
-
-    const MassVector &masses= d_vertexMass.getValue();
-    helper::WriteAccessor< DataVecDeriv > _f = f;
-    helper::ReadAccessor< DataVecCoord > _x = x;
-    helper::ReadAccessor< DataVecDeriv > _v = v;
-
-    // gravity
-    Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
-
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
-
-    // add weight and inertia force
-    if(this->m_separateGravity.getValue()) for (unsigned int i=0; i<masses.size(); i++)
-        {
-            _f[i] += core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
-        }
-    else for (unsigned int i=0; i<masses.size(); i++)
-        {
-            _f[i] += theGravity*masses[i] + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
-        }
-}
-#else
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& , const DataVecDeriv& )
 {
@@ -1312,7 +1275,6 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
         _f[i] += theGravity*masses[i];
     }
 }
-#endif
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)

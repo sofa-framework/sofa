@@ -359,34 +359,20 @@ void MechanicalObject<DeformationGradient332dTypes >::draw(const core::visual::V
 using namespace sofa::defaulttype;
 
 int MechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
         .add< MechanicalObject<Affine3dTypes> >()
         .add< MechanicalObject<Quadratic3dTypes> >()
         .add< MechanicalObject<DeformationGradient331dTypes> >()
         .add< MechanicalObject<DeformationGradient332dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<Affine3fTypes> >()
-        .add< MechanicalObject<Quadratic3fTypes> >()
-        .add< MechanicalObject<DeformationGradient331fTypes> >()
-        .add< MechanicalObject<DeformationGradient332fTypes> >()
-#endif
+
         ;
 
 
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API MechanicalObject<Affine3dTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3dTypes>;
 template class SOFA_FRAME_API MechanicalObject<DeformationGradient331dTypes>;
 template class SOFA_FRAME_API MechanicalObject<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API MechanicalObject<Affine3fTypes>;
-template class SOFA_FRAME_API MechanicalObject<Quadratic3fTypes>;
-template class SOFA_FRAME_API MechanicalObject<DeformationGradient331fTypes>;
-template class SOFA_FRAME_API MechanicalObject<DeformationGradient332fTypes>;
-#endif
+
 } // namespace behavior
 
 } // namespace core

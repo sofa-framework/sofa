@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int JoinPointsClass = core::RegisterObject("?")
-#ifndef SOFA_FLOAT
-        .add< JoinPoints<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< JoinPoints<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< JoinPoints<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3Types>;
+ 
 
 } // namespace engine
 

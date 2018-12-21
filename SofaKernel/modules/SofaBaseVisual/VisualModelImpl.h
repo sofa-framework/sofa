@@ -48,7 +48,7 @@ namespace visualmodel
 
 using sofa::core::objectmodel::Data ;
 
-class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< sofa::defaulttype::ExtVec3fTypes >
+class SOFA_BASE_VISUAL_API ExtVec3State : public core::State< sofa::defaulttype::ExtVec3Types >
 {
 public:
     topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions; ///< Vertices coordinates
@@ -56,7 +56,7 @@ public:
     topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals; ///< Normals of the model
     bool modified; ///< True if input vertices modified since last rendering
 
-    ExtVec3fState() ;
+    ExtVec3State() ;
 
     virtual void resize(size_t vsize) ;
     virtual size_t getSize() const ;
@@ -81,10 +81,10 @@ public:
  *
  */
 
-class SOFA_BASE_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3fState //, public RigidState
+class SOFA_BASE_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3State //, public RigidState
 {
 public:
-    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3fState);
+    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3State);
 
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef sofa::defaulttype::ResizableExtVector<TexCoord> VecTexCoord;
@@ -93,7 +93,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
-    typedef sofa::defaulttype::ExtVec3fTypes DataTypes;
+    typedef ExtVec3State::DataTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::VecCoord VecCoord;
@@ -395,12 +395,12 @@ public:
 
     virtual std::string getTemplateName() const override
     {
-        return ExtVec3fState::getTemplateName();
+        return ExtVec3State::getTemplateName();
     }
 
     static std::string templateName(const VisualModelImpl* p = NULL)
     {
-        return ExtVec3fState::templateName(p);
+        return ExtVec3State::templateName(p);
     }
 
     /// Utility method to compute tangent from vertices and texture coordinates.

@@ -26,14 +26,9 @@ bool ComplianceTester<DataTypes>::canConvert(core::objectmodel::BaseObject* o)
 
 CompliantSleepController::CompliantSleepController()
 {
-#ifndef SOFA_DOUBLE
-	addCompliance< forcefield::DiagonalCompliance<defaulttype::Vec6fTypes> >();
-	addCompliance< forcefield::UniformCompliance<sofa::defaulttype::Vec1fTypes> >();
-#endif
-#ifndef SOFA_FLOAT
 	addCompliance< forcefield::DiagonalCompliance<defaulttype::Vec6dTypes> >();
 	addCompliance< forcefield::UniformCompliance<sofa::defaulttype::Vec1dTypes> >();
-#endif
+
 }
 
 CompliantSleepController::~CompliantSleepController()

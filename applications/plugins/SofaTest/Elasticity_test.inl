@@ -42,7 +42,6 @@
 
 // ForceField
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaMiscForceField/LennardJonesForceField.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>

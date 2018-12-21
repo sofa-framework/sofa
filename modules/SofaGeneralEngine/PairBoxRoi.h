@@ -136,16 +136,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6dTypes>; //Phuoc
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6fTypes>; //Phuoc
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
+ 
 #endif
 
 } // namespace engine

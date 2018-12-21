@@ -56,15 +56,9 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1dTypes>;
-extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1fTypes>;
-extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3fTypes>;
-#endif
+#if !defined(SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3Types>;
 #endif
 
 }

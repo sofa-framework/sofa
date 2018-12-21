@@ -140,23 +140,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
             mparams().setImplicitVelocity( alpha );
             mparams().setImplicitPosition( beta );
-
-//            mparams().setX( posId );
-//            mparams().setV( velId );
-
             mop.mparams = mparams();
         }
-
-//        SolverOperations( const SolverOperations& sop )
-//            : vop(sop.vop)
-//            , mop(sop.mop)
-//            , ctx(sop.ctx)
-//            , alpha(sop.alpha)
-//            , beta(sop.beta)
-//            , _mparams(sop._mparams)
-//            , posId(sop.posId)
-//            ,velId(sop.velId)
-//        {}
 
         inline const core::MechanicalParams& mparams() const { return /*mop.*/_mparams; }
         inline       core::MechanicalParams& mparams()       { return /*mop.*/_mparams; }
@@ -294,7 +279,7 @@ public:
     system_type::vec getLambda() const { assert(storeDSol); return dynamics_solution.tail(sys.n); }
     system_type::vec getDv() const { assert(storeDSol); return dynamics_solution.head(sys.m); }
     system_type::vec getPhi() const { assert(storeDSol); return dynamics_rhs.tail(sys.n); }
-//    system_type::vec getF() const { assert(storeDSol); return dynamics_rhs.head(sys.m); }  FF: I suspect this one is wrong, because rhs does not contain forces but momenta, does it ?
+
     // assembled matrices
     const system_type::rmat& H() const {return sys.H;}
     const system_type::rmat& P() const {return sys.P;}

@@ -18,34 +18,18 @@ using namespace defaulttype;
 // Register in the Factory
 int PairingMultiMappingClass = core::RegisterObject("dot product between vec dofs")
 
-#ifndef SOFA_FLOAT
-    .add< PairingMultiMapping< Vec6dTypes, Vec1dTypes > >()    
-    .add< PairingMultiMapping< Vec3dTypes, Vec1dTypes > >()
-    .add< PairingMultiMapping< Vec2dTypes, Vec1dTypes > >()    
-    .add< PairingMultiMapping< Vec1dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< PairingMultiMapping< Vec6fTypes, Vec1fTypes > >()    
-    .add< PairingMultiMapping< Vec3fTypes, Vec1fTypes > >()
-    .add< PairingMultiMapping< Vec2fTypes, Vec1fTypes > >()
-    .add< PairingMultiMapping< Vec1fTypes, Vec1fTypes > >()
-#endif
+    .add< PairingMultiMapping< Vec6Types, Vec1Types > >()    
+    .add< PairingMultiMapping< Vec3Types, Vec1Types > >()
+    .add< PairingMultiMapping< Vec2Types, Vec1Types > >()    
+    .add< PairingMultiMapping< Vec1Types, Vec1Types > >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API PairingMultiMapping<  Vec3dTypes, Vec1dTypes >;
-template class SOFA_Compliant_API PairingMultiMapping<  Vec6dTypes, Vec1dTypes >;
-template class SOFA_Compliant_API PairingMultiMapping<  Vec2dTypes, Vec1dTypes >;
-template class SOFA_Compliant_API PairingMultiMapping<  Vec1dTypes, Vec1dTypes >;
-#endif
+template class SOFA_Compliant_API PairingMultiMapping<  Vec3Types, Vec1Types >;
+template class SOFA_Compliant_API PairingMultiMapping<  Vec6Types, Vec1Types >;
+template class SOFA_Compliant_API PairingMultiMapping<  Vec2Types, Vec1Types >;
+template class SOFA_Compliant_API PairingMultiMapping<  Vec1Types, Vec1Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API PairingMultiMapping<  Vec3fTypes, Vec1fTypes >;
-template class SOFA_Compliant_API PairingMultiMapping<  Vec6fTypes, Vec1fTypes >;
-template class SOFA_Compliant_API PairingMultiMapping<  Vec2fTypes, Vec1fTypes >;
-template class SOFA_Compliant_API PairingMultiMapping<  Vec1fTypes, Vec1fTypes >;
-
-#endif
 
 
 

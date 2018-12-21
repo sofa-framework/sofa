@@ -59,6 +59,8 @@ public:
     Deprecated(std::string sinceVersion, std::string untilVersion)
         : ComponentChange(sinceVersion), m_untilVersion(untilVersion) {}
 
+    virtual ~Deprecated(){}
+
     std::string getMessage()
     {
         std::stringstream output;
@@ -80,6 +82,8 @@ public:
     Pluginized(std::string sinceVersion, std::string plugin)
         : ComponentChange(sinceVersion), m_plugin(plugin) {}
 
+    virtual ~Pluginized(){}
+
     std::string getMessage()
     {
         std::stringstream output;
@@ -94,13 +98,16 @@ public:
 class SOFA_HELPER_API Removed : public ComponentChange
 {
 public:
-    Removed(std::string sinceVersion)
-        : ComponentChange(sinceVersion) {}
+    std::string m_atVersion;
+    Removed(std::string sinceVersion, std::string atVersion)
+        : ComponentChange(sinceVersion), m_atVersion(atVersion) {}
+
+    virtual ~Removed() {}
 
     std::string getMessage()
     {
         std::stringstream output;
-        output << "This component has been removed since SOFA " << m_sinceVersion << ". "
+        output << "This component has been deprecated since SOFA " << m_sinceVersion << " and removed since SOFA" << m_atVersion << ". "
                   "Please consider updating your scene. "
                   "If this component is crucial to you please report that to sofa-dev@ so that we can "
                   "reconsider this component for future re-integration.";

@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_DISTANCES_CPP
 #include <SofaMiscEngine/Distances.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,20 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
-#ifndef SOFA_FLOAT
-        .add< Distances<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< Distances<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< Distances<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_ENGINE_API Distances<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API Distances<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_MISC_ENGINE_API Distances<Vec3Types>;
+ 
 
 
 } // namespace engine

@@ -262,9 +262,8 @@ typedef testing::Types<
 //TestDataEngine< component::engine::SphereROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::SelectLabelROI<unsigned int> >,
 TestDataEngine< component::engine::SelectConnectedLabelsROI<unsigned int> >,
-#ifdef SOFA_WITH_DOUBLE
 TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >, // DilateEngine only defined for Vec3dTypes
-#endif
+
 TestDataEngine< component::engine::GenerateCylinder<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types> >,

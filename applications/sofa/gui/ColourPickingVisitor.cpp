@@ -89,16 +89,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/,
 simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation::Node* node)
 {
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    glPushMatrix();
-    double glMatrix[16];
-    node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
-    glMultMatrixd( glMatrix );
-#endif
     for_each(this, node, node->collisionModel, &ColourPickingVisitor::processCollisionModel);
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    glPopMatrix();
-#endif
     return RESULT_CONTINUE;
 }
 

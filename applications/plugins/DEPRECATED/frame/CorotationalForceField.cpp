@@ -37,24 +37,14 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int CorotationalForceFieldClass = core::RegisterObject("Compute corotational forces on deformation gradients")
-#ifndef SOFA_FLOAT
         .add< CorotationalForceField<DeformationGradient331dTypes> >()
         .add< CorotationalForceField<DeformationGradient332dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CorotationalForceField<DeformationGradient331fTypes> >()
-        .add< CorotationalForceField<DeformationGradient332fTypes> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331dTypes>;
 template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331fTypes>;
-template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332fTypes>;
-#endif
+
 
 
 

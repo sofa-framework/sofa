@@ -10,7 +10,7 @@ namespace sofa{
 
 namespace PrimitiveCreationTest{
 
-typedef sofa::defaulttype::Vector3 Vec3;
+using sofa::defaulttype::Vec3;
 
 /**
   *\brief Makes up an OBBModel containing just one OBB. angles and order are the rotations used to make up this OBB.

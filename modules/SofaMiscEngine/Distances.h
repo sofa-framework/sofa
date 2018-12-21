@@ -230,14 +230,9 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3fTypes>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3Types>;
+//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

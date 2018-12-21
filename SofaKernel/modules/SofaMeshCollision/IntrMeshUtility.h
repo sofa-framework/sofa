@@ -25,7 +25,7 @@
 
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa{
 namespace component{
@@ -101,18 +101,11 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_CPP)
-#ifndef SOFA_FLOAT
-extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3dTypes> >;
-extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
-extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
-extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3dTypes> >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3fTypes> >;
-extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
-extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
-extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3fTypes> >;
-#endif
+extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
+extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
+
 #endif
 
 }
