@@ -82,7 +82,6 @@ public:
     JointSpring()
         : m1(0), m2(0), kd(0), torsion(0,0,0) ,  lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
-        //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
         limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
@@ -93,7 +92,6 @@ public:
     JointSpring(int m1, int m2)
         : m1(m1), m2(m2), kd(0),  torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
-        //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
         limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
@@ -103,7 +101,6 @@ public:
 
     JointSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
         : m1(m1), m2(m2), kd(kd),  torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
-        //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
         , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr), needToInitializeTrans(true), needToInitializeRot(true)
     {
         limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
@@ -169,7 +166,6 @@ public:
         //by default no angle limitation is set (bi values for initialisation)
         s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
         bool initTransFound=false;
-//		bool initRotFound=false;
 
         std::string str;
         in>>str;
@@ -203,7 +199,6 @@ public:
                 else if(str == "REST_R")
                 {
                     in>>s.initRot;
-//					  initRotFound=true;
                 }
                 else
                 {
@@ -218,11 +213,9 @@ public:
         s.needToInitializeTrans = initTransFound;
         s.needToInitializeRot = initTransFound;
 
-        //if no blocStiffnessRot was specified (typically 0), we use hardStiffnessRot/100
         if(s.blocStiffnessRot == 0.0)
             s.blocStiffnessRot = s.hardStiffnessRot/100;
 
-        //if limit angle were specified, free rotation axis are set from them
         for (unsigned int i=0; i<3; i++)
         {
             if(s.limitAngles[2*i]==s.limitAngles[2*i+1])
@@ -345,35 +338,9 @@ public:
     void computeBBox(const core::ExecParams*  params, bool /*onlyVisible*/) override;
 
     // -- Modifiers
-
-    void clear(int reserve=0)
-    {
-        helper::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.clear();
-        if (reserve) springs.reserve(reserve);
-        this->springs.endEdit();
-    }
-
-    void addSpring(const Spring& s)
-    {
-        springs.beginEdit()->push_back(s);
-        springs.endEdit();
-    }
-
-
-    void addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
-    {
-        Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
-
-        const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-
-        s.initTrans = x2[m2].getCenter() - x1[m1].getCenter();
-        s.initRot = x2[m2].getOrientation()*x1[m1].getOrientation().inverse();
-
-        springs.beginEdit()->push_back(s);
-        springs.endEdit();
-    }
+    void clear(int reserve=0) ;
+    void addSpring(const Spring& s) ;
+    void addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd) ;
 
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
@@ -391,15 +358,10 @@ public:
     virtual void updateForceMask() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
-extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3fTypes>;
-extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
+extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
+extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
+
 #endif
 } // namespace interactionforcefield
 

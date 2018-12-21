@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_GENERATECYLINDER_CPP
 #include "GenerateCylinder.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -34,24 +34,14 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(GenerateCylinder)
-
 int GenerateCylinderClass = core::RegisterObject("Generate a Cylindrical Tetrahedral Mesh")
-#ifndef SOFA_FLOAT
-        .add< GenerateCylinder<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< GenerateCylinder<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< GenerateCylinder<Vec3Types> >()
+ 
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API GenerateCylinder<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API GenerateCylinder<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API GenerateCylinder<Vec3Types>;
+ 
 
 
 } // namespace constraint

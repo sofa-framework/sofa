@@ -37,28 +37,15 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(AngularSpringForceField)
-
-
 int AngularSpringForceFieldClass = core::RegisterObject("Angular springs applied to rotational degrees of freedom of a rigid body or frame")
-#ifndef SOFA_FLOAT
-        .add< AngularSpringForceField<Rigid3dTypes> >()
-        //.add< AngularSpringForceField<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< AngularSpringForceField<Rigid3fTypes> >()
-//.add< AngularSpringForceField<Rigid2fTypes> >()
-#endif
+        .add< AngularSpringForceField<Rigid3Types> >()
+        //.add< AngularSpringForceField<Rigid2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid3dTypes>;
-//template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid3fTypes>;
-//template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2fTypes>;
-#endif
+template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid3Types>;
+//template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
+
 
 } // namespace forcefield
 

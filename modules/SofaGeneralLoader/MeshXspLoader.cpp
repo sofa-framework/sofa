@@ -36,8 +36,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MeshXspLoader)
-
 int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
         .add< MeshXspLoader >()
         ;

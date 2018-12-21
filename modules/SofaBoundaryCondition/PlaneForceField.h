@@ -45,7 +45,6 @@ class PlaneForceFieldInternalData
 public:
 };
 
-///
 /// @class PlaneForceField
 /// A plane is cutting the space in two half spaces. This component generate a force preventing the
 /// object to cross the plane. The plane is defined by its normal and by the amount of displacement
@@ -138,21 +137,14 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace forcefield

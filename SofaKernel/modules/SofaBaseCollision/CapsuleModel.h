@@ -196,15 +196,10 @@ inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
 typedef TCapsuleModel<sofa::defaulttype::Vec3Types> CapsuleModel;
 typedef TCapsule<sofa::defaulttype::Vec3Types> Capsule;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CAPSULEMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_CAPSULEMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace collision

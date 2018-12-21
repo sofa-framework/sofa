@@ -119,15 +119,11 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class OscillatorConstraint<defaulttype::Rigid3dTypes>;
-extern template class OscillatorConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class OscillatorConstraint<defaulttype::Rigid3fTypes>;
-extern template class OscillatorConstraint<defaulttype::Vec3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_CPP)
+extern template class OscillatorConstraint<defaulttype::Rigid3Types>;
+extern template class OscillatorConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

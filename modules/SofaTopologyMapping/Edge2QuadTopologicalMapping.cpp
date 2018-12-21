@@ -56,8 +56,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
-
 // Register in the Factory
 int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology")
         .add< Edge2QuadTopologicalMapping >()

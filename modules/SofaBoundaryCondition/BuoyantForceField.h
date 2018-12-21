@@ -26,7 +26,6 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-
 namespace sofa
 {
 
@@ -65,14 +64,9 @@ public:
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::SeqTriangles seqTriangles;
 
-
-
     enum FLUID { AABOX, PLANE };
 
 protected:
-
-
-
     FLUID fluidModel;
     Data< Real > m_fluidModel; ///< 1 for a plane, 2 for a box
 
@@ -90,12 +84,7 @@ protected:
 
     sofa::helper::vector<ID> m_triangles;
 
-//    Data<Real>      m_immersedVolume;
-//    Data<Real>      m_immersedArea;
-//    Data<Real>      m_globalForce;
-
     Data<bool>      m_flipNormals; ///< flip normals to inverse the forces applied on the object
-
     Data<bool>      m_showPressureForces; ///< Show the pressure forces applied on the surface of the mesh if true
     Data<bool>      m_showViscosityForces; ///< Show the viscosity forces applied on the surface of the mesh if true
     Data<bool>      m_showBoxOrPlane; ///< Show the box or the plane
@@ -116,10 +105,9 @@ protected:
     Coord       m_minBoxPrev;
     Coord       m_maxBoxPrev;
 
-
-
     BuoyantForceField();
     virtual ~BuoyantForceField();
+
 public:
     virtual void init() override;
 
@@ -145,12 +133,7 @@ protected:
     /**
      * @brief Returns the number of point of a tetra included in the liquid
      */
-    //inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x);
     inline int isTriangleInFluid(const Triangle& /*tetra*/, const VecCoord& x);
-
-    //inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x);
-
-    //inline bool isCornerInTetra(const Tetra &tetra, const VecCoord& x) const;
 
     inline Real distanceFromFluidSurface(const Coord& x);
     inline Real D_distanceFromFluidSurface(const Deriv& dx);
@@ -159,15 +142,11 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3fTypes>;
-#endif
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3Types>;
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
 
 
 } // namespace forcefield

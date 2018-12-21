@@ -260,9 +260,6 @@ void RazerHydraDriver::check_for_button_presses( sixenseAllControllerData *acd )
 int RazerHydraDriverClass = core::RegisterObject("Sixense Razer Hydra controller driver")
        .add< RazerHydraDriver >();
 
-SOFA_DECL_CLASS(RazerHydraDriver)
-
-
 } // namespace controller
 
 } // namespace component

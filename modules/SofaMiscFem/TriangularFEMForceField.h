@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -369,17 +367,12 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
-#endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 

@@ -314,6 +314,13 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
     writer.addKToMatrix(this, mparams, matrix->getMatrix(this->mstate));
 }
 
+template<class DataTypes>
+SReal TaitSurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
+
 /// Convert a vector cross-product to a to matrix multiplication, i.e. cross(a,b) = matCross(a)*b
 template <typename T>
 inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::defaulttype::Vec<3,T>& u )
@@ -330,11 +337,9 @@ template<class MatrixWriter>
 void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
-    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
 
@@ -367,9 +372,17 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
             mbc = matCross((x[t[2]]-x[t[1]])*dfscale2);
             mca = matCross((x[t[0]]-x[t[2]])*dfscale2);
             mab = matCross((x[t[1]]-x[t[0]])*dfscale2);
-            mwriter.add(t[0],t[1],mab); mwriter.add(t[1],t[0],-mab);
-            mwriter.add(t[1],t[2],mbc); mwriter.add(t[2],t[1],-mbc);
-            mwriter.add(t[2],t[0],mca); mwriter.add(t[0],t[2],-mca);
+
+            // Full derivative matrix of triangle (ABC):
+            // K(A,A) = mbc   K(A,B) = mca   K(A,C) = mab
+            // K(B,A) = mbc   K(B,B) = mca   K(B,C) = mab
+            // K(C,A) = mbc   K(C,B) = mca   K(C,C) = mab
+
+            // -> the diagonal contributions become zero for closed meshes
+
+            /*mwriter.add(t[0], t[0], mbc);*/ mwriter.add(t[0], t[1], mca); mwriter.add(t[0], t[2], mab);
+            mwriter.add(t[1], t[0], mbc); /*mwriter.add(t[1], t[1], mca);*/ mwriter.add(t[1], t[2], mab);
+            mwriter.add(t[2], t[0], mbc); mwriter.add(t[2], t[1], mca); /*mwriter.add(t[2],t[2], mab); */
         }
     }
 }

@@ -157,7 +157,7 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
                          << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" ;
 
         sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
-        objDesc.setAttribute("displayFlags", oldFlags.c_str());
+        objDesc.setAttribute("displayFlags", oldFlags);
         sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
 }
@@ -980,8 +980,6 @@ void Node::setSleeping(bool val)
         notifySleepChanged();
     }
 }
-
-SOFA_DECL_CLASS(Node)
 
 }
 

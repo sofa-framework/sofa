@@ -37,24 +37,14 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FixedRotationConstraint)
-
 int FixedRotationConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
 
-#ifndef SOFA_FLOAT
-        .add< FixedRotationConstraint<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FixedRotationConstraint<Rigid3fTypes> >()
-#endif
+        .add< FixedRotationConstraint<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class FixedRotationConstraint<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class FixedRotationConstraint<Rigid3fTypes>;
-#endif
+template class FixedRotationConstraint<Rigid3Types>;
+
 
 
 } // namespace projectiveconstraintset

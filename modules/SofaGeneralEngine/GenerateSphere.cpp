@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP
 #include "GenerateSphere.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -34,24 +34,14 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(GenerateSphere)
-
 int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) Tetrahedral and Triangular Mesh")
-#ifndef SOFA_FLOAT
-        .add< GenerateSphere<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< GenerateSphere<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< GenerateSphere<Vec3Types> >()
+ 
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3Types>;
+ 
 
 
 } // namespace constraint

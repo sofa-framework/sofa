@@ -100,16 +100,7 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    QuadPressureForceField()
-        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , quadList(initData(&quadList,"quadList", "Indices of quads separated with commas where a pressure is applied"))
-        , normal(initData(&normal,"normal", "Normal direction for the plane selection of quads"))
-        , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-        , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
-        , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
-    {
-    }
+    QuadPressureForceField();
 
     virtual ~QuadPressureForceField();
 public:
@@ -128,13 +119,8 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax)
-    {
-        dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
-    }
-
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax) {dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}
     void setNormal(const Coord n) { normal.setValue(n);}
-
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateQuadInformation(); }
 
 protected :
@@ -142,26 +128,15 @@ protected :
     void selectQuadsFromString();
     void updateQuadInformation();
     void initQuadInformation();
-    bool isPointInPlane(Coord p)
-    {
-        Real d=dot(p,normal.getValue());
-        if ((d>dmin.getValue())&& (d<dmax.getValue()))
-            return true;
-        else
-            return false;
-    }
+    bool isPointInPlane(Coord p);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 
 
 } // namespace forcefield

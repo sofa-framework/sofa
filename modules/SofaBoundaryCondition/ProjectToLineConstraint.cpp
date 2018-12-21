@@ -38,27 +38,15 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(ProjectToLineConstraint)
-
 int ProjectToLineConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
-        .add< ProjectToLineConstraint<Vec3dTypes> >()
-        .add< ProjectToLineConstraint<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectToLineConstraint<Vec3fTypes> >()
-        .add< ProjectToLineConstraint<Vec2fTypes> >()
-#endif
+        .add< ProjectToLineConstraint<Vec3Types> >()
+        .add< ProjectToLineConstraint<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2Types>;
+
 
 
 

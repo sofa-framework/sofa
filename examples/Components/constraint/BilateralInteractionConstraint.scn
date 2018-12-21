@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!-- BilateralInteractionConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <RequiredPlugin name="SofaMiscCollision"/>
@@ -27,7 +28,7 @@
         </Node>
     </Node>
     <Node name="CUBE_1">
-        <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="0.1" />
@@ -52,7 +53,7 @@
     </Node>
     <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
     <Node name="CUBE_2">
-        <EulerImplicit printLog="false" />
+        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-2.5" dz="0.0" />
         <UniformMass totalMass="0.1" />
@@ -77,7 +78,7 @@
     </Node>
     <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_1/Constraints/points" object2="@CUBE_2/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_3">
-        <EulerImplicit printLog="false" />
+        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-5.0" dz="0.0" />
         <UniformMass totalMass="0.1" />
@@ -102,7 +103,7 @@
     </Node>
     <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_2/Constraints/points" object2="@CUBE_3/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_4">
-        <EulerImplicit printLog="false" />
+        <EulerImplicit printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-2.5" dz="-2.5" />
         <UniformMass totalMass="0.1" />

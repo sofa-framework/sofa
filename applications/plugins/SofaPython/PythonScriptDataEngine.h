@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "ScriptDataEngine.h"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
@@ -60,7 +60,6 @@ public:
     void setInstance(PyObject* instance);
     void refreshBinding();
     void doLoadScript();
-    virtual void handleEvent(Event *event) override;
     virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
 protected:

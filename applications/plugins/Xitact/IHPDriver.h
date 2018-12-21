@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
@@ -40,9 +40,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#ifdef SOFA_DEV
-#include <sofa/component/controller/VMechanismsForceFeedback.h>
-#endif
 #include "PaceMaker.h"
 #include <Xitact/config.h>
 namespace sofa
@@ -70,9 +67,6 @@ typedef struct
 {
     //MechanicalStateForceFeedback<Rigid3dTypes>* lcp_forceFeedback;//= NULL;
     LCPForceFeedback<Rigid3dTypes>* lcp_forceFeedback;//= NULL;
-#ifdef SOFA_DEV
-    VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;// = NULL;
-#endif
     simulation::Node *context;
 
     int indexTool;
@@ -155,9 +149,6 @@ public:
     //virtual void draw();
 
     void setLCPForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff);
-#ifdef SOFA_DEV
-    void setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff);
-#endif
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);

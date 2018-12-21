@@ -52,7 +52,7 @@ public:
     /// Update method called when variables used in precomputation are modified.
     virtual void reinit() override;
     /// Update the output values
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 protected:
 
@@ -109,13 +109,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>;
-#endif
+#if  !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
+extern template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
+
 #endif
 
 } // namespace engine

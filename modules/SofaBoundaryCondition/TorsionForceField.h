@@ -46,15 +46,8 @@ using sofa::defaulttype::Mat;
 using sofa::core::behavior::ForceField;
 using sofa::core::MechanicalParams;
 
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
-
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-#endif
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::Rigid3Types;
 
 template<typename DataTypes>
 struct TorsionForceFieldTraits
@@ -108,11 +101,7 @@ public:
 	virtual void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx) override;
 	virtual void addKToMatrix(defaulttype::BaseMatrix *matrix, double kFact, unsigned int &offset) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        serr << "Get potentialEnergy not implemented" << sendl;
-        return 0.0;
-    }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
 public :
 	Data<VecId> m_indices;		///< indices of the selected nodes.
@@ -124,31 +113,17 @@ protected :
 	Pos m_u;					///< normalized axis
 };
 
-#ifndef SOFA_DOUBLE
 template<>
-void TorsionForceField<Rigid3fTypes>::addForce(const core::MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v);
+void TorsionForceField<Rigid3Types>::addForce(const core::MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v);
 
 template<>
-void TorsionForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx);
-#endif
+void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx);
 
-#ifndef SOFA_FLOAT
-template<>
-void TorsionForceField<Rigid3dTypes>::addForce(const core::MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v);
 
-template<>
-void TorsionForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx);
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3Types>;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3fTypes>;
-#endif
 #endif
 
 } // namespace forcefield

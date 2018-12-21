@@ -543,9 +543,6 @@ void NewOmniDriverEmu::handleEvent(core::objectmodel::Event *event)
 int NewOmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< NewOmniDriverEmu >();
 
-SOFA_DECL_CLASS(NewOmniDriverEmu)
-
-
 } // namespace controller
 
 } // namespace component

@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_AverageCoord_INL
 #define SOFA_COMPONENT_ENGINE_AverageCoord_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include "AverageCoord.h"
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
@@ -67,7 +63,7 @@ void AverageCoord<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void AverageCoord<DataTypes>::update()
+void AverageCoord<DataTypes>::doUpdate()
 {
     if(mstate==NULL)
     {
@@ -86,8 +82,6 @@ void AverageCoord<DataTypes>::update()
         c += coord[ (indices.empty()) ? i : indices[i]];
     }
     c *= 1./n;
-
-    cleanDirty();
 
     d_average.setValue(c);
 }

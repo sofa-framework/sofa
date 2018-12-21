@@ -46,20 +46,13 @@ namespace controller
 //	W_tool_world.clear();
 //};
 int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
-#ifndef SOFA_FLOAT
-        .add< NullForceFeedbackT<sofa::defaulttype::Vec1dTypes> >()
-        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< NullForceFeedbackT<sofa::defaulttype::Vec1fTypes> >()
-        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3fTypes> >()
-#endif
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >()
+
         ;
 
 //int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
 //    .add< NullForceFeedback >();
-
-SOFA_DECL_CLASS(NullForceFeedbackT)
 
 } // namespace controller
 } // namespace component

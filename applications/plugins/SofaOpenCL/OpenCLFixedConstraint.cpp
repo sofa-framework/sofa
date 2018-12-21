@@ -22,7 +22,7 @@
 #include "OpenCLTypes.h"
 #include "OpenCLFixedConstraint.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
@@ -44,19 +44,11 @@ namespace opencl
 {
 
 
-SOFA_DECL_CLASS(OpenCLFixedConstraint)
-
 int FixedConstraintOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3fTypes> >()
         .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3f1Types> >()
-#ifdef SOFA_DEV
-        .add< component::projectiveconstraintset::FixedConstraint<OpenCLRigid3fTypes> >()
-#endif // SOFA_DEV
         .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3dTypes> >()
         .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3d1Types> >()
-#ifdef SOFA_DEV
-        .add< component::projectiveconstraintset::FixedConstraint<OpenCLRigid3dTypes> >()
-#endif // SOFA_DEV
         ;
 
 
@@ -153,30 +145,12 @@ void FixedConstraintOpenCL3f_projectResponseContiguous(unsigned int size, _devic
     DEBUG_TEXT("~FixedConstraintOpenCL3f_projectResponseContiguous");
 }
 
-
-
 void FixedConstraintOpenCL3f1_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 void FixedConstraintOpenCL3f1_projectResponseIndexed(unsigned int /*size*/, const _device_pointer /*indices*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
-#ifdef SOFA_DEV
-void FixedConstraintOpenCLRigid3f_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
-void FixedConstraintOpenCLRigid3f_projectResponseIndexed(unsigned int /*size*/, const _device_pointer /*indice*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
-#endif // SOFA_DEV
-
-
-
 void FixedConstraintOpenCL3d_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 void FixedConstraintOpenCL3d_projectResponseIndexed(unsigned int /*size*/, const _device_pointer /*indices*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 void FixedConstraintOpenCL3d1_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 void FixedConstraintOpenCL3d1_projectResponseIndexed(unsigned int /*size*/, const _device_pointer /*indices*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
-#ifdef SOFA_DEV
-void FixedConstraintOpenCLRigid3d_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
-void FixedConstraintOpenCLRigid3d_projectResponseIndexed(unsigned int /*size*/, const _device_pointer /*indice*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
-#endif // SOFA_DEV
-
-
-
-
-
 
 } // namespace opencl
 

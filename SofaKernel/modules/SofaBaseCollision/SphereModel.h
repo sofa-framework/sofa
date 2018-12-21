@@ -81,18 +81,11 @@ public:
 };
 
 // Specializations
-#ifndef SOFA_FLOAT
 template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
 template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
-#endif
-#ifndef SOFA_DOUBLE
-template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
-template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
-#endif
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
+
 
 template< class TDataTypes>
 class TSphereModel : public core::CollisionModel
@@ -237,17 +230,11 @@ typedef TSphere<sofa::defaulttype::Vec3Types> Sphere;
 typedef TSphereModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
 typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_SPHEREMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_SPHEREMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace collision

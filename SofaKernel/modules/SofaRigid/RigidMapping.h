@@ -173,39 +173,21 @@ struct RigidMappingMatrixHelper;
 
 
 
-#ifndef SOFA_FLOAT
 template<>
-void RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK();
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
-template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK();
-#endif
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
-#endif
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
-#endif
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
+extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
+extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::ExtVec3Types >;
+
+
+
 #endif
 
 } // namespace mapping

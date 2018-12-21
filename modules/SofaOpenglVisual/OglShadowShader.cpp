@@ -47,8 +47,6 @@ namespace visualmodel
 {
 
 
-SOFA_DECL_CLASS(OglShadowShader)
-
 //Register OglShader in the Object Factory
 int OglShadowShaderClass = core::RegisterObject("This component sets the shader system responsible of the shadowing.")
         .add< OglShadowShader >()

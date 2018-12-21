@@ -35,20 +35,13 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaDiagonalMass)
 // Register in the Factory
 int DiagonalMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::DiagonalMass<CudaVec3dTypes,double> >()
+        .add< component::mass::DiagonalMass<CudaVec3Types,double> >()
 // .add< component::mass::DiagonalMass<CudaVec3d1Types,double> >()
-// .add< component::mass::DiagonalMass<CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-#endif
-#ifndef SOFA_DOUBLE
-        .add< component::mass::DiagonalMass<CudaVec3fTypes,float> >()
-// .add< component::mass::DiagonalMass<CudaVec3f1Types,float> >()
-// .add< component::mass::DiagonalMass<CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass> >()
+// .add< component::mass::DiagonalMass<CudaRigid3Types,sofa::defaulttype::Rigid3Mass> >()
+ // SOFA_GPU_CUDA_DOUBLE
 #endif
         ;
 

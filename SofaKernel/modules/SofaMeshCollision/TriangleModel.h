@@ -101,7 +101,7 @@ public:
 };
 
 template<class TDataTypes>
-class TTriangleModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API TTriangleModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TTriangleModel, TDataTypes), core::CollisionModel);
@@ -135,28 +135,6 @@ public:
 
     Data<bool> bothSide; ///< to activate collision on both side of the triangle model
 protected:
-#if 0
-    struct TriangleInfo
-    {
-        //int i1,i2,i3;
-        //int flags;
-        Deriv normal;
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )
-        {
-            return os << ti.normal;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& ti )
-        {
-            return in >> ti.normal;
-        }
-    };
-#endif
-
-    //topology::TriangleData<TriangleInfo> elems;
     VecDeriv normals;
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles;
@@ -209,15 +187,6 @@ public:
     const VecDeriv& getNormals() const { return normals; }
 
     TriangleLocalMinDistanceFilter *getFilter() const;
-
-    //template< class TFilter >
-    //TFilter *getFilter() const
-    //{
-    //	if (m_lmdFilter != 0)
-    //		return m_lmdFilter;
-    //	else
-    //		return &m_emptyFilter;
-    //}
 
     void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
 
@@ -317,13 +286,9 @@ inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) 
 typedef TTriangleModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
+extern template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace collision

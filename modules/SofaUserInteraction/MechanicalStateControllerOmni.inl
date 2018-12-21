@@ -268,29 +268,16 @@ void MechanicalStateControllerOmni<DataTypes>::onMouseEvent(core::objectmodel::M
 */
 
 
-#ifndef SOFA_FLOAT
 template <>
-SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Vec1dTypes>::applyController(double dt);
+SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Vec1Types>::applyController(double dt);
 /*
 template <>
-SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 template <>
-SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 */
-#endif
 
-#ifndef SOFA_DOUBLE
-template <>
-SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Vec1fTypes>::applyController(double dt);
-/*
-template <>
-SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
-
-template <>
-SOFA_USER_INTERACTION_API void MechanicalStateControllerOmni<defaulttype::Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
-*/
-#endif
 
 
 } // namespace controller

@@ -37,8 +37,6 @@ namespace topology
 
 
 
-SOFA_DECL_CLASS(SparseGridRamificationTopology)
-
 int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3D (modified)")
         .addAlias("SparseGridRamification")
         .add< SparseGridRamificationTopology >()
@@ -52,9 +50,15 @@ SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()
 {
-    for( unsigned i=0; i<_connexions.size(); ++i)
-        for( unsigned j=0; j<_connexions[i].size(); ++j)
-            delete _connexions[i][j];
+    for( size_t i=0; i<_connexions.size(); ++i)
+        for( size_t j=0; j<_connexions[i].size(); ++j)
+        {
+            if (_connexions[i][j])
+            {
+                delete _connexions[i][j];
+                _connexions[i][j] = NULL;
+            }
+        }
 }
 
 
@@ -108,19 +112,19 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 return;
             }
         }
-        if(filename.empty() && vertices.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
+        if(filename.empty() && seqPoints.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
         {
             serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
             return;
         }
-        else if(filename.empty() && !vertices.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
+        else if(filename.empty() && !seqPoints.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
         {
             mesh = new helper::io::Mesh();
-            for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
-                mesh->getVertices().push_back(vertices.getValue()[i]);
+            for (unsigned int i = 0; i<seqPoints.getValue().size(); ++i)
+                mesh->getVertices().push_back(seqPoints.getValue()[i]);
             const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
-            const SeqTriangles& triangles = this->input_triangles.getValue();
-            const SeqQuads& quads = this->input_quads.getValue();
+            const SeqTriangles& triangles = this->seqTriangles.getValue();
+            const SeqQuads& quads = this->seqQuads.getValue();
             mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
             for (unsigned int i = 0; i<facets.size(); ++i)
                 mesh->getFacets()[i].push_back(facets[i]);
@@ -203,22 +207,6 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 }
             }
 
-
-
-
-
-    // HACK: delete the connexions with no-neighbours
-// 				for(unsigned i=0 ; i<_connexions.size();++i)
-// 				{
-// 					int nb=0;
-// 					for(int j=0;j<NUM_CONNECTED_NODES;++j)
-// 						nb += _connexions[i][0]->_neighbors[j].size();
-// 					if( nb == 0 )
-// 						_connexions[i].resize(0);
-// 				}
-    // end HACK
-
-
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
         if( !_connexions[i].empty() )
@@ -231,15 +219,6 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
 
 
     delete mesh;
-
-
-// 				printNeighborhood();
-
-
-
-
-// 				serr<<"END SparseGridRamificationTopology::buildAsFinest()"<<sendl;
-
 }
 
 
@@ -251,9 +230,6 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
     // it is not necessary to analyse connectivity between non-boundary cells
     if( getType(cubeIdx)!=BOUNDARY || getType(neighborIdx)!=BOUNDARY)
         return true;
-
-
-// 				serr<<"SparseGridRamificationTopology::sharingTriangle "<<this->fileTopology.getValue()<<""<<sendl;
 
     const Hexa& hexa=getHexahedron( cubeIdx );
 
@@ -443,11 +419,6 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
 
 void SparseGridRamificationTopology::buildFromFiner()
 {
-// 				serr<<"SparseGridRamificationTopology::buildFromFiner()"<<sendl;
-
-// 				SparseGridTopology::buildFromFiner();	return;
-
-
     SparseGridRamificationTopology* finerSparseGridRamification = dynamic_cast<SparseGridRamificationTopology*>(_finerSparseGrid);
 
 
@@ -473,15 +444,9 @@ void SparseGridRamificationTopology::buildFromFiner()
     setYmax(getYmin() + (getNy()-1) * (SReal)2.0 * dy[1]);
     setZmax(getZmin() + (getNz()-1) * (SReal)2.0 * dz[2]);
 
-
-
-
     _regularGrid->setPos(getXmin(), getXmax(), getYmin(), getYmax(), getZmin(), getZmax());
 
-
     _indicesOfRegularCubeInSparseGrid.resize( _regularGrid->getNbHexahedra(), -1 ); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-
-
 
     helper::vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
     MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
@@ -621,30 +586,6 @@ void SparseGridRamificationTopology::buildFromFiner()
     }
 
 
-    // print debug
-// 				for(int z=0; z<getNz()-1; ++z)
-// 				{
-// 					for(int y=0; y<getNy()-1; ++y)
-// 					{
-// 						for(int x=0; x<getNx()-1; ++x)
-// 						{
-// 							const int cubeIdxRG = _regularGrid->cube(x,y,z);
-// 							const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
-//
-// 							if( cubeIdx==-1)
-// 								sout << "  ";
-// 							else
-// 							{
-// 								sout << _connexions[cubeIdx].size() << " ";
-// 							}
-// 						}
-// 						sout << sendl;
-// 					}
-// 					sout << " -- " << sendl;
-// 				}
-
-
-
     // to know in what cube is a connexion
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
@@ -701,13 +642,6 @@ void SparseGridRamificationTopology::buildFromFiner()
     }
 
 
-
-// 				printNeighborhood();
-
-
-
-
-
     // build an new coarse hexa for each independnnt connexion
 
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
@@ -727,7 +661,6 @@ void SparseGridRamificationTopology::buildFromFiner()
     }
 
 
-
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
         for( unsigned j=0; j<_connexions[i].size(); ++j)
@@ -735,8 +668,6 @@ void SparseGridRamificationTopology::buildFromFiner()
             _mapHexa_Connexion[ _connexions[i][j]->_hexaIdx ] = std::pair<helper::vector<Connexion*>,int>(_connexions[i],j);
         }
     }
-
-
 
 
     // which cube is neigbor of which cube? in order to link similar vertices (link entiere faces)
@@ -784,14 +715,6 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-
-
-
-// 				serr<<hexahedra<<sendl;
-
-
-
-
     // saving incident hexahedra for each points in order to be able to link or not vertices
     helper::vector< helper::vector< helper::fixed_array<unsigned,3> > > hexahedraConnectedToThePoint(nbPoints);
     unsigned c=0;
@@ -807,9 +730,6 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-// 				serr<<seqPoints.size()<<" "<<hexahedra.size()<<sendl;
-
-
     helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
@@ -823,16 +743,6 @@ void SparseGridRamificationTopology::buildFromFiner()
 
             // find corresponding 3D coordinate
             seqPoints.push_back( cubeCorners[ hexahedraConnectedToThePoint[i][0][2] ][ hexahedraConnectedToThePoint[i][0][1] ] );
-
-
-
-            ///DEBUG  FAAALLLSSSSEEEE
-// 						if( hexahedraConnectedToThePoint[i].size() == 1 )
-// 						{
-// 							seqPoints.back()[2] -= hexahedraConnectedToThePoint[i][0][0]*3; // decale les particles dedoubl�es du nb de leur connexion pour bien les diff�rencier
-// 						}
-
-
 
             ++nbPoints;
         }
@@ -876,10 +786,8 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-
-
     _hierarchicalCubeMapRamification.resize(this->getNbHexahedra());
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         Connexion*& coarsecon = _mapHexa_Connexion[ i ].first[ _mapHexa_Connexion[ i ].second ];
 
@@ -889,71 +797,10 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-
-
-// 				serr<<"_connexions : "<<sendl;
-// 				for(unsigned i=0;i<_connexions.size();++i)
-// 				{
-// 					serr<<i<<" -> ";
-// 					for(unsigned j=0;j<_connexions[i].size();++j)
-// 					{
-// 						serr<<"[ ";
-// 						for( std::list<Connexion::Children>::iterator child=_connexions[i][j]->_children.begin();child!=_connexions[i][j]->_children.end();++child)
-// 							serr<<(*child).second->_hexaIdx<<" ";
-// 						serr<<"] , ";
-// 					}
-// 					serr<<sendl;
-// 				}
-//
-// 				serr<<"_hierarchicalCubeMap : "<<sendl;
-// 				for(unsigned i=0;i<_hierarchicalCubeMap.size();++i)
-// 				{
-// 					serr<<i<<" -> ";
-// 					for(int w=0;w<8;++w)
-// 					{
-// 						serr<<_hierarchicalCubeMap[i][w]<<" ";
-// 					}
-// 					serr<<sendl;
-// 				}
-//
-// 				serr<<"_mapHexa_Connexion : "<<sendl;
-// 				for(unsigned i=0;i<_mapHexa_Connexion.size();++i)
-// 				{
-// 					serr<<i<<" -> ";
-// 					serr<<"["<<_mapHexa_Connexion[i].first[0]->_nonRamifiedHexaIdx<<"]  ";
-// 					serr<<_mapHexa_Connexion[i].second;
-// 					serr<<sendl;
-// 				}
-//
-//
-// 				serr<<_finerSparseGrid->getNbHexahedra()<<sendl;
-// 				serr<<"_hierarchicalCubeMapRamification : "<<sendl;
-// 				for(unsigned i=0;i<_hierarchicalCubeMapRamification.size();++i)
-// 				{
-// 					serr<<i<<" -> ";
-// 					for(int w=0;w<8;++w)
-// 					{
-// 						serr<<"[ ";
-// 						for(unsigned j=0;j<_hierarchicalCubeMapRamification[i][w].size();++j)
-// 						{
-// 							serr<<_hierarchicalCubeMapRamification[i][w][j]<<" ";
-// 						}
-// 						serr<<"] , ";
-// 					}
-// 					serr<<sendl;
-// 				}
-
-
-
-
-
-
-
-
     // compute stiffness coefficient from children
     _stiffnessCoefs.resize( this->getNbHexahedra() );
     _massCoefs.resize( this->getNbHexahedra() );
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
         unsigned nbchildren = 0;
@@ -969,14 +816,6 @@ void SparseGridRamificationTopology::buildFromFiner()
         _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;
         _massCoefs[i] /= 8.0;//(float)nbchildren;
     }
-
-
-
-
-
-// 				serr<<"nbPoints : "<<seqPoints.size()<<sendl;
-
-// 				serr<<"END SparseGridRamificationTopology::buildFromFiner()"<<sendl;
 }
 
 
@@ -1012,10 +851,10 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     const std::string& fileTopology = this->fileTopology.getValue();
     if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
     {
-        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+        _virtualFinerLevels[0]->seqPoints.setParent(&this->seqPoints);
         _virtualFinerLevels[0]->facets.setParent(&this->facets);
-        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
-        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
+        _virtualFinerLevels[0]->seqTriangles.setParent(&this->seqTriangles);
+        _virtualFinerLevels[0]->seqQuads.setParent(&this->seqQuads);
     }
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());
@@ -1049,9 +888,6 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
 
 int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
-// 				if(  !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
-// 					return SparseGridTopology::findCube(pos, fx, fy, fz);
-
     if(  _nbVirtualFinerLevels.getValue() == 0 )
         return SparseGridTopology::findCube(pos, fx, fy, fz);
 
@@ -1073,10 +909,6 @@ int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SRea
 
 int SparseGridRamificationTopology::findNearestCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
-// 				if( !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
-// 					return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
-
-
     if( _nbVirtualFinerLevels.getValue() == 0 )
         return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
 
@@ -1150,10 +982,6 @@ void SparseGridRamificationTopology::findCoarsestParents()
             }
         }
     }
-
-
-// 				printParents();
-
 }
 
 
@@ -1209,15 +1037,10 @@ void SparseGridRamificationTopology::printNeighborhood()
             }
             sout << sendl;
 
-
-
             for(int x=0; x<getNx()-1; ++x)
             {
                 const int cubeIdxRG = _regularGrid->cube(x,y,z);
                 const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
-
-
-
 
                 if( cubeIdx==-1)
                     sout << "     ";
@@ -1236,19 +1059,13 @@ void SparseGridRamificationTopology::printNeighborhood()
                     }
                     sout<<"]";
                 }
-
-
-
             }
             sout << sendl;
-
-
-
-
         }
         sout << " -- " << sendl;
     }
 }
+
 
 void SparseGridRamificationTopology::printNeighbors()
 {
@@ -1277,6 +1094,7 @@ void SparseGridRamificationTopology::printNeighbors()
         sout << " -- " << sendl;
     }
 }
+
 
 void SparseGridRamificationTopology::printNbConnexions()
 {
@@ -1405,8 +1223,6 @@ void SparseGridRamificationTopology::printHexaIdx()
         sout << " -- " << sendl;
     }
 }
-
-
 
 
 bool SparseGridRamificationTopology::intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2)

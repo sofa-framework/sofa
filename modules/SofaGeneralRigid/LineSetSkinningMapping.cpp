@@ -35,38 +35,18 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(LineSetSkinningMapping)
-
 // Register in the Factory
 int HandMappingClass = core::RegisterObject("skin a model from a set of rigid lines")
-#ifndef SOFA_FLOAT
-        .add< LineSetSkinningMapping< Rigid3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LineSetSkinningMapping< Rigid3fTypes, Vec3fTypes > >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< LineSetSkinningMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< LineSetSkinningMapping< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+        .add< LineSetSkinningMapping< Rigid3Types, Vec3Types > >()
+
+
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3fTypes, Vec3fTypes >;
-#endif
+template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

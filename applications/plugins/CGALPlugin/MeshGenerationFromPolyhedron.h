@@ -76,7 +76,7 @@ public:
     void init();
     void reinit();
 
-    void update();
+    void doUpdate();
 
     void draw(const sofa::core::visual::VisualParams* vparams);
 
@@ -202,13 +202,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<sofa::defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<sofa::defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP)
+extern template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<sofa::defaulttype::Vec3Types>;
+ 
 #endif
 
 } //cgal

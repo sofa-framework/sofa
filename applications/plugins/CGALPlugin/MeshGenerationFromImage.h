@@ -120,7 +120,7 @@ public:
     void init();
     void reinit();
 
-    void update();
+    void doUpdate();
 
     void draw(const sofa::core::visual::VisualParams* vparams);
 
@@ -174,13 +174,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ImageUC>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ImageUC>;
-#endif //SOFA_DOUBLE
+#if  !defined(CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP)
+extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3Types, sofa::defaulttype::ImageUC>;
+ 
 #endif
 
 } //cgal

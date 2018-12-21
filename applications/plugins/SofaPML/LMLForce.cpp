@@ -33,7 +33,7 @@
  ***************************************************************************/
 
 #include "LMLForce.inl"
-#include "sofa/defaulttype/Vec3Types.h"
+#include "sofa/defaulttype/VecTypes.h"
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -49,8 +49,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component;
 
 using namespace core::behavior;
-
-SOFA_DECL_CLASS(LMLForce)
 
 template class SOFA_BUILD_FILEMANAGER_PML_API LMLForce<Vec3Types>;
 

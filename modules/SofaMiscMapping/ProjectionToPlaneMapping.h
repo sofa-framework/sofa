@@ -119,15 +119,10 @@ protected:
     };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+
 #endif
 
 
@@ -211,13 +206,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+
 #endif
 
 

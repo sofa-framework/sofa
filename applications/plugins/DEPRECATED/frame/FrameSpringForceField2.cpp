@@ -23,7 +23,7 @@
 
 #include "FrameSpringForceField2.inl"
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include "AffineTypes.h"
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
@@ -39,30 +39,18 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(FrameSpringForceField2)
-
 using namespace sofa::defaulttype;
 
 
 // Register in the Factory
 int FrameSpringForceField2Class = core::RegisterObject("Springs between frames.")
-#ifndef SOFA_FLOAT
-        .add< FrameSpringForceField2<Rigid3dTypes> >()
+        .add< FrameSpringForceField2<Rigid3Types> >()
         .add< FrameSpringForceField2<Affine3dTypes> >()
 //.add< FrameSpringForceField2<Quadratic3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-//.add< FrameSpringForceField2<Affine3fTypes> >()
-//.add< FrameSpringForceField2<Rigid3fTypes> >()
-//.add< FrameSpringForceField2<Quadratic3fTypes> >()
-#endif
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-//template class SOFA_FRAME_API FrameSpringForceField2<Rigid3fTypes>;
-#endif
+template class SOFA_FRAME_API FrameSpringForceField2<Rigid3Types>;
+
 
 
 
@@ -260,19 +248,14 @@ void FrameSpringForceField2<Affine3dTypes>::PostoSpeed( Deriv& /*Omega*/, const 
 ///////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-//template class SOFA_FRAME_API FrameSpringForceField2<Affine3fTypes>;
-#endif
+
 
 
 /*
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
 //template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3fTypes>;
 #endif
 */

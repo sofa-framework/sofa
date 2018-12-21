@@ -67,7 +67,7 @@ void DisplacementTransformEngine< DataTypes, OutputType >::init()
 }
 
 template < class DataTypes, class OutputType >
-void DisplacementTransformEngine< DataTypes, OutputType >::update()
+void DisplacementTransformEngine< DataTypes, OutputType >::doUpdate()
 {
     // parent method
     Inherit::init();
@@ -83,8 +83,6 @@ void DisplacementTransformEngine< DataTypes, OutputType >::update()
         serr << "x and x0 have not the same size: respectively " << size << " and " << size0 << sendl;
         return;
     }
-
-    cleanDirty();
 
     // Clean the output
     helper::vector< OutputType >& displacements = *d_displacements.beginWriteOnly();
@@ -164,7 +162,7 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
 }
 
 template < class DataTypes >
-void DisplacementMatrixEngine< DataTypes >::update()
+void DisplacementMatrixEngine< DataTypes >::doUpdate()
 {
     const VecCoord& x = this->d_x.getValue();
     const VecCoord& x0 = this->d_x0.getValue();
@@ -179,8 +177,6 @@ void DisplacementMatrixEngine< DataTypes >::update()
         serr << "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS << sendl;
         return;
     }
-
-    this->cleanDirty();
 
     helper::vector< Matrix4x4 >& displacements = *this->d_displacements.beginWriteOnly();
     displacements.resize(size);

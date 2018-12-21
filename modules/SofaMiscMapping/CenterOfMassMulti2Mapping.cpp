@@ -34,26 +34,16 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CenterOfMassMulti2Mapping)
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory
 int CenterOfMassMulti2MappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
-#ifndef SOFA_FLOAT
-        .add< CenterOfMassMulti2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CenterOfMassMulti2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes > >()
-#endif
+        .add< CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API CenterOfMassMulti2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CenterOfMassMulti2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
+
 
 } // namespace mapping
 

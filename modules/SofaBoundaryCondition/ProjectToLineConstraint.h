@@ -154,15 +154,11 @@ protected :
     SparseMatrix J;        ///< auxiliary variable
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

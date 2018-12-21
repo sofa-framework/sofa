@@ -23,7 +23,6 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
@@ -47,10 +46,6 @@ namespace sofa
 
 namespace helper
 {
-#if defined(_XBOX) || defined(__PS3__)
-char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
-#endif
-
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;
 

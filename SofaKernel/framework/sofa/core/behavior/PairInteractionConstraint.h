@@ -147,11 +147,11 @@ public:
             std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
-                arg->setAttribute("object1", object1.c_str());
+                arg->setAttribute("object1", object1);
             }
             if (!object2.empty())
             {
-                arg->setAttribute("object2", object2.c_str());
+                arg->setAttribute("object2", object2);
             }
             obj->parse(arg);
         }
@@ -184,22 +184,14 @@ protected:
                                const sofa::defaulttype::BaseVector* lambda);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid2dTypes>;
-#endif
+#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
+extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid2fTypes>;
-#endif
+
 #endif
 
 } // namespace behavior

@@ -23,15 +23,13 @@
 #define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -68,7 +66,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -87,14 +85,10 @@ protected:
     Data<Real> focal_distance; ///< focal distance i.e. distance between the optical center and the image plane
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+ 
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
 #endif

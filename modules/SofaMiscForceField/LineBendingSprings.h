@@ -75,15 +75,10 @@ protected:
     void registerLine( unsigned, unsigned, std::map<Index, unsigned>& );
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec3dTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec3fTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec2fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP)
+extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec3Types>;
+extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace interactionforcefield

@@ -33,6 +33,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #endif
 
+#include <Geomagic/src/config.h>
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/simulation/Node.h>
@@ -72,7 +73,7 @@ using core::objectmodel::Data;
 /**
 * Geomagic driver
 */
-class GeomagicDriver : public Controller
+class SOFA_GEOMAGIC_API GeomagicDriver : public Controller
 {
 
 public:
@@ -105,13 +106,15 @@ public:
     Data<double> d_forceScale; ///< Default forceScale applied to the force feedback. 
     Data<bool> d_frameVisu; ///< Visualize the frame corresponding to the device tooltip
     Data<bool> d_omniVisu; ///< Visualize the frame of the interface in the virtual scene
-    Data< Coord > d_posDevice; ///< position of the base of the part of the device
+    Data< Coord > d_posDevice; ///< position of the base of the part of the device    
     
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
+    Data<bool> d_emitButtonEvent; ///< Bool to send event through the graph when button are pushed/released
     Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
     Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
 
+    Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
     VecCoord m_posDeviceVisu; ///< position of the hpatic devices for rendering. first pos is equal to d_posDevice
 
     GeomagicDriver();
@@ -123,7 +126,8 @@ public:
     virtual void reinit() override;
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
-
+    void updateButtonStates(bool emitEvent);
+    void initDevice();
     ForceFeedback::SPtr m_forceFeedback;
 
     /// variable pour affichage graphique
@@ -147,9 +151,9 @@ public:
 
     bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
     bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
-    bool m_errorDevice; ///< Boolean detecting any error coming from device / detection
+    int m_errorDevice; ///< Int detecting any error coming from device / detection
     bool m_simulationStarted; /// <Boolean storing hte information if Sofa has started the simulation (changed by AnimateBeginEvent)
-
+    bool m_isInContact;
 private:
     void handleEvent(core::objectmodel::Event *) override;
     void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
@@ -171,7 +175,7 @@ public:
     OmniData m_omniData;
     OmniData m_simuData;
     HHD m_hHD;
-    std::vector< HDCallbackCode > m_hStateHandles;
+    std::vector< HDSchedulerHandle > m_hStateHandles;
 
 };
 

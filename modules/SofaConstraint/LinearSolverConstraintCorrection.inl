@@ -436,10 +436,6 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
     constraint_dofs.clear();
 
-    ////// TODO : supprimer le classement par indice max
-    //std::vector<unsigned int> VecMaxDof;
-    //VecMaxDof.resize(numConstraints);
-
     const unsigned int nbConstraints = constraints.size();
     std::vector<unsigned int> VecMinDof;
     VecMinDof.resize(nbConstraints);

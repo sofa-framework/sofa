@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 #define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include "SmoothMeshEngine.h"
 
 #include <sofa/core/visual/VisualParams.h>
@@ -72,11 +68,9 @@ void SmoothMeshEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void SmoothMeshEngine<DataTypes>::update()
+void SmoothMeshEngine<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
-
-    cleanDirty();
 
     if (!m_topo) return;
 

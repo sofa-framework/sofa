@@ -174,7 +174,6 @@ protected:
 
     PreviousForcesContainer prevForces;
     bool* contactsStatus;
-//	sofa::helper::vector<bool> contactsStatus;
 
     /// Computes constraint violation in position and stores it into resolution global vector
     ///
@@ -190,50 +189,18 @@ public:
 
     unsigned int constraintId;
 protected:
-    UnilateralInteractionConstraint(MechanicalState* object1=NULL, MechanicalState* object2=NULL)
-        : Inherit(object1, object2)
-        , epsilon(Real(0.001))
-        , yetIntegrated(false)
-        , customTolerance(0.0)
-        , contactsStatus(NULL)
-    {
-    }
+    UnilateralInteractionConstraint(MechanicalState* object1=NULL, MechanicalState* object2=NULL);
+    virtual ~UnilateralInteractionConstraint();
 
-    virtual ~UnilateralInteractionConstraint()
-    {
-        if(contactsStatus)
-            delete[] contactsStatus;
-    }
 public:
     void setCustomTolerance(double tol) { customTolerance = tol; }
 
-    void clear(int reserve = 0)
-    {
-        contacts.clear();
-        if (reserve)
-            contacts.reserve(reserve);
-    }
+    void clear(int reserve = 0);
 
     virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
 
-    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
-    {
-        addContact(mu, norm, P, Q, contactDistance, m1, m2,
-                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
-                id, localid);
-    }
-
-    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
-    {
-        addContact(mu, norm,
-                this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
-                this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
-                contactDistance, m1, m2,
-                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
-                id, localid);
-    }
+    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
+    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
 
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;
@@ -251,23 +218,9 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec2dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec2fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid2fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
+extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

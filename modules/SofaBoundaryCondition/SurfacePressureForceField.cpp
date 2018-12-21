@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP
 #include <SofaBoundaryCondition/SurfacePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -36,27 +36,15 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SurfacePressureForceField)
-
 int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
-#ifndef SOFA_FLOAT
-        .add< SurfacePressureForceField<Vec3dTypes> >()
+        .add< SurfacePressureForceField<Vec3Types> >()
 		.add< SurfacePressureForceField<Rigid3Types> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SurfacePressureForceField<Vec3fTypes> >()
-		.add< SurfacePressureForceField<Rigid3fTypes> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Rigid3Types>;
+
 
 
 } // namespace forcefield

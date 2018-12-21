@@ -90,16 +90,11 @@ protected :
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_KDTREE_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_HELPER_KDTREE_CPP)
 extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2d>;
 extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3d>;
-#endif
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2f>;
-extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3f>;
-#endif
+
 #endif
 
 }

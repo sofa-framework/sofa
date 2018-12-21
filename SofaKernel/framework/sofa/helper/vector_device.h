@@ -22,7 +22,6 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
-#ifndef PS3
 #include "system/gl.h"
 #include <sofa/helper/vector.h>
 
@@ -315,17 +314,6 @@ public:
             if ( vectorSize > 0 ) deviceIsValid = 0;
         }
 #endif // SOFA_NO_OPENGL
-
-//         else {
-//                 for (int d=0;d<MemoryManager::numDevices();d++) {
-//                         device_pointer prevDevicePointer = devicePointer[d];
-//                         //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
-//                         MemoryManager::deviceAlloc(d, &devicePointer[d], allocSize*sizeof ( T ) );
-//                         if ( vectorSize > 0 && isDeviceValid(d)) MemoryManager::memcpyDeviceToDevice (d, devicePointer[d], prevDevicePointer, vectorSize*sizeof ( T ) );
-//                         if ( !MemoryManager::isNull(prevDevicePointer)) MemoryManager::deviceFree (d, prevDevicePointer );
-//                 }
-//         }
-
         T* prevHostPointer = hostPointer;
         void* newHostPointer = NULL;
         DEBUG_OUT_V(SPACEN<< "MemoryManager::hostAlloc " << allocSize << std::endl);
@@ -770,12 +758,6 @@ protected:
     {
         if ( hostIsValid ) return;
         DEBUG_OUT_V(SPACEP << "copyToHost " << std::endl);
-//#ifndef NDEBUG
-        // COMM : if (mycudaVerboseLevel>=LOG_TRACE) {
-        // COMM :     std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
-        //sofa::helper::BackTrace::dump();
-        // COMM : }
-//#endif
 
 #ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
@@ -822,9 +804,6 @@ protected:
         if (isDeviceValid(d)) return;
         DEBUG_OUT_V(SPACEP << "copyToDevice " << std::endl);
 
-//#ifndef NDEBUG
-        //COMM : if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
-//#endif
         if ( !hostIsValid ) copyToHost();
         DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyHostToDevice " << vectorSize << std::endl);
         MemoryManager::memcpyHostToDevice (d, devicePointer[d], hostPointer, vectorSize*sizeof ( T ) );
@@ -837,12 +816,6 @@ protected:
     {
         if ( hostIsValid ) return;
         DEBUG_OUT_V(SPACEP << "copyToHostSingle " << std::endl);
-//#ifndef NDEBUG
-        //COMM : if (mycudaVerboseLevel>=LOG_TRACE) {
-        // COMM : std::cout << "CUDA: GPU->CPU single copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeof ( T ) <<" B"<<std::endl;
-        //sofa::helper::BackTrace::dump();
-        //COMM : }
-//#endif
 #ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
 #endif // SOFA_NO_OPENGL
@@ -982,5 +955,4 @@ protected:
 } // namespace helper
 
 } // namespace sofa
-#endif //ndef PS3
 #endif //SOFA_HELPER_VECTOR_DEVICE_H

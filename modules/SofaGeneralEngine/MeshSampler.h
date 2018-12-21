@@ -71,7 +71,7 @@ public:
 
     virtual void reinit()    override { update();  }
     virtual void init() override;
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -101,13 +101,9 @@ private:
     void computeNeighbors(VVI& ngb);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshSampler<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshSampler<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshSampler<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

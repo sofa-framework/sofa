@@ -27,7 +27,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <map>
 
@@ -178,7 +178,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_CPP)
 extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER

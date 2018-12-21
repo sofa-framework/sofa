@@ -36,15 +36,10 @@ namespace component
 namespace projectiveconstraintset
 {
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMELINEARMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(FRAME_FRAMELINEARMOVEMENTCONSTRAINT_CPP)
 extern template class SOFA_FRAME_API LinearMovementConstraint<defaulttype::Affine3dTypes>;
 extern template class SOFA_FRAME_API LinearMovementConstraint<defaulttype::Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API LinearMovementConstraint<defaulttype::Affine3fTypes>;
-extern template class SOFA_FRAME_API LinearMovementConstraint<defaulttype::Quadratic3fTypes>;
-#endif
+
 #endif
 
 } // namespace projectiveconstraintset

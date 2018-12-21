@@ -85,39 +85,6 @@ public:
             massMatrix.setIdentity();
             massMatrix.compress();
             d_massMatrix.endEdit();
-
-    //        // perform assembly
-    //        core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
-    //        mparams.setKFactor(0);
-    //        mparams.setBFactor(0);
-    //        mparams.setMFactor(1);
-    //        mparams.setDt( this->getContext()->getDt() ); // should not be used but to be sure
-
-    //        simulation::AssemblyVisitor assemblyVisitor( &mparams );
-    //        this->getContext()->executeVisitor( &assemblyVisitor );
-    //        component::linearsolver::AssembledSystem sys = assemblyVisitor.assemble();
-    //        massMatrix.compressedMatrix = sys.H;
-
-    //        if( massMatrix.rows()!=this->mstate->getMatrixSize() )
-    //        {
-    //            serr<<"Are you sure that every independent dofs are in independent graph branches?\n";
-    //            assert(false);
-    //        }
-
-    //        if( _instanciationNumber == 0 ) // only the first one (last bwdInit called) will call the mass removal
-    //        {
-    //    //        std::cerr<<SOFA_CLASS_METHOD<<"removing child masses"<<std::endl;
-
-    //            // visitor to delete child mass
-    //            RemoveChildMassVisitor removeChildMassVisitor( core::ExecParams::defaultInstance() );
-    //            this->getContext()->executeVisitor( &removeChildMassVisitor );
-
-    //            typename LinkMassNodes::Container massNodes = l_massNodes.getValue();
-    //            for ( unsigned int i = 0; i < massNodes.size() ; i++)
-    //            {
-    //               if( massNodes[i]->isActive() ) massNodes[i]->setActive( false );
-    //            }
-    //        }
         }
     }
 
@@ -146,11 +113,6 @@ public:
         Vec3 g ( this->getContext()->getGravity() );
         if(g[0]==0 && g[1]==0 && g[2]==0) return;
 
-    //    Deriv theGravity;
-    //    DataTypes::set( theGravity, g[0], g[1], g[2] );
-        // add weight
-    //    d_massMatrix.template addMul_by_line<Real,VecDeriv,Deriv>( _f, theGravity );
-
         //TODO optimize this!!!
         VecDeriv gravities(_f.size());
         for(size_t i=0 ; i<_f.size() ; ++i )
@@ -174,22 +136,6 @@ public:
     {
         serr<<SOFA_CLASS_METHOD<<"not implemented!\n";
         return core::behavior::Mass< DataTypes >::getPotentialEnergy( mparams, x );
-
-    //    const VecCoord& _x = x.getValue();
-
-    //    VecCoord Mx/* = d_massMatrix * _x*/;
-    //    d_massMatrix.mult( Mx, _x );
-
-    //    SReal e = 0;
-    //    // gravity
-    //    Vec3d g ( this->getContext()->getGravity() );
-    //    Deriv theGravity;
-    //    DataTypes::set ( theGravity, g[0], g[1], g[2] );
-    //    for( unsigned int i=0 ; i<_x.size() ; i++ )
-    //    {
-    //        e -= theGravity*Mx[i];
-    //    }
-    //    return e;
     }
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)

@@ -52,7 +52,6 @@ namespace controller
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
-SOFA_DECL_CLASS(NodeToggleController)
 // Register in the Factory
 int NodeToggleControllerClass = core::RegisterObject("Provides a way to switch active one of the children nodes.")
         .add<NodeToggleController>()

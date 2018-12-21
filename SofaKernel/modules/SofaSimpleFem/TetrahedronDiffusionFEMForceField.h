@@ -22,9 +22,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include "config.h"
 
@@ -166,17 +164,11 @@ public:
       bool loadedDiffusivity;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1dTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2dTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1fTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2fTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+ 
 #endif
 
 } //namespace forcefield

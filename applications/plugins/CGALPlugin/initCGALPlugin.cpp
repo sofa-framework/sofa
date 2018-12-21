@@ -82,6 +82,3 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(MeshGenerationFromPolyhedron)
-SOFA_LINK_CLASS(TriangularConvexHull3D)
-

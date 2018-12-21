@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "BatchGUI.h"
 #include <sofa/simulation/Simulation.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>

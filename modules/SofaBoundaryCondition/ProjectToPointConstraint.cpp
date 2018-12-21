@@ -38,35 +38,19 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(ProjectToPointConstraint)
-
 int ProjectToPointConstraintClass = core::RegisterObject("Project particles to a point")
-#ifndef SOFA_FLOAT
-        .add< ProjectToPointConstraint<Vec3dTypes> >()
-        .add< ProjectToPointConstraint<Vec2dTypes> >()
-        .add< ProjectToPointConstraint<Vec1dTypes> >()
-        .add< ProjectToPointConstraint<Vec6dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectToPointConstraint<Vec3fTypes> >()
-        .add< ProjectToPointConstraint<Vec2fTypes> >()
-        .add< ProjectToPointConstraint<Vec1fTypes> >()
-        .add< ProjectToPointConstraint<Vec6fTypes> >()
-#endif
+        .add< ProjectToPointConstraint<Vec3Types> >()
+        .add< ProjectToPointConstraint<Vec2Types> >()
+        .add< ProjectToPointConstraint<Vec1Types> >()
+        .add< ProjectToPointConstraint<Vec6Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6Types>;
+
 
 
 } // namespace projectiveconstraintset

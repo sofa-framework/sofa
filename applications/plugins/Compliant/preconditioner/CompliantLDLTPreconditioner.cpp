@@ -7,7 +7,6 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(CompliantLDLTPreconditioner)
 int CompliantLDLTPreconditionerClass = core::RegisterObject("LDLT preconditioner").add< CompliantLDLTPreconditioner >();
 
 

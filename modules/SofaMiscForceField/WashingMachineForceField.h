@@ -173,13 +173,9 @@ protected :
     bool _alreadyInit;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class WashingMachineForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class WashingMachineForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP)
+extern template class WashingMachineForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

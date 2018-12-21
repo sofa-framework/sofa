@@ -166,27 +166,15 @@ void  VRPN_CALLBACK handle_end_of_frame(void *userData,const struct _vrpn_IMAGER
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
 
-SOFA_DECL_CLASS(VRPNImager)
-
 int VRPNImagerClass = sofa::core::RegisterObject("VRPN Imager")
-#ifndef SOFA_FLOAT
-        .add< VRPNImager<Vec3dTypes> >()
-        .add< VRPNImager<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< VRPNImager<Vec3fTypes> >()
-        .add< VRPNImager<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< VRPNImager<Vec3Types> >()
+        .add< VRPNImager<Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Vec3dTypes>;
-template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Vec3fTypes>;
-template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Vec3Types>;
+template class SOFA_SOFAVRPNCLIENT_API VRPNImager<Rigid3Types>;
+ 
 
 }
 

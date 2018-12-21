@@ -38,23 +38,13 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-SOFA_DECL_CLASS(PointConstraint)
-
 int PointConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
-        .add< PointConstraint<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PointConstraint<Vec3fTypes> >()
-#endif
+        .add< PointConstraint<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PointConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PointConstraint<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API PointConstraint<Vec3Types>;
+
 
 
 

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP
 #include "LinearSolverConstraintCorrection.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -32,34 +32,18 @@ namespace constraintset
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(LinearSolverConstraintCorrection)
-
 int LinearSolverContactCorrectionClass = core::RegisterObject("")
-#ifndef SOFA_FLOAT
-        .add< LinearSolverConstraintCorrection<Vec3dTypes> >()
-        .add< LinearSolverConstraintCorrection<Vec2dTypes> >()
-        .add< LinearSolverConstraintCorrection<Vec1dTypes> >()
-        .add< LinearSolverConstraintCorrection<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LinearSolverConstraintCorrection<Vec3fTypes> >()
-        .add< LinearSolverConstraintCorrection<Vec2fTypes> >()
-        .add< LinearSolverConstraintCorrection<Vec1fTypes> >()
-        .add< LinearSolverConstraintCorrection<Rigid3fTypes> >()
-#endif
+        .add< LinearSolverConstraintCorrection<Vec3Types> >()
+        .add< LinearSolverConstraintCorrection<Vec2Types> >()
+        .add< LinearSolverConstraintCorrection<Vec1Types> >()
+        .add< LinearSolverConstraintCorrection<Rigid3Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3dTypes>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2dTypes>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1dTypes>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3fTypes>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2fTypes>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1fTypes>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3fTypes>;
-#endif
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3Types>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2Types>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1Types>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3Types>;
+
 
 
 } // namespace collision

@@ -3,7 +3,6 @@
     <BruteForceDetection name="N2" />
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />
     <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
     <Node name="TorusFixed">
         <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
         <Mesh src="@loader" />

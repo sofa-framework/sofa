@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_SPIRAL_CPP
 #include <SofaGeneralEngine/Spiral.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -36,23 +36,13 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(Spiral)
-
 int SpiralClass = core::RegisterObject("This class truns on spiral any topological model")
-#ifndef SOFA_FLOAT
-        .add< Spiral<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< Spiral<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< Spiral<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API Spiral<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API Spiral<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API Spiral<Vec3Types>;
+ 
 
 
 } // namespace constraint

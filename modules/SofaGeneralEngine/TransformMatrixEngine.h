@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -52,7 +52,7 @@ protected:
     /**
      * Update the transformation, to be implemented in herited classes
      */
-    virtual void update() override = 0;
+    virtual void doUpdate() override = 0;
 
 public:
     virtual void init() override;
@@ -75,7 +75,7 @@ public:
 protected:
     InvertTransformMatrixEngine() {}
     ~InvertTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 };
 
 /**
@@ -90,7 +90,7 @@ public:
 protected:
     TranslateTransformMatrixEngine();
     ~TranslateTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 public:
     virtual void init() override;
@@ -113,7 +113,7 @@ public:
 protected:
     RotateTransformMatrixEngine();
     ~RotateTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 public:
     virtual void init() override;
@@ -136,7 +136,7 @@ public:
 protected:
     ScaleTransformMatrixEngine();
     ~ScaleTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 public:
     virtual void init() override;

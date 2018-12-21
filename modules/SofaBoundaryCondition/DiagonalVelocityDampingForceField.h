@@ -28,74 +28,64 @@
 namespace sofa
 {
 
-    namespace component
-    {
+namespace component
+{
 
-        namespace forcefield
-        {
+namespace forcefield
+{
 
-            /// Apply damping forces to given degrees of freedom.
-            template<class DataTypes>
-            class DiagonalVelocityDampingForceField : public core::behavior::ForceField<DataTypes>
-            {
-            public:
-                SOFA_CLASS(SOFA_TEMPLATE(DiagonalVelocityDampingForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+/// Apply damping forces to given degrees of freedom.
+template<class DataTypes>
+class DiagonalVelocityDampingForceField : public core::behavior::ForceField<DataTypes>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(DiagonalVelocityDampingForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-                typedef core::behavior::ForceField<DataTypes> Inherit;
-                typedef typename DataTypes::VecCoord VecCoord;
-                typedef typename DataTypes::VecDeriv VecDeriv;
-                typedef typename DataTypes::Coord Coord;
-                typedef typename DataTypes::Deriv Deriv;
-                typedef typename Coord::value_type Real;
-                typedef helper::vector<unsigned int> VecIndex;
-                typedef core::objectmodel::Data<VecCoord> DataVecCoord;
-                typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+    typedef helper::vector<unsigned int> VecIndex;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-                /// air drag coefficient.
-                Data< VecDeriv > dampingCoefficients;
+    /// air drag coefficient.
+    Data< VecDeriv > dampingCoefficients;
 
-            protected:
+protected:
 
-                DiagonalVelocityDampingForceField();
+    DiagonalVelocityDampingForceField();
 
-            public:
+public:
 
-                virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) override;
+    virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) override;
 
-                virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
 
-                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
 
-                virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
 
-                virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
-            };
+};
 
 
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Rigid2Types>;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec3dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec2dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec1dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec6dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Rigid3dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec3fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec2fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec1fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec6fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Rigid3fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Rigid2fTypes>;
-#endif
 #endif
 
-        } // namespace forcefield
+} // namespace forcefield
 
-    } // namespace component
+} // namespace component
 
 } // namespace sofa
 

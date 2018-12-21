@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -61,7 +61,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     core::objectmodel::Data<VecValue> f_in; ///< input indices
     core::objectmodel::Data<VecIndex> f_indices; ///< array containing in ith cell the input index corresponding to the output index i (or reversively if transpose=true)
@@ -80,7 +80,7 @@ public:
     void apply(Value& v, const MapIndex& m);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<unsigned int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;

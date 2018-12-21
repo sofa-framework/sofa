@@ -32,27 +32,13 @@ namespace component
 namespace engine
 {
 
-  SOFA_DECL_CLASS(ProjectiveTransformEngine)
-
   int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
-#ifdef SOFA_FLOAT
-        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< ProjectiveTransformEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >()
-#endif
-#endif
-
+        .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >(true) // default template
         .add< ProjectiveTransformEngine<defaulttype::ExtVec3fTypes> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+ 
 template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
 

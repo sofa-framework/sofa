@@ -32,15 +32,13 @@ namespace component
 namespace shapefunction
 {
 
-SOFA_DECL_CLASS(ShepardShapeFunction)
-
 // Register in the Factory
 int ShepardShapeFunctionClass = core::RegisterObject("Computes Shepard shape functions")
 
-        .add< ShepardShapeFunction<sofa::core::behavior::ShapeFunction> >(true)
+        .add< ShepardShapeFunction<sofa::core::behavior::ShapeFunction3> >(true)
         ;
 
-template class SOFA_Flexible_API ShepardShapeFunction<sofa::core::behavior::ShapeFunction>;
+template class SOFA_Flexible_API ShepardShapeFunction<sofa::core::behavior::ShapeFunction3>;
 }
 }
 }

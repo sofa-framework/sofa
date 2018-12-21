@@ -35,15 +35,13 @@ namespace shapefunction
 using namespace defaulttype;
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(ImageShapeFunctionContainer)
-
 // Register in the Factory
 int ImageShapeFunctionContainerClass = core::RegisterObject("Provides interface to mapping from precomputed shape functions")
 
-        .add< ImageShapeFunctionContainer<ShapeFunction,ImageUC> >(true)
+        .add< ImageShapeFunctionContainer<ShapeFunction3,ImageUC> >(true)
         ;
 
-template class SOFA_Flexible_API ImageShapeFunctionContainer<ShapeFunction,ImageUC>;
+template class SOFA_Flexible_API ImageShapeFunctionContainer<ShapeFunction3,ImageUC>;
 }
 }
 }

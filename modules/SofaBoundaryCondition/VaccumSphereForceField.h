@@ -154,21 +154,14 @@ protected:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec1dTypes>;
-#endif
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec1Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec1fTypes>;
-#endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
 
 } // namespace forcefield
 

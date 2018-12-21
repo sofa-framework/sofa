@@ -34,27 +34,16 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CorotationalMeshMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int CorotationalMeshMappingClass = core::RegisterObject("Rigidly aligns positions to rest positions for each element")
-#ifndef SOFA_FLOAT
-        .add< CorotationalMeshMapping< Vec3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CorotationalMeshMapping< Vec3fTypes, Vec3fTypes > >()
-#endif
+        .add< CorotationalMeshMapping< Vec3Types, Vec3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API CorotationalMeshMapping< Vec3dTypes, Vec3dTypes >;
-#endif
+template class SOFA_Flexible_API CorotationalMeshMapping< Vec3Types, Vec3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API CorotationalMeshMapping< Vec3fTypes, Vec3fTypes >;
-#endif
 
 
 

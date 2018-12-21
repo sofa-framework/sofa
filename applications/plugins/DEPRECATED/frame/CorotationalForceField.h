@@ -98,15 +98,10 @@ protected :
     vector< StressStrainMatrix > stressStrainMatrices;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331fTypes>;
-extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332fTypes>;
-#endif
+
 #endif
 
 } //

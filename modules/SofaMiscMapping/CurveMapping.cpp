@@ -50,39 +50,19 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(CurveMapping)
-
 // Register in the Factory
 int CurveMappingClass = core::RegisterObject("Mapping allowing one or more rigid objects follow a trajectory determined by a set of points")
 
-#ifndef SOFA_FLOAT
-        .add< CurveMapping< Vec3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CurveMapping< Vec3fTypes, Rigid3fTypes > >()
-#endif
+        .add< CurveMapping< Vec3Types, Rigid3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< CurveMapping< Vec3dTypes, Rigid3fTypes > >()
-        .add< CurveMapping< Vec3fTypes, Rigid3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API CurveMapping< Vec3dTypes, Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CurveMapping< Vec3fTypes, Rigid3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API CurveMapping< Vec3Types, Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CurveMapping< Vec3dTypes, Rigid3fTypes >;
-template class SOFA_MISC_MAPPING_API CurveMapping< Vec3fTypes, Rigid3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

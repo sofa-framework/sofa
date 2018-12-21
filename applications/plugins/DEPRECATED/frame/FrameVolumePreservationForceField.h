@@ -83,15 +83,10 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMEVOLUMEPRESERVATIONFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(FRAME_FRAMEVOLUMEPRESERVATIONFORCEFIELD_CPP)
 extern template class SOFA_FRAME_API FrameVolumePreservationForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API FrameVolumePreservationForceField<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API FrameVolumePreservationForceField<DeformationGradient331fTypes>;
-extern template class SOFA_FRAME_API FrameVolumePreservationForceField<DeformationGradient332fTypes>;
-#endif
+
 #endif
 
 } //

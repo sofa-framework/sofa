@@ -23,10 +23,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include "TriangularFEMForceFieldOptim.h"
 
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
@@ -189,7 +185,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int i, T
     ti.bx = ti.init_frame[0] * ab;
     ti.cx = ti.init_frame[0] * ac;
     ti.cy = ti.init_frame[1] * ac;
-    //ti.ss_factor = ((Real)1.0)/(ti.bx*ti.bx*ti.cy*ti.cy);
     ti.ss_factor = ((Real)0.5)/(ti.bx*ti.cy);
 }
 
@@ -219,9 +214,7 @@ template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 {
     // Compute material-dependent constants
-
     // mu = (1-p)*y/(1-p^2) = (1-p)*y/((1-p)(1+p)) = y/(1+p)
-
     const Real youngModulus = f_young.getValue();
     const Real poissonRatio = f_poisson.getValue();
     mu = (youngModulus) / (1+poissonRatio);
@@ -433,18 +426,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
         Real fM_2 = factor * (0.5f*mu);
         KJt[0][0] = fGM  *  ti.cy ;    KJt[0][1] = fG   *(-ti.cx);    KJt[0][2] = 0;    KJt[0][3] = fG   *ti.bx;
         KJt[1][0] = fG   *  ti.cy ;    KJt[1][1] = fGM  *(-ti.cx);    KJt[1][2] = 0;    KJt[1][3] = fGM  *ti.bx;
-
         KJt[2][0] = fM_2 *(-ti.cx);    KJt[2][1] = fM_2 *( ti.cy);    KJt[2][2] = fM_2 *ti.bx;    KJt[2][3] = 0;
-        /*
-        sofa::defaulttype::Mat<4,4,Real> JKJt;
-        for (int j=0;j<4;++j)
-        {
-            JKJt[0][j] = cy*KJt[0][j] - cx*KJt[2][j];
-            JKJt[1][j] = cy*KJt[2][j] - cx*KJt[1][j];
-            JKJt[2][j] = bx*KJt[2][j];
-            JKJt[3][j] = bx*KJt[1][j];
-        }
-        */
+
         sofa::defaulttype::Mat<2,2,Real> JKJt11, JKJt12, JKJt22;
         JKJt11[0][0] = ti.cy*KJt[0][0] - ti.cx*KJt[2][0];
         JKJt11[0][1] = ti.cy*KJt[0][1] - ti.cx*KJt[2][1];
@@ -521,15 +504,24 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigne
 
     Real tr = (s[0]+s[1]);
     Real det = s[0]*s[1]-s[2]*s[2];
-    Real deltaV = helper::rsqrt(tr*tr-4*det);
+    Real deltaV2 = tr*tr-4*det;
+    Real deltaV = helper::rsqrt(std::max((Real)0.0,deltaV2));
     Real eval1, eval2;
     defaulttype::Vec<2,Real> evec1, evec2;
     eval1 = (tr + deltaV)/2;
     eval2 = (tr - deltaV)/2;
     if (s[2] == 0)
     {
-        evec1[0] = 1; evec1[1] = 0;
-        evec2[0] = 0; evec2[1] = 1;
+        if (s[0] > s[1])
+        {
+            evec1[0] = 1; evec1[1] = 0;
+            evec2[0] = 0; evec2[1] = 1;
+        }
+        else
+        {
+            evec1[0] = 0; evec1[1] = 1;
+            evec2[0] = 1; evec2[1] = 0;
+        }
     }
     else
     {
@@ -587,26 +579,18 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         std::vector<Real> stresses2;
         std::vector<Deriv> stressVectors2;
         stresses.resize(nbTriangles);
-        //if (showStressVector)
-        {
-            stressVectors.resize(nbTriangles);
-            stresses2.resize(nbTriangles);
-            stressVectors2.resize(nbTriangles);
-        }
+        stressVectors.resize(nbTriangles);
+        stresses2.resize(nbTriangles);
+        stressVectors2.resize(nbTriangles);
+
         if (showStressValue)
         {
             pstresses.resize(x.size());
         }
         for (unsigned int i=0; i<nbTriangles; i++)
         {
-            //if (showStressVector)
-            {
-                getTrianglePrincipalStress(i,stresses[i],stressVectors[i],stresses2[i],stressVectors2[i]);
-            }
-            //else
-            //{
-            //    getTriangleVonMisesStress(i,stresses[i]);
-            //}
+            getTrianglePrincipalStress(i,stresses[i],stressVectors[i],stresses2[i],stressVectors2[i]);
+
             if ( stresses[i] < minStress ) minStress = stresses[i];
             if ( stresses[i] > maxStress ) maxStress = stresses[i];
             if ( stresses2[i] < minStress ) minStress = stresses2[i];

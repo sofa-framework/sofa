@@ -31,7 +31,6 @@ using sofa::helper::system::PluginRepository ;
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::PluginRepository;
-using sofa::helper::system::DataRepository;
 using sofa::helper::system::FileSystem;
 
 #include <sofa/helper/Utils.h>
@@ -68,10 +67,6 @@ void BaseSofa_test::clearSceneGraph()
 
 
 
-#ifdef SOFA_WITH_FLOAT
-template struct SOFA_SOFATEST_API Sofa_test<float>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
 template struct SOFA_SOFATEST_API Sofa_test<double>;
-#endif
+
 }

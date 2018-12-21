@@ -35,73 +35,36 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(LinearForceField)
-
 int LinearForceFieldClass = core::RegisterObject("Linearly interpolated force applied to given degrees of freedom")
-#ifndef SOFA_FLOAT
-        .add< LinearForceField<Vec3dTypes> >()
-        .add< LinearForceField<Vec2dTypes> >()
-        .add< LinearForceField<Vec1dTypes> >()
-        .add< LinearForceField<Vec6dTypes> >()
-        .add< LinearForceField<Rigid3dTypes> >()
-// .add< LinearForceField<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LinearForceField<Vec3fTypes> >()
-        .add< LinearForceField<Vec2fTypes> >()
-        .add< LinearForceField<Vec1fTypes> >()
-        .add< LinearForceField<Vec6fTypes> >()
-        .add< LinearForceField<Rigid3fTypes> >()
-// .add< LinearForceField<Rigid2fTypes> >()
-#endif
+        .add< LinearForceField<Vec3Types> >()
+        .add< LinearForceField<Vec2Types> >()
+        .add< LinearForceField<Vec1Types> >()
+        .add< LinearForceField<Vec6Types> >()
+        .add< LinearForceField<Rigid3Types> >()
+// .add< LinearForceField<Rigid2Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3dTypes>;
-// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3fTypes>;
-// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3Types>;
+// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2Types>;
 
-#ifndef SOFA_FLOAT
+
 template <>
-SReal LinearForceField<Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
+SReal LinearForceField<Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <>
-SReal LinearForceField<Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
-{
-    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template <>
-SReal LinearForceField<Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
+SReal LinearForceField<Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
-template <>
-SReal LinearForceField<Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const
-{
-    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-#endif
 
 } // namespace forcefield
 

@@ -35,8 +35,6 @@ namespace forcefield
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(HookeForceField)
-
 // Register in the Factory
 int HookeForceFieldClass = core::RegisterObject("Hooke's Law for isotropic homogeneous materials")
 
@@ -46,11 +44,6 @@ int HookeForceFieldClass = core::RegisterObject("Hooke's Law for isotropic homog
         .add< HookeForceField< E332Types > >()
         .add< HookeForceField< E333Types > >()
         .add< HookeForceField< E221Types > >()
-
-//        .add< HookeForceField< D331Types > >()
-//        .add< HookeForceField< D321Types > >()
-//        .add< HookeForceField< D332Types > >()
-
         .add< HookeForceField< U331Types > >()
         .add< HookeForceField< U321Types > >()
         ;
@@ -61,19 +54,8 @@ template class SOFA_Flexible_API HookeForceField< E311Types >;
 template class SOFA_Flexible_API HookeForceField< E332Types >;
 template class SOFA_Flexible_API HookeForceField< E333Types >;
 template class SOFA_Flexible_API HookeForceField< E221Types >;
-
-//template class SOFA_Flexible_API HookeForceField< D331Types >;
-//template class SOFA_Flexible_API HookeForceField< D321Types >;
-//template class SOFA_Flexible_API HookeForceField< D332Types >;
-
 template class SOFA_Flexible_API HookeForceField< U331Types >;
 template class SOFA_Flexible_API HookeForceField< U321Types >;
-
-
-
-
-
-SOFA_DECL_CLASS(HookeOrthotropicForceField)
 
 // Register in the Factory
 int HookeOrthotropicForceFieldClass = core::RegisterObject("Hooke's Law for Orthotropic homogeneous materials")
@@ -91,8 +73,6 @@ template class SOFA_Flexible_API HookeOrthotropicForceField< E333Types >;
 
 
 
-
-SOFA_DECL_CLASS(HookeTransverseForceField)
 
 // Register in the Factory
 int HookeTransverseForceFieldClass = core::RegisterObject("Hooke's Law for Transversely isotropic homogeneous materials (symmetry about X axis)")

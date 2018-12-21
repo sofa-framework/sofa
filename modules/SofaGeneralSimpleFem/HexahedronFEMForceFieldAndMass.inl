@@ -53,14 +53,9 @@ template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 {
     if(this->_alreadyInit)return;
-
-    // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::init( ) "<<this->getName()<<sendl;
     HexahedronFEMForceFieldT::init();
     MassT::init();
 
-    //         computeElementMasses();
-
-    // 		_particleMasses.clear();
     _particleMasses.resize( this->_initialPoints.getValue().size() );
 
     int i=0;
@@ -107,15 +102,6 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
             }
         }
     }
-
-
-
-    // 		Real totalmass = 0.0;
-    // 		for( unsigned i=0;i<_particleMasses.size();++i)
-    // 		{
-    // 			totalmass+=_particleMasses[i];
-    // 		}
-    // 		serr<<"TOTAL MASS = "<<totalmass<<sendl;
 }
 
 
@@ -123,10 +109,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 {
-    // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )"<<sendl;
     HexahedronFEMForceFieldT::reinit();
-    //         Mass::reinit();
-
     computeElementMasses();
 }
 
@@ -134,8 +117,6 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
-    // 		  _elementMasses.resize( this->_elementStiffnesses.getValue().size() );
-
     int i=0;
     typename VecElement::const_iterator it;
     for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
@@ -149,8 +130,6 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
             _elementMasses.beginEdit()->resize( _elementMasses.getValue().size()+1 );
             computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,	this->_sparseGrid?this->_sparseGrid->getMassCoef(i):1.0 );
         }
-
-
     }
 }
 
@@ -203,16 +182,6 @@ typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceField
     Real t9 = (Real)(t1*t2);
 
     return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0)*_density.getValue();
-
-
-    // 		  Real t1 = l0*l0;
-    // 		  Real t2 = t1*signx;
-    // 		  Real t3 = signz*signx;
-    // 		  Real t7 = t1*signy;
-    // 		  return t2*t3*signz/72.0+t7*signz*signy*signz/72.0+t2*signy*t3*signy*
-    // 				  signz/216.0+t1*signz*signz/24.0+t2*signy*signx*signy/72.0+t1/8.0+t2*signx/
-    // 				  24.0+t7*signy/24.0 *_density.getValue() /(l0*l1*l2);
-
 }
 
 
@@ -334,56 +303,18 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (const core::Mechanical
     if (this->m_separateGravity.getValue())
         return;
 
-    // gravity
-    // 		Vec3d g ( this->getContext()->getGravity() );
-    // 		Deriv theGravity;
-    // 		DataTypes::set ( theGravity, g[0], g[1], g[2]);
-
     helper::WriteAccessor< DataVecDeriv > _f = f;
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-
-    helper::ReadAccessor< DataVecDeriv > _v = v;
-    helper::ReadAccessor< DataVecDeriv > _x = x;
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
-
-    // add weight and inertia force
-    for (unsigned int i=0; i<_particleMasses.size(); i++)
-    {
-        _f[i] += this->getContext()->getGravity()*_particleMasses[i] + core::behavior::inertiaForce(vframe,aframe,_particleMasses[i],_x[i],_v[i]);
-    }
-#else
     for (unsigned int i=0; i<_particleMasses.size(); i++)
     {
         _f[i] += this->getContext()->getGravity()*_particleMasses[i];
     }
-#endif
 }
 
 
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    //if (mparams->kFactor() != 1.0)
-    //{
-    //	helper::ReadAccessor< DataVecDeriv> _dx = dx;
-    //	DataVecDeriv kdx;// = dx * kFactor;
-    //	helper::WriteAccessor< DataVecDeriv > _kdx = kdx;
-    //	_kdx.resize(_dx.size());
-    //	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    //	for(unsigned i=0;i<_dx.size();++i)
-    //		_kdx[i]=_dx[i]*kFactor;
-    //	HexahedronFEMForceFieldT::addDForce(mparams, df,kdx);
-    //}
-    //else
-    //{
     HexahedronFEMForceFieldT::addDForce(mparams, df, dx);
-    //}
 }
 
 
@@ -397,7 +328,6 @@ SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*i
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->getIndexedElements()->size()<<""<<sendl;
     HexahedronFEMForceFieldT::draw(vparams);
 
     if (!vparams->displayFlags().getShowBehaviorModels())

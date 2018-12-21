@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP
 #include <SofaMiscForceField/WashingMachineForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,24 +36,14 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(WashingMachineForceField)
-
 // Register in the Factory
 int WashingMachineForceFieldClass = core::RegisterObject("A custom force field")
-#ifndef SOFA_FLOAT
-        .add< WashingMachineForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< WashingMachineForceField<Vec3fTypes> >()
-#endif
+        .add< WashingMachineForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class WashingMachineForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class WashingMachineForceField<Vec3fTypes>;
-#endif
+template class WashingMachineForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

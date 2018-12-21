@@ -96,22 +96,16 @@ protected :
     MouseMapping mouseMapping;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2fTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2dTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2Types>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3Types>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
+
 #endif
 }
 }
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 namespace helper
 {
 extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;

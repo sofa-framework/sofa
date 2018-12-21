@@ -1,0 +1,21 @@
+### Demo scenes ###
+Demos/caduceus.scn 100 1e-3
+Demos/TriangleSurfaceCutting.scn 100 1e-4 1
+Demos/liver.scn 100 1e-4 1
+Demos/collisionMultiple.scn 100 1e-4 1
+Demos/simpleBoundaryConditions.scn 100 1e-4 1
+
+### Components scenes ###
+Components/forcefield/BeamFEMForceField.scn 100 1e-4
+Components/constraint/BilateralInteractionConstraint.scn 100 1e-4
+Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4
+#moved in plugin #Components/collision/FFDDistanceGridCollisionModel.scn 100 1e-4
+Components/constraint/FixedConstraint.scn 100 1e-4
+Components/constraint/FrictionContact.scn 100 1e-4
+Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4
+Components/collision/RuleBasedContactManager.scn 100 1e-4
+Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4
+
+Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4
+Components/topology/SparseGridTopology.scn 100 1e-4
+Components/topology/SparseGridRamificationTopology.scn 100 1e-4

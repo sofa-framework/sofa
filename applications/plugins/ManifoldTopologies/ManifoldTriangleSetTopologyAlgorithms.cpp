@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "ManifoldTriangleSetTopologyAlgorithms.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
@@ -34,45 +34,14 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(ManifoldTriangleSetTopologyAlgorithms)
 int ManifoldTriangleSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldTriangle set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-
-#ifndef SOFA_FLOAT
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec1dTypes> >()
-        //	.add< ManifoldTriangleSetTopologyAlgorithms<Rigid3dTypes> >()
-        //	.add< ManifoldTriangleSetTopologyAlgorithms<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< ManifoldTriangleSetTopologyAlgorithms<Vec1fTypes> >()
-        //	.add< ManifoldTriangleSetTopologyAlgorithms<Rigid3fTypes> >()
-        //	.add< ManifoldTriangleSetTopologyAlgorithms<Rigid2fTypes> >()
-#endif
+        .add< ManifoldTriangleSetTopologyAlgorithms<Vec3Types> >(true) // default template
+        .add< ManifoldTriangleSetTopologyAlgorithms<Vec2Types> >()
+        .add< ManifoldTriangleSetTopologyAlgorithms<Vec1Types> >()
         ;
-#ifndef SOFA_FLOAT
-template class ManifoldTriangleSetTopologyAlgorithms<Vec3dTypes>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec2dTypes>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec1dTypes>;
-//      template class ManifoldTriangleSetTopologyAlgorithms<Rigid3dTypes>;
-//      template class ManifoldTriangleSetTopologyAlgorithms<Rigid2dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class ManifoldTriangleSetTopologyAlgorithms<Vec3fTypes>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec2fTypes>;
-template class ManifoldTriangleSetTopologyAlgorithms<Vec1fTypes>;
-//      template class ManifoldTriangleSetTopologyAlgorithms<Rigid3fTypes>;
-//      template class ManifoldTriangleSetTopologyAlgorithms<Rigid2fTypes>;
-#endif
+template class ManifoldTriangleSetTopologyAlgorithms<Vec3Types>;
+template class ManifoldTriangleSetTopologyAlgorithms<Vec2Types>;
+template class ManifoldTriangleSetTopologyAlgorithms<Vec1Types>;
 
 } // namespace topology
 

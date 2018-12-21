@@ -33,8 +33,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CatmullRomSplineMapping);
-
 using namespace defaulttype;
 using namespace core;
 
@@ -43,37 +41,17 @@ using namespace core;
 int CatmullRomSplineMappingClass = core::RegisterObject("Map positions between points of a curve based on catmull-rom weights")
 
 // Rigid Types
-#ifndef SOFA_FLOAT
         .add< CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CatmullRomSplineMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< CatmullRomSplineMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< CatmullRomSplineMapping< Vec3dTypes, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< CatmullRomSplineMapping< Vec3dTypes, Vec3fTypes > >()
-        .add< CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3Types >;
+
+
 
 
 } // namespace mapping

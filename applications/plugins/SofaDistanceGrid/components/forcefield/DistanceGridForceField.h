@@ -225,17 +225,11 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3dTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2dTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3fTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2fTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
+extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3Types>;
+//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2Types>;
+//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace forcefield

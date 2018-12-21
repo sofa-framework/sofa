@@ -39,44 +39,25 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MechanicalStateControllerOmni)
-
 // Register in the Factory
 int MechanicalStateControllerOmniClass = core::RegisterObject("Provides an Omni user control on a Mechanical State.")
-#ifndef SOFA_FLOAT
-//.add< MechanicalStateControllerOmni<Vec3dTypes> >()
-//.add< MechanicalStateControllerOmni<Vec2dTypes> >()
-        .add< MechanicalStateControllerOmni<Vec1dTypes> >()
-        .add< MechanicalStateControllerOmni<Rigid3dTypes> >()
-//.add< MechanicalStateControllerOmni<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-//.add< MechanicalStateControllerOmni<Vec3fTypes> >()
-//.add< MechanicalStateControllerOmni<Vec2fTypes> >()
-        .add< MechanicalStateControllerOmni<Vec1fTypes> >()
-        .add< MechanicalStateControllerOmni<Rigid3fTypes> >()
-//.add< MechanicalStateControllerOmni<Rigid2fTypes> >()
-#endif
+//.add< MechanicalStateControllerOmni<Vec3Types> >()
+//.add< MechanicalStateControllerOmni<Vec2Types> >()
+        .add< MechanicalStateControllerOmni<Vec1Types> >()
+        .add< MechanicalStateControllerOmni<Rigid3Types> >()
+//.add< MechanicalStateControllerOmni<Rigid2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec3dTypes>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec2dTypes>;
-template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec1dTypes>;
-template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Rigid3dTypes>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec3fTypes>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec2fTypes>;
-template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec1fTypes>;
-template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Rigid3fTypes>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Rigid2fTypes>;
-#endif
+//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec3Types>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec2Types>;
+template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Vec1Types>;
+template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Rigid3Types>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<Rigid2Types>;
 
-#ifndef SOFA_FLOAT
+
 template <>
-void MechanicalStateControllerOmni<Vec1dTypes>::applyController(const double dt)
+void MechanicalStateControllerOmni<Vec1Types>::applyController(const double dt)
 {
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
@@ -104,40 +85,11 @@ void MechanicalStateControllerOmni<Vec1dTypes>::applyController(const double dt)
     }
 
 };
-#endif
 
 
-#ifndef SOFA_DOUBLE
-template <>
-void MechanicalStateControllerOmni<Vec1fTypes>::applyController(const double dt)
-{
-    using sofa::defaulttype::Quat;
-    using sofa::defaulttype::Vec;
 
-    if(device)
-    {
-        if(mState)
-        {
-            helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
-            if(buttonDeviceState.getValue())
-            {
-                float angle = x0[0].x() - (float)dt; if (angle<0.05f) angle = 0.05f;
-                x0[0].x() = angle;
-                x0[1].x() = angle;
-            }
-            else
-            {
-                float angle = x0[0].x() + (float)dt; if (angle>0.5f) angle = 0.5f;
-                x0[0].x() = angle;
-                x0[1].x() = angle;
-            }
-        }
-    }
-
-};
-#endif
 /*
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template <>
 void MechanicalStateControllerOmni<Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
@@ -182,9 +134,8 @@ void MechanicalStateControllerOmni<Vec1fTypes>::onMouseEvent(core::objectmodel::
 }
 #endif
 
-#ifndef SOFA_FLOAT
 template <>
-void MechanicalStateControllerOmni<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+void MechanicalStateControllerOmni<Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
 	//sout<<"MouseEvent detected"<<sendl;
 	eventX = mev->getPosX();
@@ -225,11 +176,10 @@ void MechanicalStateControllerOmni<Vec1dTypes>::onMouseEvent(core::objectmodel::
         applyController(0);
 
 }
-#endif
 
-#ifndef SOFA_FLOAT
+
 template <>
-void MechanicalStateControllerOmni<Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+void MechanicalStateControllerOmni<Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
 	//sout<<"MouseEvent detected"<<sendl;
 	eventX = mev->getPosX();
@@ -276,9 +226,9 @@ void MechanicalStateControllerOmni<Rigid3dTypes>::onMouseEvent(core::objectmodel
 			break;
 	}
 }
-#endif
 
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
 template <>
 void MechanicalStateControllerOmni<Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {

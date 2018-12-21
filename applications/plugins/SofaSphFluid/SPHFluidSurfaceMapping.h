@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <SofaSphFluid/SPHFluidForceField.h>
 #include <SofaBaseTopology/MeshTopology.h>
@@ -266,22 +264,12 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
 extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes >;
-#endif
+extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
-#endif
-#endif
+
+
 #endif
 
 

@@ -26,7 +26,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -128,8 +128,6 @@ void PlasticMaterial::computeStressOnSection(Vector3& Stress, Vector3 Strain, in
 	Stress += _sigma[section];
 
 }
-
-SOFA_DECL_CLASS(PlasticMaterial)
 
 int PlasticMaterialClass = core::RegisterObject("Plastic material")
 .add< PlasticMaterial >()

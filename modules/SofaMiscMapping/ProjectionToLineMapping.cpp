@@ -33,56 +33,32 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(ProjectionToTargetLineMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int ProjectionToTargetLineMappingClass = core::RegisterObject("Compute distance between a moving point and fixed line")
-#ifndef SOFA_FLOAT
-        .add< ProjectionToTargetLineMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< ProjectionToTargetLineMapping< Rigid3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectionToTargetLineMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< ProjectionToTargetLineMapping< Rigid3fTypes, Vec3fTypes > >()
-#endif
+        .add< ProjectionToTargetLineMapping< Vec3Types, Vec3Types > >()
+        .add< ProjectionToTargetLineMapping< Rigid3Types, Vec3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Rigid3dTypes, Vec3dTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Vec3Types, Vec3Types >;
+template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Rigid3Types, Vec3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Rigid3fTypes, Vec3fTypes >;
-#endif
 
 
 ///////////////////
-
-SOFA_DECL_CLASS(ProjectionToLineMultiMapping)
 
 using namespace defaulttype;
 
 // Register in the Factory
 int ProjectionToLineMultiMappingClass = core::RegisterObject("Compute distance between a moving point and a moving line")
-#ifndef SOFA_FLOAT
-        .add< ProjectionToLineMultiMapping< Vec3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectionToLineMultiMapping< Vec3fTypes, Vec3fTypes > >()
-#endif
+        .add< ProjectionToLineMultiMapping< Vec3Types, Vec3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< Vec3dTypes, Vec3dTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< Vec3Types, Vec3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< Vec3fTypes, Vec3fTypes >;;
-#endif
 
 
 

@@ -70,7 +70,7 @@ bool ObjectElement::initNode()
     {
         if (replaceAttribute.find(it->first) != replaceAttribute.end())
         {
-            setAttribute(it->first,replaceAttribute[it->first].c_str());
+            setAttribute(it->first,replaceAttribute[it->first]);
         }
     }
 
@@ -81,7 +81,7 @@ bool ObjectElement::initNode()
     if (obj == NULL)
     {
         BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
-        desc.setAttribute("name", ("Not created ("+getType()+")").c_str());
+        desc.setAttribute("name", ("Not created ("+getType()+")"));
         obj = core::ObjectFactory::CreateObject(ctx, &desc) ;
         std::stringstream tmp ;
         for(auto& s : this->getErrors())
@@ -112,8 +112,6 @@ bool ObjectElement::initNode()
     }
     return true;
 }
-
-SOFA_DECL_CLASS(Object)
 
 Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
 

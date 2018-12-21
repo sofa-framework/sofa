@@ -704,7 +704,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
 void QSofaListView::Export()
 {
     Node* root = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
-    GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
+    GenGraphForm* form = new sofa::gui::qt::GenGraphForm(this);
     form->setScene ( root );
     std::string gname(((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
     std::size_t gpath = gname.find_last_of("/\\");

@@ -166,19 +166,12 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace collision

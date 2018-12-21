@@ -63,13 +63,9 @@ protected:
 
 typedef TBulletSphereModel<defaulttype::Vec3Types> BulletSphereModel;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3Types>;
+
 #endif
 
 }}}

@@ -55,7 +55,6 @@ using namespace collision;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 
-SOFA_DECL_CLASS (RayTraceDetection)
 int RayTraceDetectionClass =
     core::
     RegisterObject

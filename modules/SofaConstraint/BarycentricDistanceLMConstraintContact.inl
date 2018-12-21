@@ -161,7 +161,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     ff->clear();
     mapper1.resize(size);
     mapper2.resize(size);
-//    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];
@@ -222,7 +221,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         if (parent!=NULL)
         {
-            //msg_error()<< "Removing contact response from "<<parent->getName();
             parent->removeObject(this);
             parent->removeObject(ff);
         }
@@ -233,8 +231,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
 {
-    //	if (ff!=NULL)
-    //		ff->draw(vparams);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >

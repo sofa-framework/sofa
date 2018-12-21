@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
@@ -33,37 +33,17 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TriangleSetGeometryAlgorithms)
 int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geometry algorithms")
-#ifdef SOFA_FLOAT
-        .add< TriangleSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
-#else
         .add< TriangleSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< TriangleSetGeometryAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< TriangleSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< TriangleSetGeometryAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangleSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< TriangleSetGeometryAlgorithms<Vec1fTypes> >()
-#endif
+        .add< TriangleSetGeometryAlgorithms<Vec2Types> >()
+        .add< TriangleSetGeometryAlgorithms<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1dTypes>;
-#endif
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1Types>;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1fTypes>;
-#endif
 
 
 void SOFA_BASE_TOPOLOGY_API snapping_test_triangle(double epsilon, double alpha0, double alpha1, double alpha2,

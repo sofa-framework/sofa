@@ -89,10 +89,9 @@ void GenerateRigidMass<DataTypes, MassType>::reinit()
 }
 
 template <class DataTypes, class MassType>
-void GenerateRigidMass<DataTypes, MassType>::update()
+void GenerateRigidMass<DataTypes, MassType>::doUpdate()
 {
     integrateMesh();
-    cleanDirty();
     generateRigid();
 }
 

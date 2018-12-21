@@ -67,7 +67,7 @@ void LennardJonesForceField<DataTypes>::init()
         for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
         {
             Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-            sout << "f("<<d<<")="<<f<<sendl;
+            msg_info() << "f("<<d<<")="<<f;
         }
     }
 }

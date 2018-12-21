@@ -41,61 +41,33 @@ using namespace helper;
 
 
 
-#ifndef SOFA_FLOAT
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const Vector3& )
+Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const Vector3& )
 {
     return center();
 }
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const Vector3& )
+Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const Vector3& )
 {
     return center();
 }
-#endif
-
-#ifndef SOFA_DOUBLE
-template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const Vector3& )
-{
-    return center();
-}
-template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const Vector3& )
-{
-    return center();
-}
-#endif
 
 
 
-SOFA_DECL_CLASS(Sphere)
 
 int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
-#ifndef SOFA_FLOAT
-        .add<  TSphereModel<Vec3dTypes> >()
-        .add<TSphereModel<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add < TSphereModel<Vec3fTypes> >()
-        .add<TSphereModel<Rigid3fTypes> >()
-#endif
+        .add<  TSphereModel<Vec3Types> >()
+        .add<TSphereModel<Rigid3Types> >()
+
         .addAlias("Sphere")
         .addAlias("SphereModel")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3dTypes>;
-//template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Rigid3dTypes>; // Can't compile due to type mismatches in pFree() method.
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3fTypes>;
-//template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Rigid3fTypes>; // Can't compile due to type mismatches in pFree() method.
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
+//template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Rigid3Types>; // Can't compile due to type mismatches in pFree() method.
+template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3Types>;
+template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3Types>;
+
 
 } // namespace collision
 

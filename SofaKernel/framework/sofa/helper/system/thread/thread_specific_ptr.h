@@ -31,9 +31,6 @@
 #elif defined(WIN32)
 // use __declspec(thread)
 #define SOFA_TLS_KEYWORD __declspec(thread)
-#elif defined(_XBOX)
-// might be supported, but not needed yet!
-#define SOFA_TLS_KEYWORD
 #else
 // use pthread API
 #include <pthread.h>

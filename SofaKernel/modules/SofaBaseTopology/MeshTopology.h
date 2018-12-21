@@ -71,7 +71,7 @@ private:
     public:
         SOFA_CLASS(EdgeUpdate,PrimitiveUpdate);
         EdgeUpdate(MeshTopology* t);
-        void update() override;
+        void doUpdate() override;
     protected:
         void updateFromVolume();
         void updateFromSurface();
@@ -84,7 +84,7 @@ private:
 
         SOFA_CLASS(TriangleUpdate,PrimitiveUpdate);
         TriangleUpdate(MeshTopology* t);
-        void update() override;
+        void doUpdate() override;
     };
 
     class QuadUpdate : public PrimitiveUpdate
@@ -92,7 +92,7 @@ private:
     public:
         SOFA_CLASS(QuadUpdate,PrimitiveUpdate);
         QuadUpdate(MeshTopology* t);
-        void update() override;
+        void doUpdate() override;
     };
 protected:
     MeshTopology();

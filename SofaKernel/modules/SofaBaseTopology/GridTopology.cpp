@@ -33,8 +33,6 @@ namespace component
 namespace topology
 {
 
-SOFA_DECL_CLASS(GridTopology)
-
 int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D")
         .addAlias("Grid")
         .add< GridTopology >()
@@ -51,13 +49,29 @@ GridTopology::GridUpdate::GridUpdate(GridTopology *t):
     setDirtyValue();
 }
 
-void GridTopology::GridUpdate::update()
+void GridTopology::GridUpdate::doUpdate()
 {
     updateEdges();
     updateQuads();
     updateTriangles();
     updateHexas();
 }
+
+void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->MeshTopology::parse(arg);
+
+    if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
+    {
+        int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());
+        int ny = arg->getAttributeAsInt("ny", d_n.getValue().y());
+        int nz = arg->getAttributeAsInt("nz", d_n.getValue().z());
+        d_n.setValue(Vec3i(nx,ny,nz));
+    }
+
+    this->setNbGridPoints();
+}
+
 
 void GridTopology::GridUpdate::updateEdges()
 {

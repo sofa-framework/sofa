@@ -38,42 +38,20 @@ using namespace sofa::defaulttype;
 using namespace core;
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(TubularMapping)
-
 // Register in the Factory
 int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
-#ifndef SOFA_FLOAT
-        .add< TubularMapping< Rigid3dTypes, Vec3dTypes > > ()
-        .add< TubularMapping< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TubularMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< TubularMapping< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< TubularMapping< Rigid3Types, Vec3dTypes > > ()
+        .add< TubularMapping< Rigid3Types, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< TubularMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< TubularMapping< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3fTypes, ExtVec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3Types, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 
 } // namespace mapping

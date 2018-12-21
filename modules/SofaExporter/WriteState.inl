@@ -126,9 +126,12 @@ void WriteState::init()
         d_filename.setValue(" defaultExportFile");
     }
 
+
     //check period
     if(d_period.isSet())
     {
+        periodicExport = true;
+
         if(d_time.getValue().size() == 0)
         {
             msg_warning() << "starting time should be specified to know when to start the periodic export"
@@ -157,14 +160,22 @@ void WriteState::init()
         {
             msg_warning() << "starting export time ("<< d_time.getValue()[0] <<") is too low regarding the time step ("<< dt <<")";
         }
-        periodicExport = true;
     }
+    else
+    {
+        if(!d_time.isSet())
+        {
+            d_period.setValue(this->getContext()->getDt());
+            periodicExport = true;
+        }
+    }
+
 
     //check time
     if(!d_time.isSet())
     {
         msg_warning() << "an export time should be specified"
-                      << "by default, export at t=0";
+                      << "by default, export at t=0.0";
         helper::vector<double>& timeVector = *d_time.beginEdit();
         timeVector.clear();
         timeVector.resize(1);
@@ -195,14 +206,15 @@ void WriteState::init()
             }
 
             //check that the desired export times will be met with the chosen time step
-            double mutiple = fmod(d_time.getValue()[i],dt);
-            int integerM = (int) mutiple;
-            mutiple -= (double)integerM;
-            if(mutiple > std::numeric_limits<double>::epsilon())
+            double nbDtInTime = d_time.getValue()[i]/dt;
+            int intnbDtInTime = (int) nbDtInTime;
+            double rest = nbDtInTime - intnbDtInTime;
+            if(rest > std::numeric_limits<double>::epsilon())
             {
                 msg_warning() << "desired export time ("<< d_time.getValue()[i] <<") can not be met with the chosen time step("<< dt <<")";
             }
         }
+
     }
 
     //check stopAt

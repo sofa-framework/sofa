@@ -201,8 +201,6 @@ namespace collision
             for(int i = 0 ; i < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++i){
                 for(int j = 0 ; j < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++j){
                     _coll_pairs[i][j].clear();
-//                    _order[i][j] = 0;
-//                    _intersectors[i][j] = 0;
                 }
             }
         }

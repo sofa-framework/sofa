@@ -38,58 +38,24 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SubsetMapping)
-
 int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
-#ifndef SOFA_FLOAT
         .add< SubsetMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< SubsetMapping< Vec1dTypes, Vec1dTypes > >()
-        .add< SubsetMapping< Vec3dTypes, ExtVec3fTypes > >()
-        .add< SubsetMapping< Rigid3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SubsetMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< SubsetMapping< Vec1fTypes, Vec1fTypes > >()
-        .add< SubsetMapping< Vec3fTypes, ExtVec3fTypes > >()
-        .add< SubsetMapping< Rigid3fTypes, Rigid3fTypes > >()
-#endif
+        .add< SubsetMapping< Vec1Types, Vec1Types > >()
+        .add< SubsetMapping< Vec3dTypes, ExtVec3Types > >()
+        .add< SubsetMapping< Rigid3Types, Rigid3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< SubsetMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< SubsetMapping< Vec3dTypes, Vec3fTypes > >()
-        .add< SubsetMapping< Vec1fTypes, Vec1dTypes > >()
-        .add< SubsetMapping< Vec1dTypes, Vec1fTypes > >()
-        .add< SubsetMapping< Rigid3fTypes, Rigid3dTypes > >()
-        .add< SubsetMapping< Rigid3dTypes, Rigid3fTypes > >()
-#endif
-#endif
+
+
         .addAlias("SurfaceIdentityMapping")
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3dTypes, Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3fTypes, Rigid3fTypes >;
-#endif
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1Types, Vec1Types >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, ExtVec3Types >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3Types, Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1dTypes, Vec1fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1fTypes, Vec1dTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3dTypes, Rigid3fTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3fTypes, Rigid3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

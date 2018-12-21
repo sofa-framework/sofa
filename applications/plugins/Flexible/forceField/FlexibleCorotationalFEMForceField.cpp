@@ -25,7 +25,7 @@
 #include "FlexibleCorotationalFEMForceField.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include "../deformationMapping/BaseDeformationMapping.inl"
 
 namespace sofa
@@ -37,8 +37,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-
-SOFA_DECL_CLASS(FlexibleCorotationalFEMForceField)
 
 // Register in the Factory
 int FlexibleCorotationalFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")

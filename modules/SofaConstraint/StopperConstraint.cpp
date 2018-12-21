@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP
 #include <SofaConstraint/StopperConstraint.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -38,23 +38,13 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(StopperConstraint)
-
 int StopperConstraintClass = core::RegisterObject("TODO-StopperConstraint")
-#ifndef SOFA_FLOAT
-        .add< StopperConstraint<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< StopperConstraint<Vec1fTypes> >()
-#endif
+        .add< StopperConstraint<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class StopperConstraint<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class StopperConstraint<Vec1fTypes>;
-#endif
+template class StopperConstraint<Vec1Types>;
+
 
 } // namespace constraintset
 

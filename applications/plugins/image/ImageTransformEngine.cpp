@@ -35,8 +35,6 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageTransformEngine)
-
 int ImageTransformEngineClass = core::RegisterObject("Apply a transform to the data 'transform'")
         .add<ImageTransformEngine>(true)
         ;

@@ -91,7 +91,7 @@ protected:
     sofa::defaulttype::Quat currentRotation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
 extern template class SOFA_GENERAL_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 #endif
 

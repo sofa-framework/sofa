@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_CPP
 #include "InvertibleFVMForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -38,24 +38,14 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(InvertibleFVMForceField)
-
 // Register in the Factory
 int InvertibleFVMForceFieldClass = core::RegisterObject("Invertible Finite Volume Method")
-#ifndef SOFA_FLOAT
-        .add< InvertibleFVMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< InvertibleFVMForceField<Vec3fTypes> >()
-#endif
+        .add< InvertibleFVMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_InvertibleFVM_API InvertibleFVMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_InvertibleFVM_API InvertibleFVMForceField<Vec3fTypes>;
-#endif
+template class SOFA_InvertibleFVM_API InvertibleFVMForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

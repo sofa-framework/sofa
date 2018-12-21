@@ -33,8 +33,6 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(StabilizedHookeForceField);
-
 using namespace defaulttype;
 
 // Register in the Factory

@@ -34,9 +34,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <map>
 
@@ -304,14 +302,10 @@ protected:
     SReal m_potentialEnergy;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3fTypes>;
-#endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3Types>;
+
+#endif // !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 
 
 } // namespace forcefield

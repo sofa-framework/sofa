@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_MAPINDICES_CPP
 #include <SofaGeneralEngine/MapIndices.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -33,8 +33,6 @@ namespace component
 
 namespace engine
 {
-
-SOFA_DECL_CLASS(MapIndices)
 
 int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
         .add< MapIndices<int> >()

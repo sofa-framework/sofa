@@ -32,4 +32,4 @@ public:
     }
 };
 
-SOFA_PLUGIN(MiscMappingPlugin);
+SOFA_PLUGIN(MiscMappingPlugin)

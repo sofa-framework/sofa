@@ -196,7 +196,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
 extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel, sofa::defaulttype::Vec3Types>;
 #endif

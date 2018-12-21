@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <Node name="root" dt="0.005" gravity="10 0 0" >
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
@@ -56,7 +57,7 @@
     <Node name="Instrument" >
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
-        <MechanicalObject name="instrumentState" position="@GeomagicDevice.positionDevice" template="Rigid" />
+        <MechanicalObject name="instrumentState" template="Rigid" />
         <UniformMass name="mass" totalMass="0.05" />
         <LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection/>
