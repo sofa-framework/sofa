@@ -104,7 +104,7 @@ public:
      *
      * @param the three vertex indices.
      * @return the ID of the corresponding triangle.
-     * @return UINT_MAX if none
+     * @return InvalidID if none
      */
     virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 

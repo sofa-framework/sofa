@@ -883,7 +883,7 @@ void MeshTopology::createEdgesInTriangleArray ()
         for (unsigned int j=0; j<3; ++j)
         {
             EdgeID edgeIndex=getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
-            assert(edgeIndex != UINT_MAX);
+            assert(edgeIndex != InvalidID);
             m_edgesInTriangle[i][j]=edgeIndex;
         }
     }
@@ -902,7 +902,7 @@ void MeshTopology::createEdgesInQuadArray ()
         for (unsigned int j=0; j<4; ++j)
         {
             EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
-            assert(edgeIndex != UINT_MAX);
+            assert(edgeIndex != InvalidID);
             m_edgesInQuad[i][j]=edgeIndex;
         }
     }
@@ -923,7 +923,7 @@ void MeshTopology::createEdgesInTetrahedronArray ()
         for (unsigned int j=0; j<6; ++j)
         {
             EdgeID edgeIndex = getEdgeIndex(t[edgesInTetrahedronArray[j][0]], t[edgesInTetrahedronArray[j][1]]);
-            assert(edgeIndex != UINT_MAX);
+            assert(edgeIndex != InvalidID);
             m_edgesInTetrahedron[i][j]=edgeIndex;
         }
     }
@@ -945,7 +945,7 @@ void MeshTopology::createEdgesInHexahedronArray ()
         for (unsigned int j=0; j<12; ++j)
         {
             EdgeID edgeIndex = getEdgeIndex(h[edgeHexahedronDescriptionArray[j][0]], h[edgeHexahedronDescriptionArray[j][1]]);
-            assert(edgeIndex != UINT_MAX);
+            assert(edgeIndex != InvalidID);
             m_edgesInHexahedron[i][j]=edgeIndex;
         }
     }
@@ -1150,7 +1150,7 @@ void MeshTopology::createTrianglesInTetrahedronArray ()
         for (unsigned int j=0; j<4; ++j)
         {
             TriangleID triangleIndex=getTriangleIndex(t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
-            assert(triangleIndex != UINT_MAX);
+            assert(triangleIndex != InvalidID);
             m_trianglesInTetrahedron[i][j]=triangleIndex;
         }
     }
@@ -1338,27 +1338,27 @@ void MeshTopology::createQuadsInHexahedronArray ()
         // adding the 6 quads in the quad list of the ith hexahedron  i
         // Quad 0 :
         quadIndex=getQuadIndex(h[0],h[3],h[2],h[1]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][0]=quadIndex;
         // Quad 1 :
         quadIndex=getQuadIndex(h[4],h[5],h[6],h[7]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][1]=quadIndex;
         // Quad 2 :
         quadIndex=getQuadIndex(h[0],h[1],h[5],h[4]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][2]=quadIndex;
         // Quad 3 :
         quadIndex=getQuadIndex(h[1],h[2],h[6],h[5]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][3]=quadIndex;
         // Quad 4 :
         quadIndex=getQuadIndex(h[2],h[3],h[7],h[6]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][4]=quadIndex;
         // Quad 5 :
         quadIndex=getQuadIndex(h[3],h[0],h[4],h[7]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][5]=quadIndex;
     }
 }
@@ -1841,8 +1841,8 @@ core::topology::Topology::EdgeID MeshTopology::getEdgeIndex(PointID v1, PointID 
     const EdgesAroundVertex &es1 = getEdgesAroundVertex(v1) ;
     const SeqEdges &ea = getEdges();
     unsigned int i=0;
-    EdgeID result= UINT_MAX;
-    while ((i<es1.size()) && (result== -1))
+    EdgeID result= InvalidID;
+    while ((i<es1.size()) && (result == InvalidID))
     {
         const MeshTopology::Edge &e=ea[es1[i]];
         if ((e[0]==v2)|| (e[1]==v2))
@@ -1851,7 +1851,7 @@ core::topology::Topology::EdgeID MeshTopology::getEdgeIndex(PointID v1, PointID 
         i++;
     }
 
-    if (result == UINT_MAX)
+    if (result == InvalidID)
         msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
 
     return result;
@@ -1885,7 +1885,7 @@ core::topology::Topology::TriangleID MeshTopology::getTriangleIndex(PointID v1, 
         return (int) (out2[0]);
     else {
         msg_warning() << "Triangle with indices: [" << v1 << "; " << v2 << "; " << v3 << "] not found.";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 
@@ -1924,7 +1924,7 @@ core::topology::Topology::QuadID MeshTopology::getQuadIndex(PointID v1, PointID 
         return (int) (out3[0]);
     else {
         msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 
@@ -1960,7 +1960,7 @@ core::topology::Topology::TetrahedronID MeshTopology::getTetrahedronIndex(PointI
         return (int) (out3[0]);
     else {
         msg_warning() << "Tetrahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 
@@ -2021,7 +2021,7 @@ core::topology::Topology::HexahedronID MeshTopology::getHexahedronIndex(PointID 
     else {
         msg_warning() << "Hexahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
                          << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 

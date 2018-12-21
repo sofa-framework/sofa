@@ -115,7 +115,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 		assert(t[2] != t[3]);
 
 		// check if there already exists a tetrahedron with the same indices
-        assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3]) == UINT_MAX);
+        assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3]) == InvalidID);
 	}
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
     const TetrahedronID tetrahedronIndex = (TetrahedronID)m_tetrahedron.size();
@@ -126,7 +126,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
         {
             TriangleID triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
 
-            if(triangleIndex == UINT_MAX)
+            if(triangleIndex == InvalidID)
             {
                 // first create the traingle
                 sofa::helper::vector< Triangle > v;
@@ -136,7 +136,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
                 addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
 
                 triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
-                assert(triangleIndex != UINT_MAX);
+                assert(triangleIndex != InvalidID);
 
                 sofa::helper::vector< TriangleID > triangleIndexList;
                 triangleIndexList.push_back(triangleIndex);
@@ -171,7 +171,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 
             EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
             // we must create the edge
-            if (edgeIndex == UINT_MAX)
+            if (edgeIndex == InvalidID)
             {
                 sofa::helper::vector< Edge > v;
                 Edge e1(t[p0],t[p1]);
@@ -180,7 +180,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
                 addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
                 edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
-                assert(edgeIndex != UINT_MAX);
+                assert(edgeIndex != InvalidID);
 
                 sofa::helper::vector< EdgeID > edgeIndexList;
                 edgeIndexList.push_back(edgeIndex);

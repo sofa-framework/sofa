@@ -136,7 +136,7 @@ public:
 
     /** \brief Get the index of a hexahedron from the indices of its vertices.
      *
-     * @return The index of the corresponding hexahedron if it exists, UINT_MAX otherwise.
+     * @return The index of the corresponding hexahedron if it exists, InvalidID otherwise.
      */
     virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
                    PointID v5, PointID v6, PointID v7, PointID v8) override;

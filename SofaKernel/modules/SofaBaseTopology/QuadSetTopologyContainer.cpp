@@ -230,7 +230,7 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
         for (size_t j=0; j<4; ++j)
         {
             EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
-            assert(edgeIndex != UINT_MAX);
+            assert(edgeIndex != InvalidID);
             m_edgesInQuad[i][j]=edgeIndex;
         }
     }
@@ -299,7 +299,7 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
         return (int) (out3[0]);
     else {
         msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 

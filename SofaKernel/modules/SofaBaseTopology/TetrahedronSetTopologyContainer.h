@@ -111,7 +111,7 @@ public:
      *
      * @param the four vertex indices.
      * @return the ID of the corresponding tetrahedron.
-     * @return UINT_MAX if none
+     * @return InvalidID if none
      */
     virtual TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 

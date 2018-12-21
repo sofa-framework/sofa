@@ -407,31 +407,31 @@ void BaseMeshTopology::addTopologyEngine(TopologyEngine* _topologyEngine)
 Topology::EdgeID BaseMeshTopology::getEdgeIndex(PointID, PointID)
 {
     msg_error() << "getEdgeIndex() not supported.";
-    return UINT_MAX;
+    return InvalidID;
 }
 
 Topology::TriangleID BaseMeshTopology::getTriangleIndex(PointID, PointID, PointID)
 {
     msg_error() << "getTriangleIndex() not supported.";
-    return UINT_MAX;
+    return InvalidID;
 }
 
 Topology::QuadID BaseMeshTopology::getQuadIndex(PointID, PointID, PointID, PointID)
 {
     msg_error() << "getQuadIndex() not supported.";
-    return UINT_MAX;
+    return InvalidID;
 }
 
 Topology::TetrahedronID BaseMeshTopology::getTetrahedronIndex(PointID, PointID, PointID, PointID)
 {
     msg_error() << "getTetrahedronIndex() not supported.";
-    return UINT_MAX;
+    return InvalidID;
 }
 
 Topology::HexahedronID BaseMeshTopology::getHexahedronIndex(PointID, PointID, PointID, PointID, PointID, PointID, PointID, PointID)
 {
     msg_error() << "getHexahedronIndex() not supported.";
-    return UINT_MAX;
+    return InvalidID;
 }
 
 int BaseMeshTopology::getVertexIndexInTriangle(const Triangle &, PointID) const

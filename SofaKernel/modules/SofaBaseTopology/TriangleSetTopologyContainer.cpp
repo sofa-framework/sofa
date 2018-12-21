@@ -480,7 +480,7 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
         return (int) (out2[0]);
     else {
         msg_warning() << "Triangle with indices: [" << v1 << "; " << v2 << "; " << v3 << "] not found.";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 

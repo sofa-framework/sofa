@@ -94,7 +94,7 @@ public:
      *
      * @param v1 The first vertex
      * @param v@ The second vertex
-     * @return The index of the Edge if it exists, UINT_MAX otherwise.
+     * @return The index of the Edge if it exists, InvalidID otherwise.
     */
     virtual EdgeID getEdgeIndex(PointID v1, PointID v2) override;
 
