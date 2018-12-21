@@ -140,7 +140,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
     hexahedronInf.resize(_topology->getNbHexahedra());
 
-    for (unsigned int i=0; i<_topology->getNbHexahedra(); ++i)
+    for (size_t i=0; i<_topology->getNbHexahedra(); ++i)
     {
         hexahedronHandler->applyCreateFunction(i,hexahedronInf[i],
                 _topology->getHexahedron(i),  (const std::vector< unsigned int > )0,

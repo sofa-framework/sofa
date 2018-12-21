@@ -168,7 +168,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     {
     case SMALL :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
         {
             accumulateForceSmall( f, p, i );
         }
@@ -176,7 +176,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     case LARGE :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
         {
             accumulateForceLarge( f, p, i );
         }
@@ -184,7 +184,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     case POLAR :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
         {
             accumulateForcePolar( f, p, i );
         }
@@ -206,7 +206,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     {
     case SMALL :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
             Index a = t[0];
@@ -220,7 +220,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     }
     case LARGE :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
             Index a = t[0];
@@ -234,7 +234,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     }
     case POLAR :
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
             Index a = t[0];

@@ -111,8 +111,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-        unsigned int i;
-        for (i=0; i<bmt->getNbPoints(); i++)
+        for (int i=0; i<bmt->getNbPoints(); i++)
         {
             pInfo[i].setLMDFilters(this);
             pInfo[i].setBaseMeshTopology(bmt);
@@ -126,7 +125,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
-        for (i=0; i<bmt->getNbEdges(); i++)
+        for (unsigned int i=0; i<bmt->getNbEdges(); i++)
         {
             lInfo[i].setLMDFilters(this);
             lInfo[i].setBaseMeshTopology(bmt);
