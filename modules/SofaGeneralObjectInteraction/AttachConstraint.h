@@ -45,19 +45,13 @@ namespace component
 namespace projectiveconstraintset
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template <class DataTypes>
-class AttachConstraintInternalData
-{
-};
-
 /** Attach given pair of particles, projecting the positions of the second particles to the first ones.
 */
 template <class DataTypes>
-class AttachConstraint : public core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>, public sofa::core::DataEngine
+class AttachConstraint : public core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::PairInteractionProjectiveConstraintSet,DataTypes), sofa::core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::PairInteractionProjectiveConstraintSet,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -71,14 +65,9 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
-
-protected:
-    AttachConstraintInternalData<DataTypes> data;
-
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
-    Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
     Data<bool> f_twoWay; ///< true if forces should be projected back from model2 to model1
     Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
     Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
@@ -98,14 +87,10 @@ public:
     helper::vector<defaulttype::Quat> restRotations;
 
 protected:
-    AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     AttachConstraint();
+    AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     virtual ~AttachConstraint();
 public:
-    void clearConstraints();
-    void addConstraint(unsigned int index1, unsigned int index2);
-
-    // -- Constraint interface
     void init() override;
     void reinit() override;
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/) override;
@@ -119,7 +104,7 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual void doUpdate() override;
+    virtual void checkChanged();
 
     template<class T>
     static std::string templateName(const T* ptr= nullptr) {
@@ -144,14 +129,11 @@ protected :
             return;
         }
         constraintReleased[index] = false;
-        //const VecCoord& x1b = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        //const VecCoord& x2b = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-        Coord in1 = x1;
-        Coord in2 = x2;
 
+        checkChanged();
         sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
 
-        Deriv corr = (in2-in1)*(0.5*d_positionFactor.getValue()*constraintFactor[index]);
+        Deriv corr = (x2-x1)*(0.5*d_positionFactor.getValue()*constraintFactor[index]);
 
         x1 += corr;
         x2 -= corr;
@@ -161,13 +143,11 @@ protected :
     {
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
-        
-        Deriv in1 = x1;
-        Deriv in2 = x2;
 
+        checkChanged();
         sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
 
-        Deriv corr = (in2-in1)*(0.5*d_velocityFactor.getValue()*constraintFactor[index]);
+        Deriv corr = (x2-x1)*(0.5*d_velocityFactor.getValue()*constraintFactor[index]);
 
         x1 += corr;
         x2 -= corr;
@@ -186,7 +166,7 @@ protected :
         {
             Deriv in1 = dx1;
             Deriv in2 = dx2;
-
+            checkChanged();
             sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
 
             dx1 += in2*(d_responseFactor.getValue()*constraintFactor[index]);
