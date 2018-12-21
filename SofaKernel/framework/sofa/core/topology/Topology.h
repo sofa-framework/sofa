@@ -24,6 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/list.h>
+#include <sofa/defaulttype/TopologyTypes.h>
 #include <limits.h>
 
 namespace sofa
@@ -48,6 +49,7 @@ enum TopologyObjectType
     PYRAMID
 };
 
+
 SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s);
 SOFA_CORE_API std::string parseTopologyObjectTypeToString(TopologyObjectType t);
 
@@ -57,7 +59,7 @@ public:
     /// Topology global typedefs
     //typedef int index_type;
     typedef unsigned int index_type;
-    enum { InvalidID = (unsigned)-1 };
+    enum { InvalidID = sofa::defaulttype::InvalidID };
     typedef index_type                 ElemID;
     typedef index_type                 PointID;
     typedef index_type                 EdgeID;

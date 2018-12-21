@@ -462,7 +462,7 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
         return (int) (out3[0]);
     else {
         msg_warning() << "Tetrahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 

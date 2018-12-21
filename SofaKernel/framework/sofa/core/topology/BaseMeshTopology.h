@@ -184,15 +184,15 @@ public:
     /// @}
 
 
-    /// Returns the index of the edge joining vertex v1 and vertex v2; returns UINT_MAX if no edge exists
+    /// Returns the index of the edge joining vertex v1 and vertex v2; returns InvalidID if no edge exists
     virtual EdgeID getEdgeIndex(PointID v1, PointID v2);
-    /// Returns the index of the triangle given three vertex indices; returns UINT_MAX if no triangle exists
+    /// Returns the index of the triangle given three vertex indices; returns InvalidID if no triangle exists
     virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3);
-    /// Returns the index of the quad given four vertex indices; returns UINT_MAX if no quad exists
+    /// Returns the index of the quad given four vertex indices; returns InvalidID if no quad exists
     virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the tetrahedron given four vertex indices; returns UINT_MAX if no tetrahedron exists
+    /// Returns the index of the tetrahedron given four vertex indices; returns InvalidID if no tetrahedron exists
     virtual TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the hexahedron given eight vertex indices; returns UINT_MAX if no hexahedron exists
+    /// Returns the index of the hexahedron given eight vertex indices; returns InvalidID if no hexahedron exists
     virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
 
 

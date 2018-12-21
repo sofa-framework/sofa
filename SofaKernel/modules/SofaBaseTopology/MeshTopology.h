@@ -537,25 +537,25 @@ protected:
 
     
 public:
-    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns UINT_MAX if no edge exists
+    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns InvalidID if no edge exists
      *
      */
     EdgeID getEdgeIndex(PointID v1, PointID v2) override;
 
-    /** Returns the indices of a triangle given three vertex indices : returns UINT_MAX if none */
+    /** Returns the indices of a triangle given three vertex indices : returns InvalidID if none */
     TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 
-    /** \brief Returns the index of the quad joining vertex v1, v2, v3 and v4; returns UINT_MAX if none
+    /** \brief Returns the index of the quad joining vertex v1, v2, v3 and v4; returns InvalidID if none
      *
      */
     QuadID getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4) override;
 
-    /** \brief Returns the index of the tetrahedron given four vertex indices; returns UINT_MAX if none
+    /** \brief Returns the index of the tetrahedron given four vertex indices; returns InvalidID if none
      *
      */
     TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
-    /** \brief Returns the index of the hexahedron given eight vertex indices; returns UINT_MAX if none
+    /** \brief Returns the index of the hexahedron given eight vertex indices; returns InvalidID if none
      *
      */
     HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8) override;

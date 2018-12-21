@@ -167,7 +167,7 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
     const sofa::helper::vector< EdgeID > &es1 = getEdgesAroundVertex(v1) ;
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
-    int result = UINT_MAX;
+    int result = InvalidID;
     for(size_t i=0; (i < es1.size()) && (result == -1); ++i)
     {
         const Edge &e = m_edge[ es1[i] ];
@@ -175,7 +175,7 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
             result = (int) es1[i];
     }
 
-    if (result == UINT_MAX)
+    if (result == InvalidID)
         msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
 
     return result;

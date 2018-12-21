@@ -352,27 +352,27 @@ void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
         // adding the 6 quads in the quad list of the ith hexahedron  i
         // Quad 0 :
         quadIndex=getQuadIndex(h[0],h[3],h[2],h[1]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][0]=quadIndex;
         // Quad 1 :
         quadIndex=getQuadIndex(h[4],h[5],h[6],h[7]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][1]=quadIndex;
         // Quad 2 :
         quadIndex=getQuadIndex(h[0],h[1],h[5],h[4]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][2]=quadIndex;
         // Quad 3 :
         quadIndex=getQuadIndex(h[1],h[2],h[6],h[5]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][3]=quadIndex;
         // Quad 4 :
         quadIndex=getQuadIndex(h[2],h[3],h[7],h[6]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][4]=quadIndex;
         // Quad 5 :
         quadIndex=getQuadIndex(h[3],h[0],h[4],h[7]);
-        assert(quadIndex!= UINT_MAX);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][5]=quadIndex;
     }
 }
@@ -522,7 +522,7 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
     else {
         msg_warning() << "Hexahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
                          << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
-        return UINT_MAX;
+        return InvalidID;
     }
 }
 

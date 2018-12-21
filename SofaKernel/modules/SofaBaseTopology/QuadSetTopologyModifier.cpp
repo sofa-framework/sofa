@@ -139,7 +139,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
         {
             EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%4], t[(j+2)%4]);
 
-            if(edgeIndex == UINT_MAX)
+            if(edgeIndex == InvalidID)
             {
                 // first create the edges
                 sofa::helper::vector< Edge > v(1);
@@ -149,7 +149,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
                 addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
                 edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
-                assert(edgeIndex != UINT_MAX);
+                assert(edgeIndex != InvalidID);
 
                 sofa::helper::vector< EdgeID > edgeIndexList;
                 edgeIndexList.push_back((EdgeID) edgeIndex);
