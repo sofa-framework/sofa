@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -111,12 +111,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GenerateSphere<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GenerateSphere<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_ENGINE_API GenerateSphere<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace engine

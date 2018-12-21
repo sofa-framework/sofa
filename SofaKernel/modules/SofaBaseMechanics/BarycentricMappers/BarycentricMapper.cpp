@@ -19,51 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//===--------------------------- cxxabi.h ---------------------------------===//
-//
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
-//
-//===----------------------------------------------------------------------===//
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP
 
-#ifndef __CXXABI_H
-#define __CXXABI_H 
+#include "BarycentricMapper.inl"
 
-/*
- * This header provides the interface to the C++ ABI as defined at:
- *       http://www.codesourcery.com/cxx-abi/
- */
+namespace sofa
+{
 
-#include <stddef.h>
-#include <stdint.h>
+namespace component
+{
 
-#define _LIBCPPABI_VERSION 1001
-#define LIBCXXABI_NORETURN  __attribute__((noreturn))
+namespace mapping
+{
 
-#ifdef __cplusplus
+namespace _barycentricmapper_
+{
 
-namespace std {
-    class type_info; // forward declaration
+using namespace sofa::defaulttype;
+
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API BarycentricMapper< Vec3dTypes, ExtVec3Types >;
+
+
+
 }
 
+}}}
 
-// runtime routines use C calling conventions, but are in __cxxabiv1 namespace
-namespace __cxxabiv1 {  
-  extern "C"  {
-
-// 3.4 Demangler API
-extern char* __cxa_demangle(const char* mangled_name, 
-                            char*       output_buffer,
-                            size_t*     length, 
-                            int*        status);
-
-  } // extern "C"
-} // namespace __cxxabiv1
-
-#endif // __cplusplus
-
-namespace abi = __cxxabiv1;
-
-#endif // __CXXABI_H 
+#endif

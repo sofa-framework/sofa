@@ -36,24 +36,14 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
-#ifndef SOFA_FLOAT
-        .add< PlaneROI<Vec3dTypes> >()
-        .add< PlaneROI<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PlaneROI<Vec3fTypes> >()
-        .add< PlaneROI<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< PlaneROI<Vec3Types> >()
+        .add< PlaneROI<Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API PlaneROI<Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API PlaneROI<Rigid3Types>;
+ 
 
 
 } // namespace constraint

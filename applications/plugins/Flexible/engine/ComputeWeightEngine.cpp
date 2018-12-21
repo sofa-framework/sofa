@@ -74,7 +74,7 @@ void ComputeWeightEngine::doUpdate()
     // Get vertices from the visual model.
     // We can not use another method as vertices might be duplicated
     // and this is the only method that takes it into account.
-    sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec< 3, ExtVec3fTypes::Real > > vertices ( l_visualModel.get()->getVertices() );
+    sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec< 3, ExtVec3Types::Real > > vertices ( l_visualModel.get()->getVertices() );
     size_t nb_vertices = vertices.size();
 
     // Get indices and weight

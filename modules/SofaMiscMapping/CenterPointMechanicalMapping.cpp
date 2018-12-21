@@ -37,39 +37,19 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 int CenterPointMechanicalMappingClass = core::RegisterObject("TODO-CenterPointMechanicalMappingClass")
-#ifndef SOFA_FLOAT
         .add< CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< CenterPointMechanicalMapping< Vec3dTypes, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
+
+
         ;
 
 
-#ifndef SOFA_FLOAT
 template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

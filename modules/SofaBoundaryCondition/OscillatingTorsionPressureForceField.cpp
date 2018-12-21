@@ -23,7 +23,7 @@
 
 #include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 // #define DEBUG_TRIANGLEFEM
 
@@ -40,20 +40,12 @@ using namespace sofa::defaulttype;
 
 
 int OscillatingTorsionPressureForceFieldClass = core::RegisterObject("OscillatingTorsionPressure")
-#ifndef SOFA_FLOAT
-        .add< OscillatingTorsionPressureForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< OscillatingTorsionPressureForceField<Vec3fTypes> >()
-#endif
+        .add< OscillatingTorsionPressureForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3Types>;
+
 
 
 } // namespace forcefield
