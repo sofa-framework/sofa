@@ -1277,7 +1277,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
 
     std::vector< defaulttype::Vector3 > points[4];
-    for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+    for(size_t i = 0 ; i<_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
 
