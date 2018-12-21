@@ -222,10 +222,9 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
         _initialPoints=p;
     }
 
-    int i;
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0; i<_topology->getNbTetrahedra(); ++i)
+    for (size_t i=0; i<_topology->getNbTetrahedra(); ++i)
     {
         tetrahedronHandler->applyCreateFunction(i,tetrahedronInf[i],_topology->getTetrahedron(i),
                 (const helper::vector< unsigned int > )0,
@@ -626,7 +625,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
 
 
     std::vector< defaulttype::Vector3 > points[4];
-    for (int i = 0; i<_topology->getNbTetrahedra(); ++i)
+    for (size_t i = 0; i<_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = _topology->getTetrahedron(i);
 

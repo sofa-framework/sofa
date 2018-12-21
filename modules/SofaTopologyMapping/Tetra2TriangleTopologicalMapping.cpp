@@ -210,7 +210,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 ind_real_last = Glob2LocMap[last];
 
-                                if((int) k != last)
+                                if (k != last)
                                 {
 
                                     Glob2LocMap.erase(Glob2LocMap.find(k));
@@ -225,7 +225,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                             }
 
-                            if((int) ind_k != ind_last)
+                            if (ind_k != ind_last)
                             {
 
                                 Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
@@ -411,7 +411,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                 ind_last = ind_last - 1;
                                 unsigned int ind_k = Glob2LocMap[k];
 
-                                if((int) ind_k != ind_last)
+                                if (ind_k != ind_last)
                                 {
 
                                     Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));

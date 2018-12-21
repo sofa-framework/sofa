@@ -140,7 +140,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
     hexahedronInf.resize(_topology->getNbHexahedra());
 
-    for (int i=0; i<_topology->getNbHexahedra(); ++i)
+    for (size_t i=0; i<_topology->getNbHexahedra(); ++i)
     {
         hexahedronHandler->applyCreateFunction(i,hexahedronInf[i],
                 _topology->getHexahedron(i),  (const std::vector< unsigned int > )0,
@@ -164,7 +164,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     {
     case LARGE :
     {
-        for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
         {
             accumulateForceLarge( _f, _p, i);
         }
@@ -172,7 +172,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     }
     case POLAR :
     {
-        for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
         {
             accumulateForcePolar( _f, _p, i);
         }
@@ -193,7 +193,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(unsigned int i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
         Transformation R_0_2;
         R_0_2.transpose(hexahedronInf[i].rotation);
