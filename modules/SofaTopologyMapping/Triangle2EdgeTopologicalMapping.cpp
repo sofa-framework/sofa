@@ -34,6 +34,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -143,7 +144,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
         if (toModel)
         {
-
+            sofa::helper::AdvancedTimer::stepBegin("updateTopologicalMapping Triangle2Edge");
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
@@ -158,15 +159,18 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("ENDING_EVENT");
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
+                    sofa::helper::AdvancedTimer::stepEnd("ENDING_EVENT");
                     break;
                 }
 
                 case core::topology::EDGESREMOVED:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("EDGESREMOVED");
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESREMOVED" << sendl;
 
                     unsigned int last = (unsigned int)fromModel->getNbEdges() - 1;
@@ -245,12 +249,14 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     }
 
                     //to_tstm->propagateTopologicalChanges();
+                    sofa::helper::AdvancedTimer::stepEnd("EDGESREMOVED");
 
                     break;
                 }
 
                 case core::topology::TRIANGLESREMOVED:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("TRIANGLESREMOVED");
 
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - TRIANGLESREMOVED" << sendl;
 
@@ -338,12 +344,14 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                         //to_tstm->propagateTopologicalChanges();
 
                     }
+                    sofa::helper::AdvancedTimer::stepEnd("TRIANGLESREMOVED");
 
                     break;
                 }
 
                 case core::topology::POINTSREMOVED:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("POINTSREMOVED");
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
@@ -362,11 +370,14 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->removePointsProcess(tab_indices, false);
 
+                    sofa::helper::AdvancedTimer::stepEnd("POINTSREMOVED");
+
                     break;
                 }
 
                 case core::topology::POINTSRENUMBERING:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("POINTSRENUMBERING");
                     //sout << "INFO_print : Hexa2TriangleTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
@@ -389,6 +400,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
+                    sofa::helper::AdvancedTimer::stepEnd("POINTSRENUMBERING");
 
                     break;
                 }
@@ -440,6 +452,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::TRIANGLESADDED:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("TRIANGLESADDED");
 
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - TRIANGLESADDED" << sendl;
 
@@ -522,6 +535,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                         to_tstm->addEdgesProcess(edges_to_create) ;
                         to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
                         to_tstm->propagateTopologicalChanges();
+                        sofa::helper::AdvancedTimer::stepEnd("TRIANGLESADDED");
 
                     }
 
@@ -531,12 +545,14 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSADDED:
                 {
+                    sofa::helper::AdvancedTimer::stepBegin("POINTSADDED");
                     //sout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSADDED" << sendl;
 
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
                     to_tstm->addPointsProcess(ta->getNbAddedVertices());
                     to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
                     to_tstm->propagateTopologicalChanges();
+                    sofa::helper::AdvancedTimer::stepEnd("POINTSADDED");
 
                     break;
                 }
@@ -552,6 +568,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
 
+            sofa::helper::AdvancedTimer::stepEnd("updateTopologicalMapping Triangle2Edge");
         }
     }
 
