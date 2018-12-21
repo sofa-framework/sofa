@@ -167,12 +167,12 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
     const sofa::helper::vector< EdgeID > &es1 = getEdgesAroundVertex(v1) ;
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
-    int result = InvalidID;
-    for(size_t i=0; (i < es1.size()) && (result == -1); ++i)
+    EdgeID result = InvalidID;
+    for(size_t i=0; (i < es1.size()) && (result == InvalidID); ++i)
     {
         const Edge &e = m_edge[ es1[i] ];
         if ((e[0] == v2) || (e[1] == v2))
-            result = (int) es1[i];
+            result = es1[i];
     }
 
     if (result == InvalidID)
@@ -187,7 +187,7 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
         createEdgeSetArray();
 
     if ((size_t)i >= getNbEdges())
-        return Edge(-1, -1);
+        return Edge(InvalidID, InvalidID);
     else
         return (d_edge.getValue())[i];
 }
