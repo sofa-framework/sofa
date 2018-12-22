@@ -52,76 +52,79 @@ using namespace sofa::core::topology;
 
 // Register in the Factory
 int Triangle2EdgeTopologicalMappingClass = core::RegisterObject("Special case of mapping where TriangleSetTopology is converted to EdgeSetTopology")
-        .add< Triangle2EdgeTopologicalMapping >()
-
-        ;
+        .add< Triangle2EdgeTopologicalMapping >();
 
 Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
+    : sofa::core::topology::TopologicalMapping()
 {
 }
 
 
 Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 {
+    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    Loc2GlobVec.clear();
+    Glob2LocMap.clear();
+    Loc2GlobDataVec.endEdit();
 }
+
 
 void Triangle2EdgeTopologicalMapping::init()
 {
-    sout << "INFO_print : init Triangle2EdgeTopologicalMapping" << sendl;
+    // recheck models
+    bool modelsOk = true;
+    if (!fromModel)
+    {
+        msg_error() << "Pointer to input topology is invalid.";
+        modelsOk = false;
+    }
+
+    if (!toModel)
+    {
+        msg_error() << "Pointer to output topology is invalid.";
+        modelsOk = false;
+    }
+
+    if (!modelsOk)
+    {
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
 
     // INITIALISATION of EDGE mesh from TRIANGULAR mesh :
+    // Clear output topology
+    toModel->clear();
 
-    if (fromModel)
+    // Set the same number of points
+    toModel->setNbPoints(fromModel->getNbPoints());
+
+    // create topology maps and add edge into output topology
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Edge> &edgeArray = fromModel->getEdges();
+    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    Loc2GlobVec.clear();
+    Glob2LocMap.clear();
+
+    for (Topology::EdgeID eId=0; eId<edgeArray.size(); ++eId)
     {
-
-        sout << "INFO_print : Triangle2EdgeTopologicalMapping - from = triangle" << sendl;
-
-        if (toModel)
+        if (fromModel->getTrianglesAroundEdge(eId).size() == 1)
         {
+            Topology::Edge e = edgeArray[eId];
+            toModel->addEdge(e[0], e[1]);
 
-            sout << "INFO_print : Triangle2EdgeTopologicalMapping - to = edge" << sendl;
-
-            EdgeSetTopologyContainer *to_tstc;
-            toModel->getContext()->get(to_tstc);
-            to_tstc->clear();
-
-            toModel->setNbPoints(fromModel->getNbPoints());
-
-
-            EdgeSetTopologyModifier *to_tstm;
-            toModel->getContext()->get(to_tstm);
-
-            const sofa::helper::vector<core::topology::BaseMeshTopology::Edge> &edgeArray=fromModel->getEdges();
-
-            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
-            Loc2GlobVec.clear();
-            Glob2LocMap.clear();
-
-            for (unsigned int i=0; i<edgeArray.size(); ++i)
-            {
-                if (fromModel->getTrianglesAroundEdge(i).size()==1)
-                {
-
-                    to_tstm->addEdgeProcess(edgeArray[i]);
-
-                    Loc2GlobVec.push_back(i);
-                    Glob2LocMap[i]=(unsigned int)Loc2GlobVec.size()-1;
-                }
-            }
-
-            //to_tstm->propagateTopologicalChanges();
-            to_tstm->notifyEndingEvent();
-            //to_tstm->propagateTopologicalChanges();
-            Loc2GlobDataVec.endEdit();
+            Loc2GlobVec.push_back(eId);
+            Glob2LocMap[eId] = Loc2GlobVec.size() - 1;
         }
     }
+
+    Loc2GlobDataVec.endEdit();
+    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
 }
+
 
 unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
 {
-
-    if(fromModel->getTrianglesAroundEdge(ind).size()==1)
+    if (fromModel->getTrianglesAroundEdge(ind).size()==1)
     {
         return fromModel->getTrianglesAroundEdge(ind)[0];
     }
