@@ -122,7 +122,7 @@ public:
     * \sa removePointsProcess
     */
     // side effect: indices are sorted first
-    void removePointsWarning(sofa::helper::vector< PointID > indices,
+    void removePointsWarning(/*const*/ sofa::helper::vector< PointID > &indices,
             const bool removeDOF = true);
 
 
