@@ -78,8 +78,10 @@ public:
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     virtual const BaseMatrix* getJ(int outSize, int inSize) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b );
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b );
+    template<class _In, class _Out>
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<_In, _Out> &b );
+    template<class _In, class _Out>
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<_In, _Out> & b );
 
 protected:
     BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,

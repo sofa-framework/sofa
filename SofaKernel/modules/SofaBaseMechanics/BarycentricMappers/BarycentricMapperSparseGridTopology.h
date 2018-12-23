@@ -76,8 +76,10 @@ public:
     virtual void draw(const VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     virtual void resize( core::State<Out>* toModel ) override;
 
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b );
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b );
+    template<class _In, class _Out>
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<_In, _Out> &b );
+    template<class _In, class _Out>
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<_In, _Out> & b );
 
 protected:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
