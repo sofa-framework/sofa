@@ -244,79 +244,71 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::TRIANGLESREMOVED:
         {
-            const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &triangleArray=fromModel->getTriangles();
-
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
+            const sofa::helper::vector<Topology::TriangleID> &tri2Remove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
             sofa::helper::vector< unsigned int > edgesIndexList;
-            unsigned int nb_elems = (unsigned int)toModel->getNbEdges();
+            size_t nb_elems = toModel->getNbEdges();
 
-            for (unsigned int i = 0; i < tab.size(); ++i)
+            // For each triangle removed inside the tri2Remove array. Will look if it has only one neighbour.
+            // If yes means it will be added to the edge border topoloy.
+            // NB: doesn't check if edge is inside 2 triangles removed. This will be handle in EdgeRemoved event.
+            for (unsigned int i = 0; i < tri2Remove.size(); ++i)
             {
-                for (unsigned int j = 0; j < 3; ++j)
+                Topology::TriangleID triId = tri2Remove[i];
+                const BaseMeshTopology::EdgesInTriangle& edgesInTri = fromModel->getEdgesInTriangle(triId);
+                // get each edge of the triangle involved
+                for (auto edgeId : edgesInTri)
                 {
-                    unsigned int k = (fromModel->getEdgesInTriangle(tab[i]))[j];
+                    const BaseMeshTopology::TrianglesAroundEdge& triAEdge = fromModel->getTrianglesAroundEdge(edgeId);
 
-                    if (fromModel->getTrianglesAroundEdge(k).size()!= 2)   // remove as visible the edge indexed by k // ==1
+                    if (triAEdge.size() != 2) // means only one edge, will be removed later by EdgeRemoved event. Continue.
+                        continue;
+
+                    // Id of the opposite Triangle
+                    Topology::TriangleID idTriNeigh;
+                    if (triId == triAEdge[0])
+                        idTriNeigh = triAEdge[1];
+                    else
+                        idTriNeigh = triAEdge[0];
+
+                    // check if Triangle already processed in a previous iteration
+                    bool is_present = false;
+                    for (unsigned int k=0; k<i; ++k)
+                        if (idTriNeigh == tri2Remove[k])
+                        {
+                            is_present = true;
+                            break;
+                        }
+                    if (is_present) // already done, continue.
+                        continue;
+
+                    // Add this current edge to the output topology
+                    Topology::Edge newEdge = fromModel->getEdge(edgeId);
+
+                    // sort newEdge such that newEdge[0] is the smallest one
+                    if (newEdge[0]>newEdge[1])
                     {
-
-                        // do nothing
-
+                        Topology::Point tmp = newEdge[0];
+                        newEdge[0] = newEdge[1];
+                        newEdge[1] = tmp;
                     }
-                    else   // fromModel->getTrianglesAroundEdge(k).size()==2 // add as visible the edge indexed by k
+
+                    // Add edge to creation buffers
+                    edges_to_create.push_back(newEdge);
+                    edgesIndexList.push_back(nb_elems);
+                    nb_elems+=1;
+
+                    // update topology maps
+                    Loc2GlobVec.push_back(edgeId);
+                    // check if edge already exist
+                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeId);
+                    if(iter_1 != Glob2LocMap.end() )
                     {
-
-                        unsigned int ind_test;
-                        if(tab[i] == fromModel->getTrianglesAroundEdge(k)[0])
-                        {
-
-                            ind_test = fromModel->getTrianglesAroundEdge(k)[1];
-
-                        }
-                        else   // tab[i] == fromModel->getTrianglesAroundEdge(k)[1]
-                        {
-
-                            ind_test = fromModel->getTrianglesAroundEdge(k)[0];
-                        }
-
-                        bool is_present = false;
-                        unsigned int k0 = 0;
-                        while((!is_present) && k0 < i)
-                        {
-                            is_present = (ind_test == tab[k0]);
-                            k0+=1;
-                        }
-                        if(!is_present)
-                        {
-
-                            core::topology::BaseMeshTopology::Edge t;
-
-                            const core::topology::BaseMeshTopology::Triangle &te=triangleArray[ind_test];
-                            int h = fromModel->getEdgeIndexInTriangle(fromModel->getEdgesInTriangle(ind_test),k);
-
-                            t[0]=(int)(te[(h+1)%3]); t[1]=(int)(te[(h+2)%3]);
-
-                            // sort t such that t[0] is the smallest one
-                            if ((t[0]>t[1]))
-                            {
-                                int val=t[0]; t[0]=t[1]; t[1]=val;
-                            }
-
-                            edges_to_create.push_back(t);
-                            edgesIndexList.push_back(nb_elems);
-                            nb_elems+=1;
-
-                            Loc2GlobVec.push_back(k);
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                            if(iter_1 != Glob2LocMap.end() )
-                            {
-                                sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
-                                Glob2LocMap.erase(Glob2LocMap.find(k));
-                            }
-                            Glob2LocMap[k]= (unsigned int)Loc2GlobVec.size()-1;
-                        }
+                        dmsg_error() << "Fail to add edge " << edgeId << "which already exists with value: " << (*iter_1).second;
+                        Glob2LocMap.erase(iter_1);
                     }
+                    Glob2LocMap[edgeId] = (unsigned int)Loc2GlobVec.size()-1;
                 }
             }
 
