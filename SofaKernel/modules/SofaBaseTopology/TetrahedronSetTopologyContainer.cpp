@@ -1047,6 +1047,38 @@ sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedronID >& Tetrahed
     return m_removedTetraIndex;
 }
 
+void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
+{
+    // set this container to dirty
+    m_tetrahedronTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
+{
+    m_tetrahedronTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void TetrahedronSetTopologyContainer::updateTopologyEngineGraph()
 {

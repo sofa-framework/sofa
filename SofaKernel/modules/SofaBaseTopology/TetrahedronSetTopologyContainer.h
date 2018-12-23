@@ -458,8 +458,8 @@ protected:
 
     /// Use a specific boolean @see m_tetrahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setTetrahedronTopologyToDirty() {m_tetrahedronTopologyDirty = true;}
-    void cleanTetrahedronTopologyFromDirty() {m_tetrahedronTopologyDirty = false;}
+    void setTetrahedronTopologyToDirty();
+    void cleanTetrahedronTopologyFromDirty();
     const bool& isTetrahedronTopologyDirty() {return m_tetrahedronTopologyDirty;}
 
 public:

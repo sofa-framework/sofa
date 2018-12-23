@@ -220,8 +220,8 @@ protected:
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setEdgeTopologyToDirty() {m_edgeTopologyDirty = true;}
-    void cleanEdgeTopologyFromDirty() {m_edgeTopologyDirty = false;}
+    void setEdgeTopologyToDirty();
+    void cleanEdgeTopologyFromDirty();
     const bool& isEdgeTopologyDirty() {return m_edgeTopologyDirty;}
 
 protected:

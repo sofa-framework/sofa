@@ -1067,6 +1067,38 @@ void TriangleSetTopologyContainer::clear()
     EdgeSetTopologyContainer::clear();
 }
 
+void TriangleSetTopologyContainer::setTriangleTopologyToDirty()
+{
+    // set this container to dirty
+    m_triangleTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Triangle Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void TriangleSetTopologyContainer::cleanTriangleTopologyFromDirty()
+{
+    m_triangleTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Triangle Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 
 void TriangleSetTopologyContainer::updateTopologyEngineGraph()
