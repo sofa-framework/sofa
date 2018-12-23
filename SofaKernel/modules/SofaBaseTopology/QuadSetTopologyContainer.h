@@ -300,8 +300,8 @@ protected:
 
     /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setQuadTopologyToDirty() {m_quadTopologyDirty = true;}
-    void cleanQuadTopologyFromDirty() {m_quadTopologyDirty = false;}
+    void setQuadTopologyToDirty();
+    void cleanQuadTopologyFromDirty();
     const bool& isQuadTopologyDirty() {return m_quadTopologyDirty;}
 
 protected:

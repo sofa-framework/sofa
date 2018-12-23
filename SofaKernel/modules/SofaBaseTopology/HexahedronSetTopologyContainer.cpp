@@ -1205,7 +1205,38 @@ void HexahedronSetTopologyContainer::clear()
     QuadSetTopologyContainer::clear();
 }
 
+void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
+{
+    // set this container to dirty
+    m_hexahedronTopologyDirty = true;
 
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
+{
+    m_hexahedronTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
 {
