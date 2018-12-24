@@ -314,7 +314,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
             to_tstm->addEdgesProcess(edges_to_create) ;
             to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-            //to_tstm->propagateTopologicalChanges();
+            to_tstm->propagateTopologicalChanges();
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -406,8 +406,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         */
         case core::topology::TRIANGLESADDED:
         {
-            //const sofa::helper::vector<Triangle> &triangleArray=fromModel->getTriangles();
-
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
@@ -415,18 +413,23 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
             for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
             {
-                unsigned int ind_elem = ta->triangleIndexArray[i];
-                for (unsigned int j = 0; j < 3; ++j)
+                Topology::TriangleID triId = ta->triangleIndexArray[i];
+                const BaseMeshTopology::EdgesInTriangle& edgesInTri = fromModel->getEdgesInTriangle(triId);
+
+                // get each edge of the triangle involved
+                for (auto edgeId : edgesInTri)
                 {
-                    unsigned int k = (fromModel->getEdgesInTriangle(ind_elem))[j];
+                    const BaseMeshTopology::TrianglesAroundEdge& triAEdge = fromModel->getTrianglesAroundEdge(edgeId);
 
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                    bool is_present = (iter_1 != Glob2LocMap.end()) && fromModel->getTrianglesAroundEdge(k).size()>1;
-
-                    if (is_present)   // remove as visible the edge indexed by k
+                    // check if edge already exist
+                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeId);
+                    if (iter_1 != Glob2LocMap.end()) // edge inside map
                     {
+                        if (triAEdge.size()==1) // already registered and is on border. Nothing to do, continue.
+                            continue;
 
-                        unsigned int ind_k = Glob2LocMap[k];
+                        // more than 1 triangle, need to remove that edge from output topology
+                        unsigned int ind_k = Glob2LocMap[edgeId];
                         unsigned int ind_real_last = Loc2GlobVec[Loc2GlobVec.size() - 1];
 
                         Glob2LocMap.erase(Glob2LocMap.find(ind_real_last));
@@ -434,47 +437,25 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                         Loc2GlobVec[ind_k] = ind_real_last;
 
-                        Glob2LocMap.erase(Glob2LocMap.find(k));
+                        Glob2LocMap.erase(Glob2LocMap.find(edgeId));
                         Loc2GlobVec.resize(Loc2GlobVec.size() - 1);
 
                         sofa::helper::vector< unsigned int > edges_to_remove;
                         edges_to_remove.push_back(ind_k);
                         to_tstm->removeEdges(edges_to_remove, false);
-
                     }
-                    else   // add as visible the edge indexed by k
+                    else // edge not in the map
                     {
+                        if (triAEdge.size()!=1) //not on border. Continue.
+                            continue;
 
-                        if((iter_1 == Glob2LocMap.end()) && (fromModel->getTrianglesAroundEdge(k).size()==1))
-                        {
+                        core::topology::BaseMeshTopology::Edge edge = fromModel->getEdge(edgeId);
+                        edges_to_create.push_back(edge);
 
-                            //sofa::helper::vector< Edge > edges_to_create;
-                            //sofa::helper::vector< unsigned int > edgesIndexList;
+                        edgesIndexList.push_back((unsigned int)Loc2GlobVec.size());
+                        Loc2GlobVec.push_back(edgeId);
 
-                            core::topology::BaseMeshTopology::Edge t = fromModel->getEdge(k);
-                            /*
-                            if ((t[0]>t[1])) {
-                                int val=t[0]; t[0]=t[1]; t[1]=val;
-                            }
-                            */
-
-                            edges_to_create.push_back(t);
-                            edgesIndexList.push_back((unsigned int)Loc2GlobVec.size());
-
-                            Loc2GlobVec.push_back(k);
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                            if(iter_1 != Glob2LocMap.end() )
-                            {
-                                sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
-                                Glob2LocMap.erase(Glob2LocMap.find(k));
-                            }
-                            Glob2LocMap[k]= (unsigned int)Loc2GlobVec.size()-1;
-
-                            //to_tstm->addEdgesProcess(edges_to_create) ;
-                            //to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-                            //toModel->propagateTopologicalChanges();
-                        }
-
+                        Glob2LocMap[edgeId]= (unsigned int)Loc2GlobVec.size()-1;
                     }
                 }
             }
