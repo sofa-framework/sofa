@@ -119,12 +119,24 @@ public:
     void activateSparseData() {m_isConcerned = true;}
     void desactivateSparseData() {m_isConcerned = false;}
 
+    size_t size() {return m_map2Elements.size();}
+
+    unsigned int indexOfElement(unsigned int index)
+    {
+        for (unsigned int i=0; i<m_map2Elements.size(); ++i)
+            if (index == m_map2Elements[i])
+                return i;
+
+        return sofa::defaulttype::InvalidID;
+    }
+
 
 protected:
 
     virtual void createTopologyHandler() {}
 
-    sofa::helper::vector<unsigned int> m_map2Elements; // same size as SparseData but contain id of Triangle link to each data[]
+    // same size as SparseData but contain id of element link to each data[]
+    sofa::helper::vector<unsigned int> m_map2Elements;
 
     typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;
