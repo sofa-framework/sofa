@@ -3,3 +3,6 @@ Components/topology/Tetra2TriangleTopologicalMapping.scn 30 1e-4 1
 
 ### Topology Modifier scenes ###
 Components/topology/TopologicalModifiers/RemovingTrianglesProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/RemovingTriangle2EdgeProcess.scn 30 1e-4 
+Components/topology/TopologicalModifiers/AddingTrianglesProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingTriangle2EdgeProcess.scn 30 1e-4 1
