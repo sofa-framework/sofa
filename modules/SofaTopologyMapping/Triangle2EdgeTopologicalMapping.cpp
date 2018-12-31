@@ -406,63 +406,78 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         */
         case core::topology::TRIANGLESADDED:
         {
-            const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+            const sofa::component::topology::TrianglesAdded *trianglesAdded = static_cast< const sofa::component::topology::TrianglesAdded * >(*itBegin);
 
-            sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
-            sofa::helper::vector< unsigned int > edgesIndexList;
+            sofa::helper::vector< BaseMeshTopology::Edge > edges_to_create;
+            sofa::helper::vector< BaseMeshTopology::EdgeID > edgeId_to_create;
+            sofa::helper::vector< BaseMeshTopology::EdgeID > edgeId_to_remove;
 
-            for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
+            // Need to first add all the new edges before removing the old one.
+            for (auto triId : trianglesAdded->triangleIndexArray)
             {
-                Topology::TriangleID triId = ta->triangleIndexArray[i];
-                const BaseMeshTopology::EdgesInTriangle& edgesInTri = fromModel->getEdgesInTriangle(triId);
-
-                // get each edge of the triangle involved
-                for (auto edgeId : edgesInTri)
+                const BaseMeshTopology::EdgesInTriangle& edgeInTri = fromModel->getEdgesInTriangle(triId);
+                for (auto edgeGlobId : edgeInTri)
                 {
-                    const BaseMeshTopology::TrianglesAroundEdge& triAEdge = fromModel->getTrianglesAroundEdge(edgeId);
-
-                    // check if edge already exist
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeId);
-                    if (iter_1 != Glob2LocMap.end()) // edge inside map
+                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeGlobId);
+                    const BaseMeshTopology::TrianglesAroundEdge& triAEdge = fromModel->getTrianglesAroundEdge(edgeGlobId);
+                    if (iter_1 != Glob2LocMap.end()) // in the map
                     {
-                        if (triAEdge.size()==1) // already registered and is on border. Nothing to do, continue.
-                            continue;
-
-                        // more than 1 triangle, need to remove that edge from output topology
-                        unsigned int ind_k = Glob2LocMap[edgeId];
-                        unsigned int ind_real_last = Loc2GlobVec[Loc2GlobVec.size() - 1];
-
-                        Glob2LocMap.erase(Glob2LocMap.find(ind_real_last));
-                        Glob2LocMap[ind_real_last] = ind_k;
-
-                        Loc2GlobVec[ind_k] = ind_real_last;
-
-                        Glob2LocMap.erase(Glob2LocMap.find(edgeId));
-                        Loc2GlobVec.resize(Loc2GlobVec.size() - 1);
-
-                        sofa::helper::vector< unsigned int > edges_to_remove;
-                        edges_to_remove.push_back(ind_k);
-                        to_tstm->removeEdges(edges_to_remove, false);
+                        if (triAEdge.size() != 1) // already in the map but not anymore on border, add it for later removal.
+                            edgeId_to_remove.push_back(edgeGlobId);
                     }
-                    else // edge not in the map
+                    else
                     {
-                        if (triAEdge.size()!=1) //not on border. Continue.
+                        if (triAEdge.size() > 1) // not in the map and not on border, nothing to do.
                             continue;
 
-                        core::topology::BaseMeshTopology::Edge edge = fromModel->getEdge(edgeId);
+                        // not in the map but on border. Need to add this edge.
+                        core::topology::BaseMeshTopology::Edge edge = fromModel->getEdge(edgeGlobId);
                         edges_to_create.push_back(edge);
+                        edgeId_to_create.push_back((unsigned int)Loc2GlobVec.size());
 
-                        edgesIndexList.push_back((unsigned int)Loc2GlobVec.size());
-                        Loc2GlobVec.push_back(edgeId);
-
-                        Glob2LocMap[edgeId]= (unsigned int)Loc2GlobVec.size()-1;
+                        Loc2GlobVec.push_back(edgeGlobId);
+                        Glob2LocMap[edgeGlobId] = (unsigned int)Loc2GlobVec.size() - 1;
                     }
                 }
             }
 
-            to_tstm->addEdgesProcess(edges_to_create) ;
-            to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
+            // add new edges to output topology
+            to_tstm->addEdgesProcess(edges_to_create);
+            to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgeId_to_create);
             to_tstm->propagateTopologicalChanges();
+
+
+            // remove edges not anymore on part of the border
+            sofa::helper::vector< BaseMeshTopology::EdgeID > local_edgeId_to_remove;
+            std::sort(edgeId_to_remove.begin(), edgeId_to_remove.end(), std::greater<BaseMeshTopology::EdgeID>());
+            for (auto edgeGlobId : edgeId_to_remove)
+            {
+
+                std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeGlobId);
+                if (iter_1 == Glob2LocMap.end())
+                {
+                    msg_error() << " in TRIANGLESADDED process, edge id " << edgeGlobId << " not found in Glob2LocMap";
+                    continue;
+                }
+
+                BaseMeshTopology::EdgeID edgeLocId = iter_1->second;
+                BaseMeshTopology::EdgeID lastGlobId = Loc2GlobVec.back();
+
+                // swap and pop loc2Glob vec
+                Loc2GlobVec[edgeLocId] = lastGlobId;
+                Loc2GlobVec.pop_back();
+
+                // redirect glob2loc map
+                Glob2LocMap.erase(iter_1);
+                Glob2LocMap[lastGlobId] = edgeLocId;
+
+                // add edge for output topology update
+                local_edgeId_to_remove.push_back(edgeLocId);
+            }
+
+            // remove old edges
+            to_tstm->removeEdges(local_edgeId_to_remove);
+
             break;
         }
         case core::topology::POINTSADDED:
