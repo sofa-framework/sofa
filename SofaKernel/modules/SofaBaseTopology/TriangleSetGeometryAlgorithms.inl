@@ -2515,7 +2515,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                 color[j] = (float)fabs(normal[j]);
 
             vertices.push_back(center);
-            colors.push_back(color);
             vertices.push_back(point2);
             colors.push_back(color);
         }
