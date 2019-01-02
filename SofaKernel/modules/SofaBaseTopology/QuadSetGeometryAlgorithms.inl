@@ -355,8 +355,11 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     {
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
+        sofa::helper::types::RGBAColor color = _drawColor.getValue();
+        color[0] -= 0.2f;
+        color[1] -= 0.2f;
+        color[2] -= 0.2f;
+
         float scale = this->getIndicesScale();
 
         //for quads:
@@ -378,7 +381,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             positions.push_back(center);
 
         }
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
 
 
@@ -390,9 +393,6 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         if (!quadArray.empty()) // Draw Quad surfaces
         {
             const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
-
             { // drawing quads
                 std::vector<defaulttype::Vector3> pos;
                 pos.reserve(quadArray.size()*4u);
@@ -403,13 +403,16 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
                     {
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
                     }
-                }
-                vparams->drawTool()->drawQuads(pos, color4);
+                vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
             }
 
             { // drawing edges
                 const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-                const sofa::defaulttype::Vec4f edge_color(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f,1.0f);
+                sofa::helper::types::RGBAColor edge_color = _drawColor.getValue();
+                edge_color[0] -= 0.2f;
+                edge_color[1] -= 0.2f;
+                edge_color[2] -= 0.2f;
+
                 std::vector<defaulttype::Vector3> pos;
                 pos.reserve(edgeArray.size()*2u);
 
