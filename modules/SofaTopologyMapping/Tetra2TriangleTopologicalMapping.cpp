@@ -94,54 +94,47 @@ void Tetra2TriangleTopologicalMapping::init()
     }
 
 
-    TriangleSetTopologyContainer *to_tstc;
-    toModel->getContext()->get(to_tstc);
-    to_tstc->clear();
+    // INITIALISATION of Triangle mesh from Tetrahedral mesh :
+    // Clear output topology
+    toModel->clear();
 
+    // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
 
-    TriangleSetTopologyModifier *to_tstm;
-    toModel->getContext()->get(to_tstm);
+    // if no init triangle option (set output topology to empty)
+    if (noInitialTriangles.getValue()){
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+        return;
+    }
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &triangleArray=fromModel->getTriangles();
+    // create topology maps and add triangle on border into output topology
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangleArray = fromModel->getTriangles();
     const bool flipN = flipNormals.getValue();
 
-    /// only initialize with border triangles if necessary
-    if (noInitialTriangles.getValue()==false)
+    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+
+    Loc2GlobVec.clear();
+    Glob2LocMap.clear();
+
+    for (Topology::TriangleID triId=0; triId<triangleArray.size(); ++triId)
     {
-
-        sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
-        Loc2GlobVec.clear();
-        Glob2LocMap.clear();
-
-        for (unsigned int i=0; i<triangleArray.size(); ++i)
+        if (fromModel->getTetrahedraAroundTriangle(triId).size() == 1)
         {
+            const core::topology::BaseMeshTopology::Triangle& t = triangleArray[triId];
+            if(flipN)
+                toModel->addTriangle(t[0], t[2], t[1]);
+            else
+                toModel->addTriangle(t[0], t[1], t[2]);
 
-            if (fromModel->getTetrahedraAroundTriangle(i).size()==1)
-            {
-                if(flipN)
-                {
-                    core::topology::BaseMeshTopology::Triangle t = triangleArray[i];
-                    unsigned int tmp = t[2];
-                    t[2] = t[1];
-                    t[1] = tmp;
-                    to_tstm->addTriangleProcess(t);
-                }
-                else
-                    to_tstm->addTriangleProcess(triangleArray[i]);
-
-                Loc2GlobVec.push_back(i);
-                Glob2LocMap[i]= (unsigned int)Loc2GlobVec.size()-1;
-            }
+            Loc2GlobVec.push_back(triId);
+            Glob2LocMap[triId]= Loc2GlobVec.size() - 1;
         }
-
-        //to_tstm->propagateTopologicalChanges();
-        to_tstm->notifyEndingEvent();
-        //to_tstm->propagateTopologicalChanges();
-        Loc2GlobDataVec.endEdit();
     }
+
+    Loc2GlobDataVec.endEdit();
+    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
 }
+
 
 unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
 {
