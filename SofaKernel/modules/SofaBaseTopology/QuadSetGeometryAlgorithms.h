@@ -62,7 +62,7 @@ protected:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         , showQuadIndices(core::objectmodel::Base::initData(&showQuadIndices, (bool) false, "showQuadIndices", "Debug : view Quad indices"))
         , _drawQuads(core::objectmodel::Base::initData(&_drawQuads, false, "drawQuads","if true, draw the quads in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.0f,0.4f,0.4f), "drawColorQuads", "RGB code color used to draw quads."))
+        , _drawColor(initData(&_drawColor, sofa::helper::types::RGBAColor(0.0f,0.4f,0.4f,1.0f), "drawColorQuads", "RGB code color used to draw quads."))
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}
@@ -113,7 +113,7 @@ public:
 protected:
     Data<bool> showQuadIndices; ///< Debug : view Quad indices
     Data<bool> _drawQuads; ///< if true, draw the quads in the topology
-    Data<sofa::defaulttype::Vec3f> _drawColor; ///< RGB code color used to draw quads.
+    Data<sofa::helper::types::RGBAColor> _drawColor; ///< RGB code color used to draw quads.
 
 };
 

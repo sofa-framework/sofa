@@ -840,9 +840,6 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
     {
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = d_drawColorHexahedra.getValue();
-        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
-
         float scale = this->getIndicesScale();
 
         //for hexa:
@@ -867,7 +864,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
             positions.push_back(center);
         }
 
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, d_drawColorHexahedra.getValue());
     }
 
 
@@ -879,11 +876,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
-        const sofa::defaulttype::Vec3f& color = d_drawColorHexahedra.getValue();
-        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
-
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
         sofa::helper::vector <sofa::defaulttype::Vector3> hexaCoords;
 
         for (size_t i = 0; i<hexaArray.size(); i++)
@@ -901,13 +894,12 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
         const float& scale = d_drawScaleHexahedra.getValue();
 
         if(scale >= 1.0 && scale < 0.001)
-            vparams->drawTool()->drawHexahedra(hexaCoords, color4);
+            vparams->drawTool()->drawHexahedra(hexaCoords, d_drawColorHexahedra.getValue());
         else
-            vparams->drawTool()->drawScaledHexahedra(hexaCoords, color4, scale);
+            vparams->drawTool()->drawScaledHexahedra(hexaCoords, d_drawColorHexahedra.getValue(), scale);
 
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
-           
     }
 }
 
