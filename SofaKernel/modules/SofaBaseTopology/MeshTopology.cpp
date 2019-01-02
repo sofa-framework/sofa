@@ -255,26 +255,22 @@ void MeshTopology::TriangleUpdate::doUpdate()
     Triangle tr;
     unsigned int triangleIndex;
     unsigned int v[3],val;
+    const unsigned int trianglesInTetrahedronArray[4][3]= {{0,2,1}, {0,1,3}, {1,2,3}, {0,3,2}};
     /// create the m_edge array at the same time than it fills the m_trianglesInTetrahedron array
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
         const Tetra &t=topology->seqTetrahedra.getValue()[i];
-        for (unsigned int j=0; j<4; ++j)
+        for (TriangleID j=0; j<4; ++j)
         {
-            if (j%2)
-            {
-                v[0]=t[(j+1)%4]; v[1]=t[(j+2)%4]; v[2]=t[(j+3)%4];
-            }
-            else
-            {
-                v[0]=t[(j+1)%4]; v[2]=t[(j+2)%4]; v[1]=t[(j+3)%4];
-            }
-            //		std::sort(v,v+2);
+            for (PointID k=0; k<3; ++k)
+                v[k] = t[trianglesInTetrahedronArray[j][k]];
+
             // sort v such that v[0] is the smallest one
             while ((v[0]>v[1]) || (v[0]>v[2]))
             {
                 val=v[0]; v[0]=v[1]; v[1]=v[2]; v[2]=val;
             }
+
             // check if a triangle with an opposite orientation already exists
             tr=Triangle(v[0],v[2],v[1]);
             itt=triangleMap.find(tr);
@@ -286,16 +282,10 @@ void MeshTopology::TriangleUpdate::doUpdate()
                 triangleMap[tr]=triangleIndex;
                 seqTriangles.push_back(tr);
             }
-//            else
-//            {
-//                triangleIndex=(*itt).second;
-//            }
-            //m_trianglesInTetrahedron[i][j]=triangleIndex;
         }
     }
 
     topology->seqTriangles.endEdit();
-
 }
 
 MeshTopology::QuadUpdate::QuadUpdate(MeshTopology *t)
