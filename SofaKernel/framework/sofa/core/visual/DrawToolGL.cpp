@@ -144,6 +144,9 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 
 void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec<4,float> >& colors)
 {
+    if (points.size() != colors.size()*2)
+        return drawLines(points, size, RGBAColor::red());
+
     glLineWidth(size);
     disableLighting();
     glBegin(GL_LINES);
