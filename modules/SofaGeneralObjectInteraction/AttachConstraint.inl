@@ -45,6 +45,7 @@ using sofa::simulation::Node ;
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
+    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
         (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
@@ -80,6 +81,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
+    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
         (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
@@ -98,6 +100,7 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
+    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -111,6 +114,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
+    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -122,6 +126,7 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
+    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -151,6 +156,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& d
 template<>
 inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
+    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -176,25 +182,20 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& d
     }
 }
 
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid3Types>::DerivConstrainedSize(bool freeRotations)
+template<class DataTypes>
+inline unsigned int AttachConstraint<DataTypes>::DerivConstrainedSize(bool freeRotations)
 {
-    if (freeRotations)
-        return Deriv::spatial_dimensions;
-    else
-        return Deriv::total_size;
+    if constexpr(std::is_same<DataTypes, defaulttype::Rigid2Types>::value || std::is_same<DataTypes, defaulttype::Rigid3Types>::value) {
+        if (freeRotations)
+            return Deriv::spatial_dimensions;
+        else
+            return Deriv::total_size;
+    }
+    else {
+        SOFA_UNUSED(freeRotations);
+        return Deriv::size();
+    }
 }
-
-
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid2Types>::DerivConstrainedSize(bool freeRotations)
-{
-    if (freeRotations)
-        return Deriv::spatial_dimensions;
-    else
-        return Deriv::total_size;
-}
-
 
 #if 0
 // Define TestNewPointFunction
@@ -262,22 +263,14 @@ template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
+
+    dynamicConstraintFactor = !d_constraintFactor.isSet();
     reinit();
 }
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::reinit()
 {
-    checkChanged();
-    constraintReleased.resize(f_indices2.getValue().size());
-    activeFlags.resize(f_indices2.getValue().size());
-    std::fill(activeFlags.begin(), activeFlags.end(), true);
-    if (f_restRotations.getValue())
-        calcRestRotations();
-}
-
-template<class DataTypes>
-void AttachConstraint<DataTypes>::checkChanged() {
     // Check coherency of size between indices vectors 1 and 2
     if(f_indices1.getValue().size() != f_indices2.getValue().size())
     {
@@ -285,21 +278,12 @@ void AttachConstraint<DataTypes>::checkChanged() {
                     << f_indices1.getValue().size() << " != " << f_indices2.getValue().size() << ").";
     }
 
+    // Set to the correct length if dynamic, else check coherency.
     helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
-    if(f_indices1.getParent() || f_indices1.getParent())
+    if(dynamicConstraintFactor)
     {
-
-        if (this->mstate1 && this->mstate2 && constraintFactor.size() != f_indices2.getValue().size())
-        {
-            // constraintFactor default behavior
-            // if NOT set : initialize all constraints active
-            //if(!d_constraintFactor.isSet())
-            constraintFactor.resize(f_indices2.getValue().size());
-            std::fill(constraintFactor.begin(), constraintFactor.end(), 1.0);
-            constraintReleased.resize(f_indices2.getValue().size());
-            activeFlags.resize(f_indices2.getValue().size());
-            std::fill(activeFlags.begin(), activeFlags.end(), true);
-        }
+        constraintFactor.resize(f_indices2.getValue().size());
+        std::fill(constraintFactor.begin(), constraintFactor.end(), 1.0);
     }
     else
     {
@@ -319,7 +303,21 @@ void AttachConstraint<DataTypes>::checkChanged() {
         }
     }
     d_constraintFactor.endEdit();
+    constraintReleased.resize(f_indices2.getValue().size());
+    activeFlags.resize(f_indices2.getValue().size());
+    std::fill(activeFlags.begin(), activeFlags.end(), true);
+    if (f_restRotations.getValue())
+        calcRestRotations();
 }
+
+template<class DataTypes>
+void AttachConstraint<DataTypes>::reinitIfChanged() {
+    if((f_indices1.getParent() || f_indices2.getParent()) && d_constraintFactor.getValue().size() != f_indices2.getValue().size())
+    {
+        reinit();
+    }
+}
+
 template <class DataTypes>
 void AttachConstraint<DataTypes>::calcRestRotations()
 {
