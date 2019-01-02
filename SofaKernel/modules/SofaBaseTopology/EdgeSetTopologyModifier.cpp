@@ -625,7 +625,7 @@ void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< EdgeID >& 
     for (size_t i = 0; i < edgeIds.size(); i++)
     {
         if( edgeIds[i] >= m_container->getNumberOfEdges())
-            dmsg_error() << "Unable to remoev and edges: "<< edgeIds[i] <<" is out of bound and won't be removed." ;
+            dmsg_warning() << "Unable to remoev and edges: "<< edgeIds[i] <<" is out of bound and won't be removed." ;
         else
             edgeIds_filtered.push_back(edgeIds[i]);
     }

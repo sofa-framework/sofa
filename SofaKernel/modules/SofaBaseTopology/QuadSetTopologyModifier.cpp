@@ -466,7 +466,7 @@ void QuadSetTopologyModifier::removeQuads(const sofa::helper::vector< QuadID >& 
     for (size_t i = 0; i < quadIds.size(); i++)
     {
         if( quadIds[i] >= m_container->getNumberOfQuads())
-			msg_error() << "Quad: "<< quadIds[i] <<" is out of bound and won't be removed.";
+            dmsg_warning() << "Quad: "<< quadIds[i] <<" is out of bound and won't be removed.";
         else
             quadIds_filtered.push_back(quadIds[i]);
     }

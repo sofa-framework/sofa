@@ -301,7 +301,7 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<Tri
     for (size_t i = 0; i < triangleIds.size(); i++)
     {
         if( triangleIds[i] >= m_container->getNumberOfTriangles())
-            msg_warning() << "RemoveTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed.";
+            dmsg_warning() << "RemoveTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed.";
         else
             triangleIds_filtered.push_back(triangleIds[i]);
     }
