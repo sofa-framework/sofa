@@ -64,6 +64,7 @@ Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
     , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
     , noNewTriangles(initData(&noNewTriangles, bool(false), "noNewTriangles", "If true no new triangles are being created"))
     , noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
+    , m_outTopoModifier(NULL)
 {
 }
 
@@ -84,6 +85,13 @@ void Tetra2TriangleTopologicalMapping::init()
     if (!toModel)
     {
         msg_error() << "Pointer to output topology is invalid.";
+        modelsOk = false;
+    }
+
+    toModel->getContext()->get(m_outTopoModifier);
+    if (!m_outTopoModifier)
+    {
+        msg_error() << "No TriangleSetTopologyModifier found in the Edge topology Node.";
         modelsOk = false;
     }
 
@@ -156,9 +164,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
     sofa::helper::AdvancedTimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
 
-    TriangleSetTopologyModifier *to_tstm;
-    toModel->getContext()->get(to_tstm);
-
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
@@ -175,9 +180,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::ENDING_EVENT:
         {
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->notifyEndingEvent();
-            to_tstm->propagateTopologicalChanges();
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->notifyEndingEvent();
+            m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
 
@@ -203,7 +208,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             }
 
             std::sort(triangles_to_remove.begin(), triangles_to_remove.end(), std::greater<unsigned int>());
-            to_tstm->removeTriangles(triangles_to_remove, true, false);
+            m_outTopoModifier->removeTriangles(triangles_to_remove, true, false);
 
             // update the maps from toModel changes
             for (auto oldLocTriId : triangles_to_remove)
@@ -301,8 +306,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
-            to_tstm->addTrianglesProcess(triangles_to_create) ;
-            to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
+            m_outTopoModifier->addTrianglesProcess(triangles_to_create) ;
+            m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
             break;
         }
 
@@ -542,8 +547,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     }
                 }
 
-                to_tstm->addTrianglesProcess(triangles_to_create) ;
-                to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
+                m_outTopoModifier->addTrianglesProcess(triangles_to_create) ;
+                m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
             }
 
             break;
@@ -553,16 +558,16 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::EDGESADDED:
         {
             const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
-            to_tstm->addEdgesProcess(ea->edgeArray);
-            to_tstm->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
+            m_outTopoModifier->addEdgesProcess(ea->edgeArray);
+            m_outTopoModifier->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
             break;
         }
 
         case core::topology::POINTSADDED:
         {
             size_t nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-            to_tstm->addPointsProcess(nbAddedPoints);
-            to_tstm->addPointsWarning(nbAddedPoints, true);
+            m_outTopoModifier->addPointsProcess(nbAddedPoints);
+            m_outTopoModifier->addPointsWarning(nbAddedPoints, true);
             break;
         }
 
@@ -580,10 +585,10 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             sofa::helper::vector<unsigned int>& tab_indices = indices;
 
-            to_tstm->removePointsWarning(tab_indices, false);
+            m_outTopoModifier->removePointsWarning(tab_indices, false);
 
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->removePointsProcess(tab_indices, false);
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->removePointsProcess(tab_indices, false);
             break;
         }
 
@@ -606,9 +611,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             sofa::helper::vector<unsigned int>& tab_indices = indices;
             sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
 
-            to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
+            m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->renumberPointsProcess(tab_indices, inv_tab_indices, false);
 
             break;
         }
@@ -620,7 +625,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    to_tstm->propagateTopologicalChanges();
+    m_outTopoModifier->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
