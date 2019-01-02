@@ -185,7 +185,7 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& d
 template<class DataTypes>
 inline unsigned int AttachConstraint<DataTypes>::DerivConstrainedSize(bool freeRotations)
 {
-    if constexpr(std::is_same<DataTypes, defaulttype::Rigid2Types>::value || std::is_same<DataTypes, defaulttype::Rigid3Types>::value) {
+    if (std::is_same<DataTypes, defaulttype::Rigid2Types>::value || std::is_same<DataTypes, defaulttype::Rigid3Types>::value) {
         if (freeRotations)
             return Deriv::spatial_dimensions;
         else
