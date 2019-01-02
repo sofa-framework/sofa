@@ -56,6 +56,7 @@ int Triangle2EdgeTopologicalMappingClass = core::RegisterObject("Special case of
 
 Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
+    , m_outTopoModifier(NULL)
 {
 }
 
@@ -85,6 +86,13 @@ void Triangle2EdgeTopologicalMapping::init()
         modelsOk = false;
     }
 
+    toModel->getContext()->get(m_outTopoModifier);
+    if (!m_outTopoModifier)
+    {
+        msg_error() << "No EdgeSetTopologyModifier found in the Edge topology Node.";
+        modelsOk = false;
+    }
+
     if (!modelsOk)
     {
         this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
@@ -109,7 +117,7 @@ void Triangle2EdgeTopologicalMapping::init()
     {
         if (fromModel->getTrianglesAroundEdge(eId).size() == 1)
         {
-            Topology::Edge e = edgeArray[eId];
+            const Topology::Edge& e = edgeArray[eId];
             toModel->addEdge(e[0], e[1]);
 
             Loc2GlobVec.push_back(eId);
@@ -141,10 +149,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
     sofa::helper::AdvancedTimer::stepBegin("Update Triangle2EdgeTopologicalMapping");
 
-    EdgeSetTopologyModifier *to_tstm;
-    toModel->getContext()->get(to_tstm);
-
-
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
@@ -160,9 +164,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         {
         case core::topology::ENDING_EVENT:
         {
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->notifyEndingEvent();
-            to_tstm->propagateTopologicalChanges();
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->notifyEndingEvent();
+            m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
         case core::topology::EDGESREMOVED:
@@ -227,7 +231,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                     sofa::helper::vector< unsigned int > edges_to_remove;
                     edges_to_remove.push_back(ind_k);
-                    to_tstm->removeEdges(edges_to_remove, false);
+                    m_outTopoModifier->removeEdges(edges_to_remove, false);
 
                 }
                 else
@@ -239,7 +243,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 --last;
             }
 
-            //to_tstm->propagateTopologicalChanges();
+            //m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
         case core::topology::TRIANGLESREMOVED:
@@ -312,9 +316,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
-            to_tstm->addEdgesProcess(edges_to_create) ;
-            to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-            to_tstm->propagateTopologicalChanges();
+            m_outTopoModifier->addEdgesProcess(edges_to_create) ;
+            m_outTopoModifier->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
+            m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -331,9 +335,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
             sofa::helper::vector<unsigned int>& tab_indices = indices;
 
-            to_tstm->removePointsWarning(tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->removePointsProcess(tab_indices, false);
+            m_outTopoModifier->removePointsWarning(tab_indices, false);
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->removePointsProcess(tab_indices, false);
 
             break;
         }
@@ -356,9 +360,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             sofa::helper::vector<unsigned int>& tab_indices = indices;
             sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
 
-            to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
+            m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->renumberPointsProcess(tab_indices, inv_tab_indices, false);
             break;
         }
         /*
@@ -395,8 +399,8 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     Glob2LocMap[k]=Loc2GlobVec.size()-1;
                 }
 
-                to_tstm->addEdgesProcess(edges_to_create) ;
-                to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
+                m_outTopoModifier->addEdgesProcess(edges_to_create) ;
+                m_outTopoModifier->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
                 //toModel->propagateTopologicalChanges();
 
             }
@@ -442,9 +446,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             }
 
             // add new edges to output topology
-            to_tstm->addEdgesProcess(edges_to_create);
-            to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgeId_to_create);
-            to_tstm->propagateTopologicalChanges();
+            m_outTopoModifier->addEdgesProcess(edges_to_create);
+            m_outTopoModifier->addEdgesWarning(edges_to_create.size(), edges_to_create, edgeId_to_create);
+            m_outTopoModifier->propagateTopologicalChanges();
 
 
             // remove edges not anymore on part of the border
@@ -476,16 +480,16 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             }
 
             // remove old edges
-            to_tstm->removeEdges(local_edgeId_to_remove);
+            m_outTopoModifier->removeEdges(local_edgeId_to_remove);
 
             break;
         }
         case core::topology::POINTSADDED:
         {
             const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
-            to_tstm->addPointsProcess(ta->getNbAddedVertices());
-            to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
-            to_tstm->propagateTopologicalChanges();
+            m_outTopoModifier->addPointsProcess(ta->getNbAddedVertices());
+            m_outTopoModifier->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
+            m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
         default:
@@ -496,7 +500,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    to_tstm->propagateTopologicalChanges();
+    m_outTopoModifier->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Triangle2EdgeTopologicalMapping");
