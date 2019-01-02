@@ -591,7 +591,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector
     for (size_t i = 0; i < tetrahedraIds.size(); i++)
     {
         if( tetrahedraIds[i] >= m_container->getNumberOfTetrahedra())
-            msg_error() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
+            dmsg_warning() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
         else
             tetrahedraIds_filtered.push_back(tetrahedraIds[i]);
     }
