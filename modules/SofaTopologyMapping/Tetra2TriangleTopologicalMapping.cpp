@@ -161,6 +161,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
+    sofa::helper::AdvancedTimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
+
     TriangleSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 
@@ -172,24 +174,22 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     while( itBegin != itEnd )
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
+        std::string topoChangeType = "Triangle2EdgeTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
+        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
         switch( changeType )
         {
 
         case core::topology::ENDING_EVENT:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::ENDING_EVENT");
-            //msg_info() << " : Tetra2TriangleTopologicalMapping - ENDING_EVENT";
             to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
             to_tstm->propagateTopologicalChanges();
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::ENDING_EVENT");
             break;
         }
 
         case core::topology::TRIANGLESREMOVED:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::TRIANGLESREMOVED");
             unsigned int last = (unsigned int)fromModel->getNbTriangles() - 1;
             unsigned int ind_last = (unsigned int)toModel->getNbTriangles() - 1;
 
@@ -231,13 +231,11 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 Glob2LocMap.erase(iter_1); // pop last of glob map
             }
 
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::TRIANGLESREMOVED");
             break;
         }
 
         case core::topology::TRIANGLESADDED:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::TRIANGLESADDED");
             const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *itBegin ) )->getArray();
 
             const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
@@ -312,15 +310,13 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             to_tstm->addTrianglesProcess(triangles_to_create) ;
             to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::TRIANGLESADDED");
             break;
         }
 
         case core::topology::TETRAHEDRAADDED:
         {
-            if ((fromModel) && (noNewTriangles.getValue()==false))
+            if (noNewTriangles.getValue()==false)
             {
-                sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::TETRAHEDRAADDED");
                 //const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraAdded *>( *itBegin ) )->getArray();
 
@@ -410,7 +406,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         }
                     }
                 }
-                sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::TETRAHEDRAADDED");
             }
             break;
         }
@@ -418,10 +413,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::TETRAHEDRAREMOVED:
         {
 
-            if ((fromModel) && (noNewTriangles.getValue()==false))
+            if (noNewTriangles.getValue()==false)
             {
-                sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::TETRAHEDRAREMOVED");
-
                 const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
 
@@ -558,8 +551,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 to_tstm->addTrianglesProcess(triangles_to_create) ;
                 to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-
-                sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::TETRAHEDRAREMOVED");
             }
 
             break;
@@ -568,30 +559,22 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::EDGESADDED:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::EDGESADDED");
             const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
             to_tstm->addEdgesProcess(ea->edgeArray);
             to_tstm->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::EDGESADDED");
             break;
         }
 
         case core::topology::POINTSADDED:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::POINTSADDED");
             size_t nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
             to_tstm->addPointsProcess(nbAddedPoints);
             to_tstm->addPointsWarning(nbAddedPoints, true);
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::POINTSADDED");
-
             break;
         }
 
         case core::topology::POINTSREMOVED:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::POINTSREMOVED");
-            //msg_info() << " : Tetra2TriangleTopologicalMapping - POINTSREMOVED";
-
             const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::helper::vector<unsigned int> indices;
@@ -608,16 +591,11 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             to_tstm->propagateTopologicalChanges();
             to_tstm->removePointsProcess(tab_indices, false);
-
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::POINTSREMOVED");
             break;
         }
 
         case core::topology::POINTSRENUMBERING:
         {
-            sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::POINTSRENUMBERING");
-            //msg_info() << " : Hexa2QuadTopologicalMapping - POINTSREMOVED";
-
             const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
             const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
@@ -639,7 +617,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             to_tstm->propagateTopologicalChanges();
             to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
 
-            sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::POINTSRENUMBERING");
             break;
         }
         default:
@@ -647,11 +624,13 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
+        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
     to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
+    sofa::helper::AdvancedTimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
 }
 
 
