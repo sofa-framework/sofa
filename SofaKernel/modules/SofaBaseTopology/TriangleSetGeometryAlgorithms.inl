@@ -2430,15 +2430,24 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
             {//   Draw Triangles
                 std::vector<defaulttype::Vector3> pos;
+                pos.reserve(triangleArray.size()*3);
                 for (size_t i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
 
+                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                    std::vector<defaulttype::Vector3> tmpPos;
+                    tmpPos.resize(3);
+
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
-
+                        tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[t[j]]));
+                        bary += tmpPos[j];
                     }
+                    bary /= 3;
+
+                    for (unsigned int j = 0; j<3; j++)
+                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
                 }
                 vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
             }
@@ -2483,7 +2492,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
         size_t nbrTtri = triangleArray.size();
 
-        Coord point2;
         sofa::defaulttype::Vec4f color;
         SReal normalLength = _drawNormalLength.getValue();
 

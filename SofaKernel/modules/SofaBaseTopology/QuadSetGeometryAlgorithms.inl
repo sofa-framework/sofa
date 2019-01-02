@@ -399,10 +399,21 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
                 for (size_t i=0u; i< quadArray.size(); i++)
                 {
                     const Quad& q = quadArray[i];
+
+                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                    std::vector<defaulttype::Vector3> tmpPos;
+                    tmpPos.resize(4);
+
                     for (unsigned int j = 0; j<4; j++)
                     {
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
+                        tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[q[j]]));
+                        bary += tmpPos[j];
                     }
+                    bary /= 4;
+
+                    for (unsigned int j = 0; j<4; j++)
+                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
+                }
                 vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
             }
 
