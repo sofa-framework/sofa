@@ -45,7 +45,6 @@ using sofa::simulation::Node ;
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
-    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
         (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
@@ -81,7 +80,6 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
-    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
         (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
@@ -100,7 +98,6 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
-    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -114,7 +111,6 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
-    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -126,7 +122,6 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
-    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -156,7 +151,6 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& d
 template<>
 inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
-    reinitIfChanged();
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -279,14 +273,9 @@ void AttachConstraint<DataTypes>::reinit()
     }
 
     // Set to the correct length if dynamic, else check coherency.
-    helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
-    if(dynamicConstraintFactor)
+    if(d_constraintFactor.isSet())
     {
-        constraintFactor.resize(f_indices2.getValue().size());
-        std::fill(constraintFactor.begin(), constraintFactor.end(), 1.0);
-    }
-    else
-    {
+        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
         if(constraintFactor.size() != f_indices2.getValue().size())
         {
             msg_error() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
@@ -301,18 +290,22 @@ void AttachConstraint<DataTypes>::reinit()
                 }
             }
         }
+        d_constraintFactor.endEdit();
     }
-    d_constraintFactor.endEdit();
     constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
     std::fill(activeFlags.begin(), activeFlags.end(), true);
+    if (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10) {
+        lastDist.resize(f_indices2.getValue().size());
+    }
+
     if (f_restRotations.getValue())
         calcRestRotations();
 }
 
 template<class DataTypes>
 void AttachConstraint<DataTypes>::reinitIfChanged() {
-    if((f_indices1.getParent() || f_indices2.getParent()) && d_constraintFactor.getValue().size() != f_indices2.getValue().size())
+    if((f_indices1.getParent() || f_indices2.getParent()) && constraintReleased.size() != f_indices2.getValue().size())
     {
         reinit();
     }
@@ -351,10 +344,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
     VecCoord &res2 = *res2_d.beginEdit();
 
     // update active flags
-    constraintReleased.resize(indices2.size());
-    activeFlags.resize(indices2.size());
-    if (last)
-        lastDist.resize(indices2.size());
+    reinitIfChanged();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -417,8 +407,7 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices2.size());
-    activeFlags.resize(indices2.size());
+    reinitIfChanged();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -459,8 +448,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices2.size());
-    activeFlags.resize(indices2.size());
+    reinitIfChanged();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -518,8 +506,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices.size());
-    activeFlags.resize(indices.size());
+    reinitIfChanged();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
@@ -571,8 +558,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     unsigned int i = 0;
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices.size());
-    activeFlags.resize(indices.size());
+    reinitIfChanged();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {

@@ -120,9 +120,12 @@ protected :
     using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity;
     using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse;
 
+    inline Real getConstraintFactor(int index) {
+        return d_constraintFactor.isSet() ? d_constraintFactor.getValue()[index] : 1;
+    }
+
     void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned index)
     {
-        reinitIfChanged();
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (f_minDistance.getValue() != -1 &&
             (x2 - x1).norm() > f_minDistance.getValue())
@@ -132,9 +135,7 @@ protected :
         }
         constraintReleased[index] = false;
 
-        sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
-
-        Deriv corr = (x2-x1)*(0.5*d_positionFactor.getValue()*constraintFactor[index]);
+        Deriv corr = (x2-x1)*(0.5*d_positionFactor.getValue()*getConstraintFactor(index));
 
         x1 += corr;
         x2 -= corr;
@@ -142,12 +143,10 @@ protected :
 
     void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned index)
     {
-        reinitIfChanged();
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
 
-        sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
-        Deriv corr = (x2-x1)*(0.5*d_velocityFactor.getValue()*constraintFactor[index]);
+        Deriv corr = (x2-x1)*(0.5*d_velocityFactor.getValue()*getConstraintFactor(index));
 
         x1 += corr;
         x2 -= corr;
@@ -155,7 +154,6 @@ protected :
 
     void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned index)
     {
-        reinitIfChanged();
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
 
@@ -167,10 +165,9 @@ protected :
         {
             Deriv in1 = dx1;
             Deriv in2 = dx2;
-            sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
-
-            dx1 += in2*(d_responseFactor.getValue()*constraintFactor[index]);
-            dx2 += in1*(d_responseFactor.getValue()*constraintFactor[index]);
+            Real constraintFactor = getConstraintFactor(index);
+            dx1 += in2*(d_responseFactor.getValue()*constraintFactor);
+            dx2 += in1*(d_responseFactor.getValue()*constraintFactor);
         }
     }
 
