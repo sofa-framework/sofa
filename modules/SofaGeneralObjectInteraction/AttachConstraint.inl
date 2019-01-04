@@ -274,17 +274,6 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
 //     f_indices2.endEdit();
 }
 
-#if 0
-// Handle topological changes
-template <class DataTypes> void AttachConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-}
-#endif
-
 template <class DataTypes>
 AttachConstraint<DataTypes>::~AttachConstraint()
 {
