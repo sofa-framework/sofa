@@ -36,13 +36,10 @@ class SOFA_SIMULATION_CORE_API TopologyChangeVisitor : public Visitor
 {
 
 public:
-    TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source)
-        : Visitor(params), /*root(NULL),*/ source(source)
-    {}
+    TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source);
 
     virtual ~TopologyChangeVisitor() {}
 
-    virtual void processTopologyChangeNoCheck(simulation::Node* node, core::objectmodel::BaseObject* obj);
     virtual void processTopologyChange(simulation::Node* node, core::objectmodel::BaseObject* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -55,13 +52,13 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "topologyChange"; }
     virtual const char* getClassName() const { return "TopologyChangeVisitor"; }
-    virtual std::string getInfos() const { return "Topology:" + source->getName(); }
+    virtual std::string getInfos() const { return "Topology:" + m_source->getName(); }
 
 protected:
     /// Flag to know the number of iterations of the overloaded method processNodeTopDown
     //simulation::Node* root;
 
-    core::topology::Topology* source;
+    core::topology::Topology* m_source;
 };
 
 
