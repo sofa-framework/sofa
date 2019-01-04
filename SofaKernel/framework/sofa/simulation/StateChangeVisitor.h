@@ -51,7 +51,7 @@ public:
 
 protected:
     bool root;
-    core::topology::Topology* source;
+    core::topology::Topology* m_source;
 };
 
 
