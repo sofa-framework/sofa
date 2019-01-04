@@ -365,12 +365,6 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<Po
     }
     m_container->removePoints(indices.size());
 
-    // need to resend a visitor to call handleTopologyChange for mechanicalMapping now that mechanicalObject have been updated.
-    // TODO: epernod 2019-12-19: remove this hack when handleTopologyChange visitor will not be needed anymore.
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    getContext()->executeVisitor(&a);
     sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
 }
 
@@ -404,9 +398,6 @@ void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector
 void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-
-    // Declare all engines to dirty:
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
     this->propagateTopologicalEngineChanges();
     
