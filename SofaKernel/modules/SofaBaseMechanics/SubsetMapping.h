@@ -112,9 +112,6 @@ public:
 
     void init() override;
 
-    // handle topology changes depending on the topology
-    //void handleTopologyChange(core::topology::Topology* t);
-
     virtual ~SubsetMapping();
 
     virtual void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn ) override;
