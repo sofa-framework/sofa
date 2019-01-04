@@ -111,20 +111,6 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
     }
 }
 
-Visitor::Result HandleTopologyChangeVisitor::processNodeTopDown(simulation::Node* node)
-{
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        core::objectmodel::BaseObject* obj=it->get();
-        ctime_t t0=begin(node,obj);
-        obj->handleTopologyChange();
-        end(node,obj,t0);
-    }
-
-    return RESULT_CONTINUE;
-}
-
-
 
 } // namespace simulation
 
