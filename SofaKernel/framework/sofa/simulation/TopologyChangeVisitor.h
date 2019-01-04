@@ -64,23 +64,6 @@ protected:
     core::topology::Topology* source;
 };
 
-//Only triggers the handleTopologyChange method
-class SOFA_SIMULATION_CORE_API HandleTopologyChangeVisitor: public Visitor
-{
-public:
-    HandleTopologyChangeVisitor(const sofa::core::ExecParams* params)
-        : Visitor(params)
-    {}
-
-    virtual Result processNodeTopDown(simulation::Node* node);
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "topologyChange"; }
-    virtual const char* getClassName() const { return "HandleTopologyChangeVisitor"; }
-};
-
-
 
 } // namespace simulation
 
