@@ -2308,7 +2308,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
                                                             const VoigtTensor2 &strainIncrement,
                                                             double &lambdaIncrement,
                                                             MechanicalState &isPlasticPoint,
-                                                            const Displacement &lastDisp)
+                                                            const Displacement &currentDisp)
 {
     /** Material point iterations **/
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
@@ -2345,13 +2345,13 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
         const Eigen::Matrix<double, 6, 12> &Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
 
-        EigenDisplacement eigenLastDisp;
+        EigenDisplacement eigenCurrentDisp;
         for (int k = 0; k < 12; k++)
         {
-            eigenLastDisp(k) = lastDisp[k];
+            eigenCurrentDisp(k) = currentDisp[k];
         }
 
-        VoigtTensor2 elasticStrain = Be*eigenLastDisp;
+        VoigtTensor2 elasticStrain = Be*eigenCurrentDisp;
         VoigtTensor2 plasticStrain = plasticStrainHistory[gaussPointIt];
 
         currentStressPoint = C*(elasticStrain - plasticStrain);
@@ -2384,7 +2384,6 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
             isPlasticPoint = POSTPLASTIC;
             newStressPoint = currentStressPoint; //TO DO: check if we should take back the plastic strain
-
 
             //************ Computation of the remaining plastic strain ************//
 
@@ -2529,21 +2528,10 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     Displacement dispIncrement;
     computeDisplacementIncrement(x, _lastPos, currentDisp, lastDisp, dispIncrement, i, a, b);
 
-    //TO DO: delete, debug info
-    //EigenDisplacement displacementIncrement;
-    //double precisionThreshold = 1e-12;
-    //for (int k = 0; k < 12; k++)
-    //    if (dispIncrement[k] > precisionThreshold)
-    //        displacementIncrement(k) = dispIncrement[k];
-    //    else
-    //        displacementIncrement(k) = 0.0;
-
     EigenDisplacement displacementIncrement;
-    EigenDisplacement eigenLastDisp;
     for (int k = 0; k < 12; k++)
     {
         displacementIncrement(k) = dispIncrement[k];
-        eigenLastDisp(k) = lastDisp[k];
     }
 
     //All the rest of the force computation is made inside of the lambda function
@@ -2581,7 +2569,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
         //Stress
         initialStressPoint = _prevStresses[i][gaussPointIt];
         computeStressIncrement(i, gaussPointIt, initialStressPoint, newStressPoint,
-                               strainIncrement, lambdaIncrement, isPlastic, lastDisp);
+                               strainIncrement, lambdaIncrement, isPlastic, currentDisp);
 
         _prevStresses[i][gaussPointIt] = newStressPoint;
 
@@ -2595,11 +2583,8 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     beamsData.endEdit();
 
-    //std::cout << "Nouveaux stress au point de Gauss 0 pour l'element " << i << " : " << std::endl << _prevStresses[i][0] << " " << std::endl << std::endl; //DEBUG
-
     //Passes the contribution to the global system
     nodalForces force;
-    Displacement depl;
 
     for (int i = 0; i < 12; i++)
         force[i] = fint(i);
