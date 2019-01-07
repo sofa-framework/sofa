@@ -2392,7 +2392,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Triangles indices
-    if (showTriangleIndices.getValue())
+    if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         float scale = this->getIndicesScale();
@@ -2420,73 +2420,71 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
 
 
-    if (_draw.getValue())
+    if (_draw.getValue() && this->m_topology->getNbTriangles() != 0)
     {
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        if (!triangleArray.empty()) // Draw triangle surfaces
-        {
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        // Draw triangle surfaces
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            {//   Draw Triangles
-                std::vector<defaulttype::Vector3> pos;
-                pos.reserve(triangleArray.size()*3);
+        {//   Draw Triangles
+            std::vector<defaulttype::Vector3> pos;
+            pos.reserve(triangleArray.size()*3);
+            for (size_t i = 0; i<triangleArray.size(); i++)
+            {
+                const Triangle& t = triangleArray[i];
+
+                defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                std::vector<defaulttype::Vector3> tmpPos;
+                tmpPos.resize(3);
+
+                for (unsigned int j = 0; j<3; j++)
+                {
+                    tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[t[j]]));
+                    bary += tmpPos[j];
+                }
+                bary /= 3;
+
+                for (unsigned int j = 0; j<3; j++)
+                    pos.push_back(bary*0.1 + tmpPos[j]*0.9);
+            }
+            vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
+        }
+
+
+        {//   Draw triangle edges for better display
+            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+            std::vector<defaulttype::Vector3> pos;
+            if (!edgeArray.empty())
+            {
+                for (size_t i = 0; i<edgeArray.size(); i++)
+                {
+                    const Edge& e = edgeArray[i];
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                }
+            } else {
                 for (size_t i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
 
-                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
-                    std::vector<defaulttype::Vector3> tmpPos;
-                    tmpPos.resize(3);
-
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[t[j]]));
-                        bary += tmpPos[j];
-                    }
-                    bary /= 3;
-
-                    for (unsigned int j = 0; j<3; j++)
-                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
-                }
-                vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
-            }
-
-
-            {//   Draw triangle edges for better display
-                const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-                std::vector<defaulttype::Vector3> pos;
-                if (!edgeArray.empty())
-                {
-                    for (size_t i = 0; i<edgeArray.size(); i++)
-                    {
-                        const Edge& e = edgeArray[i];
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
-                    }
-                } else {
-                    for (size_t i = 0; i<triangleArray.size(); i++)
-                    {
-                        const Triangle& t = triangleArray[i];
-
-                        for (unsigned int j = 0; j<3; j++)
-                        {
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
-                        }
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
                     }
                 }
-
-                sofa::helper::types::RGBAColor colorL = _drawColor.getValue();
-                for (auto& c: colorL)
-                    c /= 2;
-                vparams->drawTool()->drawLines(pos, 1.0f, colorL);
             }
+
+            sofa::helper::types::RGBAColor colorL = _drawColor.getValue();
+            for (auto& c: colorL)
+                c /= 2;
+            vparams->drawTool()->drawLines(pos, 1.0f, colorL);
         }
     }
 
 
-    if (_drawNormals.getValue())
+    if (_drawNormals.getValue() && this->m_topology->getNbTriangles() != 0)
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();

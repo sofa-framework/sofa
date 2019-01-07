@@ -929,7 +929,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices
-    if (d_showTetrahedraIndices.getValue())
+    if (d_showTetrahedraIndices.getValue() && this->m_topology->getNbTetrahedra() != 0)
     {
         const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
         defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
@@ -958,10 +958,11 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     }
 
     // Draw Tetra
-    if (d_drawTetrahedra.getValue())
+    if (d_drawTetrahedra.getValue() && this->m_topology->getNbTetrahedra() != 0)
     {
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
         defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
 

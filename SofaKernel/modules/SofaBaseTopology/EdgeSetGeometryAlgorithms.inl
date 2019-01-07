@@ -713,8 +713,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Edges indices
-    if (showEdgeIndices.getValue())
-    {
+    if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
+    {        
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         float scale = this->getIndicesScale();
 
@@ -740,25 +740,22 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
     // Draw edges
-    if (_draw.getValue())
+    if (_draw.getValue() && this->m_topology->getNbEdges() != 0)
     {
         const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
 
-        if (!edgeArray.empty())
-        {
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            std::vector<defaulttype::Vector3> positions;
-            positions.reserve(edgeArray.size()*2u);
-            for (size_t i = 0; i<edgeArray.size(); i++)
-            {
-                const Edge& e = edgeArray[i];
-                positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
-            }
-            vparams->drawTool()->drawLines(positions,1.0f, _drawColor.getValue());
-            vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
+        std::vector<defaulttype::Vector3> positions;
+        positions.reserve(edgeArray.size()*2u);
+        for (size_t i = 0; i<edgeArray.size(); i++)
+        {
+            const Edge& e = edgeArray[i];
+            positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+            positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
         }
+        vparams->drawTool()->drawLines(positions,1.0f, _drawColor.getValue());
+        vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
 
 }
