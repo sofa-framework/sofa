@@ -2432,6 +2432,16 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     /*      Implicit method      */
     /*****************************/
 
+    // With the initial conditions we use, the first system to be solve actually
+    // admits a closed-form solution.
+    // If a Von Mises yield criterion is used, the residual for this closed-form
+    // solution should be 0 (left apart rounding errors caused by floating point
+    // operations). The reason for this is the underlying regularity of the Von
+    // Mises yield function, assuring a constant gradient between consecutive
+    // stress points.
+    // We implement the closed-form solution of the first step separately, in
+    // order to save the computational cost of the system solution.
+
     unsigned int nbMaxIterations = 25;
     double threshold = 1e-5; //TO DO: choose coherent value
 
@@ -2460,6 +2470,26 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
     //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
     b(6, 0) = vonMisesYield(currentStressPoint, yieldStress);
+
+    /***********************************************************************************************/
+    // With the initial conditions we use, the first system to be solve actually
+    // admits a closed-form solution.
+    // If a Von Mises yield criterion is used, the residual for this closed-form
+    // solution should be 0 (left apart rounding errors caused by floating point
+    // operations). The reason for this is the underlying regularity of the Von
+    // Mises yield function, assuring a constant gradient between consecutive
+    // stress points.
+    // We implement the closed-form solution of the first step separately, in
+    // order to save the computational cost of the system solution.
+
+    Eigen::Matrix<double, 7, 1> deltaIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+
+    deltaIncrement(6,0) = b(6, 0) / (gradient.transpose()*C*gradient);
+    deltaIncrement.block<6, 1>(0, 0) = -deltaIncrement(6, 0)*C*gradient;
+
+    VoigtTensor2 analyticalNewStress = currentStressPoint + deltaIncrement.block<6, 1>(0, 0);
+
+    /***********************************************************************************************/
 
     //solver
     Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
