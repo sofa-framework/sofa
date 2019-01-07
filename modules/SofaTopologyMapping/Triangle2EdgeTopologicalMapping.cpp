@@ -164,7 +164,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         {
         case core::topology::ENDING_EVENT:
         {
-            m_outTopoModifier->propagateTopologicalChanges();
             m_outTopoModifier->notifyEndingEvent();
             m_outTopoModifier->propagateTopologicalChanges();
             break;
@@ -351,8 +350,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
-
-                //sout << "INFO_print : Hexa2TriangleTopologicalMapping - point = " << tab[i] << sendl;
                 indices.push_back(tab[i]);
                 inv_indices.push_back(inv_tab[i]);
             }
@@ -365,46 +362,10 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             m_outTopoModifier->renumberPointsProcess(tab_indices, inv_tab_indices, false);
             break;
         }
-        /*
+        /**
         case core::topology::EDGESADDED:
         {
-            //sout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESADDED" << sendl;
-
-            if (fromModel) {
-
-                const sofa::component::topology::EdgesAdded *ta=static_cast< const sofa::component::topology::EdgesAdded * >( *itBegin );
-
-                sofa::helper::vector< Edge > edges_to_create;
-                sofa::helper::vector< unsigned int > edgesIndexList;
-                int nb_elems = toModel->getNbEdges();
-
-                for (unsigned int i=0;i<ta->getNbAddedEdges();++i)
-                {
-                    Edge t = ta->edgeArray[i];
-                    if ((t[0]>t[1])) {
-                        int val=t[0]; t[0]=t[1]; t[1]=val;
-                    }
-                    unsigned int k = ta->edgeIndexArray[i];
-
-                    edges_to_create.push_back(t);
-                    edgesIndexList.push_back(Loc2GlobVec.size());
-                    nb_elems+=1;
-
-                    Loc2GlobVec.push_back(k);
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                    if(iter_1 != Glob2LocMap.end() ) {
-                        sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
-                        Glob2LocMap.erase(Glob2LocMap.find(k));
-                    }
-                    Glob2LocMap[k]=Loc2GlobVec.size()-1;
-                }
-
-                m_outTopoModifier->addEdgesProcess(edges_to_create) ;
-                m_outTopoModifier->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-                //toModel->propagateTopologicalChanges();
-
-            }
-
+            This case doesn't need to be handle here as TriangleAdded case is emit first and handle new edge to be added to output topology.
             break;
         }
         */
@@ -500,7 +461,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    m_outTopoModifier->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Triangle2EdgeTopologicalMapping");
