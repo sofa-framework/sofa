@@ -46,6 +46,7 @@ template class SOFA_CORE_API MixedInteractionForceField<Rigid2dTypes, Rigid2dTyp
 template class SOFA_CORE_API MixedInteractionForceField<Vec3dTypes, Rigid3dTypes> ;
 template class SOFA_CORE_API MixedInteractionForceField<Vec2dTypes, Rigid2dTypes> ;
 template class SOFA_CORE_API MixedInteractionForceField<Rigid3dTypes, Vec3dTypes> ;
+template class SOFA_CORE_API MixedInteractionForceField<Rigid3dTypes, Vec1dTypes> ;
 template class SOFA_CORE_API MixedInteractionForceField<Rigid2dTypes, Vec2dTypes> ;
 #endif
 #ifndef SOFA_DOUBLE
