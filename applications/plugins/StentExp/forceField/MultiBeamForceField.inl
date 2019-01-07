@@ -134,7 +134,6 @@ void MultiBeamForceField<DataTypes>::init()
 
     _topology = context->getMeshTopology();
 
-
     stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
 
@@ -348,8 +347,10 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
         }
     }
 
-    //Save the current positions as a record for the next time step
-    //TO DO: check is this is copy operator
+    // Save the current positions as a record for the next time step.
+    // This has to be done after the call to accumulateForceLarge (otherwise
+    // the current position will be used instead in the computation)
+    //TO DO: check if this is copy operator
     _lastPos = p;
 
     dataF.endEdit();
@@ -544,89 +545,87 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
     if (_virtualDisplacementMethod.getValue())
     {
 
-        force = beamsData.getValue()[i]._Ke_loc * depl;
-
         if (_isPlasticKrabbenhoft.getValue())
         {            
-            //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //TO DO: delete, for debug 
+            //Purely elastic deformation
+            //Here _isDeformingPlastically = false, verified juste before the call to accumulateForceLarge in addForce
+
+            helper::fixed_array<VoigtTensor2, 27> newStressVector;
+            helper::fixed_array<VoigtTensor2, 27> newStrainVector; //for post-plastic deformation
+
+            Eigen::Matrix<double, 12, 1> eigenDepl;
+            for (int i = 0; i < 12; i++)
+                eigenDepl(i) = depl[i];
+
+            //***** Test if we enter in plastic deformation *****//
+            const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
+            Eigen::Matrix<double, 6, 12> Be;
+            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+
+            VoigtTensor2 newStress;
+            VoigtTensor2 strain; //DEBUG
+            double yieldStress;
+            bool res;
+
+            //For each Gauss point, we update the stress value for next iteration
+            for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
+            {
+                Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
+
+                //strain = Be*eigenDepl; //DEBUG
+                //if (gaussPointIt == 0)
+                //{
+                //    std::cout << " Elastic strain (point de Gauss " << gaussPointIt << ") : " << std::endl; //DEBUG
+                //    std::cout.precision(17);
+                //    for (int i = 0; i < 6; i++)
+                //        std::cout << "    " << strain[i] << std::scientific << " " << std::endl;
+                //    std::cout << std::endl; //DEBUG
+                //}
+
+                newStress = C*Be*eigenDepl;
+
+                yieldStress = beamsData.getValue()[i]._yS;
+                //std::cout << "Von Mises stress pour le point de Gauss " << gaussPointIt << " : " << std::endl; //DEBUG
+                res = goInPlasticDeformation(newStress, yieldStress);
+                if (res)
+                    isPlasticPoint[gaussPointIt] = PLASTIC;
+                _isDeformingPlastically = _isDeformingPlastically || res;
+
+                newStressVector[gaussPointIt] = newStress;
+            }
+            beamsData.endEdit();
+            //std::cout << std::endl; //DEBUG
+            //***************************************************//
 
             if (_isDeformingPlastically)
             {
-                // We are already into plastic deformation: no need to check here
+                // The computation of these new stresses should be plastic
                 accumulateNonLinearForce(f, x, i, a, b);
             }
             else
             {
-                //Purely elastic deformation
-                //Here _isDeformingPlastically = false
+                force = beamsData.getValue()[i]._Ke_loc * depl;
+                _prevStresses[i] = newStressVector; //for next time step
 
-                helper::fixed_array<VoigtTensor2, 27> newStressVector;
-                helper::fixed_array<VoigtTensor2, 27> newStrainVector; //for post-plastic deformation
+                std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //DEBUG
 
-                Eigen::Matrix<double, 12, 1> eigenDepl;
-                for (int i = 0; i < 12; i++)
-                    eigenDepl(i) = depl[i];
+                // Apply lambda transpose (we use the rotation value of point a for the beam)
+                Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+                Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
 
-                //***** Test if we enter in plastic deformation *****//
-                const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
-                Eigen::Matrix<double, 6, 12> Be;
-                helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-                helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+                Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+                Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
 
-                VoigtTensor2 newStress;
-                double yieldStress;
-                bool res;
+                f[a] += Deriv(-fa1, -fa2);
+                f[b] += Deriv(-fb1, -fb2);
+            }
 
-                //For each Gauss point, we update the stress value for next iteration
-                for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
-                {
-                    Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
-
-                    newStress = C*Be*eigenDepl;
-
-                    yieldStress = beamsData.getValue()[i]._yS;
-                    res = goInPlasticDeformation(newStress, yieldStress);
-                    if (res)
-                        isPlasticPoint[gaussPointIt] = PLASTIC;
-                    _isDeformingPlastically = _isDeformingPlastically || res;
-
-                    newStressVector[gaussPointIt] = newStress;
-                }
-                beamsData.endEdit();
-                //***************************************************//
-
-                if (_isDeformingPlastically)
-                {
-                    // The computation of these new stresses should be plastic
-                    accumulateNonLinearForce(f, x, i, a, b);
-                }
-                else
-                {
-                    _prevStresses[i] = newStressVector; //for next time step
-
-                    // Apply lambda transpose (we use the rotation value of point a for the beam)
-                    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
-                    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
-
-                    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
-                    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
-
-                    f[a] += Deriv(-fa1, -fa2);
-                    f[b] += Deriv(-fb1, -fb2);
-
-                    _lastPos = x;
-                }
-
-            } //endif !_isDeformingPlastically (generic elastic case)
         } //endif _isPlasticKrabbenhoft
 
         else
         {
-            if (_isPlasticMuller.getValue())
-            {
-                computePlasticForces(i, a, b, depl, plasticForce);
-                force -= plasticForce;
-            }
+            force = beamsData.getValue()[i]._Ke_loc * depl;
 
             Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
             Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
@@ -813,7 +812,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
 
             } //end for _list_segment
         }
-        else
+        else // end if (_partial_list_segment)
         {
             typename VecElement::const_iterator it;
             for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
