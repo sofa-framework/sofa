@@ -1971,11 +1971,17 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
 
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor,
-                                                            const double yieldStress)
+                                                            const double yieldStress,
+                                                            const bool verbose /*=FALSE*/)
 {
     double threshold = 1e-5; //TO DO: choose adapted threshold
 
     double yield = vonMisesYield(stressTensor, yieldStress);
+    if (verbose)
+    {
+        std::cout.precision(17);
+        std::cout << yield << std::scientific << " "; //DEBUG
+    }
     return yield > threshold;
 }
 
@@ -1983,12 +1989,18 @@ bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2 &stressTensor,
                                                               const VoigtTensor2 &stressIncrement,
-                                                              const double yieldStress)
+                                                              const double yieldStress,
+                                                              const bool verbose /*=FALSE*/)
 {
     double threshold = -1e2; //TO DO: use proper threshold
 
     Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, yieldStress);
     double cp = gradient.transpose()*stressIncrement;
+    if (verbose)
+    {
+        std::cout.precision(17);
+        std::cout << cp << std::scientific << " "; //DEBUG
+    }
     return !(cp < threshold); //if true, the stress point still represents a plastic state
 }
 

@@ -341,8 +341,9 @@ protected:
 
     MultiBeamForceField<DataTypes>* ff;
 
-    bool goInPlasticDeformation(const VoigtTensor2 &stressTensor, const double yieldStress);
-    bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement, const double yieldStress);
+    bool goInPlasticDeformation(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
+    bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
+                                  const double yieldStress, const bool verbose = FALSE);
 
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
