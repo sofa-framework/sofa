@@ -2454,11 +2454,10 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
     VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
 
-    double increment = 1e-3; //DEBUG
-    VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress);
+    //double increment = 1e-3; //DEBUG
+    //VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress);
 
     VoigtTensor4 hessian;
-    double yieldCondition = 1; //will be changed in the first iteration of the while loop below
 
     //Initialisation of the Jacobian of the nonlinear system of equations
     Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
@@ -2494,6 +2493,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     //solver
     Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
 
+    double yieldCondition = b(6, 0); //will be changed in the first iteration of the while loop below
     unsigned int count = 0;
     while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
     {
@@ -2510,7 +2510,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         //Updates J and b for the next iteration
         currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
         gradient = vonMisesGradient(currentStressPoint, yieldStress);
-        gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress);
+        //gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress); //DEBUG
         hessian = vonMisesHessian(currentStressPoint, yieldStress);
 
         J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
