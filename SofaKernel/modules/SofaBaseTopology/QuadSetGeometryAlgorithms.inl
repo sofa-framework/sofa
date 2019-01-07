@@ -351,9 +351,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Quads indices
-    if (showQuadIndices.getValue())
+    if (showQuadIndices.getValue() && this->m_topology->getNbQuads() != 0)
     {
-
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         sofa::helper::types::RGBAColor color = _drawColor.getValue();
         color[0] -= 0.2f;
@@ -386,68 +385,66 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
     // Draw Quads
-    if (_drawQuads.getValue())
+    if (_drawQuads.getValue() && this->m_topology->getNbQuads() != 0)
     {
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
-        if (!quadArray.empty()) // Draw Quad surfaces
-        {
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-            { // drawing quads
-                std::vector<defaulttype::Vector3> pos;
-                pos.reserve(quadArray.size()*4u);
-                for (size_t i=0u; i< quadArray.size(); i++)
+        // Draw Quad surfaces
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        { // drawing quads
+            std::vector<defaulttype::Vector3> pos;
+            pos.reserve(quadArray.size()*4u);
+            for (size_t i=0u; i< quadArray.size(); i++)
+            {
+                const Quad& q = quadArray[i];
+
+                defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                std::vector<defaulttype::Vector3> tmpPos;
+                tmpPos.resize(4);
+
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[q[j]]));
+                    bary += tmpPos[j];
+                }
+                bary /= 4;
+
+                for (unsigned int j = 0; j<4; j++)
+                    pos.push_back(bary*0.1 + tmpPos[j]*0.9);
+            }
+            vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
+        }
+
+        { // drawing edges
+            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+            sofa::helper::types::RGBAColor edge_color = _drawColor.getValue();
+            edge_color[0] -= 0.2f;
+            edge_color[1] -= 0.2f;
+            edge_color[2] -= 0.2f;
+
+            std::vector<defaulttype::Vector3> pos;
+            pos.reserve(edgeArray.size()*2u);
+
+            if (!edgeArray.empty())
+            {
+                for (size_t i = 0u; i<edgeArray.size(); i++)
+                {
+                    const Edge& e = edgeArray[i];
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                }
+            } else {
+                for (size_t i = 0u; i<quadArray.size(); i++)
                 {
                     const Quad& q = quadArray[i];
-
-                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
-                    std::vector<defaulttype::Vector3> tmpPos;
-                    tmpPos.resize(4);
-
                     for (unsigned int j = 0; j<4; j++)
                     {
-                        tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[q[j]]));
-                        bary += tmpPos[j];
-                    }
-                    bary /= 4;
-
-                    for (unsigned int j = 0; j<4; j++)
-                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
-                }
-                vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
-            }
-
-            { // drawing edges
-                const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-                sofa::helper::types::RGBAColor edge_color = _drawColor.getValue();
-                edge_color[0] -= 0.2f;
-                edge_color[1] -= 0.2f;
-                edge_color[2] -= 0.2f;
-
-                std::vector<defaulttype::Vector3> pos;
-                pos.reserve(edgeArray.size()*2u);
-
-                if (!edgeArray.empty())
-                {
-                    for (size_t i = 0u; i<edgeArray.size(); i++)
-                    {
-                        const Edge& e = edgeArray[i];
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
-                    }
-                } else {
-                    for (size_t i = 0u; i<quadArray.size(); i++)
-                    {
-                        const Quad& q = quadArray[i];
-                        for (unsigned int j = 0; j<4; j++)
-                        {
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
-                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
-                        }
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
                     }
                 }
-                vparams->drawTool()->drawLines(pos,1.0f, edge_color );
             }
+            vparams->drawTool()->drawLines(pos,1.0f, edge_color );
         }
     }
 }
