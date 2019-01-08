@@ -338,6 +338,7 @@ protected:
     unsigned int _NRMaxIterations;
 
     Data<bool> _isPlasticKrabbenhoft;
+    Data<bool> _isPerfectlyPlastic;
 
     MultiBeamForceField<DataTypes>* ff;
 
@@ -400,7 +401,7 @@ protected:
 
     MultiBeamForceField();
     MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
-                        bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft,
+                        bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                         helper::vector<defaulttype::Quat> localOrientations);
     virtual ~MultiBeamForceField();
 public:

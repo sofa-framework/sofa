@@ -63,6 +63,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
     , _inputLocalOrientations(initData(&_inputLocalOrientations, { defaulttype::Quat(0, 0, 0, 1) }, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
+    , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
@@ -83,7 +84,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
 template<class DataTypes>
 MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
                                                     Real ySection, bool useVD, bool isPlasticMuller, bool isTimoshenko,
-                                                    bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations)
+                                                    bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
+                                                    helper::vector<defaulttype::Quat> localOrientations)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
@@ -92,6 +94,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
     , _inputLocalOrientations(initData(&_inputLocalOrientations, localOrientations, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
+    , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
@@ -2516,6 +2519,11 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
             count++;
         }
     } // endif (!consistencyTestIsPositive)
+
+    if (_isPerfectlyPlastic.getValue())
+    {
+        std::cout << "perfectly plastic : OK" << std::endl;
+    }
 
     //Computation of the plastic strain increment, to keep track of the plastic loading history
     //TO DO: check if the increments should be stored independently rather than summed
