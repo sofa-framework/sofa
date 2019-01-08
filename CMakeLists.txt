@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
-project(Sofa VERSION 18.12.99)
+project(Sofa) # Cannot use VERSION with patch like "00"
+
+# Manually define VERSION
+set(Sofa_VERSION_MAJOR 18)
+set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_PATCH 00)
+set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
