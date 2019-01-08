@@ -244,7 +244,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 {
     if(this->isRigid())
     {
-        serr<<"WARNING: filters optimization needed for topological change on rigid collision model"<<sendl;
+        msg_error() << "WARNING: filters optimization needed for topological change on rigid collision model";
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
 
