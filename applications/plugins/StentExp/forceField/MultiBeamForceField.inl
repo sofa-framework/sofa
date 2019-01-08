@@ -2398,142 +2398,168 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         }
     }
 
+    /*****************  Plastic stress increment computation *****************/
 
-    /*****************************/
-    /*   Plastic return method   */
-    /*****************************/
-
-    ////First we compute the elastic predictor
-    //VoigtTensor2 elasticPredictor = C*strainIncrement;
-
-    //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
-
-    //VoigtTensor2 grad, plasticStressIncrement;
-    //double denum, dLambda;
-    //double fSigma = vonMisesYield(currentStressPoint, yieldStress); //for the 1st iteration
-
-    ////We start iterations with point B
-    //for (unsigned int i = 0; i < nbMaxIterations; i++)
-    //{
-    //    grad = vonMisesGradient(currentStressPoint, yieldStress);
-    //    denum = grad.transpose()*C*grad;
-    //    dLambda = fSigma / denum;
-
-    //    plasticStressIncrement = dLambda*C*grad;
-
-    //    currentStressPoint -= plasticStressIncrement;
-
-    //    fSigma = vonMisesYield(currentStressPoint, yieldStress);
-    //    if (fSigma < iterationThreshold)
-    //        break; //Yield condition : the current stress point is on the yield surface
-    //}
-    //// return the total stress increment
-    ////TO DO: return the current stress directly instead?
-    //stressIncrement = currentStressPoint - initialStress;
-
-    /*****************************/
-    /*      Implicit method      */
-    /*****************************/
-
-    /* With the initial conditions we use, the first system to be solve actually
-     * admits a closed-form solution.
-     * If a Von Mises yield criterion is used, the residual for this closed-form
-     * solution should be 0 (left apart rounding errors caused by floating point
-     * operations). The reason for this is the underlying regularity of the Von
-     * Mises yield function, assuring a constant gradient between consecutive
-     * stress points.
-     * We implement the closed-form solution of the first step separately, in
-     * order to save the computational cost of the system solution.
-     */
-
-    Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
-    double yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-    VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
-
-    newIncrement(6, 0) = yieldCondition / (gradient.transpose()*C*gradient);
-    newIncrement.block<6, 1>(0, 0) = -newIncrement(6, 0)*C*gradient;
-
-    Eigen::Matrix<double, 7, 1> totalIncrement = newIncrement;
-
-    // Updating the stress point
-    currentStressPoint += newIncrement.block<6, 1>(0, 0);
-
-    yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-
-    // Testing if the result of the first iteration is satisfaying
-    double threshold = 2e-6; //TO DO: choose coherent value
-    bool consistencyTestIsPositive = helper::rabs(yieldCondition) >= threshold;
-
-    if (!consistencyTestIsPositive)
-    {
-        /* If the new stress point computed after one iteration of the implicit
-         * method satisfied the consistency condition, we could stop the
-         * iterative procedure at this point.
-         * Otherwise the solution found with the first iteration does not
-         * satisfy the consistency condition. In this case, we need to go
-         * through more iterations to find a more correct solution.
-         */
-        unsigned int nbMaxIterations = 25;
-
-        Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
-
-        // Jacobian J of the nonlinear system of equations
-        Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
-
-        // Second member b
-        Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
-
-        //solver
-        Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
-
-        // Updating gradient
-        gradient = vonMisesGradient(currentStressPoint, yieldStress);
-        // Updating / initialising hessian
-        VoigtTensor4 hessian = vonMisesHessian(currentStressPoint, yieldStress);
-        // NB: yieldCondition was already updated after first iterations
-
-        unsigned int count = 1;
-        while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
-        {
-            //Updates J and b
-            J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
-            J.block<6, 1>(0, 6) = C*gradient;
-            J.block<1, 6>(6, 0) = gradient.transpose();
-
-            b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
-            b(6, 0) = yieldCondition;
-
-            //Computes the new increment
-            LU.compute(J);
-            newIncrement = LU.solve(-b);
-
-            totalIncrement += newIncrement;
-
-            // Update of the yield condition, gradient and hessian.
-            currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
-            yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-            gradient = vonMisesGradient(currentStressPoint, yieldStress);
-            //gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress); //DEBUG
-            hessian = vonMisesHessian(currentStressPoint, yieldStress);
-
-            count++;
-        }
-    } // endif (!consistencyTestIsPositive)
-
+    // 1st SCENARIO : perfect plasticity
     if (_isPerfectlyPlastic.getValue())
     {
-        std::cout << "perfectly plastic : OK" << std::endl;
+        /* For a perfectly plastic material, the assumption is made that during
+         * the plastic phase, the deformation is entirely plastic. In this case,
+         * the internal stress state of the material does not change during the
+         * plastic deformation, remaining constant (in 1D, equal to the yield
+         * stress value). All the corresponding deformation energy is dissipated
+         * in the form of plastic strain (i.e. during a plastic deformation, the
+         * elastic strain is null).
+        */
+
+        // Updating the stress point
+        newStressPoint = initialStress; // delta_sigma = 0
+
+        // Updating the plastic strain
+        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+        plasticStrainHistory[gaussPointIt] += strainIncrement;
+        beamsData.endEdit();
     }
 
-    //Computation of the plastic strain increment, to keep track of the plastic loading history
-    //TO DO: check if the increments should be stored independently rather than summed
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-    plasticStrainHistory[gaussPointIt] += totalIncrement(6, 0)*gradient;
-    beamsData.endEdit();
+    // 2nd SCENARIO : hardening
+    else
+    {
+        /*****************************/
+        /*   Plastic return method   */
+        /*****************************/
 
-    // return the new stress point
-    newStressPoint = currentStressPoint;
+        ////First we compute the elastic predictor
+        //VoigtTensor2 elasticPredictor = C*strainIncrement;
+
+        //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
+
+        //VoigtTensor2 grad, plasticStressIncrement;
+        //double denum, dLambda;
+        //double fSigma = vonMisesYield(currentStressPoint, yieldStress); //for the 1st iteration
+
+        ////We start iterations with point B
+        //for (unsigned int i = 0; i < nbMaxIterations; i++)
+        //{
+        //    grad = vonMisesGradient(currentStressPoint, yieldStress);
+        //    denum = grad.transpose()*C*grad;
+        //    dLambda = fSigma / denum;
+
+        //    plasticStressIncrement = dLambda*C*grad;
+
+        //    currentStressPoint -= plasticStressIncrement;
+
+        //    fSigma = vonMisesYield(currentStressPoint, yieldStress);
+        //    if (fSigma < iterationThreshold)
+        //        break; //Yield condition : the current stress point is on the yield surface
+        //}
+        //// return the total stress increment
+        ////TO DO: return the current stress directly instead?
+        //stressIncrement = currentStressPoint - initialStress;
+
+        /*****************************/
+        /*      Implicit method      */
+        /*****************************/
+
+        /* With the initial conditions we use, the first system to be solve actually
+        * admits a closed-form solution.
+        * If a Von Mises yield criterion is used, the residual for this closed-form
+        * solution should be 0 (left apart rounding errors caused by floating point
+        * operations). The reason for this is the underlying regularity of the Von
+        * Mises yield function, assuring a constant gradient between consecutive
+        * stress points.
+        * We implement the closed-form solution of the first step separately, in
+        * order to save the computational cost of the system solution.
+        */
+
+        Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+        double yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
+        VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
+
+        newIncrement(6, 0) = yieldCondition / (gradient.transpose()*C*gradient);
+        newIncrement.block<6, 1>(0, 0) = -newIncrement(6, 0)*C*gradient;
+
+        Eigen::Matrix<double, 7, 1> totalIncrement = newIncrement;
+
+        // Updating the stress point
+        currentStressPoint += newIncrement.block<6, 1>(0, 0);
+
+        yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
+
+        // Testing if the result of the first iteration is satisfaying
+        double threshold = 2e-6; //TO DO: choose coherent value
+        bool consistencyTestIsPositive = helper::rabs(yieldCondition) >= threshold;
+
+        if (!consistencyTestIsPositive)
+        {
+            /* If the new stress point computed after one iteration of the implicit
+            * method satisfied the consistency condition, we could stop the
+            * iterative procedure at this point.
+            * Otherwise the solution found with the first iteration does not
+            * satisfy the consistency condition. In this case, we need to go
+            * through more iterations to find a more correct solution.
+            */
+            unsigned int nbMaxIterations = 25;
+
+            Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
+
+            // Jacobian J of the nonlinear system of equations
+            Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
+
+            // Second member b
+            Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
+
+            //solver
+            Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
+
+            // Updating gradient
+            gradient = vonMisesGradient(currentStressPoint, yieldStress);
+            // Updating / initialising hessian
+            VoigtTensor4 hessian = vonMisesHessian(currentStressPoint, yieldStress);
+            // NB: yieldCondition was already updated after first iterations
+
+            unsigned int count = 1;
+            while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
+            {
+                //Updates J and b
+                J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
+                J.block<6, 1>(0, 6) = C*gradient;
+                J.block<1, 6>(6, 0) = gradient.transpose();
+
+                b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
+                b(6, 0) = yieldCondition;
+
+                //std::cout << "J pour le point " << gaussPointIt << " iteration " << count << " : " << std::endl << J << " " << std::endl << std::endl; //DEBUG
+                //Computes the new increment
+                LU.compute(J);
+                //std::cout << "    Determinant LU : " << LU.determinant() << " " << std::endl << std::endl; //DEBUG
+                newIncrement = LU.solve(-b);
+
+                totalIncrement += newIncrement;
+
+                // Update of the yield condition, gradient and hessian.
+                currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
+                yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
+                gradient = vonMisesGradient(currentStressPoint, yieldStress);
+                //gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress); //DEBUG
+                hessian = vonMisesHessian(currentStressPoint, yieldStress);
+
+                count++;
+            }
+        } // endif (!consistencyTestIsPositive)
+
+        // Computation of the plastic strain increment, to keep track of the plastic loading history
+
+        //TO DO: check if the increments should be stored independently rather than summed
+        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+        plasticStrainHistory[gaussPointIt] += totalIncrement(6, 0)*gradient;
+        beamsData.endEdit();
+
+        // Updating the new stress point
+        newStressPoint = currentStressPoint;
+
+    } //end if (!_isPerfectlyPlastic)
 }
 
 
