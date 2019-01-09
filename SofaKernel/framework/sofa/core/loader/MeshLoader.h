@@ -146,14 +146,14 @@ public:
     Data< helper::vector< HighOrderEdgePosition > > d_highOrderEdgePositions; ///< High order edge points of the mesh loaded
     Data< helper::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
     Data< helper::vector< HighOrderQuadPosition > > d_highOrderQuadPositions; ///< High order quad points of the mesh loaded
-    Data< helper::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
+
     // Tab of 3D elements composition
     Data< helper::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
-    
-    Data< helper::vector< Pentahedron > > d_pentahedra; ///< Pentahedra of the mesh loaded
     Data< helper::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
+    Data< helper::vector< Pentahedron > > d_pentahedra; ///< Pentahedra of the mesh loaded
     Data< helper::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
     Data< helper::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
+    Data< helper::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
 
     // polygons in 3D ?
 

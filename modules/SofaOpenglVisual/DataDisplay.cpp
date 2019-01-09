@@ -353,7 +353,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
         // Triangles
         glBegin(GL_TRIANGLES);
-        for (int i=0; i<topology->getNbTriangles(); ++i)
+        for (sofa::core::topology::Topology::TriangleID i=0; i<topology->getNbTriangles(); ++i)
         {
             const Triangle &t = topology->getTriangle(i);
             Vec4f color[3];

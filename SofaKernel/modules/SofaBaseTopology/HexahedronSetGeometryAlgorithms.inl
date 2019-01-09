@@ -648,7 +648,7 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord
     int index=-1;
     distance = 1e10;
 
-    for(int c=0; c<this->m_topology->getNbHexahedra(); ++c)
+    for(size_t c=0; c<this->m_topology->getNbHexahedra(); ++c)
     {
         const Real d = computeElementDistanceMeasure(c, pos);
 
@@ -683,7 +683,7 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(co
     int index=-1;
     distance = 1e10;
 
-    for(int c=0; c<this->m_topology->getNbHexahedra(); ++c)
+    for(size_t c=0; c<this->m_topology->getNbHexahedra(); ++c)
     {
         const Real d = computeElementRestDistanceMeasure(c, pos);
 
@@ -780,7 +780,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
 {
     //const sofa::helper::vector<Hexahedron> &ta=this->m_topology->getHexahedra();
     //const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
-    for(int i=0; i<this->m_topology->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->m_topology->getNbHexahedra(); ++i)
     {
         //const Hexahedron &t=this->m_topology->getHexahedron(i); //ta[i];
         ai[i]=(Real)(0.0); /// @todo : implementation of computeHexahedronVolume

@@ -311,7 +311,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         _initialPoints=p;
     }
 
-    int i;
+    size_t i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {

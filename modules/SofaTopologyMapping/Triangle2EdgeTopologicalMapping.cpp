@@ -196,7 +196,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 ind_real_last = Glob2LocMap[last];
 
-                                if((int) k != last)
+                                if (k != last)
                                 {
 
                                     Glob2LocMap.erase(Glob2LocMap.find(k));
