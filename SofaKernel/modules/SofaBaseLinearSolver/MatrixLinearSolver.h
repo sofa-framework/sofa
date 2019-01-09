@@ -407,6 +407,7 @@ protected:
 
     double currentMFactor, currentBFactor, currentKFactor;
 
+    JMatrixType * _j_local;
 };
 
 //////////////////////////////////////////////////////////////

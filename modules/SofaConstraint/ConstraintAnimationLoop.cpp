@@ -434,6 +434,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        cc->computeComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
         cc->addComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
     }
 

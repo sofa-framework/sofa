@@ -152,6 +152,43 @@ void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::defaulttype::B
 }
 
 template<class DataTypes>
+void LinearSolverConstraintCorrection<DataTypes>::computeComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
+{
+    if (m_componentstate != ComponentState::Valid)
+        return;
+
+    // use the OdeSolver to get the position integration factor
+    double factor = 1.0;
+
+    switch (cparams->constOrder())
+    {
+    case core::ConstraintParams::POS_AND_VEL:
+    case core::ConstraintParams::POS:
+        factor = odesolver->getPositionIntegrationFactor();
+        break;
+
+    case core::ConstraintParams::ACC:
+    case core::ConstraintParams::VEL:
+        factor = odesolver->getVelocityIntegrationFactor();
+        break;
+
+    default:
+        break;
+    }
+
+    // Compute J
+    this->computeJ(W, cparams->readJ(this->mstate)->getValue(cparams));
+
+    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->setSystemLHVector(sofa::core::MultiVecDerivId::null());
+        linearsolvers[i]->computeJMInvJt(&J, factor);
+    }
+}
+
+
+template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
     if(m_componentstate!=ComponentState::Valid)
@@ -176,13 +213,9 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         break;
     }
 
-    // Compute J
-    this->computeJ(W, cparams->readJ(this->mstate)->getValue(cparams));
-
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < linearsolvers.size(); i++)
     {
-        linearsolvers[i]->setSystemLHVector(sofa::core::MultiVecDerivId::null());
         linearsolvers[i]->addJMInvJt(W, &J, factor);
     }
 }
