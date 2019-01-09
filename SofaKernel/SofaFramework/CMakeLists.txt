@@ -78,9 +78,9 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
 
         if(WIN32)
-            sofa_copy_libraries_from_targets(GLEW::GLEW) # Windows dependency pack
+            sofa_copy_libraries_from_targets(${GLEW_Target}) # Windows dependency pack
         endif()
-        sofa_install_libraries_from_targets(GLEW::GLEW)
+        sofa_install_libraries_from_targets(${GLEW_Target})
     else()
         message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
@@ -101,9 +101,9 @@ if(ZLIB_FOUND)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
 
     if(WIN32)
-        sofa_copy_libraries_from_targets(ZLIB::ZLIB) # Windows dependency pack
+        sofa_copy_libraries_from_targets(${ZLIB_Target}) # Windows dependency pack
+        sofa_install_libraries_from_targets(${ZLIB_Target})
     endif()
-    sofa_install_libraries_from_targets(ZLIB::ZLIB)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
