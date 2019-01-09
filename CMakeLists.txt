@@ -365,7 +365,6 @@ cpack_add_component_group(development
 cpack_add_component(applications
     DISPLAY_NAME "runSofa Application"
     GROUP runtime
-    REQUIRED
     )
 cpack_add_component(headers
     DISPLAY_NAME "C++ Headers"
@@ -407,48 +406,76 @@ set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
 
 ######################
 # IFW Generator config
-set(CPACK_IFW_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
-set(CPACK_IFW_PACKAGE_TITLE "${CPACK_PACKAGE_NAME}")
-set(CPACK_IFW_PRODUCT_URL "${CPACK_PACKAGE_HOMEPAGE_URL}")
-set(CPACK_IFW_PACKAGE_LOGO "${CPACK_PACKAGE_ICON}")
-set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-if(WIN32)
-    set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/SOFA.ico")
-elseif(APPLE)
-    set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSOFA.icns")
-endif()
+if(CPACK_BINARY_IFW)
+    set(CPACK_IFW_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
+    set(CPACK_IFW_PACKAGE_TITLE "${CPACK_PACKAGE_NAME}")
+    set(CPACK_IFW_PRODUCT_URL "${CPACK_PACKAGE_HOMEPAGE_URL}")
+    set(CPACK_IFW_PACKAGE_LOGO "${CPACK_PACKAGE_ICON}")
+    set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+    if(WIN32)
+         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/SOFA.ico")
+    elseif(APPLE)
+         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSOFA.icns")
+    endif()
 
-cpack_ifw_configure_component_group(runtime
-    SORTING_PRIORITY 50
-    DEFAULT TRUE
-    EXPANDED
-    FORCED_INSTALLATION
-    SCRIPT "${CMAKE_SOURCE_DIR}/scripts/qtifw/install.qs"
-    )
-cpack_ifw_configure_component_group(development
-    SORTING_PRIORITY 10
-    DEFAULT TRUE
-    EXPANDED
-    )
+    cpack_ifw_configure_component_group(runtime
+        SORTING_PRIORITY 50
+        DEFAULT TRUE
+        EXPANDED
+        SCRIPT "${CMAKE_SOURCE_DIR}/scripts/qtifw/install.qs"
+        )
+    cpack_ifw_configure_component_group(development
+        SORTING_PRIORITY 10
+        DEFAULT TRUE
+        EXPANDED
+        )
+
+    cpack_ifw_configure_component(applications
+        DISPLAY_NAME "runSofa Application"
+        DEPENDS runtime
+        )
+    cpack_ifw_configure_component(headers
+        DISPLAY_NAME "C++ Headers"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(Eigen_headers
+        DISPLAY_NAME "Eigen Headers"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(GTest_headers
+        DISPLAY_NAME "GTest Headers"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(libraries
+        DISPLAY_NAME "Libraries"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(resources
+        DISPLAY_NAME "Resources"
+        DEPENDS runtime
+        )
+endif()
 ######################
 
 #######################
 # NSIS Generator config
-# There is a bug in NSIS that does not handle full unix paths properly. Make
-# sure there is at least one set of four (4) backslashes.
-set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
-set(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
-set(CPACK_NSIS_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
-set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
-set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
-set(CPACK_NSIS_MODIFY_PATH ON)
-set(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
-set(CPACK_NSIS_INSTALL_ROOT "$PROFILE")
-set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecShell \\\"open\\\" \\\"https://www.sofa-framework.org/thank-you?sofa=\\\${CPACK_PACKAGE_VERSION}&os=windows\\\"")
-set(CPACK_NSIS_MENU_LINKS
-    "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
-    "https://www.sofa-framework.org/api/" "SOFA Developper API"
-    "https://www.sofa-framework.org/community/forum/" "SOFA Forum")
+if(CPACK_BINARY_IFW)
+    # There is a bug in NSIS that does not handle full unix paths properly. Make
+    # sure there is at least one set of four (4) backslashes.
+    set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
+    set(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
+    set(CPACK_NSIS_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
+    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_MODIFY_PATH ON)
+    set(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
+    set(CPACK_NSIS_INSTALL_ROOT "$PROFILE")
+    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecShell \\\"open\\\" \\\"https://www.sofa-framework.org/thank-you?sofa=\\\${CPACK_PACKAGE_VERSION}&os=windows\\\"")
+    set(CPACK_NSIS_MENU_LINKS
+        "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
+        "https://www.sofa-framework.org/api/" "SOFA Developper API"
+        "https://www.sofa-framework.org/community/forum/" "SOFA Forum")
+endif()
 #######################
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
