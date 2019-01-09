@@ -332,9 +332,6 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
 
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
-    /*if(indices1.size() && indices2.size()) {
-        return;
-    }*/
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);

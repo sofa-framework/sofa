@@ -45,7 +45,7 @@ template <class DataTypes>
 NearestPointROI<DataTypes>::NearestPointROI()
     : f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
-    , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
+    , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , mstate1(initLink("object1", "First object to constrain"))
     , mstate2(initLink("object2", "Second object to constrain"))
 {
@@ -75,6 +75,14 @@ void NearestPointROI<DataTypes>::init()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::reinit()
 {
+    if(f_radius.getValue() <= 0){
+        msg_error() << "Radius must be a positive real.";
+        return;
+    }
+    if(!this->mstate1 || !this->mstate2){
+        msg_error() << "2 valid mechanicalobjects are required.";
+        return;
+    }
     doUpdate();
 }
 
@@ -87,77 +95,34 @@ void NearestPointROI<DataTypes>::doUpdate()
         return dist(a, pt2) < dist(b, pt2);
     };
 
-    if (f_radius.getValue() >= 0 && this->mstate1 && this->mstate2)
+    auto indices1 = f_indices1.beginEdit();
+    auto indices2 = f_indices2.beginEdit();
+    indices1->clear();
+    indices2->clear();
+
+    const Real maxR = f_radius.getValue();
+    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+    for (unsigned int i2=0; i2<x2.size(); ++i2)
     {
-        auto indices1 = f_indices1.beginEdit();
-        auto indices2 = f_indices2.beginEdit();
-        indices1->clear();
-        indices2->clear();
-
-        const Real maxR = f_radius.getValue();
-        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-
-        for (unsigned int i2=0; i2<x2.size(); ++i2)
-        {
-            pt2 = x2[i2];
-            auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
-            if(dist(*el, pt2) < maxR) {
-                indices1->push_back(std::distance(std::begin(x1), el));
-                indices2->push_back(i2);
-            }
+        pt2 = x2[i2];
+        auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
+        if(dist(*el, pt2) < maxR) {
+            indices1->push_back(std::distance(std::begin(x1), el));
+            indices2->push_back(i2);
         }
-        f_indices1.endEdit();
-        f_indices2.endEdit();
     }
-    else {
-        //TODO
-    }
+    f_indices1.endEdit();
+    f_indices2.endEdit();
+
     // Check coherency of size between indices vectors 1 and 2
     if(f_indices1.getValue().size() != f_indices2.getValue().size())
     {
         msg_error() << "Size mismatch between indices1 and indices2";
     }
 }
-/*
-template <class DataTypes>
-void NearestPointROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowBehaviorModels())
-        return;
 
-    vparams->drawTool()->saveLastState();
-    vparams->drawTool()->disableLighting();
-
-    const SetIndexArray & indices1 = f_indices1.getValue();
-    const SetIndexArray & indices2 = f_indices2.getValue();
-    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-
-    sofa::defaulttype::RGBAColor color(1,0.5,0.5,1);
-    std::vector<sofa::defaulttype::Vector3> vertices;
-
-    for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
-    {
-        if (activeFlags.size() > i && !activeFlags[i])
-            continue;
-        vertices.push_back(sofa::defaulttype::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
-    }
-    vparams->drawTool()->drawPoints(vertices,10,color);
-    vertices.clear();
-
-    color = sofa::defaulttype::RGBAColor(1,0.5,0.5,1);
-    for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
-    {
-        if (activeFlags.size() > i && !activeFlags[i])
-            continue;
-        vertices.push_back(sofa::defaulttype::Vector3(x1[indices1[i]][0],x1[indices1[i]][1],x1[indices1[i]][2]));
-        vertices.push_back(sofa::defaulttype::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
-    }
-    vparams->drawTool()->drawLines(vertices,1,color);
-    vparams->drawTool()->restoreLastState();
-}
-*/
 } // namespace engine
 
 } // namespace component
