@@ -18,6 +18,8 @@ public:
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
+
 private:
     const sofa::core::ConstraintParams* m_cParams;
     const sofa::defaulttype::BaseVector* m_lambda;

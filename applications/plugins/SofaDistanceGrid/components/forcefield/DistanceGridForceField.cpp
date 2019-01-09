@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include "DistanceGridForceField.inl"
 
@@ -37,19 +37,11 @@ using namespace sofa::defaulttype;
 
 
 int DistanceGridForceFieldClass = core::RegisterObject("Force applied by a distancegrid toward the exterior, the interior, or the surface")
-#ifndef SOFA_FLOAT
-        .add< DistanceGridForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DistanceGridForceField<Vec3fTypes> >()
-#endif
+        .add< DistanceGridForceField<Vec3Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<Vec3fTypes>;
-#endif
+template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

@@ -39,22 +39,12 @@ using namespace defaulttype;
 
 // Register in the Factory
 int PrincipalStretchesMappingClass = core::RegisterObject("Map Deformation Gradients to Principal Stretches")
-
         .add< PrincipalStretchesMapping< F331Types, U331Types > >(true)
         .add< PrincipalStretchesMapping< F321Types, U321Types > >()
-
-//        .add< PrincipalStretchesMapping< F331Types, D331Types > >()
-//        .add< PrincipalStretchesMapping< F321Types, D321Types > >()
-//        .add< PrincipalStretchesMapping< F332Types, D332Types > >()
-        ;
+       ;
 
 template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, U331Types >;
 template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, U321Types >;
-
-//template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, D331Types >;
-//template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, D321Types >;
-//template class SOFA_Flexible_API PrincipalStretchesMapping< F332Types, D332Types >;
-
 
 } // namespace mapping
 } // namespace component

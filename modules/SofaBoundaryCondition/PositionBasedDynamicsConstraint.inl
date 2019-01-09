@@ -134,14 +134,9 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 }
 
 // Specialization for rigids
-#ifndef SOFA_FLOAT
 template <>
-void PositionBasedDynamicsConstraint<defaulttype::Rigid3dTypes >::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PositionBasedDynamicsConstraint<defaulttype::Rigid3fTypes >::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-#endif
+void PositionBasedDynamicsConstraint<defaulttype::Rigid3Types >::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+
 
 
 

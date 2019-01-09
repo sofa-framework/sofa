@@ -91,12 +91,8 @@ private:
 typedef TIntrOBBOBB<sofa::defaulttype::RigidTypes> IntrOBBOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_BASE_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
+
 #endif
 
 }

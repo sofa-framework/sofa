@@ -61,7 +61,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     //    this->cpt_addForce++;
     int a = spring.m1;
     int b = spring.m2;
-    Coord u = p2[b]-p1[a];
+
+    /// Get the positional part out of the dofs.
+    typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
@@ -70,13 +72,13 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-        Deriv relativeVelocity = v2[b]-v1[a];
+        typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-        Deriv force = u*forceIntensity;
+        typename DataTypes::DPos force = u*forceIntensity;
 
-        f1[a]+=force;
-        f2[b]-=force;
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
 
         // Compute stiffness dF/dX
         // The force change dF comes from length change dl and unit vector change dU:
@@ -113,12 +115,13 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 {
     const int a = spring.m1;
     const int b = spring.m2;
-    const Coord d = dx2[b]-dx1[a];
-    Deriv dforce = this->dfdx[i]*d;
+    const typename DataTypes::CPos d = DataTypes::getDPos(dx2[b]) - DataTypes::getDPos(dx1[a]);
+    typename DataTypes::DPos dforce = this->dfdx[i]*d;
+
     dforce *= kFactor;
 
-    df1[a]+=dforce;
-    df2[b]-=dforce;
+    DataTypes::setDPos( df1[a], DataTypes::getDPos(df1[a]) + dforce ) ;
+    DataTypes::setDPos( df2[b], DataTypes::getDPos(df2[b]) - dforce ) ;
 }
 
 template<class DataTypes>

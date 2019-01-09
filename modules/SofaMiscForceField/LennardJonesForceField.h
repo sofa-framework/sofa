@@ -110,12 +110,8 @@ public:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3Types>;
+
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 

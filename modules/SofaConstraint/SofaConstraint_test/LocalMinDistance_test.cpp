@@ -4,10 +4,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <gtest/gtest.h>
-
-#include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -18,32 +16,16 @@ using sofa::simulation::Node ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
-#include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::MessageDispatcher ;
-
-#include <sofa/helper/logging/ClangMessageHandler.h>
-using sofa::helper::logging::ClangMessageHandler ;
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
 #include <SofaConstraint/LocalMinDistance.h>
 using sofa::component::collision::LocalMinDistance ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-int initMessage(){
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
+namespace
+{
 
-namespace sofa {
-
-struct TestLocalMinDistance : public ::testing::Test {
+struct TestLocalMinDistance : public BaseSimulationTest {
     void SetUp()
     {
         DataRepository.addFirstPath(FRAMEWORK_EXAMPLES_DIR);

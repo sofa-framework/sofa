@@ -14,21 +14,13 @@ using namespace sofa::defaulttype;
 
 int CompliantPenaltyForceFieldClass = core::RegisterObject("Penalty ForceField")
     
-#ifndef SOFA_FLOAT    
-    .add< CompliantPenaltyForceField< Vec1dTypes > >(true)
-#endif
-#ifndef SOFA_DOUBLE
-    .add< CompliantPenaltyForceField< Vec1fTypes > >()
-#endif
+    .add< CompliantPenaltyForceField< Vec1Types > >(true)
+
     ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API CompliantPenaltyForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API CompliantPenaltyForceField<Vec1fTypes>;
-#endif
+template class SOFA_Compliant_API CompliantPenaltyForceField<Vec1Types>;
+
 
 }
 }

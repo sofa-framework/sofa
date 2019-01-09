@@ -37,24 +37,14 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int GreenLagrangeForceFieldClass = core::RegisterObject("Compute forces on deformation gradients")
-#ifndef SOFA_FLOAT
         .add< GreenLagrangeForceField<DeformationGradient331dTypes> >()
         .add< GreenLagrangeForceField<DeformationGradient332dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< GreenLagrangeForceField<DeformationGradient331fTypes> >()
-        .add< GreenLagrangeForceField<DeformationGradient332fTypes> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331dTypes>;
 template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331fTypes>;
-template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332fTypes>;
-#endif
+
 
 
 

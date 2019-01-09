@@ -23,7 +23,7 @@
 #define PLUGINS_PIM_SCULPTBODYPERFORMER_CPP
 
 #include "SculptBodyPerformer.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
 namespace plugins
@@ -32,20 +32,12 @@ namespace plugins
 namespace pim
 {
 
-#ifndef SOFA_DOUBLE
-//      template class SOFA_COMPONENT_MISC_API  SculptBodyPerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MISC_API  SculptBodyPerformer<defaulttype::Vec3dTypes>;
-#endif
+template class SOFA_COMPONENT_MISC_API  SculptBodyPerformer<defaulttype::Vec3Types>;
+
 
 #ifndef WIN32
-#ifndef SOFA_DOUBLE
-//      helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3fTypes> >  SculptBodyPerformerVec3fClass("SculptBody",true);
-#endif
-#ifndef SOFA_FLOAT
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3dTypes> >  SculptBodyPerformerVec3dClass("SculptBody",true);
-#endif
+
 #endif
 
 }
