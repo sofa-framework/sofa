@@ -92,7 +92,7 @@ void TetrahedronSetTopologyContainer::init()
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 {
 	if (CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createTetrahedronSetArray method must be implemented by a child topology.";
 
 }
 
@@ -328,8 +328,8 @@ void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
         // adding triangles in the triangle list of the ith tetrahedron  i
         for (TriangleID j=0; j<4; ++j)
         {
-            const int triangleIndex = getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
-            m_trianglesInTetrahedron[i][j] = (TriangleID) triangleIndex;
+            TriangleID triangleIndex = getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
+            m_trianglesInTetrahedron[i][j] = triangleIndex;
         }
     }
 }
@@ -422,7 +422,7 @@ const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContain
 
 
 
-int TetrahedronSetTopologyContainer::getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasTetrahedraAroundVertex())
         createTetrahedraAroundVertexArray();
@@ -455,10 +455,15 @@ int TetrahedronSetTopologyContainer::getTetrahedronIndex(PointID v1, PointID v2,
 
     assert(out3.size()==0 || out3.size()==1);
 
+    if(out3.size() > 1)
+        msg_warning() << "More than one Tetrahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
+
     if (out3.size()==1)
         return (int) (out3[0]);
-    else
-        return -1;
+    else {
+        msg_warning() << "Tetrahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
+        return InvalidID;
+    }
 }
 
 size_t TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const

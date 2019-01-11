@@ -19,78 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGEVECTORS_INL
-#define SOFA_COMPONENT_ENGINE_MERGEVECTORS_INL
+#ifndef SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
+#define SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 
-#include <SofaGeneralEngine/MergeVectors.h>
+#include <limits.h>
 
 namespace sofa
 {
-
-namespace component
+namespace defaulttype
 {
 
-namespace engine
-{
+typedef unsigned int index_type;
+constexpr index_type InvalidID = UINT_MAX;
 
-template <class VecT>
-MergeVectors<VecT>::MergeVectors()
-    : f_nbInputs( initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input vectors") )
-    , vf_inputs( this, "input", "Input vector", helper::DataEngineInput )
-    , f_output( initData(&f_output , "output", "Output vector") )
-{
-}
 
-template <class VecT>
-MergeVectors<VecT>::~MergeVectors()
-{
-}
-
-template <class VecT>
-void MergeVectors<VecT>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
-{
-    vf_inputs.parseSizeData(arg, f_nbInputs);
-    Inherit1::parse(arg);
-}
-
-template <class VecT>
-void MergeVectors<VecT>::parseFields( const std::map<std::string,std::string*>& str )
-{
-    vf_inputs.parseFieldsSizeData(str, f_nbInputs);
-    Inherit1::parseFields(str);
-}
-
-template <class VecT>
-void MergeVectors<VecT>::init()
-{
-    addInput(&f_nbInputs);
-
-    vf_inputs.resize( f_nbInputs.getValue() );
-
-    addOutput(&f_output);
-
-    setDirtyValue();
-}
-
-template <class VecT>
-void MergeVectors<VecT>::reinit()
-{
-    vf_inputs.resize( f_nbInputs.getValue() );
-    update();
-}
-
-template <class VecT>
-void MergeVectors<VecT>::doUpdate()
-{
-    unsigned int nb = f_nbInputs.getValue();
-    SOFA_UNUSED(nb);
-    helper::vectorData<VecValue>::merge( f_output, vf_inputs );
-}
-
-} // namespace engine
-
-} // namespace component
+} // namespace defaulttype
 
 } // namespace sofa
 
-#endif
+
+#endif //SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
+

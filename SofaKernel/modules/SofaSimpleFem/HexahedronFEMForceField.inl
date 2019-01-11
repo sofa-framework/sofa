@@ -62,12 +62,7 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
-    : _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
-    , _mesh(NULL)
-    , _sparseGrid(NULL)
-    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
-    , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
-    , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" or \"small\" displacements" ))
+    : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" or \"small\" displacements" ))
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
     , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
     , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
@@ -77,6 +72,11 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     , needUpdateTopology(false)
+    , _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
+    , _mesh(NULL)
+    , _sparseGrid(NULL)
+    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
 {
     data->initPtrData(this);
     _coef[0][0]=-1;

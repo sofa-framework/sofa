@@ -28,6 +28,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/simulation/Node.h>
+#include <type_traits>
 
 namespace sofa
 {
@@ -37,6 +39,8 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
+using sofa::simulation::Node ;
 
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
@@ -115,7 +119,6 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x
         getVOrientation(x2) = getVOrientation(x1);
 }
 
-
 template<>
 inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
@@ -173,26 +176,20 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& d
     }
 }
 
-
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid3Types>::DerivConstrainedSize(bool freeRotations)
+template<class DataTypes>
+inline unsigned int AttachConstraint<DataTypes>::DerivConstrainedSize(bool freeRotations)
 {
-    if (freeRotations)
-        return Deriv::spatial_dimensions;
-    else
-        return Deriv::total_size;
+    if (std::is_same<DataTypes, defaulttype::Rigid2Types>::value || std::is_same<DataTypes, defaulttype::Rigid3Types>::value) {
+        if (freeRotations)
+            return Deriv::spatial_dimensions;
+        else
+            return Deriv::total_size;
+    }
+    else {
+        SOFA_UNUSED(freeRotations);
+        return Deriv::size();
+    }
 }
-
-
-template<>
-inline unsigned int AttachConstraint<defaulttype::Rigid2Types>::DerivConstrainedSize(bool freeRotations)
-{
-    if (freeRotations)
-        return Deriv::spatial_dimensions;
-    else
-        return Deriv::total_size;
-}
-
 
 #if 0
 // Define TestNewPointFunction
@@ -223,37 +220,18 @@ void AttachConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
 }
 #endif
 
+// Could be simplified with default values for mm1 and mm2, but that way we are assured that either both or neither of mm1/mm2 are set.
 template <class DataTypes>
 AttachConstraint<DataTypes>::AttachConstraint()
-    : f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
-    , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
-    , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
-    , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
-    , f_freeRotations( initData(&f_freeRotations,false,"freeRotations", "true to keep rotations free (only used for Rigid DOFs)") )
-    , f_lastFreeRotation( initData(&f_lastFreeRotation,false,"lastFreeRotation", "true to keep rotation of the last attached point free (only used for Rigid DOFs)") )
-    , f_restRotations( initData(&f_restRotations,false,"restRotations", "true to use rest rotations local offsets (only used for Rigid DOFs)") )
-    , f_lastPos( initData(&f_lastPos,"lastPos", "position at which the attach constraint should become inactive") )
-    , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
-    , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
-    , f_minDistance( initData(&f_minDistance, (Real)-1,"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
-    , d_positionFactor(initData(&d_positionFactor, (Real)1.0, "positionFactor", "IN: Factor applied to projection of position"))
-    , d_velocityFactor(initData(&d_velocityFactor, (Real)1.0, "velocityFactor", "IN: Factor applied to projection of velocity"))
-    , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
-    , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
+    : AttachConstraint<DataTypes>::AttachConstraint(nullptr, nullptr)
 {
-    // default to indice 0
-//     f_indices1.beginEdit()->push_back(0);
-//     f_indices1.endEdit();
-//     f_indices2.beginEdit()->push_back(0);
-//     f_indices2.endEdit();
 }
 
 template <class DataTypes>
 AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2)
     : core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>(mm1,mm2)
-    ,f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
+    , f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
-    , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
     , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
     , f_freeRotations( initData(&f_freeRotations,false,"freeRotations", "true to keep rotations free (only used for Rigid DOFs)") )
     , f_lastFreeRotation( initData(&f_lastFreeRotation,false,"lastFreeRotation", "true to keep rotation of the last attached point free (only used for Rigid DOFs)") )
@@ -267,11 +245,7 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
     , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
     , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
 {
-    // default to indice 0
-//     f_indices1.beginEdit()->push_back(0);
-//     f_indices1.endEdit();
-//     f_indices2.beginEdit()->push_back(0);
-//     f_indices2.endEdit();
+
 }
 
 template <class DataTypes>
@@ -280,113 +254,62 @@ AttachConstraint<DataTypes>::~AttachConstraint()
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::clearConstraints()
-{
-    f_indices1.beginEdit()->clear();
-    f_indices1.endEdit();
-    f_indices2.beginEdit()->clear();
-    f_indices2.endEdit();
-}
-
-template <class DataTypes>
-void AttachConstraint<DataTypes>::addConstraint(unsigned int index1, unsigned int index2)
-{
-    f_indices1.beginEdit()->push_back(index1);
-    f_indices1.endEdit();
-    f_indices2.beginEdit()->push_back(index2);
-    f_indices2.endEdit();
-}
-
-// -- Constraint interface
-
-
-template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    dynamicConstraintFactor = !d_constraintFactor.isSet();
+    reinit();
+}
 
-    f_indices1.createTopologicalEngine(topology);
-    f_indices1.registerTopologicalData();
-
-    f_indices2.createTopologicalEngine(topology);
-    f_indices2.registerTopologicalData();
-
-    if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
+template <class DataTypes>
+void AttachConstraint<DataTypes>::reinit()
+{
+    // Check coherency of size between indices vectors 1 and 2
+    if(f_indices1.getValue().size() != f_indices2.getValue().size())
     {
-        const Real maxR = f_radius.getValue();
-        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-        for (unsigned int i2=0; i2<x2.size(); ++i2)
-        {
-            int best = -1;
-            Real bestR = maxR;
-            for (unsigned int i1=0; i1<x1.size(); ++i1)
-            {
-                Real r = (x2[i2]-x1[i1]).norm();
-                if (r <= bestR)
-                {
-                    best = i1;
-                    bestR = r;
-                }
-            }
-            if (best >= 0)
-            {
-                addConstraint(best, i2);
-            }
-        }
+        msg_error() << "Size mismatch between indices1 and indices2 ("
+                    << f_indices1.getValue().size() << " != " << f_indices2.getValue().size() << ").";
+    }
 
+    // Set to the correct length if dynamic, else check coherency.
+    if(d_constraintFactor.isSet())
+    {
         helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
-
-        // constraintFactor default behavior
-        // if NOT set : initialize all constraints active
-        if(!d_constraintFactor.isSet())
+        if(constraintFactor.size() != f_indices2.getValue().size())
         {
-            unsigned int size = f_indices2.getValue().size();
-
-            constraintFactor.clear();
-            constraintFactor.resize(size);
-
-            for (unsigned int j=0; j<size; ++j)
-            {
-                constraintFactor[j] = 1.0;
-            }
+            msg_error() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
         }
-        // if set : check size
         else
         {
-            if(constraintFactor.size() != f_indices2.getValue().size())
+            for (unsigned int j=0; j<constraintFactor.size(); ++j)
             {
-                msg_error() << "Size of vector constraintFactor, do not fit number of indices attached";
-            }
-            else
-            {
-                for (unsigned int j=0; j<constraintFactor.size(); ++j)
+                if((constraintFactor[j] > 1.0) || (constraintFactor[j] < 0.0))
                 {
-                    if((constraintFactor[j] > 1.0) || (constraintFactor[j] < 0.0))
-                    {
-                        msg_warning() << "Value of vector constraintFactor at indice "<<j<<" is out of bounds [0.0 - 1.0]";
-                    }
+                    msg_warning() << "Value of vector constraintFactor at indice "<<j<<" is out of bounds [0.0 - 1.0]";
                 }
             }
         }
         d_constraintFactor.endEdit();
     }
-
-    // Check coherency of size between indices vectors 1 and 2
-    if(f_indices1.getValue().size() != f_indices2.getValue().size())
-    {
-        msg_error() << "Size mismatch between indices1 and indices2";
-    }
-
     constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
     std::fill(activeFlags.begin(), activeFlags.end(), true);
+    if (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10) {
+        lastDist.resize(f_indices2.getValue().size());
+    }
+
     if (f_restRotations.getValue())
         calcRestRotations();
 }
 
+template<class DataTypes>
+void AttachConstraint<DataTypes>::reinitIfChanged() {
+    if((f_indices1.getParent() || f_indices2.getParent()) && constraintReleased.size() != f_indices2.getValue().size())
+    {
+        reinit();
+    }
+}
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::calcRestRotations()
@@ -406,6 +329,7 @@ void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPa
 template <class DataTypes>
 void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/, DataVecCoord& res1_d, DataVecCoord& res2_d)
 {
+
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
     const bool freeRotations = f_freeRotations.getValue();
@@ -417,10 +341,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
     VecCoord &res2 = *res2_d.beginEdit();
 
     // update active flags
-    constraintReleased.resize(indices2.size());
-    activeFlags.resize(indices2.size());
-    if (last)
-        lastDist.resize(indices2.size());
+    reinitIfChanged();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -483,8 +404,7 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices2.size());
-    activeFlags.resize(indices2.size());
+    reinitIfChanged();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -525,8 +445,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices2.size());
-    activeFlags.resize(indices2.size());
+    reinitIfChanged();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -584,8 +503,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices.size());
-    activeFlags.resize(indices.size());
+    reinitIfChanged();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
@@ -637,8 +555,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     unsigned int i = 0;
     const bool clamp = f_clamp.getValue();
 
-    constraintReleased.resize(indices.size());
-    activeFlags.resize(indices.size());
+    reinitIfChanged();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
@@ -657,7 +574,6 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
         }
     }
 }
-
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
