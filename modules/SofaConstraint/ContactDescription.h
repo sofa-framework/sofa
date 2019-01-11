@@ -61,11 +61,11 @@ public:
         InternalData::const_iterator it = infos.find(contact);
         assert (it != infos.end());
         return it->second;
-    };
+    }
     ContactDescription& getContactDescription(const core::behavior::ConstraintGroup* contact)
     {
         return infos[contact];
-    };
+    }
 protected:
     InternalData infos;
 };

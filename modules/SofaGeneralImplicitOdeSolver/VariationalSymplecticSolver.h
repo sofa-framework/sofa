@@ -39,7 +39,7 @@ using namespace sofa::defaulttype;
 
 /** Implicit and Explicit time integrator using the Variational Symplectic Integrator as defined in :
  * Kharevych, L et al. “Geometric, Variational Integrators for Computer Animation.” ACM SIGGRAPH Symposium on Computer Animation 4 (2006): 43–51.
- * 
+ *
  * The current implementation for implicit integration assume alpha =0.5 (quadratic accuracy) and uses
  * several Newton steps to estimate the velocity
  *
@@ -47,65 +47,62 @@ using namespace sofa::defaulttype;
 class SOFA_GENERAL_IMPLICIT_ODE_SOLVER_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
-	SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
 
     Data<double>       f_newtonError; ///< Error tolerance for Newton iterations
     Data<unsigned int> f_newtonSteps; ///< Maximum number of Newton steps
     Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
-	Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
+    Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
     Data<bool> f_saveEnergyInFile; ///< If kinetic and potential energies should be dumped in a CSV file at each iteration
-	Data<bool>       f_explicit; ///< Use explicit integration scheme
+    Data<bool>       f_explicit; ///< Use explicit integration scheme
     Data<std::string> f_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
     Data<bool> f_computeHamiltonian; ///< Compute hamiltonian
     Data<double> f_hamiltonianEnergy; ///< hamiltonian energy
     Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
     Data<bool> d_threadSafeVisitor;
 
-	VariationalSymplecticSolver();
+    VariationalSymplecticSolver();
 
-	void init() override;
-	std::ofstream energies;
-   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    std::ofstream energies;
 
-   int cpt;
-   /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
-   ///
-   /// This method is used to compute the compliance for contact corrections
-   /// For Euler methods, it is typically dt.
-   virtual double getVelocityIntegrationFactor() const override
-   {
-       return 0; // getContext()->getDt();
-   }
+    void init() override;
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-   /// Given a displacement as computed by the linear system inversion, how much will it affect the position
-   ///
-   /// This method is used to compute the compliance for contact corrections
-   /// For Euler methods, it is typically dt².
-   virtual double getPositionIntegrationFactor() const override
-   {
-       return 0; //*getContext()->getDt());
-   }
+    int cpt;
 
+    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    /// For Euler methods, it is typically dt.
+    virtual double getVelocityIntegrationFactor() const override
+    {
+        return 0;
+    }
 
-       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
-       {
+    /// Given a displacement as computed by the linear system inversion, how much will it affect the position
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    /// For Euler methods, it is typically dt².
+    virtual double getPositionIntegrationFactor() const override
+    {
+        return 0;
+    }
 
-                       return 0;
+    double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
+    {
+        return 0;
+    }
 
-       }
+    double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
+    {
 
+        return 0;
+    }
 
-       double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
-       {
-
-                       return 0;
-       }
 protected:
-        sofa::core::MultiVecDerivId pID;
-        double m_incrementalPotentialEnergy;
-
-
+    sofa::core::MultiVecDerivId pID;
+    double m_incrementalPotentialEnergy;
 };
 
 } // namespace odesolver

@@ -140,8 +140,8 @@ public:
 
 protected:
     BaseLMConstraint();
+    virtual ~BaseLMConstraint() override {}
 
-    ~BaseLMConstraint() {}
 public:
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.

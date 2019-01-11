@@ -37,26 +37,15 @@ namespace component
 namespace constraintset
 {
 
-class GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
+class SOFA_CONSTRAINT_API GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
 {
 public:
     SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
 
-protected:
-    GenericConstraintCorrection();
-    virtual ~GenericConstraintCorrection();
-
-public:
     virtual void bwdInit() override;
-
     virtual void cleanup() override;
-
     virtual void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
     virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
-private:
-    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
-
-public:
 
     virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
 
@@ -92,6 +81,10 @@ public:
     }
 
 protected:
+    GenericConstraintCorrection();
+    virtual ~GenericConstraintCorrection() override;
+
+    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
     void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
                                core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);

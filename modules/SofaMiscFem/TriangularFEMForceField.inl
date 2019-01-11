@@ -41,9 +41,9 @@
 #include <limits>
 
 #ifdef DEBUG_TRIANGLEFEM
-    #define DEBUG_TRIANGLEFEM_MSG true
+#define DEBUG_TRIANGLEFEM_MSG true
 #else
-    #define DEBUG_TRIANGLEFEM_MSG false
+#define DEBUG_TRIANGLEFEM_MSG false
 #endif
 
 
@@ -100,8 +100,8 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , _topology(NULL)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-//, f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-//, f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    //, f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    //, f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , f_poisson(initData(&f_poisson,helper::vector<Real>(1,static_cast<Real>(0.45)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
     , f_young(initData(&f_young,helper::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
@@ -114,12 +114,12 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , showFracturableTriangles(initData(&showFracturableTriangles,false,"showFracturableTriangles","Flag activating rendering of triangles to fracture"))
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
-#ifdef PLOT_CURVE
+    #ifdef PLOT_CURVE
     , elementID( initData(&elementID, (Real)0, "id","element id to follow for fracture criteria") )
     , f_graphStress( initData(&f_graphStress,"graphMaxStress","Graph of max stress corresponding to the element id") )
     , f_graphCriteria( initData(&f_graphCriteria,"graphCriteria","Graph of the fracture criteria corresponding to the element id") )
     , f_graphOrientation( initData(&f_graphOrientation,"graphOrientation","Graph of the orientation of the principal stress direction corresponding to the element id"))
-#endif
+    #endif
 {
     _anisotropicMaterial = false;
     triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
@@ -255,7 +255,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         // third vector orthogonal to first and second
         Transformation R_0_1;
 
-         VecCoord initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+        VecCoord initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
 
         computeRotationLarge( R_0_1, (initialPoints), a, b, c );
 
@@ -265,13 +265,13 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         {
             std::stringstream tmp;
             tmp << "Try to access an element which indices bigger than the size of the vector: a=" <<a <<
-                    " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() << msgendl;
+                   " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() << msgendl;
 
             //reset initialPoints in case of a new pointer of the initial points of the mechanical state
             initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
             tmp << "Now it's: a=" <<a <<
-                    " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() ;
+                   " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() ;
 
             msg_error() << tmp.str() ;
         }
@@ -472,6 +472,19 @@ void TriangularFEMForceField<DataTypes>::getRotations()
 }
 
 
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setMethod(const std::string& methodName)
+{
+    if (methodName == "small")
+        this->setMethod(SMALL);
+    else
+    {
+        msg_warning_when(methodName != "large") << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
+        this->setMethod(LARGE);
+    }
+}
+
+
 // --------------------------------------------------------------------------------------
 // --- Get Fracture Criteria
 // --------------------------------------------------------------------------------------
@@ -545,7 +558,7 @@ void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
     if (a >= p.size() || b >= p.size() || c >= p.size())
     {
         msg_error() <<  "Indices given in parameters are wrong>> a=" << a << " b=" << b << " and c=" << c <<
-                " whereas the size of the vector p is " << p.size() ;
+                        " whereas the size of the vector p is " << p.size() ;
         return;
     }
 
@@ -1336,9 +1349,8 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const VecCoord &p, Index elementIndex )
 {
 
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangularFEMForceField::accumulateForceSmall"<<sendl;
-#endif
+    if(DEBUG_TRIANGLEFEM_MSG)
+        dmsg_info() << "TriangularFEMForceField::accumulateForceSmall" ;
 
     Displacement F;
 
@@ -1455,207 +1467,6 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
             computePrincipalStress(i, triangleInf[i].stress);
         triangleInfo.endEdit();
     }
-
-    //TODO(dmarchal 2017-05-03) I will remove this code soon !!!
-    /*	if (f_fracturable.getValue())
-    {
-    // First Pass - Vertices Pass
-    unsigned int nbPoints=_topology->getNbPoints();
-
-    for( unsigned int i=0; i<nbPoints; i++ )
-    {
-    const sofa::helper::vector< unsigned int >& triangleNeighbors = _topology->getTrianglesAroundVertex(i);
-
-    sofa::helper::vector< unsigned int >::const_iterator it = triangleNeighbors.begin();
-    sofa::helper::vector< unsigned int >::const_iterator itEnd = triangleNeighbors.end();
-    Coord meanStrainDirection, refStrainDirection;
-    meanStrainDirection.clear();
-    refStrainDirection.clear();
-
-    bool b(true);
-
-    while (it != itEnd)
-    {
-    if (b)
-    {
-    refStrainDirection = triangleInfo[*it].principalStrainDirection;
-    if (refStrainDirection.norm() != 0.0)
-    b=false;
-    }
-
-    (triangleInfo[*it].principalStrainDirection * refStrainDirection < 0)?
-    meanStrainDirection -= triangleInfo[*it].principalStrainDirection : meanStrainDirection += triangleInfo[*it].principalStrainDirection;
-
-    vertexInfo[i].sumEigenValues += triangleInfo[*it].eigenValue;
-
-    ++it;
-    }
-
-    //meanStrainDirection.normalize();
-
-    vertexInfo[i].meanStrainDirection = meanStrainDirection / (double)triangleNeighbors.size();
-    vertexInfo[i].sumEigenValues = (double)vertexInfo[i].sumEigenValues / (double)triangleNeighbors.size();
-    }
-
-
-    // Second Pass - Edges Pass
-
-    for(int i=0; i<_topology->getNbEdges(); i++ )
-    edgeInfo[i].fracturable = false;
-
-    if (nbPoints > 0)
-    {
-    double max = 0; //vertexInfo[0].sumEigenValues;
-    int mostDeformableVertexIndex = -1; //0;
-
-    for( unsigned int i=0; i<nbPoints; i++ )
-    {
-    bool vertexOnBorder = _topology->getTrianglesAroundVertex(i).size() < _topology->getEdgesAroundVertex(i).size() && _topology->getTrianglesAroundVertex(i).size() > 1;
-
-    if (vertexOnBorder && vertexInfo[i].sumEigenValues > max)
-    {
-    mostDeformableVertexIndex = i;
-    max = vertexInfo[i].sumEigenValues;
-    }
-    }
-
-    //			std::vector< std::pair< double, unsigned int > > mostDeformableVertexIndexA(nbPoints);
-    //			for( unsigned int i=0; i<nbPoints; i++ )
-    //			{
-    //				mostDeformableVertexIndexA[i].first = vertexInfo[i].sumEigenValues;
-    //				mostDeformableVertexIndexA[i].second = i;
-    //			}
-
-    //			std::sort( mostDeformableVertexIndexA.begin(), mostDeformableVertexIndexA.end() );
-    //		for( unsigned int i=0; i<nbPoints; i++ )
-    //			{
-    //				sout << mostDeformableVertexIndexA[i].first << " ";
-    //			}
-    //			sout << ""<<sendl;
-
-
-    //			bool vertexOnBorder(false);
-    //			int curIndex = nbPoints-1;
-
-    //			while ((!vertexOnBorder)&&(curIndex>=0))
-    //			{
-    //				mostDeformableVertexIndex = mostDeformableVertexIndexA[curIndex].second;
-    //				max=mostDeformableVertexIndexA[curIndex].first;
-    // Check if the Vertex is on the border
-    //				curIndex--;
-    //			}
-
-    // if (vertexOnBorder && (max > 0.05))
-
-    const double THRESHOLD = 0.2;
-
-    if ((mostDeformableVertexIndex!=-1) && (max > THRESHOLD))
-    {
-    //sout << "max=" << max << sendl;
-    double minDotProduct = 1000.0;
-    unsigned int fracturableIndex = 0;
-    bool fracture(false);
-
-    const sofa::helper::vector< unsigned int >& edgeNeighbors = _topology->getEdgesAroundVertex(mostDeformableVertexIndex);
-
-    sofa::helper::vector< unsigned int >::const_iterator it = edgeNeighbors.begin();
-    sofa::helper::vector< unsigned int >::const_iterator itEnd = edgeNeighbors.end();
-
-    Index a;
-    Index b;
-
-    Coord n = vertexInfo[mostDeformableVertexIndex].meanStrainDirection;
-    n.normalize();
-
-    while (it != itEnd)
-    {
-    a = _topology->getEdge(*it)[0];
-    b = _topology->getEdge(*it)[1];
-
-    if (vertexInfo[mostDeformableVertexIndex].meanStrainDirection.norm() != 0.0)
-    {
-    Coord d = x[b]-x[a];
-    d.normalize();
-    if (fabs(n * d) < minDotProduct)
-    {
-    sofa::helper::vector< unsigned int > trianglesAroundEdge = _topology->getTrianglesAroundEdge(*it);
-    if (trianglesAroundEdge.size() != 1)
-    {
-
-    //	bool bb(false);
-    //	sofa::helper::vector< unsigned int >::iterator _it = trianglesAroundEdge.begin();
-    //	sofa::helper::vector< unsigned int >::iterator _itEnd = trianglesAroundEdge.end();
-    //	while (_it != _itEnd)
-    //	{
-    //		helper::fixed_array<unsigned int,3> edges = _topology->getEdgesInTriangle(*_it);
-
-    //		int cptTest=0;
-    //		for (int i=0; i<3; i++)
-    //		{
-    //			if (_topology->getTrianglesAroundEdge(edges[i]).size() < 2)
-    //			{
-    //				cptTest++;
-    //			}
-    //		}
-
-    //		if (cptTest > 2)
-    //		{
-    //			if (max < 5 * THRESHOLD)
-    //			{
-    //				bb = true;
-    //				break;
-    //			}
-    //		}
-
-    //		++_it;
-    //	}
-
-    //	if (!bb)
-
-    {
-    minDotProduct = fabs(n * d);
-    fracturableIndex = *it;
-    fracture = true;
-    }
-    }
-    }
-    }
-
-    ++it;
-    }
-
-    if (fracture) {
-    //sout << "fracture at edge "<<fracturableIndex<<sendl;
-    edgeInfo[fracturableIndex].fracturable = true;
-    lastFracturedEdgeIndex = fracturableIndex;
-    }
-    }
-    }
-    }
-    */
-
-    //	sout << "EOF AddForce"<<sendl;
-    /*	int nodeIdx=88;
-    Transformation r,rt,I;
-    getRotation(r,nodeIdx);
-    rt.transpose(r);
-    I=rt*r;
-
-    serr << "rotation Matrix"<< r <<sendl;
-    serr << "rotation Matrix"<< rt <<sendl;
-    serr << "rotation Matrix"<< I <<sendl;*/
-
-    /*	helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-    int numNeiTri=_topology->getTrianglesAroundVertex(nodeIdx).size();
-    for(int i=0;i<numNeiTri;i++)
-    {
-    int triIdx=_topology->getTrianglesAroundVertex(nodeIdx)[i];
-    TriangleInformation *tinfo = &triangleInf[triIdx];
-    Transformation r01,r21;
-    r01=tinfo->initialTransformation;
-    r21=tinfo->rotation*r01;
-    serr << "rotation Matrix of"<< i << "triangle"<< r21 <<sendl;
-    }*/
 }
 
 // --------------------------------------------------------------------------------------

@@ -41,17 +41,33 @@ namespace forcefield
 {
 
 template<class DataTypes>
+VaccumSphereForceField<DataTypes>::VaccumSphereForceField()
+    : contacts(initData(&contacts,"contacts", "Contacts"))
+    , centerDOF(nullptr)
+    , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
+    , sphereRadius(initData(&sphereRadius, Real(1), "radius", "sphere radius"))
+    , stiffness(initData(&stiffness, Real(500), "stiffness", "force stiffness"))
+    , damping(initData(&damping, Real(5), "damping", "force damping"))
+    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "sphere color. (default=[0,0,1,1])"))
+    , centerState(initData(&centerState, "centerState", "path to the MechanicalState controlling the center point"))
+    , active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
+    , keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
+    , filter(initData(&filter, Real(0), "filter", "filter"))
+{
+}
+
+template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::init()
 {
     this->Inherit::init();
     if (centerState.getValue().empty())
     {
-        centerDOF = NULL;
+        centerDOF = nullptr;
     }
     else
     {
         this->getContext()->get(centerDOF, centerState.getValue());
-        if (centerDOF == NULL)
+        if (centerDOF == nullptr)
             serr << "Error loading centerState" << sendl;
     }
 }
@@ -122,8 +138,8 @@ void VaccumSphereForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     const VecDeriv& dx1 = d_dx.getValue();
 
     df1.resize(dx1.size());
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
+    Real kFactor = Real( mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) );
+    const Real fact = Real(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {
         const Contact& c = (this->contacts.getValue())[i];
@@ -200,11 +216,39 @@ void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const Real r = sphereRadius.getValue();
 
     vparams->drawTool()->enableLighting();
-    vparams->drawTool()->drawSphere(center, (float)(r*0.99));
+    vparams->drawTool()->drawSphere(center, float(r*0.99));
     vparams->drawTool()->disableLighting();
 
     vparams->drawTool()->restoreLastState();
 
+}
+
+template<class DataTypes>
+void VaccumSphereForceField<DataTypes>::setSphere(const Coord& center, Real radius)
+{
+    sphereCenter.setValue( center );
+    sphereRadius.setValue( radius );
+}
+
+template<class DataTypes>
+void VaccumSphereForceField<DataTypes>::setStiffness(Real stiff)
+{
+    stiffness.setValue( stiff );
+}
+
+template<class DataTypes>
+void VaccumSphereForceField<DataTypes>::setDamping(Real damp)
+{
+    damping.setValue( damp );
+}
+
+
+template<class DataTypes>
+SReal VaccumSphereForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
+                                                            const DataVecCoord&  /* x */) const
+{
+    dmsg_error() << "Get potentialEnergy not implemented.";
+    return 0.0;
 }
 
 
