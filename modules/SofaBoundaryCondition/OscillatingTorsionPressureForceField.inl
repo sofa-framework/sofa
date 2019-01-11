@@ -253,7 +253,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
     helper::vector<unsigned int> inputTriangles;
 
-    for (int n=0; n<_topology->getNbTriangles(); ++n)
+    for (size_t n=0; n<_topology->getNbTriangles(); ++n)
     {
         if ((vArray[_topology->getTriangle(n)[0]]) && (vArray[_topology->getTriangle(n)[1]])&& (vArray[_topology->getTriangle(n)[2]]) )
         {

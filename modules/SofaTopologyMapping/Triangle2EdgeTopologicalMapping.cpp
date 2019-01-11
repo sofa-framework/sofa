@@ -192,7 +192,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                     if(iter_2 != Glob2LocMap.end())
                     {
-
                         ind_real_last = Glob2LocMap[last];
 
                         if (k != last)

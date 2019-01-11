@@ -6,3 +6,13 @@ Components/topology/TopologicalModifiers/RemovingTrianglesProcess.scn 30 1e-4 1
 Components/topology/TopologicalModifiers/RemovingTriangle2EdgeProcess.scn 30 1e-4 
 Components/topology/TopologicalModifiers/AddingTrianglesProcess.scn 30 1e-4 1
 Components/topology/TopologicalModifiers/AddingTriangle2EdgeProcess.scn 30 1e-4 1
+
+Components/topology/TopologicalModifiers/RemovingHexa2QuadProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/RemovingQuad2TriangleProcess.scn 30 1e-4 1
+
+#broken: Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess.scn
+#never worked: Components/topology/TopologicalModifiers/RemovingHexa2TetraProcess.scn
+
+Components/topology/TopologicalModifiers/AddingHexa2QuadProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingQuad2TriangleProcess.scn 30 1e-4 1
+Components/topology/TopologicalModifiers/AddingTetra2TriangleProcess.scn 30 1e-4 1

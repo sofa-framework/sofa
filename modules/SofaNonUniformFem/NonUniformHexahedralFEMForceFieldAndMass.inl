@@ -170,13 +170,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     {
     case HexahedralFEMForceFieldT::LARGE:
     {
-        for (int i=0; i<this->_topology->getNbHexahedra(); ++i)
+        for (size_t i=0; i<this->_topology->getNbHexahedra(); ++i)
             initLarge(i);
     }
     break;
     case HexahedralFEMForceFieldT::POLAR:
     {
-        for(int i=0; i<this->_topology->getNbHexahedra(); ++i)
+        for(size_t i=0; i<this->_topology->getNbHexahedra(); ++i)
             initPolar(i);
     }
     break;

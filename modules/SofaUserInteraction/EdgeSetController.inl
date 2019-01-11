@@ -600,7 +600,7 @@ void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* vparam
         vparams->drawTool()->disableLighting();
         sofa::defaulttype::RGBAColor color(1.0,1.0,0.0,1.0);
         std::vector<sofa::defaulttype::Vector3> vertices;
-        for (int i=0; i<_topology->getNbEdges(); i++)
+        for (size_t i=0; i<_topology->getNbEdges(); i++)
         {
             Coord x0 = x[_topology->getEdge(i)[0]];
             Coord x1 = x[_topology->getEdge(i)[1]];
