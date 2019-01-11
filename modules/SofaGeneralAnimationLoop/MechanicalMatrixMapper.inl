@@ -57,9 +57,9 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
     :
       d_forceFieldList(initData(&d_forceFieldList,"forceFieldList","List of ForceField Names to work on (by default will take all)")),
       l_nodeToParse(initLink("nodeToParse","link to the node on which the component will work, from this link the mechanicalState/mass/forceField links will be made")),
-      l_stopAtNodeToParse(initData(&l_stopAtNodeToParse,false,"stopAtNodeToParse","Boolean to choose whether forceFields in children Nodes of NodeToParse should be considered")),
-      l_skipJ1tKJ1(initData(&l_skipJ1tKJ1,false,"skipJ1tKJ1","Boolean to choose whether to skip J1tKJ1 to avoid 2 contributions")),
-      l_skipJ2tKJ2(initData(&l_skipJ2tKJ2,false,"skipJ2tKJ2","Boolean to choose whether to skip J2tKJ2 to avoid 2 contributions")),
+      l_stopAtNodeToParse(initData(&l_stopAtNodeToParse,false,"stopAtNodeToParse","Boolean to choose whether forceFields in children Nodes of NodeToParse should be considered.")),
+      l_skipJ1tKJ1(initData(&l_skipJ1tKJ1,false,"skipJ1tKJ1","Boolean to choose whether to skip J1tKJ1 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
+      l_skipJ2tKJ2(initData(&l_skipJ2tKJ2,false,"skipJ2tKJ2","Boolean to choose whether to skip J2tKJ2 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
       l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on (filled automatically during init)")),
       l_mappedMass(initLink("mass","mass with which the component will work on (filled automatically during init)")),
       l_forceField(initLink("forceField","The ForceField(s) attached to this node (filled automatically during init)"))
@@ -117,8 +117,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
     if (l_forceField.size() == 0)
     {
         msg_warning() << ": no forcefield to link to for this node path: " << l_nodeToParse.getPath();
-        //m_componentstate = ComponentState::Invalid ;
-        //return;
     }
 
     m_componentstate = ComponentState::Valid ;
@@ -128,7 +126,7 @@ template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node,std::string massName)
 {
     bool empty = d_forceFieldList.getValue().empty();
-
+    msg_info() << "parsing node:";
     for(BaseForceField* forcefield : node->forceField)
     {
         if (forcefield->name != massName)
@@ -340,7 +338,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     sofa::simulation::Node *node = l_nodeToParse.get();
     size_t currentNbInteractionFFs = node->interactionForceField.size();
-
+    msg_info() << "nb m_nbInteractionForceFields :" << m_nbInteractionForceFields;
+    msg_info() << "nb currentNbInteractionFFs :" << currentNbInteractionFFs;
     if (m_nbInteractionForceFields != currentNbInteractionFFs)
     {
         bool emptyForceFieldList = l_forceField.empty();
@@ -406,8 +405,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         optimizeAndCopyMappingJacobianToEigenFormat2(J2, J2eig);
         msg_info(this)<<" time set J2eig alone : "<<( (double)timer->getTime() - startTime2)*timeScale<<" ms";
     }
-    msg_info() << "J1:" << J1eig;
-    msg_info() << "J2:" << J2eig;
+//    msg_info() << "J1:" << J1eig;
+//    msg_info() << "J2:" << J2eig;
     msg_info(this)<<" time getJ + set J1eig (and potentially J2eig) : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
     startTime= (double)timer->getTime();
 
@@ -439,14 +438,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         J1tKJ2eigen = J1eig.transpose()*Keig*J2eig;
         J2tKJ1eigen = J2eig.transpose()*Keig*J1eig;
         msg_info(this)<<" time compute J1tKJ2eigen J2TKJ2 and J2tKJ1 : "<<( (double)timer->getTime() - startTime2)*timeScale<<" ms";
-        msg_warning() << "J1tKJ1eigen:";
-        msg_warning() << J1tKJ1eigen;
-        msg_warning() << "J2tKJ2eigen:";
-        msg_warning() << J2tKJ2eigen;
-        msg_warning() << "J1tKJ2eigen:";
-        msg_warning() << J1tKJ2eigen;
-        msg_warning() << "J2tKJ1eigen:";
-        msg_warning() << J2tKJ1eigen;
     }
 
 
@@ -459,7 +450,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     int offset,offrow, offcol;
     startTime= (double)timer->getTime();
     offset = mat11.offset;
-//    msg_warning() << "offset mat11:" << offset;
     for (int k=0; k<J1tKJ1eigen.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(J1tKJ1eigen,k); it; ++it)
       {
@@ -471,7 +461,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     {
         startTime= (double)timer->getTime();
         offset = mat22.offset;
-//        msg_warning() << "offset mat22:" << offset;
         for (int k=0; k<J2tKJ2eigen.outerSize(); ++k)
           for (Eigen::SparseMatrix<double>::InnerIterator it(J2tKJ2eigen,k); it; ++it)
           {
@@ -481,7 +470,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         startTime= (double)timer->getTime();
         offrow = mat12.offRow;
         offcol = mat12.offCol;
-//        msg_warning() << "offset mat12:" << offrow << " " << offcol;
         for (int k=0; k<J1tKJ2eigen.outerSize(); ++k)
           for (Eigen::SparseMatrix<double>::InnerIterator it(J1tKJ2eigen,k); it; ++it)
           {
@@ -491,7 +479,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         startTime= (double)timer->getTime();
         offrow = mat21.offRow;
         offcol = mat21.offCol;
-//        msg_warning() << "offset mat21:" << offrow << " " << offcol;
         for (int k=0; k<J2tKJ1eigen.outerSize(); ++k)
           for (Eigen::SparseMatrix<double>::InnerIterator it(J2tKJ1eigen,k); it; ++it)
           {
