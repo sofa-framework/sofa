@@ -67,10 +67,15 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     : QWidget(parent)
 {
     //Build codec list
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    listCodecs.push_back(Codec("mp4", "yuv420p", "Video: h264   (Windows Media Player, QuickTime and compatible with most other players) "));
+    listCodecs.push_back(Codec("mp4", "yuv444p", "Video: h264   (VLC media player) "));
+#elif SOFA_HAVE_FFMPEG
+    listCodecs.push_back(Codec("mp4", "h264", "MP4/H264 (Best ratio visual quality/bitrate, requires libx264)"));
     listCodecs.push_back(Codec("mpeg", "Mpeg1 (Bad quality but readable everywhere)"));
     listCodecs.push_back(Codec("mp4", "MP4/Mpeg4 (Good ratio visual quality/bitrate, good compatibility)"));
-    listCodecs.push_back(Codec("mp4","h264", "MP4/H264 (Best ratio visual quality/bitrate, requires libx264)"));
     listCodecs.push_back(Codec("avi","lossless", "Lossless (No loss of information, best for post-processing and re-encodings)"));
+#endif 
 
     QVBoxLayout *layout=new QVBoxLayout(this);
 
@@ -79,7 +84,7 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     codecComboBox = new QComboBox(this);
     for(unsigned int i=0; i<listCodecs.size(); i++)
         codecComboBox->addItem(QString(listCodecs[i].description.c_str()));
-    codecComboBox->setCurrentIndex(2);
+    codecComboBox->setCurrentIndex(0);
     HLayoutCodec->addWidget (labelCodec);
     HLayoutCodec->addWidget (codecComboBox);
 
@@ -91,6 +96,11 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     bitrateSpinBox->setValue(5000);
     HLayoutBitrate->addWidget (labelBitrate);
     HLayoutBitrate->addWidget (bitrateSpinBox);
+
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    labelBitrate->setVisible(false);
+    bitrateSpinBox->setVisible(false);
+#endif
 
     layout->addLayout(HLayoutCodec);
     layout->addLayout(HLayoutBitrate);
@@ -107,7 +117,7 @@ SofaVideoRecorderManager::SofaVideoRecorderManager()
     internalAddWidget(VideoRecorderOptionGroupBox, captureOptionsWidget);
     internalAddWidget(VideoRecorderOptionGroupBox, movieOptionsWidget);
 
-#ifdef SOFA_HAVE_FFMPEG
+#if defined(SOFA_HAVE_FFMPEG_EXEC) || defined(SOFA_HAVE_FFMPEG )
     MovieRecordingTypeRadioButton->setChecked(true);
 #else
     MovieRecordingTypeRadioButton->setHidden(true);

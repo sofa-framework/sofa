@@ -55,6 +55,19 @@ find_library(FFMPEG_LIBSWSCALE
 	PATHS ${_FFMPEG_SWSCALE_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
 )
 
+find_program(FFMPEG_EXEC
+	NAMES ffmpeg
+	HINTS ${_FFMPEG_SWSCALE_LIBRARY_DIRS} /usr/bin /usr/local/bin /opt/local/bin /sw/bin
+)
+
+if (FFMPEG_EXEC )
+	message(STATUS "-- FFmpeg executable was found  "  ${FFMPEG_EXEC})
+	set(FFMPEG_EXEC_FOUND TRUE)
+	set(FFMPEG_EXEC_FILE "${FFMPEG_EXEC}")
+	add_definitions("-DSOFA_HAVE_FFMPEG_EXEC")
+	add_definitions( "-DFFMPEG_EXEC_FILE=\"${FFMPEG_EXEC_FILE}\"" )
+endif()
+
 if (FFMPEG_LIBAVCODEC AND FFMPEG_LIBAVFORMAT)
 	set(FFMPEG_FOUND TRUE)
 endif()

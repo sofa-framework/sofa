@@ -290,6 +290,13 @@ if(NOT SOFA_NO_OPENGL)
 
 endif()
 
+find_package(FFMPEG QUIET)
+
+if (FFMPEG_EXEC_FOUND)
+	list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
+    list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
+endif( FFMPEG_EXEC_FOUND)
+
 
  if(SOFA-EXTERNAL_FFMPEG)
     list(APPEND HEADER_FILES gl/VideoRecorder.h)
