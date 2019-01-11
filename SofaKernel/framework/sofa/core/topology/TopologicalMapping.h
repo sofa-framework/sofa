@@ -117,6 +117,26 @@ public:
         return 0;
     }
 
+    void dumpGlob2LocMap()
+    {
+        std::map<unsigned int, unsigned int>::iterator itM;
+        msg_info() << "## Log Glob2LocMap - size: " << Glob2LocMap.size() << " ##";
+        for (itM = Glob2LocMap.begin(); itM != Glob2LocMap.end(); ++itM)
+            msg_info() << (*itM).first << " - " << (*itM).second;
+
+        msg_info() << "#################";
+    }
+
+    void dumpLoc2GlobVec()
+    {
+        const sofa::helper::vector <unsigned int>& buffer = Loc2GlobDataVec.getValue();
+        msg_info() << "## Log Loc2GlobDataVec - size: " << buffer.size() << " ##";
+        for (unsigned int i=0; i<buffer.size(); ++i)
+            msg_info() << i << " - " << buffer[i];
+
+        msg_info() << "#################";
+    }
+
     /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
     *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.
     */
@@ -152,20 +172,20 @@ public:
 
         if (stin == NULL)
         {
-            context->serr << "Cannot create " << className(obj) << " as input model is missing or invalid." << context->sendl;
+            context->serr << "Creation of " << className(obj) << " topology mapping failed as input topology model is missing or invalid." << context->sendl;
             return false;
         }
 
         if (stout == NULL)
         {
-            context->serr << "Cannot create " << className(obj) <<" as output model is missing or invalid." << context->sendl;
+            context->serr << "Creation of " << className(obj) <<" topology mapping failed as output topology model is missing or invalid." << context->sendl;
             return false;
         }
 
         if (static_cast<BaseObject*>(stin) == static_cast<BaseObject*>(stout))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            context->serr << "Creation of " << className(obj) << " topology mapping failed because the same object \"" << stin->getName() << "\" is linked as both input and output." << context->sendl;
+            context->serr <<  "Creation of " << className(obj) << " topology mapping failed as the same object \"" << stin->getName() << "\" is linked as input and output." << context->sendl;
             return false;
         }
 
