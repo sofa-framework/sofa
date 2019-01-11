@@ -743,11 +743,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
                 if(is_in_next_triangle)
                 {
                     ind_t_test=ind_triangle;
-                    //sout << "correct to triangle indexed by " << ind_t_test << sendl;
+                    //msg_info() << "correct to triangle indexed by " << ind_t_test;
                 }
                 else // not found
                 {
-                    //sout << "not found !!! " << sendl;
+                    //msg_info() << "not found !!! ";
                     ind_t_test=ind_t;
                 }
             }
@@ -761,7 +761,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
+        //msg_info() << "INFO_print : triangle is flat";
         return false;
     }
 }
@@ -887,11 +887,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
                 if(is_in_next_triangle)
                 {
                     ind_t_test=ind_triangle;
-                    //sout << "correct to triangle indexed by " << ind_t_test << sendl;
+                    //msg_info() << "correct to triangle indexed by " << ind_t_test;
                 }
                 else // not found
                 {
-                    //sout << "not found !!! " << sendl;
+                    //msg_info() << "not found !!! ";
                     ind_t_test=ind_t;
                 }
             }
@@ -905,7 +905,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
+        //msg_info() << "INFO_print : triangle is flat";
         return false;
     }
 }
@@ -1134,8 +1134,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     sofa::defaulttype::Vec<3,Real> vect_from = point_from - point_p;
     sofa::defaulttype::Vec<3,Real> vect_to = point_p - point_to;
 
-    //sout << "INFO_print : vect_from = " << vect_from <<  sendl;
-    //sout << "INFO_print : vect_to = " << vect_to <<  sendl;
+    //msg_info() << "INFO_print : vect_from = " << vect_from <<  sendl;
+    //msg_info() << "INFO_print : vect_to = " << vect_to <<  sendl;
 
     sofa::defaulttype::Vec<3,Real> normal_from;
     sofa::defaulttype::Vec<3,Real> normal_to;
@@ -1278,8 +1278,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
             if(value_test<=0.0)
             {
-                //sout << "INFO_print : CONVEXE, value_test = " << value_test <<  sendl;
-                //sout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
+                //msg_info() << "INFO_print : CONVEXE, value_test = " << value_test <<  sendl;
+                //msg_info() << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
 
                 while(i < shell.size())
                 {
@@ -1304,8 +1304,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
             }
             else // value_test>0.0
             {
-                //sout << "INFO_print : CONCAVE, value_test = " << value_test <<  sendl;
-                //sout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
+                //msg_info() << "INFO_print : CONCAVE, value_test = " << value_test <<  sendl;
+                //msg_info() << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
 
                 while(i < shell.size())
                 {

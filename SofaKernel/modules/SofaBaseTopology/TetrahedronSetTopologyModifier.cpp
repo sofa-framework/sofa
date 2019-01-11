@@ -27,6 +27,7 @@
 #include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -590,18 +591,25 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector
     for (size_t i = 0; i < tetrahedraIds.size(); i++)
     {
         if( tetrahedraIds[i] >= m_container->getNumberOfTetrahedra())
-            msg_error() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
+            dmsg_warning() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
         else
             tetrahedraIds_filtered.push_back(tetrahedraIds[i]);
     }
 
+    /// add the topological changes in the queue
+    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraWarning");
     removeTetrahedraWarning(tetrahedraIds_filtered);
+    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraWarning");
 
     // inform other objects that the triangles are going to be removed
+    sofa::helper::AdvancedTimer::stepBegin("propagateTopologicalChanges");
     propagateTopologicalChanges();
+    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
 
     // now destroy the old tetrahedra.
+    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraProcess");
     removeTetrahedraProcess(tetrahedraIds_filtered ,true);
+    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraProcess");
 
     m_container->checkTopology();
 
