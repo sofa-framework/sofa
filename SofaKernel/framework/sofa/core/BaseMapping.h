@@ -149,7 +149,7 @@ public:
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
     /// For efficiency concerns, please return pointers to defaulttype::EigenBaseSparseMatrix
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() { serr<<"getJs not implemented"<<sendl; return 0; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() { dmsg_error() << "Calling a virtual method not implemented."; return nullptr; }
 
     /// Compute the geometric stiffness matrix based on given child forces
     /// K = dJ^T * outForce
@@ -160,7 +160,7 @@ public:
     /// This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.
     /// This matrix is associated with the parent DOFs. It is a square matrix with a size of the total number of parent DOFs.
     /// For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
-    virtual const defaulttype::BaseMatrix* getK() { return NULL; }
+    virtual const defaulttype::BaseMatrix* getK() { return nullptr; }
 
     /// @}
 

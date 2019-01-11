@@ -88,15 +88,9 @@ void updateCapsuleHeight(btCollisionShape * capsule,typename TDataTypes::Real he
     (static_cast<BulletSoftCapsule*>(capsule))->setHeight(height);
 }
 
-#ifndef SOFA_FLOAT
 template <>
-void updateCapsuleHeight<defaulttype::Rigid3dTypes>(btCollisionShape * ,typename defaulttype::Rigid3dTypes::Real ){}
-#endif
+void updateCapsuleHeight<defaulttype::Rigid3Types>(btCollisionShape * ,typename defaulttype::Rigid3Types::Real ){}
 
-#ifndef SOFA_DOUBLE
-template <>
-void updateCapsuleHeight<defaulttype::Rigid3fTypes>(btCollisionShape * ,typename defaulttype::Rigid3fTypes::Real ){}
-#endif
 
 template <class TDataTypes>
 void TBulletCapsuleModel<TDataTypes>::updateBullet(){

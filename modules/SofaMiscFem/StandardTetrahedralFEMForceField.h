@@ -240,12 +240,8 @@ public:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3Types>;
+
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 

@@ -80,22 +80,13 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid2fTypes>;
-#endif
+extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid2Types>;
+
 #endif
 
 } // namespace forcefield

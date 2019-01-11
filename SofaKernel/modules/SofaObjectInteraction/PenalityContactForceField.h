@@ -134,12 +134,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace interactionforcefield

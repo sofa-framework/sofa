@@ -60,7 +60,7 @@ using namespace sofa::core::topology;
 using namespace sofa::core::loader;
 using helper::vector;
 
-ExtVec3fState::ExtVec3fState()
+ExtVec3State::ExtVec3State()
     : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
     , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
     , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
@@ -71,7 +71,7 @@ ExtVec3fState::ExtVec3fState()
     m_vnormals.setGroup("Vector");
 }
 
-void ExtVec3fState::resize(size_t vsize)
+void ExtVec3State::resize(size_t vsize)
 {
     helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
     if( positions.size() == vsize ) return;
@@ -85,9 +85,9 @@ void ExtVec3fState::resize(size_t vsize)
     modified = true;
 }
 
-size_t ExtVec3fState::getSize() const { return m_positions.getValue().size(); }
+size_t ExtVec3State::getSize() const { return m_positions.getValue().size(); }
 
-Data<ExtVec3fState::VecCoord>* ExtVec3fState::write(     core::VecCoordId  v )
+Data<ExtVec3State::VecCoord>* ExtVec3State::write(     core::VecCoordId  v )
 {
     modified = true;
 
@@ -99,7 +99,7 @@ Data<ExtVec3fState::VecCoord>* ExtVec3fState::write(     core::VecCoordId  v )
     return NULL;
 }
 
-const Data<ExtVec3fState::VecCoord>* ExtVec3fState::read(core::ConstVecCoordId  v )  const
+const Data<ExtVec3State::VecCoord>* ExtVec3State::read(core::ConstVecCoordId  v )  const
 {
     if( v == core::VecCoordId::position() )
         return &m_positions;
@@ -109,7 +109,7 @@ const Data<ExtVec3fState::VecCoord>* ExtVec3fState::read(core::ConstVecCoordId  
     return NULL;
 }
 
-Data<ExtVec3fState::VecDeriv>*	ExtVec3fState::write(core::VecDerivId v )
+Data<ExtVec3State::VecDeriv>*	ExtVec3State::write(core::VecDerivId v )
 {
     if( v == core::VecDerivId::normal() )
         return &m_vnormals;
@@ -117,7 +117,7 @@ Data<ExtVec3fState::VecDeriv>*	ExtVec3fState::write(core::VecDerivId v )
     return NULL;
 }
 
-const Data<ExtVec3fState::VecDeriv>* ExtVec3fState::read(core::ConstVecDerivId v ) const
+const Data<ExtVec3State::VecDeriv>* ExtVec3State::read(core::ConstVecDerivId v ) const
 {
     if( v == core::VecDerivId::normal() )
         return &m_vnormals;
@@ -1602,12 +1602,12 @@ void VisualModelImpl::handleTopologyChange()
 
                             if(is_forgotten)
                             {
-                                int ind_forgotten = j_loc;
+                                unsigned int ind_forgotten = j_loc;
 
                                 bool is_in_shell = false;
                                 for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
                                 {
-                                    is_in_shell = is_in_shell || ((int)shell[j_glob] == ind_forgotten);
+                                    is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
                                 }
 
                                 if(!is_in_shell)

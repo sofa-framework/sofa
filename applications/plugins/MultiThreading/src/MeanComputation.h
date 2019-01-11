@@ -23,8 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_MEAN_COMPUTATION_H
 
 #include <MultiThreading/config.h>
-
-
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 //#include <sofa/defaulttype/Vec.h>

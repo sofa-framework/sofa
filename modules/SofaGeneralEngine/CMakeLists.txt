@@ -73,6 +73,8 @@ list(APPEND HEADER_FILES
     MeshSplittingEngine.inl
     MeshSubsetEngine.h
     MeshSubsetEngine.inl
+    NearestPointROI.h
+    NearestPointROI.inl
     NormEngine.h
     NormEngine.inl
     NormalsFromPoints.h
@@ -153,6 +155,7 @@ list(APPEND SOURCE_FILES
     MeshSampler.cpp
     MeshSplittingEngine.cpp
     MeshSubsetEngine.cpp
+    NearestPointROI.cpp
     NormEngine.cpp
     NormalsFromPoints.cpp
     PairBoxRoi.cpp

@@ -35,28 +35,16 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int ExtraMonitorClass = core::RegisterObject("Monitoring of particles")
-        #ifndef SOFA_FLOAT
-        .add<ExtraMonitor<Vec3dTypes> >(true)
-        .add<ExtraMonitor<Vec6dTypes> >()
-        .add<ExtraMonitor<Rigid3dTypes> >()
-        #endif
-        #ifndef SOFA_DOUBLE
-        .add<ExtraMonitor<Vec3fTypes> >()
-        .add<ExtraMonitor<Vec6fTypes> >()
-        .add<ExtraMonitor<Rigid3fTypes> >()
-        #endif
+                .add<ExtraMonitor<Vec3Types> >(true)
+        .add<ExtraMonitor<Vec6Types> >()
+        .add<ExtraMonitor<Rigid3Types> >()
+        
         ;
 
-#ifndef SOFA_FLOAT
-template class ExtraMonitor<Vec3dTypes>;
-template class ExtraMonitor<Vec6dTypes>;
-template class ExtraMonitor<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class ExtraMonitor<Vec3fTypes>;
-template class ExtraMonitor<Vec6fTypes>;
-template class ExtraMonitor<Rigid3fTypes>;
-#endif
+template class ExtraMonitor<Vec3Types>;
+template class ExtraMonitor<Vec6Types>;
+template class ExtraMonitor<Rigid3Types>;
+
 
 }  // namespace misc
 

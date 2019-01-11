@@ -210,7 +210,6 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     virtual void applyJT( const core::ConstraintParams*,
 						  const helper::vector< typename self::InDataMatrixDeriv* >& , 
 						  const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) {
-		// throw std::logic_error("not implemented");
 	}
 
 	

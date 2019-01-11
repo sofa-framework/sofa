@@ -147,14 +147,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1dTypes>;
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1fTypes>;
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace controller

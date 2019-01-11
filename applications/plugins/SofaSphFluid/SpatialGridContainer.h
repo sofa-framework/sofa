@@ -36,7 +36,7 @@
 #include "config.h"
 
 #include <sofa/helper/system/config.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -386,14 +386,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
-#ifndef SOFA_FLOAT
-extern template class SpatialGridContainer< defaulttype::Vec3dTypes >;
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3dTypes > >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SpatialGridContainer< defaulttype::Vec3fTypes >;
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3fTypes > >;
-#endif
+extern template class SpatialGridContainer< defaulttype::Vec3Types >;
+extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3Types > >;
+
 #endif
 
 } // namespace container
