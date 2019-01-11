@@ -69,11 +69,7 @@ public:
 
     double squaredDistance(const DSAPBox & other,int axis)const;
 
-
-    inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
-    }
+    void show() const;
 
     Cube cube;
     EndPoint * min;

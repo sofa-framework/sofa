@@ -34,17 +34,12 @@ namespace component
 namespace projectiveconstraintset
 {
 
-int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
+static int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
         .add< ParabolicConstraint<defaulttype::Vec3Types> >()
-        .add< ParabolicConstraint<defaulttype::Rigid3Types> >()
-
-        ;
+        .add< ParabolicConstraint<defaulttype::Rigid3Types> >();
 
 template class ParabolicConstraint<defaulttype::Rigid3Types>;
 template class ParabolicConstraint<defaulttype::Vec3Types>;
-
-
-
 
 } // namespace projectiveconstraintset
 

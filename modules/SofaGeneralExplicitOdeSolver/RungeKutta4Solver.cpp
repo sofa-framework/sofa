@@ -194,9 +194,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         mop.solveConstraint(vel, core::ConstraintParams::VEL);
     }
 #endif
-
-//	simulation::MechanicalSetPositionAndVelocityVisitor spav(0, core::VecCoordId::position(), core::VecId::velocity());
-//	spav.execute(this->getContext());
 }
 
 

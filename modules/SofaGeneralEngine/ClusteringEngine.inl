@@ -404,7 +404,6 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
                 }
         }
         vparams->drawTool()->drawLines(vertices, 1.0, colors);
-
         vparams->drawTool()->restoreLastState();
     }
 }

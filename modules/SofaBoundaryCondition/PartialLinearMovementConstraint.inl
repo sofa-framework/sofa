@@ -73,9 +73,9 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , minDepIndice( initData(&minDepIndice, "minDepIndice", "The indice node in the list of constrained nodes, which is imposed the minimum displacment "))
     , maxDepIndice( initData(&maxDepIndice, "maxDepIndice", "The indice node in the list of constrained nodes, which is imposed the maximum displacment "))
     , m_imposedDisplacmentOnMacroNodes(  initData(&m_imposedDisplacmentOnMacroNodes,"imposedDisplacmentOnMacroNodes","The imposed displacment on macro nodes") )
-    , X0 ( initData ( &X0,(Real) 0.0,"X0","Size of specimen in X-direction" ) )
-    , Y0 ( initData ( &Y0,(Real) 0.0,"Y0","Size of specimen in Y-direction" ) )
-    , Z0 ( initData ( &Z0,(Real) 0.0,"Z0","Size of specimen in Z-direction" ) )
+    , X0 ( initData ( &X0, Real(0.0),"X0","Size of specimen in X-direction" ) )
+    , Y0 ( initData ( &Y0, Real(0.0),"Y0","Size of specimen in Y-direction" ) )
+    , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
 {
     // default to indice 0
@@ -292,11 +292,11 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                                 x0[*it][0]*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[1]+         ///< N2
                                 x0[*it][0]*x0[*it][1]*imposedDisplacmentOnMacroNodes[2]+              ///< N3
                                 (a-x0[*it][0])*x0[*it][1]*imposedDisplacmentOnMacroNodes[3])*m[j];    ///< N4
-//                             4|----------------|3
-//                              |                |
-//                              |                |
-//                              |                |
-//                             1|----------------|2
+                        //                             4|----------------|3
+                        //                              |                |
+                        //                              |                |
+                        //                              |                |
+                        //                             1|----------------|2
                     }
                     else ///< case3d
                     {
@@ -314,7 +314,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                         //
 
                         x[*it][j] = x0[*it][j] + ((Real)1.0/(a*b*c))*(
-                                (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
+                                    (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
                                 (a-x0[*it][0])*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[1]+        ///< N2
                                 x0[*it][0]*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[2]+            ///< N3
                                 x0[*it][0]*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[3]+        ///< N4
