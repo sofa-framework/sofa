@@ -145,7 +145,7 @@ protected:
     virtual void updateFromTopology();
     virtual void updateFlags(int ntri=-1);
     virtual void updateNormals();
-    int getTriangleFlags(int i);
+    int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals; ///< set to false to disable computation of triangles normal

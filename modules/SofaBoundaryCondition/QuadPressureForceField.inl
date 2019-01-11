@@ -175,7 +175,7 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
     sofa::helper::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
     helper::vector<unsigned int> inputQuads;
 
-    for (int n=0; n<_topology->getNbQuads(); ++n)
+    for (size_t n=0; n<_topology->getNbQuads(); ++n)
     {
         if ((vArray[_topology->getQuad(n)[0]]) && (vArray[_topology->getQuad(n)[1]])&& (vArray[_topology->getQuad(n)[2]])&& (vArray[_topology->getQuad(n)[3]]) )
         {

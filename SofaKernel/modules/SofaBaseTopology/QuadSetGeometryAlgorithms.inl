@@ -109,7 +109,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
     size_t nb_quads = this->m_topology->getNbQuads();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    for(int i=0; i<nb_quads; ++i)
+    for(size_t i=0; i<nb_quads; ++i)
     {
         // ta.size()
         const Quad &t = this->m_topology->getQuad(i);  //ta[i];

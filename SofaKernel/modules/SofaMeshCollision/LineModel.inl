@@ -91,7 +91,7 @@ void TLineModel<DataTypes>::init()
     this->topology = bmt;
     resize( bmt->getNbEdges() );
 
-    for(int i = 0; i < bmt->getNbEdges(); i++)
+    for(core::topology::BaseMeshTopology::EdgeID i = 0; i < bmt->getNbEdges(); i++)
     {
         elems[i].p[0] = bmt->getEdge(i)[0];
         elems[i].p[1] = bmt->getEdge(i)[1];
@@ -146,7 +146,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
     {
         resize(bmt->getNbEdges());
 
-        for(int i = 0; i < bmt->getNbEdges(); i++)
+        for(size_t i = 0; i < bmt->getNbEdges(); i++)
         {
             elems[i].p[0] = bmt->getEdge(i)[0];
             elems[i].p[1] = bmt->getEdge(i)[1];
