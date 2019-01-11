@@ -2395,7 +2395,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     if (showTriangleIndices.getValue())
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec4f& color = _drawColor.getValue();
         float scale = this->getIndicesScale();
 
         //for triangles:
@@ -2416,7 +2415,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             positions.push_back(center);
 
         }
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, _drawColor.getValue());
     }
 
 
@@ -2429,21 +2428,28 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         {
             const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            const sofa::defaulttype::Vec4f& color = _drawColor.getValue();
-
             {//   Draw Triangles
                 std::vector<defaulttype::Vector3> pos;
+                pos.reserve(triangleArray.size()*3);
                 for (size_t i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
 
+                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                    std::vector<defaulttype::Vector3> tmpPos;
+                    tmpPos.resize(3);
+
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
-
+                        tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[t[j]]));
+                        bary += tmpPos[j];
                     }
+                    bary /= 3;
+
+                    for (unsigned int j = 0; j<3; j++)
+                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
                 }
-                vparams->drawTool()->drawTriangles(pos,color);
+                vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
             }
 
 
@@ -2470,7 +2476,11 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                         }
                     }
                 }
-                vparams->drawTool()->drawLines(pos,1.0f,color);
+
+                sofa::helper::types::RGBAColor colorL = _drawColor.getValue();
+                for (auto& c: colorL)
+                    c /= 2;
+                vparams->drawTool()->drawLines(pos, 1.0f, colorL);
             }
         }
     }
@@ -2482,11 +2492,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
         size_t nbrTtri = triangleArray.size();
 
-        Coord point2;
         sofa::defaulttype::Vec4f color;
         SReal normalLength = _drawNormalLength.getValue();
-
-        vparams->drawTool()->setLightingEnabled(false);
 
         sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
         sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
@@ -2505,10 +2512,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             sofa::defaulttype::Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
-                color[j] = (float)fabs (normal[j]);
+                color[j] = (float)fabs(normal[j]);
 
             vertices.push_back(center);
-            colors.push_back(color);
             vertices.push_back(point2);
             colors.push_back(color);
         }
