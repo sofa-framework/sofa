@@ -144,12 +144,12 @@ void QSofaStatWidget::addSummary()
 {
     std::set< std::string > nameElement;
     std::map< std::string, int > mapElement;
-    for (unsigned int i=0; i < items_stats.size(); i++)
-        nameElement.insert(items_stats[i].first->getClassName());
+    for (auto & items_stat : items_stats)
+        nameElement.insert(items_stat.first->getClassName());
 
 
-    for (unsigned int i=0; i < items_stats.size(); i++)
-        mapElement[items_stats[i].first->getClassName()] += (items_stats[i].second->text(2).toInt());
+    for (auto & items_stat : items_stats)
+        mapElement[items_stat.first->getClassName()] += (items_stat.second->text(2).toInt());
 
 
     std::string textStats("<hr>Collision Elements present: <ul>");

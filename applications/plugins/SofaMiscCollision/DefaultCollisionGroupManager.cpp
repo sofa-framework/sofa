@@ -82,9 +82,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     sofa::helper::vector< simulation::Node::SPtr > contactGroup;
     sofa::helper::vector< simulation::Node::SPtr > removedGroup;
     contactGroup.reserve(contacts.size());
-    for(sofa::helper::vector<Contact::SPtr>::const_iterator cit = contacts.begin(); cit != contacts.end(); ++cit)
+    for(const auto & cit : contacts)
     {
-        Contact* contact = cit->get();
+        Contact* contact = cit.get();
         simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
         simulation::Node* group2 = getIntegrationNode(contact->getCollisionModels().second);
         simulation::Node::SPtr group = NULL;
@@ -228,27 +228,27 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     }
 
     // delete removed groups
-    for (sofa::helper::vector<simulation::Node::SPtr>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
+    for (auto & it : removedGroup)
     {
-        simulation::Node::SPtr node = *it;
+        simulation::Node::SPtr node = it;
         node->detachFromGraph();
         node->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        it->reset();
+        it.reset();
     }
     removedGroup.clear();
 
     // finally recreate group vector
     groups.clear();
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
-        groups.push_back(*it);
+    for (const auto & it : groupSet)
+        groups.push_back(it);
 }
 
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
 {
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (const auto & it : groupSet)
     {
-        if (*it) clearGroup( (*it)->getParents(), *it );
+        if (it) clearGroup( it->getParents(), it );
     }
 
     groupSet.clear();

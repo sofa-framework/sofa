@@ -230,9 +230,9 @@ void OglTexture::initVisual()
     texture->init();
 
     setActiveTexture(textureUnit.getValue());
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(auto shader : shaders)
     {
-        (*it)->setTexture(indexShader.getValue(), id.getValue().c_str(), textureUnit.getValue());
+        shader->setTexture(indexShader.getValue(), id.getValue().c_str(), textureUnit.getValue());
         //serr << "OGLTextureDEBUG: shader textured:" << (*it)->getName() << sendl;
     }
     setActiveTexture(0);

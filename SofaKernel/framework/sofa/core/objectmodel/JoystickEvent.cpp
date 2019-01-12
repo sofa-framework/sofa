@@ -79,9 +79,9 @@ JoystickEvent::ButtonEvent::ButtonEvent( const int buttons )
 void JoystickEvent::ButtonEvent::setButtons(const int buttons)
 {
     int mask = 0x1;
-    for(int i = 0; i < 32; ++i)
+    for(bool & m_button : m_buttons)
     {
-        m_buttons[i] = ((buttons & mask) != 0);
+        m_button = ((buttons & mask) != 0);
         mask *= 2;
     }
 }
@@ -137,21 +137,21 @@ JoystickEvent::~JoystickEvent()
 {
     if (buttonEvent) delete buttonEvent;
 
-    for (unsigned int i=0; i < axisEvents.size(); i++)
-        delete axisEvents[i];
+    for (auto & axisEvent : axisEvents)
+        delete axisEvent;
 
-    for (unsigned int i=0; i < hatEvents.size(); i++)
-        delete hatEvents[i];
+    for (auto & hatEvent : hatEvents)
+        delete hatEvent;
 }
 
 const JoystickEvent::AxisEvent *JoystickEvent::getAxisEvent(const int index) const
 {
     assert( (index < (int)axisEvents.size()) && "AxisEvents index out of range" );
 
-    for (unsigned int i = 0; i < axisEvents.size(); i++)
+    for (auto axisEvent : axisEvents)
     {
-        if (axisEvents[i]->getIndex() == index)
-            return axisEvents[i];
+        if (axisEvent->getIndex() == index)
+            return axisEvent;
     }
 
     return NULL;
@@ -208,10 +208,10 @@ const JoystickEvent::HatEvent *JoystickEvent::getHatEvent(const int index) const
 {
     assert( (index < (int)hatEvents.size()) && "HatEvents index out of range" );
 
-    for (unsigned int i = 0; i < hatEvents.size(); i++)
+    for (auto hatEvent : hatEvents)
     {
-        if (hatEvents[i]->getIndex() == index)
-            return hatEvents[i];
+        if (hatEvent->getIndex() == index)
+            return hatEvent;
     }
 
     return 0l;

@@ -331,8 +331,8 @@ public:
     inline void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
-        for (size_type i=0; i<N; i++)
-            elems[i] = value;
+        for (float & elem : elems)
+            elem = value;
     }
 
     //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>

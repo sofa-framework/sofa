@@ -103,9 +103,9 @@ void DefaultPipeline::doCollisionReset()
     if (contactManager!=nullptr)
     {
         const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
-        for (helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+        for (const auto & contact : contacts)
         {
-            (*it)->removeResponse();
+            contact->removeResponse();
         }
     }
     // clear all collision groups
@@ -231,9 +231,8 @@ void DefaultPipeline::doCollisionResponse()
     // First we remove all contacts with non-simulated objects and directly add them
     helper::vector<Contact::SPtr> notStaticContacts;
 
-    for (helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+    for (auto c : contacts)
     {
-        Contact::SPtr c = *it;
         if (!c->getCollisionModels().first->isSimulated())
         {
             c->createResponse(c->getCollisionModels().second->getContext());

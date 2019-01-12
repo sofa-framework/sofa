@@ -81,10 +81,8 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             {
                 helper::vector<MappingData>& mapData = *(d_map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = m_invalidIndex.begin();
-                        iter != m_invalidIndex.end(); ++iter )
+                for (int j : m_invalidIndex)
                 {
-                    const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
                         Vector3 coefs;

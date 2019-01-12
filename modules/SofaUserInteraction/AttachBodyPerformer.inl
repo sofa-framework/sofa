@@ -160,10 +160,10 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
             simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
             core::behavior::BaseMechanicalState *mainDof=mainNode->getMechanicalState();
             const core::objectmodel::TagSet &tags=mainDof->getTags();
-            for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
+            for (auto tag : tags)
             {
-                mstateCollision->addTag(*it);
-                mappedNode->mechanicalMapping->addTag(*it);
+                mstateCollision->addTag(tag);
+                mappedNode->mechanicalMapping->addTag(tag);
             }
             mstateCollision->setName("AttachedPoint");
             mappedNode->mechanicalMapping->setName("MouseMapping");
@@ -191,8 +191,8 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 
     stiffspringforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
-    for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
-        stiffspringforcefield->addTag(*it);
+    for (auto tag : tags)
+        stiffspringforcefield->addTag(tag);
 
     mstateCollision->getContext()->addObject(stiffspringforcefield);
     return true;

@@ -186,11 +186,8 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     const SetIndexArray & indices = f_indices.getValue();
     sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::yellow();
 
-    for (SetIndexArray::const_iterator it = indices.begin();
-            it != indices.end();
-            ++it)
+    for (unsigned int index : indices)
     {
-        unsigned int index=(*it);
         Coord pos=x[index];
         defaulttype::Vector3 position;
         DataTypes::get(position[0], position[1], position[2], pos);

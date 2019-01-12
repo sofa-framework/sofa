@@ -44,8 +44,8 @@ bool DataTracker::hasChanged( const objectmodel::BaseData& data )
 
 bool DataTracker::hasChanged()
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        if( it->second != it->first->getCounter() ) return true;
+    for(auto & m_dataTracker : m_dataTrackers)
+        if( m_dataTracker.second != m_dataTracker.first->getCounter() ) return true;
     return false;
 }
 
@@ -56,8 +56,8 @@ void DataTracker::clean( const objectmodel::BaseData& data )
 
 void DataTracker::clean()
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        it->second = it->first->getCounter();
+    for(auto & m_dataTracker : m_dataTrackers)
+        m_dataTracker.second = m_dataTracker.first->getCounter();
 }
 
 
@@ -80,9 +80,9 @@ void DataTrackerDDGNode::cleanDirty(const core::ExecParams* params)
 void DataTrackerDDGNode::updateAllInputsIfDirty()
 {
     const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
+    for(auto input : inputs)
     {
-        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
+        static_cast<core::objectmodel::BaseData*>(input)->updateIfDirty();
     }
 }
 

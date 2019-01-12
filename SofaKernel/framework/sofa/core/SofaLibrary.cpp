@@ -43,19 +43,19 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //Data containing all the entries for a given category
     std::multimap< std::string, ClassEntry::SPtr> inventory;
 
-    for (std::size_t i=0; i<entries.size(); ++i)
+    for (auto & entrie : entries)
     {
         //Insert Template specification
-        ObjectFactory::CreatorMap::iterator creatorEntry = entries[i]->creatorMap.begin();
-        if (creatorEntry != entries[i]->creatorMap.end())
+        ObjectFactory::CreatorMap::iterator creatorEntry = entrie->creatorMap.begin();
+        if (creatorEntry != entrie->creatorMap.end())
         {
             const objectmodel::BaseClass* baseClass = creatorEntry->second->getClass();
             std::vector<std::string> categories;
             CategoryLibrary::getCategories(baseClass, categories);
-            for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end(); ++it)
+            for (auto & categorie : categories)
             {
-                mainCategories.insert((*it));
-                inventory.insert(std::make_pair((*it), entries[i]));
+                mainCategories.insert(categorie);
+                inventory.insert(std::make_pair(categorie, entrie));
             }
         }
     }
@@ -99,9 +99,9 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 void SofaLibrary::computeNumComponents()
 {
     numComponents=0;
-    for (std::size_t cat=0; cat<categories.size(); ++cat)
+    for (auto & categorie : categories)
     {
-        numComponents += (unsigned int) categories[cat]->getNumComponents();
+        numComponents += (unsigned int) categorie->getNumComponents();
     }
 
 }
@@ -121,10 +121,10 @@ std::string SofaLibrary::getComponentDescription( const std::string &componentNa
 
 const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName) const
 {
-    for (VecCategoryIterator it=categories.begin(); it != categories.end(); ++it)
+    for (auto categorie : categories)
     {
-        if ((*it)->getName().find(categoryName) != std::string::npos)
-            return *it;
+        if (categorie->getName().find(categoryName) != std::string::npos)
+            return categorie;
     }
     return NULL;
 }
@@ -132,13 +132,13 @@ const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName
 const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentName ) const
 {
     //Look into all the categories
-    for (std::size_t cat=0; cat<categories.size(); ++cat)
+    for (auto categorie : categories)
     {
         //For each category, look at all the components if one has the name wanted
-        const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
-        for (std::size_t comp=0; comp<components.size(); ++comp)
+        const std::vector< ComponentLibrary* > &components = categorie->getComponents();
+        for (auto component : components)
         {
-            if (componentName == components[comp]->getName()) return components[comp];
+            if (componentName == component->getName()) return component;
         }
     }
     return NULL;
@@ -146,9 +146,9 @@ const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentN
 
 void SofaLibrary::clear()
 {
-    for (std::size_t i=0; i<categories.size(); ++i)
+    for (auto & categorie : categories)
     {
-        delete categories[i];
+        delete categorie;
     }
     categories.clear();
 }

@@ -49,11 +49,11 @@ void BVHMotion::init(double _fTime, unsigned int _fCount, unsigned int _fSize)
 
 void BVHMotion::debug(void)
 {
-    for (unsigned int i=0; i<frames.size(); i++)
+    for (auto & frame : frames)
     {
         std::stringstream tmpmsg;
-        for (unsigned int j=0; j<frames[i].size(); j++)
-            tmpmsg << frames[i][j] << " ";
+        for (double j : frame)
+            tmpmsg << j << " ";
         msg_info("BVHMotion") ;
     }
 }

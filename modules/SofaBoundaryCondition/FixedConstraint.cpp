@@ -91,8 +91,8 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
         }
         else
         {
-            for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                points.push_back(x[*it].getCenter());
+            for (unsigned int indice : indices)
+                points.push_back(x[indice].getCenter());
         }
     }
 
@@ -128,9 +128,9 @@ void FixedConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparam
     }
     else
     {
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            vertices.push_back(sofa::defaulttype::Vector3(x[*it].getCenter()[0],
-                                                          x[*it].getCenter()[1],
+        for (unsigned int indice : indices)
+            vertices.push_back(sofa::defaulttype::Vector3(x[indice].getCenter()[0],
+                                                          x[indice].getCenter()[1],
                                                           0.0));
     }
 

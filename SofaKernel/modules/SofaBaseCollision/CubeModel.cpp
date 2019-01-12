@@ -254,8 +254,8 @@ void CubeModel::computeBoundingTree(int maxDepth)
         }
         // Then clear all existing levels
         {
-            for (std::list<CubeModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
-                (*it)->resize(0);
+            for (auto & level : levels)
+                level->resize(0);
         }
         // Then build root cell
         //sout << "CubeModel: add root cube"<<sendl;

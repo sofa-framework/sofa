@@ -161,16 +161,16 @@ public:
         std::stringstream tmp ;
         tmp<< "Time to incise: " << timeToIncise << msgendl;
         tmp<< "Triangle indices : ";
-        for (unsigned int i = 0 ; i < triangleIndices.size() ; i++)
-            tmp<< triangleIndices[i] << " ";
+        for (unsigned int triangleIndice : triangleIndices)
+            tmp<< triangleIndice << " ";
         tmp<<  msgendl;
         tmp<< "Barycentric coordinates : ";
-        for (unsigned int i = 0 ; i < barycentricCoordinates.size() ; i++)
-            tmp<< barycentricCoordinates[i] << " | " ;
+        for (const auto & barycentricCoordinate : barycentricCoordinates)
+            tmp<< barycentricCoordinate << " | " ;
         tmp<<  msgendl;
         tmp<< "Coordinates : ";
-        for (unsigned int i = 0 ; i < coordinates.size() ; i++)
-            tmp<< coordinates[i] << " | " ;
+        for (const auto & coordinate : coordinates)
+            tmp<< coordinate << " | " ;
         msg_info("TriangleIncisionInformation") << tmp.str() ;
     }
 

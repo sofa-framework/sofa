@@ -389,10 +389,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
         Real totalMass = (Real) 0.0;
 
         const std::list<Vec3i>& removedVoxels = modEvent.getRemovedVoxels(hexaId);
-        for(std::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
+        for(auto voxelId : removedVoxels)
         {
-            const Vec3i& voxelId = *it;
-
             const Mat88& H = _H[level][(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
 
             // add the fine element into the coarse
@@ -518,10 +516,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         std::set<unsigned int> fineChildren;
 
         // condensate recursively each 8 children (if they exist)
-        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        for(auto voxelId : voxels)
         {
-            const Vec3i& voxelId = *it;
-
             fineChildren.insert(ijk2octree(voxelId[0]%coarseNodeSize, voxelId[1]%coarseNodeSize, voxelId[2]%coarseNodeSize));
         }
 
@@ -558,10 +554,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     {
         const int coarseNodeSize = (1 << level);
 
-        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        for(auto voxelId : voxels)
         {
-            const Vec3i& voxelId = *it;
-
             const Mat88& H = _H[level][(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
 
             // add the fine element into the coarse
@@ -585,10 +579,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         std::set<unsigned int> fineChildren;
         const unsigned int coarseNodeSize = (1 << level);
 
-        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        for(auto voxelId : voxels)
         {
-            const Vec3i& voxelId = *it;
-
             fineChildren.insert(ijk2octree(voxelId[0]%coarseNodeSize, voxelId[1]%coarseNodeSize, voxelId[2]%coarseNodeSize));
         }
 
@@ -734,10 +726,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 {
     const int coarseNodeSize = (1 << level);
 
-    for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+    for(auto voxelId : voxels)
     {
-        const Vec3i& voxelId = *it;
-
         const Mat88& H = _H[level][(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
 
         // add the fine element into the coarse

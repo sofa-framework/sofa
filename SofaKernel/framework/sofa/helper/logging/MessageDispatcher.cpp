@@ -120,8 +120,8 @@ public:
 
     void process(sofa::helper::logging::Message& m)
     {
-        for( size_t i=0 ; i<m_messageHandlers.size() ; i++ ){
-            m_messageHandlers[i]->process(m) ;
+        for(auto & m_messageHandler : m_messageHandlers){
+            m_messageHandler->process(m) ;
         }
     }
 };

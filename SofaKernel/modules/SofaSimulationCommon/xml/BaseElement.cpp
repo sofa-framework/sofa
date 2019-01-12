@@ -48,10 +48,9 @@ BaseElement::BaseElement(const std::string& name, const std::string& type, BaseE
 
 BaseElement::~BaseElement()
 {
-    for (ChildList::iterator it = children.begin();
-            it != children.end(); ++it)
+    for (auto & it : children)
     {
-        delete *it;
+        delete it;
     }
     children.clear();
 }

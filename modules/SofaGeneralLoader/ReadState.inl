@@ -225,9 +225,9 @@ void ReadState::processReadState()
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
     bool updated = false;
-    for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
+    for (auto & validLine : validLines)
     {
-        std::istringstream str(*it);
+        std::istringstream str(validLine);
         std::string cmd;
         str >> cmd;
         if (cmd == "X=")

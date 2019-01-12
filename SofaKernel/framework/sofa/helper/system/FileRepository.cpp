@@ -198,10 +198,9 @@ void FileRepository::removePath(const std::string& path)
         p0 = p1+1;
     }
 
-    for(std::vector<std::string>::iterator it=entries.begin();
-        it!=entries.end(); ++it)
+    for(auto & entrie : entries)
     {
-        vpath.erase( find(vpath.begin(), vpath.end(), *it) );
+        vpath.erase( find(vpath.begin(), vpath.end(), entrie) );
     }
 }
 

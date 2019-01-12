@@ -637,8 +637,8 @@ class ParameterizedTestCaseInfo : public ParameterizedTestCaseInfoBase {
       return false;
 
     // Check for invalid characters
-    for (std::string::size_type index = 0; index < name.size(); ++index) {
-      if (!isalnum(name[index]) && name[index] != '_')
+    for (char index : name) {
+      if (!isalnum(index) && index != '_')
         return false;
     }
 
@@ -663,9 +663,8 @@ class ParameterizedTestCaseRegistry {
  public:
   ParameterizedTestCaseRegistry() {}
   ~ParameterizedTestCaseRegistry() {
-    for (TestCaseInfoContainer::iterator it = test_case_infos_.begin();
-         it != test_case_infos_.end(); ++it) {
-      delete *it;
+    for (auto & test_case_info : test_case_infos_) {
+      delete test_case_info;
     }
   }
 
@@ -676,10 +675,9 @@ class ParameterizedTestCaseRegistry {
       const char* test_case_name,
       CodeLocation code_location) {
     ParameterizedTestCaseInfo<TestCase>* typed_test_info = NULL;
-    for (TestCaseInfoContainer::iterator it = test_case_infos_.begin();
-         it != test_case_infos_.end(); ++it) {
-      if ((*it)->GetTestCaseName() == test_case_name) {
-        if ((*it)->GetTestCaseTypeId() != GetTypeId<TestCase>()) {
+    for (auto & test_case_info : test_case_infos_) {
+      if (test_case_info->GetTestCaseName() == test_case_name) {
+        if (test_case_info->GetTestCaseTypeId() != GetTypeId<TestCase>()) {
           // Complain about incorrect usage of Google Test facilities
           // and terminate the program since we cannot guaranty correct
           // test case setup and tear-down in this case.
@@ -690,7 +688,7 @@ class ParameterizedTestCaseRegistry {
           // type we are looking for, so we downcast it to that type
           // without further checks.
           typed_test_info = CheckedDowncastToActualType<
-              ParameterizedTestCaseInfo<TestCase> >(*it);
+              ParameterizedTestCaseInfo<TestCase> >(test_case_info);
         }
         break;
       }
@@ -703,9 +701,8 @@ class ParameterizedTestCaseRegistry {
     return typed_test_info;
   }
   void RegisterTests() {
-    for (TestCaseInfoContainer::iterator it = test_case_infos_.begin();
-         it != test_case_infos_.end(); ++it) {
-      (*it)->RegisterTests();
+    for (auto & test_case_info : test_case_infos_) {
+      test_case_info->RegisterTests();
     }
   }
 

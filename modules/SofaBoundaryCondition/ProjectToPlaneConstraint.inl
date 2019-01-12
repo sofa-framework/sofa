@@ -270,11 +270,9 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        for (Indices::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
@@ -284,11 +282,9 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
 
-        for (Indices::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             points.push_back(point);
         }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));

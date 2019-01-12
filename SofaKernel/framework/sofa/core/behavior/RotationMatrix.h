@@ -212,10 +212,10 @@ public:
         }
 
         if (const SparseMatrix<float> * J = dynamic_cast<const SparseMatrix<float> * >(Jmat)) {
-            for (typename sofa::component::linearsolver::SparseMatrix<float>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+            for (const auto & jit1 : *J)
             {
-                Index l = jit1->first;
-                for (typename sofa::component::linearsolver::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
+                Index l = jit1.first;
+                for (typename sofa::component::linearsolver::SparseMatrix<float>::LElementConstIterator i1 = jit1.second.begin(), jitend = jit1.second.end(); i1 != jitend;)
                 {
                     Index c = i1->first;
                     Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
@@ -227,10 +227,10 @@ public:
                 }
             }
         } else if (const SparseMatrix<double> * J = dynamic_cast<const SparseMatrix<double> * >(Jmat)) {
-            for (typename sofa::component::linearsolver::SparseMatrix<double>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+            for (const auto & jit1 : *J)
             {
-                Index l = jit1->first;
-                for (typename sofa::component::linearsolver::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
+                Index l = jit1.first;
+                for (typename sofa::component::linearsolver::SparseMatrix<double>::LElementConstIterator i1 = jit1.second.begin(), jitend = jit1.second.end(); i1 != jitend;)
                 {
                     Index c = i1->first;
                     Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;

@@ -121,10 +121,10 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
     for (size_t i = 0; i < m_tetrahedron.size(); ++i)
     {
         const Tetrahedron &t = m_tetrahedron[i];
-        for (EdgeID j=0; j<6; ++j)
+        for (auto j : edgesInTetrahedronArray)
         {
-            const PointID v1 = t[edgesInTetrahedronArray[j][0]];
-            const PointID v2 = t[edgesInTetrahedronArray[j][1]];
+            const PointID v1 = t[j[0]];
+            const PointID v2 = t[j[1]];
 
             // sort vertices in lexicographic order
             const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));

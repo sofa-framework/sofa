@@ -459,15 +459,15 @@ bool _isEndPoint(const CImg<T> & img, const CImg<T> & label,
       };
 
     // Count the number of neighbors on each plan
-    for (int k = 0; k<9; ++k) {
+    for (const auto & k : plan9) {
       int count = 0;
 
       for (int l = 0; l<8; ++l) {
-        if (x + plan9[k][l][0]<0 || x + plan9[k][l][0]>=img.width() ||
-            y + plan9[k][l][1]<0 || y + plan9[k][l][1]>=img.height() ||
-            z + plan9[k][l][2]<0 || z + plan9[k][l][2]>=img.depth()) continue;
+        if (x + k[l][0]<0 || x + k[l][0]>=img.width() ||
+            y + k[l][1]<0 || y + k[l][1]>=img.height() ||
+            z + k[l][2]<0 || z + k[l][2]>=img.depth()) continue;
 
-        if (img(x + plan9[k][l][0],y + plan9[k][l][1],z + plan9[k][l][2])!=0) ++count;
+        if (img(x + k[l][0],y + k[l][1],z + k[l][2])!=0) ++count;
       }
 
       if (count<2) return true;

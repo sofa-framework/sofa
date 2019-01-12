@@ -102,13 +102,13 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for (unsigned j = 0; j < NumDimensions; j++)
             {
                 if (blockedDirection[j])
                 {
-                    res[*it][j] = (Real) 0.0;
+                    res[indice][j] = (Real) 0.0;
                 }
             }
         }
@@ -165,17 +165,17 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             // Reset Fixed Row and Col
             for (unsigned int c=0; c<N; ++c)
             {
-                if( blockedDirection[c] ) mat->clearRowCol(offset + N * (*it) + c);
+                if( blockedDirection[c] ) mat->clearRowCol(offset + N * indice + c);
             }
             // Set Fixed Vertex
             for (unsigned int c=0; c<N; ++c)
             {
-                if( blockedDirection[c] ) mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+                if( blockedDirection[c] ) mat->set(offset + N * indice + c, offset + N * indice + c, 1.0);
             }
         }
     }
@@ -206,13 +206,13 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for (unsigned int c = 0; c < N; ++c)
             {
                 if (blockedDirection[c])
                 {
-                    vect->clear(offset + N * (*it) + c);
+                    vect->clear(offset + N * indice + c);
                 }
             }
         }
@@ -254,14 +254,14 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
         }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
                 // Reset Fixed Row and Col
                 for (unsigned int c=0; c<N; ++c)
                 {
                     if (blockedDirection[c])
                     {
-                        r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                        r.matrix->clearRowCol(r.offset + N * indice + c);
                     }
                 }
                 // Set Fixed Vertex
@@ -269,7 +269,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
                 {
                     if (blockedDirection[c])
                     {
-                        r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                        r.matrix->set(r.offset + N * indice + c, r.offset + N * indice + c, 1.0);
                     }
                 }
             }
@@ -301,13 +301,13 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for (unsigned int c = 0; c < blockSize; ++c)
             {
                 if (blockedDirection[c])
                 {
-                    M->clearRowCol( offset + (*it) * blockSize + c);
+                    M->clearRowCol( offset + indice * blockSize + c);
                 }
             }
         }

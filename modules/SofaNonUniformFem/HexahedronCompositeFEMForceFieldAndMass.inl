@@ -645,28 +645,28 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
     for(int i=0; i<sizeass; ++i)
     {
-        for( std::map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
-            if( (*it).second==i)
+        for(auto & map_idxq_idxas : map_idxq_idxass)
+            if( map_idxq_idxas.second==i)
             {
                 // 					serr<<(*it).first<<" "<<(*it).second<<sendl;
                 bool ok=false;
-                Coord finesommet = finestSparseGrid->getPointPos( (*it).first );
+                Coord finesommet = finestSparseGrid->getPointPos( map_idxq_idxas.first );
                 for( unsigned sc=0; sc<8; ++sc)
                 {
                     Coord coarsesommet = this->_sparseGrid->getPointPos( coarsehexa[sc] );
                     if( coarsesommet == finesommet )
                     {
-                        map_idxq_idxcutass[(*it).second] = sc;
-                        map_idxq_coarse[  (*it).second] = true;
-                        map_idxcoarse_idxfine[ sc ] = (*it).second;
+                        map_idxq_idxcutass[map_idxq_idxas.second] = sc;
+                        map_idxq_coarse[  map_idxq_idxas.second] = true;
+                        map_idxcoarse_idxfine[ sc ] = map_idxq_idxas.second;
                         ok=true;
                         break;
                     }
                 }
                 if( !ok )
                 {
-                    map_idxq_idxcutass[ (*it).second] = idxcutass;
-                    map_idxq_coarse[(*it).second] = false;
+                    map_idxq_idxcutass[ map_idxq_idxas.second] = idxcutass;
+                    map_idxq_coarse[map_idxq_idxas.second] = false;
                     idxcutass++;
                 }
             }
@@ -773,15 +773,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
     Coord dx( b[0]-a[0],0,0),dy( 0,b[1]-a[1],0), dz( 0,0,b[2]-a[2]);
     Coord inv_d2( 1.0f/(dx*dx),1.0f/(dy*dy),1.0f/(dz*dz) );
-    for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
+    for(auto & map_idxq_idxas : map_idxq_idxass)
     {
-        int localidx = (*it).second; // indice du noeud fin dans l'assemblage
+        int localidx = map_idxq_idxas.second; // indice du noeud fin dans l'assemblage
 
 
-        if( map_idxq_coarse[ (*it).second ] )
+        if( map_idxq_coarse[ map_idxq_idxas.second ] )
         {
             // 				serr<<map_idxq_idxcutass[ (*it).second ]<<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
-            int localcoarseidx = map_idxq_idxcutass[ (*it).second ];
+            int localcoarseidx = map_idxq_idxcutass[ map_idxq_idxas.second ];
             mask.set( localidx*3  , localcoarseidx*3   , 1);
             mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
             mask.set( localidx*3+2, localcoarseidx*3+2 , 1);
@@ -790,7 +790,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         {
 
             // find barycentric coord
-            Coord p = finestSparseGrid->getPointPos( (*it).first ) - a;
+            Coord p = finestSparseGrid->getPointPos( map_idxq_idxas.first ) - a;
 
             Real fx = p*dx*inv_d2[0];
             Real fy = p*dy*inv_d2[1];
@@ -1360,9 +1360,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         for(int i=0; i<27; ++i)
         {
-            for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+            for(int it : fineNodesPerPositions[i])
             {
-                map_idxq_idxass[*it] = idxass;
+                map_idxq_idxass[it] = idxass;
                 idxass++;
             }
         }
@@ -1482,15 +1482,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     break;
                 }
 
-                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                for(int it : fineNodesPerPositions[i])
                 {
-                    map_idxq_idxcutass[*it] = idxcutasscoarse;
-                    map_idxq_coarse[*it] = whichCoarseNode;
-                    map_idxcoarse_idxfine[ whichCoarseNode ].push_back( *it );
+                    map_idxq_idxcutass[it] = idxcutasscoarse;
+                    map_idxq_coarse[it] = whichCoarseNode;
+                    map_idxcoarse_idxfine[ whichCoarseNode ].push_back( it );
                     idxcutasscoarse++;
 
                     //mask
-                    int localidx = map_idxq_idxass[*it];
+                    int localidx = map_idxq_idxass[it];
                     mask.set( localidx*3  , whichCoarseNode*3   , 1);
                     mask.set( localidx*3+1, whichCoarseNode*3+1 , 1);
                     mask.set( localidx*3+2, whichCoarseNode*3+2 , 1);
@@ -1552,15 +1552,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         // 			  serr<<"cutting :"<<sendl;
         // 			  for ( int i=0;i<sizeass;++i)
-        for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
+        for(auto & map_idxq_idxcutas : map_idxq_idxcutass)
         {
             // 				  int col = map_idxq_idxcutass[i];
-            int colcut = (*it).second;
-            int colnoncut = map_idxq_idxass[(*it).first];
+            int colcut = map_idxq_idxcutas.second;
+            int colnoncut = map_idxq_idxass[map_idxq_idxcutas.first];
 
             // 				  serr<<(*it).first<<" "<<colcut<<sendl;
 
-            if( map_idxq_coarse[(*it).first] != -1 )
+            if( map_idxq_coarse[map_idxq_idxcutas.first] != -1 )
             {
                 for(int lig=0; lig<sizeass; ++lig)
                 {
@@ -1637,22 +1637,22 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 			  serr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<sendl;
 
 
-        for( std::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
+        for(auto & it : map_idxq_coarse)
         {
-            if( it->second != -1 )
+            if( it.second != -1 )
             {
                 // 					  serr<<it->first<<" "<<it->second<<sendl;
-                WB.add( map_idxq_idxass[it->first]*3  , it->second*3  , 1.0);
-                WB.add( map_idxq_idxass[it->first]*3+1, it->second*3+1, 1.0);
-                WB.add( map_idxq_idxass[it->first]*3+2, it->second*3+2, 1.0);
+                WB.add( map_idxq_idxass[it.first]*3  , it.second*3  , 1.0);
+                WB.add( map_idxq_idxass[it.first]*3+1, it.second*3+1, 1.0);
+                WB.add( map_idxq_idxass[it.first]*3+2, it.second*3+2, 1.0);
             }
             else
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    WB.add( map_idxq_idxass[it->first]*3  ,j, W.element( map_idxq_idxcutass[it->first]*3  , j));
-                    WB.add( map_idxq_idxass[it->first]*3+1,j, W.element( map_idxq_idxcutass[it->first]*3+1, j));
-                    WB.add( map_idxq_idxass[it->first]*3+2,j, W.element( map_idxq_idxcutass[it->first]*3+2, j));
+                    WB.add( map_idxq_idxass[it.first]*3  ,j, W.element( map_idxq_idxcutass[it.first]*3  , j));
+                    WB.add( map_idxq_idxass[it.first]*3+1,j, W.element( map_idxq_idxcutass[it.first]*3+1, j));
+                    WB.add( map_idxq_idxass[it.first]*3+2,j, W.element( map_idxq_idxcutass[it.first]*3+2, j));
                 }
             }
         }

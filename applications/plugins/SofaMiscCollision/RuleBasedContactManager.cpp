@@ -48,11 +48,10 @@ RuleBasedContactManager::RuleBasedContactManager()
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
-    for(std::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
-        itend = variablesData.end(); it != itend; ++it)
+    for(auto & it : variablesData)
     {
         //this->removeData(it->second);
-        delete it->second;
+        delete it.second;
     }
 }
 
@@ -131,10 +130,10 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
     else if (!response2.empty()) return response2;
 
     const helper::vector<Rule>& r = rules.getValue();
-    for (helper::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
+    for (const auto & it : r)
     {
-        if (it->match(model1, model2) || it->match(model2, model1))
-            return replaceVariables(it->response); // rule it matched
+        if (it.match(model1, model2) || it.match(model2, model1))
+            return replaceVariables(it.response); // rule it matched
     }
     // no rule matched
     return replaceVariables(DefaultContactManager::getContactResponse(model1, model2));

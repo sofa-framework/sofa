@@ -248,10 +248,8 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
 {
     if (cm->empty ())
         return;
-    for (sofa::helper::vector < core::CollisionModel * >::iterator it =
-            collisionModels.begin (); it != collisionModels.end (); ++it)
+    for (auto cm2 : collisionModels)
     {
-        core::CollisionModel * cm2 = *it;
         if (!cm->isSimulated() && !cm2->isSimulated())
             continue;
         if (!cm->canCollideWith (cm2))
@@ -310,14 +308,13 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
 
     const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
 
-    for (DetectionOutputMap::const_iterator it = outputsMap.begin ();
-            it != outputsMap.end (); ++it)
+    for (const auto & it : outputsMap)
     {
         TDetectionOutputVector < TriangleOctreeModel,
                                TriangleOctreeModel > *outputs =
                                        static_cast <
                                        sofa::core::collision::TDetectionOutputVector <
-                                       TriangleOctreeModel, TriangleOctreeModel > *>(it->second);
+                                       TriangleOctreeModel, TriangleOctreeModel > *>(it.second);
         for (TDetectionOutputVector < TriangleOctreeModel,
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
                 it2 != outputs->end (); ++it2)

@@ -317,7 +317,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         find1DCoord(hexaID1, hexaGeoAlgo->computeHexahedronRestCenter(hexaID));
         double densityValue1 = densityValues[hexaID1];
 
-        for ( std::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
+        for (unsigned int neighbor : neighbors)
         {
             Distance newDist;
             double stiffCoeff = 1.0;
@@ -328,10 +328,10 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
                 //double densityValue2 = densityValues[hexaID2];
                 stiffCoeff = 1.0 + (densityValue1/* - densityValue2*/) / 255.0 * 5.0; // From 1 to 10
             }
-            newDist.first = *it;
-            newDist.second = distance + (( hexaGeoAlgo->computeHexahedronRestCenter ( *it ) - hexaIDpos ).norm() * stiffCoeff);
+            newDist.first = neighbor;
+            newDist.second = distance + (( hexaGeoAlgo->computeHexahedronRestCenter ( neighbor ) - hexaIDpos ).norm() * stiffCoeff);
             if ( distMax != 0 && newDist.second > distMax ) continue; // End on distMax
-            if ( distanceMap[mapIndex][*it] == -1.0 || newDist.second < distanceMap[mapIndex][*it] ) distanceMap[mapIndex][*it] = newDist.second;
+            if ( distanceMap[mapIndex][neighbor] == -1.0 || newDist.second < distanceMap[mapIndex][neighbor] ) distanceMap[mapIndex][neighbor] = newDist.second;
             hexasBeingParsed.push ( newDist );
         }
     }
@@ -363,8 +363,8 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
             dMIndex[j] = harmonicMaxValue.getValue()/2.0;
     }
 
-    for ( helper::vector<core::topology::BaseMeshTopology::HexaID>::const_iterator it = hfrom.begin(); it != hfrom.end(); it++ )
-        dMIndex[*it] = harmonicMaxValue.getValue();
+    for (unsigned int it : hfrom)
+        dMIndex[it] = harmonicMaxValue.getValue();
 
     dMIndex[hfrom[mapIndex]] = 0.0;
 

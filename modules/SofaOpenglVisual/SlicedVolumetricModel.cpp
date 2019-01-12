@@ -285,10 +285,10 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
             // find intersections
             helper::vector<Intersection> intersections;
-            for(int i=0; i<12; ++i)
+            for(auto i : __edges__)
             {
-                int e0 = __edges__[i][0];
-                int e1 = __edges__[i][1];
+                int e0 = i[0];
+                int e1 = i[1];
                 Coord s0 = GETCOORD( cell[e0] );
                 Coord s1 = GETCOORD( cell[e1] );
                 Edge e(cell[e0],cell[e1]);

@@ -403,15 +403,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
         }
 
         //add the sub divided tetrahedra to the to be added tetrahedra list
-        for(int i=0; i<2; i++)
+        for(auto & i : subTetra)
         {
-            if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+            if(!(m_geometryAlgorithms->checkNodeSequence(i)))
             {
-                TetrahedronID temp=subTetra[i][1];
-                subTetra[i][1]=subTetra[i][2];
-                subTetra[i][2]=temp;
+                TetrahedronID temp=i[1];
+                i[1]=i[2];
+                i[2]=temp;
             }
-            toBeAddedTetra.push_back(subTetra[i]);
+            toBeAddedTetra.push_back(i);
         }
         nbAddedTetra=2;
         return nbAddedTetra;
@@ -541,15 +541,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
         }
 
         //add the sub divided tetrahedra to the to be added tetrahedra list
-        for(int i=0; i<3; i++)
+        for(auto & i : subTetra)
         {
-            if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+            if(!(m_geometryAlgorithms->checkNodeSequence(i)))
             {
-                TetrahedronID temp=subTetra[i][1];
-                subTetra[i][1]=subTetra[i][2];
-                subTetra[i][2]=temp;
+                TetrahedronID temp=i[1];
+                i[1]=i[2];
+                i[2]=temp;
             }
-            toBeAddedTetra.push_back(subTetra[i]);
+            toBeAddedTetra.push_back(i);
         }
         nbAddedTetra=3;
         return nbAddedTetra;
@@ -626,11 +626,11 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
 
         //determine devision state
         int nbEdgeSharingPoint=0;
-        for(int i=0; i<3; i++)
+        for(auto & i : intersectedEdge)
         {
             for(int j=0; j<2; j++)
             {
-                if(pointsID[0]==intersectedEdge[i][j])
+                if(pointsID[0]==i[j])
                     nbEdgeSharingPoint++;
             }
         }
@@ -674,15 +674,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
             }
 
             //add the sub divided tetrahedra to the to be added tetrahedra list
-            for(int i=0; i<4; i++)
+            for(auto & i : subTetra)
             {
-                if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+                if(!(m_geometryAlgorithms->checkNodeSequence(i)))
                 {
-                    TetrahedronID temp=subTetra[i][1];
-                    subTetra[i][1]=subTetra[i][2];
-                    subTetra[i][2]=temp;
+                    TetrahedronID temp=i[1];
+                    i[1]=i[2];
+                    i[2]=temp;
                 }
-                toBeAddedTetra.push_back(subTetra[i]);
+                toBeAddedTetra.push_back(i);
             }
             nbAddedTetra=4;
             return nbAddedTetra;
@@ -904,15 +904,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
             }
 
             //add the sub divided tetrahedra to the to be added tetrahedra list
-            for(int i=0; i<5; i++)
+            for(auto & i : subTetra)
             {
-                if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+                if(!(m_geometryAlgorithms->checkNodeSequence(i)))
                 {
-                    TetrahedronID temp=subTetra[i][1];
-                    subTetra[i][1]=subTetra[i][2];
-                    subTetra[i][2]=temp;
+                    TetrahedronID temp=i[1];
+                    i[1]=i[2];
+                    i[2]=temp;
                 }
-                toBeAddedTetra.push_back(subTetra[i]);
+                toBeAddedTetra.push_back(i);
             }
             nbAddedTetra=5;
             return nbAddedTetra;
@@ -1112,15 +1112,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
             }
         }
 
-        for(int i=0; i<6; i++)
+        for(auto & i : subTetra)
         {
-            if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+            if(!(m_geometryAlgorithms->checkNodeSequence(i)))
             {
-                TetrahedronID temp=subTetra[i][1];
-                subTetra[i][1]=subTetra[i][2];
-                subTetra[i][2]=temp;
+                TetrahedronID temp=i[1];
+                i[1]=i[2];
+                i[2]=temp;
             }
-            toBeAddedTetra.push_back(subTetra[i]);
+            toBeAddedTetra.push_back(i);
         }
         nbAddedTetra=6;
         return nbAddedTetra;
@@ -1514,15 +1514,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
         }
 
         //add the sub divided tetrahedra to the to be added tetrahedra list
-        for(int i=0; i<2; i++)
+        for(auto & i : subTetra)
         {
-            if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+            if(!(m_geometryAlgorithms->checkNodeSequence(i)))
             {
-                TetrahedronID temp=subTetra[i][1];
-                subTetra[i][1]=subTetra[i][2];
-                subTetra[i][2]=temp;
+                TetrahedronID temp=i[1];
+                i[1]=i[2];
+                i[2]=temp;
             }
-            toBeAddedTetra.push_back(subTetra[i]);
+            toBeAddedTetra.push_back(i);
         }
         nbAddedTetra=2;
         return nbAddedTetra;
@@ -1652,15 +1652,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
         }
 
         //add the sub divided tetrahedra to the to be added tetrahedra list
-        for(int i=0; i<3; i++)
+        for(auto & i : subTetra)
         {
-            if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+            if(!(m_geometryAlgorithms->checkNodeSequence(i)))
             {
-                TetrahedronID temp=subTetra[i][1];
-                subTetra[i][1]=subTetra[i][2];
-                subTetra[i][2]=temp;
+                TetrahedronID temp=i[1];
+                i[1]=i[2];
+                i[2]=temp;
             }
-            toBeAddedTetra.push_back(subTetra[i]);
+            toBeAddedTetra.push_back(i);
         }
         nbAddedTetra=3;
         return nbAddedTetra;
@@ -1737,11 +1737,11 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
 
         //determine devision state
         int nbEdgeSharingPoint=0;
-        for(int i=0; i<3; i++)
+        for(auto & i : intersectedEdge)
         {
             for(int j=0; j<2; j++)
             {
-                if(pointsID[0]==intersectedEdge[i][j])
+                if(pointsID[0]==i[j])
                     nbEdgeSharingPoint++;
             }
         }
@@ -1785,15 +1785,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
             }
 
             //add the sub divided tetrahedra to the to be added tetrahedra list
-            for(int i=0; i<4; i++)
+            for(auto & i : subTetra)
             {
-                if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+                if(!(m_geometryAlgorithms->checkNodeSequence(i)))
                 {
-                    TetrahedronID temp=subTetra[i][1];
-                    subTetra[i][1]=subTetra[i][2];
-                    subTetra[i][2]=temp;
+                    TetrahedronID temp=i[1];
+                    i[1]=i[2];
+                    i[2]=temp;
                 }
-                toBeAddedTetra.push_back(subTetra[i]);
+                toBeAddedTetra.push_back(i);
             }
             nbAddedTetra=4;
             return nbAddedTetra;
@@ -2015,15 +2015,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
             }
 
             //add the sub divided tetrahedra to the to be added tetrahedra list
-            for(int i=0; i<5; i++)
+            for(auto & i : subTetra)
             {
-                if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+                if(!(m_geometryAlgorithms->checkNodeSequence(i)))
                 {
-                    TetrahedronID temp=subTetra[i][1];
-                    subTetra[i][1]=subTetra[i][2];
-                    subTetra[i][2]=temp;
+                    TetrahedronID temp=i[1];
+                    i[1]=i[2];
+                    i[2]=temp;
                 }
-                toBeAddedTetra.push_back(subTetra[i]);
+                toBeAddedTetra.push_back(i);
             }
             nbAddedTetra=5;
             return nbAddedTetra;
@@ -2223,15 +2223,15 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
             }
         }
 
-        for(int i=0; i<6; i++)
+        for(auto & i : subTetra)
         {
-            if(!(m_geometryAlgorithms->checkNodeSequence(subTetra[i])))
+            if(!(m_geometryAlgorithms->checkNodeSequence(i)))
             {
-                TetrahedronID temp=subTetra[i][1];
-                subTetra[i][1]=subTetra[i][2];
-                subTetra[i][2]=temp;
+                TetrahedronID temp=i[1];
+                i[1]=i[2];
+                i[2]=temp;
             }
-            toBeAddedTetra.push_back(subTetra[i]);
+            toBeAddedTetra.push_back(i);
         }
         nbAddedTetra=6;
         return nbAddedTetra;

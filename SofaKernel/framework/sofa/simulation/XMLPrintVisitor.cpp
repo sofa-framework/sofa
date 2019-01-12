@@ -37,16 +37,16 @@ namespace simulation
 static std::string xmlencode(const std::string& str)
 {
     std::string res;
-    for (unsigned int i=0; i<str.length(); ++i)
+    for (char i : str)
     {
-        switch(str[i])
+        switch(i)
         {
         case '<': res += "&lt;"; break;
         case '>': res += "&gt;"; break;
         case '&': res += "&amp;"; break;
         case '"': res += "&quot;"; break;
         case '\'': res += "&apos;"; break;
-        default:  res += str[i];
+        default:  res += i;
         }
     }
     return res;

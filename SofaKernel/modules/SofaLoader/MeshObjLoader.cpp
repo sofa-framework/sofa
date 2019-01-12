@@ -561,7 +561,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                     out.push_back(f);
             }
         }
-        for (int ft = 0; ft < NBFACETYPE; ++ft)
+        for (auto & materialFace : materialFaces)
         {
             std::string fname;
             switch (faceType)
@@ -571,7 +571,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             case MeshObjLoader::QUAD:     fname = "quad"; break;
             default: break;
             }
-            for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
+            for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFace.begin(), itend = materialFace.end(); it != itend; ++it)
             {
                 std::string materialName = it->first;
                 const helper::vector<unsigned>& faces = it->second;

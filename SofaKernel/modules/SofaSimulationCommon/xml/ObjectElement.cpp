@@ -66,11 +66,11 @@ bool ObjectElement::initNode()
 {
     core::objectmodel::BaseContext* ctx = getParent()->getObject()->toBaseContext();
 
-    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
+    for (auto & attribute : attributes)
     {
-        if (replaceAttribute.find(it->first) != replaceAttribute.end())
+        if (replaceAttribute.find(attribute.first) != replaceAttribute.end())
         {
-            setAttribute(it->first,replaceAttribute[it->first]);
+            setAttribute(attribute.first,replaceAttribute[attribute.first]);
         }
     }
 
@@ -99,16 +99,16 @@ bool ObjectElement::initNode()
     }
     setObject(obj);
     /// display any unused attributes
-    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
+    for (auto & attribute : attributes)
     {
-        if (!it->second.isAccessed())
+        if (!attribute.second.isAccessed())
         {
-            std::string name = it->first;
+            std::string name = attribute.first;
 
             /// ignore some prefix that are used to quickly disable parameters in XML files
             if (name.substr(0,1) == "_" || name.substr(0,2) == "NO") continue;
 
-            msg_warning(obj.get()) << SOFA_FILE_INFO_COPIED_FROM(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" ;        }
+            msg_warning(obj.get()) << SOFA_FILE_INFO_COPIED_FROM(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<attribute.first <<"\" with value: \"" <<attribute.second.c_str() <<"\"" ;        }
     }
     return true;
 }

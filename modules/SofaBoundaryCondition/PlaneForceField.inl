@@ -394,12 +394,12 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    for (unsigned int i=0; i<4; i++)
+    for (auto & corner : corners)
     {
         for (int c=0; c<3; c++)
         {
-            if (corners[i][c] > maxBBox[c]) maxBBox[c] = (Real)corners[i][c];
-            if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
+            if (corner[c] > maxBBox[c]) maxBBox[c] = (Real)corner[c];
+            if (corner[c] < minBBox[c]) minBBox[c] = (Real)corner[c];
         }
     }
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));

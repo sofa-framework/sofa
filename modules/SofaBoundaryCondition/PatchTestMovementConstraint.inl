@@ -451,9 +451,9 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
 
     if(m_drawConstrainedPoints.getValue())
     {
-        for (SetIndexArray::const_iterator it = indices.begin();it != indices.end();++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));

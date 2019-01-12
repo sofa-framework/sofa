@@ -221,8 +221,8 @@ void vrender::VectorialRender(RenderCB render_callback, void *callback_params, V
 
 		// deletes primitives
 
-		for(unsigned int i=0;i<primitive_tab.size();++i)
-			delete primitive_tab[i] ;
+		for(auto & i : primitive_tab)
+			delete i ;
 
 		if(exporter != NULL) delete exporter ;
 		if(sort_method != NULL) delete sort_method ;

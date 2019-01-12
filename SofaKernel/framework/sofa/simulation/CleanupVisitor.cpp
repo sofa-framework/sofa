@@ -42,11 +42,11 @@ simulation::Visitor::Result CleanupVisitor::processNodeTopDown(Node* node)
         std::vector< core::objectmodel::BaseObject* > listObject;
         node->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
 
-        for (unsigned int i=0; i<listObject.size(); ++i)
+        for (auto & i : listObject)
         {
-            if (done.insert(listObject[i]).second)
+            if (done.insert(i).second)
             {
-                listObject[i]->cleanup();
+                i->cleanup();
                 stop = false;
                 break; // we have to restart as objects could have been removed anywhere
             }

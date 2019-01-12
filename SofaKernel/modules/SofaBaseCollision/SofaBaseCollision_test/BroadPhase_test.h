@@ -328,22 +328,22 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     if(brutInter.size() != broadPhaseInter.size()){
         std::cout<<"BRUT FORCE PAIRS"<<std::endl;
-        for(unsigned int j = 0 ; j < brutInter.size() ; ++j){
-            std::cout<<brutInter[j].first.getCollisionModel()->getLast()<<" "<<brutInter[j].second.getCollisionModel()->getLast()<<std::endl;
-            std::cout<<brutInter[j].first.getIndex()<<" "<<brutInter[j].second.getIndex()<<std::endl;
+        for(auto & j : brutInter){
+            std::cout<<j.first.getCollisionModel()->getLast()<<" "<<j.second.getCollisionModel()->getLast()<<std::endl;
+            std::cout<<j.first.getIndex()<<" "<<j.second.getIndex()<<std::endl;
             std::cout<<"=="<<std::endl;
         }
 
         std::cout<<"=========BROAD PHASE PAIRS"<<std::endl;
-        for(unsigned int j = 0 ; j < broadPhaseInter.size() ; ++j){
+        for(auto & j : broadPhaseInter){
             std::cout<<"alarmDist "<<alarmDist<<std::endl;
-            std::cout<<broadPhaseInter[j].first.getCollisionModel()->getLast()<<" "<<broadPhaseInter[j].second.getCollisionModel()->getLast()<<std::endl;
-            std::cout<<broadPhaseInter[j].first.getIndex()<<" "<<broadPhaseInter[j].second.getIndex()<<std::endl;
+            std::cout<<j.first.getCollisionModel()->getLast()<<" "<<j.second.getCollisionModel()->getLast()<<std::endl;
+            std::cout<<j.first.getIndex()<<" "<<j.second.getIndex()<<std::endl;
         }
 
         std::cout<<"want to show::::::::::"<<std::endl;
-        for(size_t i = 0 ; i < boxes.size() ; ++i){
-            boxes[i].show();
+        for(auto & boxe : boxes){
+            boxe.show();
         }
         std::cout<<"=="<<std::endl;
 
@@ -357,22 +357,22 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     if(i < brutInter.size()){
         std::cout<<"BRUT FORCE PAIRS"<<std::endl;
-        for(unsigned int j = 0 ; j < brutInter.size() ; ++j){
-            std::cout<<brutInter[j].first.getCollisionModel()->getLast()<<" "<<brutInter[j].second.getCollisionModel()->getLast()<<std::endl;
-            std::cout<<brutInter[j].first.getIndex()<<" "<<brutInter[j].second.getIndex()<<std::endl;
+        for(auto & j : brutInter){
+            std::cout<<j.first.getCollisionModel()->getLast()<<" "<<j.second.getCollisionModel()->getLast()<<std::endl;
+            std::cout<<j.first.getIndex()<<" "<<j.second.getIndex()<<std::endl;
             std::cout<<"=="<<std::endl;
         }
 
         std::cout<<"=========BROAD PHASE PAIRS"<<std::endl;
-        for(unsigned int j = 0 ; j < broadPhaseInter.size() ; ++j){
-            std::cout<<broadPhaseInter[j].first.getCollisionModel()->getLast()<<" "<<broadPhaseInter[j].second.getCollisionModel()->getLast()<<std::endl;
-            std::cout<<broadPhaseInter[j].first.getIndex()<<" "<<broadPhaseInter[j].second.getIndex()<<std::endl;
+        for(auto & j : broadPhaseInter){
+            std::cout<<j.first.getCollisionModel()->getLast()<<" "<<j.second.getCollisionModel()->getLast()<<std::endl;
+            std::cout<<j.first.getIndex()<<" "<<j.second.getIndex()<<std::endl;
             std::cout<<"=="<<std::endl;
         }
 
         std::cout<<"want to show::::::::::"<<std::endl;
-        for(size_t i = 0 ; i < boxes.size() ; ++i){
-            boxes[i].show();
+        for(auto & boxe : boxes){
+            boxe.show();
         }
         std::cout<<"=="<<std::endl;
 

@@ -91,12 +91,12 @@ OglShader::~OglShader()
     if (!shaderVector.empty())
     {
         shaderVector[indexActiveShader.getValue()]->TurnOff();
-        for (unsigned int i=0 ; i<shaderVector.size() ; i++)
+        for (auto & i : shaderVector)
         {
-            if (shaderVector[i])
+            if (i)
             {
-                shaderVector[i]->Release();
-                delete shaderVector[i];
+                i->Release();
+                delete i;
             }
         }
     }
@@ -589,9 +589,9 @@ void OglShaderElement::init()
     for (it = begin; it != end; ++it)
     {
         mycontext->core::objectmodel::BaseContext::get<OglShader, helper::vector<OglShader*> >(&gotShaders, (*it));
-        for(helper::vector<OglShader*>::iterator it2 = gotShaders.begin(); it2!= gotShaders.end(); ++it2) //merge into shaders vector
+        for(auto & gotShader : gotShaders) //merge into shaders vector
         {
-            shaders.insert(*it2);
+            shaders.insert(gotShader);
             //shaders.push_back(*it2);
         }
     }

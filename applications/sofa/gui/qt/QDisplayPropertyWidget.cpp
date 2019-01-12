@@ -55,15 +55,15 @@ QDisplayTreeItemWidget::~QDisplayTreeItemWidget()
 void QDisplayTreeItemWidget::updateDirtyWidget()
 {
     const QObjectList& parentList = children();
-    for(QObjectList::const_iterator itParent = parentList.begin(); itParent != parentList.end(); ++itParent)
+    for(auto itParent : parentList)
     {
-        QWidget* parentWidget = dynamic_cast<QWidget*>(*itParent);
+        QWidget* parentWidget = dynamic_cast<QWidget*>(itParent);
         if(parentWidget)
         {
             const QObjectList& childList = parentWidget->children();
-            for(QObjectList::const_iterator itChild = childList.begin(); itChild != childList.end(); ++itChild)
+            for(auto itChild : childList)
             {
-                QWidget* childWidget = dynamic_cast<QWidget*>(*itChild);
+                QWidget* childWidget = dynamic_cast<QWidget*>(itChild);
                 if(childWidget)
                 {
                     childWidget->adjustSize();
@@ -152,10 +152,8 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
     objects[componentItem] = std::pair<core::objectmodel::Base*, QTreeWidgetItem*>(base, listItem);
 
     // add data
-    for(sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it != fields.end(); ++it)
+    for(auto data : fields)
     {
-        core::objectmodel::BaseData *data = *it;
-
         // ignore unnamed data
         if(data->getName().empty())
             continue;
@@ -174,10 +172,8 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
 
     // add links
     const sofa::core::objectmodel::Base::VecLink& links = base->getLinks();
-    for(sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it != links.end(); ++it)
+    for(auto link : links)
     {
-        core::objectmodel::BaseLink *link = *it;
-
         // ignore unnamed link
         if(link->getName().empty())
             continue;

@@ -99,8 +99,8 @@ int TestEngine::getCounterUpdate()
 void TestEngine::printUpdateCallList()
 {
 
-    for (std::list<int>::iterator it=updateCallList.begin(); it != updateCallList.end(); ++it)
-        std::cout << " Call engine " <<  *it <<std::endl;
+    for (int & it : updateCallList)
+        std::cout << " Call engine " <<  it <<std::endl;
    
 }
 

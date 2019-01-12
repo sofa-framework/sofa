@@ -58,9 +58,9 @@ QCategoryTreeLibrary::QCategoryTreeLibrary( QWidget *parent, const std::string &
 
 QCategoryTreeLibrary::~QCategoryTreeLibrary()
 {
-    for (unsigned int i=0; i<components.size(); ++i)
+    for (auto & component : components)
     {
-        delete components[i];
+        delete component;
     }
     components.clear();
 }

@@ -194,9 +194,9 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             std::vector< core::objectmodel::BaseObject * > listObject;
             node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::SearchRoot);
 
-            for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping
+            for(auto & i : listObject) // loop on all components to find mapping
             {
-                sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+                sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(i);
                 if (topoMap)
                 {
                     // Mapping found: 1- looking for volume, 2- looking for surface element on border, 3- looking for correspondant ID element in surfacique mesh
@@ -373,9 +373,9 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             std::vector< core::objectmodel::BaseObject * > listObject;
             node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
 
-            for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping (only tetra for the moment)
+            for(auto & i : listObject) // loop on all components to find mapping (only tetra for the moment)
             {
-                sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+                sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(i);
                 if (topoMap)
                 {
                     // Mapping found: 1- get surface element ID in volumique topology, 2- get volume element ID behind surface element, 3- switching all variables to volumique case

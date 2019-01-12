@@ -297,25 +297,23 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
-    for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
+    for (auto & m_searchPath : m_searchPaths)
     {
-        const std::string path = *i + "/" + libName;
+        const std::string path = m_searchPath + "/" + libName;
         if (FileSystem::isFile(path))
             return path;
     }
     // Second try: case insensitive
     if (ignoreCase)
     {
-        for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
+        for (auto & dir : m_searchPaths)
         {
-            const std::string& dir = *i;
             const std::string path = dir + "/" + libName;
             const std::string downcaseLibName = Utils::downcaseString(libName);
             std::vector<std::string> files;
             FileSystem::listDirectory(dir, files);
-            for(std::vector<std::string>::iterator j = files.begin(); j != files.end(); j++)
+            for(auto & filename : files)
             {
-                const std::string& filename = *j;
                 const std::string downcaseFilename = Utils::downcaseString(filename);
                 if (downcaseFilename == downcaseLibName) {
                     return dir + "/" + filename;

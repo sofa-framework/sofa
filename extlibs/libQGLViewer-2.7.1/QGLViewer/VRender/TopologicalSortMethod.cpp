@@ -173,10 +173,10 @@ void TopologicalSortUtils::buildPrecedenceGraph(vector<PtrPrimitive>& primitive_
 
 	AxisAlignedBox_xy BBox ;
 
-	for(size_t i=0;i<primitive_tab.size();++i)
+	for(auto & i : primitive_tab)
 	{
-		BBox.include(Vector2(primitive_tab[i]->bbox().mini().x(),primitive_tab[i]->bbox().mini().y())) ;
-		BBox.include(Vector2(primitive_tab[i]->bbox().maxi().x(),primitive_tab[i]->bbox().maxi().y())) ;
+		BBox.include(Vector2(i->bbox().mini().x(),i->bbox().mini().y())) ;
+		BBox.include(Vector2(i->bbox().maxi().x(),i->bbox().maxi().y())) ;
 	}
 
 	// 1 - recursively find pairs.
@@ -214,17 +214,17 @@ void TopologicalSortUtils::recursFindNeighbors(const vector<PtrPrimitive>& primi
 		double xMean = 0.5*(xmin+xmax) ;
 		double yMean = 0.5*(ymin+ymax) ;
 
-		for(size_t i=0;i<pindices.size();++i)
+		for(unsigned long pindice : pindices)
 		{
-			bool left  = primitive_tab[pindices[i]]->bbox().mini().x() <= xMean ;
-			bool right = primitive_tab[pindices[i]]->bbox().maxi().x() >= xMean ;
-			bool down  = primitive_tab[pindices[i]]->bbox().mini().y() <= yMean ;
-			bool up    = primitive_tab[pindices[i]]->bbox().maxi().y() >= yMean ;
+			bool left  = primitive_tab[pindice]->bbox().mini().x() <= xMean ;
+			bool right = primitive_tab[pindice]->bbox().maxi().x() >= xMean ;
+			bool down  = primitive_tab[pindice]->bbox().mini().y() <= yMean ;
+			bool up    = primitive_tab[pindice]->bbox().maxi().y() >= yMean ;
 
-			if(left  && down) p_indices_min_min.push_back(pindices[i]) ;
-			if(right && down) p_indices_max_min.push_back(pindices[i]) ;
-			if(left  && up  ) p_indices_min_max.push_back(pindices[i]) ;
-			if(right && up  ) p_indices_max_max.push_back(pindices[i]) ;
+			if(left  && down) p_indices_min_min.push_back(pindice) ;
+			if(right && down) p_indices_max_min.push_back(pindice) ;
+			if(left  && up  ) p_indices_min_max.push_back(pindice) ;
+			if(right && up  ) p_indices_max_max.push_back(pindice) ;
 		}
 
 		// checks if refining is not too much stupid
@@ -520,9 +520,9 @@ void TopologicalSortUtils::recursTopologicalSort(	vector< vector<size_t> >& prec
 
 					//  Updates the precedence graph downwards.
 
-					for(size_t k=0;k<old_prec.size();++k)
+					for(unsigned long k : old_prec)
 					{
-						int prp1 = PrimitivePositioning::computeRelativePosition(prim_upper,primitive_tab[old_prec[k]]) ;
+						int prp1 = PrimitivePositioning::computeRelativePosition(prim_upper,primitive_tab[k]) ;
 #ifdef DEBUG_TS
 						cout << "Compariing " << upper_indx << " and " << old_prec[k] << ": " ;
 #endif
@@ -534,9 +534,9 @@ void TopologicalSortUtils::recursTopologicalSort(	vector< vector<size_t> >& prec
 #ifdef DEBUG_TS
 							cout << " > " << endl ;
 #endif
-							prim_upper_prec.push_back(old_prec[k]) ;
+							prim_upper_prec.push_back(k) ;
 
-							if(old_prec[k] == ancestors[i3+1])
+							if(k == ancestors[i3+1])
 								prim_upper_prec_contains_ip1 = true ;
 						}
 #ifdef DEBUG_TS
@@ -544,7 +544,7 @@ void TopologicalSortUtils::recursTopologicalSort(	vector< vector<size_t> >& prec
 							cout << " I " << endl ;
 #endif
 
-						int prp2 = PrimitivePositioning::computeRelativePosition(prim_lower,primitive_tab[old_prec[k]]) ;
+						int prp2 = PrimitivePositioning::computeRelativePosition(prim_lower,primitive_tab[k]) ;
 #ifdef DEBUG_TS
 						cout << "Compariing " << lower_indx << " and " << old_prec[k] << ": " ;
 #endif
@@ -553,9 +553,9 @@ void TopologicalSortUtils::recursTopologicalSort(	vector< vector<size_t> >& prec
 #ifdef DEBUG_TS
 							cout << " > " << endl ;
 #endif
-							prim_lower_prec.push_back(old_prec[k]) ;
+							prim_lower_prec.push_back(k) ;
 
-							if(old_prec[k] == ancestors[i3+1])
+							if(k == ancestors[i3+1])
 								prim_lower_prec_contains_ip1 = true ;
 						}
 #ifdef DEBUG_TS

@@ -117,8 +117,8 @@ public:
     {
         is_leaf = true;
         internal = false;
-        for (int i = 0; i < 8; i++)
-            childVec[i] = NULL;
+        for (auto & i : childVec)
+            i = NULL;
     }
 
     void draw (const core::visual::VisualParams* vparams);

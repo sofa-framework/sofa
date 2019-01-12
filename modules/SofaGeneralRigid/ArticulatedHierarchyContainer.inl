@@ -197,9 +197,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
         }
     }
 
-    for(unsigned int i=0; i<jointChildren.size(); i++)
+    for(auto & i : jointChildren)
     {
-        buildCenterArticulationsTree(jointChildren[i], bvhjoint->getId()+1, bvhjoint->getName(), nodeOfArticulationCenters.get());
+        buildCenterArticulationsTree(i, bvhjoint->getId()+1, bvhjoint->getName(), nodeOfArticulationCenters.get());
     }
 }
 

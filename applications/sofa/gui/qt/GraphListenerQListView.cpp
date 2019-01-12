@@ -681,11 +681,11 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const QTreeWidgetIte
 
     if(item)
     {
-        for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = items.begin() ; it != items.end() ; ++ it )
+        for (auto & it : items)
         {
-            if ( ( *it ).second == item )
+            if ( it.second == item )
             {
-                base = (*it).first;
+                base = it.first;
                 return base;
             }
         }
@@ -730,11 +730,9 @@ void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
     if( items.count(parent) )
     {
         const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();
-        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin();
-             it != fields.end();
-             ++it)
+        for(auto field : fields)
         {
-            data = (*it);
+            data = field;
             if(datas.count(data))
             {
                 delete datas[data];
@@ -754,11 +752,9 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
     if(items.count(parent))
     {
         const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();
-        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin();
-             it!=fields.end();
-             ++it)
+        for(auto field : fields)
         {
-            data = (*it);
+            data = field;
             if(!datas.count(data))
             {
                 static QPixmap pixData((const char**)icondata_xpm);

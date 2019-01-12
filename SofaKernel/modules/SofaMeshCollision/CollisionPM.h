@@ -150,22 +150,22 @@ namespace collision
                     _intersectors[cm->getEnumType()][cm->getEnumType()] = ei;
                 }
 
-                for(std::set<CollModID>::iterator it = _addedCM.begin() ; it != _addedCM.end() ; ++it){
-                    if(it->sample->getEnumType() == cm->getEnumType())
+                for(auto it : _addedCM){
+                    if(it.sample->getEnumType() == cm->getEnumType())
                         continue;
 
                     swap = false;                                        
-                    ei = interMehtod->findIntersector(cm,it->sample,swap);
+                    ei = interMehtod->findIntersector(cm,it.sample,swap);
 
                     if(ei && swap){
-                        _order[cm->getEnumType()][it->enum_type] = -1;
-                        _order[it->enum_type][cm->getEnumType()] = 1;
-                        _intersectors[it->enum_type][cm->getEnumType()] = _intersectors[cm->getEnumType()][it->enum_type] = ei;
+                        _order[cm->getEnumType()][it.enum_type] = -1;
+                        _order[it.enum_type][cm->getEnumType()] = 1;
+                        _intersectors[it.enum_type][cm->getEnumType()] = _intersectors[cm->getEnumType()][it.enum_type] = ei;
                     }
                     else if(ei){
-                        _order[cm->getEnumType()][it->enum_type] = 1;
-                        _order[it->enum_type][cm->getEnumType()] = -1;
-                        _intersectors[it->enum_type][cm->getEnumType()] = _intersectors[cm->getEnumType()][it->enum_type] = ei;
+                        _order[cm->getEnumType()][it.enum_type] = 1;
+                        _order[it.enum_type][cm->getEnumType()] = -1;
+                        _intersectors[it.enum_type][cm->getEnumType()] = _intersectors[cm->getEnumType()][it.enum_type] = ei;
                     }
                 }
             }
@@ -198,9 +198,9 @@ namespace collision
 
         void clear(){
             _addedCM.clear();
-            for(int i = 0 ; i < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++i){
+            for(auto & _coll_pair : _coll_pairs){
                 for(int j = 0 ; j < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++j){
-                    _coll_pairs[i][j].clear();
+                    _coll_pair[j].clear();
                 }
             }
         }
@@ -210,10 +210,10 @@ namespace collision
                 for(int j = 0 ; j < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++j){
                     if(_order[i][j] > 0){
                         core::collision::ElementIntersector * ei = _intersectors[i][j];
-                        for(umap_collision::iterator it = _coll_pairs[i][j].begin() ; it != _coll_pairs[i][j].end() ; ++it){
-                            core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(it->second.elem1.getCollisionModel(),it->second.elem2.getCollisionModel());
-                            ei->beginIntersect(it->second.elem1.getCollisionModel(),it->second.elem2.getCollisionModel(),output);
-                            ei->intersect(it->second.elem1,it->second.elem2,output);
+                        for(auto & it : _coll_pairs[i][j]){
+                            core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(it.second.elem1.getCollisionModel(),it.second.elem2.getCollisionModel());
+                            ei->beginIntersect(it.second.elem1.getCollisionModel(),it.second.elem2.getCollisionModel(),output);
+                            ei->intersect(it.second.elem1,it.second.elem2,output);
                         }
                     }
                 }

@@ -536,9 +536,8 @@ void MeshLoader::updatePoints()
         helper::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
         Topology::ElemID p = 0;
-        for (std::set<Topology::ElemID>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
+        for (unsigned int newp : attachedPoints)
         {
-            Topology::ElemID newp = *it;
             old2new[newp] = p;
             if (p != newp)
             {

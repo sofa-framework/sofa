@@ -120,14 +120,14 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
         t.n() = cross(*pt[1]-*pt[0],*pt[2]-*pt[0]);
         t.n().normalize();
 
-        for (int p=0; p<3; p++)
+        for (auto & p : pt)
         {
 
 
             for(int c=0; c<3; c++)
             {
-                if ((*pt[p])[c] > maxElem[c]) maxElem[c] = (*pt[p])[c];
-                if ((*pt[p])[c] < minElem[c]) minElem[c] = (*pt[p])[c];
+                if ((*p)[c] > maxElem[c]) maxElem[c] = (*p)[c];
+                if ((*p)[c] < minElem[c]) minElem[c] = (*p)[c];
 
             }
         }

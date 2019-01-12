@@ -270,9 +270,9 @@ void Quater<Real>::normalize()
         if( mag != 0)
         {
             Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-            for (int i = 0; i < 4; i++)
+            for (auto & i : _q)
             {
-                _q[i] *= sqr;
+                i *= sqr;
             }
         }
         else

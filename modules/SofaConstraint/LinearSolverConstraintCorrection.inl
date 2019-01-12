@@ -511,9 +511,9 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
         // fill the end renumbering list with the new order
         for (size_t dof = 0; dof < mstate->getSize(); dof++)
         {
-            for (size_t c = 0; c < ordering_per_dof[dof].size(); c++)
+            for (unsigned int c : ordering_per_dof[dof])
             {
-                renumbering.push_back(ordering_per_dof[dof][c]); // push_back the list of constraint by starting from the smallest dof
+                renumbering.push_back(c); // push_back the list of constraint by starting from the smallest dof
             }
         }
     }

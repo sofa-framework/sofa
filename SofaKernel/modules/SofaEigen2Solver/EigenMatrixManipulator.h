@@ -56,12 +56,12 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const LLineManipulator& s )
     {
-        for (InternalData::const_iterator it = s._data.begin(); it!=s._data.end(); ++it)
+        for (const auto & it : s._data)
         {
-            if (it->second == 1.0)
-                out << "[" << it->first << "] ";
+            if (it.second == 1.0)
+                out << "[" << it.first << "] ";
             else
-                out << "[" << it->first << ", " << it->second <<"] ";
+                out << "[" << it.first << ", " << it.second <<"] ";
         }
         return out;
     }
@@ -70,10 +70,10 @@ public:
     void buildCombination(const Container& lines, Result &output) const
     {
         //TODO: improve estimation of non zero coeff
-        for (InternalData::const_iterator it=_data.begin(); it!=_data.end(); ++it)
+        for (const auto & it : _data)
         {
-            const unsigned int indexConstraint=it->first;
-            const SReal factor=it->second;
+            const unsigned int indexConstraint=it.first;
+            const SReal factor=it.second;
             output += lines[indexConstraint]*factor;
         }
     }

@@ -58,10 +58,10 @@ BaseGUI* GUIManager::getGUI()
 void GUIManager::RegisterParameters(ArgumentParser* argumentParser)
 {
     currentArgumentParser = argumentParser;
-    for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
+    for(auto & guiCreator : guiCreators)
     {
-        if (it->parameters)
-            it->parameters(argumentParser);
+        if (guiCreator.parameters)
+            guiCreator.parameters(argumentParser);
     }
 }
 
@@ -97,9 +97,9 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIP
 std::vector<std::string> GUIManager::ListSupportedGUI()
 {
     std::vector<std::string> names;
-    for(std::list<GUICreator>::iterator it = guiCreators.begin(), itend = guiCreators.end(); it != itend; ++it)
+    for(auto & guiCreator : guiCreators)
     {
-        names.push_back(it->name);
+        names.push_back(guiCreator.name);
     }
     return names;
 }
@@ -108,10 +108,10 @@ std::string GUIManager::ListSupportedGUI(char separator)
 {
     std::string names;
     bool first = true;
-    for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
+    for(auto & guiCreator : guiCreators)
     {
         if (!first) names += separator; else first = false;
-        names += it->name;
+        names += guiCreator.name;
     }
     return names;
 }

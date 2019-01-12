@@ -175,11 +175,9 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (unsigned int indice : indices)
         {
-            res[*it] = Deriv();
+            res[indice] = Deriv();
         }
     }
 }
@@ -206,11 +204,9 @@ void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
     {
         while (rowIt != rowItEnd)
         {
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+            for (unsigned int indice : indices)
             {
-                rowIt.row().erase(*it);
+                rowIt.row().erase(indice);
             }
             ++rowIt;
         }
@@ -239,11 +235,9 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (unsigned int indice : indices)
         {
-            res[*it] = f_point.getValue();
+            res[indice] = f_point.getValue();
         }
     }
 }
@@ -254,14 +248,14 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int indice : indices)
     {
         // Reset Fixed Row and Col
         for (unsigned int c=0; c<N; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
+            mat->clearRowCol(offset + N * indice + c);
         // Set Fixed Vertex
         for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+            mat->set(offset + N * indice + c, offset + N * indice + c, 1.0);
     }
 }
 
@@ -271,10 +265,10 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = f_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int indice : indices)
     {
         for (unsigned int c=0; c<N; ++c)
-            vect->clear(offset + N * (*it) + c);
+            vect->clear(offset + N * indice + c);
     }
 }
 
@@ -302,11 +296,9 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 points.push_back(point);
             }
         else
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+            for (unsigned int indice : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[indice]);
                 points.push_back(point);
             }
         vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
@@ -322,11 +314,9 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 points.push_back(point);
             }
         else
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+            for (unsigned int indice : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[indice]);
                 points.push_back(point);
             }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));

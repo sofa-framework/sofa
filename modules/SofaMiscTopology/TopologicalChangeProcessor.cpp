@@ -1078,17 +1078,17 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
     std::vector<unsigned int> finalTriIndices;
     finalTriIndices.clear();
 
-    for (size_t i = 0 ; i < triIndices.size() ; i++)
+    for (unsigned int triIndice : triIndices)
     {
         const bool is_tested = false;
         unsigned int indTest = 0;
-        const bool isPointInTriangle = triangleGeo->isPointInsideTriangle(triIndices[i], is_tested, coord, indTest);
+        const bool isPointInTriangle = triangleGeo->isPointInsideTriangle(triIndice, is_tested, coord, indTest);
 
         if (isPointInTriangle)
         {
-            finalTriIndices.push_back(triIndices[i]);
+            finalTriIndices.push_back(triIndice);
 
-            if ((int)triIndices[i] == oldTriangleIndex)
+            if ((int)triIndice == oldTriangleIndex)
             {
                 triangleIndex = oldTriangleIndex;
                 return;
@@ -1200,8 +1200,8 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     {
         std::stringstream tmp ;
         tmp <<" Unable to find a time index with time " <<  getContext()->getTime() << ". The possible values are ";
-        for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
-            tmp << triangleIncisionInformation[i].timeToIncise << " | ";
+        for (auto & i : triangleIncisionInformation)
+            tmp << i.timeToIncise << " | ";
         tmp << ". Aborting." ;
         msg_error() << tmp.str() ;
         return;
@@ -1396,11 +1396,11 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     std::vector< Vector3 > trianglesToDraw;
     std::vector< Vector3 > pointsToDraw;
 
-    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (auto & i : triangleIncisionInformation)
     {
-        for (size_t j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
+        for (size_t j = 0 ; j < i.triangleIndices.size() ; j++)
         {
-            unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
+            unsigned int triIndex = i.triangleIndices[j];
 
             if ( triIndex > nbTriangles -1)
                 break;
@@ -1408,13 +1408,13 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
             Vec3Types::Coord coord[3];
             triangleGeo->getTriangleVertexCoordinates(triIndex, coord);
 
-            for(unsigned int k = 0 ; k < 3 ; k++)
-                trianglesToDraw.push_back(coord[k]);
+            for(const auto & k : coord)
+                trianglesToDraw.push_back(k);
 
             Vector3 a;
             a.clear();
             for (unsigned k = 0 ; k < 3 ; k++)
-                a += coord[k] * triangleIncisionInformation[i].barycentricCoordinates[j][k];
+                a += coord[k] * i.barycentricCoordinates[j][k];
 
             pointsToDraw.push_back(a);
         }
@@ -1429,13 +1429,13 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         /* initialize random seed: */
         srand ( (unsigned int)time(NULL) );
 
-        for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
+        for (unsigned int errorTrianglesIndice : errorTrianglesIndices)
         {
             Vec3Types::Coord coord[3];
-            triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndices[i], coord);
+            triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndice, coord);
 
-            for(unsigned int k = 0 ; k < 3 ; k++)
-                trianglesToDraw.push_back(coord[k]);
+            for(const auto & k : coord)
+                trianglesToDraw.push_back(k);
         }
 
         vparams->drawTool()->drawTriangles(trianglesToDraw,

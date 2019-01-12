@@ -191,10 +191,10 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::Me
         const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for( unsigned j=0; j<NumDimensions; j++)
-                if(movedDirection[j]) dx[*it][j] = (Real) 0.0;
+                if(movedDirection[j]) dx[indice][j] = (Real) 0.0;
 
         }
     }
@@ -222,9 +222,9 @@ void PartialLinearMovementConstraint<DataTypes>::projectVelocity(const core::Mec
         const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            dx[*it] = (nextM - prevM)*(1.0 / (nextT - prevT));
+            dx[indice] = (nextM - prevM)*(1.0 / (nextT - prevT));
         }
     }
 }
@@ -241,9 +241,9 @@ void PartialLinearMovementConstraint<DataTypes>::projectPosition(const core::Mec
     {
         const SetIndexArray & indices = m_indices.getValue();
         x0.resize(x.size());
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x0[*it] = x[*it];
+            x0[indice] = x[indice];
         }
     }
 
@@ -280,7 +280,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
         if(a==0.0) {a=b; b=c;}
         if(b==0.0) {b=c;}
 
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for( unsigned j=0; j< NumDimensions; j++)
             {
@@ -288,10 +288,10 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                 {
                     if(case2d)
                     {
-                        x[*it][j] = x0[*it][j] + ((Real)1.0/(a*b))*((a-x0[*it][0])*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[0]+   ///< N1
-                                x0[*it][0]*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[1]+         ///< N2
-                                x0[*it][0]*x0[*it][1]*imposedDisplacmentOnMacroNodes[2]+              ///< N3
-                                (a-x0[*it][0])*x0[*it][1]*imposedDisplacmentOnMacroNodes[3])*m[j];    ///< N4
+                        x[indice][j] = x0[indice][j] + ((Real)1.0/(a*b))*((a-x0[indice][0])*(b-x0[indice][1])*imposedDisplacmentOnMacroNodes[0]+   ///< N1
+                                x0[indice][0]*(b-x0[indice][1])*imposedDisplacmentOnMacroNodes[1]+         ///< N2
+                                x0[indice][0]*x0[indice][1]*imposedDisplacmentOnMacroNodes[2]+              ///< N3
+                                (a-x0[indice][0])*x0[indice][1]*imposedDisplacmentOnMacroNodes[3])*m[j];    ///< N4
                         //                             4|----------------|3
                         //                              |                |
                         //                              |                |
@@ -313,15 +313,15 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                         //   Z/
                         //
 
-                        x[*it][j] = x0[*it][j] + ((Real)1.0/(a*b*c))*(
-                                    (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
-                                (a-x0[*it][0])*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[1]+        ///< N2
-                                x0[*it][0]*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[2]+            ///< N3
-                                x0[*it][0]*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[3]+        ///< N4
-                                (a-x0[*it][0])*x0[*it][1]*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[4]+        ///< N5
-                                (a-x0[*it][0])*x0[*it][1]*x0[*it][2]*imposedDisplacmentOnMacroNodes[5]+            ///< N6
-                                x0[*it][0]*x0[*it][1]*x0[*it][2]*imposedDisplacmentOnMacroNodes[6]+                ///< N7
-                                x0[*it][0]*x0[*it][1]*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[7]             ///< N8
+                        x[indice][j] = x0[indice][j] + ((Real)1.0/(a*b*c))*(
+                                    (a-x0[indice][0])*(b-x0[indice][1])*(c-x0[indice][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
+                                (a-x0[indice][0])*(b-x0[indice][1])*x0[indice][2]*imposedDisplacmentOnMacroNodes[1]+        ///< N2
+                                x0[indice][0]*(b-x0[indice][1])*x0[indice][2]*imposedDisplacmentOnMacroNodes[2]+            ///< N3
+                                x0[indice][0]*(b-x0[indice][1])*(c-x0[indice][2])*imposedDisplacmentOnMacroNodes[3]+        ///< N4
+                                (a-x0[indice][0])*x0[indice][1]*(c-x0[indice][2])*imposedDisplacmentOnMacroNodes[4]+        ///< N5
+                                (a-x0[indice][0])*x0[indice][1]*x0[indice][2]*imposedDisplacmentOnMacroNodes[5]+            ///< N6
+                                x0[indice][0]*x0[indice][1]*x0[indice][2]*imposedDisplacmentOnMacroNodes[6]+                ///< N7
+                                x0[indice][0]*x0[indice][1]*(c-x0[indice][2])*imposedDisplacmentOnMacroNodes[7]             ///< N8
 
                                 )*m[j];
 
@@ -333,10 +333,10 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for( unsigned j=0; j< NumDimensions; j++)
-                if(movedDirection[j]) x[*it][j] = x0[*it][j] + m[j] ;
+                if(movedDirection[j]) x[indice][j] = x0[indice][j] + m[j] ;
         }
     }
 
@@ -354,10 +354,10 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
     helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int indice : indices)
     {
-        x[*it].getCenter() = x0[*it].getCenter() + getVCenter(m) ;
-        x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
+        x[indice].getCenter() = x0[indice].getCenter() + getVCenter(m) ;
+        x[indice].getOrientation() = x0[indice].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
     }
 }
 
@@ -421,17 +421,17 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 
     if (r) {
         VecBool movedDirection = movedDirections.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             // Reset Fixed Row and Col
             for (unsigned int c=0; c<NumDimensions; ++c)
             {
-                if( movedDirection[c] ) r.matrix->clearRowCol(r.offset + NumDimensions * (*it) + c);
+                if( movedDirection[c] ) r.matrix->clearRowCol(r.offset + NumDimensions * indice + c);
             }
             // Set Fixed Vertex
             for (unsigned int c=0; c<NumDimensions; ++c)
             {
-                if( movedDirection[c] ) r.matrix->set(r.offset + NumDimensions * (*it) + c, r.offset + NumDimensions * (*it) + c, 1.0);
+                if( movedDirection[c] ) r.matrix->set(r.offset + NumDimensions * indice + c, r.offset + NumDimensions * indice + c, 1.0);
             }
         }
     }
@@ -445,13 +445,13 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
         unsigned int offset = (unsigned int)o;
         VecBool movedDirection = movedDirections.getValue();
         const SetIndexArray & indices = m_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             for (unsigned int c = 0; c < NumDimensions; ++c)
             {
                 if (movedDirection[c])
                 {
-                    vector->clear(offset + NumDimensions * (*it) + c);
+                    vector->clear(offset + NumDimensions * indice + c);
                 }
             }
         }
@@ -479,10 +479,10 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         const VecDeriv& keyMovements = m_keyMovements.getValue();
         for (unsigned int i = 0; i < keyMovements.size() - 1; i++)
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                v0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
-                v1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                v0 = DataTypes::getCPos(x0[indice]) + DataTypes::getDPos(keyMovements[i]);
+                v1 = DataTypes::getCPos(x0[indice]) + DataTypes::getDPos(keyMovements[i + 1]);
 
                 vertices.push_back(v0);
                 vertices.push_back(v1);
@@ -496,9 +496,9 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
 
         defaulttype::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             vertices.push_back(point);
         }
         vparams->drawTool()->drawPoints(vertices, 10, color);

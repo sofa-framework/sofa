@@ -192,9 +192,9 @@ void RadioDataWidget::setDataReadOnly(bool readOnly)
     if (buttonMode)
     {
         QList<QAbstractButton *> buttons = buttonList->buttons();
-        for (int i = 0; i < buttons.size(); ++i)
+        for (auto button : buttons)
         {
-            buttons.at(i)->setEnabled(!readOnly);
+            button->setEnabled(!readOnly);
         }
     }
     else

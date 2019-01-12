@@ -91,9 +91,8 @@ public:
     ///// Get list of all attributes
     template<class T> void getAttributeList(T& container) const
     {
-        for (AttributeMap::const_iterator it = attributes.begin();
-                it != attributes.end(); ++it)
-            container.push_back(it->first);
+        for (const auto & attribute : attributes)
+            container.push_back(attribute.first);
     }
 
     /// Find an object description given its name (relative to this object)

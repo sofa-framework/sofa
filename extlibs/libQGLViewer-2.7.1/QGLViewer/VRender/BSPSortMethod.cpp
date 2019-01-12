@@ -172,8 +172,8 @@ void BSPTree::recursFillPrimitiveArray(vector<PtrPrimitive>& tab) const
 {
 	if(_root != NULL) _root->recursFillPrimitiveArray(tab);
 
-	for(unsigned int i=0;i<_points.size();++i) tab.push_back(_points[i]);
-	for(unsigned int j=0;j<_segments.size();++j) tab.push_back(_segments[j]);
+	for(auto _point : _points) tab.push_back(_point);
+	for(auto _segment : _segments) tab.push_back(_segment);
 }
 
 //----------------------------------------------------------------------------//
@@ -516,10 +516,10 @@ void BSPNode::recursFillPrimitiveArray(vector<PtrPrimitive>& primitive_tab) cons
   if(fils_plus != NULL)
     fils_plus->recursFillPrimitiveArray(primitive_tab);
 
-  for(unsigned int i=0;i<seg_plus.size();++i)
-    primitive_tab.push_back(seg_plus[i]);
-  for(unsigned int j=0;j<pts_plus.size();++j)
-    primitive_tab.push_back(pts_plus[j]);
+  for(auto seg_plu : seg_plus)
+    primitive_tab.push_back(seg_plu);
+  for(auto pts_plu : pts_plus)
+    primitive_tab.push_back(pts_plu);
 
   if(polygone != NULL)
     primitive_tab.push_back(polygone);
@@ -527,10 +527,10 @@ void BSPNode::recursFillPrimitiveArray(vector<PtrPrimitive>& primitive_tab) cons
   if(fils_moins != NULL)
     fils_moins->recursFillPrimitiveArray(primitive_tab);
 
-  for(unsigned int i2=0;i2<seg_moins.size();++i2)
-    primitive_tab.push_back(seg_moins[i2]);
-  for(unsigned int j2=0;j2<pts_moins.size();++j2)
-    primitive_tab.push_back(pts_moins[j2]);
+  for(auto seg_moin : seg_moins)
+    primitive_tab.push_back(seg_moin);
+  for(auto pts_moin : pts_moins)
+    primitive_tab.push_back(pts_moin);
 }
 
 void BSPNode::insert(Point *P)

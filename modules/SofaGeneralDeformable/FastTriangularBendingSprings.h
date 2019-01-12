@@ -183,9 +183,9 @@ protected:
 
             for( unsigned j=0; j<4; ++j)
             {
-                for( unsigned k=0; k<4; ++k)
+                for(auto & k : dpKfact)
                 {
-                    df[vid[j]] -= dpKfact[k] * alpha[j];
+                    df[vid[j]] -= k * alpha[j];
                 }
             }
         }

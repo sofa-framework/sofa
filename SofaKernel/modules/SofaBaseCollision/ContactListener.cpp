@@ -86,14 +86,14 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
         if  ( mCollisionModel2 == nullptr )
         {
             //// check only one collision model
-            for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
+            for (const auto & it : detectionOutputsMap)
             {
-                const CollisionModel* collMod1 = it->first.first;
-                const CollisionModel* collMod2 = it->first.second;
+                const CollisionModel* collMod1 = it.first.first;
+                const CollisionModel* collMod2 = it.first.second;
 
                 if ( mCollisionModel1 == collMod1 || mCollisionModel1 == collMod2 )
                 {
-                    if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
+                    if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it.second) )
                     {
                         mContactsVector.push_back( contacts );
                     }
@@ -103,14 +103,14 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
         else
         {
             // check both collision models
-            for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
+            for (const auto & it : detectionOutputsMap)
             {
-                const CollisionModel* collMod1 = it->first.first;
-                const CollisionModel* collMod2 = it->first.second;
+                const CollisionModel* collMod1 = it.first.first;
+                const CollisionModel* collMod2 = it.first.second;
 
                 if ( (mCollisionModel1==collMod1 && mCollisionModel2==collMod2) || (mCollisionModel1==collMod2 && mCollisionModel2==collMod1) )
                 {
-                    if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
+                    if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it.second) )
                     {
                         mContactsVector.push_back( contacts );
                     }

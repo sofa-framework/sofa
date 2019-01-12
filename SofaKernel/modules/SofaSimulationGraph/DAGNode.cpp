@@ -185,9 +185,9 @@ void DAGNode::moveChild(BaseNode::SPtr node)
     else
     {
         const LinkParents::Container& parents = dagnode->l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; ++i)
+        for (const auto & parent : parents)
         {
-            DAGNode *prev = parents[i];
+            DAGNode *prev = parent;
             notifyMoveChild(dagnode,prev);
             prev->doRemoveChild(dagnode);
         }
@@ -272,8 +272,8 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         case SearchUp:
         {
             const LinkParents::Container& parents = l_parents.getValue();
-            for ( unsigned int i = 0; i < parents.size() ; ++i)
-                result = parents[i]->getObject(class_info, tags, SearchUp);
+            for (const auto & parent : parents)
+                result = parent->getObject(class_info, tags, SearchUp);
         }
         break;
         case SearchDown:
@@ -325,9 +325,9 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         if (getNbParents())
         {
             const LinkParents::Container& parents = l_parents.getValue();
-            for ( unsigned int i = 0; i < parents.size() ; ++i)
+            for (const auto & parent : parents)
             {
-                void* obj = parents[i]->getObject(class_info,newpath);
+                void* obj = parent->getObject(class_info,newpath);
                 if (obj) return obj;
             }
             return 0;   // not found in any parent node at all
@@ -426,8 +426,8 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
     Parents p;
 
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-        p.push_back(parents[i]);
+    for (const auto & parent : parents)
+        p.push_back(parent);
 
     return p;
 }
@@ -452,9 +452,9 @@ core::objectmodel::BaseNode* DAGNode::getFirstParent() const
 bool DAGNode::hasParent(const BaseNode* node) const
 {
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
+    for (const auto & parent : parents)
     {
-        if (parents[i]==node) return true;
+        if (parent==node) return true;
     }
     return false;
 }
@@ -465,8 +465,8 @@ bool DAGNode::hasParent(const BaseContext* context) const
     if (context == NULL) return !getNbParents();
 
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-        if (context == parents[i]->getContext()) return true;
+    for (const auto & parent : parents)
+        if (context == parent->getContext()) return true;
     return false;
 
 }
@@ -478,9 +478,9 @@ bool DAGNode::hasParent(const BaseContext* context) const
 bool DAGNode::hasAncestor(const BaseContext* context) const
 {
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-        if (context == parents[i]->getContext()
-            || parents[i]->hasAncestor(context))
+    for (const auto & parent : parents)
+        if (context == parent->getContext()
+            || parent->hasAncestor(context))
             return true;
     return false;
 }
@@ -506,12 +506,12 @@ core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
     }
     // No mapping with a different topology, continue on to the parents
     const LinkParents::Container &parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    for (const auto & parent : parents)
     {
         // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-        if ( parents[i] )
+        if ( parent )
         {
-            core::topology::BaseMeshTopology* res = parents[i]->getActiveMeshTopology();
+            core::topology::BaseMeshTopology* res = parent->getActiveMeshTopology();
             if (res)
                 return res;
         }
@@ -554,10 +554,10 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
 {
     if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
-        for( NodeList::iterator it = _precomputedTraversalOrder.begin(), itend = _precomputedTraversalOrder.end() ; it != itend ; ++it )
+        for(auto & it : _precomputedTraversalOrder)
         {
-            if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
-                action->processNodeTopDown( *it );
+            if ( action->canAccessSleepingNode || !it->getContext()->isSleeping() )
+                action->processNodeTopDown( it );
         }
 
         for( NodeList::reverse_iterator it = _precomputedTraversalOrder.rbegin(), itend = _precomputedTraversalOrder.rend() ; it != itend ; ++it )
@@ -650,16 +650,16 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         visitorRoot->updateDescendancy();
 
         const LinkParents::Container &parents = l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; i++ )
+        for (const auto & parent : parents)
         {
             // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-            if ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() || parents[i]==visitorRoot )
+            if ( visitorRoot->_descendancy.find(parent)!=visitorRoot->_descendancy.end() || parent==visitorRoot )
             {
                 // all parents must have been visited before
-                if ( statusMap[parents[i]] == NOT_VISITED )
+                if ( statusMap[parent] == NOT_VISITED )
                     return; // skipped for now... the other parent should come later
 
-                allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
+                allParentsPruned = allParentsPruned && ( statusMap[parent] == PRUNED );
                 hasParent = true;
             }
         }
@@ -718,9 +718,9 @@ void DAGNode::setDirtyDescendancy()
 {
     _descendancy.clear();
     const LinkParents::Container &parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    for (const auto & parent : parents)
     {
-        parents[i]->setDirtyDescendancy();
+        parent->setDirtyDescendancy();
     }
 }
 

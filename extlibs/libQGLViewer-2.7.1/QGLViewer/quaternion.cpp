@@ -334,9 +334,9 @@ void Quaternion::getMatrix(GLdouble m[16]) const {
   static GLdouble mat[4][4];
   getMatrix(mat);
   int count = 0;
-  for (int i = 0; i < 4; ++i)
+  for (auto & i : mat)
     for (int j = 0; j < 4; ++j)
-      m[count++] = mat[i][j];
+      m[count++] = i[j];
 }
 
 /*! Fills \p m with the 3x3 rotation matrix associated with the Quaternion.

@@ -86,12 +86,12 @@ void TriangleModelInRegularGrid::init()
     while ( found )
     {
         found = false;
-        for ( vector<TopologicalMapping*>::iterator it = topoVec.begin(); it != topoVec.end(); ++it )
+        for (auto & it : topoVec)
         {
-            if ( ( *it )->getTo() == _higher_topo )
+            if ( it->getTo() == _higher_topo )
             {
                 found = true;
-                _topoMapping = *it;
+                _topoMapping = it;
                 _higher_topo = _topoMapping->getFrom();
                 if ( !_higher_topo ) break;
                 sofa::simulation::Node* node = static_cast< sofa::simulation::Node* > ( _higher_topo->getContext() );

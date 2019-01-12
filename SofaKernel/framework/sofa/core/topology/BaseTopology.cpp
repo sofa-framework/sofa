@@ -146,10 +146,9 @@ std::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngi
 void TopologyContainer::resetTopologyChangeList()
 {
     std::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
-    for (std::list<const TopologyChange *>::iterator it=my_changeList.begin();
-            it!=my_changeList.end(); ++it)
+    for (auto & it : my_changeList)
     {
-        delete (*it);
+        delete it;
     }
 
     my_changeList.clear();
@@ -159,10 +158,9 @@ void TopologyContainer::resetTopologyChangeList()
 void TopologyContainer::resetStateChangeList()
 {
     std::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
-    for (std::list<const TopologyChange *>::iterator it=my_stateChangeList.begin();
-            it!=my_stateChangeList.end(); ++it)
+    for (auto & it : my_stateChangeList)
     {
-        delete (*it);
+        delete it;
     }
 
     my_stateChangeList.clear();
@@ -171,11 +169,10 @@ void TopologyContainer::resetStateChangeList()
 
 void TopologyContainer::resetTopologyEngineList()
 {
-    for (std::list<TopologyEngine *>::iterator it=m_topologyEngineList.begin();
-            it!=m_topologyEngineList.end(); ++it)
+    for (auto & it : m_topologyEngineList)
     {
         //delete (*it);
-        *it = NULL;
+        it = NULL;
     }
 
     m_topologyEngineList.clear();

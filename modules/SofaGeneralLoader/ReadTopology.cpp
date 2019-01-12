@@ -87,8 +87,8 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
         {
             rt = sofa::core::objectmodel::New<ReadTopology>();
             gnode->addObject(rt);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
-                rt->addTag(*it);
+            for (auto it : this->subsetsToManage)
+                rt->addTag(it);
         }
 
         std::ostringstream ofilename;

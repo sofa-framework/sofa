@@ -239,11 +239,11 @@ void ProximityROI<DataTypes>::doUpdate()
 
 
 
-    for(std::vector<SortingPair>::iterator it=sortingheap.begin(); it!=sortingheap.end(); it++)
+    for(auto & it : sortingheap)
     {
-        indices.push_back(it->i);
-        distanceInROI.push_back((Real)it->distance);
-        pointsInROI.push_back((*x0)[it->i]);
+        indices.push_back(it.i);
+        distanceInROI.push_back((Real)it.distance);
+        pointsInROI.push_back((*x0)[it.i]);
     }
 
     f_indices.endEdit();

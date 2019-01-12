@@ -164,9 +164,9 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
 
     typedef component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
     const MouseFactory *factory = MouseFactory::getInstance();
-    for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
+    for (const auto & it : *factory)
     {
-        instanceComponents.push_back(it->second->createInstance(NULL));
+        instanceComponents.push_back(it.second->createInstance(NULL));
     }
     interaction = instanceComponents.back();
 
@@ -183,7 +183,7 @@ void PickHandler::reset()
 {
     deactivateRay();
     mouseButton = NONE;
-    for (unsigned int i=0; i<instanceComponents.size(); ++i) instanceComponents[i]->reset();
+    for (auto & instanceComponent : instanceComponents) instanceComponent->reset();
 }
 
 void PickHandler::unload()
@@ -284,13 +284,13 @@ void PickHandler::setCompatibleInteractor()
     if (lastPicked.body)
     {
         if (interaction->isCompatible(lastPicked.body->getContext())) return;
-        for (unsigned int i=0; i<instanceComponents.size(); ++i)
+        for (auto & instanceComponent : instanceComponents)
         {
-            if (instanceComponents[i] != interaction &&
-                instanceComponents[i]->isCompatible(lastPicked.body->getContext()))
+            if (instanceComponent != interaction &&
+                instanceComponent->isCompatible(lastPicked.body->getContext()))
             {
                 interaction->detach();
-                interaction = instanceComponents[i];
+                interaction = instanceComponent;
                 if (mouseNode) 
                     interaction->attach(mouseNode.get());
             }
@@ -299,13 +299,13 @@ void PickHandler::setCompatibleInteractor()
     else
     {
         if (interaction->isCompatible(lastPicked.mstate->getContext())) return;
-        for (unsigned int i=0; i<instanceComponents.size(); ++i)
+        for (auto & instanceComponent : instanceComponents)
         {
-            if (instanceComponents[i] != interaction &&
-                instanceComponents[i]->isCompatible(lastPicked.mstate->getContext()))
+            if (instanceComponent != interaction &&
+                instanceComponent->isCompatible(lastPicked.mstate->getContext()))
             {
                 interaction->detach();
-                interaction = instanceComponents[i];
+                interaction = instanceComponent;
                 if (mouseNode) 
                     interaction->attach(mouseNode.get());
             }
@@ -424,10 +424,10 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
     const double& maxLength                     = mouseCollision->getRay(0).l();
     
     const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
-    for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
+    for (auto contact : contacts)
     {
 
-        const sofa::helper::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
+        const sofa::helper::vector<core::collision::DetectionOutput*>& output = contact->getDetectionOutputs();
         sofa::core::CollisionModel *modelInCollision;
         for (unsigned int i=0; i<output.size(); ++i)
         {

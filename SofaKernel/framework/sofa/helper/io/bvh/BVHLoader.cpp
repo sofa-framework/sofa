@@ -227,8 +227,8 @@ void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
                 msg_error() << "fscanf function has encountered an error." ;
         }
 
-    for (unsigned int i=0; i < joint->getChildren().size(); i++)
-        parseFrames(joint->getChildren()[i], frameIndex, f);
+    for (auto & i : joint->getChildren())
+        parseFrames(i, frameIndex, f);
 }
 
 } // namespace bvh

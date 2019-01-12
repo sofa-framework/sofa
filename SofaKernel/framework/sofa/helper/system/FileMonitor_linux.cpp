@@ -261,11 +261,11 @@ int FileMonitor::updates(int timeout)
         }
 
 
-        for(vector<string>::iterator f=changedfiles.begin(); f!=changedfiles.end(); f++) {
-            ListOfListeners::iterator it = file2listener[*f].begin() ;
-            ListOfListeners::iterator end = file2listener[*f].end() ;
+        for(auto & changedfile : changedfiles) {
+            ListOfListeners::iterator it = file2listener[changedfile].begin() ;
+            ListOfListeners::iterator end = file2listener[changedfile].end() ;
             for(;it!=end;++it){
-                (*it)->fileHasChanged(*f) ;
+                (*it)->fileHasChanged(changedfile) ;
             }
         }
 

@@ -155,8 +155,8 @@ void HermiteSplineConstraint<DataTypes>::projectResponseT(const core::Mechanical
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
         const SetIndexArray & indices = m_indices.getValue();
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            dx[*it] = Deriv();
+        for(unsigned int indice : indices)
+            dx[indice] = Deriv();
     }
 }
 
@@ -184,9 +184,9 @@ void HermiteSplineConstraint<DataTypes>::projectVelocity(const core::MechanicalP
         Real dH00, dH10, dH01, dH11;
         computeDerivateHermiteCoefs( u, dH00, dH10, dH01, dH11);
 
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for(unsigned int indice : indices)
         {
-            dx[*it] = m_x0.getValue()*dH00 + m_dx0.getValue()*dH10 + m_x1.getValue()*dH01 + m_dx1.getValue()*dH11;
+            dx[indice] = m_x0.getValue()*dH00 + m_dx0.getValue()*dH10 + m_x1.getValue()*dH01 + m_dx1.getValue()*dH11;
         }
     }
 }
@@ -208,9 +208,9 @@ void HermiteSplineConstraint<DataTypes>::projectPosition(const core::MechanicalP
         Real H00, H10, H01, H11;
         computeHermiteCoefs( u, H00, H10, H01, H11);
 
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for(unsigned int indice : indices)
         {
-            x[*it] = m_x0.getValue()*H00 + m_dx0.getValue()*H10 + m_x1.getValue()*H01 + m_dx1.getValue()*H11;
+            x[indice] = m_x0.getValue()*H00 + m_dx0.getValue()*H10 + m_x1.getValue()*H01 + m_dx1.getValue()*H11;
         }
     }
 }

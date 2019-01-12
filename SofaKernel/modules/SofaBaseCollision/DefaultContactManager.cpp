@@ -82,12 +82,12 @@ void DefaultContactManager::init()
 
 void DefaultContactManager::cleanup()
 {
-    for (sofa::helper::vector<core::collision::Contact::SPtr>::iterator it=contacts.begin(); it!=contacts.end(); ++it)
+    for (auto & contact : contacts)
     {
-        (*it)->removeResponse();
-        (*it)->cleanup();
+        contact->removeResponse();
+        contact->cleanup();
         //delete *it;
-        it->reset();
+        contact.reset();
     }
     contacts.clear();
     contactMap.clear();
@@ -130,17 +130,16 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
     size_t nbContact = 0;
 
     // First iterate on the collision detection outputs and look for existing or new contacts
-    for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
-        outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
+    for (const auto & outputsIt : outputsMap)
     {
         std::pair<ContactMap::iterator,bool> contactInsert =
-            contactMap.insert(ContactMap::value_type(outputsIt->first,Contact::SPtr()));
+            contactMap.insert(ContactMap::value_type(outputsIt.first,Contact::SPtr()));
         ContactMap::iterator contactIt = contactInsert.first;
         if (contactInsert.second)
         {
             // new contact
-            CollisionModel* model1 = outputsIt->first.first;
-            CollisionModel* model2 = outputsIt->first.second;
+            CollisionModel* model1 = outputsIt.first.first;
+            CollisionModel* model2 = outputsIt.first.second;
             std::string responseUsed = getContactResponse(model1, model2);
 
             // We can create rules in order to not respond to specific collisions
@@ -186,7 +185,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
                     setContactTags(model1, model2, contact);
                     contact->f_printLog.setValue(notMuted());
                     contact->init();
-                    contact->setDetectionOutputs(outputsIt->second);
+                    contact->setDetectionOutputs(outputsIt.second);
                     ++nbContact;
                 }
             }
@@ -194,7 +193,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
         else
         {
             // pre-existing and still active contact
-            contactIt->second->setDetectionOutputs(outputsIt->second);
+            contactIt->second->setDetectionOutputs(outputsIt.second);
             ++nbContact;
         }
     }
@@ -289,10 +288,10 @@ std::string DefaultContactManager::getContactResponse(core::CollisionModel* mode
 
 void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
 {
-    for (sofa::helper::vector<core::collision::Contact::SPtr>::iterator it = contacts.begin(); it!=contacts.end(); ++it)
+    for (auto & contact : contacts)
     {
-        if ((*it)!=nullptr)
-            (*it)->draw(vparams);
+        if (contact!=nullptr)
+            contact->draw(vparams);
     }
 }
 

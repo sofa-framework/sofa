@@ -143,16 +143,16 @@ void CompareState::processCompareState()
         last_time = getContext()->getTime();
         if (!this->readNext(time, validLines)) return;
     }
-    for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
+    for (auto & validLine : validLines)
     {
-        std::istringstream str(*it);
+        std::istringstream str(validLine);
         std::string cmd;
         str >> cmd;
 
         double currentError=0;
         if (cmd.compare("X=") == 0)
         {
-            last_X = *it;
+            last_X = validLine;
             currentError = mmodel->compareVec(core::VecId::position(), str);
 
 
@@ -164,7 +164,7 @@ void CompareState::processCompareState()
         }
         else if (cmd.compare("V=") == 0)
         {
-            last_V = *it;
+            last_V = validLine;
             currentError = mmodel->compareVec(core::VecId::velocity(), str);
             totalError_V +=currentError;
 
@@ -190,18 +190,18 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
             nextValidLines.clear();
         else
         {
-            for (std::vector<std::string>::iterator it=nextValidLines.begin(); it!=nextValidLines.end(); ++it)
+            for (auto & nextValidLine : nextValidLines)
             {
-                std::istringstream str(*it);
+                std::istringstream str(nextValidLine);
                 std::string cmd;
                 str >> cmd;
                 if (cmd.compare("X=") == 0)
                 {
-                    last_X = *it;
+                    last_X = nextValidLine;
                 }
                 else if (cmd.compare("V=") == 0)
                 {
-                    last_V = *it;
+                    last_V = nextValidLine;
                 }
             }
         }

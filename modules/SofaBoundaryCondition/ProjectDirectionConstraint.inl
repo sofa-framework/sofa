@@ -184,9 +184,9 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Indices &indices = f_indices.getValue();
-    for( Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+    for(unsigned int indice : indices)
     {
-        m_origin.push_back( DataTypes::getCPos(x[*it]) );
+        m_origin.push_back( DataTypes::getCPos(x[indice]) );
     }
 
 }
@@ -270,11 +270,9 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        for (Indices::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
@@ -283,11 +281,9 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        for (Indices::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             points.push_back(point);
         }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));

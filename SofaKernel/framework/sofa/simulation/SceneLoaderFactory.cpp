@@ -43,13 +43,13 @@ std::vector<std::string> SceneLoaderFactory::extensions()
 {
     std::vector<std::string> tmp ;
     SceneLoaderFactory::SceneLoaderList* loaders = getEntries();
-    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); ++it)
+    for (auto & loader : *loaders)
     {
         SceneLoader::ExtensionList extensions;
-        (*it)->getExtensionList(&extensions);
-        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); ++itExt)
+        loader->getExtensionList(&extensions);
+        for (auto & extension : extensions)
         {
-            tmp.push_back(*itExt) ;
+            tmp.push_back(extension) ;
         }
     }
     return tmp ;

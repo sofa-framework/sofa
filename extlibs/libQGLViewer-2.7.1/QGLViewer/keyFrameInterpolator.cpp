@@ -40,16 +40,16 @@ KeyFrameInterpolator::KeyFrameInterpolator(Frame *frame)
 // #CONNECTION# Values cut pasted initFromDOMElement()
 {
   setFrame(frame);
-  for (int i = 0; i < 4; ++i)
-    currentFrame_[i] = new QMutableListIterator<KeyFrame *>(keyFrame_);
+  for (auto & i : currentFrame_)
+    i = new QMutableListIterator<KeyFrame *>(keyFrame_);
   connect(&timer_, SIGNAL(timeout()), SLOT(update()));
 }
 
 /*! Virtual destructor. Clears the keyFrame path. */
 KeyFrameInterpolator::~KeyFrameInterpolator() {
   deletePath();
-  for (int i = 0; i < 4; ++i)
-    delete currentFrame_[i];
+  for (auto & i : currentFrame_)
+    delete i;
 }
 
 /*! Sets the frame() associated to the KeyFrameInterpolator. */
@@ -420,8 +420,8 @@ void KeyFrameInterpolator::drawPath(int mask, int nbFrames, qreal scale) {
 void KeyFrameInterpolator::updateModifiedFrameValues() {
   Quaternion prevQ = keyFrame_.first()->orientation();
   KeyFrame *kf;
-  for (int i = 0; i < keyFrame_.size(); ++i) {
-    kf = keyFrame_.at(i);
+  for (auto i : keyFrame_) {
+    kf = i;
     if (kf->frame())
       kf->updateValuesFromPointer();
     kf->flipOrientationIfNeeded(prevQ);

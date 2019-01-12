@@ -2949,7 +2949,7 @@ namespace cimg_library_suffixed {
       int trylock(const unsigned int) { return 0; }
 #elif defined(_PTHREAD_H)
       pthread_mutex_t mutex[32];
-      Mutex_info() { for (unsigned int i = 0; i<32; ++i) pthread_mutex_init(&mutex[i],0); }
+      Mutex_info() { for (auto & i : mutex) pthread_mutex_init(&i,0); }
       void lock(const unsigned int n) { pthread_mutex_lock(&mutex[n]); }
       void unlock(const unsigned int n) { pthread_mutex_unlock(&mutex[n]); }
       int trylock(const unsigned int n) { return pthread_mutex_trylock(&mutex[n]); }
@@ -31094,8 +31094,8 @@ namespace cimg_library_suffixed {
         double x[3]; // [front,center,back]
         for (int pass = 0; pass<2; ++pass) {
           if (!pass) {
-            for (int k = 0; k<3; ++k) x[k] = (boundary_conditions?*data:0);
-            for (int k = 0; k<4; ++k) val[k] = 0;
+            for (double & k : x) k = (boundary_conditions?*data:0);
+            for (double & k : val) k = 0;
           } else {
             /* apply Triggs border condition */
             const double
@@ -31127,8 +31127,8 @@ namespace cimg_library_suffixed {
         double x[3]; // [front,center,back]
         for (int pass = 0; pass<2; ++pass) {
           if (!pass) {
-            for (int k = 0; k<3; ++k) x[k] = (boundary_conditions?*data:0);
-            for (int k = 0; k<4; ++k) val[k] = 0;
+            for (double & k : x) k = (boundary_conditions?*data:0);
+            for (double & k : val) k = 0;
           } else {
             /* apply Triggs border condition */
             const double
@@ -31156,8 +31156,8 @@ namespace cimg_library_suffixed {
         double x[3]; // [front,center,back]
         for (int pass = 0; pass<2; ++pass) {
           if (!pass) {
-            for (int k = 0; k<3; ++k) x[k] = (boundary_conditions?*data:0);
-            for (int k = 0; k<4; ++k) val[k] = 0;
+            for (double & k : x) k = (boundary_conditions?*data:0);
+            for (double & k : val) k = 0;
           } else {
             /* apply Triggs border condition */
             const double

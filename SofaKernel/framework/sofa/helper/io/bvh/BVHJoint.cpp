@@ -78,8 +78,8 @@ void BVHJoint::initMotion(double fTime, unsigned int fCount)
     if (channels != NULL)
         this->getMotion()->init(fTime, fCount, channels->size);
 
-    for (unsigned int i=0; i < children.size(); i++)
-        children[i]->initMotion(fTime, fCount);
+    for (auto & i : children)
+        i->initMotion(fTime, fCount);
 }
 
 void BVHJoint::display(int frameNum)
@@ -131,9 +131,9 @@ void BVHJoint::display(int frameNum)
     sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
     helper::gl::drawSphere(center, 0.01f);
 
-    for (unsigned int i=0; i<children.size(); i++)
+    for (auto & i : children)
     {
-        children[i]->display(frameNum);
+        i->display(frameNum);
     }
 
     glPopMatrix();
@@ -155,9 +155,9 @@ void BVHJoint::displayInGlobalFrame(void)
 
     glPopMatrix();
 
-    for (unsigned int i=0; i<children.size(); i++)
+    for (auto & i : children)
     {
-        children[i]->displayInGlobalFrame();
+        i->displayInGlobalFrame();
     }
 #endif /* SOFA_NO_OPENGL */
 }
@@ -172,8 +172,8 @@ int BVHJoint::getNumJoints(char *s)
         if (strcmp(name,s) == 0)
             return accumulateNumJoints();
 
-        for (unsigned int i=0; i<children.size(); i++)
-            tmp += children[i]->getNumJoints(s);
+        for (auto & i : children)
+            tmp += i->getNumJoints(s);
     }
     else
         return accumulateNumJoints();
@@ -187,8 +187,8 @@ int BVHJoint::accumulateNumJoints(void)
 
     if (children.size() != 0)
     {
-        for (unsigned int i=0; i<children.size(); i++)
-            tmp += children[i]->accumulateNumJoints();
+        for (auto & i : children)
+            tmp += i->accumulateNumJoints();
     }
 
     return tmp;
@@ -245,8 +245,8 @@ void BVHJoint::dumpPosition(FILE *f, char *s)
         if (strcmp(name,s) == 0)
             dumpPosition(f, id);
         else
-            for (unsigned int i=0; i<children.size(); i++)
-                children[i]->dumpPosition(f, s);
+            for (auto & i : children)
+                i->dumpPosition(f, s);
     }
     else
         dumpPosition(f, id);
@@ -256,8 +256,8 @@ void BVHJoint::dumpPosition(FILE *f, char *s)
 void BVHJoint::dumpPosition(FILE *f, int beginIndex)
 {
     fprintf(f, "\t%d %f %f %f\n", id - beginIndex, matrix[12], matrix[13], matrix[14]);
-    for (unsigned int i=0; i<children.size(); i++)
-        children[i]->dumpPosition(f, beginIndex);
+    for (auto & i : children)
+        i->dumpPosition(f, beginIndex);
 }
 
 
@@ -270,8 +270,8 @@ void BVHJoint::dumpSegment(FILE *f, char *s)
         if (strcmp(name,s) == 0)
             dumpSegment(f, cpt, id);
         else
-            for (unsigned int i=0; i<children.size(); i++)
-                children[i]->dumpSegment(f, s);
+            for (auto & i : children)
+                i->dumpSegment(f, s);
     }
     else
         dumpSegment(f, cpt, id);
@@ -280,10 +280,10 @@ void BVHJoint::dumpSegment(FILE *f, char *s)
 
 void BVHJoint::dumpSegment(FILE *f, int &cpt, int beginIndex)
 {
-    for (unsigned int i=0; i<children.size(); i++)
+    for (auto & i : children)
     {
-        fprintf(f, "\t%d %d %d\n", cpt++, id - beginIndex, children[i]->id - beginIndex);
-        children[i]->dumpSegment(f, cpt, beginIndex);
+        fprintf(f, "\t%d %d %d\n", cpt++, id - beginIndex, i->id - beginIndex);
+        i->dumpSegment(f, cpt, beginIndex);
     }
 }
 
@@ -297,8 +297,8 @@ void BVHJoint::dumpRotation(FILE *f, char *s)
         if (strcmp(name,s) == 0)
             dumpRotation(f, cpt, id);
         else
-            for (unsigned int i=0; i<children.size(); i++)
-                children[i]->dumpRotation(f, s);
+            for (auto & i : children)
+                i->dumpRotation(f, s);
     }
     else
         dumpRotation(f, cpt, id);
@@ -311,8 +311,8 @@ void BVHJoint::dumpRotation(FILE *f, int &cpt, int beginIndex)
     fprintf(f, "\t%d %d %f %f %f\n", cpt++, id - beginIndex, matrix[4], matrix[5], matrix[6]);
     fprintf(f, "\t%d %d %f %f %f\n", cpt++, id - beginIndex, matrix[8], matrix[9], matrix[10]);
 
-    for (unsigned int i=0; i<children.size(); i++)
-        children[i]->dumpRotation(f, cpt, beginIndex);
+    for (auto & i : children)
+        i->dumpRotation(f, cpt, beginIndex);
 }
 
 
@@ -325,8 +325,8 @@ void BVHJoint::dumpRotationLimit(FILE *f, char *s)
         if (strcmp(name,s) == 0)
             dumpRotationLimit(f, cpt);
         else
-            for (unsigned int i=0; i<children.size(); i++)
-                children[i]->dumpRotationLimit(f, s);
+            for (auto & i : children)
+                i->dumpRotationLimit(f, s);
     }
     else
         dumpRotationLimit(f, cpt);
@@ -339,8 +339,8 @@ void BVHJoint::dumpRotationLimit(FILE *f, int &cpt)
     fprintf(f, "\t%d -1000000.0 1000000.0\n", cpt++);
     fprintf(f, "\t%d -1000000.0 1000000.0\n", cpt++);
 
-    for (unsigned int i=0; i<children.size(); i++)
-        children[i]->dumpRotationLimit(f, cpt);
+    for (auto & i : children)
+        i->dumpRotationLimit(f, cpt);
 }
 
 
@@ -353,8 +353,8 @@ void BVHJoint::dumpRotationStiffness(FILE *f, char *s)
         if (strcmp(name,s) == 0)
             dumpRotationStiffness(f, cpt);
         else
-            for (unsigned int i=0; i<children.size(); i++)
-                children[i]->dumpRotationStiffness(f, s);
+            for (auto & i : children)
+                i->dumpRotationStiffness(f, s);
     }
     else
         dumpRotationStiffness(f, cpt);
@@ -367,8 +367,8 @@ void BVHJoint::dumpRotationStiffness(FILE *f, int &cpt)
     fprintf(f, "\t%d 1000000000.0\n", cpt++);
     fprintf(f, "\t%d 1000000000.0\n", cpt++);
 
-    for (unsigned int i=0; i<children.size(); i++)
-        children[i]->dumpRotationStiffness(f, cpt);
+    for (auto & i : children)
+        i->dumpRotationStiffness(f, cpt);
 }
 
 void BVHJoint::debug(int tab)
@@ -391,14 +391,14 @@ void BVHJoint::debug(int tab)
         for (int i=0; i<tab; i++)
             tmpmsg << "\t";
         tmpmsg << "channels ";
-        for (unsigned int i=0; i<channels->channels.size(); i++)
-            tmpmsg << channels->channels[i] << " ";
+        for (auto & channel : channels->channels)
+            tmpmsg << channel << " ";
         msg_info("BVHJoint") << tmpmsg.str() ;
     }
 
-    for (unsigned int i=0; i<children.size(); i++)
+    for (auto & i : children)
     {
-        children[i]->debug(tab+1);
+        i->debug(tab+1);
     }
 }
 

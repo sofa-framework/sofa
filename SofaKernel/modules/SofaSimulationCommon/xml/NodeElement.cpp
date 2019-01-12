@@ -78,9 +78,9 @@ bool NodeElement::init()
     bool res = Element<core::objectmodel::BaseNode>::init();
 
     /// send the errors created by the object in this node in the node's log
-    for (unsigned int i=0; i<errors.size(); ++i)
+    for (const auto & i : errors)
     {
-        msg_error(getObject()) << errors[i];
+        msg_error(getObject()) << i;
     }
 
     return res;

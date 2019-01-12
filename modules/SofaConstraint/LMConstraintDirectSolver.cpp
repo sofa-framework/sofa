@@ -116,10 +116,10 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
 
     DofToMatrix LMatricesDirectSolver;
     DofToMatrix LTMatricesDirectSolver;
-    for (DofToMatrix::iterator it=LMatrices.begin(); it!=LMatrices.end(); ++it)
+    for (auto & LMatrice : LMatrices)
     {
         //------------------------------------------------------------------
-        const SparseMatrixEigen& matrix= it->second;
+        const SparseMatrixEigen& matrix= LMatrice.second;
         //Init the manipulator with the full matrix
         linearsolver::LMatrixManipulator manip;
         manip.init(matrix);
@@ -130,7 +130,7 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
         L.reserve(rowsL.size()*matrix.cols());
         manip.buildLMatrix(rowsL ,L);
         L.finalize();
-        LMatricesDirectSolver.insert (std::make_pair(it->first,L ));
+        LMatricesDirectSolver.insert (std::make_pair(LMatrice.first,L ));
 
 
 
@@ -139,7 +139,7 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
         LT.reserve(rowsLT.size()*matrix.cols());
         manip.buildLMatrix(rowsLT,LT);
         LT.finalize();
-        LTMatricesDirectSolver.insert(std::make_pair(it->first,LT));
+        LTMatricesDirectSolver.insert(std::make_pair(LMatrice.first,LT));
     }
 
 
@@ -220,9 +220,8 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
         {
             const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
             //Iterate among all the contacts
-            for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            for (auto group : constraintOrder)
             {
-                const sofa::core::behavior::ConstraintGroup* group=*itGroup;
                 const sofa::component::constraintset::ContactDescription& contact=contactDescriptor->getContactDescription(group);
 
                 const unsigned int idxEquation=group->getConstraint(0).idx;
@@ -275,9 +274,8 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
         {
             //Non contact constraints: we add all the equations
             const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
-            for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            for (auto group : constraintOrder)
             {
-                const sofa::core::behavior::ConstraintGroup* group=*itGroup;
                 std::pair< sofa::core::behavior::ConstraintGroup::EquationConstIterator,sofa::core::behavior::ConstraintGroup::EquationConstIterator> range=group->data();
                 for ( sofa::core::behavior::ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
                 {
@@ -298,9 +296,8 @@ void LMConstraintDirectSolver::buildLeftRectangularMatrix(const DofToMatrix& inv
         SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const
 {
     invMass_Ltrans.clear();
-    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
+    for (auto dofs : setDofs)
     {
-        const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const SparseMatrixEigen &invMass=invMassMatrix.find(dofs)->second;
         const SparseMatrixEigen &L =LMatrix[dofs];
         const SparseMatrixEigen &LT=LTMatrix[dofs];

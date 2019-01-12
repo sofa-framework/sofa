@@ -45,9 +45,9 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
     if (!components.empty())
     {
         const QString componentName(component->getName().c_str());
-        for (unsigned int i=0; i<components.size(); ++i)
+        for (const auto & component : components)
         {
-            if (!componentName.contains(components[i],Qt::CaseInsensitive)) return false;
+            if (!componentName.contains(component,Qt::CaseInsensitive)) return false;
         }
     }
 
@@ -59,9 +59,9 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
         for (unsigned int t=0; t<componentTemplates.size() && !templateFound; ++t)
         {
             const QString currentTemplate(componentTemplates[t].c_str());
-            for (unsigned int i=0; i<templates.size(); ++i)
+            for (const auto & i : templates)
             {
-                if (currentTemplate.contains(templates[i],Qt::CaseInsensitive)) { templateFound=true; break;}
+                if (currentTemplate.contains(i,Qt::CaseInsensitive)) { templateFound=true; break;}
             }
         }
         if (!templateFound) return false;
@@ -71,9 +71,9 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
     if (!licenses.empty())
     {
         const QString componentLicense(component->getEntry()->license.c_str());
-        for (unsigned int i=0; i<licenses.size(); ++i)
+        for (const auto & license : licenses)
         {
-            if (!componentLicense.contains(licenses[i],Qt::CaseInsensitive)) return false;
+            if (!componentLicense.contains(license,Qt::CaseInsensitive)) return false;
         }
     }
 
@@ -81,9 +81,9 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
     if (!authors.empty())
     {
         const QString componentAuthor(component->getEntry()->authors.c_str());
-        for (unsigned int i=0; i<authors.size(); ++i)
+        for (const auto & author : authors)
         {
-            if (!componentAuthor.contains(authors[i],Qt::CaseInsensitive)) return false;
+            if (!componentAuthor.contains(author,Qt::CaseInsensitive)) return false;
         }
     }
 

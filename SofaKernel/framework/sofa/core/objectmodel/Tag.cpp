@@ -75,10 +75,8 @@ bool TagSet::includes(const TagSet& t) const
     }
 #if 1
     // Simple but not optimal version
-    for (std::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
-        first2 != last2; ++first2)
+    for (auto t2 : t)
     {
-        Tag t2 = *first2;
         if (t2 == Tag(0)) continue; // tag "0" is used to indicate that we should include objects without any tag
         if (!t2.negative())
         {

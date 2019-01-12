@@ -67,9 +67,9 @@ void QComponentTreeLibrary::endConstruction()
     }
 
     tree->setItemWidget(componentTree,1,templates);
-    for (unsigned int i=0; i<templateName.size(); ++i)
+    for (auto & i : templateName)
     {
-        templates->addItem(QString(templateName[i].c_str()));
+        templates->addItem(QString(i.c_str()));
     }
 }
 

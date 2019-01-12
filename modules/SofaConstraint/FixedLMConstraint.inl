@@ -92,9 +92,8 @@ void FixedLMConstraint<DataTypes>::initFixedPosition()
     this->restPosition.clear();
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = this->f_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int index : indices)
     {
-        unsigned int index=*it;
         this->restPosition.insert(std::make_pair(index, x[index]));
     }
 }
@@ -132,10 +131,8 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
     idxZ.clear();
     const SetIndexArray &indices = f_indices.getValue();
 
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int index : indices)
     {
-        const unsigned int index=*it;
-
         //Constraint degree of freedom along X direction
         c->writeLine(cIndex).addCol(index,X);
         idxX.push_back(cIndex++);
@@ -215,11 +212,9 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     std::vector< defaulttype::Vector3 > points;
     defaulttype::Vector3 point;
-    for (SetIndexArray::const_iterator it = indices.begin();
-            it != indices.end();
-            ++it)
+    for (unsigned int indice : indices)
     {
-        point = DataTypes::getCPos(x[*it]);
+        point = DataTypes::getCPos(x[indice]);
         points.push_back(point);
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points

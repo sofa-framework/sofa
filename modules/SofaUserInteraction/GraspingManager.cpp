@@ -62,15 +62,15 @@ void GraspingManager::init()
 {
     std::vector<ToolModel*> models;
     this->getContext()->get<ToolModel>(&models, core::objectmodel::BaseContext::SearchDown);
-    for (unsigned int i=0; i<models.size(); i++)
+    for (auto & model : models)
     {
-        if (models[i]->getContactResponse() == std::string("stick") || models[i]->getContactResponse() == std::string("StickContactConstraint") || models[i]->getName() == std::string("GraspingToolModel"))
+        if (model->getContactResponse() == std::string("stick") || model->getContactResponse() == std::string("StickContactConstraint") || model->getName() == std::string("GraspingToolModel"))
         {
-            modelTools.insert(models[i]);
+            modelTools.insert(model);
         }
     }
-    for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
-        (*it)->setActive(false);
+    for (auto modelTool : modelTools)
+        modelTool->setActive(false);
     sout << "GraspingManager: "<<modelTools.size()<<"/"<<models.size()<<" collision models selected."<<sendl;
     mstateTool = getContext()->get<ToolDOFs>(core::objectmodel::BaseContext::SearchDown);
     if (mstateTool) sout << "GraspingManager: tool DOFs found"<<sendl;
@@ -90,14 +90,14 @@ void GraspingManager::doGrasp()
     {
         sout << "GraspingManager activated" << sendl;
         // activate CMs for one iteration
-        for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
-            (*it)->setActive(true);
+        for (auto modelTool : modelTools)
+            modelTool->setActive(true);
     }
     else
     {
         // deactivate CMs
-        for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
-            (*it)->setActive(false);
+        for (auto modelTool : modelTools)
+            modelTool->setActive(false);
     }
 
     if (!newActive && wasActive)
@@ -107,9 +107,9 @@ void GraspingManager::doGrasp()
         if (contactManager)
         {
             const core::collision::ContactManager::ContactVector& cv = contactManager->getContacts();
-            for (core::collision::ContactManager::ContactVector::const_iterator it = cv.begin(), itend = cv.end(); it != itend; ++it)
+            for (const auto & it : cv)
             {
-                core::collision::Contact* c = it->get();
+                core::collision::Contact* c = it.get();
                 if (modelTools.count(c->getCollisionModels().first) || modelTools.count(c->getCollisionModels().second))
                     c->setKeepAlive(false);
             }

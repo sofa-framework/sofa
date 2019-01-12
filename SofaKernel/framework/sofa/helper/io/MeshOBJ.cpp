@@ -161,9 +161,9 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
                 std::string face;
                 values >> face;
                 if (face.empty()) continue;
-                for (int j = 0; j < 3; ++j)
+                for (int & j : vtn)
                 {
-                    vtn[j] = 0;
+                    j = 0;
                     std::string::size_type pos = face.find('/');
                     std::string tmp = face.substr(0, pos);
                     if (pos == std::string::npos)
@@ -174,7 +174,7 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
                     }
 
                     if (!tmp.empty())
-                        vtn[j] = atoi(tmp.c_str()) - 1; // -1 because the numerotation begins at 1 and a vector begins at 0
+                        j = atoi(tmp.c_str()) - 1; // -1 because the numerotation begins at 1 and a vector begins at 0
                 }
 
                 vIndices.push_back(vtn[0]);

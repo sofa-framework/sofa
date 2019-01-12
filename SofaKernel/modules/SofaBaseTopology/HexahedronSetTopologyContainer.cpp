@@ -107,10 +107,10 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
         const Hexahedron &t = m_hexahedron[i];
-        for(PointID j=0; j<12; ++j)
+        for(auto j : edgesInHexahedronArray)
         {
-            PointID v1 = t[edgesInHexahedronArray[j][0]];
-            PointID v2 = t[edgesInHexahedronArray[j][1]];
+            PointID v1 = t[j[0]];
+            PointID v2 = t[j[1]];
             const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
             if(edgeMap.find(e)==edgeMap.end())

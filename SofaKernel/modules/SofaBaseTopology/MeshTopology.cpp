@@ -85,10 +85,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         const Tetra &t=tetrahedra[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        for (unsigned int j=0; j<6; ++j)
+        for (auto j : edgesInTetrahedronArray)
         {
-            unsigned int v1=t[edgesInTetrahedronArray[j][0]];
-            unsigned int v2=t[edgesInTetrahedronArray[j][1]];
+            unsigned int v1=t[j[0]];
+            unsigned int v2=t[j[1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -124,10 +124,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         const Hexa &h=hexahedra[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        for (unsigned int j=0; j<12; ++j)
+        for (auto j : edgeHexahedronDescriptionArray)
         {
-            unsigned int v1=h[edgeHexahedronDescriptionArray[j][0]];
-            unsigned int v2=h[edgeHexahedronDescriptionArray[j][1]];
+            unsigned int v1=h[j[0]];
+            unsigned int v2=h[j[1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);

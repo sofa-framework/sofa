@@ -1008,8 +1008,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (
     for (unsigned int i = 0; i<3; i++)
     {
         test = false;
-        for (unsigned int j = 0; j<2; j++)
-            if (triangle2[i] == CommonEdge[j])
+        for (auto & j : CommonEdge)
+            if (triangle2[i] == j)
             {
                 test = true;
                 break;

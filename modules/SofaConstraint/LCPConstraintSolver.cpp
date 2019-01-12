@@ -64,9 +64,8 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     timeTotal=0.0;
     timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 
@@ -282,15 +281,15 @@ void LCPConstraintSolver::init()
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
+        for (auto & constraintCorrection : constraintCorrections)
+            constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
     constraintCorrectionIsActive.resize(constraintCorrections.size());
-    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-        constraintCorrections[i]->addConstraintSolver(this);
+    for (auto & constraintCorrection : constraintCorrections)
+        constraintCorrection->addConstraintSolver(this);
 
     context = (simulation::Node*) getContext();
 }
@@ -299,8 +298,8 @@ void LCPConstraintSolver::cleanup()
 {
     if (!constraintCorrections.empty())
     {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
+        for (auto & constraintCorrection : constraintCorrections)
+            constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
 
@@ -341,9 +340,8 @@ void LCPConstraintSolver::build_LCP()
 
     dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->addComplianceInConstraintSpace(&cparams, _W);
     }
 
@@ -393,9 +391,8 @@ void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_m
     dmsg_error_when(sizeCoarseSystem==0) <<"no constraint" ;
 
     _Wcoarse.resize(sizeCoarseSystem,sizeCoarseSystem);
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getComplianceWithConstraintMerge(&_Wcoarse, constraint_merge);
     }
 }
@@ -812,11 +809,11 @@ void LCPConstraintSolver::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = (*_result)[c];
     // clear previous history
-    for (std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
+    for (auto & _previousConstraint : _previousConstraints)
     {
-        ConstraintBlockBuf& buf = it->second;
-        for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
-            it2->second = -1;
+        ConstraintBlockBuf& buf = _previousConstraint.second;
+        for (auto & it2 : buf.persistentToConstraintIdMap)
+            it2.second = -1;
     }
     // fill info from current ids
     for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
@@ -878,9 +875,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     }
 
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetForUnbuiltResolution(f, contact_sequence);
 
         if(notMuted())
@@ -906,10 +902,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
 
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if(cc->hasConstraintNumber(3*c1))
             {
                 if(elem1)
@@ -1129,9 +1124,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     }
 
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetForUnbuiltResolution(f, contact_sequence);
     }
 
@@ -1151,10 +1145,9 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
 
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if(cc->hasConstraintNumber(c1))
             {
                 if(elem1)

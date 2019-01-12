@@ -90,10 +90,10 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
     const SeqEdges& edges = d_edges.getValue();
 
-    for( SeqEdges::const_iterator it=edges.begin(), itend=edges.end() ; it !=itend ; ++it )
+    for(auto edge : edges)
     {
-        const Coord& p1 = pos[(*it)[0]];
-        const Coord& p2 = pos[(*it)[1]];
+        const Coord& p1 = pos[edge[0]];
+        const Coord& p2 = pos[edge[1]];
 
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }

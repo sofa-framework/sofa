@@ -115,9 +115,9 @@ public:
 
             _tmp = connexionNumber;
             for(int i=0; i<NUM_CONNECTED_NODES; ++i)
-                for(std::set<Connexion*>::iterator n = _neighbors[i].begin(); n!=_neighbors[i].end(); ++n)
-                    if( find( allFineConnexions.begin(),allFineConnexions.end(),*n ) != allFineConnexions.end() ) // the neighbors is in the good child of the coarse hexa
-                        (*n)->propagateConnexionNumberToNeighbors(connexionNumber,allFineConnexions);
+                for(auto n : _neighbors[i])
+                    if( find( allFineConnexions.begin(),allFineConnexions.end(),n ) != allFineConnexions.end() ) // the neighbors is in the good child of the coarse hexa
+                        n->propagateConnexionNumberToNeighbors(connexionNumber,allFineConnexions);
         }
     };
 

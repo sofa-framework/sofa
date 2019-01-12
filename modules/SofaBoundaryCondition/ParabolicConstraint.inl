@@ -133,8 +133,8 @@ void ParabolicConstraint<DataTypes>::projectResponseT(const core::MechanicalPara
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
         const SetIndexArray & indices = m_indices.getValue();
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            dx[*it] = Deriv();
+        for(unsigned int indice : indices)
+            dx[indice] = Deriv();
     }
 }
 
@@ -157,7 +157,7 @@ void ParabolicConstraint<DataTypes>::projectVelocity(const core::MechanicalParam
         Real relativeTime = (t - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
         const SetIndexArray & indices = m_indices.getValue();
 
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for(unsigned int indice : indices)
         {
             //compute velocity by doing v = dx/dt
             Real pxP = m_locP3.x()*relativeTime;
@@ -170,7 +170,7 @@ void ParabolicConstraint<DataTypes>::projectVelocity(const core::MechanicalParam
 
             Vec3R worldVel = m_projection.rotate(locVel);
 
-            dx[*it] = worldVel;
+            dx[indice] = worldVel;
         }
     }
 }
@@ -186,7 +186,7 @@ void ParabolicConstraint<DataTypes>::projectPosition(const core::MechanicalParam
         Real relativeTime = (t - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
         const SetIndexArray & indices = m_indices.getValue();
 
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for(unsigned int indice : indices)
         {
             //compute position from the equation of the parabol : Y = -y2/(x3*x2-x2�) * X� + (x3*y2)/(x3*x2-x2�) * X
             //with P1:(0,0,0), P2:(x2,y2,z2), P3:(x3,y3,z3) , projected in parabol plan
@@ -197,7 +197,7 @@ void ParabolicConstraint<DataTypes>::projectPosition(const core::MechanicalParam
             //projection to world coordinates
             Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
 
-            x[*it] = worldPos;
+            x[indice] = worldPos;
         }
     }
 }

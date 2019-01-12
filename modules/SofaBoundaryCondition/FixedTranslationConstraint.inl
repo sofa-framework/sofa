@@ -143,10 +143,9 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it
-                != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            clearPos(res[*it]);
+            clearPos(res[indice]);
         }
     }
 }
@@ -214,10 +213,10 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     }
     else
     {
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
             sofa::defaulttype::Vector3 v;
-            const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
+            const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[indice]);
             for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
 

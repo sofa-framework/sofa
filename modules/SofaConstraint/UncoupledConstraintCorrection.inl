@@ -269,10 +269,10 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     // look for the number of group;
     unsigned int numGroup = 0;
-    for (unsigned int cm = 0; cm < constraint_merge.size(); cm++)
+    for (int cm : constraint_merge)
     {
-        if (constraint_merge[cm] > (int) numGroup)
-            numGroup = (unsigned int) constraint_merge[cm];
+        if (cm > (int) numGroup)
+            numGroup = (unsigned int) cm;
     }
     numGroup += 1;
 

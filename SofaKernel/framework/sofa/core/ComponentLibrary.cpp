@@ -56,12 +56,12 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
     //Find a scene
     std::string nameComponentCaseInsensitive = caseInsensitive(entry->className);
 
-    for (unsigned int i=0; i<exampleFiles.size(); ++i)
+    for (const auto & exampleFile : exampleFiles)
     {
-        std::string exampleCaseInsensitive = caseInsensitive(exampleFiles[i]);
+        std::string exampleCaseInsensitive = caseInsensitive(exampleFile);
 //             if (exampleFiles[i].findRev(entry->className.c_str()) >= 0 )
         if (exampleCaseInsensitive.find(nameComponentCaseInsensitive) != std::string::npos)
-            possiblePaths.push_back(exampleFiles[i]);
+            possiblePaths.push_back(exampleFile);
     }
 
     std::string nameSpace = sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorMap.begin()->second->type());
@@ -84,9 +84,9 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
     if (possiblePaths.size() != 0)
     {
         description += std::string("<li><b>Example: </b><ul>");
-        for (unsigned int i=0; i<possiblePaths.size(); ++i)
+        for (const auto & possiblePath : possiblePaths)
         {
-            description += std::string("<li><a href=\"")+possiblePaths[i]+std::string("\">") + possiblePaths[i] + std::string("</a></li>");
+            description += std::string("<li><a href=\"")+possiblePath+std::string("\">") + possiblePath + std::string("</a></li>");
         }
         description += std::string("</ul>");
     }

@@ -35,9 +35,8 @@ std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
 
 ImageCImgCreators::ImageCImgCreators()
 {
-    for(unsigned int i=0 ; i<cimgSupportedExtensions.size() ; i++)
+    for(const auto & ext : cimgSupportedExtensions)
     {
-        const std::string& ext = cimgSupportedExtensions[i];
         if (!sofa::helper::io::Image::FactoryImage::HasKey(ext))
         {
             creators.push_back(new Creator<helper::io::Image::FactoryImage, ImageCImg>(ext));
@@ -138,9 +137,8 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     bool res = false;
     std::string ext;
     //check extension
-    for(size_t i=0 ; i<ImageCImgCreators::cimgSupportedExtensions.size() ; i++)
+    for(auto currExt : ImageCImgCreators::cimgSupportedExtensions)
     {
-        const std::string currExt = ImageCImgCreators::cimgSupportedExtensions[i];
         if(filename.substr(filename.find_last_of(".") + 1) == currExt)
             ext = currExt;
     }

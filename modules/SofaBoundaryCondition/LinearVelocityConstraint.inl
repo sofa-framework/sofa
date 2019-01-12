@@ -177,9 +177,9 @@ void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::Mechanica
         const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            dx[*it] = Deriv();
+            dx[indice] = Deriv();
         }
     }
 
@@ -207,18 +207,18 @@ void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::Mechanica
         if (coordinates.size() == 0)
         {
             //set the motion to the Dofs
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                dx[*it] = v;
+                dx[indice] = v;
             }
         }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
+                for(unsigned int coordinate : coordinates)
                 {
-                    dx[*it][*itInd] = v[*itInd];
+                    dx[indice][coordinate] = v[coordinate];
                 }
             }
         }
@@ -237,10 +237,10 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
         const SetIndexArray & indices = m_indices.getValue();
         x0.resize( x.size() );
         xP.resize( x.size() );
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x0[*it] = x[*it];
-            xP[*it] = x0[*it];
+            x0[indice] = x[indice];
+            xP[indice] = x0[indice];
         }
     }
 
@@ -266,20 +266,20 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
         if (coordinates.size() == 0)
         {
             //set the motion to the Dofs
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                x[*it] = xP[*it] + m*dTsimu;
-                xP[*it] = x[*it];
+                x[indice] = xP[indice] + m*dTsimu;
+                xP[indice] = x[indice];
             }
         }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
+                for(unsigned int coordinate : coordinates)
                 {
-                    x[*it][*itInd] = xP[*it][*itInd] + m[*itInd]*dTsimu;
-                    xP[*it] = x[*it];
+                    x[indice][coordinate] = xP[indice][coordinate] + m[coordinate]*dTsimu;
+                    xP[indice] = x[indice];
                 }
             }
         }
@@ -342,10 +342,10 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     const SetIndexArray & indices = m_indices.getValue();
     for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(x0[*it]+keyVelocities[i]);
-            const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(x0[*it]+keyVelocities[i+1]);
+            const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(x0[indice]+keyVelocities[i]);
+            const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(x0[indice]+keyVelocities[i+1]);
 
             vertices.push_back(sofa::defaulttype::Vector3(cpos0));
             vertices.push_back(sofa::defaulttype::Vector3(cpos1));

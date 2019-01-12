@@ -122,10 +122,10 @@ void CategoryLibrary::endConstruction()
 
 const ComponentLibrary *CategoryLibrary::getComponent( const std::string &categoryName) const
 {
-    for (VecComponentIterator it=components.begin(); it != components.end(); ++it)
+    for (auto component : components)
     {
-        if ((*it)->getName().find(categoryName) != std::string::npos)
-            return *it;
+        if (component->getName().find(categoryName) != std::string::npos)
+            return component;
     }
     return NULL;
 }

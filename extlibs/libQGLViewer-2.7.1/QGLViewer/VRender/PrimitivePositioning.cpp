@@ -138,10 +138,10 @@ int PrimitivePositioning::computeRelativePosition(const Polygone *P,const Segmen
 	double tmin = FLT_MAX ;
 	double tmax = -FLT_MAX ;
 
-	for(unsigned int j=0;j<intersections.size();++j)
+	for(double intersection : intersections)
 	{
-        tmin = min(tmin,intersections[j]) ;
-        tmax = max(tmax,intersections[j]) ;
+        tmin = min(tmin,intersection) ;
+        tmax = max(tmax,intersection) ;
 	}
 
 	if(tmax - tmin < 2*_EPS)
@@ -152,9 +152,9 @@ int PrimitivePositioning::computeRelativePosition(const Polygone *P,const Segmen
 
 	int res = Independent ;
 
-	for(unsigned int k=0;k<intersections.size();++k)
+	for(double intersection : intersections)
 	{
-		Vector3 v( (1-intersections[k])*S->vertex(0) + intersections[k]*S->vertex(1) ) ;
+		Vector3 v( (1-intersection)*S->vertex(0) + intersection*S->vertex(1) ) ;
 
 		if(P->equation(v) < -_EPS) res |= Lower ;
 		if(P->equation(v) >  _EPS) res |= Upper ;

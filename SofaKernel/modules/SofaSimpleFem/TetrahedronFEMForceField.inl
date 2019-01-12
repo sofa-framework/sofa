@@ -1835,12 +1835,12 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawLines(points[1],1,color3 );
                 vparams->drawTool()->drawLines(points[2],1,color4 );
 
-                for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
+                for(auto & point : points) point.clear();
             } else
             {
                 if (_computeVonMisesStress.getValue() > 0)
                 {
-                    for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
+                    for(auto & point : points) point.clear();
                 }
             }
         }
@@ -1900,8 +1900,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawTriangles(points[2],color3 );
                 vparams->drawTool()->drawTriangles(points[3],color4 );
 
-                for(unsigned int i=0 ; i<4 ; i++)
-                    points[i].clear();
+                for(auto & point : points)
+                    point.clear();
             } else
             {
                 if (_computeVonMisesStress.getValue() > 0) {
@@ -1914,7 +1914,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                     vparams->drawTool()->drawTriangles(points[2],col);
                     vparams->drawTool()->drawTriangles(points[3],col);
 
-                    for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
+                    for(auto & point : points) point.clear();
                 }
             }
         }

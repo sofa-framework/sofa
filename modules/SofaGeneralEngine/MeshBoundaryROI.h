@@ -114,11 +114,11 @@ public:
                 }
 
         std::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
-        for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
-            if(it->second==1)
+        for(auto & it : edgeCount)
+            if(it.second==1)
             {
-                indexset.insert(it->first.first);
-                indexset.insert(it->first.second);
+                indexset.insert(it.first.first);
+                indexset.insert(it.first.second);
             }
         indices.wref().insert(indices.end(), indexset.begin(), indexset.end());
     }

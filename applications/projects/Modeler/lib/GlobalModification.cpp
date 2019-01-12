@@ -64,18 +64,18 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
         }
 
         const core::objectmodel::Base::MapData& aliases=c->getDataAliases();
-        for (core::objectmodel::Base::MapData::const_iterator it=aliases.begin(); it!=aliases.end(); ++it)
+        for (const auto & aliase : aliases)
         {
-            allAliases.insert(it->first);
+            allAliases.insert(aliase.first);
         }
 
     }
 
-    for (std::set< std::string >::const_iterator it=allNames.begin(); it!=allNames.end(); ++it)
-        listDataName << it->c_str();
+    for (const auto & allName : allNames)
+        listDataName << allName.c_str();
 
-    for (std::set< std::string >::const_iterator it=allAliases.begin(); it!=allAliases.end(); ++it)
-        listDataAliases << it->c_str();
+    for (const auto & allAliase : allAliases)
+        listDataAliases << allAliase.c_str();
 
     //Creation of the GUI
     QVBoxLayout *globalLayout = new QVBoxLayout(this);
@@ -212,11 +212,11 @@ void GlobalModification::applyGlobalModification()
             if (historyManager) historyManager->beginModification(c);
 
 
-            for (unsigned int i=0; i<data.size(); ++i)
+            for (auto i : data)
             {
                 bool conditionsAccepted=true;
-                for (unsigned int cond=0; cond<conditions.size() && conditionsAccepted; ++cond) conditionsAccepted &= conditions[cond]->verify(c,data[i]);
-                if (conditionsAccepted) data[i]->read(v);
+                for (unsigned int cond=0; cond<conditions.size() && conditionsAccepted; ++cond) conditionsAccepted &= conditions[cond]->verify(c,i);
+                if (conditionsAccepted) i->read(v);
             }
             if (historyManager) historyManager->endModification(c);
         }

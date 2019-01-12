@@ -117,15 +117,15 @@ void GenericConstraintSolver::init()
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
+        for (auto & constraintCorrection : constraintCorrections)
+            constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
     constraintCorrectionIsActive.resize(constraintCorrections.size());
-    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-        constraintCorrections[i]->addConstraintSolver(this);
+    for (auto & constraintCorrection : constraintCorrections)
+        constraintCorrection->addConstraintSolver(this);
     context = (simulation::Node*) getContext();
 
     simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
@@ -145,8 +145,8 @@ void GenericConstraintSolver::cleanup()
 {
     if (!constraintCorrections.empty())
     {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
+        for (auto & constraintCorrection : constraintCorrections)
+            constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
     simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
@@ -238,9 +238,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
     if (unbuilt.getValue())
     {
-        for (unsigned int i=0;i<constraintCorrections.size();i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (!cc->isActive()) continue;
             cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
         }
@@ -294,9 +293,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
         msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (!cc->isActive()) continue;
             sofa::helper::AdvancedTimer::stepBegin("Object name: " + cc->getName());
             cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
@@ -318,9 +316,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
 void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         if (!cc->isActive()) continue;
         cc->rebuildSystem(massFactor, forceFactor);
     }
@@ -421,9 +418,8 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
 void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->computeResidual(eparam,&current_cp->f);
     }
 }
@@ -565,12 +561,12 @@ void GenericConstraintProblem::clear(int nbC)
 
 void GenericConstraintProblem::freeConstraintResolutions()
 {
-    for(unsigned int i=0; i<constraintsResolutions.size(); i++)
+    for(auto & constraintsResolution : constraintsResolutions)
     {
-        if (constraintsResolutions[i] != NULL)
+        if (constraintsResolution != NULL)
         {
-            delete constraintsResolutions[i];
-            constraintsResolutions[i] = NULL;
+            delete constraintsResolution;
+            constraintsResolution = NULL;
         }
     }
 }

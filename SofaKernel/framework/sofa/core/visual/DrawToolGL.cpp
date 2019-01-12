@@ -85,9 +85,9 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
     disableLighting();
     glBegin(GL_POINTS);
     {
-        for (std::size_t i=0; i<points.size(); ++i)
+        for (const auto & point : points)
         {
-            internalDrawPoint(points[i], color);
+            internalDrawPoint(point, color);
         }
     } glEnd();
     if (getLightEnabled()) enableLighting();
@@ -174,9 +174,9 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
     disableLighting();
     glBegin(GL_LINES);
     {
-        for (std::size_t i=0; i<index.size(); ++i)
+        for (auto i : index)
         {
-            internalDrawLine(points[ index[i][0] ],points[ index[i][1] ], color );
+            internalDrawLine(points[ i[0] ],points[ i[1] ], color );
         }
     } glEnd();
     if (getLightEnabled()) enableLighting();
@@ -193,9 +193,9 @@ void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, c
     disableLighting();
     glBegin(GL_LINE_STRIP);
     {
-        for (std::size_t i=0; i<points.size(); ++i)
+        for (const auto & point : points)
         {
-            internalDrawPoint(points[i]  , color );
+            internalDrawPoint(point  , color );
         }
     } glEnd();
     if (getLightEnabled()) enableLighting();
@@ -212,9 +212,9 @@ void DrawToolGL::drawLineLoop(const std::vector<Vector3> &points, float size, co
     disableLighting();
     glBegin(GL_LINE_LOOP);
     {
-        for (std::size_t i=0; i<points.size(); ++i)
+        for (const auto & point : points)
         {
-            internalDrawPoint(points[i]  , color );
+            internalDrawPoint(point  , color );
         }
     } glEnd();
     if (getLightEnabled()) enableLighting();

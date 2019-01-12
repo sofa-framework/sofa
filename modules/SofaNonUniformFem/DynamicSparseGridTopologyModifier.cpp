@@ -96,12 +96,12 @@ void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::
     // Update the data
     unsigned int nbElt = iirg.size();
     std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
-    for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); ++it )
+    for (unsigned int it : hexahedra)
     {
         nbElt--;
 
         // Update the voxels value
-        unsigned int idHexaInRegularGrid = iirg[*it];
+        unsigned int idHexaInRegularGrid = iirg[it];
         (*( m_DynContainer->valuesIndexedInRegularGrid.beginEdit()))[idHexaInRegularGrid] = 0;
         m_DynContainer->valuesIndexedInRegularGrid.endEdit();
 
@@ -116,11 +116,11 @@ void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::
         itMap = regularG2Topo.find( iirg[nbElt]);// Index in the regular grid of the last elt in the topology
         if( itMap != regularG2Topo.end())
         {
-            itMap->second = *it;
+            itMap->second = it;
         }
 
         // renumber iirg
-        iirg[*it] = iirg[nbElt];
+        iirg[it] = iirg[nbElt];
     }
     iirg.resize( nbElt);
 

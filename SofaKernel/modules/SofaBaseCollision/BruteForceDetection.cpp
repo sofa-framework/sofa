@@ -111,10 +111,8 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
             }
 
     }
-    for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
+    for (auto cm2 : collisionModels)
     {
-        core::CollisionModel* cm2 = *it;
-
         if (!cm->isSimulated() && !cm2->isSimulated())
         {
             continue;

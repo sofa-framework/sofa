@@ -229,8 +229,8 @@ IncrSAP::IncrSAP()
 
 
 IncrSAP::~IncrSAP(){
-    for(int i = 0 ; i < 3 ; ++i)
-        for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
+    for(auto & _end_point : _end_points)
+        for(EndPointList::iterator it = _end_point.begin() ; it != _end_point.end() ; ++it)
             delete (*it);
 
 
@@ -240,11 +240,11 @@ IncrSAP::~IncrSAP(){
 
 
 void IncrSAP::purge(){
-    for(int i = 0 ; i < 3 ; ++i){
-        for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
+    for(auto & _end_point : _end_points){
+        for(EndPointList::iterator it = _end_point.begin() ; it != _end_point.end() ; ++it)
             delete (*it);
 
-        _end_points[i].clear();
+        _end_point.clear();
     }
 
     _boxes.clear();
@@ -313,8 +313,8 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
 
         EndPointID * endPts[6];
         for(int i = 0 ; i < cube_model->getSize() ; ++i){
-            for(int j = 0 ; j < 6 ; ++j)
-                endPts[j] = new EndPointID;
+            for(auto & endPt : endPts)
+                endPt = new EndPointID;
 
             ISAPBox & new_box = _boxes[old_size + i];
             new_box.cube = Cube(cube_model,i);
@@ -365,17 +365,17 @@ int IncrSAP::greatestVarianceAxis()const{
 
 
 void IncrSAP::updateEndPoints(){
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        _boxes[i].update(_alarmDist_d2);
+    for(auto & _boxe : _boxes){
+        _boxe.update(_alarmDist_d2);
         assert(_boxes[i].endPointsAreAlright(i));
     }
 }
 
 
 void IncrSAP::setEndPointsID(){
-    for(int dim = 0 ; dim < 3 ; ++dim){
+    for(auto & _end_point : _end_points){
         int ID = 0;
-        for(EndPointList::iterator it = _end_points[dim].begin() ; it != _end_points[dim].end() ; ++it){
+        for(EndPointList::iterator it = _end_point.begin() ; it != _end_point.end() ; ++it){
             (**it).ID = ID;
             ++ID;
         }
@@ -386,8 +386,8 @@ void IncrSAP::setEndPointsID(){
 void IncrSAP::reinitDetection(){
     _colliding_elems.clear();
     CompPEndPoint comp;
-    for(int j = 0 ; j < 3 ; ++j){
-        std::sort(_end_points[j].begin(),_end_points[j].end(),comp);
+    for(auto & _end_point : _end_points){
+        std::sort(_end_point.begin(),_end_point.end(),comp);
     }
     setEndPointsID();
 }
@@ -397,8 +397,8 @@ void IncrSAP::reinitDetection(){
 void IncrSAP::showEndPoints()const{
     for(int j = 0 ; j < 3 ; ++j){
         msg_info() <<"dimension "<<j<<"===========" ;
-        for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
-            const EndPointID & end_pt = (**it);
+        for(auto it : _end_points[j]){
+            const EndPointID & end_pt = (*it);
             end_pt.show();
         }
     }
@@ -406,8 +406,7 @@ void IncrSAP::showEndPoints()const{
 
 
 void IncrSAP::showBoxes()const{
-    for(size_t i = 0 ; i < _boxes.size() ; ++i){
-        const ISAPBox & box = _boxes[i];
+    for(const auto & box : _boxes){
         std::stringstream tmp;
 
         tmp <<"collision model "<<box.cube.getCollisionModel()->getLast()<<" index "<<box.cube.getExternalChildren().first.getIndex()<<msgendl ;
@@ -484,17 +483,17 @@ void IncrSAP::boxPrune(){
                                  //                  the active boxes.
                                  //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
                                  //                  so, we delete the owner box, of this max end point from the active boxes
-    for(EndPointList::iterator it = _end_points[_cur_axis].begin() ; it != _end_points[_cur_axis].end() ; ++it){
-        if((**it).max()){//erase it from the active_boxes
+    for(auto & it : _end_points[_cur_axis]){
+        if((*it).max()){//erase it from the active_boxes
             assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
-            active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
+            active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(*it).boxID()));
         }
         else{//we encounter a min possible intersection between it and active_boxes
-            int new_box = (**it).boxID();
+            int new_box = (*it).boxID();
 
-            for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
+            for(int active_boxe : active_boxes){
 
-                addIfCollide(new_box,active_boxes[i],axis1,axis2);
+                addIfCollide(new_box,active_boxe,axis1,axis2);
             }
             active_boxes.push_back(new_box);
         }
@@ -602,16 +601,16 @@ bool IncrSAP::assertion_inferior(EndPointList::iterator begin_it,const EndPointL
 bool IncrSAP::assertion_end_points_sorted() const{
     CompPEndPoint inferior;
     int n = 0;
-    for(int dim = 0 ; dim < 3 ; ++dim){
+    for(const auto & _end_point : _end_points){
         int ID = 0;
         EndPointList::const_iterator next_it2;
         int equality_number = 0;
-        for(EndPointList::const_iterator it2 = _end_points[dim].begin() ; it2 != _end_points[dim].end() ; ++it2){
+        for(EndPointList::const_iterator it2 = _end_point.begin() ; it2 != _end_point.end() ; ++it2){
             assert((**it2).ID == ID);
 
             next_it2 = it2;
             ++next_it2;
-            if(next_it2 != _end_points[dim].end()){
+            if(next_it2 != _end_point.end()){
                 assert((**next_it2).ID == ID + 1);
 
                 if(!inferior(*it2,*next_it2)){
@@ -730,8 +729,7 @@ void IncrSAP::updateMovingBoxes(){
     EndPointID updated_min;
     EndPointID updated_max;
 
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        ISAPBox & cur_box = _boxes[i];
+    for(auto & cur_box : _boxes){
         for(int dim = 0 ; dim < 3 ; ++dim){
             min_updated = false;
             max_updated = false;

@@ -84,10 +84,9 @@ public:
 
     void resetTopologyChangeListFine()
     {
-        for(std::list<const core::topology::TopologyChange *>::iterator it = m_changeListFine.begin();
-            it != m_changeListFine.end(); ++it)
+        for(auto & it : m_changeListFine)
         {
-            delete (*it);
+            delete it;
         }
         m_changeListFine.clear();
     }

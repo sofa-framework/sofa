@@ -200,9 +200,9 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            res[*it] = Deriv();
+            res[indice] = Deriv();
         }
     }
 }
@@ -229,9 +229,9 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     {
         while (rowIt != rowItEnd)
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                rowIt.row().erase(*it);
+                rowIt.row().erase(indice);
             }
             ++rowIt;
         }
@@ -256,9 +256,9 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            res[*it] = Deriv();
+            res[indice] = Deriv();
         }
     }
 }
@@ -296,14 +296,14 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         {
             const SetIndexArray & indices = d_indices.getValue();
 
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
                 // Reset Fixed Row and Col
                 for (unsigned int c=0; c<N; ++c)
-                    r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                    r.matrix->clearRowCol(r.offset + N * indice + c);
                 // Set Fixed Vertex
                 for (unsigned int c=0; c<N; ++c)
-                    r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                    r.matrix->set(r.offset + N * indice + c, r.offset + N * indice + c, 1.0);
             }
         }
     }
@@ -329,10 +329,10 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         else
         {
             const SetIndexArray & indices = d_indices.getValue();
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
                 for (unsigned int c=0; c<N; ++c)
-                    vect->clear(offset + N * (*it) + c);
+                    vect->clear(offset + N * indice + c);
             }
         }
     }
@@ -366,9 +366,9 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[indice]);
                 points.push_back(point);
             }
         }
@@ -388,9 +388,9 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int indice : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[indice]);
                 points.push_back(point);
             }
         }

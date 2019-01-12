@@ -95,8 +95,8 @@ DirectSAP::DirectSAP()
 DirectSAP::~DirectSAP()
 {
 
-    for(unsigned int i = 0 ; i < _to_del.size() ; ++i)
-        delete[] _to_del[i];
+    for(auto & i : _to_del)
+        delete[] i;
 }
 
 
@@ -146,9 +146,9 @@ void DirectSAP::endBroadPhase()
     cube_models.reserve(_new_cm.size());
 
     int n = 0;
-    for(unsigned int i = 0 ; i < _new_cm.size() ; ++i){
-        n += _new_cm[i]->getSize();
-        cube_models.push_back(dynamic_cast<CubeModel*>(_new_cm[i]->getPrevious()));
+    for(auto & i : _new_cm){
+        n += i->getSize();
+        cube_models.push_back(dynamic_cast<CubeModel*>(i->getPrevious()));
     }
 
     _boxes.reserve(_boxes.size() + n);
@@ -157,8 +157,7 @@ void DirectSAP::endBroadPhase()
 
     int cur_EndPtID = 0;
     int cur_boxID = _boxes.size();
-    for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
-        CubeModel * cm = cube_models[i];
+    for(auto cm : cube_models){
         for(int j = 0 ; j < cm->getSize() ; ++j){
             EndPoint * min = &end_pts[cur_EndPtID];
             ++cur_EndPtID;
@@ -195,9 +194,9 @@ int DirectSAP::greatestVarianceAxis()const{
         v[i] = m[i] = 0;
 
     //computing the mean value of end points on each axis
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        const defaulttype::Vector3 & min = _boxes[i].cube.minVect();
-        const defaulttype::Vector3 & max = _boxes[i].cube.maxVect();
+    for(const auto & _boxe : _boxes){
+        const defaulttype::Vector3 & min = _boxe.cube.minVect();
+        const defaulttype::Vector3 & max = _boxe.cube.maxVect();
         m[0] += min[0] + max[0];
         m[1] += min[1] + max[1];
         m[2] += min[2] + max[2];
@@ -208,9 +207,9 @@ int DirectSAP::greatestVarianceAxis()const{
     m[2] /= 2*_boxes.size();
 
     //computing the variance of end points on each axis
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        const defaulttype::Vector3 & min = _boxes[i].cube.minVect();
-        const defaulttype::Vector3 & max = _boxes[i].cube.maxVect();
+    for(const auto & _boxe : _boxes){
+        const defaulttype::Vector3 & min = _boxe.cube.minVect();
+        const defaulttype::Vector3 & max = _boxe.cube.maxVect();
 
         diff = min[0] - m[0];
         v[0] += diff*diff;
@@ -240,8 +239,8 @@ int DirectSAP::greatestVarianceAxis()const{
 
 void DirectSAP::update(){
     _cur_axis = greatestVarianceAxis();
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        _boxes[i].update(_cur_axis,_alarmDist_d2);
+    for(auto & _boxe : _boxes){
+        _boxe.update(_cur_axis,_alarmDist_d2);
     }
 }
 
@@ -270,17 +269,17 @@ void DirectSAP::beginNarrowPhase()
                                  //                  the active boxes.
                                  //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
                                  //                  so, we delete the owner box, of this max end point from the active boxes
-    for(EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
-        if((**it).max()){//erase it from the active_boxes
+    for(auto & _end_point : _end_points){
+        if((*_end_point).max()){//erase it from the active_boxes
             assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
-            active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
+            active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(*_end_point).boxID()));
         }
         else{//we encounter a min possible intersection between it and active_boxes
-            int new_box = (**it).boxID();
+            int new_box = (*_end_point).boxID();
 
             DSAPBox & box0 = _boxes[new_box];
-            for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
-                DSAPBox & box1 = _boxes[active_boxes[i]];
+            for(int active_boxe : active_boxes){
+                DSAPBox & box1 = _boxes[active_boxe];
 
                 core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
                 core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();

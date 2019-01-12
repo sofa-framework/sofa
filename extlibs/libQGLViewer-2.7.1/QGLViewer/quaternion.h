@@ -250,8 +250,8 @@ public:
   qreal normalize() {
     const qreal norm =
         sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
-    for (int i = 0; i < 4; ++i)
-      q[i] /= norm;
+    for (double & i : q)
+      i /= norm;
     return norm;
   }
 

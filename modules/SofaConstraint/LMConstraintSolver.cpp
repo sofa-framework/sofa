@@ -316,9 +316,8 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem L");
     LMatrices.clear();
     //Init matrices to the good size
-    for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end(); ++it)
+    for (auto dofs : setDofs)
     {
-        const core::behavior::BaseMechanicalState* dofs=*it;
         SparseMatrixEigen L(numConstraint,dofs->getSize()*dofs->getDerivDimension());
         L.reserve(numConstraint*(1+dofs->getSize()));//TODO: give a better estimation of non-zero coefficients
         LMatrices.insert(std::make_pair(dofs, L));
@@ -400,9 +399,8 @@ bool LMConstraintSolver::applyCorrection(const core::ConstraintParams* cparams, 
     //************************************************************
     // Updating the state vectors
     // get the displacement. deltaState = M^-1.L^T.lambda : lambda being the solution of the system
-    for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
+    for (auto dofs : setDofs)
     {
-        sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         bool updateVelocities=!constraintVel.getValue();
         VecId v = id.getId(dofs);
         constraintStateCorrection(v, cparams->constOrder(), updateVelocities,invMass_Ltrans[dofs] , Lambda, dofUsed[dofs], dofs);
@@ -428,9 +426,8 @@ bool LMConstraintSolver::applyCorrection(const core::ConstraintParams* cparams, 
 
 void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofToMatrix& LMatrix, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const
 {
-    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
+    for (auto dofs : setDofs)
     {
-        const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const SparseMatrixEigen &invMass=invMassMatrix.find(dofs)->second;
         const SparseMatrixEigen &L=LMatrix[dofs];
 
@@ -480,9 +477,8 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
 
 void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToMatrix& invMassMatrices)
 {
-    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
+    for (auto dofs : setDofs)
     {
-        const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const unsigned int dimensionDofs=dofs->getDerivDimension();
 
 
@@ -612,9 +608,9 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
             }
         }
     }
-    for (std::list< ConstraintBlock >::iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
+    for (auto & block : blocks)
     {
-        delete itBlock->getMatrix();
+        delete block.getMatrix();
     }
 }
 
@@ -906,9 +902,8 @@ void LMConstraintSolver::computeKineticEnergy(MultiVecId id)
     applyCorrection(&cparam, id);
 
     double kineticEnergy=0;
-    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
+    for (auto dofs : setDofs)
     {
-        const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const core::behavior::BaseMass *mass=dofs->getContext()->getMass();
         if (mass) kineticEnergy += mass->getKineticEnergy();
     }

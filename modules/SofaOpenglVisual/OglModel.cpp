@@ -111,9 +111,9 @@ OglModel::~OglModel()
 {
     if (tex!=NULL) delete tex;
 
-    for (unsigned int i = 0 ; i < textures.size() ; i++)
+    for (auto & texture : textures)
     {
-        delete textures[i];
+        delete texture;
     }
 
 #ifdef GL_ARB_vertex_buffer_object
@@ -810,9 +810,9 @@ void OglModel::initTextures()
     {
         if (!textures.empty())
         {
-            for (unsigned int i = 0 ; i < textures.size() ; i++)
+            for (auto & texture : textures)
             {
-                textures[i]->init();
+                texture->init();
             }
         }
     }

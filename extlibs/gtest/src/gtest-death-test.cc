@@ -908,9 +908,8 @@ class Arguments {
   }
 
   ~Arguments() {
-    for (std::vector<char*>::iterator i = args_.begin(); i != args_.end();
-         ++i) {
-      free(*i);
+    for (auto & arg : args_) {
+      free(arg);
     }
   }
   void AddArgument(const char* argument) {

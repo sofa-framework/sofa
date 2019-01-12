@@ -156,10 +156,10 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
             simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
             core::behavior::BaseMechanicalState *mainDof=mainNode->getMechanicalState();
             const core::objectmodel::TagSet &tags=mainDof->getTags();
-            for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
+            for (auto tag : tags)
             {
-                mstateCollision->addTag(*it);
-                mappedNode->mechanicalMapping->addTag(*it);
+                mstateCollision->addTag(tag);
+                mappedNode->mechanicalMapping->addTag(tag);
             }
             mstateCollision->setName("AttachedPoint");
             mappedNode->mechanicalMapping->setName("MouseMapping");
@@ -193,8 +193,8 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     bconstraint->addContact(normal, point1, point2, (point2-point1).norm(), 0, index, point2, point1);
 
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
-    for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
-        bconstraint->addTag(*it);
+    for (auto tag : tags)
+        bconstraint->addTag(tag);
 
     mstateCollision->getContext()->addObject(bconstraint);
     return true;

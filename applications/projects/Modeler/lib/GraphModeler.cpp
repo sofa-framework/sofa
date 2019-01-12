@@ -997,7 +997,7 @@ void GraphModeler::changeComponentDataValue(const std::string &name, const std::
         return;
 
     std::string v(value);
-    for (unsigned int i=0; i<data.size(); ++i) data[i]->read(v);
+    for (auto i : data) i->read(v);
 
     historyManager->endModification(component);
 

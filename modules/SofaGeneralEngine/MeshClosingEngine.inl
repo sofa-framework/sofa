@@ -82,7 +82,7 @@ void MeshClosingEngine<DataTypes>::doUpdate()
     // get loops
     typedef std::map<PointID,PointID> edgemap;
     edgemap emap;
-    for(edgesetit it=edges.begin(); it!=edges.end(); it++)  emap[it->first]=it->second;
+    for(const auto & edge : edges)  emap[edge.first]=edge.second;
 
     typename edgemap::iterator it=emap.begin();
     VecSeqIndex loops; loops.resize(1);

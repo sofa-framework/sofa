@@ -1414,8 +1414,8 @@ void SparseGridTopology::updateEdges()
     SeqEdges& edges = *seqEdges.beginEdit();
     edges.clear();
     edges.reserve(edgesMap.size());
-    for( std::map<pair<int,int>,bool>::iterator it=edgesMap.begin(); it!=edgesMap.end(); ++it)
-        edges.push_back( Edge( (*it).first.first,  (*it).first.second ));
+    for(auto & it : edgesMap)
+        edges.push_back( Edge( it.first.first,  it.first.second ));
     seqEdges.endEdit();
 }
 
@@ -1444,8 +1444,8 @@ void SparseGridTopology::updateQuads()
     SeqQuads& quads = *seqQuads.beginEdit();
     quads.clear();
     quads.reserve(quadsMap.size());
-    for( std::map<fixed_array<int,4>,bool>::iterator it=quadsMap.begin(); it!=quadsMap.end(); ++it)
-        quads.push_back( Quad( (*it).first[0],  (*it).first[1],(*it).first[2],(*it).first[3] ));
+    for(auto & it : quadsMap)
+        quads.push_back( Quad( it.first[0],  it.first[1],it.first[2],it.first[3] ));
     seqQuads.endEdit();
 }
 

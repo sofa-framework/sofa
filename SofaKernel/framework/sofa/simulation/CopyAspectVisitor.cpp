@@ -42,9 +42,9 @@ void CopyAspectVisitor::processObject(sofa::core::objectmodel::BaseObject* obj)
     obj->copyAspect(destAspect, srcAspect);
     const sofa::core::objectmodel::BaseObject::VecSlaves& slaves = obj->getSlaves();
 
-    for(sofa::core::objectmodel::BaseObject::VecSlaves::const_iterator iObj = slaves.begin(), endObj = slaves.end(); iObj != endObj; ++iObj)
+    for(const auto & slave : slaves)
     {
-        processObject(iObj->get());
+        processObject(slave.get());
     }
 }
 

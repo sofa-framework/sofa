@@ -55,9 +55,9 @@ public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase()
     {
-        for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
+        for (auto & it : m_outputsMap)
         {
-            DetectionOutputVector *do_vec = (it->second);
+            DetectionOutputVector *do_vec = (it.second);
 
             if (do_vec != 0)
                 do_vec->clear();
@@ -70,8 +70,8 @@ public:
     /// Add a new list of potentially colliding pairs of models
     virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
     {
-        for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
-            addCollisionPair(*it);
+        for (const auto & it : v)
+            addCollisionPair(it);
     }
 
     virtual void endNarrowPhase()

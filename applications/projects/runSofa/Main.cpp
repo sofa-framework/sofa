@@ -356,8 +356,8 @@ int main(int argc, char** argv)
     if (!files.empty())
         fileName = files[0];
 
-    for (unsigned int i=0; i<plugins.size(); i++)
-        PluginManager::getInstance().loadPlugin(plugins[i]);
+    for (const auto & plugin : plugins)
+        PluginManager::getInstance().loadPlugin(plugin);
 
     const std::string& pluginDir = Utils::getPluginDirectory();
     std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);

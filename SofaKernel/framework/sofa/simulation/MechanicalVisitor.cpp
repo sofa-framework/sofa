@@ -666,9 +666,9 @@ Visitor::Result MechanicalVMultiOpVisitor::fwdMappedMechanicalState(VisitorConte
         {
             VMultiOp ops2 = ops;
             const SReal fact = *ctx->nodeData;
-            for (VMultiOp::iterator it = ops2.begin(), itend = ops2.end(); it != itend; ++it)
-                for (unsigned int i = 1; i < it->second.size(); ++i)
-                    it->second[i].second *= fact;
+            for (auto & it : ops2)
+                for (unsigned int i = 1; i < it.second.size(); ++i)
+                    it.second[i].second *= fact;
             mm->vMultiOp(this->params, ops2 );
         }
         else

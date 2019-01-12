@@ -105,8 +105,8 @@ Polygone::Polygone(const vector<Feedback3DColor>& fc)
 {
 	initNormal() ;
 
-	for(size_t i=0;i<fc.size();i++)
-		_bbox.include(fc[i].pos()) ;
+	for(const auto & i : fc)
+		_bbox.include(i.pos()) ;
 }
 
 AxisAlignedBox_xyz Polygone::bbox() const

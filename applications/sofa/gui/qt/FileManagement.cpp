@@ -78,13 +78,12 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
 
     const QFileInfoList &listDirectories = d.entryInfoList();
     QStringList filters;
-    for (unsigned int i=0; i<filter.size(); ++i)
-        filters << filter[i];
+    for (const auto & i : filter)
+        filters << i;
 
     d.setNameFilters(filters);
-    for (int j = 0; j < listDirectories.size(); ++j)
+    for (auto fileInfo : listDirectories)
     {
-        QFileInfo fileInfo=listDirectories.at(j);
         subDir.push_back(fileInfo.fileName());
 
     }
@@ -93,22 +92,20 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
 
     const QFileInfoList &listFiles =
         d.entryInfoList();
-    for (int j = 0; j < listFiles.size(); ++j)
+    for (auto fileInfo : listFiles)
     {
-        QFileInfo fileInfo=listFiles.at(j);
-
         files.push_back(path+QString("/")+fileInfo.fileName());
 
     }
 
     if (recursive)
     {
-        for (unsigned int i=0; i<subDir.size(); ++i)
+        for (auto & i : subDir)
         {
-            if (subDir[i].left(1) == QString(".")) continue;
-            if (subDir[i] == QString("OBJ"))       continue;
+            if (i.left(1) == QString(".")) continue;
+            if (i == QString("OBJ"))       continue;
 
-            QString nextDir=path+QString("/")+subDir[i];
+            QString nextDir=path+QString("/")+i;
             getFilesInDirectory(nextDir, files, recursive, filter);
         }
     }

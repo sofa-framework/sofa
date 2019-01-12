@@ -223,8 +223,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     else if (creators.size() > 1)
     {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
         std::string w = "Template " + templatename + std::string(" incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
-        for(unsigned int i = 0; i < creators.size(); ++i)
-            w += std::string("\n\t* ") + creators[i].first;
+        for(auto & creator : creators)
+            w += std::string("\n\t* ") + creator.first;
         msg_warning(object.get()) << w;
     }
 
@@ -270,8 +270,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     if(!arg->getErrors().empty())
     {
         std::stringstream msg;
-        for (std::vector< std::string >::const_iterator it = arg->getErrors().begin(); it != arg->getErrors().end(); ++it)
-            msg << " " << *it << msgendl ;
+        for (const auto & it : arg->getErrors())
+            msg << " " << it << msgendl ;
 
         msg_deprecated(object.get()) << msg.str() ;
     }
@@ -288,12 +288,11 @@ ObjectFactory* ObjectFactory::getInstance()
 void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 {
     result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
+    for(auto & it : registry)
     {
-        ClassEntry::SPtr entry = it->second;
+        ClassEntry::SPtr entry = it.second;
         // Push the entry only if it is not an alias
-        if (entry->className == it->first)
+        if (entry->className == it.first)
             result.push_back(entry);
     }
 }
@@ -301,14 +300,13 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target)
 {
     result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
+    for(auto & it : registry)
     {
-        ClassEntry::SPtr entry = it->second;
+        ClassEntry::SPtr entry = it.second;
         bool inTarget = false;
-        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+        for (auto & itc : entry->creatorMap)
         {
-            Creator::SPtr c = itc->second;
+            Creator::SPtr c = itc.second;
             if (target == c->getTarget())
                 inTarget = true;
         }
@@ -333,16 +331,16 @@ std::string ObjectFactory::listClassesFromTarget(std::string target, std::string
 
 void ObjectFactory::dump(std::ostream& out)
 {
-    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (auto & it : registry)
     {
-        ClassEntry::SPtr entry = it->second;
-        if (entry->className != it->first) continue;
+        ClassEntry::SPtr entry = it.second;
+        if (entry->className != it.first) continue;
         out << "class " << entry->className <<" :\n";
         if (!entry->aliases.empty())
         {
             out << "  aliases :";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << *it;
+            for (const auto & aliase : entry->aliases)
+                out << " " << aliase;
             out << "\n";
         }
         if (!entry->description.empty())
@@ -351,9 +349,9 @@ void ObjectFactory::dump(std::ostream& out)
             out << "  authors : " << entry->authors << "\n";
         if (!entry->license.empty())
             out << "  license : " << entry->license << "\n";
-        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+        for (auto & itc : entry->creatorMap)
         {
-            out << "  template instance : " << itc->first << "\n";
+            out << "  template instance : " << itc.first << "\n";
         }
     }
 }
@@ -361,16 +359,16 @@ void ObjectFactory::dump(std::ostream& out)
 static std::string xmlencode(const std::string& str)
 {
     std::string res;
-    for (unsigned int i=0; i<str.length(); ++i)
+    for (char i : str)
     {
-        switch(str[i])
+        switch(i)
         {
         case '<': res += "&lt;"; break;
         case '>': res += "&gt;"; break;
         case '&': res += "&amp;"; break;
         case '"': res += "&quot;"; break;
         case '\'': res += "&apos;"; break;
-        default:  res += str[i];
+        default:  res += i;
         }
     }
     return res;
@@ -378,23 +376,23 @@ static std::string xmlencode(const std::string& str)
 
 void ObjectFactory::dumpXML(std::ostream& out)
 {
-    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (auto & it : registry)
     {
-        ClassEntry::SPtr entry = it->second;
-        if (entry->className != it->first) continue;
+        ClassEntry::SPtr entry = it.second;
+        if (entry->className != it.first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
-        for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-            out << "<alias>" << xmlencode(*it) << "</alias>\n";
+        for (const auto & aliase : entry->aliases)
+            out << "<alias>" << xmlencode(aliase) << "</alias>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
         if (!entry->authors.empty())
             out << "<authors>"<<entry->authors<<"</authors>\n";
         if (!entry->license.empty())
             out << "<license>"<<entry->license<<"</license>\n";
-        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+        for (auto & itc : entry->creatorMap)
         {
             out << "<creator";
-            if (!itc->first.empty()) out << " template=\"" << xmlencode(itc->first) << "\"";
+            if (!itc.first.empty()) out << " template=\"" << xmlencode(itc.first) << "\"";
             out << "/>\n";
         }
         out << "</class>\n";
@@ -404,10 +402,10 @@ void ObjectFactory::dumpXML(std::ostream& out)
 void ObjectFactory::dumpHTML(std::ostream& out)
 {
     out << "<ul>\n";
-    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (auto & it : registry)
     {
-        ClassEntry::SPtr entry = it->second;
-        if (entry->className != it->first) continue;
+        ClassEntry::SPtr entry = it.second;
+        if (entry->className != it.first) continue;
         out << "<li><b>" << xmlencode(entry->className) <<"</b>\n";
         if (!entry->description.empty())
             out << "<br/>"<<entry->description<<"\n";
@@ -415,8 +413,8 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "<li>Aliases:<i>";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << xmlencode(*it);
+            for (const auto & aliase : entry->aliases)
+                out << " " << xmlencode(aliase);
             out << "</i></li>\n";
         }
         if (!entry->authors.empty())
@@ -519,22 +517,22 @@ RegisterObject::operator int()
                 reg.defaultTemplate = entry.defaultTemplate;
             }
         }
-        for (ObjectFactory::CreatorMap::iterator itc = entry.creatorMap.begin(), itcend = entry.creatorMap.end(); itc != itcend; ++itc)
+        for (auto & itc : entry.creatorMap)
         {
-            if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
+            if (reg.creatorMap.find(itc.first) != reg.creatorMap.end())
             {
-                msg_warning("ObjectFactory") << "Class already registered: " << itc->first;
+                msg_warning("ObjectFactory") << "Class already registered: " << itc.first;
             }
             else
             {
-                reg.creatorMap.insert(*itc);
+                reg.creatorMap.insert(itc);
             }
         }
-        for (std::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)
+        for (const auto & aliase : entry.aliases)
         {
-            if (reg.aliases.find(*it) == reg.aliases.end())
+            if (reg.aliases.find(aliase) == reg.aliases.end())
             {
-                ObjectFactory::getInstance()->addAlias(*it,entry.className);
+                ObjectFactory::getInstance()->addAlias(aliase,entry.className);
             }
         }
         return 1;

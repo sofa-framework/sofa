@@ -1275,10 +1275,10 @@ json TimerData::getJson(std::string stepNumber)
                     deepthTree.pop_back();
                     jsonPointer = &jsonOutput[jsonObjectName];
                     temp = *jsonPointer;
-                    for(unsigned int i = 0; i < deepthTree.size(); i++)
+                    for(const auto & i : deepthTree)
                     {
-                        temp = temp.at(deepthTree.at(i));
-                        jsonPointer = &jsonPointer->at(deepthTree.at(i));
+                        temp = temp.at(i);
+                        jsonPointer = &jsonPointer->at(i);
                     }
 
                     ComposantId << steps[s];

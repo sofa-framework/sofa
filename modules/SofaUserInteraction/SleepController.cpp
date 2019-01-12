@@ -144,13 +144,11 @@ void SleepController::init()
     GetStatesThatCanSleep(core::ExecParams::defaultInstance(), tempStates).execute(getContext()->getRootContext());
 
     // Find the corresponding template in each mechanical state we are monitoring
-    for (unsigned int i = 0, nbStates = tempStates.size(); i < nbStates; ++i)
+    for (auto state : tempStates)
     {
-        core::behavior::BaseMechanicalState* state = tempStates[i];
         bool found = false;
-        for (unsigned int j = 0, nbTesters = m_stateTesters.size(); j < nbTesters; ++j)
+        for (auto tester : m_stateTesters)
         {
-            StateTesterPtr tester = m_stateTesters[j];
             if (tester->canConvert(state))
             {
                 found = true;
@@ -170,8 +168,8 @@ void SleepController::init()
     // If it is the first time doing the init, copy the initial state values
     if (m_initialState.empty())
     {
-        for (unsigned int i = 0, nbContexts = m_contextsThatCanSleep.size(); i < nbContexts; ++i)
-            m_initialState.push_back(m_contextsThatCanSleep[i]->isSleeping());
+        for (auto & i : m_contextsThatCanSleep)
+            m_initialState.push_back(i->isSleeping());
     }
 
     sout << "found " << m_statesThatCanSleep.size() << " nodes that can change their sleep state" << sendl;
@@ -187,8 +185,8 @@ void SleepController::reset()
     }
 
     // Reset time since wake up to 0
-    for (unsigned int i = 0, nb = m_timeSinceWakeUp.size(); i < nb; ++i)
-            m_timeSinceWakeUp[i] = 0.0;
+    for (double & i : m_timeSinceWakeUp)
+            i = 0.0;
 }
 
 void SleepController::handleEvent(core::objectmodel::Event* event)
@@ -264,9 +262,9 @@ void SleepController::wakeUpNodes()
                 continue;
 
             const BaseContexts& wakeupPair = wakeupPairs[i];
-            for (unsigned int j = 0, nbLinks = wakeupPair.size(); j < nbLinks; ++j)
+            for (auto j : wakeupPair)
             {
-                if (!wakeupPair[j]->isSleeping())
+                if (!j->isSleeping())
                 {
                     changed = true;
                     context->setSleeping(false);
@@ -309,9 +307,9 @@ void SleepController::collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs)
     else
         root->get<core::collision::Contact>(&contacts, core::objectmodel::BaseContext::SearchDown);
 
-    for (unsigned int i = 0, nbContacts = contacts.size(); i < nbContacts; ++i)
+    for (auto & contact : contacts)
     {
-        std::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contacts[i]->getCollisionModels();
+        std::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contact->getCollisionModels();
 
         addWakeupPair(wakeupPairs, collisionModels.first->getContext(), collisionModels.first->isMoving(),
                                     collisionModels.second->getContext(), collisionModels.second->isMoving());

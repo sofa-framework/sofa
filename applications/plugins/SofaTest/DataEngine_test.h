@@ -139,9 +139,9 @@ struct DataEngine_test : public Sofa_test<>
         CHECKCOUNTER( 0 );  // c'est parti mon kiki
 
         // modifying inputs to ensure the engine should be evaluated
-        for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
+        for(auto parent_input : parent_inputs)
         {
-            parent_inputs[i]->setDirtyValue();
+            parent_input->setDirtyValue();
             CHECKCOUNTER( 0 );  // c'est parti mon kiki
         }
 
@@ -157,18 +157,18 @@ struct DataEngine_test : public Sofa_test<>
 
         // modifying the parent inputs one by one
         m_engine->resetCounter();
-        for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
+        for(auto parent_input : parent_inputs)
         {
-            parent_inputs[i]->setDirtyValue(); // to check if the engine is evaluated for this input
+            parent_input->setDirtyValue(); // to check if the engine is evaluated for this input
             outputs[0]->updateIfDirty(); // could call the engine
         }
         CHECKMAXCOUNTER( parent_inputs.size() );
 
         // modifying the engine inputs one by one
         m_engine->resetCounter();
-        for( unsigned i=0, iend=inputs.size() ; i<iend ; ++i )
+        for(auto input : inputs)
         {
-            inputs[i]->setDirtyValue(); // to check if the engine is evaluated for this input
+            input->setDirtyValue(); // to check if the engine is evaluated for this input
             outputs[0]->updateIfDirty(); // could call the engine
         }
         CHECKMAXCOUNTER( parent_inputs.size() );

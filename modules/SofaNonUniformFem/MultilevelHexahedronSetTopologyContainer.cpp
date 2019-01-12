@@ -144,8 +144,8 @@ void MultilevelHexahedronSetTopologyContainer::getHexaNeighbors(const unsigned i
     }
 
     neighbors.reserve(uniqueNeighbors.size());
-    for(std::set<unsigned int>::const_iterator iter = uniqueNeighbors.begin(); iter != uniqueNeighbors.end(); ++iter)
-        neighbors.push_back(*iter);
+    for(unsigned int uniqueNeighbor : uniqueNeighbors)
+        neighbors.push_back(uniqueNeighbor);
 }
 
 void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const unsigned int hexa,
@@ -263,10 +263,9 @@ int MultilevelHexahedronSetTopologyContainer::getHexaChildren(const unsigned int
     Component* comp = compList.front();
     while(!comp->_children.empty())
     {
-        for(std::set<Component*>::iterator iter = comp->_children.begin();
-            iter != comp->_children.end(); ++iter)
+        for(auto iter : comp->_children)
         {
-            compList.push_back(*iter);
+            compList.push_back(iter);
         }
 
         compList.pop_front();
@@ -452,9 +451,9 @@ MultilevelHexahedronSetTopologyContainer::Component::Component(const Vec3i& id, 
 
 MultilevelHexahedronSetTopologyContainer::Component::~Component()
 {
-    for(std::set<Component*>::iterator iter = _children.begin(); iter != _children.end(); ++iter)
+    for(auto iter : _children)
     {
-        delete (*iter);
+        delete iter;
     }
 }
 
@@ -472,10 +471,9 @@ void MultilevelHexahedronSetTopologyContainer::Component::clear()
 
 void MultilevelHexahedronSetTopologyContainer::Component::removeVoxels(const std::set<Vec3i>& voxels)
 {
-    for(std::set<Vec3i>::const_iterator voxelIter = voxels.begin();
-        voxelIter != voxels.end(); ++voxelIter)
+    for(auto voxel : voxels)
     {
-        this->_voxels.erase(this->_voxels.find(*voxelIter));
+        this->_voxels.erase(this->_voxels.find(voxel));
     }
 
     for(std::set<Component*>::iterator iter = this->_children.begin();
@@ -561,10 +559,9 @@ bool MultilevelHexahedronSetTopologyContainer::Component::isConnected(const Comp
     if((this->_id - other->_id).norm2() > 3)
         return false;
 
-    for(std::set<Vec3i>::const_iterator voxelIter = other->_voxels.begin();
-        voxelIter != other->_voxels.end(); ++voxelIter)
+    for(auto _voxel : other->_voxels)
     {
-        if(isConnected(this->_voxels, *voxelIter))
+        if(isConnected(this->_voxels, _voxel))
             return true;
     }
 
@@ -575,10 +572,9 @@ bool MultilevelHexahedronSetTopologyContainer::Component::isConnected(const std:
         const Vec3i& voxel) const
 {
     // check if the two sets contain neighboring voxels
-    for(std::set<Vec3i>::const_iterator voxelIter = voxelSet.begin();
-        voxelIter != voxelSet.end(); ++voxelIter)
+    for(auto voxelIter : voxelSet)
     {
-        const Vec3i diff(*voxelIter-voxel);
+        const Vec3i diff(voxelIter-voxel);
 
         if(diff.norm2() < 4)
             return true;
@@ -597,19 +593,15 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
     const int size = 1 << level;
 
     // check if the two components contain neighboring voxels
-    for(std::set<Vec3i>::const_iterator voxelIter = this->_voxels.begin();
-        voxelIter != this->_voxels.end(); ++voxelIter)
+    for(auto voxel1 : this->_voxels)
     {
-        const Vec3i& voxel1 = (*voxelIter);
-
         if((voxel1[0] % size > 0) && (voxel1[1] % size > 0) && (voxel1[2] % size > 0)
            && (voxel1[0] % size < size -1) && (voxel1[1] % size < size - 1) && (voxel1[2] % size < size - 1))
             continue;
 
-        for(std::set<Vec3i>::const_iterator voxelIter2 = other->_voxels.begin();
-            voxelIter2 != other->_voxels.end(); ++voxelIter2)
+        for(auto _voxel : other->_voxels)
         {
-            const Vec3i& voxel2 = (*voxelIter2);
+            const Vec3i& voxel2 = _voxel;
 
             if((voxel2[0] % size > 0) && (voxel2[1] % size > 0) && (voxel2[2] % size > 0)
                && (voxel2[0] % size < size -1) && (voxel2[1] % size < size - 1) && (voxel2[2] % size < size - 1))
@@ -640,7 +632,7 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
                     d1[1] = (diff[1] == 1) ? 1 : ((diff[1] == 0) ? 1 : 0);
                     d1[2] = (diff[2] == 1) ? 1 : ((diff[2] == 0) ? 1 : 0);
 
-                    Vec3i pnt0((*voxelIter2) + d0);
+                    Vec3i pnt0(_voxel + d0);
                     pnt0[0] = pnt0[0] % size;
                     pnt0[1] = pnt0[1] % size;
                     pnt0[2] = pnt0[2] % size;
@@ -649,7 +641,7 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
                     pnt0[1] = (pnt0[1] == 0) ? 1 : 0;
                     pnt0[2] = (pnt0[2] == 0) ? 1 : 0;
 
-                    Vec3i pnt1((*voxelIter2) + d1);
+                    Vec3i pnt1(_voxel + d1);
                     pnt1[0] = pnt1[0] % size;
                     pnt1[1] = pnt1[1] % size;
                     pnt1[2] = pnt1[2] % size;
@@ -677,7 +669,7 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
                     d[1] = (diff[1] == 1) ? 1 : 0;
                     d[2] = (diff[2] == 1) ? 1 : 0;
 
-                    Vec3i pnt((*voxelIter2) + d);
+                    Vec3i pnt(_voxel + d);
                     pnt[0] = pnt[0] % size;
                     pnt[1] = pnt[1] % size;
                     pnt[2] = pnt[2] % size;
@@ -703,10 +695,9 @@ bool MultilevelHexahedronSetTopologyContainer::Component::merge(Component* other
     if((this->_id - other->_id).norm2() != 0 || this->_parent != other->_parent)
         return false;
 
-    for(std::set<Component*>::const_iterator it = other->_children.begin();
-        it != other->_children.end(); ++it)
+    for(auto it : other->_children)
     {
-        (*it)->_parent = this;
+        it->_parent = this;
     }
 
     // merge children and voxels

@@ -50,12 +50,12 @@ using sofa::helper::system::thread::ctime_t;
 
 TriangleOctree::~TriangleOctree()
 {
-    for(int i=0; i<8; i++)
+    for(auto & i : childVec)
     {
-        if(childVec[i])
+        if(i)
         {
-            delete childVec[i];
-            childVec[i]=NULL;
+            delete i;
+            i=NULL;
         }
     }
 }
@@ -76,10 +76,10 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->setPolygonMode(0, true);
     }
-    for (int i = 0; i < 8; i++)
+    for (auto & i : childVec)
     {
-        if (childVec[i])
-            childVec[i]->draw(vparams);
+        if (i)
+            i->draw(vparams);
     }
 #endif /* SOFA_NO_OPENGL */
 }

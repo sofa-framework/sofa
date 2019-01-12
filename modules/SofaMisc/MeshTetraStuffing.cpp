@@ -327,9 +327,8 @@ void MeshTetraStuffing::init()
         do
         {
             nwraps = 0;
-            for (std::set<int>::const_iterator it = violatedOutsidePoints.begin(), itend = violatedOutsidePoints.end(); it != itend; ++it)
+            for (int p : violatedOutsidePoints)
             {
-                int p = *it;
                 if (pInside[p] == 0) continue; // point already wrapped
                 Real minDist = 0;
                 int minEdge = -1;
@@ -397,9 +396,8 @@ void MeshTetraStuffing::init()
         }
         while (nwraps > 0);
         // then order remaining violated inside points
-        for (std::set<int>::const_iterator it = violatedInsidePoints.begin(), itend = violatedInsidePoints.end(); it != itend; ++it)
+        for (int p : violatedInsidePoints)
         {
-            int p = *it;
             if (pInside[p] == 0)
             {
                 serr << "ERROR: inside point " << p << " already wrapped." << sendl;

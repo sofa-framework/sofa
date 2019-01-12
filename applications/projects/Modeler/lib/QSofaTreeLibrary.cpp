@@ -65,28 +65,28 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
     unsigned int indexPage=0;
     helper::vector<QTreeWidgetItem*> categoryDisplayed;
     //Look into all the categories
-    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    for (auto & categorie : categories)
     {
         unsigned int numComponentDisplayedInCategory=0;
         bool needToHideCategory=true;
         //For each category, look at all the components if one has the name wanted
-        const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
-        for (unsigned int comp=0; comp<components.size(); ++comp)
+        const std::vector< ComponentLibrary* > &components = categorie->getComponents();
+        for (auto component : components)
         {
-            if (f.isValid(components[comp]))
+            if (f.isValid(component))
             {
-                components[comp]->setDisplayed(true);
+                component->setDisplayed(true);
                 needToHideCategory=false;
                 ++numComponentDisplayed;
                 ++numComponentDisplayedInCategory;
             }
             else
             {
-                components[comp]->setDisplayed(false);
+                component->setDisplayed(false);
             }
         }
 
-        QCategoryTreeLibrary *category = static_cast<QCategoryTreeLibrary *>(categories[cat]);
+        QCategoryTreeLibrary *category = static_cast<QCategoryTreeLibrary *>(categorie);
 
         QList<QTreeWidgetItem*> found=findItems(QString(category->getName().c_str()),Qt::MatchStartsWith);
 
@@ -156,9 +156,9 @@ void QSofaTreeLibrary::build(const std::vector< std::string >& examples)
     resizeColumnToContents(0);
 
     //Look into all the categories
-    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    for (auto & categorie : categories)
     {
-        QCategoryTreeLibrary *category = static_cast<QCategoryTreeLibrary *>(categories[cat]);
+        QCategoryTreeLibrary *category = static_cast<QCategoryTreeLibrary *>(categorie);
         setItemExpanded(category->getQWidget(),false);
     }
 

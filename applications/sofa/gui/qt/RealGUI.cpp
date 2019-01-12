@@ -1514,8 +1514,8 @@ void RealGUI::eventNewStep()
     if ( frameCounter==0 )
     {
         ctime_t t = CTime::getRefTime();
-        for ( int i=0; i<10; i++ )
-            beginTime[i] = t;
+        for (unsigned long long & i : beginTime)
+            i = t;
     }
 
     ++frameCounter;
@@ -1787,14 +1787,14 @@ void RealGUI::createBackgroundGUIInfos()
     QHBoxLayout *colourLayout = new QHBoxLayout(colour);
     colourLayout->addWidget(new QLabel(QString("Colour "),colour));
 
-    for (unsigned int i=0; i<3; ++i)
+    for (auto & i : background)
     {
         std::ostringstream s;
         s<<"background" <<i;
         background[i] = new WDoubleLineEdit(colour,s.str().c_str());
-        background[i]->setMinValue( 0.0f);
-        background[i]->setMaxValue( 1.0f);
-        background[i]->setValue( 1.0f);
+        i->setMinValue( 0.0f);
+        i->setMaxValue( 1.0f);
+        i->setValue( 1.0f);
         background[i]->setMaximumSize(50, 20);
 
         colourLayout->addWidget(background[i]);

@@ -402,9 +402,9 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
     }
 
 //	ctx->serr << "MechanicalOperations::solveConstraint found solvers" << ctx->sendl;
-    for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
+    for (auto & it : constraintSolverList)
     {
-        (*it)->solveConstraint(&cparams, id);
+        it->solveConstraint(&cparams, id);
     }
 }
 

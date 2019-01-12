@@ -43,8 +43,8 @@ void CountingMessageHandler::process(Message& m)
 }
 
 void CountingMessageHandler::reset(){
-    for(unsigned int i=0;i<m_countMatching.size();i++){
-        m_countMatching[i] = 0 ;
+    for(int & i : m_countMatching){
+        i = 0 ;
     }
 }
 

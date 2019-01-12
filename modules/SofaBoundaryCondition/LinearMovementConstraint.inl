@@ -176,9 +176,9 @@ void LinearMovementConstraint<DataTypes>::projectResponseT(const core::Mechanica
         const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            dx[*it] = Deriv();
+            dx[indice] = Deriv();
         }
     }
 }
@@ -205,9 +205,9 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
         const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            dx[*it] = (nextM - prevM)*(1.0 / (nextT - prevT));
+            dx[indice] = (nextM - prevM)*(1.0 / (nextT - prevT));
         }
     }
 }
@@ -224,9 +224,9 @@ void LinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     {
         const SetIndexArray & indices = m_indices.getValue();
         x0.resize(x.size());
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x0[*it] = x[*it];
+            x0[indice] = x[indice];
         }
     }
 
@@ -254,16 +254,16 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     //set the motion to the Dofs
     if (d_relativeMovements.getValue())
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x[*it] = x0[*it] + m ;
+            x[indice] = x0[indice] + m ;
         }
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x[*it] = m ;
+            x[indice] = m ;
         }
     }
 }
@@ -282,18 +282,18 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     //set the motion to the Dofs
     if (d_relativeMovements.getValue())
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x[*it].getCenter() = x0[*it].getCenter() + getVCenter(m) ;
-            x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
+            x[indice].getCenter() = x0[indice].getCenter() + getVCenter(m) ;
+            x[indice].getOrientation() = x0[indice].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
         }
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            x[*it].getCenter() =  getVCenter(m) ;
-            x[*it].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
+            x[indice].getCenter() =  getVCenter(m) ;
+            x[indice].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
         }
     }
 }
@@ -370,14 +370,14 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
 
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int indice : indices)
     {
         // Reset Fixed Row and Col
         for (unsigned int c=0; c<N; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
+            mat->clearRowCol(offset + N * indice + c);
         // Set Fixed Vertex
         for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+            mat->set(offset + N * indice + c, offset + N * indice + c, 1.0);
     }
 }
 
@@ -387,10 +387,10 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = m_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (unsigned int indice : indices)
     {
         for (unsigned int c=0; c<N; ++c)
-            vect->clear(offset + N * (*it) + c);
+            vect->clear(offset + N * indice + c);
     }
 }
 
@@ -416,10 +416,10 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         {
             for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
             {
-                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                for (unsigned int indice : indices)
                 {
-                    auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
-                    auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                    auto tmp0 = DataTypes::getCPos(x0[indice]) + DataTypes::getDPos(keyMovements[i]);
+                    auto tmp1 = DataTypes::getCPos(x0[indice]) + DataTypes::getDPos(keyMovements[i + 1]);
                     sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
                     sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
@@ -451,9 +451,9 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         sofa::helper::vector<defaulttype::Vector3> points;
         defaulttype::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int indice : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[indice]);
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, color);

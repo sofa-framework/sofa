@@ -129,8 +129,8 @@ public:
     friend std::ostream& operator << (std::ostream& _flux, FileRepository _fr)
     {
         _flux<< "FileRepository vpath :"<<std::endl;
-        for(std::vector<std::string>::iterator it = _fr.vpath.begin(); it!=_fr.vpath.end(); it++)
-            _flux<<(*it)<<std::endl;
+        for(auto & it : _fr.vpath)
+            _flux<<it<<std::endl;
 
         return _flux;
     }

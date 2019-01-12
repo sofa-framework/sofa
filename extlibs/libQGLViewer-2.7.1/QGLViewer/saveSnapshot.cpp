@@ -88,8 +88,8 @@ bool QGLViewer::openSnapshotFormatDialog() {
 void QGLViewer::initializeSnapshotFormats() {
   QList<QByteArray> list = QImageWriter::supportedImageFormats();
   QStringList formatList;
-  for (int i = 0; i < list.size(); ++i)
-    formatList << QString(list.at(i).toUpper());
+  for (const auto & i : list)
+    formatList << QString(i.toUpper());
 //        qWarning("Available image formats: ");
 //        QStringList::Iterator it = formatList.begin();
 //        while( it != formatList.end() )

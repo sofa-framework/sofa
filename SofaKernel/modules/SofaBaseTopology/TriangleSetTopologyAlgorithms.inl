@@ -1381,37 +1381,37 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 // Triangularize the remaining quad according to the delaunay criteria
                 const typename DataTypes::VecCoord& coords =(m_geometryAlgorithms->getDOF()->read(core::ConstVecCoordId::position())->getValue());
-                for (unsigned int j = 0; j<2; j++)
+                for (auto & j : quad)
                 {
                     //Vec<3,double> pos[4];
                     Coord pos[4];
                     for (unsigned int k = 0; k<4; k++)
                     {
-                        if (quad[j][k] == p1)
+                        if (j[k] == p1)
                             for (unsigned int u = 0; u<3; u++)
                                 for (unsigned int v = 0; v<3; v++)
                                     pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*(Real)coords_list[i][u];
-                        else if (quad[j][k] == p2)
+                        else if (j[k] == p2)
                             for (unsigned int u = 0; u<3; u++)
                                 for (unsigned int v = 0; v<3; v++)
                                     pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*(Real)coords_list[i+1][u];
                         else
-                            pos[k]= coords[quad[j][k]];
+                            pos[k]= coords[j[k]];
 
                     }
 
                     if (m_geometryAlgorithms->isQuadDeulaunayOriented(pos[0], pos[1], pos[2], pos[3]))
                     {
-                        new_triangles.push_back(Triangle(quad[j][1], quad[j][2], quad[j][0]));
+                        new_triangles.push_back(Triangle(j[1], j[2], j[0]));
                         new_triangles_id.push_back(next_triangle++);
-                        new_triangles.push_back(Triangle(quad[j][3], quad[j][0], quad[j][2]));
+                        new_triangles.push_back(Triangle(j[3], j[0], j[2]));
                         new_triangles_id.push_back(next_triangle++);
                     }
                     else
                     {
-                        new_triangles.push_back(Triangle(quad[j][2], quad[j][3], quad[j][1]));
+                        new_triangles.push_back(Triangle(j[2], j[3], j[1]));
                         new_triangles_id.push_back(next_triangle++);
-                        new_triangles.push_back(Triangle(quad[j][0], quad[j][1], quad[j][3]));
+                        new_triangles.push_back(Triangle(j[0], j[1], j[3]));
                         new_triangles_id.push_back(next_triangle++);
                     }
 
@@ -2206,9 +2206,8 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 3: Create new triangles by replacing indices of split points in the list of triangles to update
-    for (std::set<TriangleID>::const_iterator it = updatedTriangles.begin(), itend = updatedTriangles.end(); it != itend; ++it)
+    for (unsigned int tid : updatedTriangles)
     {
-        TriangleID tid = *it;
         Triangle t = m_container->getTriangle(tid);
         bool changed = false;
         for (int c = 0; c < 3; ++c)

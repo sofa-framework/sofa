@@ -337,8 +337,8 @@ static bool GTestIsInitialized() { return GetArgvs().size() > 0; }
 static int SumOverTestCaseList(const std::vector<TestCase*>& case_list,
                                int (TestCase::*method)() const) {
   int sum = 0;
-  for (size_t i = 0; i < case_list.size(); i++) {
-    sum += (case_list[i]->*method)();
+  for (auto i : case_list) {
+    sum += (i->*method)();
   }
   return sum;
 }
@@ -1111,11 +1111,11 @@ std::vector<EditType> CalculateOptimalEdits(
   std::vector<size_t> left_ids, right_ids;
   {
     InternalStrings intern_table;
-    for (size_t i = 0; i < left.size(); ++i) {
-      left_ids.push_back(intern_table.GetId(left[i]));
+    for (const auto & i : left) {
+      left_ids.push_back(intern_table.GetId(i));
     }
-    for (size_t i = 0; i < right.size(); ++i) {
-      right_ids.push_back(intern_table.GetId(right[i]));
+    for (const auto & i : right) {
+      right_ids.push_back(intern_table.GetId(i));
     }
   }
   return CalculateOptimalEdits(left_ids, right_ids);
@@ -3358,8 +3358,8 @@ GTEST_REVERSE_REPEATER_METHOD_(OnTestProgramEnd, UnitTest)
 void TestEventRepeater::OnTestIterationStart(const UnitTest& unit_test,
                                              int iteration) {
   if (forwarding_enabled_) {
-    for (size_t i = 0; i < listeners_.size(); i++) {
-      listeners_[i]->OnTestIterationStart(unit_test, iteration);
+    for (auto & listener : listeners_) {
+      listener->OnTestIterationStart(unit_test, iteration);
     }
   }
 }
@@ -3502,8 +3502,7 @@ std::string XmlUnitTestResultPrinter::EscapeXml(
     const std::string& str, bool is_attribute) {
   Message m;
 
-  for (size_t i = 0; i < str.size(); ++i) {
-    const char ch = str[i];
+  for (char ch : str) {
     switch (ch) {
       case '<':
         m << "&lt;";
@@ -3548,9 +3547,9 @@ std::string XmlUnitTestResultPrinter::RemoveInvalidXmlCharacters(
     const std::string& str) {
   std::string output;
   output.reserve(str.size());
-  for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
-    if (IsValidXmlCharacter(*it))
-      output.push_back(*it);
+  for (char it : str)
+    if (IsValidXmlCharacter(it))
+      output.push_back(it);
 
   return output;
 }
@@ -3869,8 +3868,7 @@ void JsonUnitTestResultPrinter::OnTestIterationEnd(const UnitTest& unit_test,
 std::string JsonUnitTestResultPrinter::EscapeJson(const std::string& str) {
   Message m;
 
-  for (size_t i = 0; i < str.size(); ++i) {
-    const char ch = str[i];
+  for (char ch : str) {
     switch (ch) {
       case '\\':
       case '"':
@@ -5146,8 +5144,7 @@ int UnitTestImpl::FilterTests(ReactionToSharding shard_tests) {
   // this shard.
   int num_runnable_tests = 0;
   int num_selected_tests = 0;
-  for (size_t i = 0; i < test_cases_.size(); i++) {
-    TestCase* const test_case = test_cases_[i];
+  for (auto test_case : test_cases_) {
     const std::string &test_case_name = test_case->name();
     test_case->set_should_run(false);
 
@@ -5215,8 +5212,7 @@ void UnitTestImpl::ListTestsMatchingFilter() {
   // Print at most this many characters for each type/value parameter.
   const int kMaxParamLength = 250;
 
-  for (size_t i = 0; i < test_cases_.size(); i++) {
-    const TestCase* const test_case = test_cases_[i];
+  for (auto test_case : test_cases_) {
     bool printed_test_case_name = false;
 
     for (size_t j = 0; j < test_case->test_info_list().size(); j++) {
@@ -5294,8 +5290,8 @@ void UnitTestImpl::ShuffleTests() {
                static_cast<int>(test_cases_.size()), &test_case_indices_);
 
   // Shuffles the tests inside each test case.
-  for (size_t i = 0; i < test_cases_.size(); i++) {
-    test_cases_[i]->ShuffleTests(random());
+  for (auto & test_case : test_cases_) {
+    test_case->ShuffleTests(random());
   }
 }
 
@@ -5613,10 +5609,10 @@ static void LoadFlagsFromFile(const std::string& path) {
   posix::FClose(flagfile);
   std::vector<std::string> lines;
   SplitString(contents, '\n', &lines);
-  for (size_t i = 0; i < lines.size(); ++i) {
-    if (lines[i].empty())
+  for (auto & line : lines) {
+    if (line.empty())
       continue;
-    if (!ParseGoogleTestFlag(lines[i].c_str()))
+    if (!ParseGoogleTestFlag(line.c_str()))
       g_help_flag = true;
   }
 }

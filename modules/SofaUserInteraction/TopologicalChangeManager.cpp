@@ -115,9 +115,9 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         is_topoMap = false;
         std::vector< core::objectmodel::BaseObject * > listObject;
         node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
-        for(unsigned int i=0; i<listObject.size(); ++i)
+        for(auto & i : listObject)
         {
-            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(i);
             if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
@@ -127,19 +127,19 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                 items.clear();
                 if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (unsigned int loc_item : loc_items)
                     {
-                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind_glob = topoMap->getGlobIndex(loc_item);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
                         items.insert(ind);
                     }
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (unsigned int loc_item : loc_items)
                     {
                         vector<unsigned int> indices;
-                        topoMap->getFromIndex( indices, *it);
+                        topoMap->getFromIndex( indices, loc_item);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             items.insert( *itIndices );
@@ -244,9 +244,9 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
         is_topoMap = false;
         std::vector< core::objectmodel::BaseObject * > listObject;
         node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
-        for (unsigned int i = 0; i<listObject.size(); ++i)
+        for (auto & i : listObject)
         {
-            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(i);
             if (topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
@@ -254,19 +254,19 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
                 items.clear();
                 if (topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it = loc_items.begin(); it != loc_items.end(); ++it)
+                    for (unsigned int loc_item : loc_items)
                     {
-                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind_glob = topoMap->getGlobIndex(loc_item);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
                         items.insert(ind);
                     }
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it = loc_items.begin(); it != loc_items.end(); ++it)
+                    for (unsigned int loc_item : loc_items)
                     {
                         vector<unsigned int> indices;
-                        topoMap->getFromIndex(indices, *it);
+                        topoMap->getFromIndex(indices, loc_item);
                         for (vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             items.insert(*itIndices);
@@ -321,9 +321,9 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
 
         std::vector< core::objectmodel::BaseObject * > listObject;
         node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
-        for(unsigned int i=0; i<listObject.size(); ++i)
+        for(auto & i : listObject)
         {
-            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(i);
             if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
@@ -331,19 +331,19 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                 items.clear();
                 if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (unsigned int loc_item : loc_items)
                     {
-                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind_glob = topoMap->getGlobIndex(loc_item);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
                         items.insert(ind);
                     }
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (unsigned int loc_item : loc_items)
                     {
                         vector<unsigned int> indices;
-                        topoMap->getFromIndex( indices, *it);
+                        topoMap->getFromIndex( indices, loc_item);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             items.insert( *itIndices );
