@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,12 +22,8 @@
 #ifndef SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 
-#include <sofa/core/core.h>
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -170,30 +166,18 @@ protected:
     virtual void updateForceMask() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3dTypes, defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2dTypes, defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec1dTypes, defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2dTypes, defaulttype::Rigid2dTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2dTypes, defaulttype::Rigid2dTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2dTypes, defaulttype::Vec2dTypes> ;
-#endif
+#if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3Types, defaulttype::Rigid3Types> ;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2Types, defaulttype::Rigid2Types> ;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Rigid3Types> ;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Rigid2Types> ;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3Types, defaulttype::Vec3Types> ;
+extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2Types, defaulttype::Vec2Types> ;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3fTypes, defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2fTypes, defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec1fTypes, defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2fTypes, defaulttype::Rigid2fTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2fTypes, defaulttype::Rigid2fTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes> ;
-extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigid2fTypes, defaulttype::Vec2fTypes> ;
-#endif
+
 #endif
 
 } // namespace behavior

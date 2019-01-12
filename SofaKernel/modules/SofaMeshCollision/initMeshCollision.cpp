@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,19 +44,7 @@ void initMeshCollision()
 
     core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
     (void) pMeshNewProximityIntersectors;
-    // pMeshNewProximityIntersectors will be deleted when the application is closed
 }
-
-SOFA_LINK_CLASS(BarycentricPenalityContact)
-SOFA_LINK_CLASS(BarycentricContactMapper)
-SOFA_LINK_CLASS(IdentityContactMapper)
-SOFA_LINK_CLASS(MeshNewProximityIntersection)
-SOFA_LINK_CLASS(Point)
-SOFA_LINK_CLASS(Line)
-SOFA_LINK_CLASS(Triangle)
-SOFA_LINK_CLASS(LineLocalMinDistanceFilter)
-SOFA_LINK_CLASS(PointLocalMinDistanceFilter)
-
 
 } // namespace component
 

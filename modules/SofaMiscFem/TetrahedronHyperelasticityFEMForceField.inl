@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,12 +34,11 @@
 #include <SofaMiscFem/Ogden.h>
 #include "TetrahedronHyperelasticityFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
@@ -237,10 +236,9 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
             m_initialPoints=p;
     }
-    int i;
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<m_topology->getNbTetrahedra();++i)
+    for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
         m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                                                 m_topology->getTetrahedron(i),  (const vector< unsigned int > )0,
@@ -729,6 +727,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -736,7 +736,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
 
 
     std::vector< Vector3 > points[4];
-    for(int i = 0 ; i<m_topology->getNbTetrahedra();++i)
+    for(Topology::TetrahedronID i = 0 ; i<m_topology->getNbTetrahedra();++i)
     {
         const Tetrahedron t=m_topology->getTetrahedron(i);
 
@@ -831,6 +831,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,false);
 
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

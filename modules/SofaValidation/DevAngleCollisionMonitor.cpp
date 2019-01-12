@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,24 +35,14 @@ namespace misc
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(DevAngleCollisionMonitor)
-
 // Register in the Factory
 int DevAngleCollisionMonitorClass = core::RegisterObject("Angle collision monitoring")
-#ifndef SOFA_FLOAT
-        .add< DevAngleCollisionMonitor<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DevAngleCollisionMonitor<Rigid3fTypes> >()
-#endif
+        .add< DevAngleCollisionMonitor<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class DevAngleCollisionMonitor<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class DevAngleCollisionMonitor<Rigid3fTypes>;
-#endif
+template class DevAngleCollisionMonitor<Rigid3Types>;
+
 
 } // namespace misc
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,30 +32,18 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(DeformableOnRigidFrameMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-#ifndef SOFA_FLOAT
-        .add< DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes > >()
-//.add< DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes > >()
-//.add< DeformableOnRigidFrameMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes > >()
+//.add< DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
-//template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
-//template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, ExtVec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes >;
+//template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3Types >;
+
 
 
 } // namespace mapping

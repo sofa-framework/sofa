@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,8 +25,6 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -111,6 +109,9 @@ public:
     /// This is the method that should be implemented by the component
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) = 0;
 
+
+    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
@@ -140,24 +141,19 @@ protected:
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() override;
+
+private:
+    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2dTypes>;
-#endif
+#if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2fTypes>;
-#endif
+
 #endif
 } // namespace behavior
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
 
 void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
 {
-     sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
+    sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
 
     sofa::helper::AdvancedTimer::stepBegin("begin collision",obj);
     {
@@ -110,7 +110,7 @@ void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::Od
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
-//  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
+    //  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
     solver->solve(params, getDt());
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
@@ -122,9 +122,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (!firstNodeVisited)
     {
         firstNodeVisited=true;
-        sofa::core::MechanicalParams mparams(*this->params);
-        mparams.setDt(dt);
-        MechanicalResetConstraintVisitor resetConstraint(&mparams);
+        
+        sofa::core::ConstraintParams cparams(*this->params);
+        MechanicalResetConstraintVisitor resetConstraint(&cparams);
         node->execute(&resetConstraint);
     }
 
@@ -165,13 +165,11 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         }
 
         MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
-            sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
-        ).execute( node );
-        MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-                VecDerivId::dx(),
-#endif
-                true).execute( node );
+                                                    sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+                                                    ).execute( node );
+        MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,
+                                                          VecCoordId::position(),
+                                                          VecDerivId::velocity(), true).execute( node );
 
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);

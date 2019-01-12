@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,7 +51,9 @@ public:
 	typedef sofa::core::behavior::BaseAnimationLoop Inherit;
 	SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-	Data<int> threadNumber;
+    Data<std::string> schedulerName; ///< scheduler name type
+
+	Data<unsigned int> threadNumber; ///< number of thread
 
 
 protected:
@@ -86,14 +88,11 @@ public:
 
 private :
 
-	// thread storage initialization
-	void initThreadLocalData();
-
-	int mNbThread;
+	unsigned int mNbThread;
 
 	simulation::Node* gnode;
 	
-
+    TaskScheduler* _taskScheduler;
 
 	//boost::shared_ptr<TaskScheduler> mScheduler;
 };

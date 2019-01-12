@@ -57,6 +57,7 @@ def getStackForSofa():
 
 def getPythonCallingPointAsString():
     """returns the last entry with an "informal" formatting. """
+
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[-1:]
     return formatStackForSofa(ss)
@@ -65,12 +66,40 @@ def getPythonCallingPoint():
     """returns the tupe with closest filename & line. """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1]
-    return (ss[1], ss[2])
+    tmp=(ss[1], ss[2])
+    return tmp
 
-def sofaExceptHandler(type, value, tb):
+def sendMessageFromException(e):
+    exc_type, exc_value, exc_tb = sys.exc_info()
+    sofaExceptHandler(exc_type, exc_value, exc_tb)
+
+def sofaFormatHandler(type, value, tb):
+    global oldexcepthook
     """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
        Message Description
-       Python Stack:
+       Python Stack (most recent are at the end)
+          File file1.py line 4  ...
+          File file1.py line 10 ...
+          File file1.py line 40 ...
+          File file1.py line 23 ...
+            faulty line
+    """
+    s="\nPython Stack (most recent are at the end): \n"
+    for line in traceback.format_tb(tb):
+        s += line
+
+    return repr(value)+" "+s
+
+
+def getSofaFormattedStringFromException(e):
+    exc_type, exc_value, exc_tb = sys.exc_info()
+    return sofaFormatHandler(exc_type, exc_value, exc_tb)
+
+def sofaExceptHandler(type, value, tb):
+    global oldexcepthook
+    """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
+       Message Description
+       Python Stack (most recent are at the end)
           File file1.py line 4  ...
           File file1.py line 10 ...
           File file1.py line 40 ...
@@ -105,3 +134,22 @@ class Controller(Sofa.PythonScriptController):
         if not cls.onLoaded is Sofa.PythonScriptController.onLoaded:
             Sofa.msg_warning('SofaPython',
                              '`onLoaded` is defined in subclass but will not be called in the future' )
+
+class DataEngine(Sofa.PythonScriptDataEngine):
+
+    def __init__(self, node, *args, **kwargs):
+        Sofa.msg_warning('SofaPython', 'SofaPython.DataEngine is intended as compatibility class only')
+
+        # setting attributes from kwargs
+        for name, value in kwargs.iteritems():
+            setattr(self, name, value)
+
+        # call createGraph for compatibility purposes
+        self.createGraph(node)
+
+        # check whether derived class has 'onLoaded'
+        cls = type(self)
+        if not cls.onLoaded is Sofa.PythonScriptDataEngine.onLoaded:
+            Sofa.msg_warning('SofaPython',
+                             '`onLoaded` is defined in subclass but will not be called in the future' )
+

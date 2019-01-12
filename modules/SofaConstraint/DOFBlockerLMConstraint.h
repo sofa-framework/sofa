@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -132,10 +132,10 @@ public:
         else return false;
     }
 
-    Data<helper::vector<Deriv> > BlockedAxis;
-    Data<helper::vector<SReal> > factorAxis;
-    SetIndex f_indices;
-    Data<SReal> showSizeAxis;
+    Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
+    Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
+    SetIndex f_indices; ///< List of the index of particles to be fixed
+    Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {
@@ -165,15 +165,10 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class DOFBlockerLMConstraint<defaulttype::Rigid3dTypes>;
-extern template class DOFBlockerLMConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class DOFBlockerLMConstraint<defaulttype::Rigid3fTypes>;
-extern template class DOFBlockerLMConstraint<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)
+extern template class DOFBlockerLMConstraint<defaulttype::Rigid3Types>;
+extern template class DOFBlockerLMConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

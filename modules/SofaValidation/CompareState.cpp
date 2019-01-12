@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -132,7 +132,7 @@ void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
 //-------------------------------- processCompareState------------------------------------
 void CompareState::processCompareState()
 {
-    SReal time = getContext()->getTime() + f_shift.getValue();
+    SReal time = getContext()->getTime() + d_shift.getValue();
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;
     std::vector<std::string> validLines;
@@ -174,13 +174,13 @@ void CompareState::processCompareState()
         }
     }
 
-    sout << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_V << sendl;
+    msg_info() << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_V;
 }
 
 //-------------------------------- processCompareState------------------------------------
 void CompareState::draw(const core::visual::VisualParams* vparams)
 {
-    SReal time = getContext()->getTime() + f_shift.getValue();
+    SReal time = getContext()->getTime() + d_shift.getValue();
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;
     if (nextValidLines.empty() && last_time != getContext()->getTime())
@@ -326,7 +326,7 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
             validFilename = lookForValidCompareStateFile(sceneName, ms->getName(), counterCompareState, extension,
                     ms->getClass()->shortName);
         }
-        rs->f_filename.setValue(validFilename);  rs->f_listening.setValue(false); //Deactivated only called by extern functions
+        rs->d_filename.setValue(validFilename);  rs->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rs->init();
 
         ++counterCompareState;

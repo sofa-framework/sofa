@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 
 #include <SofaGeneralEngine/MergeMeshes.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -134,23 +133,11 @@ void MergeMeshes<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void MergeMeshes<DataTypes>::update()
+void MergeMeshes<DataTypes>::doUpdate()
 {
 //    createInputMeshesData();
 
     unsigned int nb = f_nbMeshes.getValue();
-
-    for (unsigned int i=0; i<nb; ++i)
-    {
-        vf_positions[i]->updateIfDirty();
-        vf_edges[i]->updateIfDirty();
-        vf_triangles[i]->updateIfDirty();
-        vf_quads[i]->updateIfDirty();
-        vf_tetrahedra[i]->updateIfDirty();
-        vf_hexahedra[i]->updateIfDirty();
-    }
-
-    cleanDirty();
 
     mergeInputDataVector(nb, f_output_positions, vf_positions);
     mergeInputDataVector(nb, f_output_edges, vf_edges, vf_positions);

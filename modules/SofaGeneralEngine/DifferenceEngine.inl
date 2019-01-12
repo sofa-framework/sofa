@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,12 +61,10 @@ void DifferenceEngine<DataType>::reinit()
 }
 
 template <class DataType>
-void DifferenceEngine<DataType>::update()
+void DifferenceEngine<DataType>::doUpdate()
 {
     helper::ReadAccessor<Data<VecData> > in = d_input;
     helper::ReadAccessor<Data<VecData> > sub = d_substractor;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecData> > out = d_output;
 

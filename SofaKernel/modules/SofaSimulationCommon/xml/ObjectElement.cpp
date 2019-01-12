@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,7 +70,7 @@ bool ObjectElement::initNode()
     {
         if (replaceAttribute.find(it->first) != replaceAttribute.end())
         {
-            setAttribute(it->first,replaceAttribute[it->first].c_str());
+            setAttribute(it->first,replaceAttribute[it->first]);
         }
     }
 
@@ -81,7 +81,7 @@ bool ObjectElement::initNode()
     if (obj == NULL)
     {
         BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
-        desc.setAttribute("name", ("Not created ("+getType()+")").c_str());
+        desc.setAttribute("name", ("Not created ("+getType()+")"));
         obj = core::ObjectFactory::CreateObject(ctx, &desc) ;
         std::stringstream tmp ;
         for(auto& s : this->getErrors())
@@ -112,8 +112,6 @@ bool ObjectElement::initNode()
     }
     return true;
 }
-
-SOFA_DECL_CLASS(Object)
 
 Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
 

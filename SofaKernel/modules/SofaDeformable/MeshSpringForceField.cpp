@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP
 #include <SofaDeformable/MeshSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -37,31 +37,17 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(MeshSpringForceField)
-
 int MeshSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
-#ifndef SOFA_FLOAT
-        .add< MeshSpringForceField<Vec3dTypes> >()
-        .add< MeshSpringForceField<Vec2dTypes> >()
-        .add< MeshSpringForceField<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MeshSpringForceField<Vec3fTypes> >()
-        .add< MeshSpringForceField<Vec2fTypes> >()
-        .add< MeshSpringForceField<Vec1fTypes> >()
-#endif
+        .add< MeshSpringForceField<Vec3Types> >()
+        .add< MeshSpringForceField<Vec2Types> >()
+        .add< MeshSpringForceField<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec3dTypes>;
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec2dTypes>;
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec3fTypes>;
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec2fTypes>;
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec1fTypes>;
-#endif
+template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec3Types>;
+template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec2Types>;
+template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec1Types>;
+
 } // namespace interactionforcefield
 
 } // namespace component

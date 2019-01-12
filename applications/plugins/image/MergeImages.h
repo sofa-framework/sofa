@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,15 +80,15 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    Data<helper::OptionsGroup> overlap;
-    Data<helper::OptionsGroup> Interpolation;
-    Data<unsigned int> nbImages;
+    Data<helper::OptionsGroup> overlap; ///< method for handling overlapping regions
+    Data<helper::OptionsGroup> Interpolation; ///< Interpolation method.
+    Data<unsigned int> nbImages; ///< number of images to merge
 
     helper::vectorData<ImageTypes> inputImages;
     helper::vectorData<TransformType> inputTransforms;
 
-    Data<ImageTypes> image;
-    Data<TransformType> transform;
+    Data<ImageTypes> image; ///< Image
+    Data<TransformType> transform; ///< Transform
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
@@ -172,7 +172,7 @@ protected:
         Coord u;
     };
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         unsigned int nb = nbImages.getValue();
         inputImages.resize(nb);
@@ -321,7 +321,6 @@ protected:
         }
 
         sout << "Created merged image from " << nb << " input images." << sendl;
-        cleanDirty();
     }
 
     defaulttype::Vec<2,Coord> getBB(unsigned int i) // get image corners

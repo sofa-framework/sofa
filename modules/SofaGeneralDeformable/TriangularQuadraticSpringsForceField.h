@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -131,10 +129,10 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
-    Data<Real> f_dampingRatio;
-    Data<bool> f_useAngularSprings; // whether angular springs should be included
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
+    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
     Real lambda;  /// first Lam� coefficient
     Real mu;    /// second Lam� coefficient
@@ -209,8 +207,8 @@ public:
 
 
 protected :
-    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
@@ -219,17 +217,13 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3Types>;
 
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
 
 
 } //namespace forcefield

@@ -15,7 +15,7 @@
         <VisualStyle displayFlags="showForceFields" />
         
         <MechanicalObject />
-        <UniformMass totalmass="1000.0" />
+        <UniformMass totalMass="1000.0" />
         <SparseGrid n="8 6 6" fileTopology="mesh/liver-smooth.obj" />
         <BoxROI name="box1" box="-2.5 0 -2.5 7.5 3 2" />
         <FixedConstraint indices="@box1.indices"/>
@@ -34,9 +34,9 @@
         
         <RegularGrid nx="50" ny="1" nz="50" xmin="-6" xmax="2" ymin="6" ymax="6" zmin="-4" zmax="4" name="Container" />
         <MechanicalObject name="dofs" />
-        <UniformMass totalmass="100" />
+        <UniformMass totalMass="100" />
         <Node name="T">
-            <include href="../../Objects/TriangleSetTopology.xml" />
+            <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,6 +88,7 @@ protected:
     virtual bool script_onKeyPressed(const char c) override;
     virtual bool script_onKeyReleased(const char c) override;
 
+    virtual void script_onMouseMove(const int posX,const int posY) override;
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;
@@ -113,7 +114,7 @@ protected:
 public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
-    sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; /// array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
+    sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; ///< array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
 
@@ -127,6 +128,7 @@ protected:
     // optionnal script entry points:
     PyObject *m_Func_onKeyPressed          {nullptr} ;
     PyObject *m_Func_onKeyReleased         {nullptr} ;
+    PyObject *m_Func_onMouseMove           {nullptr} ;
     PyObject *m_Func_onMouseButtonLeft     {nullptr} ;
     PyObject *m_Func_onMouseButtonRight    {nullptr} ;
     PyObject *m_Func_onMouseButtonMiddle   {nullptr} ;

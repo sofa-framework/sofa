@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,11 +40,11 @@ namespace objectmodel
 class SOFA_CORE_API IdleEvent : public Event
 {
 public:
-    IdleEvent() {}
-    virtual ~IdleEvent() {}
+    IdleEvent();
+    virtual ~IdleEvent();
     SOFA_EVENT_H( IdleEvent )
 
-    virtual const char* getClassName() const { return "IdleEvent"; }
+    virtual const char* getClassName() const;
 protected:
 };
 

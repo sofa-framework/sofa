@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,20 +46,13 @@ namespace controller
 //	W_tool_world.clear();
 //};
 int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
-#ifndef SOFA_FLOAT
-        .add< NullForceFeedbackT<sofa::defaulttype::Vec1dTypes> >()
-        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< NullForceFeedbackT<sofa::defaulttype::Vec1fTypes> >()
-        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3fTypes> >()
-#endif
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >()
+
         ;
 
 //int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
 //    .add< NullForceFeedback >();
-
-SOFA_DECL_CLASS(NullForceFeedbackT)
 
 } // namespace controller
 } // namespace component

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -156,30 +156,18 @@ public:
         return false;
     }
 
-
-    //template < class Visit, class Container, class Object >
-    //void for_each(Visit* visitor, const Container& list, void (Visit::*fn)(Object))
-    //{
-    //	for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-    //	{
-    //		(visitor->*fn)(*it);
-    //	}
-    //}
-
-
     /// Alias for context->executeVisitor(this)
     virtual void execute(core::objectmodel::BaseContext* node, bool precomputedOrder=false);
 
     virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj
             , const std::string &typeInfo=std::string("type")
                          );
+
     virtual void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
     ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj
             , const std::string &typeInfo=std::string("type")
                  );
     void end(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj, ctime_t t0);
-
-
 
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,9 +40,19 @@ namespace mapping
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear ( int reserve )
 {
+
     helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
+    vectorData.clear();
+    if ( reserve>0 )
+        vectorData.reserve ( reserve );
     map.endEdit();
+
+    helper::vector<MappingOrientData>& vectorOrientData = *(mapOrient.beginEdit());
+    vectorOrientData.clear();
+    if ( reserve>0 )
+        vectorOrientData.reserve ( reserve );
+
+    mapOrient.endEdit();
 }
 
 template <class In, class Out>
@@ -92,7 +102,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
     _fromContainer->getContext()->get ( _fromGeomAlgo );
 
     int outside = 0;
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     sofa::helper::vector<sofa::defaulttype::Matrix3> bases;
     sofa::helper::vector<sofa::defaulttype::Vector3> centers;
@@ -164,7 +174,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
 {
     actualTetraPosition=in;
     //get number of point being mapped
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
 
@@ -227,7 +237,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
 {
     out.resize( map.getValue().size() );
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
@@ -261,7 +271,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     typename core::behavior::MechanicalState<Out>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
@@ -332,7 +342,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
     else
         matrixJ->clear();
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
 
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
@@ -383,7 +393,7 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
     // TODO: use mapOrient
@@ -421,7 +431,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
     // TODO: use mapOrient

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -45,8 +45,20 @@ template <class DataTypes> QuadPressureForceField<DataTypes>::~QuadPressureForce
 {
 }
 
+template <class DataTypes>
+QuadPressureForceField<DataTypes>::QuadPressureForceField()
+    : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    , quadList(initData(&quadList,"quadList", "Indices of quads separated with commas where a pressure is applied"))
+    , normal(initData(&normal,"normal", "Normal direction for the plane selection of quads"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
+    , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
+{
+}
 
-template <class DataTypes> void QuadPressureForceField<DataTypes>::init()
+template <class DataTypes>
+void QuadPressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
 
@@ -78,7 +90,6 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     Deriv force;
 
-    //edgePressureMap.activateSubsetData();
     const sofa::helper::vector <unsigned int>& my_map = quadPressureMap.getMap2Elements();
     const sofa::helper::vector<QuadPressureInformation>& my_subset = quadPressureMap.getValue();
 
@@ -164,7 +175,7 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
     sofa::helper::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
     helper::vector<unsigned int> inputQuads;
 
-    for (int n=0; n<_topology->getNbQuads(); ++n)
+    for (size_t n=0; n<_topology->getNbQuads(); ++n)
     {
         if ((vArray[_topology->getQuad(n)[0]]) && (vArray[_topology->getQuad(n)[1]])&& (vArray[_topology->getQuad(n)[2]])&& (vArray[_topology->getQuad(n)[3]]) )
         {
@@ -202,39 +213,47 @@ void QuadPressureForceField<DataTypes>::selectQuadsFromString()
     return;
 }
 
+template <class DataTypes>
+bool QuadPressureForceField<DataTypes>::isPointInPlane(Coord p)
+{
+    Real d=dot(p,normal.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+        return true;
+    else
+        return false;
+}
 
 template<class DataTypes>
 void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (!p_showForces.getValue())
         return;
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_QUADS);
-    glColor4f(0,1,0,1);
+    vparams->drawTool()->disableLighting();
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::green();
 
     const sofa::helper::vector <unsigned int>& my_map = quadPressureMap.getMap2Elements();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getQuad(my_map[i])[0]]);
-        helper::gl::glVertexT(x[_topology->getQuad(my_map[i])[1]]);
-        helper::gl::glVertexT(x[_topology->getQuad(my_map[i])[2]]);
-        helper::gl::glVertexT(x[_topology->getQuad(my_map[i])[3]]);
+        for(unsigned int j=0 ; j<4 ; j++)
+            vertices.push_back(x[_topology->getQuad(my_map[i])[j]]);
     }
-    glEnd();
+    vparams->drawTool()->drawQuads(vertices, color);
 
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->saveLastState();
 }
 
 } // namespace forcefield

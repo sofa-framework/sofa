@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,15 +29,11 @@
 #include <bits/atomicity.h> // for __exchange_and_add
 #elif defined(__GNUC__) && (defined(i386) || defined(__i386__) || defined(__x86_64__))
 // custom ASM code, no include
-#elif defined(__GNUC__) && !(defined(PS3))
+#elif defined(__GNUC__)
 // Fall-back mode: stdc++ atomic operations (should be available on all gcc-supported platforms)
 #include <bits/atomicity.h>
 #elif defined(WIN32)
 #include <windows.h>
-#elif defined(_XBOX)
-#include <xtl.h>
-#elif defined(PS3)
-#include <cell/atomic.h>
 #else
 #error atomic operations are not supported on your platform
 #endif
@@ -185,7 +181,7 @@ public:
 #endif
 };
 
-#elif defined(__GNUC__) && !defined(PS3)
+#elif defined(__GNUC__)
 // Fall-back mode: stdc++ atomic operations (should be available on all gcc-supported platforms)
 
 using namespace __gnu_cxx;
@@ -233,7 +229,7 @@ public:
     static const char* getImplName() { return "GLIBC"; }
 };
 
-#elif defined(WIN32) || defined(_XBOX)
+#elif defined(WIN32)
 
 /// Small class used for multi-process reference counting
 template<> class atomic<int>
@@ -277,66 +273,6 @@ public:
     int exchange(int i) { return InterlockedExchange(&val,i); }
 
     static const char* getImplName() { return "Win32"; }
-};
-#elif defined(PS3)
-/// Small class used for multi-process reference counting
-template<> class atomic<int>
-{
-    uint32_t val;
-
-public:
-    atomic() {}
-    atomic(int i) { set(i); }
-    operator int() const
-    {
-        // this is the correct implementation
-        //     return __exchange_and_add(&val,0);
-        // but this is faster and should also work on x86 and ppc
-        return val;
-    }
-    void set(int i)
-    {
-		do
-		{
-			cellAtomicLockLine32(&val);
-		}
-		while (cellAtomicStoreConditional32(&val, i));
-    }
-
-	void add(int i) { cellAtomicAdd32(&val,(uint32_t)i); }
-    void sub(int i) { cellAtomicSub32(&val,(uint32_t)i); }
-    void inc() { cellAtomicIncr32(&val); }
-    void dec() { cellAtomicDecr32(&val); }
-    //bool sub_and_test_null(int i) { return __exchange_and_add(&val,-i)==i; }
-    bool dec_and_test_null() { cellAtomicDecr32(&val); return val==0; }
-    //bool inc_and_test_null() { return __exchange_and_add(&val,1)==-1; }
-    bool add_and_test_neg(int i) { cellAtomicAdd32(&val,(uint32_t)i); return val <-i; }
-    atomic& operator= (int i) { set(i); return *this; }
-    /// Add a value to this atomic, without return value (use exchange_and_add if you need the result)
-    void operator+=(int i) { add(i);  }
-    /// Substract a value to this atomic, without return value (use exchange_and_add if you need the result)
-    void operator-=(int i) { sub(i); }
-    void operator++() { inc(); }
-    void operator++(int) { inc(); }
-    void operator--() { dec(); }
-    void operator--(int) { dec(); }
-
-    int exchange_and_add(int i) { return cellAtomicAdd32(&val,i);}
-    int compare_and_swap(int cmp, int with) { return cellAtomicCompareAndSwap32(&val, with, cmp);}
-
-	int exchange(int i)
-	{
-		uint32_t old;
-		do
-		{
-			old = cellAtomicLockLine32(&val);
-		}
-		while (cellAtomicStoreConditional32(&val, i));
-
-		return old;
-	}
-
-    static const char* getImplName() { return "PS3"; }
 };
 #endif
 

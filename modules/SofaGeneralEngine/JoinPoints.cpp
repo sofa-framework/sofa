@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,23 +35,13 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(JoinPoints)
-
 int JoinPointsClass = core::RegisterObject("?")
-#ifndef SOFA_FLOAT
-        .add< JoinPoints<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< JoinPoints<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< JoinPoints<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API JoinPoints<Vec3Types>;
+ 
 
 } // namespace engine
 

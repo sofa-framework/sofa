@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <iostream>
 
@@ -68,7 +67,7 @@ void LennardJonesForceField<DataTypes>::init()
         for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
         {
             Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-            sout << "f("<<d<<")="<<f<<sendl;
+            msg_info() << "f("<<d<<")="<<f;
         }
     }
 }
@@ -199,6 +198,8 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
+    vparams->drawTool()->saveLastState();
+
     std::vector< defaulttype::Vector3 > points[2];
 
     const Real d02 = this->d0.getValue()*this->d0.getValue();
@@ -219,6 +220,7 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
     vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
 
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

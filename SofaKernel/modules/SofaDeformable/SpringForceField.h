@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,19 +49,20 @@ class LinearSpring
 {
 public:
     typedef T Real;
-    int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
-    Real  ks;      ///< spring stiffness
-    Real  kd;      ///< damping factor
-    Real  initpos; ///< rest length of the spring
-    bool elongationOnly; //only forbid elongation, not compression
+    int  m1, m2;            ///< the two extremities of the spring: masses m1 and m2
+    Real ks;                ///< spring stiffness
+    Real kd;                ///< damping factor
+    Real initpos;           ///< rest length of the spring
+    bool elongationOnly;    ///< only forbid elongation, not compression
+    bool enabled;           ///< false to disable this spring (i.e. broken)
 
-    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0, bool noCompression=false)
-        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression)
+    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0, bool noCompression=false, bool enabled=true)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
 
-    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0, bool noCompression=false)
-        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression)
+    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0, bool noCompression=false, bool enabled=true)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
 
@@ -112,11 +113,13 @@ public:
 
     typedef LinearSpring<Real> Spring;
 
-    Data<SReal> ks;
-    Data<SReal> kd;
-    Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<sofa::helper::vector<Spring> > springs;
+    Data<SReal> ks; ///< uniform stiffness for the all springs
+    Data<SReal> kd; ///< uniform damping for the all springs
+    Data<float> showArrowSize; ///< size of the axis
+    Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<sofa::helper::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
+
+protected:
     core::objectmodel::DataFileName fileSprings;
 
 protected:
@@ -212,21 +215,13 @@ public:
     std::ofstream* m_gnuplotFileEnergy;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
 extern template class SOFA_DEFORMABLE_API LinearSpring<double>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API LinearSpring<float>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6fTypes>;
-#endif
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace interactionforcefield

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,44 +33,22 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(BeamLinearMapping_mt)
-
 //using namespace defaulttype;
 // Register in the Factory
 int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-#ifndef SOFA_FLOAT
-        .add< BeamLinearMapping_mt< Rigid3dTypes, Vec3dTypes > >()
-        .add< BeamLinearMapping_mt< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping_mt< Rigid3fTypes, Vec3fTypes > >()
-        .add< BeamLinearMapping_mt< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+        .add< BeamLinearMapping_mt< Rigid3Types, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping_mt< Rigid3dTypes, Vec3fTypes > >()
-        .add< BeamLinearMapping_mt< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class BeamLinearMapping_mt< Rigid3dTypes, Vec3dTypes >;
-template class BeamLinearMapping_mt< Rigid3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class BeamLinearMapping_mt< Rigid3fTypes, Vec3fTypes >;
-template class BeamLinearMapping_mt< Rigid3fTypes, ExtVec3fTypes >;
-#endif
+template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
+template class BeamLinearMapping_mt< Rigid3Types, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class BeamLinearMapping_mt< Rigid3dTypes, Vec3fTypes >;
-template class BeamLinearMapping_mt< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

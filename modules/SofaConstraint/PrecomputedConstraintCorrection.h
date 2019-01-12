@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,7 @@ namespace constraintset
 {
 
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class PrecomputedConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
@@ -68,10 +68,10 @@ public:
     Data<bool> m_rotations;
     Data<bool> m_restRotations;
 
-    Data<bool> recompute;
-	Data<double> debugViewFrameScale;
-	sofa::core::objectmodel::DataFileName f_fileCompliance;
-	Data<std::string> fileDir;
+    Data<bool> recompute; ///< if true, always recompute the compliance
+	Data<double> debugViewFrameScale; ///< Scale on computed node's frame
+	sofa::core::objectmodel::DataFileName f_fileCompliance; ///< Precomputed compliance matrix data file
+	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:
     PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
@@ -84,13 +84,13 @@ public:
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const override;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x, sofa::core::objectmodel::Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void computeMotionCorrection(const core::ConstraintParams*, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x, sofa::core::objectmodel::Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dx , const sofa::Data< VecDeriv > & correction) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v, sofa::core::objectmodel::Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &dx, const sofa::Data< VecDeriv > & correction) override;
 
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dv, const sofa::Data< VecDeriv > & correction) override;
 
     /// @name Deprecated API
     /// @{
@@ -195,68 +195,38 @@ protected:
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(const Data< VecDeriv > &f, std::list< int > &activeDofs);
+    void computeDx(Data<VecDeriv>& dx, const Data< VecDeriv > &f, const std::list< int > &activeDofs);
+
+    std::list< int > m_activeDofs;
 };
 
 
-/////////////////////////////////////////////////////////////////////////////////
-
-
-#ifndef SOFA_FLOAT
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints(bool back);
+void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateConstraints(bool back);
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints(bool back);
+void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::rotateConstraints(bool back);
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse();
+void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse();
+void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::rotateResponse();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
+void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw(const core::visual::VisualParams* vparams);
+void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::draw(const core::visual::VisualParams* vparams);
 
-#endif
 
-#ifndef SOFA_DOUBLE
 
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints(bool back);
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1Types>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3Types>;
 
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints(bool back);
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse();
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
-
-template<>
-void PrecomputedConstraintCorrection<sofa::defaulttype::Vec1fTypes>::draw(const sofa::core::visual::VisualParams* vparams);
-
-#endif
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>;
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>;
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>;
-#endif
 #endif
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,15 +27,8 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
-
-#include <sofa/helper/gl/BasicShapes.h>
-
-
 
 
 namespace sofa
@@ -47,7 +40,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-// Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -61,7 +53,6 @@ bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunct
     }
 }
 
-// Define RemovalFunction
 template< class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
@@ -79,7 +70,6 @@ ProjectDirectionConstraint<DataTypes>::ProjectDirectionConstraint()
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
     , data(new ProjectDirectionConstraintInternalData<DataTypes>())
 {
-    // default to index 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 
@@ -127,9 +117,6 @@ void ProjectDirectionConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
-
     // Initialize functions and parameters
     f_indices.createTopologicalEngine(topology, pointHandler);
     f_indices.registerTopologicalData();
@@ -148,16 +135,11 @@ void ProjectDirectionConstraint<DataTypes>::init()
     }
 
     reinit();
-
-//  cerr<<"ProjectDirectionConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 template <class DataTypes>
 void  ProjectDirectionConstraint<DataTypes>::reinit()
 {
-//    cerr<<"ProjectDirectionConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
-
     // normalize the normal vector
     CPos n = f_direction.getValue();
     if( n.norm()==0 )
@@ -172,7 +154,6 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
         {
             bProjection[i][j] = n[i]*n[j];
         }
-//    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit() bProjection[0] = " << endl << bProjection[0] << endl;
 
     // get the indices sorted
     Indices tmp = f_indices.getValue();
@@ -200,8 +181,6 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
         i++;
     }
     jacobian.compress();
-//    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
-
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Indices &indices = f_indices.getValue();
@@ -261,7 +240,6 @@ void ProjectDirectionConstraint<DataTypes>::projectPosition(const core::Mechanic
     xData.endEdit();
 }
 
-// Matrix Integration interface
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
@@ -280,10 +258,11 @@ void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVec
 template <class DataTypes>
 void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    vparams->drawTool()->saveLastState();
 
     const Indices & indices = f_indices.getValue();
 
@@ -291,7 +270,6 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"ProjectDirectionConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -305,7 +283,6 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -315,24 +292,9 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
         }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
+
 }
-
-//// Specialization for rigids
-//#ifndef SOFA_FLOAT
-//template <>
-//    void ProjectDirectionConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-//template <>
-//    void ProjectDirectionConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-//#endif
-//#ifndef SOFA_DOUBLE
-//template <>
-//    void ProjectDirectionConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-//template <>
-//    void ProjectDirectionConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-//#endif
-
-
 
 } // namespace constraint
 

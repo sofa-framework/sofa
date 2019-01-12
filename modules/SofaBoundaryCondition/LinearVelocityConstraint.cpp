@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP
 #include <SofaBoundaryCondition/LinearVelocityConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/Node.h>
@@ -39,112 +39,22 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
-//display specialisation for rigid types
-#ifndef SOFA_FLOAT
-template <>
-void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    const SetIndexArray & indices = m_indices.getValue();
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (0,0.5,0.5,0);
-    glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        gl::glVertexT(x[*it].getCenter());
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
-}
-template <>
-void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    const SetIndexArray & indices = m_indices.getValue();
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (0,0.5,0.5,0);
-    glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        gl::glVertexT(Vec<3,double>(x[*it][0], x[*it][1], x[*it][2]));
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
-}
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    const SetIndexArray & indices = m_indices.getValue();
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (0,0.5,0.5,0);
-    glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        gl::glVertexT(x[*it].getCenter());
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
-}
-template <>
-void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    const SetIndexArray & indices = m_indices.getValue();
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (0,0.5,0.5,0);
-    glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
-}
-#endif
-
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(LinearVelocityConstraint)
-
-
 int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to given particles")
-#ifndef SOFA_FLOAT
-        .add< LinearVelocityConstraint<Vec3dTypes> >()
-        .add< LinearVelocityConstraint<Vec2dTypes> >()
-        .add< LinearVelocityConstraint<Vec1dTypes> >()
-        .add< LinearVelocityConstraint<Vec6dTypes> >()
-        .add< LinearVelocityConstraint<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LinearVelocityConstraint<Vec3fTypes> >()
-        .add< LinearVelocityConstraint<Vec2fTypes> >()
-        .add< LinearVelocityConstraint<Vec1fTypes> >()
-        .add< LinearVelocityConstraint<Vec6fTypes> >()
-        .add< LinearVelocityConstraint<Rigid3fTypes> >()
-#endif
+        .add< LinearVelocityConstraint<Vec3Types> >()
+        .add< LinearVelocityConstraint<Vec2Types> >()
+        .add< LinearVelocityConstraint<Vec1Types> >()
+        .add< LinearVelocityConstraint<Vec6Types> >()
+        .add< LinearVelocityConstraint<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3Types>;
+
 
 } // namespace projectiveconstraintset
 

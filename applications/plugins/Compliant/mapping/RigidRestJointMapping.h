@@ -36,7 +36,8 @@ public:
 
     typedef typename TIn::Real Real;
 
-    Data< bool > rotation, translation;
+    Data< bool > rotation; ///< compute relative rotation
+    Data< bool > translation; ///< compute relative translation
 	
 	Data< bool > exact_dlog;
 
@@ -173,9 +174,12 @@ protected:
         }
     }
 
-
-
 };
+
+
+#if !defined(SOFA_COMPLIANT_RIGIDRESTJOINTMAPPING_CPP)
+extern template class SOFA_Compliant_API RigidRestJointMapping<  Rigid3Types, Vec6Types >;
+#endif
 }
 }
 }

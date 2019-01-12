@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -32,6 +32,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <qevent.h>
 
@@ -48,6 +49,8 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
+
+#include <QImage>
 
 namespace sofa
 {
@@ -74,8 +77,6 @@ using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 
 helper::SofaViewerCreator< QtViewer> QtViewer_class("qt",false);
-SOFA_DECL_CLASS ( QTGUI )
-
 //Q:Why would the QtViewer write its .view file with the qglviewer (a GPL library) extension?
 //A:The new QtViewer has the same parameters as QGLViewer.
 //  Consequently, the old .view file is now totally incorrect.
@@ -100,9 +101,11 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    //VSync
-    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
-    f.setSwapInterval(0); // disable vertical refresh sync
+    if(!SOFA_GUI_VSYNC)
+    {
+        std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+        f.setSwapInterval(0); // disable vertical refresh sync
+    }
 
     int vmajor = 3, vminor = 2;
     f.setVersion(vmajor,vminor);
@@ -153,6 +156,10 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
+#ifdef __linux__
+    ::setenv("MESA_GL_VERSION_OVERRIDE", "3.0", 1);
+#endif // __linux
+
     this->setObjectName(name);
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x050400
@@ -213,7 +220,19 @@ QtViewer::~QtViewer()
 // -----------------------------------------------------------------
 void QtViewer::initializeGL(void)
 {
-    std::cout << "QtViewer: OpenGL " << glGetString(GL_VERSION) << " context created." << std::endl;
+    std::cout << "QtViewer: OpenGL " << glGetString(GL_VERSION)
+              << " context created." << std::endl;
+    if (std::string((const char*)glGetString(GL_VENDOR)).find("Intel") !=
+            std::string::npos)
+    {
+        const char* mesaEnv = ::getenv("MESA_GL_VERSION_OVERRIDE");
+        if ( !mesaEnv || std::string(mesaEnv) != "3.0")
+            msg_error("runSofa") << "QtViewer is not compatible with Intel drivers on "
+                                    "Linux. To use runSofa, either change the gui to "
+                                    "qglviewer (runSofa -g qglviewer) or set the "
+                                    "environment variable \"MESA_GL_VERSION_OVERRIDE\" "
+                                    "to the value \"3.0\"";
+    }
 
     static GLfloat specref[4];
     static GLfloat ambientLight[4];
@@ -1680,6 +1699,23 @@ The captured images are saved in the running project directory under the name fo
 Each time the frame is updated a screenshot is saved<br></li>\
 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
     return text;
+}
+
+
+void QtViewer::screenshot(const std::string& filename, int compression_level)
+{
+    QImage screenshot;
+
+    screenshot = this->grabFramebuffer();
+    bool res = screenshot.save(filename.c_str(), nullptr, (compression_level == -1) ? -1 : compression_level*100); // compression_level is either -1 or [0,100]
+    if(res)
+    {
+        msg_info("QtViewer") << "Saved " << screenshot.width() << "x" << screenshot.height() << " screen image to " << filename;
+    }
+    else
+    {
+        msg_error("QtViewer") << "Unknown error while saving screen image to " << filename;
+    }
 }
 
 }// namespace qt

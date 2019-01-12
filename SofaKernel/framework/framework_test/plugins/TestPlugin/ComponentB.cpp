@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 #include "ComponentB.h"
 
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -43,31 +43,17 @@ ComponentB<T>::~ComponentB()
 {
 }
 
-SOFA_DECL_CLASS(ComponentB)
-
 int ComponentBClass = sofa::core::RegisterObject("Component B")
-#ifndef SOFA_FLOAT
     .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< ComponentB<float> >()
-    .add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
-#endif
+    .add< ComponentB<sofa::defaulttype::Vec2Types> >()
+    .add< ComponentB<sofa::defaulttype::Rigid3Types> >()
+
 ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_TESTPLUGIN_API ComponentB<float>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2Types>;
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3Types>;
+
 
 
 

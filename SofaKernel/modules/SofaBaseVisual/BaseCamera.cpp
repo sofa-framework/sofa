@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,6 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define _USE_MATH_DEFINES // for C++
+#include <cmath>
+
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -27,6 +30,10 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 #include <tinyxml.h>
+
+#include <sofa/core/ObjectFactory.h>
+
+using sofa::helper::types::RGBAColor ;
 
 namespace sofa
 {
@@ -43,9 +50,9 @@ BaseCamera::BaseCamera()
     ,p_lookAt(initData(&p_lookAt, "lookAt", "Camera's look at"))
     ,p_distance(initData(&p_distance, "distance", "Distance between camera and look at"))
     ,p_fieldOfView(initData(&p_fieldOfView, (double) (45.0) , "fieldOfView", "Camera's FOV"))
-    ,p_zNear(initData(&p_zNear, (double) 0.0 , "zNear", "Camera's zNear"))
-    ,p_zFar(initData(&p_zFar, (double) 0.0 , "zFar", "Camera's zFar"))
-    ,p_computeZClip(initData(&p_computeZClip, (bool) true, "computeZClip", "Compute Z clip planes (Near and Far) according to the bounding box"))
+    ,p_zNear(initData(&p_zNear, (double) 0.01 , "zNear", "Camera's zNear"))
+    ,p_zFar(initData(&p_zFar, (double) 100.0 , "zFar", "Camera's zFar"))
+    ,p_computeZClip(initData(&p_computeZClip, (bool)true, "computeZClip", "Compute Z clip planes (Near and Far) according to the bounding box"))
     ,p_minBBox(initData(&p_minBBox, Vec3(0.0,0.0,0.0) , "minBBox", "minBBox"))
     ,p_maxBBox(initData(&p_maxBBox, Vec3(1.0,1.0,1.0) , "maxBBox", "maxBBox"))
     ,p_widthViewport(initData(&p_widthViewport, (unsigned int) 800 , "widthViewport", "widthViewport"))
@@ -55,6 +62,7 @@ BaseCamera::BaseCamera()
     ,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
     ,p_modelViewMatrix(initData(&p_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
     ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
+    ,l_background(initLink("backgroundSetting", "Link pointing to a BackgroundSetting object set the background parameters for this camera."))
     ,b_setDefaultParameters(false)
 {
     this->f_listening.setValue(true);
@@ -82,7 +90,6 @@ BaseCamera::BaseCamera()
 
 BaseCamera::~BaseCamera()
 {
-
 }
 
 void BaseCamera::activate()
@@ -101,12 +108,7 @@ bool BaseCamera::isActivated()
 }
 
 void BaseCamera::init()
-{
-
-}
-
-void BaseCamera::bwdInit()
-{
+{    
     if(p_position.isSet())
     {
         if(!p_orientation.isSet())
@@ -120,14 +122,14 @@ void BaseCamera::bwdInit()
         {
             //distance assumed to be set
             if(!p_distance.isSet())
-                sout << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" << sendl;
+                msg_warning() << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" ;
 
             Vec3 lookat = getLookAtFromOrientation(p_position.getValue(), p_distance.getValue(), p_orientation.getValue());
             p_lookAt.setValue(lookat);
         }
         else
         {
-            sout << "Too many missing parameters ; taking default ..." << sendl;
+            msg_warning() << "Too many missing parameters ; taking default ..." ;
             b_setDefaultParameters = true;
         }
     }
@@ -137,25 +139,43 @@ void BaseCamera::bwdInit()
         {
             //distance assumed to be set
             if(!p_distance.isSet())
-                sout << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" << sendl;
+                msg_warning() << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" ;
 
             Vec3 pos = getPositionFromOrientation(p_lookAt.getValue(), p_distance.getValue(), p_orientation.getValue());
             p_position.setValue(pos);
         }
         else
         {
-            sout << "Too many missing parameters ; taking default ..." << sendl;
+            msg_warning() << "Too many missing parameters ; taking default ..." ;
             b_setDefaultParameters = true;
         }
     }
     currentDistance = p_distance.getValue();
     currentZNear = p_zNear.getValue();
     currentZFar = p_zFar.getValue();
+}
+
+void BaseCamera::reinit()
+{
+    //Data "LookAt" has changed
+    //-> Orientation needs to be updated
+    if(currentLookAt !=  p_lookAt.getValue())
+    {
+        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+        p_orientation.setValue(newOrientation);
+
+        currentLookAt = p_lookAt.getValue();
+    }
+
+    updateOutputData();
+}
+
+void BaseCamera::bwdInit()
+{
     p_minBBox.setValue(getContext()->f_bbox.getValue().minBBox());
     p_maxBBox.setValue(getContext()->f_bbox.getValue().maxBBox());
 
     updateOutputData();
-
 }
 
 void BaseCamera::translate(const Vec3& t)
@@ -251,6 +271,52 @@ bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *proje
     objectCoordinate[1] = out[1] * out[3];
     objectCoordinate[2] = out[2] * out[3];
     return true;
+}
+
+BaseCamera::Quat BaseCamera::getOrientation()
+{
+    if(currentLookAt !=  p_lookAt.getValue())
+    {
+        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+        p_orientation.setValue(newOrientation);
+
+        currentLookAt = p_lookAt.getValue();
+    }
+
+    return p_orientation.getValue();
+}
+
+
+unsigned int BaseCamera::getCameraType() const
+{
+    return p_type.getValue().getSelectedId();
+}
+
+
+void BaseCamera::setCameraType(unsigned int type)
+{
+    sofa::helper::OptionsGroup* optionsGroup = p_type.beginEdit();
+
+    if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
+        optionsGroup->setSelectedItem(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
+    else
+        optionsGroup->setSelectedItem(core::visual::VisualParams::PERSPECTIVE_TYPE);
+
+    p_type.endEdit();
+}
+
+
+double BaseCamera::getHorizontalFieldOfView()
+{
+    const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+    const core::visual::VisualParams::Viewport viewport = vp->viewport();
+
+    float screenwidth = (float)viewport[2];
+    float screenheight = (float)viewport[3];
+    float aspectRatio = screenwidth / screenheight;
+    float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
+    float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
+    return hor_fov_radian*(180/M_PI);
 }
 
 BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
@@ -390,19 +456,6 @@ void BaseCamera::getOpenGLProjectionMatrix(double oglProjectionMatrix[16])
     {
         for(unsigned int j=0 ; j<4 ; j++)
             oglProjectionMatrix[i+j*4] = projectionMatrix[i*4+j];
-    }
-}
-
-void BaseCamera::reinit()
-{
-    //Data "LookAt" has changed
-    //-> Orientation needs to be updated
-    if(currentLookAt !=  p_lookAt.getValue())
-    {
-        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
-        p_orientation.setValue(newOrientation);
-
-        currentLookAt = p_lookAt.getValue();
     }
 }
 
@@ -723,8 +776,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     if (!root)
         result = false;
 
-    //std::string camVersion;
-    //root->QueryStringAttribute ("version", &camVersion);
     if(result)
     {
         BaseCameraXMLImportSingleParameter(root, p_position, this);
@@ -746,8 +797,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 void BaseCamera::updateOutputData()
 {
     //Matrices
-    //sofa::helper::WriteAccessor< Data<Mat4> > wModelViewMatrix = p_modelViewMatrix;
-    //sofa::helper::WriteAccessor< Data<Mat4> > wProjectionMatrix = p_projectionMatrix;
     helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
     helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 
@@ -780,6 +829,11 @@ void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
         updateOutputData();
 }
+
+void BaseCamera::draw(const sofa::core::visual::VisualParams* /*params*/)
+{
+}
+
 
 
 } // namespace visualmodel

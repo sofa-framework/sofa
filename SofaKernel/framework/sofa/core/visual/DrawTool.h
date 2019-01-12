@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,11 +23,9 @@
 #define SOFA_HELPER_GL_DRAWTOOL_H
 
 #include <sofa/core/core.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-#include <vector>
 
 namespace sofa
 {
@@ -82,13 +80,13 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
+            const std::vector< Vec4f > &colour) = 0 ;
+    virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
             const std::vector< Vec4f > &colour) = 0 ;
-
     virtual void drawTriangleStrip(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
             const Vec4f& colour) = 0 ;
-
     virtual void drawTriangleFan(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
             const Vec4f& colour) = 0 ;
@@ -146,6 +144,7 @@ public:
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) = 0 ;
     virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
+    virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<Vec4f>& colours) = 0 ;
 
     virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour) = 0 ;
     virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour) = 0;
@@ -161,10 +160,10 @@ public:
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
 
-    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max ) = 0;
+    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0 ) = 0;
 
     virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text) = 0;
-    virtual void draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color) = 0;
+    virtual void draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const Vec4f &color) = 0;
     /// @}
 
     /// @name Transformation methods.

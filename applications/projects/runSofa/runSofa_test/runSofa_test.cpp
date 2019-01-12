@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -24,7 +24,6 @@
 #include <gtest/gtest.h>
 #include <SofaTest/Sofa_test.h>
 
-#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -48,7 +47,7 @@ protected:
 
     void SetUp()
     {
-        const std::string& pluginDir = helper::Utils::getPluginDirectory();
+        const std::string& pluginDir = PluginRepository.getFirstPath();
 
         m_testConfigPluginName = "test_plugin_list.conf";
         m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;

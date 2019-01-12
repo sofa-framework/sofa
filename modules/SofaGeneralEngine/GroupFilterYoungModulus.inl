@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,7 +61,7 @@ void GroupFilterYoungModulus<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GroupFilterYoungModulus<DataTypes>::update()
+void GroupFilterYoungModulus<DataTypes>::doUpdate()
 {
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
@@ -70,8 +70,6 @@ void GroupFilterYoungModulus<DataTypes>::update()
     const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
-
-    cleanDirty();
 
     //Output
     helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();

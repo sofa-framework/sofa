@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,6 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -315,6 +314,13 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
     writer.addKToMatrix(this, mparams, matrix->getMatrix(this->mstate));
 }
 
+template<class DataTypes>
+SReal TaitSurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
+
 /// Convert a vector cross-product to a to matrix multiplication, i.e. cross(a,b) = matCross(a)*b
 template <typename T>
 inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::defaulttype::Vec<3,T>& u )
@@ -331,11 +337,9 @@ template<class MatrixWriter>
 void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
-    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
 

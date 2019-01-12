@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 
 #include <SofaGeneralEngine/MapIndices.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -87,13 +86,11 @@ inline void MapIndices<unsigned int>::apply(Value& v, const MapIndex& m)
 }
 
 template <class T>
-void MapIndices<T>::update()
+void MapIndices<T>::doUpdate()
 {
     helper::ReadAccessor<Data<VecValue> > in = f_in;
     helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
     const bool transpose = f_transpose.getValue();
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,10 +31,6 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
-
-// FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
-#define SIMPLEFEM_COLORMAP
-#define SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
 
 #include <sofa/helper/ColorMap.h>
 
@@ -127,7 +123,6 @@ protected:
     /// Strain-displacement matrix
     typedef defaulttype::Mat<12, 6, Real> StrainDisplacement;
 
-
     defaulttype::MatNoInit<3, 3, Real> R0;
 
     /// Rigid transformation (rotation) matrix
@@ -179,80 +174,20 @@ protected:
     Real m_restVolume;
 
 public:
-
-
     // get the volume of the mesh
     Real getRestVolume() {return m_restVolume;}
 
     //For a faster contact handling with simplified compliance
     void getRotation(Transformation& R, unsigned int nodeIdx);
-
-    void getRotations(VecReal& vecR)
-    {
-        unsigned int nbdof = this->mstate->getSize();
-        for (unsigned int i=0; i<nbdof; ++i)
-        {
-
-            getRotation(*(Transformation*)&(vecR[i*9]),i);
-        }
-    }
-
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override
-    {
-        unsigned int nbdof = this->mstate->getSize();
-
-        if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
-        {
-            Transformation R;
-            for (unsigned int e=0; e<nbdof; ++e)
-            {
-                getRotation(R,e);
-                for(int j=0; j<3; j++)
-                {
-                    for(int i=0; i<3; i++)
-                    {
-                        diag->getVector()[e*9 + j*3 + i] = (float)R[j][i];
-                    }
-                }
-            }
-        }
-        else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
-        {
-            Transformation R;
-            for (unsigned int e=0; e<nbdof; ++e)
-            {
-                getRotation(R,e);
-                for(int j=0; j<3; j++)
-                {
-                    for(int i=0; i<3; i++)
-                    {
-                        diag->getVector()[e*9 + j*3 + i] = R[j][i];
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (unsigned int i=0; i<nbdof; ++i)
-            {
-                Transformation t;
-                getRotation(t,i);
-                int e = offset+i*3;
-                rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
-                rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
-                rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
-            }
-        }
-    }
-
+    void getRotations(VecReal& vecR) ;
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
     Data< VecCoord > _initialPoints; ///< the initial positions of the points
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
 
-    Data<Real> _poissonRatio;
-    //Data<Real> _youngModulus;
-    Data<VecReal > _youngModulus;
-    Data<VecReal> _localStiffnessFactor;
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
+    Data<VecReal > _youngModulus; ///< FEM Young Modulus
+    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
 
@@ -260,150 +195,60 @@ public:
     /// @name Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     /// @{
     Data<Real> _plasticMaxThreshold;
-    Data<Real> _plasticYieldThreshold;
+    Data<Real> _plasticYieldThreshold; ///< Plastic Yield Threshold (2-norm of the strain)
     Data<Real> _plasticCreep; ///< this parameters is different from the article, here it includes the multiplication by dt
     /// @}
 
 
-    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
-    Data< bool > drawHeterogeneousTetra;
-    Data< bool > drawAsEdges;
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
+    Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
+    Data< bool > drawAsEdges; ///< Draw as edges instead of tetrahedra
 
     Real minYoung, maxYoung;
 
     /// to compute vonMises stress for visualization
     /// two options: either using corotational strain (TODO)
     ///              or full Green strain tensor (which must be therefore computed for each element and requires some pre-calculations in reinit)
-
     helper::vector<Real> elemLambda;
     helper::vector<Real> elemMu;
     helper::vector<Mat44> elemShapeFun;
 
     Real prevMaxStress;
 
-
-    Data<int> _computeVonMisesStress;
-    Data<helper::vector<Real> > _vonMisesPerElement;
-    Data<helper::vector<Real> > _vonMisesPerNode;
-    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors;
+    Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain
+    Data<helper::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
+    Data<helper::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
+    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
     
-
-#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
     helper::ColorMap m_VonMisesColorMap;
+    Data<std::string> _showStressColorMap; ///< Color map used to show stress values
+    Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
+    Data<bool> _showVonMisesStressPerNode; ///< draw points  showing vonMises stress interpolated in nodes
 
-    Data<std::string> _showStressColorMap;
-    Data<float> _showStressAlpha;
-    Data<bool> _showVonMisesStressPerNode;
-#endif
     /// Suppress field for save as function
-    Data < bool > isToPrint;
-    Data<bool>  _updateStiffness;
+    Data<bool>  isToPrint;
+    Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
     helper::vector<defaulttype::Vec<6,Real> > elemDisplacements;
 
     bool updateVonMisesStress;
 
-
 protected:
-    TetrahedronFEMForceField()
-        : _mesh(NULL)
-        , _indexedElements(NULL)
-        , needUpdateTopology(false)
-        , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
-        , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
-        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
-        , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
-        , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        , _updateStiffnessMatrix(initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
-        , _assembling(initData(&_assembling,false,"computeGlobalMatrix",""))
-        , _plasticMaxThreshold(initData(&_plasticMaxThreshold,(Real)0.f,"plasticMaxThreshold","Plastic Max Threshold (2-norm of the strain)"))
-        , _plasticYieldThreshold(initData(&_plasticYieldThreshold,(Real)0.0001f,"plasticYieldThreshold","Plastic Yield Threshold (2-norm of the strain)"))
-        , _plasticCreep(initData(&_plasticCreep,(Real)0.9f,"plasticCreep","Plastic Creep Factor * dt [0,1]. Warning this factor depends on dt."))
-        , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-        , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-        , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
-        , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
-        , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain"))
-        , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
-        , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
-        , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
-#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-        , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
-        , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
-        , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
-#endif
-        , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
-        , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
-    {
-		_poissonRatio.setRequired(true);
-		_youngModulus.setRequired(true);
-		_youngModulus.beginEdit()->push_back((Real)5000.);
-		_youngModulus.endEdit();
-		_youngModulus.unset();
-
-        data.initPtrData(this);
-        this->addAlias(&_assembling, "assembling");
-        minYoung = 0.0;
-        maxYoung = 0.0;
-
-    }
-
+    TetrahedronFEMForceField() ;
     virtual ~TetrahedronFEMForceField();
 
 public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
-
-    void setYoungModulus(Real val)
-    {
-        VecReal newY;
-        newY.resize(1);
-        newY[0] = val;
-        _youngModulus.setValue(newY);
-    }
-
+    void setYoungModulus(Real val) ;
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
     //for tetra mapping, should be removed in future
-    Transformation getActualTetraRotation(unsigned int index)
-    {
-        if (index < rotations.size() )
-            return rotations[index];
-        else { Transformation t; t.identity(); return t; }
-    }
+    Transformation getActualTetraRotation(unsigned int index);
+    Transformation getInitialTetraRotation(unsigned int index);
 
-    Transformation getInitialTetraRotation(unsigned int index)
-    {
-        if (index < rotations.size() )
-            return _initialRotations[index];
-        else { Transformation t; t.identity(); return t; }
-    }
-
-
-    void setMethod(std::string methodName)
-    {
-        if (methodName == "small")	this->setMethod(SMALL);
-        else if (methodName  == "polar")	this->setMethod(POLAR);
-        else if (methodName  == "svd")	this->setMethod(SVD);
-        else
-        {
-            if (methodName != "large")
-                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"polar\", \"large\", \"svd\" "<<sendl;
-            this->setMethod(LARGE);
-        }
-    }
-
-    void setMethod(int val)
-    {
-        method = val;
-        switch(val)
-        {
-        case SMALL: f_method.setValue("small"); break;
-        case POLAR: f_method.setValue("polar"); break;
-        case SVD:   f_method.setValue("svd"); break;
-        default   : f_method.setValue("large");
-        };
-    }
+    void setMethod(std::string methodName);
+    void setMethod(int val);
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
@@ -424,7 +269,11 @@ public:
 
     virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
 
+
     void draw(const core::visual::VisualParams* vparams) override;
+
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
@@ -432,7 +281,6 @@ public:
     virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
 protected:
-
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
@@ -469,25 +317,15 @@ protected:
 
     void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
-
-    void handleTopologyChange() override
-    {
-        needUpdateTopology = true;
-    }
+    void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-
     void handleEvent(core::objectmodel::Event *event) override;
-
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3fTypes>;
-#endif
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
+extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

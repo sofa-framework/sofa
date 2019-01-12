@@ -15,7 +15,7 @@
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" />
-            <UniformMass totalmass="15" />
+            <UniformMass totalMass="15" />
             <TetrahedronFEMForceField name="FEM" youngModulus="300" poissonRatio="0.49" />
             <TriangleModel template="Vec3d" name="default7" />
             <BoxConstraint box_roi="fixedROI" box="-5 -20 -5 5 -17.5 5" drawBoxes="1" />
@@ -31,8 +31,8 @@
         </Node>
         <Node name="Out">
             <MechanicalObject template="Vec3d" name="mecaObj2" />
-            <SparseGridTopology n="4 7 4" vertices="@../Subset.pointsOutROI" name="name" drawHexahedra="0" />
-            <UniformMass totalmass="15" />
+            <SparseGridTopology n="4 7 4" position="@../Subset.pointsOutROI" name="name" drawHexahedra="0" />
+            <UniformMass totalMass="15" />
             <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" poissonRatio="0.49" />
             <Node name="tetra">
                 <TetrahedronSetTopologyContainer name="Container" position="@../../Subset.pointsOutROI" tetrahedra="@../../Subset.tetrahedraOutROI" />

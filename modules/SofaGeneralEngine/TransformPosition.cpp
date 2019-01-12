@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP
 #include <SofaGeneralEngine/TransformPosition.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -36,25 +36,12 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TransformPosition)
-
 int TransformPositionClass = core::RegisterObject("Transform position of 3d points")
-#ifdef SOFA_FLOAT
-        .add< TransformPosition<Vec3fTypes> >(true)
-#else
-        .add< TransformPosition<Vec3dTypes> >(true)
-#ifndef SOFA_DOUBLE
-        .add< TransformPosition<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
-#endif
+        .add< TransformPosition<Vec3Types> >(true)
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3Types>;
+ 
 
 
 } // namespace constraint

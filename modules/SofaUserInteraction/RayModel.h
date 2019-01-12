@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
 
@@ -99,7 +99,7 @@ protected:
     sofa::helper::vector<SReal> length;
     sofa::helper::vector<defaulttype::Vector3> direction;
 
-    Data<SReal> defaultLength;
+    Data<SReal> defaultLength; ///< TODO
 
     std::set<BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;

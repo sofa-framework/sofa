@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,23 +52,22 @@ template <>
 void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
 
 //////// Rigid3d ////////
-#ifndef SOFA_FLOAT
 template <>
-class RigidMappingInternalData<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>
+class RigidMappingInternalData<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>
 {
 public:
-    gpu::cuda::CudaVec3fTypes::VecDeriv tmp;
+    gpu::cuda::CudaVec3Types::VecDeriv tmp;
 };
 
 template <>
-void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::apply( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
 
 template <>
-void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
 
 template <>
-void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
-#endif
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJT( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
+
 
 //////// Rigid3f ////////
 

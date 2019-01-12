@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,24 +22,15 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/system/atomic.h>
-#include <sofa/helper/system/SofaOStream.h>
-#include <sofa/helper/vector.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 
 #include <sofa/core/sptr.h>
 
 #include <deque>
-#include <string>
-#include <map>
 
 
 // forward declaration of castable classes
@@ -462,11 +453,11 @@ public:
     Data<std::string> name;
 
 
-    Data<bool> f_printLog;
+    Data<bool> f_printLog; ///< if true, emits extra messages at runtime.
 
-    Data< sofa::core::objectmodel::TagSet > f_tags;
+    Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
-    Data< sofa::defaulttype::BoundingBox > f_bbox;
+    Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
     /// @name casting
     ///   trivial cast to a few base components

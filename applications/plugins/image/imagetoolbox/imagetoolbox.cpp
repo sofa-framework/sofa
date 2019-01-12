@@ -17,7 +17,6 @@ namespace misc
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS (ImageToolBox);
 // Register in the Factory
 
 int ImageToolBoxClass = core::RegisterObject ( "ImageToolBox" )

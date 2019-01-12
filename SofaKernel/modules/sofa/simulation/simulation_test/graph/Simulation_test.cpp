@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/helper/testing/NumericTest.h>
+using sofa::helper::testing::NumericTest ;
+
+#include <sofa/defaulttype/VecTypes.h>
+using sofa::defaulttype::Vec3Types ;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
@@ -31,6 +34,8 @@ typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBaseMechanics/UniformMass.h>
+
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
 using namespace modeling;
@@ -59,7 +64,7 @@ struct ParentObject : public O1
 
 /** Test the Simulation class
 */
-struct Scene_test: public Sofa_test<SReal>
+struct Scene_test: public NumericTest<SReal>
 {
     // root
     simulation::Simulation* simulation;
@@ -67,9 +72,7 @@ struct Scene_test: public Sofa_test<SReal>
 
     Scene_test()
     {
-        //msg_info("SimulationTest") << "Simulation_test::Simulation_test" ;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        //sofa::simulation::setSimulation(simulation = new sofa::simulation::tree::TreeSimulation());
     }
 
     /// Test Simulation::computeBBox
@@ -165,7 +168,7 @@ struct Scene_test: public Sofa_test<SReal>
     void objectDestruction_subNodeAndStep()
     {
         root = simulation::getSimulation()->createNewGraph("root");
-        root->addObject(core::objectmodel::New<simulation::DefaultAnimationLoop>());
+        root->addObject(core::objectmodel::New<sofa::simulation::DefaultAnimationLoop>());
 
         core::objectmodel::BaseNode* child  = root->createChild("child").get();
         child->addObject(core::objectmodel::New<MechanicalObject3>());
@@ -282,11 +285,6 @@ TEST_F( Scene_test,sceneDestruction_createnewgraph) {
     EXPECT_MSG_NOEMIT(Error) ;
     this->sceneDestruction_createnewgraph();
 }
-
-// Node destruction does not trigger sub-graph destruction. You need to unload the node before. The two following tests are thus irrelevant.
-//TEST_F( Simulation_test,sceneDestruction_reset) { this->sceneDestruction_reset(); }
-//TEST_F( Simulation_test,sceneDestruction_setNull) { this->sceneDestruction_setNull(); }
-
 
 }// namespace sofa
 

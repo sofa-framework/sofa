@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -36,35 +36,19 @@ namespace component
 namespace interactionforcefield
 {
 
-SOFA_DECL_CLASS(BoxStiffSpringForceField)
-
 int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the points inside a given box")
-#ifndef SOFA_FLOAT
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3dTypes> >()
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec2dTypes> >()
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec1dTypes> >()
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3fTypes> >()
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec2fTypes> >()
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec1fTypes> >()
-        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6fTypes> >()
-#endif
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3Types> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec2Types> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec1Types> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3dTypes>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1dTypes>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3fTypes>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2fTypes>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1fTypes>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6fTypes>;
-#endif
+template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6Types>;
+
 
 } // namespace interactionforcefield
 

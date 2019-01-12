@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,10 +69,16 @@ public:
     Data < double > f_period;
     /// Computed distances
     Data < helper::vector<Real> > dist;
-    /// Computed distances (mean, min, max, standard deviation)
-    Data < double > distMean, distMin, distMax, distDev;
-    /// Relative computed distances (mean, min, max, standard deviation)
-    Data < double > rdistMean, rdistMin, rdistMax, rdistDev;
+
+    Data < double > distMean; ///< mean distance (OUTPUT)
+    Data < double > distMin; ///< min distance (OUTPUT)
+    Data < double > distMax; ///< max distance (OUTPUT)
+    Data < double > distDev; ///< distance standard deviation (OUTPUT)
+
+    Data < double > rdistMean; ///< mean relative distance (OUTPUT)
+    Data < double > rdistMin; ///< min relative distance (OUTPUT)
+    Data < double > rdistMax; ///< max relative distance (OUTPUT)
+    Data < double > rdistDev; ///< relative distance standard deviation (OUTPUT)
 
     typedef SingleLink<EvalPointsDistance<DataTypes>,core::behavior::MechanicalState<DataTypes>,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkMState;
     /// First model mechanical state
@@ -103,7 +109,7 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
+    virtual void doDraw(const core::visual::VisualParams* vparams, const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState (First model)
     core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
@@ -153,15 +159,10 @@ protected:
     sofa::defaulttype::BoundingBox box2;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3dTypes>;
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3fTypes>;
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3Types>;
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace misc

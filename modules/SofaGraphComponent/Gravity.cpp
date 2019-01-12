@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaGraphComponent/Gravity.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
@@ -48,8 +48,6 @@ void Gravity::apply()
 {
     getContext()->setGravity( f_gravity.getValue() );
 }
-
-SOFA_DECL_CLASS(Gravity)
 
 int GravityClass = core::RegisterObject("Gravity in world coordinates")
         .add< Gravity >()

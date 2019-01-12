@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -102,8 +102,8 @@ public:
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<helper::OptionsGroup> filter;
-    Data< ParamTypes > param;
+    Data<helper::OptionsGroup> filter; ///< Filter
+    Data< ParamTypes > param; ///< Parameters
 
     Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;
@@ -176,17 +176,15 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
-        bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
+        bool updateImage = m_dataTracker.hasChanged(this->inputImage);	// change of input image -> update output image
+        bool updateTransform = m_dataTracker.hasChanged(this->inputTransform);	// change of input transform -> update output transform
         if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
         raParam p(this->param);
         raTransform inT(this->inputTransform);
         raImagei in(this->inputImage);
-
-        cleanDirty();
 
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);

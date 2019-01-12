@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,9 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/helper.h>
+
+#include <sofa/helper/StringUtils.h>
+using sofa::helper::getAStringCopy ;
 
 namespace sofa
 {
@@ -133,7 +136,7 @@ public:
                 std::ostringstream oname, ohelp;
                 oname << m_name << (i+1);
                 ohelp << m_help << "(" << (i+1) << ")";
-                Data< T >* d = new Data< T >(m_defaultValue, ohelp.str().c_str(), true, false);
+                Data< T >* d = new Data< T >(m_defaultValue, getAStringCopy(ohelp.str().c_str()), true, false);
                 d->setName(oname.str());
                 this->push_back(d);
                 if (m_component!=NULL)

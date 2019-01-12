@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,60 +88,33 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
 
     SphereForceFieldInternalData<DataTypes> data;
 
 public:
 
-    Data<Coord> sphereCenter;
-    Data<Real> sphereRadius;
-    Data<Real> stiffness;
-    Data<Real> damping;
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
+    Data<Coord> sphereCenter; ///< sphere center
+    Data<Real> sphereRadius; ///< sphere radius
+    Data<Real> stiffness; ///< force stiffness
+    Data<Real> damping; ///< force damping
+    Data<defaulttype::RGBAColor> color; ///< sphere color. (default=[0,0,1,1])
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
     /// option bilateral : if true, the force field is applied on both side of the plane
     Data<bool> bilateral;
 protected:
-    SphereForceField()
-        : contacts(initData(&contacts,"contacts", "Contacts"))
-        , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
-        , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
-        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
-        , damping(initData(&damping, (Real)5, "damping", "force damping"))
-        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
-        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
-        , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-        , bilateral( initData(&bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
-    {
-    }
+    SphereForceField();
+
 public:
-    void setSphere(const Coord& center, Real radius)
-    {
-        sphereCenter.setValue( center );
-        sphereRadius.setValue( radius );
-    }
-
-    void setStiffness(Real stiff)
-    {
-        stiffness.setValue( stiff );
-    }
-
-    void setDamping(Real damp)
-    {
-        damping.setValue( damp );
-    }
+    void setSphere(const Coord& center, Real radius);
+    void setStiffness(Real stiff);
+    void setDamping(Real damp);
 
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        serr << "Get potentialEnergy not implemented" << sendl;
-        return 0.0;
-    }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     virtual void updateStiffness( const VecCoord& x );
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &) override;
@@ -149,17 +122,11 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API SphereForceField<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace forcefield

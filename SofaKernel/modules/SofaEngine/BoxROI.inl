@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,10 +21,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
 #define SOFA_COMPONENT_ENGINE_BOXROI_INL
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
 
 #include <SofaEngine/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -123,12 +119,6 @@ BoxROI<DataTypes>::BoxROI()
     /// Display as few as possible the deprecated data.
     d_deprecatedX0.setDisplayed(false);
     d_deprecatedIsVisible.setDisplayed(false);
-
-    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
-    {
-        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
-        d_alignedBoxes.endEdit();
-    }
 
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -320,6 +310,12 @@ void BoxROI<DataTypes>::init()
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
+    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
+    {
+        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
+        d_alignedBoxes.endEdit();
+    }
+
     vector<Vec6>& alignedBoxes = *(d_alignedBoxes.beginEdit());
     if (!alignedBoxes.empty())
     {
@@ -512,22 +508,20 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 
 // The update method is called when the engine is marked as dirty.
 template <class DataTypes>
-void BoxROI<DataTypes>::update()
+void BoxROI<DataTypes>::doUpdate()
 {
     if(m_componentstate==ComponentState::Invalid){
-        cleanDirty() ;
         return ;
     }
 
     if(!d_doUpdate.getValue()){
-        cleanDirty() ;
         return ;
     }
 
     const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
 
-    if (alignedBoxes.empty() && orientedBoxes.empty()) { cleanDirty(); return; }
+    if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
 
 
     // Read accessor for input topology
@@ -538,8 +532,6 @@ void BoxROI<DataTypes>::update()
     ReadAccessor< Data<vector<Quad> > > quad = d_quad;
 
     const VecCoord& x0 = d_X0.getValue();
-
-    cleanDirty();
 
     // Write accessor for topological element indices in BOX
     SetIndex& indices = *d_indices.beginWriteOnly();
@@ -984,7 +976,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
     const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue(params);
 
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
+    const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 

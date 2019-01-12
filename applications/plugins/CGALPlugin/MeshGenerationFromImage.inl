@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -135,7 +135,7 @@ void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
 }
 
 template <class DataTypes, class _ImageTypes>
-void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
+void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
 {
     helper::WriteAccessor< Data<VecCoord> > newPoints = d_newX0;
     helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = d_tetrahedra;

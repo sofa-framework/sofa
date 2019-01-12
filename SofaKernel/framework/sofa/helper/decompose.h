@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -389,7 +389,7 @@ SOFA_HELPER_API inline double Decompose<double>::zeroTolerance()
     return 1e-8;
 }
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_HELPER)
+#if  !defined(SOFA_BUILD_HELPER)
 extern template class SOFA_HELPER_API Decompose<double>;
 extern template class SOFA_HELPER_API Decompose<float>;
 #endif

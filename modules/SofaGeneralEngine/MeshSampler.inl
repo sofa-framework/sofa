@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_INL
 
 #include <SofaGeneralEngine/MeshSampler.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 
@@ -68,15 +67,9 @@ void MeshSampler<DataTypes>::init()
 
 
 template <class DataTypes>
-void MeshSampler<DataTypes>::update()
+void MeshSampler<DataTypes>::doUpdate()
 {
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
-
-    number.updateIfDirty();
-    f_edges.updateIfDirty();
-    maxIter.updateIfDirty();
-
-    cleanDirty();
 
     VVI ngb;    if(this->f_edges.getValue().size()!=0) computeNeighbors(ngb); // one ring neighbors from edges
     VI voronoi;

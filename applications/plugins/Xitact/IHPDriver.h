@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
@@ -40,9 +40,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#ifdef SOFA_DEV
-#include <sofa/component/controller/VMechanismsForceFeedback.h>
-#endif
 #include "PaceMaker.h"
 #include <Xitact/config.h>
 namespace sofa
@@ -70,9 +67,6 @@ typedef struct
 {
     //MechanicalStateForceFeedback<Rigid3dTypes>* lcp_forceFeedback;//= NULL;
     LCPForceFeedback<Rigid3dTypes>* lcp_forceFeedback;//= NULL;
-#ifdef SOFA_DEV
-    VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;// = NULL;
-#endif
     simulation::Node *context;
 
     int indexTool;
@@ -121,21 +115,21 @@ public:
     SOFA_CLASS(IHPDriver,sofa::component::controller::Controller);
     typedef RigidTypes::VecCoord VecCoord;
 
-    Data<double> Scale;
-    Data<double> forceScale;
-    Data<bool> permanent;
-    Data<int> indexTool;
-    Data<double> graspThreshold;
-    Data<bool> showToolStates;
-    Data<bool> testFF;
-    Data<int> RefreshFrequency;
-    Data<bool> xitactVisu;
-    Data< VecCoord > positionBase;
-    Data<string> locPosBati;
-    Data<int> deviceIndex;
-    Data<Vec1d> openTool;
-    Data<double> maxTool;
-    Data<double> minTool;
+    Data<double> Scale; ///< Default scale applied to the Phantom Coordinates. 
+    Data<double> forceScale; ///< Default scale applied to the force feedback. 
+    Data<bool> permanent; ///< Apply the force feedback permanently
+    Data<int> indexTool; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
+    Data<double> graspThreshold; ///< Threshold value under which grasping will launch an event.
+    Data<bool> showToolStates; ///< Display states and forces from the tool.
+    Data<bool> testFF; ///< If true will add force when closing handle. As if tool was entering an elastic body.
+    Data<int> RefreshFrequency; ///< Frequency of the haptic loop.
+    Data<bool> xitactVisu; ///< Visualize the position of the interface in the virtual scene
+    Data< VecCoord > positionBase; ///< position of the base of the device
+    Data<string> locPosBati; ///< localisation of the restPosition of the bati
+    Data<int> deviceIndex; ///< index of the device
+    Data<Vec1d> openTool; ///< opening of the tool
+    Data<double> maxTool; ///< maxTool value
+    Data<double> minTool; ///< minTool value
 
     allXiToolDataIHP allData;
     XiToolDataIHP data;
@@ -155,9 +149,6 @@ public:
     //virtual void draw();
 
     void setLCPForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff);
-#ifdef SOFA_DEV
-    void setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff);
-#endif
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -66,9 +66,9 @@ protected:
     GLuint m_shadowTexWidth, m_shadowTexHeight;
 
 #ifdef SOFA_HAVE_GLEW
-    helper::gl::FrameBufferObject m_shadowFBO;
-    helper::gl::FrameBufferObject m_blurHFBO;
-    helper::gl::FrameBufferObject m_blurVFBO;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_shadowFBO;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_blurHFBO;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_blurVFBO;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;
@@ -82,23 +82,24 @@ protected:
     void computeShadowMapSize();
     void blurDepthTexture();
 public:
-    Data<defaulttype::RGBAColor> d_color;
-    Data<GLuint> d_shadowTextureSize;
-    Data<bool> d_drawSource;
-    Data<double> d_zNear, d_zFar;
-    Data<bool> d_shadowsEnabled;
-    Data<bool> d_softShadows;
-    Data<float> d_shadowFactor;
-    Data<float> d_VSMLightBleeding;
-    Data<float> d_VSMMinVariance;
-    Data<unsigned short> d_textureUnit;
+    Data<defaulttype::RGBAColor> d_color; ///< Set the color of the light. (default=[1.0,1.0,1.0,1.0])
+    Data<GLuint> d_shadowTextureSize; ///< [Shadowing] Set size for shadow texture 
+    Data<bool> d_drawSource; ///< Draw Light Source
+    Data<double> d_zNear; ///< [Shadowing] Light's ZNear
+    Data<double> d_zFar; ///< [Shadowing] Light's ZFar
+    Data<bool> d_shadowsEnabled; ///< [Shadowing] Enable Shadow from this light
+    Data<bool> d_softShadows; ///< [Shadowing] Turn on Soft Shadow from this light
+    Data<float> d_shadowFactor; ///< [Shadowing] Shadow Factor (decrease/increase darkness)
+    Data<float> d_VSMLightBleeding; ///< [Shadowing] (VSM only) Light bleeding paramter
+    Data<float> d_VSMMinVariance; ///< [Shadowing] (VSM only) Minimum variance parameter
+    Data<unsigned short> d_textureUnit; ///< [Shadowing] Texture unit for the genereated shadow texture
 
 protected:
     Light();
     virtual ~Light();
 public:
-    Data<helper::vector<float> > d_modelViewMatrix;
-    Data<helper::vector<float> > d_projectionMatrix;
+    Data<helper::vector<float> > d_modelViewMatrix; ///< [Shadowing] ModelView Matrix
+    Data<helper::vector<float> > d_projectionMatrix; ///< [Shadowing] Projection Matrix
 
     void setID(const GLint& id);
 
@@ -108,6 +109,9 @@ public:
     virtual void drawLight();
     virtual void reinit() override;
     virtual void updateVisual() override;
+
+    /// Draw the light source from an external point of view.
+    virtual void drawSource(const sofa::core::visual::VisualParams*) = 0;
 
     GLfloat getZNear();
     GLfloat getZFar();
@@ -139,13 +143,14 @@ class SOFA_OPENGL_VISUAL_API DirectionalLight : public Light
 public:
     SOFA_CLASS(DirectionalLight, Light);
 
-    Data<sofa::defaulttype::Vector3> d_direction;
+    Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
 
     DirectionalLight();
     virtual ~DirectionalLight();
     virtual void preDrawShadow(core::visual::VisualParams* vp) override;
     virtual void drawLight() override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void drawSource(const core::visual::VisualParams* vparams) override;
     virtual GLuint getDepthTexture() override;
     virtual GLuint getColorTexture() override;
     virtual defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
@@ -162,14 +167,15 @@ class SOFA_OPENGL_VISUAL_API PositionalLight : public Light
 public:
     SOFA_CLASS(PositionalLight, Light);
 
-    Data<bool> d_fixed;
-    Data<sofa::defaulttype::Vector3> d_position;
-    Data<float> d_attenuation;
+    Data<bool> d_fixed; ///< Fix light position from the camera
+    Data<sofa::defaulttype::Vector3> d_position; ///< Set the position of the light
+    Data<float> d_attenuation; ///< Set the attenuation of the light
 
     PositionalLight();
     virtual ~PositionalLight();
     virtual void drawLight() override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void drawSource(const core::visual::VisualParams*) override;
     virtual const sofa::defaulttype::Vector3 getPosition() override { return d_position.getValue(); }
     LightType getLightType() override { return LightType::POSITIONAL; }
 };
@@ -179,15 +185,16 @@ class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
 public:
     SOFA_CLASS(SpotLight, PositionalLight);
 
-    Data<sofa::defaulttype::Vector3> d_direction;
-    Data<float> d_cutoff;
-    Data<float> d_exponent;
-    Data<bool> d_lookat;
+    Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
+    Data<float> d_cutoff; ///< Set the angle (cutoff) of the spot
+    Data<float> d_exponent; ///< Set the exponent of the spot
+    Data<bool> d_lookat; ///< If true, direction specify the point at which the spotlight should be pointed to
 
     SpotLight();
     virtual ~SpotLight();
     virtual void drawLight() override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void drawSource(const core::visual::VisualParams* vparams) override;
 
     void preDrawShadow(core::visual::VisualParams*  vp) override;
     GLuint getDepthTexture() override;

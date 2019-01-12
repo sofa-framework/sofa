@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -94,26 +94,26 @@ public:
     /// Editable Data
     Data< helper::vector<unsigned int> > d_indices;
 
-    Data< bool > d_saveXToGnuplot;
-    Data< bool > d_saveVToGnuplot;
-    Data< bool > d_saveFToGnuplot;
+    Data< bool > d_saveXToGnuplot; ///< export Monitored positions as gnuplot file
+    Data< bool > d_saveVToGnuplot; ///< export Monitored velocities as gnuplot file
+    Data< bool > d_saveFToGnuplot; ///< export Monitored forces as gnuplot file
 
-    Data< bool > d_showPositions;
-    Data<RGBAColor > d_positionsColor;
+    Data< bool > d_showPositions; ///< see the Monitored positions
+    Data<RGBAColor > d_positionsColor; ///< define the color of positions
 
-    Data< bool > d_showVelocities;
-    Data< RGBAColor > d_velocitiesColor;
+    Data< bool > d_showVelocities; ///< see the Monitored velocities
+    Data< RGBAColor > d_velocitiesColor; ///< define the color of velocities
 
-    Data< bool > d_showForces;
-    Data< RGBAColor > d_forcesColor;
+    Data< bool > d_showForces; ///< see the Monitored forces
+    Data< RGBAColor > d_forcesColor; ///< define the color of forces
 
-    Data< double > d_showMinThreshold;
+    Data< double > d_showMinThreshold; ///< under this value, vectors are not represented
 
-    Data< bool > d_showTrajectories;
-    Data< double > d_trajectoriesPrecision;
-    Data< RGBAColor > d_trajectoriesColor;
+    Data< bool > d_showTrajectories; ///< print the trajectory of Monitored particles
+    Data< double > d_trajectoriesPrecision; ///< set the dt between to save of positions
+    Data< RGBAColor > d_trajectoriesColor; ///< define the color of the trajectories
 
-    Data< double > d_showSizeFactor;
+    Data< double > d_showSizeFactor; ///< factor to multiply to arrows
     core::objectmodel::DataFileName  d_fileName;
 
 protected:
@@ -132,17 +132,11 @@ protected:
     sofa::helper::vector < sofa::helper::vector<Coord> > m_savedPos; ///< store all the monitored positions, for trajectories display
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3dTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6dTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3fTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6fTypes>;
-extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3Types>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6Types>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3Types>;
+
 #endif
 
 

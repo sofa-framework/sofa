@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,8 +64,6 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
     c.norm = norm;
     c.dist = dist;
     c.ks = ks;
-//	c.mu_s = mu_s;
-//	c.mu_v = mu_v;
     c.pen = 0;
     if (oldIndex > 0 && oldIndex <= (int)prevContacts.size())
     {
@@ -83,10 +81,8 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
 {
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
-    //const VecDeriv& v1 =  data_v1.getValue();
     VecDeriv&       f2 = *data_f2.beginEdit();
     const VecCoord& x2 =  data_x2.getValue();
-    //const VecDeriv& v2 =  data_v2.getValue();
 
     helper::vector<Contact>& cc = *contacts.beginEdit();
 

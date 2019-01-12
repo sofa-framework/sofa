@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <../applications/plugins/frame/Blending.h>
 
 
@@ -54,13 +54,9 @@ public:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP)
+extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
+
 #endif
 
 

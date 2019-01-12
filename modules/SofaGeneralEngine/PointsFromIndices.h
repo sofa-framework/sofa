@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -64,7 +62,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -93,21 +91,17 @@ public:
         return DataTypes::Name();
     }
 
-    Data<VecCoord> f_X;
-    Data<SetIndex> f_indices;
-    Data<VecCoord> f_indices_position;
+    Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
+    Data<SetIndex> f_indices; ///< Indices of the points
+    Data<VecCoord> f_indices_position; ///< Coordinates of the points contained in indices
 
 private:
     bool contains(VecCoord& v, Coord c);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
+extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

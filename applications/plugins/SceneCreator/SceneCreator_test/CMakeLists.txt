@@ -8,7 +8,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     SceneCreator_test.cpp
-    SimpleApi_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

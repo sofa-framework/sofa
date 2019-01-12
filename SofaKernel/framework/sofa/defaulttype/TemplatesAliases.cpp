@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,14 +24,15 @@
 #include <iostream>
 #include <map>
 #include <sofa/helper/logging/Messaging.h>
-
+#include "VecTypes.h"
+#include "RigidTypes.h"
 namespace sofa
 {
 
 namespace defaulttype
 {
 
-typedef std::map<std::string, std::string> TemplateAliasesMap;
+typedef std::map<std::string, TemplateAlias> TemplateAliasesMap;
 typedef TemplateAliasesMap::const_iterator TemplateAliasesMapIterator;
 TemplateAliasesMap& getTemplateAliasesMap()
 {
@@ -39,7 +40,7 @@ TemplateAliasesMap& getTemplateAliasesMap()
 	return theMap;
 }
 
-bool TemplateAliases::addAlias(const std::string& name, const std::string& result)
+bool TemplateAliases::addAlias(const std::string& name, const std::string& result, const bool doWarnUser)
 {
 	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
 	if (templateAliases.find(name) != templateAliases.end())
@@ -49,9 +50,18 @@ bool TemplateAliases::addAlias(const std::string& name, const std::string& resul
 	}
 	else
 	{
-		templateAliases[name] = result;
+        templateAliases[name] = std::make_pair(result, doWarnUser);
 		return true;
 	}
+}
+
+const TemplateAlias* TemplateAliases::getTemplateAlias(const std::string &name)
+{
+    TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
+    TemplateAliasesMapIterator it = templateAliases.find(name);
+    if (it != templateAliases.end())
+        return  &(it->second);
+    return nullptr;
 }
 
 std::string TemplateAliases::resolveAlias(const std::string& name)
@@ -59,7 +69,7 @@ std::string TemplateAliases::resolveAlias(const std::string& name)
 	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
 	TemplateAliasesMapIterator it = templateAliases.find(name);
 	if (it != templateAliases.end())
-		return it->second;
+        return it->second.first;
 	else if (name.find(",") != std::string::npos) // Multiple templates, resolve each one
 	{
 		std::string resolved = name;
@@ -74,7 +84,7 @@ std::string TemplateAliases::resolveAlias(const std::string& name)
 			// Replace the token with the alias (if there is one)
 			it = templateAliases.find(token);
 			if (it != templateAliases.end())
-				resolved.replace(first, last-first, it->second);
+                resolved.replace(first, last-first, it->second.first);
 
 			// Recompute the start of next token as we can have changed the length of the string
 			first = resolved.find_first_of(",", first);
@@ -89,30 +99,38 @@ std::string TemplateAliases::resolveAlias(const std::string& name)
 		return name;
 }
 	
-RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std::string& result)
+RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser)
 {
-	TemplateAliases::addAlias(alias, result);
+    TemplateAliases::addAlias(alias, result, doWarnUser);
 }
 
-#ifndef SOFA_FLOAT
-RegisterTemplateAlias Vec1Alias("Vec1", "Vec1d");
-RegisterTemplateAlias Vec2Alias("Vec2", "Vec2d");
-RegisterTemplateAlias Vec3Alias("Vec3", "Vec3d");
-RegisterTemplateAlias Vec4Alias("Vec4", "Vec4d");
-RegisterTemplateAlias Vec6Alias("Vec6", "Vec6d");
-RegisterTemplateAlias Rigid2Alias("Rigid2", "Rigid2d");
-RegisterTemplateAlias Rigid3Alias("Rigid3", "Rigid3d");
-RegisterTemplateAlias RigidAlias("Rigid", "Rigid3d");
-#else
-RegisterTemplateAlias Vec1Alias("Vec1", "Vec1f");
-RegisterTemplateAlias Vec2Alias("Vec2", "Vec2f");
-RegisterTemplateAlias Vec3Alias("Vec3", "Vec3f");
-RegisterTemplateAlias Vec4Alias("Vec4", "Vec4f");
-RegisterTemplateAlias Vec6Alias("Vec6", "Vec6f");
-RegisterTemplateAlias Rigid2Alias("Rigid2", "Rigid2f");
-RegisterTemplateAlias Rigid3Alias("Rigid3", "Rigid3f");
-RegisterTemplateAlias RigidAlias("Rigid", "Rigid3f");
-#endif
+
+/// The following types are the generic 'precision'
+static RegisterTemplateAlias Vec1Alias("Vec1", sofa::defaulttype::Vec1Types::Name());
+static RegisterTemplateAlias Vec2Alias("Vec2", sofa::defaulttype::Vec2Types::Name());
+static RegisterTemplateAlias Vec3Alias("Vec3", sofa::defaulttype::Vec3Types::Name());
+static RegisterTemplateAlias Vec6Alias("Vec6", sofa::defaulttype::Vec6Types::Name());
+static RegisterTemplateAlias Rigid2Alias("Rigid2", sofa::defaulttype::Rigid2Types::Name());
+static RegisterTemplateAlias Rigid3Alias("Rigid3", sofa::defaulttype::Rigid3Types::Name());
+
+/// Compatibility aliases for niceness.
+static RegisterTemplateAlias RigidAlias("Rigid", sofa::defaulttype::Rigid3Types::Name(), true);
+
+static RegisterTemplateAlias ExtVec3fAlias("ExtVec3f", sofa::defaulttype::ExtVec3Types::Name(), isSRealDouble());
+static RegisterTemplateAlias Rigid2fAlias("Rigid2f", sofa::defaulttype::Rigid2Types::Name(), isSRealDouble());
+static RegisterTemplateAlias Rigid3fAlias("Rigid3f", sofa::defaulttype::Rigid3Types::Name(), isSRealDouble());
+static RegisterTemplateAlias Vec1fAlias("Vec1f", sofa::defaulttype::Vec1Types::Name(), isSRealDouble());
+static RegisterTemplateAlias Vec2fAlias("Vec2f", sofa::defaulttype::Vec2Types::Name(), isSRealDouble());
+static RegisterTemplateAlias Vec3fAlias("Vec3f", sofa::defaulttype::Vec3Types::Name(), isSRealDouble());
+static RegisterTemplateAlias Vec6fAlias("Vec6f", sofa::defaulttype::Vec6Types::Name(), isSRealDouble());
+
+static RegisterTemplateAlias ExtVec3dAlias("ExtVec3d", sofa::defaulttype::ExtVec3Types::Name(), isSRealFloat());
+static RegisterTemplateAlias Vec1dAlias("Vec1d", sofa::defaulttype::Vec1Types::Name(), isSRealFloat());
+static RegisterTemplateAlias Vec2dAlias("Vec2d", sofa::defaulttype::Vec2Types::Name(), isSRealFloat());
+static RegisterTemplateAlias Vec3dAlias("Vec3d", sofa::defaulttype::Vec3Types::Name(), isSRealFloat());
+static RegisterTemplateAlias Vec6dAlias("Vec6d", sofa::defaulttype::Vec6Types::Name(), isSRealFloat());
+static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Types::Name(), isSRealFloat());
+static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
 
 }// defaulttype
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,8 @@
 
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/SVector.h>
+#include <sofa/helper/types/Material.h>
+
 namespace sofa
 {
 
@@ -40,14 +42,11 @@ public:
     enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
 
     SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
-
 protected:
-
     MeshObjLoader();
     virtual ~MeshObjLoader();
 
 public:
-
     virtual bool load() override;
 
     template <class T>
@@ -57,12 +56,36 @@ public:
     }
 
 protected:
+    bool readOBJ (std::ifstream &file, const char* filename);
+    bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& materials);
+    void addGroup (const sofa::core::loader::PrimitiveGroup& g);
 
-    bool readOBJ (std::istream &stream, const char* filename);
+    Data<bool> d_handleSeams;
+    Data<bool> loadMaterial;
+    std::string textureName;
+    FaceType faceType;
 
 public:
+    Data<sofa::helper::types::Material> d_material;
+    Data <helper::vector <sofa::helper::types::Material> > materials;
+    Data <helper::SVector <helper::SVector <int> > > faceList;
+    Data <helper::SVector <helper::SVector <int> > > texIndexList;
+    Data <helper::vector<sofa::defaulttype::Vector3> > positionsList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoordsList;
+    Data <helper::SVector<helper::SVector<int> > > normalsIndexList;
+    Data <helper::vector<sofa::defaulttype::Vector3> > normalsList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
+    Data< bool > computeMaterialFaces;
+    helper::vector< Data <helper::vector <unsigned int> >* > subsets_indices;
 
-    Data< bool > d_storeGroups; ///< should sub-groups be stored?
+    /// If vertices have multiple normals/texcoords, then we need to separate them
+    /// This vector store which input position is used for each vertex
+    /// If it is empty then each vertex correspond to one position
+    Data< helper::vector<int> > d_vertPosIdx;
+
+    /// Similarly this vector store which input normal is used for each vertex
+    /// If it is empty then each vertex correspond to one normal
+    Data< helper::vector<int> > d_vertNormIdx;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 };

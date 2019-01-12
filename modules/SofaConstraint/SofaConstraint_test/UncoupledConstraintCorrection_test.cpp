@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,77 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest;
 
+#include <SofaSimulationGraph/SimpleApi.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/CleanupVisitor.h>
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaConstraint/FreeMotionAnimationLoop.h>
-#include <SofaConstraint/UncoupledConstraintCorrection.h>
+using namespace sofa::simulation;
 
-namespace sofa {
-
-/** Test the UncoupledConstraintCorrection class
-*/
-struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
+namespace
 {
-    // root
-    simulation::Simulation* simulation;
-    simulation::Node::SPtr root;
 
-    UncoupledConstraintCorrection_test()
-    {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-    }
-
+/** Test the UncoupledConstraintCorrection class */
+struct UncoupledConstraintCorrection_test: public BaseSimulationTest
+{
     /// create a component and replace it with an other one
     void objectRemovalThenStep()
     {
-        typedef component::constraintset::LCPConstraintSolver LCPConstraintSolver;
-        typedef component::animationloop::FreeMotionAnimationLoop FreeMotionAnimationLoop;
-        typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
-        typedef component::constraintset::UncoupledConstraintCorrection<defaulttype::Vec3Types> UncoupledConstraintCorrection;
+        SceneInstance sceneinstance("xml",
+                    "<Node>\n"
+                    "   <RequiredPlugin name='SofaAllCommonComponents'/>"
+                    "   <RequiredPlugin name='SofaMiscCollision'/>"
+                    "   <LCPConstraintSolver maxIt='1000' tolerance='0.001' />\n"
+                    "   <FreeMotionAnimationLoop />\n"
+                    "   <Node name='collision'>\n"
+                    "         <MechanicalObject />\n"
+                    "         <UncoupledConstraintCorrection />\n"
+                    "   </Node>\n"
+                    "</Node>\n"
+                    );
 
-        root = simulation::getSimulation()->createNewGraph("root");
+        sceneinstance.initScene();
 
-        LCPConstraintSolver::SPtr lcpConstraintSolver = core::objectmodel::New<LCPConstraintSolver>();
-        lcpConstraintSolver->tol.setValue(0.001);
-        lcpConstraintSolver->maxIt.setValue(1000);
-        root->addObject(lcpConstraintSolver);
-        root->addObject(core::objectmodel::New<FreeMotionAnimationLoop>(root.get()));
+        /// removal
+        sofa::core::sptr<sofa::simulation::Node> nodeToRemove = sceneinstance.root->getChild("collision");
+        ASSERT_NE(nodeToRemove.get(), nullptr);
 
-        simulation::Node::SPtr child = root->createChild("collision");
-        child->addObject(core::objectmodel::New<MechanicalObject3>());
-        child->addObject(core::objectmodel::New<UncoupledConstraintCorrection>());
-
-        simulation->init(root.get());
-
-        // removal
-        {
-            simulation::Node::SPtr nodeToRemove = child;
-            nodeToRemove->detachFromGraph();
-            nodeToRemove->execute<simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
-            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        }
-
-        simulation->animate(root.get(), 0.04);
-
-        simulation->unload(root);
+        nodeToRemove->detachFromGraph();
+        nodeToRemove->execute<sofa::simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
+        nodeToRemove->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        sceneinstance.simulate(0.04);
     }
 };
 
-// run the tests
-TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep) {
+/// run the tests
+TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep)
+{
     EXPECT_MSG_NOEMIT(Error) ;
-    this->objectRemovalThenStep();
+    objectRemovalThenStep();
 }
 
-
-}// namespace sofa
+}/// namespace sofa
 
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,25 +32,12 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MeshSplittingEngine)
-
 int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in multiple parts, based on selected vertices or cells.")
-#ifdef SOFA_FLOAT
-        .add< MeshSplittingEngine<defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< MeshSplittingEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< MeshSplittingEngine<defaulttype::Vec3fTypes> >()
-#endif
-#endif
+        .add< MeshSplittingEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
+ 
 
 
 } // namespace constraint

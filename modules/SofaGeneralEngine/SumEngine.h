@@ -1,7 +1,7 @@
  
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -71,20 +71,15 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<DataType> d_output;
+    Data<VecData> d_input; ///< input vector
+    Data<DataType> d_output; ///< output sum
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
 extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1f>;
-extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3f>;
-#endif
+
 #endif
 
 } // namespace engine

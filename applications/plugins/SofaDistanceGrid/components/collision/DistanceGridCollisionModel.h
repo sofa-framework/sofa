@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,7 +31,7 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include "../../DistanceGrid.h"
@@ -124,22 +124,22 @@ public:
 
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
-    Data< double > scale;
-    Data< defaulttype::Vector3 > translation;
-    Data< defaulttype::Vector3 > rotation;
-    Data< double > sampling;
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    Data< double > scale; ///< scaling factor for input file
+    Data< defaulttype::Vector3 > translation; ///< translation to apply to input file
+    Data< defaulttype::Vector3 > rotation; ///< rotation to apply to input file
+    Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    Data< bool > usePoints;
-    Data< bool > flipNormals;
-    Data< bool > showMeshPoints;
-    Data< bool > showGridPoints;
-    Data< double > showMinDist;
-    Data< double > showMaxDist;
+    Data< bool > usePoints; ///< use mesh vertices for collision detection
+    Data< bool > flipNormals; ///< reverse surface direction, i.e. points are considered in collision if they move outside of the object instead of inside
+    Data< bool > showMeshPoints; ///< Enable rendering of mesh points
+    Data< bool > showGridPoints; ///< Enable rendering of grid points
+    Data< double > showMinDist; ///< Min distance to render gradients
+    Data< double > showMaxDist; ///< Max distance to render gradients
 protected:
     RigidDistanceGridCollisionModel();
 
@@ -148,7 +148,7 @@ public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
-    void init();
+    void init() override;
 
     DistanceGrid* getGrid(int index=0)
     {
@@ -222,14 +222,14 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size);
+    void resize(int size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, int index);
+    void draw(const core::visual::VisualParams*, int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
@@ -431,12 +431,12 @@ protected:
 
     // Input data parameters
     sofa::core::objectmodel::DataFileName  fileFFDDistanceGrid;
-    Data< double > scale;
-    Data< double > sampling;
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    Data< double > scale; ///< scaling factor for input file
+    Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* ffd;
@@ -452,8 +452,8 @@ public:
     typedef topology::RegularGridTopology Topology;
     typedef FFDDistanceGridCollisionElement Element;
 
-    Data< bool > usePoints;
-    Data< bool > singleContact;
+    Data< bool > usePoints; ///< use mesh vertices for collision detection
+    Data< bool > singleContact; ///< keep only the deepest contact in each cell
 protected:
     FFDDistanceGridCollisionModel();
 
@@ -464,9 +464,9 @@ public:
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
+    core::topology::BaseMeshTopology* getMeshTopology() override { return ffdMesh; }
 
-    void init();
+    void init() override;
 
     DistanceGrid* getGrid(int index=0)
     {
@@ -481,16 +481,16 @@ public:
     void setGrid(DistanceGrid* surf, int index=0);
 
     /// CollisionModel interface
-    void resize(int size);
+    void resize(int size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*,int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)
@@ -608,7 +608,7 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
 
 extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;

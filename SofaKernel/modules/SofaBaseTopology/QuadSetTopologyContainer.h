@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,9 +97,9 @@ public:
      *
      * @param the four vertex indices.
      * @return the ID of the corresponding quad.
-     * @return -1 if none
+     * @return InvalidID if none
      */
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
+    virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
 
     /** \brief Returns the set of edges adjacent to a given quad.
@@ -173,7 +173,7 @@ public:
     virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const VecQuadID getConnectedElement(QuadID elem) override;
@@ -188,13 +188,13 @@ public:
     /** \brief Returns the number of quads in this topology.
      * The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
      */
-    unsigned int getNumberOfQuads() const;
+    size_t getNumberOfQuads() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const override;
+    virtual size_t getNumberOfElements() const override;
 
 
     /** \brief Returns the Quad array. */
@@ -223,6 +223,8 @@ public:
 
     /// @}
 
+    /** \brief Returns the type of the topology */
+    virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::QUAD;}
 
 protected:
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,15 +90,13 @@ void DilateEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void DilateEngine<DataTypes>::update()
+void DilateEngine<DataTypes>::doUpdate()
 {
     ReadAccessor<Data<VecCoord> > in = d_inputX;
     ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
     ReadAccessor<Data<SeqQuads> > quads = d_quads;
     const Real distance = d_distance.getValue();
     const Real minThickness = d_minThickness.getValue();
-
-    cleanDirty();
 
     WriteOnlyAccessor<Data<VecCoord> > out = d_outputX;
 

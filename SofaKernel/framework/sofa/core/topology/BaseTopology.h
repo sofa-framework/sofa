@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,8 +26,6 @@
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
 
-#include <sofa/helper/list.h>
-#include <sofa/core/objectmodel/BaseNode.h>
 
 
 namespace sofa

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,7 +75,7 @@ LeapMotionDriver::~LeapMotionDriver() {
 
 void LeapMotionDriver::cleanup()
 {
-    sout << "LeapMotionDriver::cleanup()" << sendl;
+    msg_info() << "LeapMotionDriver::cleanup()";
 }
 
 
@@ -138,13 +138,13 @@ void LeapMotionDriver::init()
 
 void LeapMotionDriver::bwdInit()
 {
-    sout<<"LeapMotionDriver::bwdInit()"<<sendl;
+    msg_info() <<"LeapMotionDriver::bwdInit()";
 }
 
 
 void LeapMotionDriver::reset()
 {
-    sout<<"LeapMotionDriver::reset()" << sendl;
+    msg_info() <<"LeapMotionDriver::reset()";
     scrollDirection.setValue(0);
     this->reinit();
 }
@@ -733,9 +733,6 @@ void LeapMotionDriver::handleEvent(core::objectmodel::Event *event)
 
 int LeapMotionDriverClass = core::RegisterObject("LeapMotion device driver")
 .add< LeapMotionDriver >();
-
-SOFA_DECL_CLASS(LeapMotionDriver)
-
 
 } // namespace controller
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/Node.h>
 
@@ -533,6 +532,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    vparams->drawTool()->saveLastState();
+
     if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< sofa::defaulttype::Vector3 > points;
     std::vector< sofa::defaulttype::Vector3 > pointsLine;
@@ -562,6 +563,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
 
     vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     vparams->drawTool()->drawLines(pointsLine, 1, sofa::defaulttype::Vec<4,float>(0,0,1,1));
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace mapping

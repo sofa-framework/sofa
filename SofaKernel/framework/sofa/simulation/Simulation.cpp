@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,6 +43,8 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateLinksVisitor.h>
 #include <sofa/simulation/init.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
+#include <sofa/simulation/DefaultVisualManagerLoop.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -58,20 +60,6 @@
 #include <string.h>
 
 #include <sofa/helper/logging/Messaging.h>
-
-// #include <SofaSimulationCommon/FindByTypeVisitor.h>
-
-
-
-// #include <sofa/helper/system/FileRepository.h>
-
-// #include <fstream>
-// #include <string.h>
-// #ifndef WIN32
-// #include <locale.h>
-// #endif
-
-
 
 namespace sofa
 {
@@ -163,11 +151,9 @@ void Simulation::exportGraph ( Node* root, const char* filename )
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
-    //cerr<<"Simulation::init"<<endl;
+    sofa::helper::AdvancedTimer::stepBegin("Simulation::init");
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-
-    //setContext( root->getContext());
 
     if (!root->getAnimationLoop())
     {
@@ -211,6 +197,7 @@ void Simulation::init ( Node* root )
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
+    sofa::helper::AdvancedTimer::stepEnd("Simulation::init");
 }
 
 
@@ -223,16 +210,10 @@ void Simulation::initNode( Node* node)
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     node->execute<InitVisitor>(params);
 
-    //node->execute<MechanicalPropagatePositionAndVelocityVisitor>(params);
-    //node->execute<MechanicalPropagateFreePositionVisitor>(params);
     {
         sofa::core::MechanicalParams mparams(*params);
         node->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
         node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
-        /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
-          mparams.x() = xfree;
-          MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
-          node->execute(act);*/
     }
 
     node->execute<StoreResetStateVisitor>(params);
@@ -297,10 +278,8 @@ void Simulation::reset ( Node* root )
         root->setTime(0.);
     UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
 
-//    root->execute<CleanupVisitor>(params);
     // by definition cleanup() MUST only be called right before destroying the object
     // if for some reason some components need to do something, it has to be done in reset or storeResetState
-
     root->execute<ResetVisitor>(params);
     sofa::core::MechanicalParams mparams(*params);
     root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
@@ -383,10 +362,6 @@ void Simulation::updateVisualContext (Node* root)
         serr<<"ERROR in updateVisualContext() : VisualLoop expected at the root node"<<sendl;
         return;
     }
-
-    /*
-    UpdateVisualContextVisitor vis(vparams);
-    vis.execute(root);*/
 }
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
@@ -479,10 +454,6 @@ void Simulation::unload(Node::SPtr root)
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    //if (this->getContext() == (BaseContext*)root)
-    //{
-    //    this->setContext(NULL);
-    //}
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);

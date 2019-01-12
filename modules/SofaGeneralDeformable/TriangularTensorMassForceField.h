@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -99,7 +97,7 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
@@ -142,8 +140,8 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -189,16 +187,12 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
 } //namespace forcefield
 

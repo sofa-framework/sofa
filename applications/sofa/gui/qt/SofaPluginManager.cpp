@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -119,9 +119,8 @@ void SofaPluginManager::addLibrary()
     std::stringstream sstream;
 
     std::string pluginFile = std::string(sfile.toStdString());
-    if(sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginFile,&sstream))
+    if(sofa::helper::system::PluginManager::getInstance().loadPluginByPath(pluginFile,&sstream))
     {
-        typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
         typedef sofa::helper::system::Plugin    Plugin;
         if( ! sstream.str().empty())
         {
@@ -131,11 +130,16 @@ void SofaPluginManager::addLibrary()
             mbox->setText(sstream.str().c_str());
             mbox->show();
         }
-        PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
-        Plugin& plugin = map[pluginFile];
-        QString slicense = plugin.getModuleLicense();
-        QString sname    = plugin.getModuleName();
-        QString sversion = plugin.getModuleVersion();
+        Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(pluginFile);
+        if(!plugin)
+        {
+            // This should not happen as we are protected by if(loadPluginByPath(...))
+            msg_error("SofaPluginManager") << "plugin should be loaded: " << pluginFile << msgendl;
+            return;
+        }
+        QString slicense = plugin->getModuleLicense();
+        QString sname    = plugin->getModuleName();
+        QString sversion = plugin->getModuleVersion();
 
         //QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
         QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins);
@@ -215,12 +219,15 @@ void SofaPluginManager::updateComponentList()
 
     std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
-    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
-    PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
-    Plugin& plugin = map[location];
+    Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(location);
+    if(!plugin)
+    {
+        msg_warning("SofaPluginManager") << "plugin is not loaded: " << location << msgendl;
+        return;
+    }
 
-    QString cpts( plugin.getModuleComponentList() );
+    QString cpts( plugin->getModuleComponentList() );
     cpts.replace(", ","\n");
     cpts.replace(",","\n");
     std::istringstream in(cpts.toStdString());
@@ -234,7 +241,6 @@ void SofaPluginManager::updateComponentList()
         QTreeWidgetItem * item = new QTreeWidgetItem(listComponents);
         item->setText(0, componentText.c_str());
     }
-
 }
 
 
@@ -251,11 +257,14 @@ void SofaPluginManager::updateDescription()
 
     std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
-    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
-    PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
-    Plugin plugin = map[location];
-    description->setText(QString(plugin.getModuleDescription()));
+    Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(location);
+    if(!plugin)
+    {
+        msg_warning("SofaPluginManager") << "plugin is not loaded: " << location << msgendl;
+        return;
+    }
+    description->setText(QString(plugin->getModuleDescription()));
 }
 
 void SofaPluginManager::savePluginsToIniFile()

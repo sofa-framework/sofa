@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,21 +67,6 @@ void Multi2Mapping<In1,In2,Out>::addOutputModel(State<Out>* to, const std::strin
     if (to && isMechanical() && !testMechanicalState(to))
         setNonMechanical();
 }
-
-///<TO REMOVE>
-//cannot compile
-//template< class In1, class In2, class Out > template <class In>
-//helper::vector<State<In>*>&  Multi2Mapping<In1,In2,Out>::getFromModels()
-//{
-//  if (!fromModels1.empty() && dynamic_cast< State<In>* >(fromModels1[0]))
-//  {
-//
-//  }
-//  else if (!fromModels2.empty() && dynamic_cast< State<In>* >(fromModels2[0]))
-//  {
-//    return fromModels2;
-//  }
-//}
 
 template< class In1, class In2, class Out >
 const typename Multi2Mapping<In1,In2,Out>::VecFromModels1& Multi2Mapping<In1,In2,Out>::getFromModels1()
@@ -156,6 +141,88 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
     return mechToVec;
 }
 
+template < class In1, class In2,class Out>
+void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
+{
+    helper::vector<OutDataVecCoord*> vecOutPos;
+    getVecOutCoord(outPos, vecOutPos);
+    helper::vector<const In1DataVecCoord*> vecIn1Pos;
+    getConstVecIn1Coord(inPos, vecIn1Pos);
+    helper::vector<const In2DataVecCoord*> vecIn2Pos;
+    getConstVecIn2Coord(inPos, vecIn2Pos);
+
+    this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
+
+#ifdef SOFA_USE_MASK
+    this->m_forceMaskNewStep = true;
+#endif
+}
+
+template < class In1, class In2,class Out>
+void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
+{
+    helper::vector<OutDataVecDeriv*> vecOutVel;
+    getVecOutDeriv(outVel, vecOutVel);
+    helper::vector<const In1DataVecDeriv*> vecIn1Vel;
+    getConstVecIn1Deriv(inVel, vecIn1Vel);
+    helper::vector<const In2DataVecDeriv*> vecIn2Vel;
+    getConstVecIn2Deriv(inVel, vecIn2Vel);
+    this->applyJ(mparams, vecOutVel, vecIn1Vel, vecIn2Vel);
+}
+
+template < class In1, class In2,class Out>
+void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
+{
+    helper::vector<In1DataVecDeriv*> vecOut1Force;
+    getVecIn1Deriv(inForce, vecOut1Force);
+    helper::vector<In2DataVecDeriv*> vecOut2Force;
+    getVecIn2Deriv(inForce, vecOut2Force);
+
+    helper::vector<const OutDataVecDeriv*> vecInForce;
+    getConstVecOutDeriv(outForce, vecInForce);
+    this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
+
+#ifdef SOFA_USE_MASK
+    if( this->m_forceMaskNewStep )
+    {
+        this->m_forceMaskNewStep = false;
+        updateForceMask();
+    }
+#endif
+}
+
+template < class In1, class In2,class Out>
+void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+{
+    helper::vector<In1DataMatrixDeriv*> matOut1Const;
+    getMatIn1Deriv(inConst, matOut1Const);
+    helper::vector<In2DataMatrixDeriv*> matOut2Const;
+    getMatIn2Deriv(inConst, matOut2Const);
+
+    helper::vector<const OutDataMatrixDeriv*> matInConst;
+    getConstMatOutDeriv(outConst, matInConst);
+    this->applyJT(cparams, matOut1Const, matOut2Const, matInConst);
+}
+
+template < class In1, class In2,class Out>
+void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+{
+    helper::vector<OutDataVecDeriv*> vecOutAcc;
+    getVecOutDeriv(outAcc, vecOutAcc);
+
+    helper::vector<const In1DataVecDeriv*> vecIn1Vel;
+    getConstVecIn1Deriv(inVel, vecIn1Vel);
+    helper::vector<const In1DataVecDeriv*> vecIn1Acc;
+    getConstVecIn1Deriv(inAcc, vecIn1Acc);
+
+    helper::vector<const In2DataVecDeriv*> vecIn2Vel;
+    getConstVecIn2Deriv(inVel, vecIn2Vel);
+    helper::vector<const In2DataVecDeriv*> vecIn2Acc;
+    getConstVecIn2Deriv(inAcc, vecIn2Acc);
+
+    this->computeAccFromMapping(mparams, vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc);
+}
+
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::init()
 {
@@ -175,35 +242,6 @@ void Multi2Mapping<In1,In2,Out>::init()
     if (f_applyRestPosition.getValue())
         apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
-
-///<TO REMOVE>
-/*
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::updateMapping()
-{
-  if( (this->fromModels1.empty() && this->fromModels2.empty() ) || this->toModels.empty() )
-    return;
-
-  helper::vector<OutDataVecCoord*> vecOutPos;
-  getVecOutCoord(VecId::position(), vecOutPos);
-
-  const ConstVecId constIdPos = ConstVecId::position();
-  helper::vector<const In1DataVecCoord*> vecIn1Pos;
-  getConstVecIn1Coord(constIdPos, vecIn1Pos);
-  helper::vector<const In2DataVecCoord*> vecIn2Pos;
-  getConstVecIn2Coord(constIdPos, vecIn2Pos);
-  apply ( vecOutPos, vecIn1Pos, vecIn2Pos);
-
-  helper::vector<OutDataVecDeriv*> vecOutVel;
-  getVecOutDeriv(VecId::velocity(), vecOutVel);
-  const ConstVecId constIdVel = ConstVecId::velocity();
-  helper::vector<const In1DataVecDeriv*> vecIn1Vel;
-  getConstVecIn1Deriv(constIdVel, vecIn1Vel);
-  helper::vector<const In2DataVecDeriv*> vecIn2Vel;
-  getConstVecIn2Deriv(constIdVel, vecIn2Vel);
-  applyJ( vecOutVel, vecIn1Vel, vecIn2Vel);
-}
-*/
 
 template < class In1, class In2, class Out >
 std::string Multi2Mapping<In1,In2,Out>::templateName(const Multi2Mapping<In1, In2, Out>* /*mapping*/)

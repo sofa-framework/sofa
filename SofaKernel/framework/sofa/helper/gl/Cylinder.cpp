@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,15 +42,6 @@ std::map < std::pair<std::pair<float,float>,float>, Cylinder* > Cylinder::Cylind
 
 void Cylinder::initDraw()
 {
-#ifdef PS3
-	// No display lists
-	if (quadratic==NULL)
-	{
-		quadratic=gluNewQuadric();
-		gluQuadricNormals(quadratic, GLU_SMOOTH);
-		gluQuadricTexture(quadratic, GL_TRUE);
-	}
-#else
     if (quadratic!=NULL) return;
 
     quadratic=gluNewQuadric();
@@ -60,10 +51,8 @@ void Cylinder::initDraw()
     displayList=glGenLists(1);
 
     glNewList(displayList, GL_COMPILE);
-#endif
 
     glColor3f(1,1,0);
-    //gluSphere(quadratic,l[0],quadricDiscretisation,quadricDiscretisation/2);
 
     if (length[0] > 0.0)
     {
@@ -98,9 +87,7 @@ void Cylinder::initDraw()
         glTranslated(0,0,-length[2]/2);
     }
 
-#ifndef PS3
 	glEndList();
-#endif
 }
 
 void Cylinder::draw()

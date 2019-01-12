@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -138,7 +138,6 @@ int MeshIntTool::computeIntersection(TSphere<DataTypes> & e1, Point& e2,typename
     }
     else
     {
-        //intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
         detection->normal= typename DataTypes::Coord(1,0,0);
     }
     detection->point[0] = e1.getContactPointByNormal( -detection->normal );
@@ -174,7 +173,6 @@ int MeshIntTool::computeIntersection(Line& e2, TSphere<DataTypes>& e1,typename D
 
     typename DataTypes::Coord P = e1.center();
     typename DataTypes::Coord QP = P-Q;
-    //typename DataTypes::Coord PQ = Q-P;
 
     if (QP.norm2() >= myAlarmDist*myAlarmDist)
         return 0;
@@ -194,7 +192,6 @@ int MeshIntTool::computeIntersection(Line& e2, TSphere<DataTypes>& e1,typename D
     }
     else
     {
-        //intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
         detection->normal= typename DataTypes::Coord(1,0,0);
     }
     detection->point[1]=e1.getContactPointByNormal( detection->normal );
@@ -232,7 +229,7 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,type
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_MESHINTTOOL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_MESHINTTOOL_CPP)
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Vec3Types>& cap, const sofa::defaulttype::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -132,7 +132,7 @@ public:
 
     Data< ImageTypes > image;
     Data< TransformType > transform;
-    Data< MassMatrix > massMatrix;
+    Data< MassMatrix > massMatrix; ///< Mass Matrix
 
     enum { NO_LUMPING=0, BLOCK_LUMPING=1, DIAGONAL_LUMPING=2 };
     Data< int > f_lumping; ///< is the mass matrix lumped? (copy each non-diagonal term on the diagonal term of the same line)  0->no, 1->by bloc, 2->diagonal matrix
@@ -172,14 +172,10 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void doUpdate()
     {
         if(!deformationMapping) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no mapping found"<<sendl; return; }
         if(!dofs) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no MechanicalObject<Vec3> found"<<sendl; return; }
-
-        updateAllInputsIfDirty(); // the easy way...
-
-        cleanDirty();
 
         MassFromDensitySpec::update(this);
 

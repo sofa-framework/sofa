@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,11 +28,6 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/core/behavior/InertiaForce.h>
-#endif
-
-#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -150,40 +145,6 @@ void MatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams
     }
 }
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
-{
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue())
-        return;
-
-    const VecMass &masses= *_usedMassMatrices;
-    helper::WriteAccessor< DataVecDeriv > _f = f;
-
-    // gravity
-    Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
-
-
-    helper::ReadAccessor< DataVecCoord > _x = x;
-    helper::ReadAccessor< DataVecDeriv > _v = v;
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
-
-    // add weight and inertia force
-    for (unsigned int i=0; i<masses.size(); i++)
-    {
-        _f[i] += masses[i]*theGravity + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
-    }
-}
-#else
 
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
@@ -207,7 +168,6 @@ void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*m
         _f[i] += masses[i]*theGravity;
     }
 }
-#endif
 
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)

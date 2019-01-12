@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/BaseVector.h>
@@ -98,17 +97,17 @@ public:
     virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    PointData< VecCoord > x;
-    PointData< VecDeriv > v;
-    PointData< VecDeriv > f;
-    Data< VecDeriv > externalForces;
-    Data< VecDeriv > dx;
-    Data< VecCoord > xfree;
-    Data< VecDeriv > vfree;
-    PointData< VecCoord > x0;
-    Data< MatrixDeriv > c;
-    Data< VecCoord > reset_position;
-    Data< VecDeriv > reset_velocity;
+    PointData< VecCoord > x; ///< position coordinates of the degrees of freedom
+    PointData< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
+    PointData< VecDeriv > f; ///< force vector of the degrees of freedom
+    Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
+    Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
+    Data< VecCoord > xfree; ///< free position coordinates of the degrees of freedom
+    Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
+    PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
+    Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
+    Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
+    Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
 
 
     class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
@@ -137,33 +136,33 @@ public:
     //static void PointDestroyFunction (int, void*, Coord&);
 
 #else
-    Data< VecCoord > x;
-    Data< VecDeriv > v;
-    Data< VecDeriv > f;
-    Data< VecDeriv > externalForces;
-    Data< VecDeriv > dx;
-    Data< VecCoord > xfree;
-    Data< VecDeriv > vfree;
-    Data< VecCoord > x0;
-    Data< MatrixDeriv > c;
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
-    Data< MatrixDeriv > m;
-#endif
-    Data< VecCoord > reset_position;
-    Data< VecDeriv > reset_velocity;
+    Data< VecCoord > x; ///< position coordinates of the degrees of freedom
+    Data< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
+    Data< VecDeriv > f; ///< force vector of the degrees of freedom
+    Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
+    Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
+    Data< VecCoord > xfree; ///< free position coordinates of the degrees of freedom
+    Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
+    Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
+    Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
+    Data< MatrixDeriv > m; ///< mappingJacobian applied to the degrees of freedom
+    Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
+    Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
 #endif
 
     defaulttype::MapMapSparseMatrix< Deriv > c2;
 
-    Data< SReal > restScale;
+    Data< SReal > restScale; ///< optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)
 
-    Data< bool >  showObject;
-    Data< float > showObjectScale;
-    Data< bool >  showIndices;
-    Data< float > showIndicesScale;
-    Data< bool >  showVectors;
-    Data< float > showVectorsScale;
-    Data< int > drawMode;
+    Data< bool >  d_useTopology; ///< Shall this object rely on any active topology to initialize its size and positions
+
+    Data< bool >  showObject; ///< Show objects. (default=false)
+    Data< float > showObjectScale; ///< Scale for object display. (default=0.1)
+    Data< bool >  showIndices; ///< Show indices. (default=false)
+    Data< float > showIndicesScale; ///< Scale for indices display. (default=0.02)
+    Data< bool >  showVectors; ///< Show velocity. (default=false)
+    Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
+    Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
     Data< defaulttype::Vec4f > d_color;  ///< drawing color
     Data < bool > isToPrint; ///< ignore some Data for file export
 
@@ -200,7 +199,7 @@ public:
     virtual void resize( size_t vsize) override;
     virtual void reserve(size_t vsize);
 
-    size_t getSize() const override { return vsize; }
+    size_t getSize() const override { return d_size.getValue(); }
 
     SReal getPX(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
     SReal getPY(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
@@ -292,8 +291,6 @@ public:
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const override;
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id) override;
 
-    void setFilename(std::string s) {filename.setValue(s);}
-
     /// @name Initial transformations accessors.
     /// @{
 
@@ -306,14 +303,6 @@ public:
     virtual Vector3 getScale() const override {return scale.getValue();}
 
     /// @}
-
-    void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
-
-    std::string getFilename() {return filename.getValue();}
-
-    /// Renumber the constraint ids with the given permutation vector
-    void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering) override;
-
 
     /// @name Integration related methods
     /// @{
@@ -378,12 +367,11 @@ public:
 
     virtual void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx()) override;
 
-    virtual void resetConstraint(const core::ExecParams* params) override;
+    virtual void resetConstraint(const core::ConstraintParams* cparams) override;
 
-    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
-    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID);
-#endif
+    virtual void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
+
+    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
     /// @}
 
     /// @name Debug
@@ -414,17 +402,20 @@ protected :
     /// @name Initial geometric transformations
     /// @{
 
-    Data< Vector3 > translation;
-    Data< Vector3 > rotation;
-    Data< Vector3 > scale;
-    Data< Vector3 > translation2;
-    Data< Vector3 > rotation2;
+    Data< Vector3 > translation; ///< Translation of the DOFs
+    Data< Vector3 > rotation; ///< Rotation of the DOFs
+    Data< Vector3 > scale; ///< Scale of the DOFs in 3 dimensions
+    Data< Vector3 > translation2; ///< Translation of the DOFs, applied after the rest position has been computed
+    Data< Vector3 > rotation2; ///< Rotation of the DOFs, applied the after the rest position has been computed
 
     /// @}
 
-    sofa::core::objectmodel::DataFileName filename;
-    Data< bool> ignoreLoader;
-    Data< int > f_reserve;
+    //int vsize; ///< Number of elements to allocate in vectors
+    Data< int > d_size; ///< Size of the vectors
+
+    SingleLink< MechanicalObject<DataTypes>, core::topology::BaseMeshTopology,BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH> l_topology;
+
+    Data< int > f_reserve; ///< Size to reserve when creating vectors. (default=0)
 
     bool m_initialized;
 
@@ -434,8 +425,6 @@ protected :
     sofa::helper::vector< Data< VecCoord >		* > vectorsCoord;		///< Coordinates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< VecDeriv >		* > vectorsDeriv;		///< Derivates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< MatrixDeriv >	* > vectorsMatrixDeriv; ///< Constraint vectors table
-
-    size_t vsize; ///< Number of elements to allocate in vectors
 
     /**
      * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
@@ -475,63 +464,33 @@ protected :
     std::ofstream* m_gnuplotFileX;
     std::ofstream* m_gnuplotFileV;
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#ifndef SOFA_FLOAT
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
-#endif
-#ifndef SOFA_FLOAT
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
+void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const defaulttype::Quat q);
 
-#ifndef SOFA_FLOAT
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 
-#ifndef SOFA_FLOAT
+
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+
+
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
+void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2Types>;
+
 #endif
 
 } // namespace container

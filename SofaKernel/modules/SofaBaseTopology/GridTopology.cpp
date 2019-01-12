@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,8 +33,6 @@ namespace component
 namespace topology
 {
 
-SOFA_DECL_CLASS(GridTopology)
-
 int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D")
         .addAlias("Grid")
         .add< GridTopology >()
@@ -51,13 +49,29 @@ GridTopology::GridUpdate::GridUpdate(GridTopology *t):
     setDirtyValue();
 }
 
-void GridTopology::GridUpdate::update()
+void GridTopology::GridUpdate::doUpdate()
 {
     updateEdges();
     updateQuads();
     updateTriangles();
     updateHexas();
 }
+
+void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->MeshTopology::parse(arg);
+
+    if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
+    {
+        int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());
+        int ny = arg->getAttributeAsInt("ny", d_n.getValue().y());
+        int nz = arg->getAttributeAsInt("nz", d_n.getValue().z());
+        d_n.setValue(Vec3i(nx,ny,nz));
+    }
+
+    this->setNbGridPoints();
+}
+
 
 void GridTopology::GridUpdate::updateEdges()
 {
@@ -145,17 +159,11 @@ void GridTopology::GridUpdate::updateHexas()
     for (int z=0; z<n[2]-1; z++)
         for (int y=0; y<n[1]-1; y++)
             for (int x=0; x<n[0]-1; x++)
-#ifdef SOFA_NEW_HEXA
                 hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
                         topology->point(x+1,y+1,z  ),topology->point(x  ,y+1,z  ),
                         topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
                         topology->point(x+1,y+1,z+1),topology->point(x  ,y+1,z+1)));
-#else
-                hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
-                        topology->point(x  ,y+1,z  ),topology->point(x+1,y+1,z  ),
-                        topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
-                        topology->point(x  ,y+1,z+1),topology->point(x+1,y+1,z+1)));
-#endif
+
     topology->seqHexahedra.endEdit();
 }
 
@@ -337,17 +345,11 @@ GridTopology::Hexa GridTopology::getHexaCopy(int i)
 
 GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
 {
-#ifdef SOFA_NEW_HEXA
+
     return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x+1,y+1,z  ),point(x  ,y+1,z  ),
             point(x  ,y  ,z+1),point(x+1,y  ,z+1),
             point(x+1,y+1,z+1),point(x  ,y+1,z+1));
-#else
-    return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
-            point(x  ,y+1,z  ),point(x+1,y+1,z  ),
-            point(x  ,y  ,z+1),point(x+1,y  ,z+1),
-            point(x  ,y+1,z+1),point(x+1,y+1,z+1));
-#endif
 }
 
 GridTopology::Quad GridTopology::getQuadCopy(int i)

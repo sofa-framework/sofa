@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,9 +25,9 @@
 
 #include "Sofa_test.h"
 
+#include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
 
 namespace sofa {
 
@@ -48,10 +48,9 @@ public:
     {}
 
 
-    virtual void update() override
+    void doUpdate()
     {
-        DataEngineType::update();
-
+        Inherit1::doUpdate();
         ++m_counter;
     }
 
@@ -80,7 +79,7 @@ struct DataEngine_test : public Sofa_test<>
     typedef DDGNode::DDGLinkContainer DDGLinkContainer;
 
     typename Engine::SPtr m_engine; ///< the real tested engine
-    typename DataEngineType::SPtr m_engineInput; ///< an other identical engine, where only inputs are used (not the engine itself). It is an easy way to create all inputs of the right type, to be able to link wuth them.
+    typename DataEngineType::SPtr m_engineInput; ///< an other identical engine, where only inputs are used (not the engine itself). It is an easy way to create all inputs of the right type, to be able to link with them.
 
     ///
     DataEngine_test()

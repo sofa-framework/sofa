@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,7 +54,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return "0.2";
+    return "0.3";
 }
 
 const char* getModuleLicense()
@@ -65,7 +65,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "a simple example of a plugin component module";
+    return "Manager handling carving operations between a tool and an object.";
 }
 
 const char* getModuleComponentList()
@@ -78,6 +78,4 @@ const char* getModuleComponentList()
 }
 
 }
-
-SOFA_LINK_CLASS(CarvingManager)
 

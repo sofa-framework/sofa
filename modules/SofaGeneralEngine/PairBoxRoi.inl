@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,15 +22,10 @@
 #ifndef SOFA_COMPONENT_ENGINE_PAIRBOXROI_INL
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/PairBoxRoi.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <limits>
 
 namespace sofa
@@ -136,11 +131,9 @@ bool PairBoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 }
 
 template <class DataTypes>
-void PairBoxROI<DataTypes>::update()
+void PairBoxROI<DataTypes>::doUpdate()
 {
    const VecCoord* x0 = &f_X0.getValue();
-
-   cleanDirty();
 
    Vec6& maxvb = *(inclusiveBox.beginEdit());
    Vec6& minvb = *(includedBox.beginEdit());
@@ -198,50 +191,19 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
-//    const VecCoord* x0 = &f_X0.getValue();
-    sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(1.0f, 0.4f, 0.4f, 1.0f);
+    sofa::defaulttype::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
 
-
+    vparams->drawTool()->saveLastState();
     /// Draw inclusive box
     if( p_drawInclusiveBox.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
         const Vec6& vb=inclusiveBox.getValue();
-
-        const Vec6& b=vb;
-        const Real& Xmin=b[0];
-        const Real& Xmax=b[3];
-        const Real& Ymin=b[1];
-        const Real& Ymax=b[4];
-        const Real& Zmin=b[2];
-        const Real& Zmax=b[5];
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-        vparams->drawTool()->drawLines(vertices, linesWidth , color );
+        const sofa::defaulttype::Vector3 minBBox(vb[0], vb[1], vb[2]);
+        const sofa::defaulttype::Vector3 maxBBox(vb[3], vb[4], vb[5]);
+        vparams->drawTool()->setMaterial(color);
+        vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, linesWidth);
     }
 
     /// Draw included box
@@ -249,41 +211,11 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
         const Vec6& vb=includedBox.getValue();
-
-        const Vec6& b=vb;
-        const Real& Xmin=b[0];
-        const Real& Xmax=b[3];
-        const Real& Ymin=b[1];
-        const Real& Ymax=b[4];
-        const Real& Zmin=b[2];
-        const Real& Zmax=b[5];
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-        vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-        vparams->drawTool()->drawLines(vertices, linesWidth , color );
+        const sofa::defaulttype::Vector3 minBBox(vb[0], vb[1], vb[2]);
+        const sofa::defaulttype::Vector3 maxBBox(vb[3], vb[4], vb[5]);
+        vparams->drawTool()->setMaterial(color);
+        vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, linesWidth);
     }
 
     const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
@@ -305,6 +237,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawPoints(vertices, pointsWidth, color);
     }
+    vparams->drawTool()->restoreLastState();
 
 }
 

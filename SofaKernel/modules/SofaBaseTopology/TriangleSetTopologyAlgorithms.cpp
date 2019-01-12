@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,9 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,97 +34,61 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TriangleSetTopologyAlgorithms)
 int TriangleSetTopologyAlgorithmsClass = core::RegisterObject("Triangle set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< TriangleSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< TriangleSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< TriangleSetTopologyAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< TriangleSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< TriangleSetTopologyAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangleSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< TriangleSetTopologyAlgorithms<Vec1fTypes> >()
-#endif
+        .add< TriangleSetTopologyAlgorithms<Vec3Types> >(true) // default template
+        .add< TriangleSetTopologyAlgorithms<Vec2Types> >()
+        .add< TriangleSetTopologyAlgorithms<Vec1Types> >()
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1fTypes>;
-#endif
 
 
-
-
-
-
-
-
-
-#ifndef SOFA_FLOAT
-
-
+// methods specilizations declaration
 template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
+int TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+    sofa::helper::vector<ElemID>& indices_list,
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+    sofa::helper::vector<ElemID>& indices_list,
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
+
+
+
+
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1Types>;
+
+
+
+
+
+// methods specilizations definition
+
+template<>
+int TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID , Coord& , PointID , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
-                                                              sofa::helper::vector<unsigned int>& ,
+                                                              sofa::helper::vector<ElemID>& ,
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath not implemented";
     return 0;
 }
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
+
+template<>
+int TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointID , Coord& , PointID , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
-                                                              sofa::helper::vector<unsigned int>& ,
+                                                              sofa::helper::vector<ElemID>& ,
                                                               sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
-    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath not implemented"<<sendl;
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath not implemented";
     return 0;
 }
-
-#endif
-
-
-#ifndef SOFA_DOUBLE
-
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
-                                                              sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
-                                                              sofa::helper::vector<unsigned int>& ,
-                                                              sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
-                                                              sofa::helper::vector<EdgeID>& , double  , double )
-{
-    sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented"<<sendl;
-    return 0;
-}
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
-                                                              sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
-                                                              sofa::helper::vector<unsigned int>& ,
-                                                              sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
-                                                              sofa::helper::vector<EdgeID>& , double  , double )
-{
-    sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath not implemented"<<sendl;
-    return 0;
-}
-
-
-#endif
 
 
 

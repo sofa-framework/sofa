@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -215,27 +215,18 @@ struct ShapeFunctionTypes
     static const char* Name();
 };
 
-#ifndef SOFA_FLOAT
-typedef ShapeFunctionTypes<3,double> ShapeFunctiond;
-typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
-template<> inline const char* ShapeFunctiond::Name() { return "ShapeFunctiond"; }
-template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
-#endif
-#ifndef SOFA_DOUBLE
-typedef ShapeFunctionTypes<3,float>  ShapeFunctionf;
+typedef ShapeFunctionTypes<3,float>  ShapeFunction3f;
 typedef ShapeFunctionTypes<2,float>  ShapeFunction2f;
-template<> inline const char* ShapeFunctionf::Name() { return "ShapeFunctionf"; }
+template<> inline const char* ShapeFunction3f::Name() { return "ShapeFunction3f"; }
 template<> inline const char* ShapeFunction2f::Name() { return "ShapeFunction2f"; }
-#endif
 
-#ifdef SOFA_FLOAT
-typedef ShapeFunctionf ShapeFunction;
-typedef ShapeFunction2f ShapeFunction2;
-#else
-typedef ShapeFunctiond ShapeFunction;
-typedef ShapeFunction2d ShapeFunction2;
-#endif
+typedef ShapeFunctionTypes<3,double> ShapeFunction3d;
+typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
+template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }
+template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
 
+typedef ShapeFunctionTypes<3,SReal> ShapeFunction3;
+typedef ShapeFunctionTypes<2,SReal> ShapeFunction2;
 
 }
 }

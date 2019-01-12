@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP
-#include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetTopologyAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -37,44 +36,20 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(EdgeSetTopologyAlgorithms)
 int EdgeSetTopologyAlgorithmsClass = core::RegisterObject("Edge set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< EdgeSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< EdgeSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< EdgeSetTopologyAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< EdgeSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< EdgeSetTopologyAlgorithms<Vec1dTypes> >()
-        .add< EdgeSetTopologyAlgorithms<Rigid3dTypes> >()
-        .add< EdgeSetTopologyAlgorithms<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EdgeSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< EdgeSetTopologyAlgorithms<Vec1fTypes> >()
-        .add< EdgeSetTopologyAlgorithms<Rigid3fTypes> >()
-        .add< EdgeSetTopologyAlgorithms<Rigid2fTypes> >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec1dTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid2dTypes>;
-#endif
+        .add< EdgeSetTopologyAlgorithms<Vec3Types> >(true) // default template
+        .add< EdgeSetTopologyAlgorithms<Vec2Types> >()
+        .add< EdgeSetTopologyAlgorithms<Vec1Types> >()
+        .add< EdgeSetTopologyAlgorithms<Rigid3Types> >()
+        .add< EdgeSetTopologyAlgorithms<Rigid2Types> >()
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec1fTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid2fTypes>;
-#endif
+        ;
+template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Vec1Types>;
+template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid3Types>;
+template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<Rigid2Types>;
+
 
 } // namespace topology
 

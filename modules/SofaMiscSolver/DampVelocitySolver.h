@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,8 +43,8 @@ public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
 
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-    Data<double> rate;
-    Data<double> threshold;
+    Data<double> rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
+    Data<double> threshold; ///< Threshold under which the velocities are canceled.
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.

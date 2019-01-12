@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,45 +32,21 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MergePoints)
-
 int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
-#ifdef SOFA_FLOAT
-        .add< MergePoints<defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< MergePoints<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< MergePoints<defaulttype::Vec3fTypes> >()
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< MergePoints<defaulttype::Vec1dTypes> >()
-        .add< MergePoints<defaulttype::Vec2dTypes> >()
-        .add< MergePoints<defaulttype::Rigid2dTypes> >()
-        .add< MergePoints<defaulttype::Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< MergePoints<defaulttype::Vec1fTypes> >()
-        .add< MergePoints<defaulttype::Vec2fTypes> >()
-        .add< MergePoints<defaulttype::Rigid2fTypes> >()
-        .add< MergePoints<defaulttype::Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< MergePoints<defaulttype::Vec3Types> >(true) // default template
+        .add< MergePoints<defaulttype::Vec1Types> >()
+        .add< MergePoints<defaulttype::Vec2Types> >()
+        .add< MergePoints<defaulttype::Rigid2Types> >()
+        .add< MergePoints<defaulttype::Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2dTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1fTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2fTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2fTypes>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1Types>;
+template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2Types>;
+template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2Types>;
+template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3Types>;
+ 
 
 
 } // namespace constraint

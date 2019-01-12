@@ -118,7 +118,7 @@ public:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(__PreassembledMass_CPP)
+#if  !defined(__PreassembledMass_CPP)
 
 extern template class SOFA_PreassembledMass_API PreassembledMass<defaulttype::Vec3Types>; // volume FEM (tetra, hexa)
 extern template class SOFA_PreassembledMass_API PreassembledMass<defaulttype::Vec1Types>; // subspace

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,8 +74,8 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     if (ff==NULL)
     {
 
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseType>(mstate1,mstate2);
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
@@ -161,7 +161,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     ff->clear();
     mapper1.resize(size);
     mapper2.resize(size);
-//    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];
@@ -222,7 +221,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         if (parent!=NULL)
         {
-            //msg_error()<< "Removing contact response from "<<parent->getName();
             parent->removeObject(this);
             parent->removeObject(ff);
         }
@@ -233,8 +231,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
 {
-    //	if (ff!=NULL)
-    //		ff->draw(vparams);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >

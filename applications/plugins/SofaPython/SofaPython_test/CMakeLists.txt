@@ -9,6 +9,7 @@ set(SOURCE_FILES
     memory.cpp
     PythonFactory_test.cpp
     SofaModule_test.cpp
+    PythonBinding_test_list.cpp
     PythonScriptControllerHelper_test.cpp
     PythonScriptController_test.cpp
     SofaModule_test.cpp
@@ -31,6 +32,14 @@ set(PYTHON_FILES
     python/test_PythonFactory.py
     python/test_PythonScriptControllerHelper.py
     python/test_PythonScriptController.py
+    python/test_BindingBase.py
+    python/test_BindingBaseObject.py
+    python/test_BindingData.py
+    python/test_BindingLink.py
+    python/test_BindingNode.py
+    python/test_BindingSofa.py
+    python/test_PythonEnvironment.py
+    python/unicodeData.py
 )
 
 

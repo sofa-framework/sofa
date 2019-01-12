@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,31 +45,44 @@ Capture::Capture()
 bool Capture::saveScreen(const std::string& filename, int compression_level)
 {
     std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
-    std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
     //test if we can export in lossless image
     bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
-    if(!imageSupport)
+    if (!imageSupport)
     {
-        msg_error("Capture") << "Could not write " << extension  << "image format (no support found)" ;
+        msg_error("Capture") << "Could not write " << extension << "image format (no support found)";
         return false;
     }
 
-    helper::io::Image* img =  helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
+    helper::io::Image* img = helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
+    bool success = false;
+    if (img)
+    {
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        img->init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
+        glReadBuffer(GL_FRONT);
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
 
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
-    img->init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
-    glReadBuffer(GL_FRONT);
-    glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
+        success = img->save(filename, compression_level);
 
-    if (!img->save(filename, compression_level))
-        return false;
+        if (success)
+        {
+            msg_info("Capture") << "Saved " << img->getWidth() << "x" << img->getHeight() << " screen image to " << filename;
+        }
 
-    msg_info("Capture") << "Saved "<<img->getWidth()<<"x"<<img->getHeight()<<" screen image to "<<filename ;
-    glReadBuffer(GL_BACK);
-    return true;
+        glReadBuffer(GL_BACK);
+        delete img;
+    }
+
+    if(!success)
+    {
+        msg_error("Capture") << "Unknown error while saving screen image to " << filename;
+    }
+
+    return success;
 }
 
 std::string Capture::findFilename()
@@ -85,7 +98,6 @@ std::string Capture::findFilename()
     if(!pngSupport && !bmpSupport)
         return filename;
 
-#ifndef PS3
     char buf[32];
     int c;
     c = 0;
@@ -111,7 +123,6 @@ std::string Capture::findFilename()
         filename += ".png";
     else
         filename += ".bmp";
-#endif
 
     return filename;
 }

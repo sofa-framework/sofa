@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,7 @@ namespace engine
 {
 
 template <class DataTypes>
-void MeshSubsetEngine<DataTypes>::update()
+void MeshSubsetEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
     helper::ReadAccessor<Data< SeqEdges > > edg(this->inputEdges);
@@ -78,8 +78,6 @@ void MeshSubsetEngine<DataTypes>::update()
         for(size_t j=0; j<4; j++) if(FtoS.find(qd[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[qd[i][j]];
         if(inside) oqd.push_back(cell);
     }
-
-    this->cleanDirty();
 }
 
 

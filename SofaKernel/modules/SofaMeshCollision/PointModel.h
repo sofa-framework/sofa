@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
 namespace sofa
@@ -86,8 +86,6 @@ class SOFA_MESH_COLLISION_API TPointModel : public core::CollisionModel
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TPointModel, TDataTypes), core::CollisionModel);
 
-//    typedef Vec3Types InDataTypes;
-//    typedef Vec3Types DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef TPointModel<DataTypes> ParentModel;
@@ -112,6 +110,7 @@ public:
 
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
+    void draw(const core::visual::VisualParams*,int index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
@@ -122,20 +121,11 @@ public:
 
     PointLocalMinDistanceFilter *getFilter() const;
 
-    //template< class TFilter >
-    //TFilter *getFilter() const
-    //{
-    //	if (m_lmdFilter != 0)
-    //		return m_lmdFilter;
-    //	else
-    //		return &m_emptyFilter;
-    //}
-
     void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
     const Deriv& velocity(int index) const;
 
-    Data<bool> bothSide; // to activate collision on both side of the point model (when surface normals are defined on these points)
+    Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -163,16 +153,16 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    Data<bool> computeNormals;
+    Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
-    Data<std::string> PointActiverPath;
+    Data<std::string> PointActiverPath; ///< path of a component PointActiver that activate or deactivate collision point during execution
 
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition;
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     void updateNormals();
 
@@ -226,13 +216,9 @@ inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
 typedef TPointModel<sofa::defaulttype::Vec3Types> PointModel;
 typedef TPoint<sofa::defaulttype::Vec3Types> Point;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
+extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3Types>;
+
 #endif
 
 //bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);

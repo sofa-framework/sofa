@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,6 +29,8 @@
 #include <QToolTip>
 
 #define SIZE_TEXT     60
+
+
 namespace sofa
 {
 namespace helper
@@ -157,6 +159,22 @@ DataWidget::setWidgetDirty(bool b)
     dirty = b;
     Q_EMIT WidgetDirty(b);
 }
+
+typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
+
+DataWidget *DataWidget::CreateDataWidget(const DataWidget::CreatorArgument &dwarg)
+{
+    DataWidget *datawidget_ = 0;
+    const std::string &widgetName=dwarg.data->getWidget();
+    if (widgetName.empty())
+        datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
+    else
+        datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
+
+    return datawidget_;
+}
+
+
 /*QDisplayDataInfoWidget definitions */
 
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,

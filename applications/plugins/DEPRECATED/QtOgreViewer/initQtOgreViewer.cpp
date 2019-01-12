@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,13 +86,3 @@ const char* getModuleComponentList()
 } // namespace sofa
 
 ////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(QtOgreViewer)
-SOFA_LINK_CLASS(OgreVisualModel)
-SOFA_LINK_CLASS(OgreShaderParameter)
-SOFA_LINK_CLASS(OgreShaderTextureUnit)
-SOFA_LINK_CLASS(OgrePlanarReflectionMaterial);
-SOFA_LINK_CLASS(OgreViewerSetting)
-SOFA_LINK_CLASS(OgreMeshLoader);
-
-
-

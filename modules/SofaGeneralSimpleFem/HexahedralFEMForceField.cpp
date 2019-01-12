@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP
 #include "HexahedralFEMForceField.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -36,24 +36,14 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(HexahedralFEMForceField)
-
 // Register in the Factory
 int HexahedralFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
-#ifndef SOFA_FLOAT
-        .add< HexahedralFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedralFEMForceField<Vec3fTypes> >()
-#endif
+        .add< HexahedralFEMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceField<Vec3fTypes>;
-#endif
+template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,155 +78,6 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::reinit( )
     computeParticleMasses();
     computeLumpedMasses();
 }
-
-/*
-template <class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topology::Topology* t)
-{
-	if(t != this->_topology)
-		return;
-
-	HexahedralFEMForceFieldT::handleTopologyChange();
-
-	std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
-	std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
-#ifdef TODOTOPO
-	// handle point events
-	_particleMasses.handleTopologyEvents(itBegin,itEnd);
-
-	if( _useLumpedMass.getValue() )
-		_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
-
-	// handle hexa events
-	_elementMasses.handleTopologyEvents(itBegin,itEnd);
-	_elementTotalMass.handleTopologyEvents(itBegin,itEnd);
-#endif
-
-	for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
-		iter != itEnd; ++iter)
-	{
-		switch((*iter)->getChangeType())
-		{
-		// for added elements:
-		// compute ElementMasses and TotalMass
-		// add particle masses and lumped masses of adjacent particles
-		case HEXAHEDRAADDED:
-			{
-				const VecElement& hexahedra = this->_topology->getHexahedra();
-				const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
-
-				const VecCoord& initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-				helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-				helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
-
-				for(unsigned int i=0; i<hexaModif.size(); ++i)
-				{
-					const unsigned int hexaId = hexaModif[i];
-
-					Vec<8,Coord> nodes;
-					for(int w=0;w<8;++w)
-						nodes[w] = initialPoints[hexahedra[hexaId][w]];
-
-					computeElementMass( elementMasses[hexaId], elementTotalMass[hexaId],
-										this->hexahedronInfo.getValue()[hexaId].rotatedInitialElements);
-				}
-
-				this->_elementTotalMass.endEdit();
-				this->_elementMasses.endEdit();
-
-
-				helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-
-				for(unsigned int i=0; i<hexaModif.size(); ++i)
-				{
-					const unsigned int hexaId = hexaModif[i];
-
-					Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
-
-					for(int w=0; w<8; ++w)
-						particleMasses[ hexahedra[hexaId][w] ] += mass;
-				}
-
-				this->_particleMasses.endEdit();
-
-				if( _useLumpedMass.getValue() )
-				{
-					helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-					for(unsigned int i=0; i<hexaModif.size(); ++i)
-					{
-						const unsigned int hexaId = hexaModif[i];
-						const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
-
-						for(int w=0;w<8;++w)
-						{
-							for(int j=0;j<8*3;++j)
-							{
-								lumpedMasses[ hexahedra[hexaId][w] ][0] += mass[w*3  ][j];
-								lumpedMasses[ hexahedra[hexaId][w] ][1] += mass[w*3+1][j];
-								lumpedMasses[ hexahedra[hexaId][w] ][2] += mass[w*3+2][j];
-							}
-						}
-					}
-
-					this->_lumpedMasses.endEdit();
-				}
-
-			}
-			break;
-
-		// for removed elements:
-		// subttract particle masses and lumped masses of adjacent particles
-		case HEXAHEDRAREMOVED:
-			{
-				const VecElement& hexahedra = this->_topology->getHexahedra();
-				const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraRemoved *> (*iter))->getArray();
-
-				helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-
-				for(unsigned int i=0; i<hexaModif.size(); ++i)
-				{
-					const unsigned int hexaId = hexaModif[i];
-
-					Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
-
-					for(int w=0; w<8; ++w)
-						particleMasses[ hexahedra[hexaId][w] ] -= mass;
-				}
-
-				this->_particleMasses.endEdit();
-
-				if( _useLumpedMass.getValue() )
-				{
-					helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-					for(unsigned int i=0; i<hexaModif.size(); ++i)
-					{
-						const unsigned int hexaId = hexaModif[i];
-						const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
-
-						for(int w=0;w<8;++w)
-						{
-							for(int j=0;j<8*3;++j)
-							{
-								lumpedMasses[ hexahedra[hexaId][w] ][0] -= mass[w*3  ][j];
-								lumpedMasses[ hexahedra[hexaId][w] ][1] -= mass[w*3+1][j];
-								lumpedMasses[ hexahedra[hexaId][w] ][2] -= mass[w*3+2][j];
-							}
-						}
-					}
-
-					this->_lumpedMasses.endEdit();
-				}
-			}
-			break;
-		default:
-			break;
-		}
-	}
-}
-*/
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
@@ -448,7 +299,6 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
 ///// WARNING this method only add diagonal elements in the given matrix !
 template<class DataTypes>
-// void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     // Build Matrix Block for this ForceField
@@ -472,19 +322,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
         for (n1=0; n1<8; n1++)
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
-#ifndef SOFA_NEW_HEXA
-            node1 = hexa[_indices[n1]];
-#else
             node1 = hexa[n1];
-#endif
+
             // find index of node 2
             //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = hexa[_indices[n2]];
-#else
                 node2 = hexa[n2];
-#endif
+
                 Mat33 tmp = it->rotation.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * it->rotation;
@@ -499,45 +343,42 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-// void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaulttype::BaseMatrix * matrix,
-// double mFact, double /*bFact*/, double kFact, unsigned int &offset )
 {
     int i, j, n1, n2;
     Index node1, node2;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
-    //typename VecElement::const_iterator it;
+    if (this->hexahedronInfo.getValue().size() != hexahedra.size())
+    {
+        msg_error() << "HexahedronInformation vector and Topology's Hexahedron vector should have the same size.";
+        return;
+    }
+
     typename helper::vector<HexahedronInformation>::const_iterator it;
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
-    for ( unsigned int e = 0; e < hexahedra.size(); ++e )
+    unsigned int e = 0;
+    for ( it = this->hexahedronInfo.getValue().begin() ; it != this->hexahedronInfo.getValue().end() ; ++it, ++e )
     {
         const ElementMass &Me = _elementMasses.getValue() [e];
         const Element hexa = hexahedra[e];
         const ElementStiffness &Ke = it->stiffness;
 
         // find index of node 1
-
         Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
         Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
         for ( n1 = 0; n1 < 8; n1++ )
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
-#ifndef SOFA_NEW_HEXA
-            node1 = hexa[_indices[n1]];
-#else
             node1 = hexa[n1];
-#endif
+
             // find index of node 2
             //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = hexa[_indices[n2]];
-#else
                 node2 = hexa[n2];
-#endif
+
                 // add M to matrix
                 Mat33 tmp = Mat33 ( Coord ( Me[3*n1+0][3*n2+0], Me[3*n1+0][3*n2+1], Me[3*n1+0][3*n2+2] ),
                         Coord ( Me[3*n1+1][3*n2+0], Me[3*n1+1][3*n2+1], Me[3*n1+1][3*n2+2] ),
@@ -606,21 +447,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addForce(const core::MechanicalP
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    //if (mparams->kFactor() != 1.0)
-    //{
-    //	helper::ReadAccessor< DataVecDeriv > _dx = dx;
-    //	DataVecDeriv kdx;// = dx * kFactor;
-    //	helper::WriteAccessor< DataVecDeriv > _kdx = kdx;
-    //	_kdx.resize(_dx.size());
-    //	Real _kFactor = (Real)mparams->kFactor();
-    //	for(unsigned i=0;i<_dx.size();++i)
-    //		_kdx[i]=_dx[i]*_kFactor;
-    //	HexahedralFEMForceFieldT::addDForce(mparams, df,kdx);
-    //}
-    //else
-    //{
     HexahedralFEMForceFieldT::addDForce(mparams, df, dx);
-    //}
 }
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,8 +51,6 @@ int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation lo
         .addAlias("MultiStepMasterSolver")
         ;
 
-SOFA_DECL_CLASS(MultiStepAnimationLoop);
-
 MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
     , collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
@@ -90,10 +88,15 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     const int ninteg = integrationSteps.getValue();
 
     SReal stepDt = dt / (ncollis * ninteg);
+
+    // initialize a constraint params object with default MultiVecId for 
+    // constraint jacobian, free positions, free velocity vectors
+    sofa::core::ConstraintParams cparams(*params); 
+
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints
-        sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
+        sofa::simulation::MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
         // Then do collision detection and response creation
         sout << "collision" << sendl;
         computeCollision(params);
@@ -126,11 +129,12 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

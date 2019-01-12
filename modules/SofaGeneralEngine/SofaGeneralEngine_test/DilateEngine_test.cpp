@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -104,7 +104,6 @@ struct DilateEngine_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using testing::Types;
-#ifdef SOFA_WITH_DOUBLE
 typedef Types<Vec3Types> DataTypes;
 
 TYPED_TEST_CASE(DilateEngine_test, DataTypes);
@@ -117,6 +116,6 @@ TYPED_TEST(DilateEngine_test, UpdateTest) {
     EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
-#endif
+
 
 }

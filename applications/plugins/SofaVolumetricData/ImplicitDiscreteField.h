@@ -4,7 +4,7 @@
 #include <iostream>
 #include <SofaVolumetricData/ImplicitShape.h>
 #include <SofaVolumetricData/DistanceGrid.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/ObjectFactory.h>
@@ -43,11 +43,11 @@ public:
 private:
     DataFileName in_filename;
     Coord pmin, pmax;
-    Data<int> in_nx;
-    Data<int> in_ny;
-    Data<int> in_nz;
-    Data<double> in_scale;
-    Data<double> in_sampling;
+    Data<int> in_nx; ///< in_nx
+    Data<int> in_ny; ///< in_ny
+    Data<int> in_nz; ///< in_nz
+    Data<double> in_scale; ///< in_scale
+    Data<double> in_sampling; ///< in_sampling
 
 };
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,9 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
@@ -33,37 +32,17 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(TetrahedronSetGeometryAlgorithms)
 int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
-#ifdef SOFA_FLOAT
-        .add< TetrahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
-#else
         .add< TetrahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< TetrahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< TetrahedronSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< TetrahedronSetGeometryAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TetrahedronSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< TetrahedronSetGeometryAlgorithms<Vec1fTypes> >()
-#endif
+        .add< TetrahedronSetGeometryAlgorithms<Vec2Types> >()
+        .add< TetrahedronSetGeometryAlgorithms<Vec1Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1dTypes>;
-#endif
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1Types>;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1fTypes>;
-#endif
 
 } // namespace topology
 

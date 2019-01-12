@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,14 +74,6 @@ static Mat<9,9,real> getDeterminantHessian(const Mat<3,3,real>& from)
     ret(5,8)=ret(5,6)=from(0,1);
     return ret;
 }
-
-//template<class real>
-//static void addMultDeterminantHessian(Mat<3,3,real>& out, const Mat<3,3,real>& in, const Mat<3,3,real>& from)
-//{
-//    out(0,0)+=from(2,2)*in(1,1)-from(2,1)*in(1,2)-from(1,2)*in(2,1)+from(1,1)*in(2,2);  out(0,1)+=-from(2,2)*in(1,0)+from(2,0)*in(1,2)+from(1,2)*in(2,0)-from(1,0)*in(2,2); out(0,2)+=from(2,1)*in(1,0)-from(2,0)*in(1,1)-from(1,1)*in(2,0)+from(1,0)*in(2,1);
-//    out(1,0)+=-from(2,2)*in(0,1)+from(2,1)*in(0,2)+from(0,2)*in(2,1)-from(0,1)*in(2,2); out(1,1)+=from(2,2)*in(0,0)-from(2,0)*in(0,2)-from(0,2)*in(2,0)+from(0,0)*in(2,2);  out(1,2)+=-from(2,1)*in(0,0)+from(2,0)*in(0,1)+from(0,1)*in(2,0)-from(0,0)*in(2,1);
-//    out(2,0)+=from(1,2)*in(0,1)-from(1,1)*in(0,2)-from(0,2)*in(1,1)+from(0,1)*in(1,2);  out(2,1)+=-from(1,2)*in(0,0)+from(1,0)*in(0,2)+from(0,2)*in(1,0)-from(0,0)*in(1,2); out(2,2)+=from(1,1)*in(0,0)-from(1,0)*in(0,1)-from(0,1)*in(1,0)+from(0,0)*in(1,1);
-//}
 
 /// returns  d^2 I1 /d from^2 = d( 2.*from )/d from
 template<class real>
@@ -189,11 +181,6 @@ public:
         result.getStrain()[0]+= I1;
         result.getStrain()[1]+= I2;
         result.getStrain()[2]+= detF;
-
-        //        std::cout<<"F="<<F<<std::endl;
-        //        std::cout<<"dd1="<<dd1<<std::endl;
-        //        std::cout<<"dd2="<<dd2<<std::endl;
-        //        std::cout<<"ddJ="<<ddJ<<std::endl;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
@@ -237,128 +224,6 @@ public:
         vdf += H*vdx*kfactor;
     }
 };
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////
-////  U331 -> I331
-//////////////////////////////////////////////////////////////////////////////////
-
-//template<class InReal,class OutReal>
-//class InvariantJacobianBlock< U331(InReal) , I331(OutReal) > :
-//    public  BaseJacobianBlock< U331(InReal) , I331(OutReal) >
-//{
-//public:
-//    typedef U331(InReal) In;
-//    typedef I331(OutReal) Out;
-
-//    typedef BaseJacobianBlock<In,Out> Inherit;
-//    typedef typename Inherit::InCoord InCoord;
-//    typedef typename Inherit::InDeriv InDeriv;
-//    typedef typename Inherit::OutCoord OutCoord;
-//    typedef typename Inherit::OutDeriv OutDeriv;
-//    typedef typename Inherit::MatBlock MatBlock;
-//    typedef typename Inherit::KBlock KBlock;
-//    typedef typename Inherit::Real Real;
-
-//    /**
-//    Mapping:
-//        - non-deviatoric: \f$ U -> [ sqrt(I1) , sqrt(I2), J ] \f$
-//        - deviatoric \f$ U -> [ sqrt(I1/J^{2/3}) , sqrt(I2/J^{4/3}), J ] \f$
-//    Jacobian:
-//        - non-deviatoric: \f$ J = [ dI1/(2.sqrt(I1)) , dI2/(2.sqrt(I2)) , dJ ] = [ Ui/sqrt(I1) dUi , Ui.(Uj^2+Uk^2)/(2.sqrt(I2)) dUi, dJ ] \f$
-//        - deviatoric \f$ J = [ Ui/(sqrt(I1/J^{2/3}).J^{2/3}) dUi , Ui.(Uj^2+Uk^2)/(sqrt(I2/J^{4/3}).J^{4/3}) dUi , dJ ] \f$
-//    where:
-//        - \f$ I1 = U1^2+U2^2+U3^2 \f$ ,                      \f$
-//        - \f$ I2 = U1^2.U2^2 + U2^2.U3^2 + U3^2.U1^2  \f$    \f$
-//        - \f$ J = U1*U2*U3                                   \f$ , \f$ dJ/dUi = Uj.Uk \f$
-//    */
-
-//    static const Real MIN_DETERMINANT() {return 0.001;} ///< J is clamped to avoid undefined deviatoric expressions
-
-//    static const bool constant=false;
-//    bool deviatoric;
-
-//    /// mapping parameters
-//    MatBlock _J;
-
-
-//    void addapply( OutCoord& result, const InCoord& data )
-//    {
-//        Real squareU[3] = { data.getStrain()[0]*data.getStrain()[0], data.getStrain()[1]*data.getStrain()[1], data.getStrain()[2]*data.getStrain()[2] };
-
-//        Real I1 = squareU[0] + squareU[1] + squareU[2];
-//        Real I2 = squareU[0]*squareU[1] + squareU[1]*squareU[2] + squareU[2]*squareU[0];
-//        Real J = data.getStrain()[0]*data.getStrain()[1]*data.getStrain()[2];
-//        if ( J <= MIN_DETERMINANT() ) J = MIN_DETERMINANT();   // CLAMP J
-
-//        Real sqrtI1, sqrtI2;
-//        Real denI1, denI2;
-
-//        if( deviatoric )
-//        {
-//            Real J23 = pow(J,2.0/3.0);
-//            Real J43 = pow(J,4.0/3.0);
-
-//            I1 /= J23;
-//            I2 /= J43;
-//            sqrtI1 = sqrt(I1);
-//            sqrtI2 = sqrt(I2);
-
-//            denI1 = sqrtI1 * J23;
-//            denI2 = sqrtI2 * J43;
-//        }
-//        else
-//        {
-//            sqrtI1 = sqrt(I1);
-//            sqrtI2 = sqrt(I2);
-
-//            denI1 = sqrtI1;
-//            denI2 = 2*sqrtI2;
-//        }
-
-//        _J[0][0] = data.getStrain()[0]/denI1;
-//        _J[0][1] = data.getStrain()[1]/denI1;
-//        _J[0][2] = data.getStrain()[2]/denI1;
-
-//        _J[1][0] = data.getStrain()[0] * ( squareU[1] + squareU[2] ) / denI2;
-//        _J[1][1] = data.getStrain()[1] * ( squareU[2] + squareU[0] ) / denI2;
-//        _J[1][2] = data.getStrain()[2] * ( squareU[0] + squareU[1] ) / denI2;
-
-//        _J[2][0] = data.getStrain()[1] * data.getStrain()[2];
-//        _J[2][1] = data.getStrain()[2] * data.getStrain()[0];
-//        _J[2][2] = data.getStrain()[0] * data.getStrain()[1];
-
-//        result.getStrain()[0] += sqrtI1;
-//        result.getStrain()[1] += sqrtI2;
-//        result.getStrain()[2] += J;
-//    }
-
-//    void addmult( OutDeriv& result,const InDeriv& data )
-//    {
-//        result.getStrain() += _J * data.getStrain();
-//    }
-
-//    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-//    {
-//        result.getStrain() += _J.multTranspose( data.getStrain() );
-//    }
-
-//    MatBlock getJ()
-//    {
-//        return _J;
-//    }
-
-//    KBlock getK(const OutDeriv&, bool=false)
-//    {
-//        KBlock K = KBlock();
-//        return K;
-//    }
-//    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
-//    {
-//    }
-//};
 
 } // namespace defaulttype
 } // namespace sofa

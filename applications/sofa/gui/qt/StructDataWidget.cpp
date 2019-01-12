@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -36,8 +36,6 @@ namespace qt
 using sofa::helper::Creator;
 using sofa::helper::fixed_array;
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(StructDataWidget);
 
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,float> > > DWClass_RigidCoord2f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,double> > > DWClass_RigidCoord2d("default",true);

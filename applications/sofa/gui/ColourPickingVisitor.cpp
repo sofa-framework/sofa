@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -89,16 +89,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/,
 simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation::Node* node)
 {
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    glPushMatrix();
-    double glMatrix[16];
-    node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
-    glMultMatrixd( glMatrix );
-#endif
     for_each(this, node, node->collisionModel, &ColourPickingVisitor::processCollisionModel);
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    glPopMatrix();
-#endif
     return RESULT_CONTINUE;
 }
 

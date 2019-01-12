@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
@@ -36,9 +35,6 @@
 #include <map>
 #include <list>
 
-//#ifdef SOFA_HAVE_GLEW
-//#include <SofaOpenglVisual/OglShaderVisualModel.h>
-//#endif
 
 namespace sofa
 {
@@ -365,25 +361,6 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
         }
     }
 
-    //sout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<sendl;
-    /*
-        if (firstApply)
-        {
-    #ifdef SOFA_HAVE_GLEW
-            visualmodel::OglShaderVisualModel* oglsvm = dynamic_cast<visualmodel::OglShaderVisualModel*>(this->toModel);
-
-            if(oglsvm)
-            {
-                Vec3fTypes::VecCoord tempRest;
-                for(unsigned int i=0 ; i<out.size() ; i++)
-                    tempRest.push_back(out[i]);
-                oglsvm->putRestPositions(tempRest);
-            }
-
-            firstApply = false;
-    #endif
-        }
-    */
     if(normals_data == NULL)
         delete normals;
     else
@@ -405,8 +382,11 @@ void SPHFluidSurfaceMapping<In,Out>::applyJT(const core::MechanicalParams * /*mp
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings()) return;
-    if (!grid) return;
+    if (!vparams->displayFlags().getShowMappings())
+        return;
+    if (!grid)
+        return;
+
     grid->draw(vparams);
 
     float scale = (float)mStep.getValue();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -191,30 +191,27 @@ public:
     }
 
     Data< helper::vector< unsigned char > >     dataVoxels;
-    Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
+    Data<bool> _fillWeighted; ///< is quantity of matter inside a cell taken into account?
 
-    Data<bool> d_bOnlyInsideCells;
+    Data<bool> d_bOnlyInsideCells; ///< Select only inside cells (exclude boundary cells)
 
 
 protected:
     bool isVirtual;
     /// cutting number in all directions
     Data< sofa::defaulttype::Vec< 3, int > > n;
-    Data< Vector3 > _min;
-    Data< Vector3 > _max;
+    Data< Vector3 > _min; ///< Min
+    Data< Vector3 > _max; ///< Max
     Data< SReal > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
 public:
-    Data< Vec3i >			dataResolution;
-    Data< Vector3 >         voxelSize;
-    Data< unsigned int >    marchingCubeStep;
-    Data< unsigned int >    convolutionSize;
+    Data< Vec3i >			dataResolution; ///< Dimension of the voxel File
+    Data< Vector3 >         voxelSize; ///< Dimension of one voxel
+    Data< unsigned int >    marchingCubeStep; ///< Step of the Marching Cube algorithm
+    Data< unsigned int >    convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 
-    Data< helper::vector< Vector3 > >    vertices;
-    Data< helper::vector < helper::vector <int> > >facets;
-    Data< SeqTriangles > input_triangles;
-    Data< SeqQuads > input_quads;
+    Data< helper::vector < helper::vector <int> > >facets; ///< Input mesh facets
 
     /** Create the data structure based on resolution, size and filling.
           \param numPoints  Number of points in the x,y,and z directions
@@ -226,7 +223,6 @@ public:
 protected:
     virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateHexahedra() override;
 
     sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
@@ -299,71 +295,26 @@ protected:
     };
 
 
-    /*	/// to compute valid cubes (intersection between mesh segments and cubes)
-    typedef struct segmentForIntersection{
-    Vector3 center;
-    Vector3 dir;
-    SReal norm;
-    segmentForIntersection(const Vector3& s0, const Vector3& s1)
-    {
-    center = (s0+s1)*.5;
-    dir = center-s0;
-    norm = dir.norm();
-    dir /= norm;
-    };
-    } SegmentForIntersection;
-    struct ltSegmentForIntersection // for set of SegmentForIntersection
-    {
-    bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
-    {
-    return s0.center < s1.center || s0.norm < s1.norm;
-    }
-    };
-    typedef struct cubeForIntersection{
-    Vector3 center;
-    fixed_array<Vector3,3> dir;
-    Vector3 norm;
-    cubeForIntersection( const CubeCorners&  corners )
-    {
-    center = (corners[7] + corners[0]) * .5;
-
-    norm[0] = (center[0] - corners[0][0]);
-    dir[0] = Vector3(1,0,0);
-
-    norm[1] = (center[1] - corners[0][1]);
-    dir[1] = Vector3(0,1,0);
-
-    norm[2] = (center[2] - corners[0][2]);
-    dir[2] = Vector3(0,0,1);
-    }
-    } CubeForIntersection;
-    /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
-    bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  ); */
 
     bool _alreadyInit;
 
 public :
 
-#ifdef SOFA_NEW_HEXA
+
     virtual const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
-#else
-    virtual const SeqCubes& getHexahedra()
-    {
-        if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexahedra();
-    }
-#endif
+
     virtual int getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
-    virtual int getNbHexahedra() override { return (int)this->getHexahedra().size();}
+    /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.
+    virtual size_t getNbHexahedra() override { return this->getHexahedra().size();}
 };
 
 } // namespace topology

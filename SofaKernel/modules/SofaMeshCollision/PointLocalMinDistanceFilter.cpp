@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -292,8 +292,6 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
 }
 
 
-
-SOFA_DECL_CLASS(PointLocalMinDistanceFilter)
 
 int PointLocalMinDistanceFilterClass = core::RegisterObject("This class manages Point collision models cones filters computations and updates.")
         .add< PointLocalMinDistanceFilter >()

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,10 +60,10 @@ public:
     Data< TransformType > inputTransform;
     Data< TransformType > outputTransform;
 
-    Data<defaulttype::Vector3> translation; // translation
-    Data<defaulttype::Vector3> rotation; // rotation
-    Data<Real> scale; // scale
-    Data<bool> inverse;
+    Data<defaulttype::Vector3> translation; ///< translation
+    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<Real> scale; ///< scale
+    Data<bool> inverse; ///< true to apply inverse transformation
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageTransformEngine* = NULL) { return std::string();  }
@@ -95,7 +95,7 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
 		raTransform inT(this->inputTransform);
         waTransform outT(this->outputTransform);
@@ -124,8 +124,6 @@ protected:
         outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
 
         outT->update(); // update internal data
-
-        cleanDirty();
     }
 
 };

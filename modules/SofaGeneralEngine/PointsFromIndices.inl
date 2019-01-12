@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,8 @@
 #ifndef SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_INL
 #define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/PointsFromIndices.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -87,12 +82,10 @@ bool PointsFromIndices<DataTypes>::contains(VecCoord& v, Coord c)
 }
 
 template <class DataTypes>
-void PointsFromIndices<DataTypes>::update()
+void PointsFromIndices<DataTypes>::doUpdate()
 {
     const SetIndex& indices = f_indices.getValue();
     const VecCoord& x = f_X.getValue();
-
-    cleanDirty();
 
     VecCoord& indices_position = *(f_indices_position.beginWriteOnly());
 

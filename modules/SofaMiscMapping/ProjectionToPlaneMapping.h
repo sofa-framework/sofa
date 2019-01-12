@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,7 +78,7 @@ public:
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
     Data< OutVecCoord >      f_normals; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
-    Data< Real > d_factor;
+    Data< Real > d_factor; ///< Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ...
 
     Data< SReal >            d_drawScale; ///< drawing scale
     Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
@@ -119,15 +119,10 @@ protected:
     };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+
 #endif
 
 
@@ -176,7 +171,7 @@ public:
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
-    Data< Real > d_factor;
+    Data< Real > d_factor; ///< Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ...
 
     Data< SReal >                   d_drawScale; ///< drawing scale
     Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
@@ -211,13 +206,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+
 #endif
 
 

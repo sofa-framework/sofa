@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,15 +93,15 @@ public:
     int nbElementPerVertex;                 // max number of elements connected to a vertex
 
     // Material properties
-    Data<Real> poissonRatio;
-    Data<Real> youngModulus;
+    Data<Real> poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> youngModulus; ///< Young modulus in Hooke's law
     float Lambda, Mu;                       // Lame coefficients
 
     // TLED configuration
-    Data<Real> timestep;                    // time step of the simulation
-    Data<unsigned int> isViscoelastic;      // flag = 1 to enable viscoelasticity
-    Data<unsigned int> isAnisotropic;       // flag = 1 to enable transverse isotropy
-    Data<Vec3f> preferredDirection;         // uniform preferred direction for transverse isotropy
+    Data<Real> timestep;                    ///< time step of the simulation
+    Data<unsigned int> isViscoelastic;      ///< flag = 1 to enable viscoelasticity
+    Data<unsigned int> isAnisotropic;       ///< flag = 1 to enable transverse isotropy
+    Data<Vec3f> preferredDirection;         ///< uniform preferred direction for transverse isotropy
 
     CudaTetrahedronTLEDForceField();
     virtual ~CudaTetrahedronTLEDForceField();

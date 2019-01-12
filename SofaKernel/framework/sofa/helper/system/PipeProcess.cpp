@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,9 +31,6 @@
 typedef int ssize_t;
 typedef HANDLE fd_t;
 typedef SOCKET socket_t;
-#elif defined(_XBOX)
-#include <xtl.h>
-#elif defined(PS3)
 #else
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -80,9 +77,6 @@ PipeProcess::~PipeProcess()
 
 bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &/*filenameStdin*/, std::string & outString, std::string & errorString)
 {
-#if defined (_XBOX) || defined(PS3)
-    return false; // not supported
-#else
     //std::string fileIN = filenameStdin;
     //Remove this line below and uncomment the one above when Windows will be able to read file as stdin
     std::string fileIN = "";
@@ -366,7 +360,6 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         delete [] cargs;
         return (status == 0);
     }
-#endif
 }
 
 }

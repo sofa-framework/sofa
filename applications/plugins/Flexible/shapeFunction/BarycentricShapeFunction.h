@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,7 +64,7 @@ public:
     enum {spatial_dimensions=Inherit::spatial_dimensions};
     typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
     sofa::helper::vector<Basis> bases;
-    Data< Real > f_tolerance;
+    Data< Real > f_tolerance; ///< minimum weight (allows for mapping outside elements)
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
 

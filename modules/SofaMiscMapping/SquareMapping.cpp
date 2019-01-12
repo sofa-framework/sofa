@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,30 +33,18 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SquareMapping)
-
-
 using namespace defaulttype;
 
 
 // Register in the Factory
 int SquareMappingClass = core::RegisterObject("Compute the square")
-#ifndef SOFA_FLOAT
-        .add< SquareMapping< Vec1dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SquareMapping< Vec1fTypes, Vec1fTypes > >()
-#endif
+        .add< SquareMapping< Vec1Types, Vec1Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API SquareMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API SquareMapping< Rigid3dTypes, Vec1dTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API SquareMapping< Vec1Types, Vec1Types >;
+template class SOFA_MISC_MAPPING_API SquareMapping< Rigid3Types, Vec1Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API SquareMapping< Vec1fTypes, Vec1fTypes >;
-#endif
 
 
 

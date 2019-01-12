@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,6 +26,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sstream>
 #include <typeinfo>
 #include <sofa/helper/logging/Messaging.h>
@@ -1289,6 +1290,11 @@ struct DataTypeInfo< std::set<T,Compare,Alloc> > : public SetTypeInfo<std::set<T
     static std::string name() { std::ostringstream o; o << "std::set<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
+template<>
+struct DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
+{
+    static std::string name() { return "RGBAColor"; }
+};
 
 } // namespace defaulttype
 

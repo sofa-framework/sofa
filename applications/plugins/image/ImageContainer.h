@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -107,7 +108,6 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         typename ImageContainerT::waTransform wtransform(container->transform);
 
         // read image
-#ifndef __PS3__
 #ifdef SOFA_HAVE_ZLIB
         //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
@@ -135,7 +135,6 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         }
         else
 #endif // SOFA_HAVE_ZLIB
-#endif // __PS3__
             if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                     || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
             {
@@ -340,28 +339,28 @@ public:
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< image
 
     // transform data
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
-    Data< TransformType > transform;
+    Data< TransformType > transform; ///< 12-param vector for trans, rot, scale, ...
 
     // input file
     sofa::core::objectmodel::DataFileName m_filename;
 
-    Data<bool> drawBB;
+    Data<bool> drawBB; ///< draw bounding box
 
     /**
     * If true, the container will attempt to load a sequence of images starting from the file given by filename
     */
-    Data<bool> sequence;
+    Data<bool> sequence; ///< load a sequence of images
     /**
     * The number of frames of the sequence to be loaded.
     */
-    Data<unsigned int> nFrames;
+    Data<unsigned int> nFrames; ///< The number of frames of the sequence to be loaded. Default is the entire sequence.
 
 
     virtual std::string getTemplateName() const	override { return templateName(this); }

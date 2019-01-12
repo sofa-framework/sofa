@@ -1,7 +1,7 @@
  
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -72,21 +72,16 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecData> d_substractor;
-    Data<VecData> d_output;
+    Data<VecData> d_input; ///< input vector
+    Data<VecData> d_substractor; ///< vector to substract to input
+    Data<VecData> d_output; ///< output vector = input-substractor
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1f>;
-extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3f>;
-#endif
+
 #endif
 
 } // namespace engine

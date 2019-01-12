@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,10 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/objectmodel/Data.h>
 
-#include <iostream>
-#include <map>
 
 
 namespace sofa
@@ -50,21 +47,13 @@ public:
 
 
 
-    Data<bool> is_activated;
+    Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    Data<SReal> dt_;
-    Data<SReal> time_;
-    Data<bool> animate_;
-	Data<bool> d_isSleeping;				/// Tells if the context is sleeping, and thus ignored by visitors
-	Data<bool> d_canChangeSleepingState;	/// Tells if the context can change its sleeping state
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// @name For multiresolution (UNSTABLE)
-    /// @{
-    Data<int> currentLevel_;
-    Data<int> coarsestLevel_;
-    Data<int> finestLevel_;
-    /// @}
-#endif
+    Data<SReal> dt_; ///< Time step
+    Data<SReal> time_; ///< Current time
+    Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
+	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
+	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 
 
 
@@ -101,51 +90,7 @@ public:
 
     /// Animation flag
     virtual bool getAnimate() const override;
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCurrentLevel() const;
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCoarsestLevel() const;
-    /// Multiresolution support (UNSTABLE)
-    virtual int getFinestLevel() const;
-#endif
-
     /// @}
-
-
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    /// @name Local Coordinate System
-    /// @{
-    typedef BaseContext::Frame Frame;
-    typedef BaseContext::Vec3 Vec3;
-    typedef BaseContext::Quat Quat;
-    typedef BaseContext::SpatialVector SpatialVector;
-
-    Frame localFrame_;
-    SpatialVector spatialVelocityInWorld_;
-    Vec3 velocityBasedLinearAccelerationInWorld_;
-    /// Projection from the local coordinate system to the world coordinate system.
-    virtual const Frame& getPositionInWorld() const;
-    /// Projection from the local coordinate system to the world coordinate system.
-    virtual void setPositionInWorld(const Frame&);
-
-    /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual const SpatialVector& getVelocityInWorld() const;
-    /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual void setVelocityInWorld(const SpatialVector&);
-
-    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual const Vec3& getVelocityBasedLinearAccelerationInWorld() const;
-    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& );
-
-    /// Gravity in the local coordinate system  TODO: replace with world coordinates
-    virtual Vec3 getLocalGravity() const;
-    /// Gravity in the local coordinate system
-    //virtual void setGravity(const Vec3& );
-    /// @}
-#endif
 
     /// @name Parameters Setters
     /// @{
@@ -168,17 +113,6 @@ public:
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
 
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
-    virtual bool setCurrentLevel(int l);
-    /// Multiresolution support (UNSTABLE)
-    virtual void setCoarsestLevel(int l);
-    /// Multiresolution support (UNSTABLE)
-    virtual void setFinestLevel(int l);
-#endif
-
-
-
     /// @}
 
     /// Copy the context variables from the given instance
@@ -186,8 +120,6 @@ public:
 
     /// Copy the context variables of visualization from the given instance
     void copySimulationContext(const Context& c);
-
-
 
 };
 

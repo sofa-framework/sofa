@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/LinearVelocityConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -66,11 +66,9 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     , m_keyVelocities(  initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
     , m_coordinates( initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
 {
-    // default to indice 0
     m_indices.beginEdit()->push_back(0);
     m_indices.endEdit();
 
-    //default valueEvent to 0
     m_keyTimes.beginEdit()->push_back( 0.0 );
     m_keyTimes.endEdit();
     m_keyVelocities.beginEdit()->push_back( Deriv() );
@@ -333,23 +331,30 @@ void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::Mec
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_LINES);
+    vparams->drawTool()->saveLastState();
+
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    const VecDeriv& keyVelocities = m_keyVelocities.getValue();
     const SetIndexArray & indices = m_indices.getValue();
-    for (unsigned int i=0 ; i<m_keyVelocities.getValue().size()-1 ; i++)
+    for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)
     {
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::helper::gl::glVertexT(x0[*it]+m_keyVelocities.getValue()[i]);
-            sofa::helper::gl::glVertexT(x0[*it]+m_keyVelocities.getValue()[i+1]);
+            const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(x0[*it]+keyVelocities[i]);
+            const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(x0[*it]+keyVelocities[i+1]);
+
+            vertices.push_back(sofa::defaulttype::Vector3(cpos0));
+            vertices.push_back(sofa::defaulttype::Vector3(cpos1));
         }
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->drawLines(vertices, 1.0, color);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraint

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
@@ -308,7 +308,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
         _initialPoints=p;
     }
 
-    int i;
+    unsigned int i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
@@ -375,7 +375,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
@@ -383,7 +383,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Deriv force;
     Coord dp0,dp1,dp;
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
@@ -413,39 +413,42 @@ void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbTriangles=_topology->getNbTriangles();
 
-    glDisable(GL_LIGHTING);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::defaulttype::Vector3> normals;
 
-    glBegin(GL_TRIANGLES);
-    for(i=0; i<nbTriangles; ++i)
+    vparams->drawTool()->disableLighting();
+
+    for(unsigned int i=0; i<nbTriangles; ++i)
     {
         int a = _topology->getTriangle(i)[0];
         int b = _topology->getTriangle(i)[1];
         int c = _topology->getTriangle(i)[2];
 
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
+        colors.push_back(sofa::defaulttype::RGBAColor::green());
+        vertices.push_back(x[a]);
+        colors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(x[b]);
+        colors.push_back(sofa::defaulttype::RGBAColor::blue());
+        vertices.push_back(x[c]);
     }
-    glEnd();
-
+    vparams->drawTool()->drawTriangles(vertices, normals, colors);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

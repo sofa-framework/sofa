@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -40,27 +39,45 @@ namespace component
 namespace projectiveconstraintset
 {
 
-template <class DataTypes>
-FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
-    : direction( initData(&direction,"direction","normal direction of the plane"))
-    , dmin( initData(&dmin,(Real)0,"dmin","Minimum plane distance from the origin"))
-    , dmax( initData(&dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
-    , indices( initData(&indices,"indices","Indices of the fixed points"))
-{
-    selectVerticesFromPlanes=false;
-    pointHandler = new FCPointHandler(this, &indices);
-}
+using sofa::helper::WriteAccessor;
+using sofa::defaulttype::Vec;
+using sofa::component::topology::PointSubsetData;
+using sofa::component::topology::TopologySubsetDataHandler;
 
-template <class DataTypes>
-FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
-{
-    if (pointHandler)
-        delete pointHandler;
-}
 
-// Define TestNewPointFunction
+/////////////////////////// DEFINITION OF FCPointHandler (INNER CLASS) /////////////////////////////
+template <class DataTypes>
+class FixedPlaneConstraint<DataTypes>::FCPointHandler :
+        public TopologySubsetDataHandler<BaseMeshTopology::Point, SetIndexArray >
+{
+public:
+    typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
+
+    FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+        : TopologySubsetDataHandler<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
+
+    void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+    bool applyTestCreateFunction(unsigned int /*index*/,
+                                 const helper::vector< unsigned int > & /*ancestors*/,
+                                 const helper::vector< double > & /*coefs*/);
+protected:
+    FixedPlaneConstraint<DataTypes> *fc;
+};
+
+/// Define RemovalFunction
 template< class DataTypes>
-bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+{
+    if (fc)
+    {
+        fc->removeConstraint((unsigned int) pointIndex);
+    }
+}
+
+/// Define TestNewPointFunction
+template< class DataTypes>
+bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const helper::vector<unsigned int> &, const helper::vector<double> &)
 {
     if (fc)
     {
@@ -72,117 +89,106 @@ bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(un
     }
 }
 
-// Matrix Integration interface
+/////////////////////////// DEFINITION OF FixedPlaneConstraint /////////////////////////////////////
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
+    : d_direction( initData(&d_direction,"direction","normal direction of the plane"))
+    , d_dmin( initData(&d_dmin,(Real)0,"dmin","Minimum plane distance from the origin"))
+    , d_dmax( initData(&d_dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
+    , d_indices( initData(&d_indices,"indices","Indices of the fixed points"))
 {
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    m_selectVerticesFromPlanes=false;
+    m_pointHandler = new FCPointHandler(this, &d_indices);
+}
+
+template <class DataTypes>
+FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
+{
+    if (m_pointHandler)
+        delete m_pointHandler;
+}
+
+/// Matrix Integration interface
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix)
+{
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get(mparams));
     if(r)
     {
-        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+        /// Implement plane constraint only when the direction is along the coordinates directions
+        // TODO : generalize projection to any direction
+
         const unsigned int N = Deriv::size();
-        const SetIndexArray & ind = indices.getValue();
-
-        // IMplement plane constraint only when the direction is along the coordinates directions
-		// TODO : generalize projection to any direction
-		 Coord dir=direction.getValue();
-
-        for (SetIndexArray::const_iterator it = ind.begin(); it != ind.end(); ++it)
+        Coord dir=d_direction.getValue();
+        for (auto& index : d_indices.getValue())
         {
-            // Reset Fixed Row and Col
+            /// Reset Fixed Row and Col
             for (unsigned int c=0; c<N; ++c)
-				if (dir[c]!=0.0)
-                r.matrix->clearRowCol(r.offset + N * (*it) + c);
-            // Set Fixed Vertex
+                if (dir[c]!=0.0)
+                    r.matrix->clearRowCol(r.offset + N * index + c);
+            /// Set Fixed Vertex
             for (unsigned int c=0; c<N; ++c)
-				if (dir[c]!=0.0)
-                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                if (dir[c]!=0.0)
+                    r.matrix->set(r.offset + N * index + c, r.offset + N * index + c, 1.0);
         }
     }
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams,
+                                                      BaseVector* vect,
+                                                      const MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    int o = matrix->getGlobalOffset(mstate.get(mparams));
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;
-		// IMplement plane constraint only when the direction is along the coordinates directions
-		// TODO : generalize projection to any direction
-		Coord dir=direction.getValue();
+        /// Implement plane constraint only when the direction is along the coordinates directions
+        // TODO : generalize projection to any direction
+        Coord dir=d_direction.getValue();
 
         const unsigned int N = Deriv::size();
 
-      
-
-
-        const SetIndexArray & ind = indices.getValue();
-        for (SetIndexArray::const_iterator it = ind.begin(); it != ind.end(); ++it)
+        for (auto& index : d_indices.getValue())
         {
             for (unsigned int c=0; c<N; ++c)
-				if (dir[c]!=0.0)
-                vect->clear(offset + N * (*it) + c);
+                if (dir[c]!=0.0)
+                    vect->clear(offset + N * index + c);
         }
     }
 }
 
-// Define RemovalFunction
-template< class DataTypes>
-void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((unsigned int) pointIndex);
-    }
-}
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::addConstraint(int index)
 {
-    indices.beginEdit()->push_back(index);
-    indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
 {
-    removeValue(*indices.beginEdit(),(unsigned int)index);
-    indices.endEdit();
-}
-
-// -- Mass interface
-
-
-template <class DataTypes> template <class DataDeriv>
-void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
-{
-    Coord dir=direction.getValue();
-
-    for (helper::vector< unsigned int >::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
-    {
-        /// only constraint one projection of the displacement to be zero
-        res[*it]-= dir*dot(res[*it],dir);
-    }
+    removeValue(*d_indices.beginEdit(),(unsigned int)index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void FixedPlaneConstraint<DataTypes>::projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseImpl(mparams, res.wref());
 }
 
 /// project dx to constrained space (dx models a velocity)
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
+void FixedPlaneConstraint<DataTypes>::projectVelocity(const MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
 
 }
 
 /// project x to constrained space (x models a position)
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
+void FixedPlaneConstraint<DataTypes>::projectPosition(const MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
 
 }
@@ -190,26 +196,25 @@ void FixedPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalPara
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned /*offset*/ )
 {
-    // clears the rows and columns associated with constrained particles
+    /// clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;
 
-    for(SetIndexArray::const_iterator it= indices.getValue().begin(), iend=indices.getValue().end(); it!=iend; it++ )
+    for(auto& index : d_indices.getValue())
     {
-        M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
+        M->clearRowsCols((index) * blockSize,(index+1) * (blockSize) );
     }
-
 }
-template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
-{
-    helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData)
+{
+    WriteAccessor<DataMatrixDeriv> c = cData;
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
+        projectResponseImpl(mparams, rowIt.row());
         ++rowIt;
     }
 }
@@ -219,57 +224,108 @@ void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
 {
     if (dir.norm2()>0)
     {
-        direction.setValue(dir);
+        d_direction.setValue(dir);
     }
 }
 
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    unsigned int i;
-    for(i=0; i<x.size(); ++i)
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    for(unsigned int i=0; i<x.size(); ++i)
     {
         if (isPointInPlane(x[i]))
             addConstraint(i);
     }
-
 }
+
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::init()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    m_topology = getContext()->getMeshTopology();
 
     /// test that dmin or dmax are different from zero
-    if (dmin.getValue()!=dmax.getValue())
-        selectVerticesFromPlanes=true;
+    if (d_dmin.getValue()!=d_dmax.getValue())
+        m_selectVerticesFromPlanes=true;
 
-    if (selectVerticesFromPlanes)
+    if (m_selectVerticesFromPlanes)
         selectVerticesAlongPlane();
 
-    // Initialize functions and parameters
-    indices.createTopologicalEngine(topology, pointHandler);
-    indices.registerTopologicalData();
-
+    /// Initialize functions and parameters
+    d_indices.createTopologicalEngine(m_topology, m_pointHandler);
+    d_indices.registerTopologicalData();
 }
 
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::setDminAndDmax(const Real _dmin,const Real _dmax)
+{
+    d_dmin=_dmin;
+    d_dmax=_dmax;
+    m_selectVerticesFromPlanes=true;
+}
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    sofa::helper::vector<sofa::defaulttype::Vector3> points;
-    for (helper::vector< unsigned int >::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
+    helper::vector<sofa::defaulttype::Vector3> points;
+    for(auto& index : d_indices.getValue())
     {
-        points.push_back({x[*it][0], x[*it][1], x[*it][2]});
+        points.push_back({x[index][0], x[index][1], x[index][2]});
     }
 
     vparams->drawTool()->drawPoints(points, 10, {1,1.0,0.5,1});
+}
+
+/// This function are there to provide kind of type translation to the vector one so we can
+/// implement the algorithm as is the different objects where of similar type.
+/// this solution is not really satisfactory but for the moment it does the job.
+/// A better solution would that all the used types are following the same iterface which
+/// requires to touch core sofa classes.
+sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i){ return i.getVCenter(); }
+sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
+const sofa::defaulttype::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
+sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
+const sofa::defaulttype::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
+sofa::defaulttype::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
+const sofa::defaulttype::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
+
+sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
+sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
+const sofa::defaulttype::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
+sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
+const sofa::defaulttype::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
+sofa::defaulttype::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
+const sofa::defaulttype::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
+
+template<class DataTypes>
+bool FixedPlaneConstraint<DataTypes>::isPointInPlane(Coord p) const
+{
+    Vec<Coord::spatial_dimensions,Real> pos = getVec(p) ;
+    Real d=pos*getVec(d_direction.getValue());
+    if ((d>d_dmin.getValue())&& (d<d_dmax.getValue()))
+        return true;
+    else
+        return false;
+}
+
+template <class DataTypes>
+template <class T>
+void FixedPlaneConstraint<DataTypes>::projectResponseImpl(const MechanicalParams* mparams, T& res) const
+{
+    SOFA_UNUSED(mparams);
+
+    Coord dir=d_direction.getValue();
+    for (auto& index : d_indices.getValue())
+    {
+        /// only constraint one projection of the displacement to be zero
+        getVec(res[index]) -= getVec(dir) * dot( getVec(res[index]), getVec(dir));
+    }
 }
 
 } // namespace constraint

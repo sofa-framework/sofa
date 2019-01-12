@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_BOXROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -93,7 +91,7 @@ public:
 public:
     void init() override;
     void reinit() override;
-    void update() override;
+    void doUpdate() override;
     void draw(const VisualParams*) override;
 
     virtual void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
@@ -135,48 +133,51 @@ public:
     //Input
     Data<vector<Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
+    /// Rest position coordinates of the degrees of freedom.
+    /// If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context.
+    /// If none are found the parent's context is searched for MechanicalObject.
     Data<VecCoord> d_X0;
-    Data<vector<Edge> > d_edges;
-    Data<vector<Triangle> > d_triangles;
-    Data<vector<Tetra> > d_tetrahedra;
-    Data<vector<Hexa> > d_hexahedra;
-    Data<vector<Quad> > d_quad;
-    Data<bool> d_computeEdges;
-    Data<bool> d_computeTriangles;
-    Data<bool> d_computeTetrahedra;
-    Data<bool> d_computeHexahedra;
-    Data<bool> d_computeQuad;
+    Data<vector<Edge> > d_edges; ///< Edge Topology
+    Data<vector<Triangle> > d_triangles; ///< Triangle Topology
+    Data<vector<Tetra> > d_tetrahedra; ///< Tetrahedron Topology
+    Data<vector<Hexa> > d_hexahedra; ///< Hexahedron Topology
+    Data<vector<Quad> > d_quad; ///< Quad Topology
+    Data<bool> d_computeEdges; ///< If true, will compute edge list and index list inside the ROI. (default = true)
+    Data<bool> d_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI. (default = true)
+    Data<bool> d_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI. (default = true)
+    Data<bool> d_computeHexahedra; ///< If true, will compute hexahedra list and index list inside the ROI. (default = true)
+    Data<bool> d_computeQuad; ///< If true, will compute quad list and index list inside the ROI. (default = true)
 
     //Output
-    Data<SetIndex> d_indices;
-    Data<SetIndex> d_edgeIndices;
-    Data<SetIndex> d_triangleIndices;
-    Data<SetIndex> d_tetrahedronIndices;
-    Data<SetIndex> d_hexahedronIndices;
-    Data<SetIndex> d_quadIndices;
-    Data<VecCoord > d_pointsInROI;
-    Data<vector<Edge> > d_edgesInROI;
-    Data<vector<Triangle> > d_trianglesInROI;
-    Data<vector<Tetra> > d_tetrahedraInROI;
-    Data<vector<Hexa> > d_hexahedraInROI;
-    Data<vector<Quad> > d_quadInROI;
-    Data< unsigned int > d_nbIndices;
+    Data<SetIndex> d_indices; ///< Indices of the points contained in the ROI
+    Data<SetIndex> d_edgeIndices; ///< Indices of the edges contained in the ROI
+    Data<SetIndex> d_triangleIndices; ///< Indices of the triangles contained in the ROI
+    Data<SetIndex> d_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
+    Data<SetIndex> d_hexahedronIndices; ///< Indices of the hexahedra contained in the ROI
+    Data<SetIndex> d_quadIndices; ///< Indices of the quad contained in the ROI
+    Data<VecCoord > d_pointsInROI; ///< Points contained in the ROI
+    Data<vector<Edge> > d_edgesInROI; ///< Edges contained in the ROI
+    Data<vector<Triangle> > d_trianglesInROI; ///< Triangles contained in the ROI
+    Data<vector<Tetra> > d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
+    Data<vector<Hexa> > d_hexahedraInROI; ///< Hexahedra contained in the ROI
+    Data<vector<Quad> > d_quadInROI; ///< Quad contained in the ROI
+    Data< unsigned int > d_nbIndices; ///< Number of selected indices
 
     //Parameter
-    Data<bool> d_drawBoxes;
-    Data<bool> d_drawPoints;
-    Data<bool> d_drawEdges;
-    Data<bool> d_drawTriangles;
-    Data<bool> d_drawTetrahedra;
-    Data<bool> d_drawHexahedra;
-    Data<bool> d_drawQuads;
-    Data<double> d_drawSize;
-    Data<bool> d_doUpdate;
+    Data<bool> d_drawBoxes; ///< Draw Boxes. (default = false)
+    Data<bool> d_drawPoints; ///< Draw Points. (default = false)
+    Data<bool> d_drawEdges; ///< Draw Edges. (default = false)
+    Data<bool> d_drawTriangles; ///< Draw Triangles. (default = false)
+    Data<bool> d_drawTetrahedra; ///< Draw Tetrahedra. (default = false)
+    Data<bool> d_drawHexahedra; ///< Draw Tetrahedra. (default = false)
+    Data<bool> d_drawQuads; ///< Draw Quads. (default = false)
+    Data<double> d_drawSize; ///< rendering size for box and topological elements
+    Data<bool> d_doUpdate; ///< If true, updates the selection at the beginning of simulation steps. (default = true)
 
     /// Deprecated input parameters... should be kept until
     /// the corresponding attribute is not supported any more.
     Data<VecCoord> d_deprecatedX0;
-    Data<bool> d_deprecatedIsVisible;
+    Data<bool> d_deprecatedIsVisible; ///< (deprecated)Replaced with the attribute 'drawBoxes'
 
 
 protected:
@@ -212,17 +213,11 @@ protected:
     void getPointsFromOrientedBox(const Vec10& box, vector<Vec3> &points);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3fTypes>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
+extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6Types>;
+ 
 #endif
 
 } // namespace boxroi

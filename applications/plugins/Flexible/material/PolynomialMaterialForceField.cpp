@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,26 +33,14 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(PolynomialMaterialForceField);
-
 using namespace defaulttype;
 
 // Register in the Factory
 int PolynomialMaterialForceFieldClass = core::RegisterObject("Polynomial Material Law for isotropic homogeneous materials")
-
         .add< PolynomialMaterialForceField< I331Types > >(true)
-//.add< PolynomialMaterialForceField< I332Types > >()
-//.add< PolynomialMaterialForceField< I333Types > >()
-//        .add< PolynomialMaterialForceField< U331Types > >(true)
-//        .add< PolynomialMaterialForceField< U321Types > >()
         ;
 
 template class SOFA_Flexible_API PolynomialMaterialForceField< I331Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< I332Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< I333Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< U331Types >;
-//template class SOFA_Flexible_API PolynomialMaterialForceField< U321Types >;
-
 }
 }
 }

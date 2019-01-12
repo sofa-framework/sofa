@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -128,8 +128,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK() override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
-    Data<float> d_showObjectScale;
-    Data<defaulttype::RGBAColor> d_color;
+    Data<float> d_showObjectScale; ///< Scale for object display
+    Data<defaulttype::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
 protected:
     DistanceFromTargetMapping();
@@ -149,17 +149,11 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+
 
 #endif
 

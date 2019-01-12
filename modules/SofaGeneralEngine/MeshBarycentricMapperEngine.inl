@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,14 +22,8 @@
 #ifndef SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_INL
 #define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/MeshBarycentricMapperEngine.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 
 namespace sofa
 {
@@ -84,9 +78,8 @@ void MeshBarycentricMapperEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::update()
+void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 {
-
     using sofa::defaulttype::Vector3;
     using sofa::defaulttype::Matrix3;
     using sofa::defaulttype::Mat3x3d;
@@ -122,8 +115,6 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     const VecCoord* out = &MappedPointPositions.getValue();
 
 
-    cleanDirty();
-
 
     baryPos =  BarycentricPositions.beginWriteOnly();
     tableElts= TableElements.beginWriteOnly();
@@ -146,11 +137,8 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     int outside = 0;
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = TopoInput->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = TopoInput->getCubes();
-#endif
+
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = TopoInput->getQuads();
     sofa::helper::vector<Matrix3> bases;
@@ -281,11 +269,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
         {
             Mat3x3d m,mt;
             m[0] = (*in)[cubes[c][1]]-(*in)[cubes[c][0]];
-#ifdef SOFA_NEW_HEXA
             m[1] = (*in)[cubes[c][3]]-(*in)[cubes[c][0]];
-#else
-            m[1] = (*in)[cubes[c][2]]-(*in)[cubes[c][0]];
-#endif
             m[2] = (*in)[cubes[c][4]]-(*in)[cubes[c][0]];
             mt.transpose ( m );
             bases[c0+c].invert ( mt );

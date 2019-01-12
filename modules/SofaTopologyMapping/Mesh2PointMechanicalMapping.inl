@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -416,9 +416,10 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
             while (colIt != colItEnd)
             {
-                const unsigned int indexIn = colIt.index();
+                const unsigned int indexUIn = colIt.index();
                 const OutDeriv data = colIt.val();
-                std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexIn];
+                std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexUIn];
+                int indexIn = (int)indexUIn;
 
                 switch (source.first)
                 {
@@ -442,7 +443,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     else
                     {
                         const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-
                         bool err = true;
                         for(unsigned int i = 0; i < edgeMap[source.second].size(); ++i)
                         {
@@ -453,7 +453,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                                 break;
                             }
                         }
-
                         if (err)
                         {
                             serr << "Error in " << __FUNCTION__ << " : wrong source edge / destination point association" << sendl;
@@ -481,7 +480,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     else
                     {
                         const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-
                         bool err = true;
                         for(unsigned int i = 0; i < triangleMap[source.second].size(); ++i)
                         {
@@ -493,13 +491,11 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                                 break;
                             }
                         }
-
                         if (err)
                         {
                             serr << "Error in " << __FUNCTION__ << " : wrong source triangle / destination point association" << sendl;
                         }
                     }
-
 
                     o.addCol(t[0], f * (1 - fx - fy));
                     o.addCol(t[1], f * fx);
@@ -523,7 +519,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     else
                     {
                         const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-
                         bool err = true;
                         for(unsigned int i = 0; i < quadMap[source.second].size(); ++i)
                         {
@@ -535,7 +530,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                                 break;
                             }
                         }
-
                         if (err)
                         {
                             serr << "Error in " << __FUNCTION__ << " : wrong source quad / destination point association" << sendl;
@@ -567,7 +561,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     else
                     {
                         const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-
                         bool err = true;
                         for(unsigned int i = 0; i < tetraMap[source.second].size(); ++i)
                         {
@@ -580,7 +573,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                                 break;
                             }
                         }
-
                         if (err)
                         {
                             serr << "Error in " << __FUNCTION__ << " : wrong source tetra / destination point association" << sendl;
@@ -602,7 +594,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     double fx = 0;
                     double fy = 0;
                     double fz = 0;
-
                     if (topoMap->getHexaBaryCoords().size() == 1)
                     {
                         fx = topoMap->getHexaBaryCoords()[0][0];
@@ -612,7 +603,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     else
                     {
                         const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
-
                         bool err = true;
                         for(unsigned int i = 0; i < hexaMap[source.second].size(); ++i)
                         {
@@ -625,7 +615,6 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                                 break;
                             }
                         }
-
                         if (err)
                         {
                             serr << "Error in " << __FUNCTION__ << " : wrong source hexa / destination point association" << sendl;

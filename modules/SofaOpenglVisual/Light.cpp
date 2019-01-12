@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,22 +47,17 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(Light)
-
-SOFA_DECL_CLASS(DirectionalLight)
 //Register DirectionalLight in the Object Factory
 int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
         .add< DirectionalLight >()
         ;
 
-SOFA_DECL_CLASS(PositionalLight)
 //Register PositionalLight in the Object Factory
 int PositionalLightClass = core::RegisterObject("A positional light illuminating the scene."
                                                 "The light has a location from which the ray are starting in all direction  (cannot cast shadows for now)")
         .add< PositionalLight >()
         ;
 
-SOFA_DECL_CLASS(SpotLight)
 //Register SpotLight in the Object Factory
 int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
                                           "The light has a location and a illumination cone restricting the directions"
@@ -82,11 +77,6 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 
 Light::Light()
     : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
-#ifdef SOFA_HAVE_GLEW
-    , m_shadowFBO(true, true, true), m_blurHFBO(false,false,true), m_blurVFBO(false,false,true)
-    , m_depthShader(sofa::core::objectmodel::New<OglShader>())
-    , m_blurShader(sofa::core::objectmodel::New<OglShader>())
-#endif
     , d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
     , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
@@ -146,59 +136,59 @@ void Light::init()
     if(!d_shadowsEnabled.getValue() && d_softShadows.getValue()){
         if(d_softShadows.isSet() && d_shadowsEnabled.isSet()){
             msg_warning() << "Soft shadow is specified but 'shadowEnable' is set to false. " << msgendl
-                                 "To remove this warning message you need to synchronize the softShadow & shadowEnable parameters." << msgendl ;
+                             "To remove this warning message you need to synchronize the softShadow & shadowEnable parameters." << msgendl ;
         }
     }
 
     if(!d_shadowsEnabled.getValue()){
         if( d_shadowTextureSize.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'shadowTextureSize' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'shadowTextureSize' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'shadowTextureSize' values.";
         }
 
         if( d_shadowFactor.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'shadowFactor' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'shadowFactor' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'shadowFactor' values.";
         }
 
         if( d_textureUnit.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'textureUnit' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'textureUnit' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'textureUnit' values.";
         }
 
         if( d_zNear.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'zNear' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'zNear' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'zNear' values.";
         }
 
         if( d_zFar.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'zFar' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'zFar' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'zFar' values.";
         }
     }
 
     if(!d_softShadows.getValue()){
         if( d_VSMLightBleeding.isSet() ){
             msg_warning() << "Soft shadow is not enabled. The 'VSMLightBleeding' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'softShadows' parameter to true." << msgendl
-                                 " - unset the 'VSMLightBleeding' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'softShadows' parameter to true." << msgendl
+                             " - unset the 'VSMLightBleeding' values.";
         }
         if( d_VSMMinVariance.isSet() ){
             msg_warning() << "Soft shadow is not enabled. The 'VSMMinVariance' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'softShadows' parameter to true." << msgendl
-                                 " - unset the 'VMSMinVariance' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'softShadows' parameter to true." << msgendl
+                             " - unset the 'VMSMinVariance' values.";
         }
     }
 
@@ -219,9 +209,18 @@ void Light::initVisual()
     //Shadow part
     //Shadow texture init
 #ifdef SOFA_HAVE_GLEW
-    m_shadowFBO.init(m_shadowTexWidth, m_shadowTexHeight);
-    m_blurHFBO.init(m_shadowTexWidth, m_shadowTexHeight);
-    m_blurVFBO.init(m_shadowTexWidth, m_shadowTexHeight);
+    m_shadowFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new helper::gl::FrameBufferObject(true, true, true));
+    m_blurHFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new helper::gl::FrameBufferObject(false,false,true));
+    m_blurVFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new helper::gl::FrameBufferObject(false,false,true));
+    m_depthShader = sofa::core::objectmodel::New<OglShader>();
+    m_blurShader = sofa::core::objectmodel::New<OglShader>();
+
+    m_shadowFBO->init(m_shadowTexWidth, m_shadowTexHeight);
+    m_blurHFBO->init(m_shadowTexWidth, m_shadowTexHeight);
+    m_blurVFBO->init(m_shadowTexWidth, m_shadowTexHeight);
     m_depthShader->vertFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,true);
     m_depthShader->fragFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER,true);
     m_depthShader->init();
@@ -273,7 +272,7 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     m_depthShader->setInt(0, "u_lightType", this->getLightType());
     m_depthShader->setFloat(0, "u_shadowFactor", d_shadowFactor.getValue());
     m_depthShader->start();
-    m_shadowFBO.start();
+    m_shadowFBO->start();
 #endif
 }
 
@@ -294,7 +293,7 @@ void Light::postDrawShadow()
 {
 #ifdef SOFA_HAVE_GLEW
     //Unbind fbo
-    m_shadowFBO.stop();
+    m_shadowFBO->stop();
     m_depthShader->stop();
 #endif
 
@@ -327,9 +326,9 @@ void Light::blurDepthTexture()
     glPushMatrix();
     glLoadIdentity();
 
-    m_blurHFBO.start();
+    m_blurHFBO->start();
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_shadowFBO.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_shadowFBO->getColorTexture());
 
     m_blurShader->setFloat(0, "mapDimX", (GLfloat) m_shadowTexWidth);
     m_blurShader->setInt(0, "orientation", 0);
@@ -346,11 +345,11 @@ void Light::blurDepthTexture()
     m_blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_blurHFBO.stop();
+    m_blurHFBO->stop();
 
-    m_blurVFBO.start();
+    m_blurVFBO->start();
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_blurHFBO.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_blurHFBO->getColorTexture());
 
     m_blurShader->setFloat(0, "mapDimX", (GLfloat) m_shadowTexWidth);
     m_blurShader->setInt(0, "orientation", 1);
@@ -367,7 +366,7 @@ void Light::blurDepthTexture()
     m_blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_blurVFBO.stop();
+    m_blurVFBO->stop();
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -450,8 +449,13 @@ void DirectionalLight::drawLight()
 
 void DirectionalLight::draw(const core::visual::VisualParams* )
 {
-
 }
+
+void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
+{
+    SOFA_UNUSED(vparams);
+}
+
 void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
 {
     //1-compute bounding box
@@ -612,7 +616,7 @@ GLuint DirectionalLight::getDepthTexture()
     //return debugVisualShadowTexture;
     //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
-    return m_shadowFBO.getDepthTexture();
+    return m_shadowFBO->getDepthTexture();
 #else
     return 0;
 #endif
@@ -622,9 +626,9 @@ GLuint DirectionalLight::getColorTexture()
 {
 #ifdef SOFA_HAVE_GLEW
     if (d_softShadows.getValue())
-        return m_blurVFBO.getColorTexture();
+        return m_blurVFBO->getColorTexture();
     else
-        return m_shadowFBO.getColorTexture();
+        return m_shadowFBO->getColorTexture();
 #else
     return 0;
 #endif
@@ -668,28 +672,33 @@ void PositionalLight::drawLight()
 
 }
 
+void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
+{
+    Vector3 sceneMinBBox, sceneMaxBBox;
+    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+    scale *= 0.01f;
+
+    GLUquadric* quad = gluNewQuadric();
+    const Vector3& pos = d_position.getValue();
+    const auto& col = d_color.getValue();
+
+    glDisable(GL_LIGHTING);
+    glColor3fv((float*)col.data());
+
+    glPushMatrix();
+    glTranslated(pos[0], pos[1], pos[2]);
+    gluSphere(quad, 1.0f*scale, 16, 16);
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+}
+
 void PositionalLight::draw(const core::visual::VisualParams* vparams)
 {
     if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
-        Vector3 sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
-        scale *= 0.01f;
-
-        GLUquadric* quad = gluNewQuadric();
-        const Vector3& pos = d_position.getValue();
-        const auto& col = d_color.getValue();
-
-        glDisable(GL_LIGHTING);
-        glColor3fv((float*)col.data());
-
-        glPushMatrix();
-        glTranslated(pos[0], pos[1], pos[2]);
-        gluSphere(quad, 1.0f*scale, 16, 16);
-        glPopMatrix();
-
-        glEnable(GL_LIGHTING);
+        drawSource(vparams) ;
     }
 }
 
@@ -730,8 +739,43 @@ void SpotLight::drawLight()
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
     }
-
 }
+
+void SpotLight::drawSource(const core::visual::VisualParams* vparams)
+{
+    float zNear, zFar;
+
+    computeClippingPlane(vparams, zNear, zFar);
+
+    Vector3 dir = d_direction.getValue();
+    if (d_lookat.getValue())
+        dir -= d_position.getValue();
+
+    computeOpenGLProjectionMatrix(m_lightMatProj, m_shadowTexWidth, m_shadowTexHeight, 2 * d_cutoff.getValue(), zNear, zFar);
+    computeOpenGLModelViewMatrix(m_lightMatModelview, d_position.getValue(), dir);
+
+    float baseLength = zFar * tanf(this->d_cutoff.getValue() * M_PI / 180);
+    float tipLength = (baseLength*0.5) * (zNear/ zFar);
+
+    Vector3 direction;
+    if(d_lookat.getValue())
+        direction = this->d_direction.getValue() - this->d_position.getValue();
+    else
+        direction = this->d_direction.getValue();
+
+    direction.normalize();
+    Vector3 base = this->getPosition() + direction*zFar;
+    Vector3 tip = this->getPosition() + direction*zNear;
+    std::vector<Vector3> centers;
+    centers.push_back(this->getPosition());
+    vparams->drawTool()->setPolygonMode(0, true);
+    vparams->drawTool()->setLightingEnabled(false);
+    vparams->drawTool()->drawSpheres(centers, zNear*0.1,d_color.getValue());
+    vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, d_color.getValue());
+    vparams->drawTool()->setLightingEnabled(true);
+    vparams->drawTool()->setPolygonMode(0, false);
+}
+
 
 void SpotLight::draw(const core::visual::VisualParams* vparams)
 {
@@ -748,26 +792,7 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
 
     if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
-        float baseLength = zFar * tanf(this->d_cutoff.getValue() * M_PI / 180);
-        float tipLength = (baseLength*0.5) * (zNear/ zFar);
-
-        Vector3 direction;
-        if(d_lookat.getValue())
-            direction = this->d_direction.getValue() - this->d_position.getValue();
-        else
-            direction = this->d_direction.getValue();
-
-        direction.normalize();
-        Vector3 base = this->getPosition() + direction*zFar;
-        Vector3 tip = this->getPosition() + direction*zNear;
-        std::vector<Vector3> centers;
-        centers.push_back(this->getPosition());
-        vparams->drawTool()->setPolygonMode(0, true);
-        vparams->drawTool()->setLightingEnabled(false);
-        vparams->drawTool()->drawSpheres(centers, zNear*0.1,d_color.getValue());
-        vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, d_color.getValue());
-        vparams->drawTool()->setLightingEnabled(true);
-        vparams->drawTool()->setPolygonMode(0, false);
+        drawSource(vparams) ;
     }
 }
 
@@ -979,7 +1004,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
 GLuint SpotLight::getDepthTexture()
 {
 #ifdef SOFA_HAVE_GLEW
-    return m_shadowFBO.getDepthTexture();
+    return m_shadowFBO->getDepthTexture();
 #else
     return 0;
 #endif
@@ -989,9 +1014,9 @@ GLuint SpotLight::getColorTexture()
 {
 #ifdef SOFA_HAVE_GLEW
     if(d_softShadows.getValue())
-        return m_blurVFBO.getColorTexture();
+        return m_blurVFBO->getColorTexture();
     else
-        return m_shadowFBO.getColorTexture();
+        return m_shadowFBO->getColorTexture();
 #else
     return 0;
 #endif

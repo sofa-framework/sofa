@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -142,7 +142,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
         error=0.0;
         for(j=0; j<_dim; ) // increment of j realized at the end of the loop
         {
-            nb = _constraintsResolutions[j]->nbLines;
+            nb = _constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
@@ -388,15 +388,14 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
 
 void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params, simulation::Node *context, unsigned int &numConstraints)
 {
-    // calling resetConstraint on LMConstraints and MechanicalStates
-    simulation::MechanicalResetConstraintVisitor(params).execute(context);
-
     core::ConstraintParams cparams = core::ConstraintParams(*params);
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    // calling applyConstraint on each constraint
+    // calling resetConstraint on LMConstraints and MechanicalStates
+    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
 
+    // calling applyConstraint on each constraint
     MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
@@ -537,7 +536,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32)
     if (_realTimeCompensation.getValue())
     {
         if (timer == 0)
@@ -598,7 +597,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         {
             computePredictiveForce(CP.getSize(), CP.getF()->ptr(), CP.getConstraintResolutions());
             msg_info() << "getF() after computePredictiveForce:" ;
-            helper::afficheResult(CP.getF()->ptr(),CP.getSize());
+            helper::resultToString(std::cout,CP.getF()->ptr(),CP.getSize());
         }
     }
 
@@ -607,7 +606,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         (*CP.getF())*=0.0;
         computePredictiveForce(CP.getSize(), CP.getF()->ptr(), CP.getConstraintResolutions());
         msg_info() << "getF() after re-computePredictiveForce:" ;
-        helper::afficheResult(CP.getF()->ptr(),CP.getSize());
+        helper::resultToString(std::cout,CP.getF()->ptr(),CP.getSize());
     }
 
 
@@ -636,7 +635,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     if (EMIT_EXTRA_DEBUG_MESSAGE)
     {
         msg_info() << "getF() after setConstraintEquations:" ;
-        helper::afficheResult(CP.getF()->ptr(),CP.getSize());
+        helper::resultToString(std::cout, CP.getF()->ptr(),CP.getSize());
     }
 
     sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
@@ -693,11 +692,12 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif
@@ -710,7 +710,7 @@ void ConstraintAnimationLoop::computePredictiveForce(int dim, double* force, std
     for(int i=0; i<dim; )
     {
         res[i]->initForce(i, force);
-        i += res[i]->nbLines;
+        i += res[i]->getNbLines();
     }
 }
 
@@ -738,7 +738,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     for(i=0; i<dim; )
     {
         res[i]->init(i, w, force);
-        i += res[i]->nbLines;
+        i += res[i]->getNbLines();
     }
 
     std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
@@ -781,7 +781,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         for(j=0; j<dim; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint  (max=6)
-            nb = res[j]->nbLines;
+            nb = res[j]->getNbLines();
 
             bool check = true;
             for (int b=0; b<nb; b++)
@@ -833,11 +833,11 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
                         constraintsAreVerified = false;
                 }
 
-                if(res[j]->tolerance)
+                if(res[j]->getTolerance())
                 {
-                    if(contraintError > res[j]->tolerance)
+                    if(contraintError > res[j]->getTolerance())
                         constraintsAreVerified = false;
-                    contraintError *= tolerance / res[j]->tolerance;
+                    contraintError *= tolerance / res[j]->getTolerance();
                 }
 
                 error += contraintError;
@@ -906,7 +906,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     for(i=0; i<dim; )
     {
         res[i]->store(i, force, convergence);
-        int t = res[i]->nbLines;
+        int t = res[i]->getNbLines();
         i += t;
     }
 
@@ -928,12 +928,12 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
     for(j=0; j<dim; )
     {
-        nb = res[j]->nbLines;
+        nb = res[j]->getNbLines();
 
         if(tabErrors[j])
             graph_constraints.push_back(tabErrors[j]);
-        else if(res[j]->tolerance)
-            graph_constraints.push_back(res[j]->tolerance);
+        else if(res[j]->getTolerance())
+            graph_constraints.push_back(res[j]->getTolerance());
         else
             graph_constraints.push_back(tolerance);
 
@@ -956,8 +956,6 @@ void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 
 }
 
-
-SOFA_DECL_CLASS ( ConstraintAnimationLoop )
 
 int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
         .add< ConstraintAnimationLoop >()

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,14 +65,6 @@ bool BaseContext::isSleeping() const { return false; }
 /// The Context can not change its sleeping state by default
 bool BaseContext::canChangeSleepingState() const { return false; }
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-/// Gravity in the local coordinate system
-BaseContext::Vec3 BaseContext::getLocalGravity() const
-{
-    static const Vec3 G((SReal)0,(SReal)-9.81,(SReal)0);
-    return G;
-}
-#endif
 
 /// Gravity in the world coordinate system
 const BaseContext::Vec3& BaseContext::getGravity() const
@@ -99,57 +91,6 @@ bool BaseContext::getAnimate() const
     return true;
 }
 
-
-
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-/// Multiresolution
-int BaseContext::getCurrentLevel() const
-{
-    return 0;
-}
-int BaseContext::getCoarsestLevel() const
-{
-    return 0;
-}
-int BaseContext::getFinestLevel() const
-{
-    return 0;
-}
-// unsigned int BaseContext::nbLevels() const
-// {
-// 	return getCoarsestLevel() - getFinestLevel() + 1;
-// }
-#endif
-
-
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-//////////////////////////////
-// Local Coordinates System //
-//////////////////////////////
-
-
-/// Projection from the local coordinate system to the world coordinate system.
-const BaseContext::Frame& BaseContext::getPositionInWorld() const
-{
-    static const Frame f;
-    return f;
-}
-
-/// Spatial velocity (linear, angular) of the local frame with respect to the world
-const BaseContext::SpatialVector& BaseContext::getVelocityInWorld() const
-{
-    static const SpatialVector v( Vec3(0,0,0), Vec3(0,0,0) );
-    return v;
-}
-
-/// Linear acceleration of the origin induced by the angular velocity of the ancestors
-const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld() const
-{
-    static const Vec3 a(0,0,0);
-    return a;
-}
-#endif
 
 BaseContext* BaseContext::getRootContext() const
 {
@@ -227,10 +168,24 @@ core::topology::Topology* BaseContext::getTopology() const
 {
     return this->get<sofa::core::topology::Topology>();
 }
+
 /// Mesh Topology (unified interface for both static and dynamic topologies)
 core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 {
     return this->get<sofa::core::topology::BaseMeshTopology>();
+}
+
+/// Mesh Topology that is local to this context (i.e. not within parent contexts)
+core::topology::BaseMeshTopology* BaseContext::getLocalMeshTopology() const
+{
+    return this->get<sofa::core::topology::BaseMeshTopology>(Local);
+}
+
+/// Mesh Topology that is relevant for this context
+/// (within it or its parents until a mapping is reached that does not preserve topologies).
+core::topology::BaseMeshTopology* BaseContext::getActiveMeshTopology() const
+{
+    return this->get<sofa::core::topology::BaseMeshTopology>(Local);
 }
 
 /// Shader
@@ -252,19 +207,9 @@ void BaseContext::executeVisitor(simulation::Visitor*, bool)
 }
 
 std::ostream& operator << (std::ostream& out, const BaseContext&
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-        c
-#endif
                           )
 
 {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    out<<std::endl<<"local gravity = "<<c.getLocalGravity();
-    out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
-    //out<<std::endl<<"transform from world to local = "<<c.getWorldToLocal();
-    out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
-    out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
-#endif
     return out;
 }
 

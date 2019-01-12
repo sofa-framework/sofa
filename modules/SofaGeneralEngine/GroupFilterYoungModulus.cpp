@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP
 #include "GroupFilterYoungModulus.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,23 +36,13 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(GroupFilterYoungModulus)
-
 int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vector of young modulus according of a list of defined groups")
-#ifndef SOFA_FLOAT
-        .add< GroupFilterYoungModulus<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< GroupFilterYoungModulus<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< GroupFilterYoungModulus<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<Vec3Types>;
+ 
 
 
 } // namespace engine

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,18 +22,8 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-#include <list>
-#include <iostream>
-#include <typeinfo>
 #include <sofa/core/core.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -96,6 +86,8 @@ public:
         const char* group;
         const char* widget;
     };
+
+    virtual BaseData* getNewInstance() { return nullptr; }
 
     /** Constructor used via the Base::initData() methods. */
     explicit BaseData(const BaseInitData& init);
@@ -342,13 +334,13 @@ protected:
     virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
-    const char* help;
+    const char* help {nullptr} ;
     /// Owner class
-    const char* ownerClass;
+    const char* ownerClass {nullptr} ;
     /// group
-    const char* group;
+    const char* group {nullptr};
     /// widget
-    const char* widget;
+    const char* widget {nullptr};
     /// Number of changes since creation
     helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
     /// True if this %Data is set, i.e. its value is different from the default value
@@ -356,7 +348,7 @@ protected:
     /// Flags indicating the purpose and behaviour of this %Data
     DataFlags m_dataFlags;
     /// Return the Base component owning this %Data
-    Base* m_owner;
+    Base* m_owner {nullptr};
     /// Data name within the Base component
     std::string m_name;
 //    /// Link to another Data, if used as an input from another Data (@ typo).

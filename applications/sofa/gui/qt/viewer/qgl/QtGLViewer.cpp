@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -70,9 +70,6 @@ using sofa::simulation::getSimulation;
 using namespace sofa::simulation;
 
 helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
-SOFA_DECL_CLASS ( QGLViewerGUI )
-
-
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
@@ -85,6 +82,14 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
     {
         f.setSampleBuffers(true);
         f.setSamples(nbMSAASamples);
+    }
+
+    if(!SOFA_GUI_VSYNC)
+    {
+        std::cout << "QtGLViewer: disabling vertical refresh sync" << std::endl;
+        QSurfaceFormat format;
+        format.setSwapInterval(0);
+        QSurfaceFormat::setDefaultFormat(format);
     }
 
     return f;
@@ -1160,13 +1165,13 @@ void QtGLViewer::setView(const Vec3d& pos, const Quat &ori)
 void QtGLViewer::setSizeW( int size )
 {
     resizeGL( size, _H );
-    updateGL();
+    update();
 }
 
 void QtGLViewer::setSizeH( int size )
 {
     resizeGL( _W, size );
-    updateGL();
+    update();
 
 }
 

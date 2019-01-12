@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationGraph/init.h>
-
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
-
 #include <sofa/defaulttype/Vec.h>
 using sofa::defaulttype::Vec4d ;
 
@@ -39,12 +28,13 @@ using sofa::core::objectmodel::Data ;
 #include <sofa/defaulttype/RGBAColor.h>
 using sofa::defaulttype::RGBAColor ;
 
-class Color_Test : public Sofa_test<>,
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
+class Color_Test : public BaseTest,
                    public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
-    void SetUp() ;
-    void TearDown() ;
     void checkCreateFromString() ;
     void checkCreateFromDouble() ;
     void checkEquality() ;
@@ -54,18 +44,6 @@ public:
     void checkStreamingOperator(const std::vector<std::string>&) ;
     void checkDoubleStreamingOperator(const std::vector<std::string>&) ;
 };
-
-void Color_Test::SetUp()
-{
-    sofa::simulation::common::init();
-    sofa::simulation::graph::init();
-}
-
-void Color_Test::TearDown()
-{
-    sofa::simulation::common::cleanup();
-    sofa::simulation::graph::cleanup();
-}
 
 void Color_Test::checkCreateFromString()
 {

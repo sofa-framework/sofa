@@ -14,7 +14,7 @@
 	  <CGLinearSolver />
 	  <Mesh  src="@../sampler" />
 	  <MechanicalObject  />
-          <UniformMass totalmass="1000.0" />
+          <UniformMass totalMass="1000.0" />
 
           <HexahedronFEMForceField youngModulus="30.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
 

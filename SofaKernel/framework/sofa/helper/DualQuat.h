@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -267,7 +267,7 @@ public:
 typedef DualQuatCoord3<double> DualQuatCoordd; ///< alias
 typedef DualQuatCoord3<float> DualQuatCoordf; ///< alias
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_DUALQUAT_CPP)
+#if  !defined(SOFA_HELPER_DUALQUAT_CPP)
 extern template class SOFA_HELPER_API DualQuatCoord3<double>;
 extern template class SOFA_HELPER_API DualQuatCoord3<float>;
 #endif

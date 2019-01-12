@@ -38,8 +38,8 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 
-    Data<SReal> d_stiffness;
-    Data<SReal> d_damping;
+    Data<SReal> d_stiffness; ///< uniform stiffness value applied to all the DOF
+    Data<SReal> d_damping; ///< uniform viscous damping
 
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/,

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,10 +63,10 @@ protected:
     virtual ~DAGNode();
 
 public:
-    //Pure Virtual method from Node
+    /// Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
-    //Pure Virtual method from BaseNode
+    /// Pure Virtual method from BaseNode
     /// Add a child node
     virtual void addChild(BaseNode::SPtr node) override;
 
@@ -128,8 +128,9 @@ public:
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
 
-
-
+    /// Mesh Topology that is relevant for this context
+    /// (within it or its parents until a mapping is reached that does not preserve topologies).
+    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children
@@ -240,96 +241,10 @@ protected:
     /// @{
 
     /// get node's local objects respecting specified class_info and tags
-    inline void getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const
-    {
-        for (DAGNode::ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-        {
-            core::objectmodel::BaseObject* obj = it->get();
-            void* result = class_info.dynamicCast(obj);
-            if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
-                container(result);
-        }
-    }
+    void getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const ;
 
-    /// get all down objects respecting specified class_info and tags
-    class GetDownObjectsVisitor : public Visitor
-    {
-    public:
-
-        GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
-            : Visitor( core::ExecParams::defaultInstance() )
-            , _class_info(class_info)
-            , _container(container)
-            , _tags(tags)
-        {}
-
-        virtual Result processNodeTopDown(simulation::Node* node)
-        {
-            ((const DAGNode*)node)->getLocalObjects( _class_info, _container, _tags );
-            return RESULT_CONTINUE;
-        }
-
-        /// Specify whether this action can be parallelized.
-        virtual bool isThreadSafe() const { return false; }
-
-        /// Return a category name for this action.
-        /// Only used for debugging / profiling purposes
-        virtual const char* getCategoryName() const { return "GetDownObjectsVisitor"; }
-        virtual const char* getClassName()    const { return "GetDownObjectsVisitor"; }
-
-
-    protected:
-
-        const sofa::core::objectmodel::ClassInfo& _class_info;
-        DAGNode::GetObjectsCallBack& _container;
-        const sofa::core::objectmodel::TagSet& _tags;
-    };
-
-
-    /// get all up objects respecting specified class_info and tags
-    class GetUpObjectsVisitor : public Visitor
-    {
-    public:
-
-        GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
-            : Visitor( core::ExecParams::defaultInstance() )
-            , _searchNode( searchNode )
-            , _class_info(class_info)
-            , _container(container)
-            , _tags(tags)
-        {}
-
-        virtual Result processNodeTopDown(simulation::Node* node)
-        {
-            const DAGNode* dagnode = (const DAGNode*)node;
-            if( dagnode->_descendancy.find(_searchNode)!=dagnode->_descendancy.end() ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
-            {
-                dagnode->getLocalObjects( _class_info, _container, _tags );
-                return RESULT_CONTINUE;
-            }
-            else // the current node is NOT a parent of searchNode, stop here
-            {
-                return RESULT_PRUNE;
-            }
-        }
-
-        /// Specify whether this action can be parallelized.
-        virtual bool isThreadSafe() const { return false; }
-
-        /// Return a category name for this action.
-        /// Only used for debugging / profiling purposes
-        virtual const char* getCategoryName() const { return "GetUpObjectsVisitor"; }
-        virtual const char* getClassName()    const { return "GetUpObjectsVisitor"; }
-
-
-    protected:
-
-        DAGNode* _searchNode;
-        const sofa::core::objectmodel::ClassInfo& _class_info;
-        DAGNode::GetObjectsCallBack& _container;
-        const sofa::core::objectmodel::TagSet& _tags;
-
-    };
+    friend class GetDownObjectsVisitor ;
+    friend class GetUpObjectsVisitor ;
     /// @}
 };
 

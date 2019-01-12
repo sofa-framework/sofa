@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,13 +23,10 @@
 #define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_H
 #include "config.h"
 
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/defaulttype/RigidTypes.h>
-//#include <SofaBaseMechanics/MechanicalObject.h>
-
 #include <sofa/helper/Factory.h>
-
+#include <sofa/core/CollisionModel.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -50,21 +47,11 @@ namespace component
 namespace collision
 {
 
-class GenerateStirngID
+class SOFA_BASE_COLLISION_API GenerateStringID
 {
 public :
-
-    static const int length = 15;
-
-    static std::string generate(){
-        static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        std::string result;
-        result.resize(length);
-        for (int i = 0; i < length; i++)
-            result[i] = alphanum[rand() % length];
-
-        return result;
-    }
+    static const int length {15};
+    static std::string generate() ;
 };
 
 
@@ -151,16 +138,9 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
-
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3dTypes>;
-#endif
+#if !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
+extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3Types>;
 
 #endif
 
@@ -168,17 +148,12 @@ extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rig
 
 } // namespace component
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
 namespace helper
 {
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3fTypes>, core::CollisionModel* >;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3dTypes>, core::CollisionModel* >;
-#endif
+//extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec2Types>, core::CollisionModel* >;
+extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
 } // namespace helper
 #endif
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,7 +54,7 @@ protected:
     virtual ~AddResourceRepository();
 public:
     //cannot be a DataFilename
-    Data<std::string> d_repositoryPath;
+    Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
     void cleanup() override;

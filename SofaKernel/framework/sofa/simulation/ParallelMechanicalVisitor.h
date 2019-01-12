@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,14 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_SMP_PARALLELMECHANICALACTION_H
 #define SOFA_SMP_PARALLELMECHANICALACTION_H
-//#define SOFA_SUPPORT_MAPPED_MASS
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 
 #include <sofa/simulation/MechanicalVisitor.h>
-// #include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
@@ -38,8 +32,6 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/SharedTypes.h>
 
-//#include <sofa/defaulttype/BaseMatrix.h>
-//#include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

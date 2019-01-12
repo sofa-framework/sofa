@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,39 +47,22 @@ public:
 protected:
     StaticSolver();
 public:
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    void solve (const core::ExecParams* params, SReal dt,
+                sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
-    {
-        double matrix[3][3] =
-        {
-            { 1, 0, 0},
-            { 0, 1, 0},
-            { 0, 0, 0}
-        };
-        if (inputDerivative >= 3 || outputDerivative >= 3)
-            return 0;
-        else
-            return matrix[outputDerivative][inputDerivative];
-    }
+    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override;
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const override
-    {
-        double vect[3] = { 1, 0, 0};
-        if (outputDerivative >= 3)
-            return 0;
-        else
-            return vect[outputDerivative];
-    }
+    double getSolutionIntegrationFactor(int outputDerivative) const override;
 
-    Data<SReal> massCoef;
-    Data<SReal> dampingCoef;
-    Data<SReal> stiffnessCoef;
+    Data<SReal> massCoef; ///< factor associated with the mass matrix in the equation system
+    Data<SReal> dampingCoef; ///< factor associated with the mass matrix in the equation system
+    Data<SReal> stiffnessCoef; ///< factor associated with the mass matrix in the equation system
     Data<bool> applyIncrementFactor; ///< multiply the solution by dt. Default: false
+    Data<bool> d_threadSafeVisitor;
 };
 
 } // namespace odesolver

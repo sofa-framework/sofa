@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -157,7 +157,7 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
                          << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" ;
 
         sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
-        objDesc.setAttribute("displayFlags", oldFlags.c_str());
+        objDesc.setAttribute("displayFlags", oldFlags);
         sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
 }
@@ -559,6 +559,12 @@ core::topology::BaseMeshTopology* Node::getMeshTopology() const
         return this->meshTopology;
     else
         return get<core::topology::BaseMeshTopology>(SearchParents);
+}
+
+/// Mesh Topology that is local to this context (i.e. not within parent contexts)
+core::topology::BaseMeshTopology* Node::getLocalMeshTopology() const
+{
+    return this->meshTopology;
 }
 
 /// Degrees-of-Freedom
@@ -974,8 +980,6 @@ void Node::setSleeping(bool val)
         notifySleepChanged();
     }
 }
-
-SOFA_DECL_CLASS(Node)
 
 }
 

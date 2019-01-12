@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,17 +27,16 @@
 #include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace core
-{ 
-namespace visual
-{
-class VisualParams;
+namespace sofa {
+namespace core {
+namespace visual {
+    class VisualParams;
 } // namespace visual
 } // namespace core
+}
 
+namespace sofa
+{
 namespace simulation
 {
 
@@ -47,13 +46,13 @@ namespace simulation
  *
  */
 
-class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public core::visual::VisualLoop
+class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public sofa::core::visual::VisualLoop
 {
 public:
-    typedef core::visual::VisualLoop Inherit;
+    typedef sofa::core::visual::VisualLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
-    SOFA_CLASS(DefaultVisualManagerLoop,core::visual::VisualLoop);
+    SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
     DefaultVisualManagerLoop(simulation::Node* gnode = NULL);
 

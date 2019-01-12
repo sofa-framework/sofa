@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -81,14 +79,14 @@ public:
     void getFiberDir(int element, Deriv& dir);
 
     //Data<Real> f_poisson2;
-    //Data<Real> f_young2;
+    //Data<Real> f_young2; ///< Young modulus along transverse direction
     Data<helper::vector<Real> > f_poisson2;
-    Data<helper::vector<Real> > f_young2;
-    Data<Real> f_theta;
-    Data<VecCoord> f_fiberCenter;
-    Data<bool> showFiber;
+    Data<helper::vector<Real> > f_young2; ///< Young modulus along transverse direction
+    Data<Real> f_theta; ///< Fiber angle in global reference frame (in degrees)
+    Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
+    Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
 
-    topology::TriangleData <helper::vector< Deriv> > localFiberDirection;
+    topology::TriangleData <helper::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
 
     class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {
@@ -108,18 +106,18 @@ public:
         TriangularAnisotropicFEMForceField<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    /// Inherited member
+    /// Bring inherited member in the current lookup context.
+    /// otherwise any access to the Inherit1::member would require "this->".
+    /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    using Inherit1::_topology;
 
     TRQSTriangleHandler* triangleHandler;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
+extern template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

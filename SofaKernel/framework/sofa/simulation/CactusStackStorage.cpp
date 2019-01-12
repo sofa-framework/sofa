@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,7 +33,7 @@ void CactusStackStorage::push(void* data)
 }
 void* CactusStackStorage::pop()
 {
-    if (stack.empty()) return NULL;
+    if (stack.empty()) return nullptr;
     void* data = stack.top();
     stack.pop();
     return data;
@@ -44,13 +44,13 @@ void* CactusStackStorage::top() const
         if (up)
             return up->top();
         else
-            return NULL;
+            return nullptr;
     else
         return stack.top();
 }
 bool CactusStackStorage::empty() const
 {
-    return stack.empty() && (up == NULL || up->empty());
+    return stack.empty() && (up == nullptr || up->empty());
 }
 
 } // namespace simulation

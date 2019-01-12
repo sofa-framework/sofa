@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,12 +24,13 @@
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/CollisionEndEvent.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaUserInteraction/TopologicalChangeManager.h>
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -42,188 +43,213 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(CarvingManager)
-
 int CarvingManagerClass = core::RegisterObject("Manager handling carving operations between a tool and an object.")
 .add< CarvingManager >()
 ;
 
 
 CarvingManager::CarvingManager()
-: f_modelTool( initData(&f_modelTool, "modelTool", "Tool model path"))
-, f_modelSurface( initData(&f_modelSurface, "modelSurface", "TriangleSetModel or SphereModel path"))
-, active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
-, keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
-, keySwitchEvent( initData(&keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
-, mouseEvent( initData(&mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
-, omniEvent( initData(&omniEvent, true, "omniEvent", "Activate carving with omni button") )
-, modelTool(NULL)
-, modelSurface(NULL)
-, intersectionMethod(NULL)
-, detectionNP(NULL)
+    : d_toolModelPath( initData(&d_toolModelPath, "toolModelPath", "Tool model path"))
+    , d_surfaceModelPath( initData(&d_surfaceModelPath, "surfaceModelPath", "TriangleSetModel or SphereModel path"))
+    , d_carvingDistance( initData(&d_carvingDistance, 0.0, "carvingDistance", "Collision distance at which cavring will start. Equal to contactDistance by default."))
+    , d_active( initData(&d_active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
+    , d_keyEvent( initData(&d_keyEvent, '1', "key", "key to press to activate this object until the key is released") )
+    , d_keySwitchEvent( initData(&d_keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
+    , d_mouseEvent( initData(&d_mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
+    , d_omniEvent( initData(&d_omniEvent, true, "omniEvent", "Activate carving with omni button") )
+    , d_activatorName(initData(&d_activatorName, "button1", "activatorName", "Name to active the script event parsing. Will look for 'pressed' or 'release' keyword. For example: 'button1_pressed'"))
+    , m_toolCollisionModel(NULL)
+    , m_intersectionMethod(NULL)
+    , m_detectionNP(NULL)
+    , m_carvingReady(false)
 {
     this->f_listening.setValue(true);
 }
+
 
 CarvingManager::~CarvingManager()
 {
 }
 
+
 void CarvingManager::init()
 {
-    if (f_modelTool.getValue().empty())
+    // Search for collision model corresponding to the tool.
+    if (d_toolModelPath.getValue().empty())
     {
-        modelTool = getContext()->get<ToolModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
-        if (!modelTool)
-            modelTool = getContext()->get<ToolModel>(core::objectmodel::BaseContext::SearchDown);
+        m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
+        if (!m_toolCollisionModel)
+            m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::BaseContext::SearchDown);
     }
     else
-        modelTool = getContext()->get<ToolModel>(f_modelTool.getValue());
+        m_toolCollisionModel = getContext()->get<core::CollisionModel>(d_toolModelPath.getValue());
 
-    if (f_modelSurface.getValue().empty())
+    // Search for the surface collision model.
+    if (d_surfaceModelPath.getValue().empty())
     {
         // we look for a CollisionModel relying on a TetrahedronSetTopology.
-        //modelSurface = getContext()->get<TriangleSetModel>(core::objectmodel::BaseContext::SearchDown);
         std::vector<core::CollisionModel*> models;
         getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
-    if (models.empty())
-        getContext()->get<core::CollisionModel>(&models, core::objectmodel::BaseContext::SearchRoot);
-	    sofa::core::topology::TopologicalMapping * topoMapping;
-        for (unsigned int i=0;i<models.size();++i)
+    
+        // extend the research to model without the tag. 
+        if (models.empty())
+            getContext()->get<core::CollisionModel>(&models, core::objectmodel::BaseContext::SearchRoot);
+
+
+        // If topological mapping, iterate into child Node to find mapped topology
+	    sofa::core::topology::TopologicalMapping* topoMapping;
+        for (size_t i=0;i<models.size();++i)
         {
             core::CollisionModel* m = models[i];
             m->getContext()->get(topoMapping);
             if (topoMapping == NULL) continue;
-            
-            modelSurface = m; // we found a good object
-            break;
+                        
+            m_surfaceCollisionModels.push_back(m);
         }
     }
     else
     {
-        modelSurface = getContext()->get<core::CollisionModel>(f_modelSurface.getValue());
+        m_surfaceCollisionModels.push_back(getContext()->get<core::CollisionModel>(d_surfaceModelPath.getValue()));
     }
-    intersectionMethod = getContext()->get<core::collision::Intersection>();
-    detectionNP = getContext()->get<core::collision::NarrowPhaseDetection>();
-    bool error = false;
-    if (modelTool == NULL) { serr << "CarvingManager: modelTool not found"<<sendl; error = true; }
-    if (modelSurface == NULL) { serr << "CarvingManager: modelSurface not found"<<sendl; error = true; }
-    if (intersectionMethod == NULL) { serr << "CarvingManager: intersectionMethod not found"<<sendl; error = true; }
-    if (detectionNP == NULL) { serr << "CarvingManager: NarrowPhaseDetection not found"<<sendl; error = true; }
-    if (!error)
-        sout << "CarvingManager: init OK." << sendl;
+
+    m_intersectionMethod = getContext()->get<core::collision::Intersection>();
+    m_detectionNP = getContext()->get<core::collision::NarrowPhaseDetection>();
+
+    m_carvingReady = true;
+
+    if (m_toolCollisionModel == NULL) { msg_error() << "m_toolCollisionModel not found"; m_carvingReady = false; }
+    if (m_surfaceCollisionModels.empty()) { msg_error() << "CarvingManager: m_surfaceCollisionModels not found"; m_carvingReady = false; }
+    if (m_intersectionMethod == NULL) { msg_error() << "CarvingManager: m_intersectionMethod not found"; m_carvingReady = false; }
+    if (m_detectionNP == NULL) { msg_error() << "CarvingManager: NarrowPhaseDetection not found"; m_carvingReady = false; }
+    
+    if (m_carvingReady)
+        msg_info() << "CarvingManager: init OK.";
 }
+
 
 void CarvingManager::reset()
 {
+
 }
+
 
 void CarvingManager::doCarve()
 {
-    if (modelTool==NULL || modelSurface==NULL || intersectionMethod == NULL || detectionNP == NULL) return;
+    if (!m_carvingReady)
+        return;
 
-    const bool continuous = intersectionMethod->useContinuous();
-    const double dt       = getContext()->getDt();
-    const int depth = 6;
+    // get the collision output
+    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = m_detectionNP->getDetectionOutputs();
+    if (detectionOutputs.size() == 0)
+        return;
 
-    if (continuous)
-        modelTool->computeContinuousBoundingTree(dt, depth);
-    else
-        modelTool->computeBoundingTree(depth);
-
-    if (continuous)
-        modelSurface->computeContinuousBoundingTree(dt, depth);
-    else
-        modelSurface->computeBoundingTree(depth);
-
-    
-    sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > vectCMPair;
-    vectCMPair.push_back(std::make_pair(modelSurface->getFirst(),modelTool->getFirst()));
-    
-    detectionNP->setInstance(this);
-    detectionNP->setIntersectionMethod(intersectionMethod);
-    detectionNP->beginNarrowPhase();
-    detectionNP->addCollisionPairs(vectCMPair);
-    detectionNP->endNarrowPhase();
-    
-    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = detectionNP->getDetectionOutputs();
-
+    // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
     const ContactVector* contacts = NULL;
-    core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); //find(std::make_pair(modelSurface,modelTool));
-    if (it != detectionOutputs.end())
+    for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
-        contacts = dynamic_cast<const ContactVector*>(it->second);
-    }
-    unsigned int ncontacts = 0;
-    if (contacts != NULL)
-    {
-        ncontacts = contacts->size();
-    }
+        const sofa::core::CollisionModel* collMod1 = it->first.first;
+        const sofa::core::CollisionModel* collMod2 = it->first.second;
 
-    int nbelems = 0;
+        if (collMod1 == m_toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
+        {
+            contacts = dynamic_cast<const ContactVector*>(it->second);
+        }
+        else if (collMod2 == m_toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
+        {
+            contacts = dynamic_cast<const ContactVector*>(it->second);
+        }
+        else // not linked to the carving, iterate.
+            continue;
 
-    helper::vector<int> elemsToRemove;
-    for (unsigned int j=0; j < ncontacts; ++j)
-    {
-        const ContactVector::value_type& c = (*contacts)[j];
-        int triangleIdx = (c.elem.first.getCollisionModel()==modelSurface ? c.elem.first.getIndex():c.elem.second.getIndex());
+        size_t ncontacts = 0;
+        if (contacts != NULL)
+            ncontacts = contacts->size();
 
-		elemsToRemove.push_back(triangleIdx);
+        if (ncontacts == 0)
+            continue;
+
+        int nbelems = 0;
+        helper::vector<int> elemsToRemove;
+
+        for (size_t j = 0; j < ncontacts; ++j)
+        {
+            const ContactVector::value_type& c = (*contacts)[j];
+
+            if (c.value < d_carvingDistance.getValue())
+            {
+                int triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                elemsToRemove.push_back(triangleIdx);
+            }
+        }
+
+        sofa::helper::AdvancedTimer::stepBegin("CarveElems");
+        if (!elemsToRemove.empty())
+        {
+            static TopologicalChangeManager manager;
+            if (it->first.first == m_toolCollisionModel)
+                nbelems += manager.removeItemsFromCollisionModel(it->first.second, elemsToRemove);
+            else
+                nbelems += manager.removeItemsFromCollisionModel(it->first.first, elemsToRemove);
+        }
     }
-    sofa::helper::AdvancedTimer::stepBegin("CarveElems");
-    if (!elemsToRemove.empty())
-    {
-		static TopologicalChangeManager manager;
-		nbelems += manager.removeItemsFromCollisionModel(modelSurface, elemsToRemove);
-    }
-
-    detectionNP->setInstance(NULL);
 }
 
 void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
+    if (!m_carvingReady)
+        return;
+
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
-        sout << "GET KEY "<<ev->getKey()<<sendl;
-        if (ev->getKey() == keyEvent.getValue())
+        dmsg_info() << "GET KEY "<<ev->getKey();
+        if (ev->getKey() == d_keyEvent.getValue())
         {
-            active.setValue(true);
+            d_active.setValue(true);
         }
-        else if (ev->getKey() == keySwitchEvent.getValue())
+        else if (ev->getKey() == d_keySwitchEvent.getValue())
         {
-            active.setValue(!active.getValue());
+            d_active.setValue(!d_active.getValue());
         }
     }
     else if (sofa::core::objectmodel::KeyreleasedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent*>(event))
     {
-        if (ev->getKey() == keyEvent.getValue())
+        if (ev->getKey() == d_keyEvent.getValue())
         {
-            active.setValue(false);
+            d_active.setValue(false);
         }
     }
     else if (sofa::core::objectmodel::MouseEvent * ev = dynamic_cast<sofa::core::objectmodel::MouseEvent*>(event))
     {
-        if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddlePressed) && (mouseEvent.getValue()))
+        if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddlePressed) && (d_mouseEvent.getValue()))
         {
-            active.setValue(true);
+            d_active.setValue(true);
         }
         else
-        if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddleReleased) && (mouseEvent.getValue()))
+        if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddleReleased) && (d_mouseEvent.getValue()))
         {
-            active.setValue(false);
+            d_active.setValue(false);
         }
     }
     else if (sofa::core::objectmodel::HapticDeviceEvent * ev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event))
     {
-        if (ev->getButtonState()==1) active.setValue(true);
-        else if (ev->getButtonState()==0) active.setValue(false);
+        if (ev->getButtonState()==1) d_active.setValue(true);
+        else if (ev->getButtonState()==0) d_active.setValue(false);
     }
-
-    else if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
+    else if (sofa::core::objectmodel::ScriptEvent *ev = dynamic_cast<sofa::core::objectmodel::ScriptEvent *>(event))
     {
-        if (active.getValue())
+        const std::string& eventS = ev->getEventName();
+        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("pressed") != std::string::npos)
+            d_active.setValue(true);
+        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("released") != std::string::npos)
+            d_active.setValue(false);
+    }
+    else if (simulation::CollisionEndEvent::checkEventType(event))
+    {
+        if (d_active.getValue())
             doCarve();
     }
+
+
 }
 
 } // namespace collision

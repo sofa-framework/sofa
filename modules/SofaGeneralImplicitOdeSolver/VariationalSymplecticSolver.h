@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,17 +49,18 @@ class SOFA_GENERAL_IMPLICIT_ODE_SOLVER_API VariationalSymplecticSolver : public 
 public:
 	SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
 
-    Data<double>       f_newtonError;
-    Data<unsigned int> f_newtonSteps;
-    Data<SReal> f_rayleighStiffness;
-    Data<SReal> f_rayleighMass;
-	Data<bool> f_verbose;
-    Data<bool> f_saveEnergyInFile;
-	Data<bool>       f_explicit;
-    Data<std::string> f_fileName;
-    Data<bool> f_computeHamiltonian;
-    Data<double> f_hamiltonianEnergy;
-    Data<bool> f_useIncrementalPotentialEnergy;
+    Data<double>       f_newtonError; ///< Error tolerance for Newton iterations
+    Data<unsigned int> f_newtonSteps; ///< Maximum number of Newton steps
+    Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+	Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
+    Data<bool> f_saveEnergyInFile; ///< If kinetic and potential energies should be dumped in a CSV file at each iteration
+	Data<bool>       f_explicit; ///< Use explicit integration scheme
+    Data<std::string> f_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
+    Data<bool> f_computeHamiltonian; ///< Compute hamiltonian
+    Data<double> f_hamiltonianEnergy; ///< hamiltonian energy
+    Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
+    Data<bool> d_threadSafeVisitor;
 
 	VariationalSymplecticSolver();
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,15 +89,7 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-	void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override
-	{
-		unsigned blockSize = DataTypes::deriv_total_size;	
-		unsigned size = this->mstate->getSize();
-		for( unsigned i=0; i<size; i++ )
-		{
-			M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
-		}
-	}
+    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
@@ -117,12 +109,12 @@ protected:
 
 protected:
 	// every nodes needed in the animation chain
-    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints;
+    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
-    Data<helper::SVector<SkeletonBone> >				skeletonBones;
+    Data<helper::SVector<SkeletonBone> >				skeletonBones; ///< skeleton bones
 
 	// control how fast the animation is played since animation time is not simulation time
-	Data<float>											animationSpeed;
+	Data<float>											animationSpeed; ///< animation speed
 
     /// is the projective constraint activated?
     Data<bool>                                          active;
@@ -152,14 +144,9 @@ struct SkeletonJoint
         , mTimes()
         , mPreviousMotionTime(0)
         , mNextMotionTime(0)
-    {
+    {}
 
-    }
-
-    virtual ~SkeletonJoint()
-    {
-
-    }
+    virtual ~SkeletonJoint(){}
 
 	void addChannel(Coord channel, double time)
 	{
@@ -258,12 +245,8 @@ private:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 

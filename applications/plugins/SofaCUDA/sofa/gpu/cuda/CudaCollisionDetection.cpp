@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,6 @@ extern "C"
 {
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
 }
-
-SOFA_DECL_CLASS(CudaCollisionDetection)
 
 int CudaCollisionDetectionClass = core::RegisterObject("GPU-based collision detection using CUDA")
         .add< CudaCollisionDetection >()

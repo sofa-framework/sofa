@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -155,10 +153,10 @@ public :
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
-   Data<std::string> f_materialName; /// the name of the material
-   Data<SetParameterArray> f_parameterSet;
-   Data<SetAnisotropyDirectionArray> f_anisotropySet;
-   Data<std::string> f_parameterFileName;
+   Data<std::string> f_materialName; ///< the name of the material
+   Data<SetParameterArray> f_parameterSet; ///< The global parameters specifying the material
+   Data<SetAnisotropyDirectionArray> f_anisotropySet; ///< The global directions of anisotropy of the material
+   Data<std::string> f_parameterFileName; ///< the name of the file describing the material parameters for all tetrahedra
 
    
 public:
@@ -225,9 +223,9 @@ public:
 
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
-        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo;
-        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo;
-        topology::EdgeData<edgeInformationVector> edgeInfo;
+        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
+        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
+        topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
         void testDerivatives();
@@ -240,16 +238,12 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 
 
 } // namespace forcefield

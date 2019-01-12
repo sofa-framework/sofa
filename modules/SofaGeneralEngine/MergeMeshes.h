@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,8 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {
@@ -65,7 +67,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -77,7 +79,7 @@ public:
         return DataTypes::Name();
     }
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to merge
 
     helper::vector<Data<VecCoord>*> vf_positions;
     helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,2> > >* > vf_edges;
@@ -88,14 +90,14 @@ public:
     helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,8> > >* > vf_hexahedra;
 
 
-    Data<unsigned> f_output_npoints;
-    Data<VecCoord> f_output_positions;
-    Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges;
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles;
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > f_output_quads;
-    Data< helper::vector< helper::vector <unsigned int> > > f_output_polygons;
-    Data< helper::vector< helper::fixed_array<unsigned int,4> > > f_output_tetrahedra;
-    Data< helper::vector< helper::fixed_array<unsigned int,8> > > f_output_hexahedra;
+    Data<unsigned> f_output_npoints; ///< Number Of out points
+    Data<VecCoord> f_output_positions; ///< Output Vertices of the merged mesh
+    Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges; ///< Output Edges of the merged mesh
+    Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles; ///< Output Triangles of the merged mesh
+    Data< helper::vector< helper::fixed_array <unsigned int,4> > > f_output_quads; ///< Output Quads of the merged mesh
+    Data< helper::vector< helper::vector <unsigned int> > > f_output_polygons; ///< Output Polygons of the merged mesh
+    Data< helper::vector< helper::fixed_array<unsigned int,4> > > f_output_tetrahedra; ///< Output Tetrahedra of the merged mesh
+    Data< helper::vector< helper::fixed_array<unsigned int,8> > > f_output_hexahedra; ///< Output Hexahedra of the merged mesh
 
 protected:
     void createInputMeshesData(int nb = -1);
@@ -110,7 +112,7 @@ protected:
             ohelp << help << (i+1);
             std::string name_i = oname.str();
             std::string help_i = ohelp.str();
-            Data<T>* d = new Data<T>(help_i.c_str(), true, false);
+            Data<T>* d = new Data<T>(sofa::helper::getAStringCopy(help_i.c_str()), true, false);
             d->setName(name_i);
             vf.push_back(d);
             this->addData(d);
@@ -167,21 +169,13 @@ protected:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEMESHES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MERGEMESHES_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid2Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergeMeshes<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

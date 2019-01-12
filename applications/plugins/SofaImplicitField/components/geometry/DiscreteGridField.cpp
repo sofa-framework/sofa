@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -366,8 +366,6 @@ double DiscreteGridField::getValue( Vec3d &transformedPos )
 ///factory register
 int DiscreteGridFieldClass = RegisterObject("A discrete scalar field from a regular grid storing field value with interpolation.")
         .add< DiscreteGridField >() ;
-
-SOFA_DECL_CLASS(DiscreteGridField)
 
 } ///namespace _discretegrid_
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -170,13 +170,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     {
     case HexahedralFEMForceFieldT::LARGE:
     {
-        for (int i=0; i<this->_topology->getNbHexahedra(); ++i)
+        for (size_t i=0; i<this->_topology->getNbHexahedra(); ++i)
             initLarge(i);
     }
     break;
     case HexahedralFEMForceFieldT::POLAR:
     {
-        for(int i=0; i<this->_topology->getNbHexahedra(); ++i)
+        for(size_t i=0; i<this->_topology->getNbHexahedra(); ++i)
             initPolar(i);
     }
     break;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,24 +36,13 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(SkeletalMotionConstraint)
-
-
 int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")
-#ifndef SOFA_FLOAT
-        .add< SkeletalMotionConstraint<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SkeletalMotionConstraint<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< SkeletalMotionConstraint<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
+
 
 } // namespace projectiveconstraintset
 

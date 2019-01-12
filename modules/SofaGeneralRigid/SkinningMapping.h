@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,10 +31,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-
-#ifdef SOFA_DEV
-#include <sofa/helper/DualQuat.h>
-#endif
 
 namespace sofa
 {
@@ -86,17 +82,8 @@ public:
 
     typedef typename Inherit::ForceMask ForceMask;
 
-#ifdef SOFA_DEV
-    typedef helper::DualQuatCoord3<OutReal> DQCoord;
-    typedef defaulttype::Mat<4,4,OutReal> Mat44;
-    typedef defaulttype::Mat<3,3,OutReal> Mat33;
-    typedef defaulttype::Mat<3,4,OutReal> Mat34;
-    typedef defaulttype::Mat<4,3,OutReal> Mat43;
-#endif
-
 protected:
-
-    Data<OutVecCoord> f_initPos;  // initial child coordinates in the world reference frame
+    Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 
     // data for linear blending
     helper:: vector<helper::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
@@ -104,25 +91,17 @@ protected:
     SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 
     // data for dual quat blending
-#ifdef SOFA_DEV
-    helper::vector<helper::vector< Mat44 > > f_T0; /// Real part of blended quaternion Jacobian : db = [T0,TE] dq
-    helper::vector<helper::vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
-    helper::vector<helper::vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
-    helper::vector<helper::vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
-    Data<bool> useDQ;  // use dual quat blending instead of linear blending
-#endif
-
-    Data< helper::vector<unsigned int> > nbRef; // Number of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<InReal> > > weight;
+    Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<InReal> > > weight; ///< influence weights of the Dofs.
     void updateWeights();
 
 public:
     void setWeights(const helper::vector<sofa::helper::SVector<InReal> >& weights, const helper::vector<sofa::helper::SVector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
 
 public:
-    Data<unsigned int> showFromIndex;
-    Data<bool> showWeights;
+    Data<unsigned int> showFromIndex; ///< Displayed From Index.
+    Data<bool> showWeights; ///< Show influence.
 protected:
     SkinningMapping ();
     virtual ~SkinningMapping();
@@ -152,22 +131,12 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
-#endif
-#endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
+extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::ExtVec3Types >;
+
+
+#endif // !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,10 +38,6 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 
     mContactTime = -std::numeric_limits<Real>::max();
 
-    //int tri_flg = _tri->getCollisionModel()->getTriangleFlags(_tri->getIndex());
-    //int tri_flg = _tri->getCollisionModel()->getTriangleFlags(_tri->getIndex());
-    //((TTriangleModel<TDataTypes> *)(_tri->getCollisionModel()))->bidon();
-
     int side = IntrConfiguration<Real>::NONE;
     IntrConfiguration<Real> triContact, boxContact;
 
@@ -76,20 +72,11 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
         // Test if axis is parallel to triangle normal.  The test is:
         // sin(Angle(normal,axis)) < epsilon
         Real NdA = (_tri->n()) * axis;
-//        Real NdN = (_tri->n()).SquaredLength();
-//        Real AdA = axis.SquaredLength();
-//        if (NdA < IntrUtil<Real>::ZERO_TOLERANCE())
-//        {
-//            coplanar = i0;
-//        }        Real NdA = triNorm.Dot(axis);
         Real sn = fabs((Real)1 -NdA*NdA);
         if (sn < IntrUtil<Real>::ZERO_TOLERANCE())
         {
             coplanar = i0;
         }
-
-
-
     }
 
     if (coplanar == -1)
@@ -97,7 +84,6 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
         // Test triedges cross boxfaces.
         for (i0 = 0; i0 < 3; ++i0)
         {
-
             if(tri_flg&TriangleModel::FLAG_E12){
                 axis = edge[0].cross(mBox->axis(i0));
                 if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
@@ -142,7 +128,6 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
         }
     }
       else
-        //if()
     {
         // Test triedges cross coplanar box axis.
         if(tri_flg&TriangleModel::FLAG_E12){
@@ -200,8 +185,6 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 
     if(side == IntrConfiguration<Real>::LEFT)
         _sep_axis *= -1.0;
-
-//    assert(mBox->onSurface(_pt_on_second));
 
     return true;
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MeshTrianLoader)
-
 int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian (only triangulations) file format.")
         .add< MeshTrianLoader >()
         ;
@@ -58,7 +56,7 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
 
 bool MeshTrianLoader::load()
 {
-    sout << "Loading Trian file: " << m_filename << sendl;
+    msg_info() << "Loading Trian file: " << m_filename;
 
     bool fileRead = false;
 
@@ -68,7 +66,7 @@ bool MeshTrianLoader::load()
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 

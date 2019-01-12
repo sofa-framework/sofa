@@ -34,7 +34,7 @@
 
 #include "LMLConstraint.inl"
 #include <sofa/core/ObjectFactory.h>
-#include "sofa/defaulttype/Vec3Types.h"
+#include "sofa/defaulttype/VecTypes.h"
 #include "sofa/defaulttype/RigidTypes.h"
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -49,9 +49,6 @@ namespace pml
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 using namespace core::behavior;
-SOFA_DECL_CLASS(LMLConstraint)
-
-
 template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;
 
 

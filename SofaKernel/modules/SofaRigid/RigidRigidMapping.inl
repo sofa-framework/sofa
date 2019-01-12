@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,6 +43,25 @@ namespace component
 
 namespace mapping
 {
+
+template <class TIn, class TOut>
+RigidRigidMapping<TIn,TOut>::RigidRigidMapping()
+    : Inherit(),
+      points(initData(&points, "initialPoints", "Initial position of the points")),
+      repartition(initData(&repartition,"repartition","number of child frames per parent frame. \n"
+                           "If empty, all the children are attached to the parent with index \n"
+                           "given in the \"index\" attribute. If one value, each parent frame drives \n"
+                           "the given number of children frames. Otherwise, the values are the number \n"
+                           "of child frames driven by each parent frame. ")),
+      index(initData(&index,(unsigned)0,"index","input frame index")),
+      fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
+      axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
+      indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
+      globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
+{
+    this->addAlias(&fileRigidRigidMapping,"filename");
+}
+
 
 template <class TIn, class TOut>
 class RigidRigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader

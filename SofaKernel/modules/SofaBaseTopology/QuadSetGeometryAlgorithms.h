@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -41,6 +40,7 @@ class QuadSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(QuadSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
 
+    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
@@ -62,7 +62,7 @@ protected:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         , showQuadIndices(core::objectmodel::Base::initData(&showQuadIndices, (bool) false, "showQuadIndices", "Debug : view Quad indices"))
         , _drawQuads(core::objectmodel::Base::initData(&_drawQuads, false, "drawQuads","if true, draw the quads in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.0f,0.4f,0.4f), "drawColorQuads", "RGB code color used to draw quads."))
+        , _drawColor(initData(&_drawColor, sofa::helper::types::RGBAColor(0.0f,0.4f,0.4f,1.0f), "drawColorQuads", "RGB code color used to draw quads."))
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}
@@ -99,7 +99,7 @@ public:
     * is included or not in the plane defined by (ind_p, plane_vect)
     *
     */
-    bool isQuadInPlane(const QuadID ind_q, const unsigned int ind_p,
+    bool isQuadInPlane(const QuadID ind_q, const PointID ind_p,
             const defaulttype::Vec<3,Real>& plane_vect) const;
 
     bool isPointInQuad(const QuadID ind_q, const sofa::defaulttype::Vec<3,Real>& p) const;
@@ -111,9 +111,9 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    Data<bool> showQuadIndices;
-    Data<bool> _drawQuads;
-    Data<sofa::defaulttype::Vec3f> _drawColor;
+    Data<bool> showQuadIndices; ///< Debug : view Quad indices
+    Data<bool> _drawQuads; ///< if true, draw the quads in the topology
+    Data<sofa::helper::types::RGBAColor> _drawColor; ///< RGB code color used to draw quads.
 
 };
 
@@ -134,22 +134,14 @@ inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Ve
 template< class Real>
 inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  );
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP)
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1Types>;
+//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3Types>;
+//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
-#endif
+
 #endif
 
 } // namespace topology

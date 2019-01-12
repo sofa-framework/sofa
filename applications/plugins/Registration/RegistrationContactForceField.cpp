@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_CPP
 #include "RegistrationContactForceField.inl"
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
  
 namespace sofa
@@ -38,24 +38,14 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(RegistrationContactForceField)
-
 // Register in the Factory
 int RegistrationContactForceFieldClass = core::RegisterObject("Contact using attractive springs")
-#ifndef SOFA_FLOAT
-.add< RegistrationContactForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< RegistrationContactForceField<Vec3fTypes> >()
-#endif
+.add< RegistrationContactForceField<Vec3Types> >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_REGISTRATION_API RegistrationContactForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_REGISTRATION_API RegistrationContactForceField<Vec3fTypes>;
-#endif
+template class SOFA_REGISTRATION_API RegistrationContactForceField<Vec3Types>;
+
 
 } // namespace interactionforcefield
 

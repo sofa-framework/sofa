@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,17 +22,13 @@
 #ifndef SOFA_COMPONENT_ENGINE_DISTANCES_INL
 #define SOFA_COMPONENT_ENGINE_DISTANCES_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaMiscEngine/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.inl>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/gl/glText.inl>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <algorithm>
 #include <functional>
 #include <queue>
@@ -139,11 +135,9 @@ void Distances< DataTypes >::reinit()
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::update()
+void Distances< DataTypes >::doUpdate()
 {
 
-    // tester les data dirty
-    cleanDirty();
 
     /*
     if( true)
@@ -707,22 +701,25 @@ void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopolo
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::draw(const core::visual::VisualParams* )
+void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
-        glColor3f ( 1.0f, 0.0f, 0.3f );
+        sofa::defaulttype::RGBAColor color(1.0f, 0.0f, 0.3f, 1.0f);
+
         const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
         for ( unsigned int j = 0; j < distMap.size(); j++ )
         {
             Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
             sofa::defaulttype::Vector3 tmpPt = sofa::defaulttype::Vector3 ( point[0], point[1], point[2] );
-            sofa::helper::gl::GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
+            std::ostringstream oss;
+            oss << (distMap[j]);
+            vparams->drawTool()->draw3DText(tmpPt, showTextScaleFactor.getValue(), color, oss.str().c_str());
         }
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 

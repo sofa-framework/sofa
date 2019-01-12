@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,13 +70,16 @@ public:
         dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
-    Data< double > forceCoef;
+    Data< double > forceCoef; ///< multiply haptic force by this coef.
     //Data< double > momentCoef;
 
-    Data< double > solverTimeout;
+    Data< double > solverTimeout; ///< max time to spend solving constraints.
 
     // deriv (or not) the rotations when updating the violations
-    Data <bool> d_derivRotations;
+    Data <bool> d_derivRotations; ///< if true, deriv the rotations when updating the violations
+
+    // Enable/disable constraint haptic influence from all frames
+    Data< bool > d_localHapticConstraintAllFrames; ///< Flag to enable/disable constraint haptic influence from all frames
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override;
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
@@ -89,6 +92,12 @@ protected:
     {
         delete(_timer);
     }
+
+    virtual void updateStats();
+    virtual bool updateConstraintProblem();
+    virtual void doComputeForce(const  VecCoord& state,  VecDeriv& forces);
+
+
 public:
     void handleEvent(sofa::core::objectmodel::Event *event) override;
 
@@ -137,15 +146,10 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1dTypes>;
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1fTypes>;
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace controller

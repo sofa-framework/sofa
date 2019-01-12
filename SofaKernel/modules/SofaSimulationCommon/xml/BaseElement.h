@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -253,7 +253,7 @@ public:
 
 namespace helper
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP)
+#if  !defined(SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP)
 extern template class SOFA_SIMULATION_COMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 #endif
 } // namespace helper

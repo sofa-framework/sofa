@@ -13,6 +13,7 @@ set(HEADER_FILES
     ../SofaGUI.h
     ../ViewerFactory.h
     ../GUIManager.h
+    ../GuiDataRepository.h
 )
 
 set(SOURCE_FILES
@@ -25,12 +26,12 @@ set(SOURCE_FILES
     ../PickHandler.cpp
     ../GUIManager.cpp
     ../ViewerFactory.cpp
+    ../GuiDataRepository.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUI")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGui SofaGuiCommon "")
-
-install(FILES ${HEADER_FILES} DESTINATION include/sofa/gui)
+sofa_install_targets(SofaGui SofaGuiCommon "sofa/gui")

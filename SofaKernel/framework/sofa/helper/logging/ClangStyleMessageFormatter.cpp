@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,19 +38,19 @@ namespace helper
 namespace logging
 {
 
-helper::fixed_array<std::string,Message::TypeCount> s_messageTypeStrings;
-ClangStyleMessageFormatter ClangStyleMessageFormatter::s_instance;
+std::string ClangStyleMessageFormatter::getPrefixText(unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return "suggestion";
+        case Message::Deprecated : return "info";
+        case Message::Warning    : return "deprecated";
+        case Message::Info       : return "warning";
+        case Message::Error      : return "error";
+        case Message::Fatal      : return "fatal";
+        case Message::TEmpty     : return "empty";
 
-
-ClangStyleMessageFormatter::ClangStyleMessageFormatter()
-{
-    s_messageTypeStrings[Message::Advice]       = "suggestion";
-    s_messageTypeStrings[Message::Info]       = "info";
-    s_messageTypeStrings[Message::Deprecated] = "deprecated";
-    s_messageTypeStrings[Message::Warning]    = "warning";
-    s_messageTypeStrings[Message::Error]      = "error";
-    s_messageTypeStrings[Message::Fatal]      = "fatal";
-    s_messageTypeStrings[Message::TEmpty]     = "empty";
+        default:
+            return "";
+    }
 }
 
 
@@ -58,14 +58,14 @@ void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& ou
 {
     if(m.fileInfo()){
         if(m.sender()!="")
-            out << m.fileInfo()->filename << ":" << m.fileInfo()->line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
+            out << m.fileInfo()->filename << ":" << m.fileInfo()->line << ":1: " << getPrefixText(m.type()) << ": " << m.message().str() << std::endl ;
         else
-            out << m.fileInfo()->filename << ":" << m.fileInfo()->line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
+            out << m.fileInfo()->filename << ":" << m.fileInfo()->line << ":1: " << getPrefixText(m.type()) << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
     }else{
         if(m.sender()!="")
-            out << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
+            out << getPrefixText(m.type()) << ": " << m.message().str() << std::endl ;
         else
-            out << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
+            out << getPrefixText(m.type()) << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
 
     }
 }

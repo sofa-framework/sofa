@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,6 +78,7 @@ protected:
     virtual bool script_onKeyPressed(const char c) override;
     virtual bool script_onKeyReleased(const char c) override ;
 
+    virtual void script_onMouseMove(const int posX,const int posY) override;
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;

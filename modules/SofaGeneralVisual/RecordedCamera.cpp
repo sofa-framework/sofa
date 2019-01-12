@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralVisual/RecordedCamera.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -36,8 +37,6 @@ namespace component
 
 namespace visualmodel
 {
-
-SOFA_DECL_CLASS(RecordedCamera)
 
 int RecordedCameraClass = core::RegisterObject("Camera moving along a predetermined path (currently only a rotation)")
         .add< RecordedCamera >()
@@ -567,39 +566,42 @@ void RecordedCamera::drawRotation()
     return;
 }
 
-void RecordedCamera::draw(const core::visual::VisualParams* /*vparams*/)
+void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     // Draw rotation path
     if(p_drawRotation.getValue())
     {
         if (m_rotationPoints.empty())
             return;
 
-        glDisable(GL_LIGHTING);
-        glColor3f(0,1,0.5);
+        vparams->drawTool()->disableLighting();
+        sofa::defaulttype::RGBAColor color(0,1,0.5,1);
+        std::vector<sofa::defaulttype::Vector3> vertices;
 
         // Camera positions
-        glBegin(GL_LINES);
         for (unsigned int i=0; i<m_rotationPoints.size()-1; ++i)
         {
-            glVertex3f((float)m_rotationPoints[i  ][0], (float)m_rotationPoints[i  ][1], (float)m_rotationPoints[i  ][2]);
-            glVertex3f((float)m_rotationPoints[i+1][0], (float)m_rotationPoints[i+1][1], (float)m_rotationPoints[i+1][2]);
+            vertices.push_back(sofa::defaulttype::Vector3((float)m_rotationPoints[i  ][0], (float)m_rotationPoints[i  ][1], (float)m_rotationPoints[i  ][2]));
+            vertices.push_back(sofa::defaulttype::Vector3((float)m_rotationPoints[i+1][0], (float)m_rotationPoints[i+1][1], (float)m_rotationPoints[i+1][2]));
         }
-        glVertex3f((float)m_rotationPoints.back()[0], (float)m_rotationPoints.back()[1], (float)m_rotationPoints.back()[2]);
-        glVertex3f((float)m_rotationPoints[0    ][0], (float)m_rotationPoints[0    ][1], (float)m_rotationPoints[0    ][2]);
-        glEnd();
+        vertices.push_back(sofa::defaulttype::Vector3((float)m_rotationPoints.back()[0], (float)m_rotationPoints.back()[1], (float)m_rotationPoints.back()[2]));
+        vertices.push_back(sofa::defaulttype::Vector3((float)m_rotationPoints[0    ][0], (float)m_rotationPoints[0    ][1], (float)m_rotationPoints[0    ][2]));
+
+        vparams->drawTool()->drawLines(vertices,1,color);
+        vertices.clear();
 
         Vec3 _lookAt = m_rotationLookAt.getValue();
         unsigned int dx = 4;
         std::size_t ratio = m_rotationPoints.size()/dx;
-        glBegin(GL_LINES);
+
         for (unsigned int i=0; i<dx; ++i)
         {
-            glVertex3f((float)m_rotationPoints[i*ratio][0], (float)m_rotationPoints[i*ratio][1], (float)m_rotationPoints[i*ratio][2]);
-            glVertex3f((float)_lookAt[0], (float)_lookAt[1], (float)_lookAt[2]);
+            vertices.push_back(sofa::defaulttype::Vector3((float)m_rotationPoints[i*ratio][0], (float)m_rotationPoints[i*ratio][1], (float)m_rotationPoints[i*ratio][2]));
+            vertices.push_back(sofa::defaulttype::Vector3((float)_lookAt[0], (float)_lookAt[1], (float)_lookAt[2]));
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1,color);
     }
 
     // Draw translation path
@@ -608,21 +610,20 @@ void RecordedCamera::draw(const core::visual::VisualParams* /*vparams*/)
         if (m_translationPositions.getValue().size() < 2)
             return;
 
-        glDisable(GL_LIGHTING);
-        glColor3f(0,1,0.5);
+        vparams->drawTool()->disableLighting();
+        sofa::defaulttype::RGBAColor color(0,1,0.5,1);
+        std::vector<sofa::defaulttype::Vector3> vertices;
 
         // Camera positions
-        glBegin(GL_LINES);
         helper::vector <Vec3> _positions = m_translationPositions.getValue();
         for (unsigned int i=0; i < _positions.size()-1; ++i)
         {
-            glVertex3f((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]);
-            glVertex3f((float)_positions[i+1][0], (float)_positions[i+1][1], (float)_positions[i+1][2]);
+            vertices.push_back(sofa::defaulttype::Vector3((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]));
+            vertices.push_back(sofa::defaulttype::Vector3((float)_positions[i+1][0], (float)_positions[i+1][1], (float)_positions[i+1][2]));
         }
-
-        glEnd ();
+        vparams->drawTool()->drawLines(vertices,1,color);
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace visualmodel

@@ -30,7 +30,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     //typedef TBtTriangle<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     virtual void initBullet();
@@ -98,13 +98,9 @@ private:
 typedef TBulletTriangleModel<defaulttype::Vec3Types> BulletTriangleModel;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3Types>;
+
 #endif
 
 }}}

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,10 +28,8 @@
 #include <sofa/helper/system/config.h>
 #include <string>
 
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
+#if defined(SOFA_HAVE_GLEW)
 #  include <GL/glew.h>
-#elif defined(PS3)
-#  include <sofa/helper/gl/ps3gl_compat.h>
 #elif defined(__APPLE__)
 #  include <OpenGL/gl.h>
 #else

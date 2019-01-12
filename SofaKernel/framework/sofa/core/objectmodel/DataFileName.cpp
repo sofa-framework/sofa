@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,8 @@ void DataFileName::updatePath()
         m_fullpath = parentDataFileName->getFullPath();
         if (this->m_owner)
             this->m_owner->sout << "Updated DataFileName " << this->getName() << " with path " << m_fullpath << this->m_owner->sendl;
-        m_relativepath = parentDataFileName->getRelativePath() ;
+        m_relativepath = parentDataFileName->getRelativePath();
+        m_extension = parentDataFileName->getExtension();
     }
     else
     {
@@ -74,6 +75,12 @@ void DataFileName::updatePath()
         if (m_relativepath.empty())
             m_relativepath = m_values[currentAspect()].getValue();
 
+        // Compute the file extension if found.
+        std::size_t found = m_relativepath.find_last_of(".");        
+        if (found != m_relativepath.npos)
+            m_extension = m_relativepath.substr(found + 1);
+        else
+            m_extension = "";
     }
 }
 

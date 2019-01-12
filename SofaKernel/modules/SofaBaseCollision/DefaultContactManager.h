@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,6 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
-#include <vector>
 
 
 namespace sofa
@@ -49,8 +48,8 @@ protected:
     ContactMap contactMap;
 
 public:
-    Data<sofa::helper::OptionsGroup> response;
-    Data<std::string> responseParams;
+    Data<sofa::helper::OptionsGroup> response; ///< contact response class
+    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
 protected:
     DefaultContactManager();
     ~DefaultContactManager();

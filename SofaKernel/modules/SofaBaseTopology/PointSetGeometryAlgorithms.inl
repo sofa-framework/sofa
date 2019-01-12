@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,7 +69,11 @@ template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
     const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
-    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * d_showIndicesScale.getValue());
+    float bbDiff = (bbox.maxBBox() - bbox.minBBox()).norm();
+    if (std::isinf(bbDiff))
+        return d_showIndicesScale.getValue();
+    else
+        return bbDiff * d_showIndicesScale.getValue();
 }
 
 
@@ -228,7 +232,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::PointAncestorElem &ancestorElem
+void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const core::topology::PointAncestorElem &ancestorElem
     , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& /*derivVecs*/)
 
 {
@@ -257,7 +261,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         float scale = getIndicesScale();
 
-        helper::vector<defaulttype::Vector3> positions;
+        std::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
             defaulttype::Vector3 center; center = DataTypes::getCPos(coords[i]);

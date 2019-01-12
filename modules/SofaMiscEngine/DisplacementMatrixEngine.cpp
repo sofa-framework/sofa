@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,8 +35,6 @@ namespace engine
 {
 
 using namespace defaulttype;
-
-SOFA_DECL_CLASS( DisplacementTransformEngine )
 
 int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
     .add< DisplacementTransformEngine<Rigid3Types,Mat4x4f> >()
@@ -73,8 +71,6 @@ void DisplacementTransformEngine<Rigid3Types,Mat4x4f>::mult( Mat4x4f& out, const
 }
 
 /////////////////////////////////////////
-
-SOFA_DECL_CLASS( DisplacementMatrixEngine )
 
 int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
     .add< DisplacementMatrixEngine<Rigid3Types> >()

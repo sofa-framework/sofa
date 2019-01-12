@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,14 +38,6 @@ void initBaseMechanics()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(MappedObject)
-SOFA_LINK_CLASS(MechanicalObject)
-SOFA_LINK_CLASS(DiagonalMass)
-SOFA_LINK_CLASS(UniformMass)
-SOFA_LINK_CLASS(BarycentricMapping)
-SOFA_LINK_CLASS(IdentityMapping)
-SOFA_LINK_CLASS(SubsetMapping)
 
 } // namespace component
 

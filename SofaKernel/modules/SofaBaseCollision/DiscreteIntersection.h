@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,15 +25,7 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/CapsuleIntTool.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/OBBIntTool.h>
 #include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa
 {
@@ -78,7 +70,7 @@ namespace core
 {
 namespace collision
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
 extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
 #endif
 }

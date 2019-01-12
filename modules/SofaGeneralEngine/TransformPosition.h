@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,15 +23,13 @@
 #define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -94,7 +92,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -128,32 +126,28 @@ public:
 protected:
 
     TransformationMethod transformationMethod;
-    Data<Coord> f_origin; // origin used by projectOnPlane
-    Data<VecCoord> f_inputX; // input position
-    Data<VecCoord> f_outputX; // ouput position
-    Data<Coord> f_normal; // normal used by projectOnPlane
-    Data<Coord> f_translation; // translation
-    Data<Coord> f_rotation; // rotation
-    Data<Coord> f_scale; // scale
-    Data<Mat4x4> f_affineMatrix; // affine transformation
-    Data<sofa::helper::OptionsGroup> f_method; // the method of the transformation
-    Data<long> f_seed; // the seed for the random generator
-    Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator
-    Data<SetIndex> f_fixedIndices; // the indices of the elements that are not transformed
-    core::objectmodel::DataFileName f_filename; //filename of an affine matrix
-    Data<bool> f_drawInput;
-    Data<bool> f_drawOutput;
-    Data<Real> f_pointSize;
+    Data<Coord> f_origin; ///< origin used by projectOnPlane
+    Data<VecCoord> f_inputX; ///< input position
+    Data<VecCoord> f_outputX; ///< ouput position
+    Data<Coord> f_normal; ///< normal used by projectOnPlane
+    Data<Coord> f_translation; ///< translation
+    Data<Coord> f_rotation; ///< rotation
+    Data<Coord> f_scale; ///< scale
+    Data<Mat4x4> f_affineMatrix; ///< affine transformation
+    Data<sofa::helper::OptionsGroup> f_method; ///< the method of the transformation
+    Data<long> f_seed; ///< the seed for the random generator
+    Data<Real> f_maxRandomDisplacement; ///< the maximum displacement for the random generator
+    Data<SetIndex> f_fixedIndices; ///< the indices of the elements that are not transformed
+    core::objectmodel::DataFileName f_filename; ///< filename of an affine matrix. Supported extensions are: .trm, .tfm, .xfm and .txt(read as .xfm)
+    Data<bool> f_drawInput; ///< Draw input points
+    Data<bool> f_drawOutput; ///< Draw output points
+    Data<Real> f_pointSize; ///< Point size
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API TransformPosition<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API TransformPosition<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
+extern template class SOFA_GENERAL_ENGINE_API TransformPosition<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

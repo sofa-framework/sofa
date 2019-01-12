@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -184,7 +184,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
             "normal", "d", "stiffness", "damping", "maxForce", "bilateral", "localRange",
-            "draw", "color", "drawSize"
+            "showPlane", "planeColor", "showPlaneSize"
         };
 
         for(auto& attrname : attrnames)
@@ -345,20 +345,12 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 using testing::Types;
 typedef Types<
               TypeTuple<Rigid3Types, Rigid3Mass>
-#ifdef SOFA_WITH_DOUBLE
               ,TypeTuple<Vec1dTypes, double>
               ,TypeTuple<Vec2dTypes, double>
               ,TypeTuple<Vec3dTypes, double>
               ,TypeTuple<Vec6dTypes, double>
               ,TypeTuple<Rigid3dTypes, Rigid3dMass>
-#endif
-#ifdef SOFA_WITH_FLOAT
-             ,TypeTuple<Vec1fTypes, float>
-             ,TypeTuple<Vec2fTypes, float>
-             ,TypeTuple<Vec3fTypes, float>
-             ,TypeTuple<Vec6fTypes, float>
-             ,TypeTuple<Rigid3fTypes, Rigid3fMass>
-#endif
+
 > DataTypes;
 
 // Test suite for all the instanciations

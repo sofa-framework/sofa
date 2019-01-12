@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP
 
 #include <SofaMiscMapping/IdentityMultiMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -37,28 +37,16 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(IdentityMultiMapping)
-
 // Register in the Factory
 int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States together")
-#ifndef SOFA_FLOAT
-    .add< IdentityMultiMapping< Vec3dTypes, Vec3dTypes > >()
-    .add< IdentityMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< IdentityMultiMapping< Vec3fTypes, Vec3fTypes > >()
-    .add< IdentityMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
-#endif
+    .add< IdentityMultiMapping< Vec3Types, Vec3Types > >()
+    .add< IdentityMultiMapping< Rigid3Types, Rigid3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Rigid3dTypes, Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Rigid3fTypes, Rigid3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
+
 
 } // namespace mapping
 

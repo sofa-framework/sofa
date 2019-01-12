@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,8 +21,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_INL
-//#define DEBUG
-//#define NEW_VERSION
 
 #include "UncoupledConstraintCorrection.h"
 
@@ -43,12 +41,79 @@ namespace component
 namespace constraintset
 {
 
+namespace
+{ // helper methods
+
+/// Compute compliance between 2 constraint Jacobians for Vec types
+template<int N, typename Real, class VecReal>
+inline double UncoupledConstraintCorrection_computeCompliance(
+    unsigned int index,
+    const sofa::defaulttype::Vec<N, Real>& n1, const sofa::defaulttype::Vec<N, Real>& n2,
+    const Real comp0, const VecReal& comp)
+{
+    return (n1 * n2) * ((index < comp.size()) ? comp[index] : comp0);
+}
+
+/// Compute compliance between 2 constraint Jacobians for Rigid types
+template<typename Real, class VecReal>
+inline double UncoupledConstraintCorrection_computeCompliance(
+    unsigned int /*index*/,
+    const sofa::defaulttype::RigidDeriv<3, Real>& n1, const sofa::defaulttype::RigidDeriv<3, Real>& n2,
+    const Real /*comp0*/, const VecReal& comp)
+{
+    double w;
+
+    // translation part
+    w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
+    // rotation part
+    w += (n1.getVOrientation()[0] * comp[1] + n1.getVOrientation()[1] * comp[2] + n1.getVOrientation()[2] * comp[3]) * n2.getVOrientation()[0];
+    w += (n1.getVOrientation()[0] * comp[2] + n1.getVOrientation()[1] * comp[4] + n1.getVOrientation()[2] * comp[5]) * n2.getVOrientation()[1];
+    w += (n1.getVOrientation()[0] * comp[3] + n1.getVOrientation()[1] * comp[5] + n1.getVOrientation()[2] * comp[6]) * n2.getVOrientation()[2];
+
+    return w;
+}
+
+/// Compute displacement from constraint force for Vec types
+template<int N, typename Real, class VecReal>
+inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
+    unsigned int index,
+    const sofa::defaulttype::Vec<N, Real>& f,
+    const Real comp0, const VecReal& comp)
+{
+    return (f) * ((index < comp.size()) ? comp[index] : comp0);
+}
+
+/// Compute displacement from constraint force for Rigid types
+template<typename Real, class VecReal>
+inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_computeDx(
+    unsigned int /*index*/,
+    const sofa::defaulttype::RigidDeriv<3, Real>& f,
+    const Real /*comp0*/, const VecReal& comp)
+{
+    sofa::defaulttype::RigidDeriv<3, Real> dx;
+    // translation part
+    dx.getVCenter() = (f.getVCenter()) * comp[0];
+    // rotation part
+    dx.getVOrientation()[0] = (f.getVOrientation()[0] * comp[1] + f.getVOrientation()[1] * comp[2] + f.getVOrientation()[2] * comp[3]);
+    dx.getVOrientation()[1] = (f.getVOrientation()[0] * comp[2] + f.getVOrientation()[1] * comp[4] + f.getVOrientation()[2] * comp[5]);
+    dx.getVOrientation()[2] = (f.getVOrientation()[0] * comp[3] + f.getVOrientation()[1] * comp[5] + f.getVOrientation()[2] * comp[6]);
+
+    return dx;
+}
+
+}
+
 template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
+    , d_handleTopologyChange(initData(&d_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for compliance vector (disable if another component takes care of this)"))
+    , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
+    , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
+    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , m_pOdeSolver(NULL)
 {
 }
 
@@ -91,6 +156,17 @@ void UncoupledConstraintCorrection<DataTypes>::init()
             compliance.setValue(UsedComp);
         }
     }
+
+    this->getContext()->get(m_pOdeSolver);
+    if (!m_pOdeSolver)
+    {
+        if (d_useOdeSolverIntegrationFactors.getValue() == true)
+        {
+            serr << "Can't find any odeSolver" << sendl;
+            d_useOdeSolverIntegrationFactors.setValue(false);
+        }
+        d_useOdeSolverIntegrationFactors.setReadOnly(true);
+    }
 }
 
 template <class DataTypes>
@@ -105,6 +181,9 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::BaseMeshTopology;
+
+    if (!d_handleTopologyChange.getValue())
+        return; // another component takes care of updating compliance vector
 
     BaseMeshTopology *topology = this->getContext()->getMeshTopology();
     if (!topology)
@@ -236,110 +315,126 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 }
 
 
-#ifndef NEW_VERSION
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, sofa::defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const VecReal& comp = compliance.getValue();
-    const Real comp0 = defaultCompliance.getValue();
+    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue(cparams) ;
+    VecReal comp = compliance.getValue();
+    Real comp0 = defaultCompliance.getValue();
+    const bool verbose = f_verbose.getValue();
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+    // use the OdeSolver to get the position integration factor
+    double factor = 1.0;
+    switch (cparams->constOrder())
+    {
+    case core::ConstraintParams::POS_AND_VEL :
+    case core::ConstraintParams::POS :
+        factor = useOdeIntegrationFactors ? m_pOdeSolver->getPositionIntegrationFactor() : 1.0;
+        break;
+
+    case core::ConstraintParams::ACC :
+    case core::ConstraintParams::VEL :
+        factor = useOdeIntegrationFactors ? m_pOdeSolver->getVelocityIntegrationFactor() : 1.0;
+        break;
+
+    default :
+        break;
+    }
+
+    comp0 *= Real(factor);
+    for(std::size_t i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
+
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
     {
         int indexCurRowConst = rowIt.index();
+        if (rowIt.row().empty()) continue; // ignore constraints with empty Jacobians
 
-        if (f_verbose.getValue())
+        if (verbose)
+        {
             sout << "C[" << indexCurRowConst << "]";
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
-        {
-            unsigned int dof = colIt.index();
-            Deriv n = colIt.val();
-
-            if (f_verbose.getValue())
-                sout << " dof[" << dof << "]=" << n;
-
-            int indexCurColConst;
-
-            for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
-            {
-                indexCurColConst = rowIt2.index();
-
-                for (MatrixDerivColConstIterator colIt2 = rowIt2.begin(), colIt2End = rowIt2.end(); colIt2 != colIt2End; ++colIt2)
-                {
-                    if (dof == colIt2.index())
-                    {
-                        double w = n * colIt2.val() * (dof < comp.size() ? comp[dof] : comp0);
-                        W->add(indexCurRowConst, indexCurColConst, w);
-                        if (indexCurRowConst != indexCurColConst)
-                        {
-                            W->add(indexCurColConst, indexCurRowConst, w);
-                        }
-                    }
-                }
-            }
         }
-        if (f_verbose.getValue())
-            sout << sendl;
-    }
-}
 
-#else
+        const MatrixDerivColConstIterator colItBegin = rowIt.begin();
+        const MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
-{
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue;
-    const VecReal& comp = compliance.getValue();
-    const Real comp0 = defaultCompliance.getValue();
-
-    typedef std::list< std::pair< int, Deriv > > CIndicesAndValues;
-
-    helper::vector< CIndicesAndValues > dofsIndexedConstraints;
-    const unsigned int numDOFs = this->mstate->getSize();
-    dofsIndexedConstraints.resize(numDOFs);
-
-    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
-    {
-        int indexCurRowConst = rowIt.index();
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
+        // First the compliance of the constraint with itself
         {
-            dofsIndexedConstraints[colIt.index()].push_back(std::make_pair(indexCurRowConst, colIt.val()));
-        }
-    }
-
-    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
-    {
-        int indexCurRowConst = rowIt.index();
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
-        {
-            unsigned int dof = colIt.index();
-
-            CIndicesAndValues &dofsConstraint = dofsIndexedConstraints[dof];
-
-            if (!dofsConstraint.empty())
+            double w = 0.0;
+            
+            for (MatrixDerivColConstIterator colIt = colItBegin; colIt != colItEnd; ++colIt)
             {
+                unsigned int dof = colIt.index();
                 Deriv n = colIt.val();
-                const Real dofComp = dof < comp.size() ? comp[dof] : comp0;
 
-                double w = n * dofsConstraint.front().second * dofComp;
-                W->add(indexCurRowConst, indexCurRowConst, w);
-                dofsConstraint.pop_front();
-
-                for (typename CIndicesAndValues::const_iterator it = dofsConstraint.begin(), itEnd = dofsConstraint.end(); it != itEnd; ++it)
+                if (verbose)
                 {
-                    w = n * it->second * dofComp;
-                    W->add(indexCurRowConst, it->first, w);
-                    W->add(it->first, indexCurRowConst, w);
+                    sout << " dof[" << dof << "]=" << n;
                 }
+
+                //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);
+                w += UncoupledConstraintCorrection_computeCompliance(dof, n, n, comp0, comp);
+            }
+            
+            W->add(indexCurRowConst, indexCurRowConst, w);
+        }
+
+        if (verbose)
+        {
+            sout << sendl;
+        }
+
+        // Then the compliance with the remaining constraints
+        MatrixDerivRowConstIterator rowIt2 = rowIt;
+        ++rowIt2;
+        for (; rowIt2 != rowItEnd; ++rowIt2)
+        {
+            int indexCurColConst = rowIt2.index();
+            if (rowIt2.row().empty()) continue; // ignore constraints with empty Jacobians
+
+            // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
+            // fact that the values are sorted on both rows to iterate through them in one pass,
+            // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
+
+            double w = 0.0;
+
+            MatrixDerivColConstIterator colIt  = colItBegin;
+            MatrixDerivColConstIterator colIt2 = rowIt2.begin();
+            const MatrixDerivColConstIterator colIt2End = rowIt2.end();
+
+            while (colIt != colItEnd && colIt2 != colIt2End)
+            {
+                if (colIt.index() < colIt2.index()) // colIt is behind colIt2
+                {
+                    ++colIt;
+                }
+                else if (colIt2.index() < colIt.index()) // colIt2 is behind colIt
+                {
+                    ++colIt2;
+                }
+                else // colIt and colIt2 are at the same index
+                {
+                    unsigned int dof = colIt.index();
+                    const Deriv& n1 = colIt.val();
+                    const Deriv& n2 = colIt2.val();
+                    //w += (n1 * n2) * (dof < comp.size() ? comp[dof] : comp0);
+                    w += UncoupledConstraintCorrection_computeCompliance(dof, n1, n2, comp0, comp);
+                    ++colIt;
+                    ++colIt2;
+                }
+            }
+
+            if (w != 0.0)
+            {
+                W->add(indexCurRowConst, indexCurColConst, w);
+                W->add(indexCurColConst, indexCurRowConst, w);
             }
         }
     }
 }
-
-#endif
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
@@ -360,12 +455,9 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d)
+void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d, VecDeriv& dx)
 {
     const VecDeriv& f = f_d.getValue();
-
-    Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
-    VecDeriv& dx = *dx_d.beginEdit();
 
     dx.resize(f.size());
     const VecReal& comp = compliance.getValue();
@@ -373,36 +465,45 @@ void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > 
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        dx[i] = f[i] * (i < comp.size() ? comp[i] : comp0);
+        //dx[i] = f[i] * (i < comp.size() ? comp[i] : comp0);
+        dx[i] = UncoupledConstraintCorrection_computeDx(i, f[i], comp0, comp);
     }
+}
 
-    dx_d.endEdit();
+template<class DataTypes>
+void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f)
+{
+    auto writeDx = sofa::helper::write( *dx[this->getMState()].write(), cparams );
+    const Data<VecDeriv>& f_d = *f[this->getMState()].read();
+    computeDx(f_d, writeDx.wref());
 }
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
+void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data<VecDeriv>& dx_d, const Data< VecDeriv > &correction_d)
 {
-    this->addConstraintForceInMotionSpace(f_d, lambda);
 
-    computeDx(f_d);
+    auto dx         = sofa::helper::write(dx_d, cparams);
+    auto correction = sofa::helper::read(correction_d, cparams);
 
     VecCoord& x = *x_d.beginEdit();
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+      
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
 
-    const double invDt = 1.0 / this->getContext()->getDt();
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
-        x[i] += dx[i];
-        v[i] += dx[i] * invDt;
+        const Deriv dxi = correction[i] * xFactor;
+        const Deriv dvi = correction[i] * vFactor;
+        x[i] = x_free[i] + dxi;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dxi;
     }
 
     x_d.endEdit();
@@ -411,21 +512,24 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(c
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
+void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv >& dx_d, const Data< VecDeriv > &correction_d)
 {
-    this->addConstraintForceInMotionSpace(f_d, lambda);
-
-    computeDx(f_d);
+    auto dx = sofa::helper::write(dx_d, cparams);
+    auto correction = sofa::helper::read(correction_d, cparams);
 
     VecCoord& x = *x_d.beginEdit();
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i] + dx[i];
+        const  Deriv dxi = correction[i] * xFactor;
+        x[i] = x_free[i] + dxi;
+        dx[i] = dxi;
     }
 
     x_d.endEdit();
@@ -433,21 +537,24 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
+void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const core::ConstraintParams *cparams, Data< VecDeriv > &v_d, Data<VecDeriv>& dv_d, const Data< VecDeriv > &correction_d)
 {
-    this->addConstraintForceInMotionSpace(f_d, lambda);
-
-    computeDx(f_d);
+    auto dx = sofa::helper::write(dv_d, cparams);
+    auto correction = sofa::helper::read(correction_d, cparams);
 
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
 
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : this->d_correctionVelocityFactor.getValue();
+    
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        v[i] = v_free[i] + dx[i]/* * invDt*/;
+        const Deriv dvi = correction[i] * vFactor;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dvi;
     }
 
     v_d.endEdit();
@@ -491,28 +598,28 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     VecDeriv& v = vData.wref();
     const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
-    const double invDt = 1.0/this->getContext()->getDt();
+
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
-        dx[i] = force[i] * (i<comp.size() ? comp[i] : comp0);
-        x[i] += dx[i];
-        v[i] += dx[i]*invDt;
+
+        // compliance * force
+        dx[i] = UncoupledConstraintCorrection_computeDx(i, force[i], comp0, comp);
+
+        const Deriv dxi = dx[i] * xFactor;
+        const Deriv dvi = dx[i] * vFactor;
+        x[i] = x_free[i] + dxi;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dxi;
     }
 }
-
-
-template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
-{
-    this->setConstraintForceInMotionSpace(f_d, lambda);
-}
-
 
 
 template<class DataTypes>
@@ -573,6 +680,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
     }
 
     // constraint_dofs buff the DOF that are involved with the constraints
+    // @TODO: should be sorted first ? (or use a std::set instead of a std::list)
     constraint_dofs.unique();
 }
 
@@ -637,7 +745,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
                 constraint_force[dof] += colIt.val() * df[id];
 
-                Deriv dx =  constraint_force[dof] * (dof < comp.size() ? comp[dof] : comp0);
+                Deriv dx = UncoupledConstraintCorrection_computeDx(dof, constraint_force[dof], comp0, comp);
 
                 constraint_disp[dof] = dx;
 
@@ -660,43 +768,67 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
 
         MatrixDerivRowConstIterator curConstraint = constraints.readLine(id1);
 
-        if (curConstraint != constraints.end())
+        if (curConstraint == constraints.end()) continue;
+
+        const MatrixDerivColConstIterator colItBegin = curConstraint.begin();
+        const MatrixDerivColConstIterator colItEnd   = curConstraint.end();
+
+        // First the compliance of the constraint with itself
         {
-            MatrixDerivColConstIterator colIt = curConstraint.begin();
-            MatrixDerivColConstIterator colItEnd = curConstraint.end();
-
-            while (colIt != colItEnd)
+            double w = 0.0;
+            
+            for (MatrixDerivColConstIterator colIt = colItBegin; colIt != colItEnd; ++colIt)
             {
-                Deriv n1 = colIt.val();
-                unsigned int dof1 = colIt.index();
+                unsigned int dof = colIt.index();
+                Deriv n = colIt.val();
+                w += UncoupledConstraintCorrection_computeCompliance(dof, n, n, comp0, comp);
+            }
+            
+            W->add(id1, id1, w);
+        }
 
-                for (int id2 = id1; id2 <= end; id2++)
+        // Then the compliance with the remaining constraints
+        for (int id2 = id1+1; id2 <= end; id2++)
+        {
+            MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(id2);
+
+            if (curConstraint2 == constraints.end()) continue;
+
+            // To efficiently compute the compliance between id1 and id2, we can rely on the
+            // fact that the values are sorted on both rows to iterate through them in one pass,
+            // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
+
+            double w = 0.0;
+
+            MatrixDerivColConstIterator colIt  = colItBegin;
+            MatrixDerivColConstIterator colIt2 = curConstraint2.begin();
+            const MatrixDerivColConstIterator colIt2End = curConstraint2.end();
+
+            while (colIt != colItEnd && colIt2 != colIt2End)
+            {
+                if (colIt.index() < colIt2.index()) // colIt is behind colIt2
                 {
-                    MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(id2);
-
-                    if (curConstraint2 != constraints.end())
-                    {
-                        MatrixDerivColConstIterator colIt2 = curConstraint2.begin();
-                        MatrixDerivColConstIterator colItEnd2 = curConstraint2.end();
-
-                        while (colIt2 != colItEnd2)
-                        {
-                            unsigned int dof2 = colIt2.index();
-
-                            if (dof1 == dof2)
-                            {
-                                double w = n1 * colIt2.val() * (dof1 < comp.size() ? comp[dof1] : comp0);
-                                W->add(id1, id2, w);
-                                if (id1 != id2)
-                                    W->add(id2, id1, w);
-                            }
-
-                            ++colIt2;
-                        }
-                    }
+                    ++colIt;
                 }
+                else if (colIt2.index() < colIt.index()) // colIt2 is behind colIt
+                {
+                    ++colIt2;
+                }
+                else // colIt and colIt2 are at the same index
+                {
+                    unsigned int dof = colIt.index();
+                    const Deriv& n1 = colIt.val();
+                    const Deriv& n2 = colIt2.val();
+                    w += UncoupledConstraintCorrection_computeCompliance(dof, n1, n2, comp0, comp);
+                    ++colIt;
+                    ++colIt2;
+                }
+            }
 
-                ++colIt;
+            if (w != 0.0)
+            {
+                W->add(id1, id2, w);
+                W->add(id2, id1, w);
             }
         }
     }

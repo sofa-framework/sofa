@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,10 @@
 
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 
 namespace sofa
 {
@@ -258,8 +260,11 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& in, const Data<OutMatrixDeriv>& out)
 {
+    const OutMatrixDeriv& childMat  = sofa::helper::read(out, cparams).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::write(in, cparams).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 

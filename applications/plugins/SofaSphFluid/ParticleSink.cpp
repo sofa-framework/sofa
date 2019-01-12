@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #include "ParticleSink.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include "sofa/defaulttype/Vec3Types.h"
+#include "sofa/defaulttype/VecTypes.h"
 
 namespace sofa
 {
@@ -33,17 +33,10 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(ParticleSink)
-
 int ParticleSinkClass = core::RegisterObject("Parametrable particle generator")
-#ifndef SOFA_FLOAT
-        .add< ParticleSink<defaulttype::Vec3dTypes> >()
-        .add< ParticleSink<defaulttype::Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ParticleSink<defaulttype::Vec3fTypes> >()
-        .add< ParticleSink<defaulttype::Vec2fTypes> >()
-#endif
+        .add< ParticleSink<defaulttype::Vec3Types> >()
+        .add< ParticleSink<defaulttype::Vec2Types> >()
+
         ;
 
 }

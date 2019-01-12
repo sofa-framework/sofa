@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -166,8 +166,6 @@ void ArticulatedHierarchyBVHController::applyController(void)
         }
     }
 }
-
-SOFA_DECL_CLASS(ArticulatedHierarchyBVHController)
 
 // Register in the Factory
 int ArticulatedHierarchyBVHControllerClass = core::RegisterObject("Implements a handler that controls the values of the articulations of an articulated hierarchy container using a .bvh file.")

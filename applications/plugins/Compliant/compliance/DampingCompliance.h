@@ -1,5 +1,5 @@
-#ifndef DAMPINGCOMPLIANCE_H
-#define DAMPINGCOMPLIANCE_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
 
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -102,7 +102,7 @@ public:
 
 	typedef typename DataTypes::Real real;
 
-	Data<real> damping;
+	Data<real> damping; ///< damping value
 
 protected:
 
@@ -114,9 +114,15 @@ protected:
 };
 
 
-}
-}
-}
-
-
+#if !defined(SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec6Types>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec1Types>;
 #endif
+
+}
+}
+}
+
+
+#endif // SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -222,7 +222,6 @@ public:
     void addForce_method1( Deriv& f , const Coord& x , const Deriv& /*v*/)  const
     {
         Real J = x.getStrain()[0]*x.getStrain()[1]*x.getStrain()[2];
-//        if( J<MIN_DETERMINANT() ) J=MIN_DETERMINANT();
         Real Jm1 = J-1;
         Real KVolJm1 = KVol * Jm1;
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,7 +40,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(PostProcessManager)
 //Register PostProcessManager in the Object Factory
 int PostProcessManagerClass = core::RegisterObject("PostProcessManager")
         .add< PostProcessManager >()
@@ -89,7 +88,8 @@ void PostProcessManager::initVisual()
         GLint windowWidth = viewport[2];
         GLint windowHeight = viewport[3];
 
-        fbo.init(windowWidth, windowHeight);
+        fbo = std::unique_ptr<helper::gl::FrameBufferObject>(new helper::gl::FrameBufferObject());
+        fbo->init(windowWidth, windowHeight);
 
 
         /*dofShader = new OglShader();
@@ -111,8 +111,8 @@ void PostProcessManager::preDrawScene(VisualParams* vp)
 
     if (postProcessEnabled)
     {
-        fbo.setSize(viewport[2], viewport[3]);
-        fbo.start();
+        fbo->setSize(viewport[2], viewport[3]);
+        fbo->start();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         glMatrixMode(GL_PROJECTION);
@@ -135,7 +135,7 @@ void PostProcessManager::preDrawScene(VisualParams* vp)
         gluPerspective(60.0,1.0, vp->zNear(), vp->zFar());
         glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
-        fbo.stop();
+        fbo->stop();
     }
 }
 
@@ -166,11 +166,11 @@ bool PostProcessManager::drawScene(VisualParams* vp)
 
         glActiveTexture(GL_TEXTURE0);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, fbo.getColorTexture());
+        glBindTexture(GL_TEXTURE_2D, fbo->getColorTexture());
 
         glActiveTexture(GL_TEXTURE1);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, fbo.getDepthTexture());
+        glBindTexture(GL_TEXTURE_2D, fbo->getDepthTexture());
         glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
 

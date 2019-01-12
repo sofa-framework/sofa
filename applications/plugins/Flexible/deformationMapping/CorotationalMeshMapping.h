@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -155,9 +155,6 @@ public:
 
         rot.resize(this->clusters.size());
 
-        //#ifdef _OPENMP
-        //        #pragma omp parallel for
-        //#endif
         for (unsigned int i=0 ; i<this->clusters.size() ; ++i)
         {
             Mat3x3 M;
@@ -212,11 +209,6 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
     {
-        //        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
-        //        const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-        //        const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
-        //        helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        //        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
     }
 
 
@@ -247,17 +239,17 @@ protected:
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 public:
-    Data< SeqTetrahedra > in_tetrahedra;
-    Data< SeqHexahedra > in_hexahedra;
-    Data< SeqTriangles > in_triangles;
-    Data< SeqQuads > in_quads;
-    Data< SeqEdges > in_edges;
+    Data< SeqTetrahedra > in_tetrahedra; ///< input tetrahedra
+    Data< SeqHexahedra > in_hexahedra; ///< input hexahedra
+    Data< SeqTriangles > in_triangles; ///< input triangles
+    Data< SeqQuads > in_quads; ///< input quads
+    Data< SeqEdges > in_edges; ///< input edges
 
-    Data< SeqTetrahedra > out_tetrahedra;
-    Data< SeqHexahedra > out_hexahedra;
-    Data< SeqTriangles > out_triangles;
-    Data< SeqQuads > out_quads;
-    Data< SeqEdges > out_edges;
+    Data< SeqTetrahedra > out_tetrahedra; ///< output tetrahedra
+    Data< SeqHexahedra > out_hexahedra; ///< output hexahedra
+    Data< SeqTriangles > out_triangles; ///< output triangles
+    Data< SeqQuads > out_quads; ///< output quads
+    Data< SeqEdges > out_edges; ///< output edges
 
 protected:
     VecVecID clusters;  ///< groups of points for which we compute the transformation
@@ -269,13 +261,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
+extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+
 
 #endif
 

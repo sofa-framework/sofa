@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,22 +36,12 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int GenerateRigidMassClass = core::RegisterObject("An engine computing the RigidMass of a mesh : mass, volume and inertia matrix.")
-#ifndef SOFA_FLOAT
-        .add< GenerateRigidMass<Rigid3dTypes, Rigid3dMass> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< GenerateRigidMass<Rigid3fTypes, Rigid3fMass> >()
-#endif
+        .add< GenerateRigidMass<Rigid3Types, Rigid3Mass> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3dTypes, Rigid3dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3fTypes, Rigid3fMass>;
-#endif
+template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
 
-SOFA_DECL_CLASS(GenerateRigidMass)
 
 } // namespace loader
 

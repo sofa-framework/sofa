@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,12 +35,142 @@ namespace cuda
 
 extern "C"
 {
+    void MeshMatrixMassCuda_addMDx3f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addForce3f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
+    void MeshMatrixMassCuda_accFromF3f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
+
     void MeshMatrixMassCuda_addMDx2f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res);
     void MeshMatrixMassCuda_addForce2f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
     void MeshMatrixMassCuda_accFromF2f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
+
+    void MeshMatrixMassCuda_addMDx1f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addForce1f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
+    void MeshMatrixMassCuda_accFromF1f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
 }
 
 
+//////////////////////
+/* Vec3f */
+//////////////////////
+//////////////////////
+// GPU-side methods //
+//////////////////////
+template<class real>
+__global__ void MeshMatrixMassCuda_addMDx3f_kernel(real factor, real massLumpingCoeff,const real * vertexMass, const real* dx, real* res)
+{
+    int tx = threadIdx.x;
+    int tx2 = tx/3;
+    int index1 = umul24(blockIdx.x,BSIZE);
+    int index2 = index1*3;
+
+    __shared__ real s_dx[BSIZE];
+    __shared__ real s_vertexMass[BSIZE];
+
+    s_vertexMass[tx] = vertexMass[index1+tx];
+    s_dx[tx] = dx[index2+tx];
+    __syncthreads();
+
+    //LUMPING INTEGRATION METHOD-------------------------------
+    res[index2+tx] += s_dx[tx] * s_vertexMass[tx2] * massLumpingCoeff * factor;
+
+    //__syncthreads();
+
+    index2 += BSIZE;
+    tx2 += BSIZE/3;
+    s_dx[tx] = dx[index2+tx];
+
+    //__syncthreads();
+
+    res[index2+tx] += s_dx[tx] * s_vertexMass[tx2] * massLumpingCoeff * factor;
+}
+
+template<class real>
+__global__ void MeshMatrixMassCuda_addForce3f_kernel(int dim, real *  f, const real * vertexMass, real g_x, real g_y, real massLumpingCoeff)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index2 = index * 3;
+    if (index < dim)
+    {
+        f[index2+0] += vertexMass[index] * massLumpingCoeff * g_x;
+        f[index2+1] += vertexMass[index] * massLumpingCoeff * g_y;
+        f[index2+2] += vertexMass[index] * massLumpingCoeff * g_y;
+    }
+}
+
+template<class real>
+__global__ void MeshMatrixMassCuda_accFromF3f_kernel(int dim, real * acc, const real * f, const real * vertexMass, real massLumpingCoeff)
+{
+//    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+//    int index2 = index * 2;
+//    if (index < dim) {
+//      acc[index2+0] = f[index2+0] / (vertexMass[index2+0] * massLumpingCoeff);
+//      acc[index2+1] = f[index2+1] / (vertexMass[index2+1] * massLumpingCoeff);
+//    }
+    int tx = threadIdx.x;
+    int tx2 = tx/3;
+    int index1 = umul24(blockIdx.x,BSIZE);
+    int index2 = index1*3;
+
+    __shared__ real s_f[BSIZE];
+    __shared__ real s_vertexMass[BSIZE];
+
+    s_vertexMass[tx] = vertexMass[index1+tx];
+    s_f[tx] = f[index2+tx];
+    __syncthreads();
+
+    //LUMPING INTEGRATION METHOD-------------------------------
+    acc[index2+tx] = s_f[tx] / (s_vertexMass[tx2] * massLumpingCoeff);
+
+    //__syncthreads();
+
+    index2 += BSIZE;
+    tx2 += BSIZE/3;
+    s_f[tx] = f[index2+tx];
+
+    //__syncthreads();
+
+    acc[index2+tx] = s_f[tx] / (s_vertexMass[tx2] * massLumpingCoeff);
+}
+
+
+
+//////////////////////
+// CPU-side methods //
+//////////////////////
+
+void MeshMatrixMassCuda_addMDx3f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MeshMatrixMassCuda_addMDx3f_kernel<float><<< grid, threads >>>(factor, massLumpingCoeff, (const float *) vertexMass, (const float *) dx, (float*) res);    mycudaDebugError("MeshMatrixMassCuda_addMDx2f_kernel<float>");}
+}
+
+void MeshMatrixMassCuda_addForce3f(int dim, void * f, const void * vertexMass, const double * g, float massLumpingCoeff)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+    {MeshMatrixMassCuda_addForce3f_kernel<float><<< grid, threads >>>(dim, (float *) f, (const float *) vertexMass, g[0], g[1], massLumpingCoeff);              mycudaDebugError("MeshMatrixMassCuda_addForce2f_kernel<float>");}
+}
+
+void MeshMatrixMassCuda_accFromF3f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+    {MeshMatrixMassCuda_accFromF3f_kernel<float><<< grid, threads >>>(dim, (float *) acc, (const float *) f, (const float *) vertexMass, massLumpingCoeff);     mycudaDebugError("MeshMatrixMassCuda_accFromF2f_kernel<float>");}
+}
+
+
+
+
+
+
+
+//////////////////////
+/* Vec2f */
+//////////////////////
+//////////////////////
+// GPU-side methods //
+//////////////////////
 template<class real>
 __global__ void MeshMatrixMassCuda_addMDx2f_kernel(real factor, real massLumpingCoeff,const real * vertexMass, const real* dx, real* res)
 {
@@ -142,6 +272,111 @@ void MeshMatrixMassCuda_accFromF2f(int dim, void * acc, const void * f,  const v
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
     {MeshMatrixMassCuda_accFromF2f_kernel<float><<< grid, threads >>>(dim, (float *) acc, (const float *) f, (const float *) vertexMass, massLumpingCoeff);     mycudaDebugError("MeshMatrixMassCuda_accFromF2f_kernel<float>");}
+}
+
+
+
+
+
+
+
+//////////////////////
+/* Vec1f */
+//////////////////////
+//////////////////////
+// GPU-side methods //
+//////////////////////
+template<class real>
+__global__ void MeshMatrixMassCuda_addMDx1f_kernel(real factor, real massLumpingCoeff,const real * vertexMass, const real* dx, real* res)
+{
+    int tx = threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE);
+
+    __shared__ real s_dx[BSIZE];
+    __shared__ real s_vertexMass[BSIZE];
+
+    s_vertexMass[tx] = vertexMass[index+tx];
+    s_dx[tx] = dx[index+tx];
+    __syncthreads();
+
+    //LUMPING INTEGRATION METHOD-------------------------------
+    res[index+tx] += s_dx[tx] * s_vertexMass[tx] * massLumpingCoeff * factor;
+
+    //__syncthreads();
+
+    s_dx[tx] = dx[index+tx];
+
+    //__syncthreads();
+
+    res[index+tx] += s_dx[tx] * s_vertexMass[tx] * massLumpingCoeff * factor;
+}
+
+template<class real>
+__global__ void MeshMatrixMassCuda_addForce1f_kernel(int dim, real *  f, const real * vertexMass, real g_x, real g_y, real massLumpingCoeff)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    if (index < dim)
+    {
+        f[index] += vertexMass[index] * massLumpingCoeff * g_x;
+    }
+}
+
+template<class real>
+__global__ void MeshMatrixMassCuda_accFromF1f_kernel(int dim, real * acc, const real * f, const real * vertexMass, real massLumpingCoeff)
+{
+//    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+//    int index2 = index * 2;
+//    if (index < dim) {
+//      acc[index2+0] = f[index2+0] / (vertexMass[index2+0] * massLumpingCoeff);
+//      acc[index2+1] = f[index2+1] / (vertexMass[index2+1] * massLumpingCoeff);
+//    }
+    int tx = threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE);
+
+    __shared__ real s_f[BSIZE];
+    __shared__ real s_vertexMass[BSIZE];
+
+    s_vertexMass[tx] = vertexMass[index+tx];
+    s_f[tx] = f[index+tx];
+    __syncthreads();
+
+    //LUMPING INTEGRATION METHOD-------------------------------
+    acc[index+tx] = s_f[tx] / (s_vertexMass[tx] * massLumpingCoeff);
+
+    //__syncthreads();
+
+    s_f[tx] = f[index+tx];
+
+    //__syncthreads();
+
+    acc[index+tx] = s_f[tx] / (s_vertexMass[tx] * massLumpingCoeff);
+}
+
+
+
+//////////////////////
+// CPU-side methods //
+//////////////////////
+
+void MeshMatrixMassCuda_addMDx1f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MeshMatrixMassCuda_addMDx1f_kernel<float><<< grid, threads >>>(factor, massLumpingCoeff, (const float *) vertexMass, (const float *) dx, (float*) res);    mycudaDebugError("MeshMatrixMassCuda_addMDx2f_kernel<float>");}
+}
+
+void MeshMatrixMassCuda_addForce1f(int dim, void * f, const void * vertexMass, const double * g, float massLumpingCoeff)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+    {MeshMatrixMassCuda_addForce1f_kernel<float><<< grid, threads >>>(dim, (float *) f, (const float *) vertexMass, g[0], g[1], massLumpingCoeff);              mycudaDebugError("MeshMatrixMassCuda_addForce2f_kernel<float>");}
+}
+
+void MeshMatrixMassCuda_accFromF1f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+    {MeshMatrixMassCuda_accFromF1f_kernel<float><<< grid, threads >>>(dim, (float *) acc, (const float *) f, (const float *) vertexMass, massLumpingCoeff);     mycudaDebugError("MeshMatrixMassCuda_accFromF2f_kernel<float>");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

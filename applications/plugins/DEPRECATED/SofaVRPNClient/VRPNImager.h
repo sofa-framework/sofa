@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -115,8 +115,8 @@ public:
     //Data<Point> rigidPoint;
     //Data<sofa::helper::vector<Vec3 > > f_positions;
     //Data<sofa::helper::vector<Quat> > f_orientations;
-    sofa::core::objectmodel::Data<Point> f_rigidPoint;
-    sofa::core::objectmodel::Data<Real>  f_scale;
+    sofa::core::objectmodel::Data<Point> f_rigidPoint; ///< RigidPoint
+    sofa::core::objectmodel::Data<Real>  f_scale; ///< Scale
 
 private:
     vrpn_Imager_Remote      *g_imager;      //< Imager client object
@@ -131,13 +131,9 @@ private:
     void handleEvent(sofa::core::objectmodel::Event* event);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_VRPNIMAGER_CPP_)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFAVRPNCLIENT_VRPNIMAGER_CPP_)
+extern template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3Types>;
+ 
 #endif
 
 }

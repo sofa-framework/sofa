@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/TopologyHandler.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -48,6 +48,8 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
     for (changeIt=_changeList.begin(); changeIt!=_changeList.end(); ++changeIt)
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
+        std::string topoChangeType = "DefaultTopologyHandler: " + parseTopologyChangeTypeToString(changeType);
+        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
         switch( changeType )
         {
@@ -103,6 +105,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
             break;
         }; // switch( changeType )
 
+        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         //++changeIt;
     }
 }

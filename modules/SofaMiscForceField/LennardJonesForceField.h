@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,10 +55,14 @@ public:
 
 protected:
     Real a,b;
-    Data<Real> aInit;
-    Data<Real> alpha,beta,dmax,fmax;
-    Data<Real> d0,p0;
-    Data<Real> damping;
+    Data<Real> aInit; ///< a for Gravitational FF which corresponds to G*m1*m2 alpha should be equal to 1 and beta to 0.
+    Data<Real> alpha; ///< Alpha
+    Data<Real> beta; ///< Beta
+    Data<Real> dmax; ///< DMax
+    Data<Real> fmax; ///< FMax
+    Data<Real> d0; ///< d0
+    Data<Real> p0; ///< p0
+    Data<Real> damping; ///< Damping
 
     struct DForce
     {
@@ -104,16 +108,12 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
 } // namespace forcefield
 

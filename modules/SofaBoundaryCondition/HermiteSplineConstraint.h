@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,7 +74,7 @@ public:
 
     /// the time steps defining the duration of the constraint
     Data<Real> m_tBegin;
-    Data<Real> m_tEnd;
+    Data<Real> m_tEnd; ///< End Time of the motion
 
     /// control parameters :
     /// first control point
@@ -88,7 +88,7 @@ public:
     /// acceleration parameters : the accaleration curve is itself a hermite spline, with first point at (0,0) and second at (1,1)
     /// and derivated on this points are :
     Data<Vec2R> m_sx0;
-    Data<Vec2R> m_sx1;
+    Data<Vec2R> m_sx1; ///< second interpolation vector
 
 
 
@@ -132,15 +132,11 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class HermiteSplineConstraint<defaulttype::Rigid3fTypes>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3fTypes>;
-#endif
+
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
+extern template class HermiteSplineConstraint<defaulttype::Rigid3Types>;
+extern template class HermiteSplineConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

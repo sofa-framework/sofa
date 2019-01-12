@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include <SofaConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
@@ -212,13 +211,10 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
     const SetIndexArray & indices = f_indices.getValue();
 
     std::vector< defaulttype::Vector3 > points;
     defaulttype::Vector3 point;
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -235,17 +231,6 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
         vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
-
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void FixedLMConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void FixedLMConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-
 
 } // namespace constraintset
 

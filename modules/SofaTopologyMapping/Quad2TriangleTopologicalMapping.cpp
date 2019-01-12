@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,8 +56,6 @@ using namespace sofa::core::topology;
 typedef BaseMeshTopology In;
 /// Output Topology
 typedef BaseMeshTopology Out;
-
-SOFA_DECL_CLASS(Quad2TriangleTopologicalMapping)
 
 // Register in the Factory
 int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where QuadSetTopology is converted to TriangleSetTopology")
@@ -155,8 +153,8 @@ void Quad2TriangleTopologicalMapping::init()
                 Loc2GlobVec.push_back(i);
                 Loc2GlobVec.push_back(i);
                 sofa::helper::vector<unsigned int> out_info;
-                out_info.push_back(Loc2GlobVec.size()-2);
-                out_info.push_back(Loc2GlobVec.size()-1);
+                out_info.push_back((unsigned int)Loc2GlobVec.size()-2);
+                out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                 In2OutMap[i]=out_info;
             }
 
@@ -222,7 +220,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                         sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
                         sofa::helper::vector< unsigned int > trianglesIndexList;
-                        int nb_elems = toModel->getNbTriangles();
+                        unsigned int nb_elems = (unsigned int)toModel->getNbTriangles();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -244,8 +242,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             Loc2GlobVec.push_back(k);
                             Loc2GlobVec.push_back(k);
                             sofa::helper::vector<unsigned int> out_info;
-                            out_info.push_back(Loc2GlobVec.size()-2);
-                            out_info.push_back(Loc2GlobVec.size()-1);
+                            out_info.push_back((unsigned int)Loc2GlobVec.size()-2);
+                            out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                             In2OutMap[k]=out_info;
 
                         }
@@ -265,12 +263,12 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
-                        int last= fromModel->getNbQuads() - 1;
+                        unsigned int last = (unsigned int)fromModel->getNbQuads() - 1;
 
                         int ind_tmp;
 
                         sofa::helper::vector<unsigned int> ind_real_last;
-                        int ind_last=toModel->getNbTriangles();
+                        unsigned int ind_last = (unsigned int)toModel->getNbTriangles();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -297,7 +295,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                                     ind_real_last = In2OutMap[last];
 
-                                    if((int) k != last)
+                                    if (k != last)
                                     {
 
                                         In2OutMap.erase(In2OutMap.find(k));
@@ -320,7 +318,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                     sout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << last << sendl;
                                 }
 
-                                if((int) ind_k[1] != ind_last)
+                                if (ind_k[1] != ind_last)
                                 {
 
                                     In2OutMap.erase(In2OutMap.find(Loc2GlobVec[ind_last]));
@@ -341,7 +339,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 ind_last = ind_last-1;
 
-                                if((int) ind_k[0] != ind_last)
+                                if (ind_k[0] != ind_last)
                                 {
 
                                     ind_tmp = Loc2GlobVec[ind_k[0]];

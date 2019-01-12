@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -91,7 +91,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void doUpdate()
     {
         unsigned int nodeIndex = d_nodeIndex.getValue();
         sout << "Update image for node " << nodeIndex << sendl;
@@ -115,8 +115,6 @@ protected:
                     for(int i=0; i<indices.spectrum(); i++)
                         if (indices(x,y,z,i)==d_nodeIndex.getValue())
                             nodeWeigh(x,y,z,0)=weight(x,y,z,i);
-
-        cleanDirty();
     }
 };
 

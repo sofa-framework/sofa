@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 #ifndef CLANGSTYLEMESSAGEFORMATTER_H
 #define CLANGSTYLEMESSAGEFORMATTER_H
 #include <sstream>
-#include "Message.h"
 #include "MessageFormatter.h"
 #include <sofa/helper/helper.h>
 
@@ -39,19 +38,27 @@ namespace helper
 namespace logging
 {
 
+class Message;
 
 class SOFA_HELPER_API ClangStyleMessageFormatter : public MessageFormatter
 {
 public:
-    virtual void formatMessage(const Message& m,std::ostream& out);
-    static ClangStyleMessageFormatter& getInstance() { return s_instance; }
+    static inline ClangStyleMessageFormatter &getInstance ()
+    {
+        static ClangStyleMessageFormatter instance;
+        return instance;
+    }
+
+    void formatMessage(const Message& m,std::ostream& out) override;
+
+protected:
+    std::string getPrefixText(unsigned int type) const override;
 
 private:
     // singleton API
-    ClangStyleMessageFormatter();
+    ClangStyleMessageFormatter() {}
     ClangStyleMessageFormatter(const ClangStyleMessageFormatter&);
     void operator=(const ClangStyleMessageFormatter&);
-    static ClangStyleMessageFormatter s_instance;
 };
 
 

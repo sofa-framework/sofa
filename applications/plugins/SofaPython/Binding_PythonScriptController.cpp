@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -417,8 +417,22 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
     };
 }
        
+static PyObject * PythonScriptController_onMouseMove(PyObject * /*self*/, PyObject * args)
+{
+    int x,y;
+    if (!PyArg_ParseTuple(args, "ii",&x,&y))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
 
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    std::cerr << obj->m_classname.getValueString() << ".onMouseMove not implemented in " << obj->name.getValueString() << std::endl;
+#endif
 
+    Py_RETURN_NONE;
+}
 
 
 SP_CLASS_METHODS_BEGIN(PythonScriptController)
@@ -428,6 +442,7 @@ SP_CLASS_METHOD(PythonScriptController,initGraph)
 SP_CLASS_METHOD(PythonScriptController,bwdInitGraph)
 SP_CLASS_METHOD(PythonScriptController,onKeyPressed)
 SP_CLASS_METHOD(PythonScriptController,onKeyReleased)
+SP_CLASS_METHOD(PythonScriptController,onMouseMove)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonLeft)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonRight)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonMiddle)

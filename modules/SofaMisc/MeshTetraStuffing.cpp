@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,8 +42,6 @@ namespace misc
 
 using namespace sofa::defaulttype;
 using helper::vector;
-
-SOFA_DECL_CLASS(MeshTetraStuffing)
 
 int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
         .add< MeshTetraStuffing >()

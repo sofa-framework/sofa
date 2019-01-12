@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,18 +26,11 @@ namespace sofa{
 namespace component{
 namespace collision{
 
-#ifndef SOFA_FLOAT
-template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3dTypes> >;
-template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
-template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
-template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3dTypes> >;
-#endif
-#ifndef SOFA_DOUBLE
-template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3fTypes> >;
-template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
-template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
-template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3fTypes> >;
-#endif
+template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
+template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
+
 
 
 }

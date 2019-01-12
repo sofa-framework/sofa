@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,9 +58,9 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 public:
-    Data< Real > distance;
-    Data< Real > stiffness;
-    Data< Real > damping;
+    Data< Real > distance; ///< Distance to maintain between particles
+    Data< Real > stiffness; ///< Stiffness
+    Data< Real > damping; ///< Damping
 
     typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 
@@ -105,29 +105,17 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec2dTypes;
-#endif
 
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Vec2fTypes;
-#endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3dTypes>;
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2dTypes>;
-#endif
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3Types>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3fTypes>;
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2fTypes>;
-#endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 
 } // namespace forcefield
 

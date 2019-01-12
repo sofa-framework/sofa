@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -52,15 +52,15 @@ protected:
     /**
      * Update the transformation, to be implemented in herited classes
      */
-    virtual void update() override = 0;
+    virtual void doUpdate() override = 0;
 
 public:
     virtual void init() override;
     virtual void reinit() override;
 
 protected:
-    Data<defaulttype::Matrix4> d_inT; // input transformation
-    Data<defaulttype::Matrix4> d_outT; // input transformation
+    Data<defaulttype::Matrix4> d_inT; ///< input transformation
+    Data<defaulttype::Matrix4> d_outT; ///< input transformation
 };
 
 /**
@@ -75,7 +75,7 @@ public:
 protected:
     InvertTransformMatrixEngine() {}
     ~InvertTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 };
 
 /**
@@ -90,7 +90,7 @@ public:
 protected:
     TranslateTransformMatrixEngine();
     ~TranslateTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 public:
     virtual void init() override;
@@ -113,7 +113,7 @@ public:
 protected:
     RotateTransformMatrixEngine();
     ~RotateTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 public:
     virtual void init() override;
@@ -136,13 +136,13 @@ public:
 protected:
     ScaleTransformMatrixEngine();
     ~ScaleTransformMatrixEngine() {}
-    virtual void update() override;
+    virtual void doUpdate() override;
 
 public:
     virtual void init() override;
 
 protected:
-    Data<defaulttype::Vector3> d_scale; // scale
+    Data<defaulttype::Vector3> d_scale; ///< scale
 };
 
 } // namespace engine

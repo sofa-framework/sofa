@@ -18,6 +18,9 @@ timeout "beam/linearQuadratic_flex332.scn" "50"
 iterations "beam/linearRigid_flex332.scn" "10"
 timeout "beam/linearRigid_flex332.scn" "50"
 
+# This runs slowly, so compute only a few iterations 
+iterations "beam/linearAffine_flex331.scn" "50"
+
 # This runs very slowly (generate topologies of armadillo) so compute only a few iterations 
 iterations "demos/linearHexaFEM-armadillo.scn" "10"
 timeout "demos/linearHexaFEM-armadillo.scn" "50"
@@ -34,4 +37,5 @@ timeout "visualization/strainDiscretizer.scn" "50"
 iterations "deformation/linearHexaFEM-comparison.scn" "3"
 timeout "deformation/linearHexaFEM-comparison.scn" "200"
 
-
+# This scene depend on plugin.HighOrder 
+ignore "shapeFunction/BezierTetrahedron.scn"

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaOpenglVisual/OglVariable.h>
 
@@ -63,10 +63,10 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     core::topology::BaseMeshTopology* m_topology;
 
-    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions; ///< Vertices coordinates
     Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > m_tetrahedrons;
-    Data<bool> depthTest;
-    Data<bool> blending;
+    Data<bool> depthTest; ///< Set Depth Test
+    Data<bool> blending; ///< Set Blending
 
     bool modified;
     int lastMeshRev;
@@ -103,13 +103,9 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP)
+extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace visualmodel

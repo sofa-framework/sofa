@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,19 +23,12 @@
 #define SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
 #include "config.h"
 
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/topology/BaseTopology.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/simulation/Visitor.h>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>
@@ -52,12 +45,6 @@ namespace component
 namespace misc
 {
 
-#ifdef SOFA_FLOAT
-typedef float Real; ///< alias
-#else
-typedef double Real; ///< alias
-#endif
-
 class TriangleIncisionInformation;
 
 /** Read file containing topological modification. Or apply input modifications
@@ -72,28 +59,28 @@ public:
 
 
     sofa::core::objectmodel::DataFileName m_filename;
-    Data < helper::vector< helper::vector <unsigned int> > > m_listChanges;
+    Data < helper::vector< helper::vector <unsigned int> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
 
     // Parameters for time
-    Data < double > m_interval;
-    Data < double > m_shift;
-    Data < bool > m_loop;
+    Data < double > m_interval; ///< time duration between 2 actions
+    Data < double > m_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > m_loop; ///< set to 'true' to re-read the file when reaching the end
 
     // Inputs for operations on Data
-    Data <bool> m_useDataInputs;
-    Data <double> m_timeToRemove;
-    Data <sofa::helper::vector <unsigned int> > m_edgesToRemove;
-    Data <sofa::helper::vector <unsigned int> > m_trianglesToRemove;
-    Data <sofa::helper::vector <unsigned int> > m_quadsToRemove;
-    Data <sofa::helper::vector <unsigned int> > m_tetrahedraToRemove;
-    Data <sofa::helper::vector <unsigned int> > m_hexahedraToRemove;
+    Data <bool> m_useDataInputs; ///< If true, will perform operation using Data input lists rather than text file.
+    Data <double> m_timeToRemove; ///< If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also.
+    Data <sofa::helper::vector <unsigned int> > m_edgesToRemove; ///< List of edge IDs to be removed.
+    Data <sofa::helper::vector <unsigned int> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
+    Data <sofa::helper::vector <unsigned int> > m_quadsToRemove; ///< List of quad IDs to be removed.
+    Data <sofa::helper::vector <unsigned int> > m_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
+    Data <sofa::helper::vector <unsigned int> > m_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
 
-    Data <bool> m_saveIndicesAtInit;
+    Data <bool> m_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
 
-    Data<Real>  m_epsilonSnapPath;
-    Data<Real>  m_epsilonSnapBorder;
+    Data<SReal>  m_epsilonSnapPath; ///< epsilon snap path
+    Data<SReal>  m_epsilonSnapBorder; ///< epsilon snap path
 
-    Data<bool>  m_draw;
+    Data<bool>  m_draw; ///< draw information
 
 
 protected:
@@ -150,13 +137,13 @@ public:
 
 protected:
 
-    std::vector<Real> getValuesInLine(std::string line, unsigned int nbElements);
+    std::vector<SReal> getValuesInLine(std::string line, size_t nbElements);
 
     void findElementIndex(defaulttype::Vector3 coord, int& triangleIndex, int oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
-    int findIndexInListOfTime(Real time);
+    int findIndexInListOfTime(SReal time);
 };
 
 
@@ -165,7 +152,7 @@ class TriangleIncisionInformation
 public:
     std::vector<unsigned int>      triangleIndices;
     std::vector<defaulttype::Vector3>                barycentricCoordinates;
-    Real                                           timeToIncise;
+    SReal                                           timeToIncise;
 
     std::vector<defaulttype::Vector3>                coordinates;
 

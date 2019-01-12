@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,19 +46,19 @@ void LoggingMessageHandler::reset()
     m_messages.clear() ;
 }
 
-int LoggingMessageHandler::activate()
+size_t LoggingMessageHandler::activate()
 {
     assert(m_activationCount>=0) ;
     m_activationCount++;
     return m_messages.size() ;
 }
 
-int LoggingMessageHandler::deactivate()
+size_t LoggingMessageHandler::deactivate()
 {
     assert(m_activationCount>0) ;
     m_activationCount--;
 
-    int size = m_messages.size();
+    size_t size = m_messages.size();
 
     if(m_activationCount<=0)
         m_messages.clear() ;
@@ -81,12 +81,12 @@ LoggingMessageHandler& MainLoggingMessageHandler::getInstance()
     return s_instance;
 }
 
-int MainLoggingMessageHandler::activate()
+size_t MainLoggingMessageHandler::activate()
 {
     return getInstance().activate() ;
 }
 
-int MainLoggingMessageHandler::deactivate()
+size_t MainLoggingMessageHandler::deactivate()
 {
     return getInstance().deactivate() ;
 }

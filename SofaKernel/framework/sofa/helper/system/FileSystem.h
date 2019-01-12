@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,6 +47,10 @@ class SOFA_HELPER_API FileSystem
 {
 public:
 
+/// @brief Get the extension of a file from an absolute path description
+/// @return i.e. if given"a/b/c.d", return "d"
+static std::string getExtension(const std::string& filename);
+
 /// @brief List the content of a directory.
 ///
 /// It pushes the filenames (not their absolute paths) in the vector provided in argument.
@@ -63,6 +67,15 @@ static bool listDirectory(const std::string& directoryPath,
 static bool listDirectory(const std::string& directoryPath,
                           std::vector<std::string>& outputFilenames,
                           const std::string& extension);
+
+/// @brief Find the files from a directory which match the given extension.
+///
+/// It pushes the files absolute paths in the vector provided in argument.
+/// @warning The directory must exist.
+/// @return the number of files found or -1 as error
+static int findFiles(const std::string& directoryPath,
+                          std::vector<std::string>& outputFilePaths,
+                          const std::string& extension, const int depth = 0);
 
 /// @brief Create a directory. (This function accepts relative paths)
 ///
@@ -96,6 +109,9 @@ static bool isDirectory(const std::string& path);
 
 /// @brief Return true if and only if the given file path is absolute.
 static bool isAbsolute(const std::string& path);
+
+/// @brief Return true if and only if the given file path is an existing file.
+static bool isFile(const std::string& path);
 
 /// @brief Replace backslashes with slashes.
 static std::string convertBackSlashesToSlashes(const std::string& path);

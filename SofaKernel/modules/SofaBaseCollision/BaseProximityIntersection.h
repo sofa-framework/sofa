@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaBaseCollision/BaseIntTool.h>
-#include <sofa/helper/FnDispatcher.h>
 
 namespace sofa
 {
@@ -40,8 +39,8 @@ class SOFA_BASE_COLLISION_API BaseProximityIntersection : public DiscreteInterse
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseProximityIntersection,DiscreteIntersection);
-    Data<SReal> alarmDistance;
-    Data<SReal> contactDistance;
+    Data<SReal> alarmDistance; ///< Proximity detection distance
+    Data<SReal> contactDistance; ///< Distance below which a contact is created
 protected:
     BaseProximityIntersection();
     virtual ~BaseProximityIntersection() { }

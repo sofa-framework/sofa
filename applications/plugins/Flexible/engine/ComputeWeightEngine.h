@@ -53,14 +53,14 @@ public:
     void init();
     void reinit();
     // Update the engine
-    void update();
+    void doUpdate();
 
 protected:
 
     // Indices
-    Data< helper::vector< Indices > > d_indices;
+    Data< helper::vector< Indices > > d_indices; ///< Indices
     // Weights
-    Data< helper::vector< Weights > > d_weights;
+    Data< helper::vector< Weights > > d_weights; ///< Weights
 
 };
 

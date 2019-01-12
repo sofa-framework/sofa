@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SelectConnectedLabelsROI_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -56,13 +54,13 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> d_nbLabels;
+    Data<unsigned int> d_nbLabels; ///< number of label lists
     typedef helper::vector<helper::SVector<T> > VecVLabels;
     helper::vectorData<VecVLabels> d_labels;
-    Data<helper::vector<T> > d_connectLabels;
+    Data<helper::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
 
     //Output
-    Data<helper::vector<Index> > d_indices;
+    Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const SelectConnectedLabelsROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
@@ -111,11 +109,8 @@ public:
 protected:
 
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
         indices.clear();
 

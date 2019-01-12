@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,48 +32,33 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(PersistentContactRigidMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int PersistentContactRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-#ifndef SOFA_FLOAT
-        .add< PersistentContactRigidMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< PersistentContactRigidMapping< Rigid2dTypes, Vec2dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PersistentContactRigidMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< PersistentContactRigidMapping< Rigid2fTypes, Vec2fTypes > >()
-#endif
+        .add< PersistentContactRigidMapping< Rigid3Types, Vec3Types > >()
+        .add< PersistentContactRigidMapping< Rigid2Types, Vec2Types > >()
 
-//#ifndef SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//        .add< PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes > >()
-//        .add< PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes > >()
-//        .add< PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes > >()
-//        .add< PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes > >()
-//#endif
+
+////#ifdef SOFA_WITH_FLOAT
+//        .add< PersistentContactRigidMapping< Rigid3Types, Vec3Types > >()
+//        .add< PersistentContactRigidMapping< Rigid3Types, Vec3Types > >()
+//        .add< PersistentContactRigidMapping< Rigid2Types, Vec2Types > >()
+//        .add< PersistentContactRigidMapping< Rigid2Types, Vec2Types > >()
+//
 //#endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2dTypes >;
-#endif
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3Types, Vec3Types >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2Types, Vec2Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2fTypes >;
-#endif
 
-//#ifndef SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
-//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
-//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
-//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
-//#endif
+////#ifdef SOFA_WITH_FLOAT
+//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3Types, Vec3Types >;
+//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3Types, Vec3Types >;
+//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2Types, Vec2Types >;
+//template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2Types, Vec2Types >;
+//
 //#endif
 
 

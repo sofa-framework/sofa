@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,11 +46,6 @@ BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
 
 BaseObjectDescription::~BaseObjectDescription()
 {
-//     for (std::map<std::string,std::string*>::iterator it = attributes.begin();
-//         it != attributes.end(); ++it)
-//     {
-//         delete it->second;
-//     }
     attributes.clear();
 }
 
@@ -68,7 +63,7 @@ std::string BaseObjectDescription::getName()
 
 void BaseObjectDescription::setName(const std::string& name)
 {
-    setAttribute("name",name.c_str());
+    setAttribute("name",name);
 }
 
 /// Get the parent node
@@ -167,9 +162,15 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
     return retval ;
 }
 
+void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
+{
+    std::string s = val;
+    return setAttribute(attr, s);
+}
+
 
 /// Set an attribute. Override any existing value
-void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
+void BaseObjectDescription::setAttribute(const std::string& attr, const std::string &val)
 {
     attributes[attr] = val;
 }

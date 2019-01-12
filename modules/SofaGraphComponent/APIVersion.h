@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,6 +15,7 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -22,6 +23,8 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
+#ifndef SOFA_APIVERSION_H
+#define SOFA_APIVERSION_H
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
@@ -50,7 +53,7 @@ protected:
     virtual ~APIVersion() ;
     void checkInputData() ;
 private:
-    Data<std::string>  d_level ;
+    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
 };
 
 } // namespace _apiversion_
@@ -60,3 +63,5 @@ using _apiversion_::APIVersion ;
 } // namespace component
 
 } // namespace sofa
+
+#endif // SOFA_APIVERSION_H

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vectorData.h>
 
@@ -69,12 +69,12 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqEdges > inputEdges;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
-    Data< SeqTetrahedra > inputTets;
-    Data< SeqHexahedra > inputHexa;
-    Data<unsigned int> nbInputs;
+    Data< SeqEdges > inputEdges; ///< input edges
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
+    Data< SeqTetrahedra > inputTets; ///< input tetrahedra
+    Data< SeqHexahedra > inputHexa; ///< input hexahedra
+    Data<unsigned int> nbInputs; ///< Number of input vectors
     helper::vectorData<SetIndices> indices;
     helper::vectorData<SetIndices> edgeIndices;
     helper::vectorData<SetIndices> triangleIndices;
@@ -160,7 +160,7 @@ public:
     }
 
 
-    void update() override;
+    void doUpdate() override;
 
 protected:
     void resizeData()
@@ -176,13 +176,9 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

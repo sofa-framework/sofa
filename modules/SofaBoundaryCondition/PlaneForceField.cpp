@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP
 
 #include <SofaBoundaryCondition/PlaneForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <limits>
 
@@ -37,38 +37,20 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PlaneForceField)
-
 int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane toward the exterior (half-space)")
-#ifdef SOFA_WITH_DOUBLE
-.add< PlaneForceField<Vec3dTypes> >()
-.add< PlaneForceField<Vec2dTypes> >()
-.add< PlaneForceField<Vec1dTypes> >()
-.add< PlaneForceField<Vec6dTypes> >()
-.add< PlaneForceField<Rigid3dTypes> >()
-#endif
-#ifdef SOFA_WITH_FLOAT
-.add< PlaneForceField<Vec3fTypes> >()
-.add< PlaneForceField<Vec2fTypes> >()
-.add< PlaneForceField<Vec1fTypes> >()
-.add< PlaneForceField<Vec6fTypes> >()
-.add< PlaneForceField<Rigid3fTypes> >()
-#endif
+.add< PlaneForceField<Vec3Types> >()
+.add< PlaneForceField<Vec2Types> >()
+.add< PlaneForceField<Vec1Types> >()
+.add< PlaneForceField<Vec6Types> >()
+.add< PlaneForceField<Rigid3Types> >()
+
 ;
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3Types>;
+
 
 } // namespace forcefield
 

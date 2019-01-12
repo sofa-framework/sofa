@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,9 +29,16 @@
 #include <iostream>
 #include <algorithm>
 
-
 namespace sofa
 {
+
+namespace core
+{
+    namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+    }
+}
 
 namespace component
 {
@@ -42,8 +49,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
-
-SOFA_DECL_CLASS(NewProximityIntersection)
 
 int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
         .add< NewProximityIntersection >()
@@ -82,14 +87,6 @@ void NewProximityIntersection::init()
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
-}
-}
 
 } // namespace sofa
 

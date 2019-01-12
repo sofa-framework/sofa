@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,12 +43,12 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyC
 public:
     SOFA_CLASS(EdgeSetTopologyContainer,PointSetTopologyContainer);
 
-    typedef BaseMeshTopology::PointID		   	PointID;
-    typedef BaseMeshTopology::EdgeID			      EdgeID;
-    typedef BaseMeshTopology::Edge				   Edge;
-    typedef BaseMeshTopology::SeqEdges			   SeqEdges;
-    typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
-    typedef sofa::helper::vector<EdgeID>         VecEdgeID;
+    typedef BaseMeshTopology::PointID               PointID;
+    typedef BaseMeshTopology::EdgeID                EdgeID;
+    typedef BaseMeshTopology::Edge                  Edge;
+    typedef BaseMeshTopology::SeqEdges              SeqEdges;
+    typedef BaseMeshTopology::EdgesAroundVertex     EdgesAroundVertex;
+    typedef sofa::helper::vector<EdgeID>            VecEdgeID;
 
 
 protected:
@@ -94,9 +94,9 @@ public:
      *
      * @param v1 The first vertex
      * @param v@ The second vertex
-     * @return The index of the Edge if it exists, -1 otherwise.
+     * @return The index of the Edge if it exists, InvalidID otherwise.
     */
-    virtual int getEdgeIndex(PointID v1, PointID v2) override;
+    virtual EdgeID getEdgeIndex(PointID v1, PointID v2) override;
 
 
     /** \brief Get the indices of the edges around a vertex.
@@ -128,12 +128,12 @@ public:
      * The difference to getNbEdges() is that this method does not generate the edge array if it does not exist.
      * @return the number of edges.
      */
-    unsigned int getNumberOfEdges() const;
+    size_t getNumberOfEdges() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const override;
+    virtual size_t getNumberOfElements() const override;
 
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -176,7 +176,7 @@ public:
     virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const VecEdgeID getConnectedElement(EdgeID elem) override;
@@ -187,7 +187,9 @@ public:
     virtual const VecEdgeID getElementAroundElements(VecEdgeID elems) override;
     /// @}
 
-
+      /** \brief Returns the type of the topology */
+      virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
+    
 
 protected:
 
@@ -249,9 +251,9 @@ protected:
 
 public:
     /** The array that stores the set of edges in the edge set */
-    Data< sofa::helper::vector<Edge> > d_edge;
+    Data< sofa::helper::vector<Edge> > d_edge; ///< List of edge indices
 
-    Data <bool> m_checkConnexity;
+    Data <bool> m_checkConnexity; ///< It true, will check the connexity of the mesh.
 
 
 };

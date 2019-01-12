@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,16 +23,14 @@
 #define SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/helper/RandomGenerator.h>
 
@@ -68,7 +66,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -83,17 +81,17 @@ public:
     }
     bool initialized;
     helper::RandomGenerator rg;
-    Data<unsigned int> randomSeed;
-    Data<bool> isVisible;
-    Data<bool> drawOutputPoints;
-    Data<Real> minDistanceBetweenPoints;
-    Data<unsigned int> numberOfInPoints;
-    Data<unsigned int> numberOfTests;
+    Data<unsigned int> randomSeed; ///< Set a specified seed for random generation (0 for "true pseudo-randomness" 
+    Data<bool> isVisible; ///< is Visible ?
+    Data<bool> drawOutputPoints; ///< Output points visible ?
+    Data<Real> minDistanceBetweenPoints; ///< Min Distance between 2 points (-1 for true randomness)
+    Data<unsigned int> numberOfInPoints; ///< Number of points inside
+    Data<unsigned int> numberOfTests; ///< Number of tests to find if the point is inside or not (odd number)
 
-    Data<VecCoord> f_vertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles;
-    Data<VecCoord> f_inPoints;
-    Data<VecCoord> f_outPoints;
+    Data<VecCoord> f_vertices; ///< Vertices
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles; ///< Triangles indices
+    Data<VecCoord> f_inPoints; ///< Points inside the surface
+    Data<VecCoord> f_outPoints; ///< Points outside the surface
 
     unsigned int safeCounter;
     unsigned int safeLimit;
@@ -108,13 +106,9 @@ protected:
     bool testDistance(Coord p);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

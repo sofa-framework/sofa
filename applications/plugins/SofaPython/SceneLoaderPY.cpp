@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,7 @@
 #include "PythonFactory.h"
 
 using namespace sofa::core::objectmodel;
+using sofa::helper::system::SetDirectory;
 
 namespace sofa
 {
@@ -108,10 +109,11 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
+    SetDirectory chdir ( filename );
 
     notifyLoadingScene();
-    if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename), arguments);
+    if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename)))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( "scene script load error." );

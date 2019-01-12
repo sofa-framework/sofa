@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,8 @@
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 namespace sofa
 {
 
@@ -71,7 +73,7 @@ private:
         typedef MeshTopology::Hexa Hexa;
         SOFA_CLASS(GridUpdate,sofa::core::DataEngine);
         GridUpdate(GridTopology* t);
-        virtual void update() override;
+        virtual void doUpdate() override;
     protected:
         void updateEdges();
         void updateQuads();
@@ -163,24 +165,10 @@ public:
     virtual SReal getPZ(int i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override
-    {
-        this->MeshTopology::parse(arg);
-
-        if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
-        {
-            int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());
-            int ny = arg->getAttributeAsInt("ny", d_n.getValue().y());
-            int nz = arg->getAttributeAsInt("nz", d_n.getValue().z());
-            d_n.setValue(Vec3i(nx,ny,nz));
-        }
-
-        this->setNbGridPoints();
-    }
-
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override ;
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    virtual int getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    virtual size_t getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 
@@ -188,11 +176,6 @@ public:
     Hexa getHexahedron(int x, int y, int z);
     Hexa getHexaCopy(int i);
     Quad getQuadCopy(int i);
-
-#ifndef SOFA_NEW_HEXA
-    Cube getCubeCopy(int i) { return getHexaCopy(i); }
-    Cube getCube(int x, int y, int z) { return getHexahedron(x,y,z); }
-#endif
 
     /// Get Point index in Grid, will call method @sa getIndex
     int point(int x, int y, int z) const { return getIndex(x,y,z); }
@@ -208,7 +191,10 @@ public:
     Data<Vec3i> d_n;
 
     /// Data bool to set option to compute topological elements
-    Data<bool> d_computeHexaList, d_computeQuadList, d_computeEdgeList, d_computePointList;
+    Data<bool> d_computeHexaList;
+    Data<bool> d_computeQuadList; ///< put true if the list of Quad is needed during init (default=true)
+    Data<bool> d_computeEdgeList; ///< put true if the list of Lines is needed during init (default=true)
+    Data<bool> d_computePointList; ///< put true if the list of Points is needed during init (default=true)
     /// Data bool to set option to compute texcoords
     Data<bool> d_createTexCoords;
 };

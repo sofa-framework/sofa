@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,14 +105,6 @@ const CollisionAnimationLoop::Solvers& CollisionAnimationLoop::getSolverSequence
     assert( gnode );
     return gnode->solver;
 }
-
-// CollisionAnimationLoop::Pipeline* CollisionAnimationLoop::getPipeline()
-// {
-// 	simulation::Node* gnode = dynamic_cast<simulation::Node*>( getContext() );
-// 	assert( gnode );
-// 	return gnode->collisionPipeline;
-// }
-
 
 } // namespace simulation
 

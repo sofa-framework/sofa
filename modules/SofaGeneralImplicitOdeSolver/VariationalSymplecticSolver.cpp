@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,8 @@ VariationalSymplecticSolver::VariationalSymplecticSolver()
     , f_fileName(initData(&f_fileName,"file","File name where kinetic and potential energies are saved in a CSV file"))
     , f_computeHamiltonian( initData(&f_computeHamiltonian,true,"computeHamiltonian","Compute hamiltonian") )
     , f_hamiltonianEnergy( initData(&f_hamiltonianEnergy,0.0,"hamiltonianEnergy","hamiltonian energy") )
-    , f_useIncrementalPotentialEnergy( initData(&f_useIncrementalPotentialEnergy,true,"use incremental potential Energy","use real potential energy, if false use approximate potential energy"))
+    , f_useIncrementalPotentialEnergy( initData(&f_useIncrementalPotentialEnergy,true,"useIncrementalPotentialEnergy","use real potential energy, if false use approximate potential energy"))
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
     cpt=0;
 }
@@ -90,7 +91,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     MultiVecDeriv vel_1(&vop, vResult); // vector of final  velocity
     MultiVecDeriv p(&vop); // vector of momemtum
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     const SReal& h = dt;
     const SReal rM = f_rayleighMass.getValue();
@@ -129,7 +130,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 	if (f_explicit.getValue()) {
 		mop->setImplicit(false); // this solver is explicit only
 
-		MultiVecDeriv acc(&vop, core::VecDerivId::dx() ); acc.realloc( &vop, true, true ); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+        MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
 
 		sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
 		mop.computeForce(f);
@@ -349,8 +350,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 	// update the previous momemtum as the current one for next step
     pPrevious.eq(newp);
 }
-
-SOFA_DECL_CLASS(VariationalSymplecticSolver)
 
 int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integrator which conserves linear momentum and mechanical energy")
         .add< VariationalSymplecticSolver >()

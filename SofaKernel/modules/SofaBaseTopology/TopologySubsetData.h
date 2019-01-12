@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,10 +42,10 @@ namespace topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/** \brief A class for storing Edge related data. Automatically manages topology changes.
+/** \brief A class for storing element related data. Automatically manages topology changes.
 *
 * This class is a wrapper of class helper::vector that is made to take care transparently of all topology changes that might
-* happen (non exhaustive list: Edges added, removed, fused, renumbered).
+* happen (non exhaustive list: elements added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
 class TopologySubsetDataImpl : public sofa::core::topology::BaseTopologyData<VecT>
@@ -111,13 +111,19 @@ public:
 
 
 protected:
-    virtual void linkToElementDataArray() {}
-
     virtual void createTopologyHandler() {}
 
     typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::component::topology::TopologySubsetDataHandler<TopologyElementType,VecT>* m_topologyHandler;
+
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*   ) { linkToTriangleDataArray();    }
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*       ) { linkToQuadDataArray();        }
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) { linkToTetrahedronDataArray(); }
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron* ) { linkToHexahedronDataArray();  }
+
 };
 
 
@@ -131,18 +137,10 @@ template< class VecT >
 class PointSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>::value_type value_type;
-
     PointSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
     {}
-
-protected:
-    void linkToElementDataArray() {this->linkToPointDataArray();}
 };
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,16 +151,9 @@ template< class VecT >
 class EdgeSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>::value_type value_type;
-
     EdgeSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
     {}
-
-protected:
-    void linkToElementDataArray() {this->linkToEdgeDataArray();}
-
 };
 
 
@@ -174,18 +165,10 @@ template< class VecT >
 class TriangleSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>::value_type value_type;
-
     TriangleSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
     {}
-
-protected:
-    void linkToElementDataArray() {this->linkToTriangleDataArray();}
-
 };
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,18 +179,10 @@ template< class VecT >
 class QuadSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>::value_type value_type;
-
     QuadSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
     {}
-
-protected:
-    void linkToElementDataArray() {this->linkToQuadDataArray();}
-
 };
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,19 +193,10 @@ template< class VecT >
 class TetrahedronSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>::value_type value_type;
-
     TetrahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
     {}
-
-protected:
-    void linkToElementDataArray() {this->linkToTetrahedronDataArray();}
-
 };
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,20 +207,10 @@ template< class VecT >
 class HexahedronSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>::value_type value_type;
-
     HexahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
     {}
-
-protected:
-    void linkToElementDataArray() {this->linkToHexahedronDataArray();}
-
 };
-
-
-
 
 
 } // namespace topology

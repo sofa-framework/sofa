@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_HELPER_TEMPLATESALIASES_H
+#define SOFA_HELPER_TEMPLATESALIASES_H
 #include <sofa/defaulttype/defaulttype.h>
-
 #include <string>
 
 namespace sofa
@@ -28,6 +29,17 @@ namespace sofa
 
 namespace defaulttype
 {
+
+template<class T>
+constexpr bool isDouble(){return false;}
+
+template<>
+constexpr bool isDouble<double>(){return true;}
+
+constexpr bool isSRealDouble(){ return isDouble<SReal>(); }
+constexpr bool isSRealFloat(){ return !isDouble<SReal>(); }
+
+typedef std::pair<std::string, bool> TemplateAlias;
 
 /**
  *  \brief Class used to store and resolve template aliases.
@@ -42,10 +54,13 @@ public:
     ///
     /// \param name     name of the new alias
     /// \param result   real template pointed to
-    static bool addAlias(const std::string& name, const std::string& result);
+    static bool addAlias(const std::string& name, const std::string& result, const bool doWarnUser);
 
 	/// Get the template pointed to by the alias. Returns the input if there is no alias.
-	static std::string resolveAlias(const std::string& name);
+    static std::string resolveAlias(const std::string& name);
+
+    /// Get the alias template associated with a given name. Return false & nullptr if none;
+    static const TemplateAlias* getTemplateAlias(const std::string& name);
 };
 
 /**
@@ -61,9 +76,11 @@ class SOFA_DEFAULTTYPE_API RegisterTemplateAlias
 {
 public:
     /// Register an alias
-    RegisterTemplateAlias(const std::string& alias, const std::string& result);
+    RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser=false);
 };
 
 }// defaulttype
 
 }// sofa
+
+#endif // SOFA_HELPER_TEMPLATESALIASES_H

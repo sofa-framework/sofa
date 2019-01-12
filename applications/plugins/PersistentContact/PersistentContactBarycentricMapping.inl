@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,11 +44,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
     int retValue = 0;
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
 
@@ -171,11 +167,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
         {
             defaulttype::Mat3x3d m,mt;
             m[0] = in[cubes[c][1]]-in[cubes[c][0]];
-#ifdef SOFA_NEW_HEXA
             m[1] = in[cubes[c][3]]-in[cubes[c][0]];
-#else
-            m[1] = in[cubes[c][2]]-in[cubes[c][0]];
-#endif
             m[2] = in[cubes[c][4]]-in[cubes[c][0]];
             mt.transpose ( m );
             bases[c0+c].invert ( mt );
@@ -234,11 +226,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
 
     this->updateJ = true;
 
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
 
     sofa::helper::vector<defaulttype::Matrix3> bases;
     sofa::helper::vector<defaulttype::Vector3> centers;
@@ -250,11 +238,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
     {
         defaulttype::Mat3x3d m,mt;
         m[0] = in[cubes[c][1]]-in[cubes[c][0]];
-#ifdef SOFA_NEW_HEXA
         m[1] = in[cubes[c][3]]-in[cubes[c][0]];
-#else
-        m[1] = in[cubes[c][2]]-in[cubes[c][0]];
-#endif
         m[2] = in[cubes[c][4]]-in[cubes[c][0]];
         mt.transpose ( m );
         bases[c].invert ( mt );

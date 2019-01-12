@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,9 +43,21 @@ namespace component
 namespace mass
 {
 
+template class MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+
 template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+
+template class MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace mass
@@ -58,12 +70,14 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
-
 int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >(true)
+        .add< component::mass::MeshMatrixMass<CudaVec3fTypes, float > >(true)
+        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >()
+        .add< component::mass::MeshMatrixMass<CudaVec1fTypes, float > >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::mass::MeshMatrixMass<CudaVec3dTypes, double > >()
         .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
+        .add< component::mass::MeshMatrixMass<CudaVec1dTypes, double > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

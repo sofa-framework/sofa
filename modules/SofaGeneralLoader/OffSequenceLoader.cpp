@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,8 +38,6 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(OffSequenceLoader)
 
 int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at each timestep")
         .add< OffSequenceLoader >();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,11 +26,9 @@
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
-
-// #define DEBUG_TRIANGLEFEM
 
 namespace sofa
 {
@@ -41,18 +39,32 @@ namespace component
 namespace forcefield
 {
 
-
-template <class DataTypes> OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
+template <class DataTypes>
+OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForceField()
+    : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
+    , moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
+    , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+    , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
+    , center(initData(&center,"center", "Center of rotation"))
+    , penalty(initData(&penalty, (Real)1000, "penalty", "Strength of the penalty force"))
+    , frequency(initData(&frequency, (Real)1, "frequency", "frequency of oscillation"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
 {
-    //file.close();
+    rotationAngle = 0;
+}
+
+template <class DataTypes>
+OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
+{
 }
 
 
-template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>::init()
+template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
-    //file.open("testsofa.dat");
-    // normalize axis:
     axis.setValue( axis.getValue() / axis.getValue().norm() );
 
     _topology = this->getContext()->getMeshTopology();
@@ -161,6 +173,19 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
         }
 }
 
+template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
+
+template <class DataTypes>
+SReal OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
 
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
@@ -228,7 +253,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
     helper::vector<unsigned int> inputTriangles;
 
-    for (int n=0; n<_topology->getNbTriangles(); ++n)
+    for (size_t n=0; n<_topology->getNbTriangles(); ++n)
     {
         if ((vArray[_topology->getTriangle(n)[0]]) && (vArray[_topology->getTriangle(n)[1]])&& (vArray[_topology->getTriangle(n)[2]]) )
         {
@@ -270,34 +295,36 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString(
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (!p_showForces.getValue())
         return;
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_TRIANGLES);
-    glColor4f(0,1,0,1);
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::green();
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
 
     for (unsigned int i = 0; i < my_map.size(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[0]]);
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[1]]);
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[2]]);
+        for(unsigned int j=0 ; j< 3 ; j++)
+        {
+            const Coord& c = x[_topology->getTriangle(my_map[i])[j]];
+            vertices.push_back(sofa::defaulttype::Vector3(c[0], c[1], c[2]));
+        }
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices, color);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

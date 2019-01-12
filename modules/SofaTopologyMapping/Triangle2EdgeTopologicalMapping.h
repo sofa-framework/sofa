@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,6 +39,9 @@ namespace component
 namespace topology
 {
 
+class EdgeSetTopologyModifier;
+
+
 /**
 * This class, called Triangle2EdgeTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
 *
@@ -48,7 +51,6 @@ namespace topology
 * Triangle2EdgeTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
 *
 */
-
 class SOFA_TOPOLOGY_MAPPING_API Triangle2EdgeTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
@@ -79,6 +81,10 @@ public:
     virtual void updateTopologicalMappingTopDown() override;
 
     virtual unsigned int getFromIndex(unsigned int ind) override;
+
+private:
+    /// Pointer to the output topology modifier
+    EdgeSetTopologyModifier* m_outTopoModifier;
 };
 
 } // namespace topology

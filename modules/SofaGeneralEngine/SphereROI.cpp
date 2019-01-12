@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
 #include <SofaGeneralEngine/SphereROI.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -36,27 +36,15 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SphereROI)
-
 int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
-#ifndef SOFA_FLOAT
-        .add< SphereROI<Vec3dTypes> >()
-.add< SphereROI<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< SphereROI<Vec3fTypes> >()
-.add< SphereROI<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< SphereROI<Vec3Types> >()
+.add< SphereROI<Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API SphereROI<Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API SphereROI<Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API SphereROI<Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3Types>;
+ 
 
 
 } // namespace constraint

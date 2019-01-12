@@ -23,6 +23,7 @@ set(HEADER_FILES
     SolidTypes.inl
     # SparseConstraintTypes.h
     TemplatesAliases.h
+    TopologyTypes.h
     Vec.h
     Vec3Types.h
     VecTypes.h
@@ -30,6 +31,12 @@ set(HEADER_FILES
     init.h
     Color.h
 )
+
+if(EIGEN3_FOUND OR Eigen3_FOUND)
+    list(APPEND HEADER_FILES 
+         MapMapSparseMatrixEigenUtils.h
+        )
+endif()
 
 set(SOURCE_FILES
     BaseMatrix.cpp
@@ -50,7 +57,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEF
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework SofaDefaultType "")
-
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/defaulttype"
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/defaulttype")

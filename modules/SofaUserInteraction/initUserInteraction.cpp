@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,22 +38,6 @@ void initUserInteraction()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(RayTraceDetection)
-SOFA_LINK_CLASS(RayContact)
-SOFA_LINK_CLASS(MouseInteractor)
-SOFA_LINK_CLASS(ArticulatedHierarchyController)
-SOFA_LINK_CLASS(ArticulatedHierarchyBVHController)
-SOFA_LINK_CLASS(EdgeSetController)
-SOFA_LINK_CLASS(MechanicalStateController)
-SOFA_LINK_CLASS(MechanicalStateControllerOmni)
-SOFA_LINK_CLASS(Ray)
-SOFA_LINK_CLASS(RayDiscreteIntersection)
-SOFA_LINK_CLASS(RayNewProximityIntersection)
-SOFA_LINK_CLASS(NodeToggleController)
-SOFA_LINK_CLASS(GraspingManager)
-SOFA_LINK_CLASS(InterpolationController)
-
 
 } // namespace component
 

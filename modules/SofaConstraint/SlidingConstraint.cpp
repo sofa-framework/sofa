@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 
 #include <SofaConstraint/SlidingConstraint.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -39,22 +39,11 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(SlidingConstraint)
-
 int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
-#ifdef SOFA_FLOAT
-        .add< SlidingConstraint<Vec3fTypes> >(true)
-#else
-        .add< SlidingConstraint<Vec3dTypes> >(true)
-#endif
-        ;
+        .add< SlidingConstraint<Vec3Types> >(true);
 
-#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3fTypes>;
-#endif
+template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3Types>;
+
 
 } // namespace constraintset
 

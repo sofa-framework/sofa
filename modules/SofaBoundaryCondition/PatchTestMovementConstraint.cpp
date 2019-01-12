@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP
 #include <SofaBoundaryCondition/PatchTestMovementConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/Node.h>
@@ -37,28 +37,15 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(PatchTestMovementConstraint)
-
-
 int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint")
-#ifndef SOFA_FLOAT
-        .add< PatchTestMovementConstraint<defaulttype::Vec3dTypes> >()
-        .add< PatchTestMovementConstraint<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PatchTestMovementConstraint<defaulttype::Vec3fTypes> >()
-        .add< PatchTestMovementConstraint<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< PatchTestMovementConstraint<defaulttype::Vec3Types> >()
+        .add< PatchTestMovementConstraint<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+
 
 } // namespace projectiveconstraintset
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,9 +63,6 @@ bool GLSLIsSupported = false;
 
 bool GLSLShader::InitGLSL()
 {
-#ifdef PS3
-    return false;
-#else
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
     if( !CanUseGlExtension("GL_ARB_shading_language_100") )
     {
@@ -81,7 +78,6 @@ bool GLSLShader::InitGLSL()
     }
     GLSLIsSupported = true;
     return true;
-#endif
 }
 
 GLhandleARB GLSLShader::GetActiveShaderProgram()

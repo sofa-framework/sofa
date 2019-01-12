@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,7 +127,6 @@ public:
     {
         addInput(&f_method);
         addInput(&f_order);
-//        addInput(&f_position); // can be either input or output depending on the sampler
         addOutput(&f_volume);
         addOutput(&f_transforms);
     }

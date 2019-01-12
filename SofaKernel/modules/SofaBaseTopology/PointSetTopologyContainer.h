@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,8 +59,6 @@ public:
 
     virtual void init() override;
 
-
-
     /// Procedural creation methods
     /// @{
     virtual void clear() override;
@@ -78,7 +76,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual size_t getNumberOfElements() const;
 
     /** \brief Returns a reference to the Data of points array container. */
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
@@ -99,6 +97,9 @@ public:
     /** \brief Returns the Z coordinate of the ith DOF. */
     virtual SReal getPZ(int i) const override;
 
+   	/** \brief Returns the type of the topology */
+   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
+    
     /// @}
 
 
@@ -148,8 +149,7 @@ public:
         return in;
     }
 
-
-
+    const sofa::helper::vector<PointID>& getPoints() const;
 
 protected:
     /// \brief Function creating the data graph linked to d_point
@@ -173,10 +173,11 @@ protected:
 
 public:
 
-    Data<unsigned int> nbPoints;
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
 
-    Data<InitTypes::VecCoord> d_initPoints;
 protected:
+
+
     /// Boolean used to know if the topology Data of this container is dirty
     bool m_pointTopologyDirty;
 
@@ -186,6 +187,12 @@ protected:
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
     sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+
+private:
+    
+    Data<unsigned int> nbPoints; ///< Number of points
+
+    Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };
 
 } // namespace topology

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,8 +41,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-
-SOFA_DECL_CLASS(MeshMinProximityIntersection)
 
 IntersectorCreator<MinProximityIntersection, MeshMinProximityIntersection> MeshMinProximityIntersectors("Mesh");
 
@@ -90,9 +88,6 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
             intersection->intersectors.ignore<TriangleModel, SphereModel>();
             intersection->intersectors.ignore<TriangleModel, RigidSphereModel>();
         }
-
-//    intersection->intersectors.ignore<RayModel, PointModel>();
-//    intersection->intersectors.ignore<RayModel, LineModel>();
     }
 }
 
@@ -244,15 +239,12 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
     SReal alpha = 0.5;
     SReal beta = 0.5;
 
-    //if (det < -0.000000000001 || det > 0.000000000001)
-    {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        if (alpha < 0.000001 ||
+    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
-            return false;
-    }
+        return false;
 
     const Vector3 PQ = AB * alpha + AC * beta - AP;
 
@@ -283,21 +275,12 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     SReal alpha = 0.5;
     SReal beta = 0.5;
 
-    //if (det < -0.000000000001 || det > 0.000000000001)
-    {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        if (alpha < 0.000001 ||
+    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
-            return 0;
-//        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-//        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-//        if (alpha < 0 ||
-//            beta  < 0 ||
-//            alpha + beta  > 1)
-//            return 0;
-    }
+        return 0;
 
     Vector3 P,Q,QP; //PQ
     P = e1.p();
@@ -368,12 +351,9 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
 
     SReal alpha = 0.5;
 
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
-            return false;
-    }
+    alpha = b/A;
+    if (alpha < 0.000001 || alpha > 0.999999)
+        return false;
 
     Vector3 P,Q,PQ;
     P = e1.p();
@@ -401,20 +381,16 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
 
     Vector3 P,Q,QP;
 
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;
+    alpha = b/A;
 
-        if (alpha <= 0.0){
-            Q = e2.p1();
-        }
-        else if (alpha >= 1.0){
-            Q = e2.p2();
-//            alpha = 1.0;
-        }
-        else{
-            Q = e2.p1() + AB * alpha;
-        }
+    if (alpha <= 0.0){
+        Q = e2.p1();
+    }
+    else if (alpha >= 1.0){
+        Q = e2.p2();
+    }
+    else{
+        Q = e2.p1() + AB * alpha;
     }
 
     P = e1.p();

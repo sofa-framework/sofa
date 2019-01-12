@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -178,9 +178,6 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
 
     mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
     mstate2 = mstateCollision;
-
-//    helper::ReadAccessor<Data <VecCoord> > x1 = *mstate1->read(core::VecCoordId::position());
-//    helper::ReadAccessor<Data <VecCoord> > x2 = *mstate2->read(core::VecCoordId::position());
 
     defaulttype::Vec3d point1;
     defaulttype::Vec3d point2;

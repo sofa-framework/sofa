@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 
 #include <SofaGeneralDeformable/RegularGridSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -423,6 +422,9 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     assert(this->mstate1);
     assert(this->mstate2);
+
+    vparams->drawTool()->saveLastState();
+
     // Draw any custom springs
     this->StiffSpringForceField<DataTypes>::draw(vparams);
     // Compute topological springs
@@ -489,147 +491,11 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
                         }
 
             }
-#if 0
-            if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
-            {
-                typename RegularGridSpringForceField<DataTypes>::Spring spring1;
-                typename RegularGridSpringForceField<DataTypes>::Spring spring2;
-                // quads along XY plane
-                // lines (x,y,z) -> (x+1,y+1,z)
-                spring1.initpos = (topology->getDx()+topology->getDy()).norm();
-                spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
-                spring1.kd = this->linesDamping.getValue() / spring1.initpos;
-                // lines (x+1,y,z) -> (x,y+1,z)
-                spring2.initpos = (topology->getDx()-topology->getDy()).norm();
-                spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
-                spring2.kd = this->linesDamping.getValue() / spring2.initpos;
-                for (int z=0; z<nz; z++)
-                    for (int y=0; y<ny-1; y++)
-                        for (int x=0; x<nx-1; x++)
-                        {
-                            spring1.m1 = topology->point(x,y,z);
-                            spring1.m2 = topology->point(x+1,y+1,z);
-                            point1 = DataTypes::getCPos(p1[spring1.m1]);
-                            point2 = DataTypes::getCPos(p2[spring1.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                            spring2.m1 = topology->point(x+1,y,z);
-                            spring2.m2 = topology->point(x,y+1,z);
-                            point1 = DataTypes::getCPos(p1[spring2.m1]);
-                            point2 = DataTypes::getCPos(p2[spring2.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                        }
-                // quads along XZ plane
-                // lines (x,y,z) -> (x+1,y,z+1)
-                spring1.initpos = (topology->getDx()+topology->getDz()).norm();
-                spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
-                spring1.kd = this->linesDamping.getValue() / spring1.initpos;
-                // lines (x+1,y,z) -> (x,y,z+1)
-                spring2.initpos = (topology->getDx()-topology->getDz()).norm();
-                spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
-                spring2.kd = this->linesDamping.getValue() / spring2.initpos;
-                for (int z=0; z<nz-1; z++)
-                    for (int y=0; y<ny; y++)
-                        for (int x=0; x<nx-1; x++)
-                        {
-                            spring1.m1 = topology->point(x,y,z);
-                            spring1.m2 = topology->point(x+1,y,z+1);
-                            point1 = DataTypes::getCPos(p1[spring1.m1]);
-                            point2 = DataTypes::getCPos(p2[spring1.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                            spring2.m1 = topology->point(x+1,y,z);
-                            spring2.m2 = topology->point(x,y,z+1);
-                            point1 = DataTypes::getCPos(p1[spring2.m1]);
-                            point2 = DataTypes::getCPos(p2[spring2.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                        }
-                // quads along YZ plane
-                // lines (x,y,z) -> (x,y+1,z+1)
-                spring1.initpos = (topology->getDy()+topology->getDz()).norm();
-                spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
-                spring1.kd = this->linesDamping.getValue() / spring1.initpos;
-                // lines (x,y+1,z) -> (x,y,z+1)
-                spring1.initpos = (topology->getDy()-topology->getDz()).norm();
-                spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
-                spring1.kd = this->linesDamping.getValue() / spring1.initpos;
-                for (int z=0; z<nz-1; z++)
-                    for (int y=0; y<ny-1; y++)
-                        for (int x=0; x<nx; x++)
-                        {
-                            spring1.m1 = topology->point(x,y,z);
-                            spring1.m2 = topology->point(x,y+1,z+1);
-                            point1 = DataTypes::getCPos(p1[spring1.m1]);
-                            point2 = DataTypes::getCPos(p2[spring1.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                            spring2.m1 = topology->point(x,y+1,z);
-                            spring2.m2 = topology->point(x,y,z+1);
-                            point1 = DataTypes::getCPos(p1[spring2.m1]);
-                            point2 = DataTypes::getCPos(p2[spring2.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                        }
-            }
-            if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
-            {
-                typename RegularGridSpringForceField<DataTypes>::Spring spring1;
-                typename RegularGridSpringForceField<DataTypes>::Spring spring2;
-                typename RegularGridSpringForceField<DataTypes>::Spring spring3;
-                typename RegularGridSpringForceField<DataTypes>::Spring spring4;
-                // lines (x,y,z) -> (x+1,y+1,z+1)
-                spring1.initpos = (topology->getDx()+topology->getDy()+topology->getDz()).norm();
-                spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
-                spring1.kd = this->linesDamping.getValue() / spring1.initpos;
-                // lines (x+1,y,z) -> (x,y+1,z+1)
-                spring2.initpos = (-topology->getDx()+topology->getDy()+topology->getDz()).norm();
-                spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
-                spring2.kd = this->linesDamping.getValue() / spring2.initpos;
-                // lines (x,y+1,z) -> (x+1,y,z+1)
-                spring3.initpos = (topology->getDx()-topology->getDy()+topology->getDz()).norm();
-                spring3.ks = this->linesStiffness.getValue() / spring3.initpos;
-                spring3.kd = this->linesDamping.getValue() / spring3.initpos;
-                // lines (x,y,z+1) -> (x+1,y+1,z)
-                spring4.initpos = (topology->getDx()+topology->getDy()-topology->getDz()).norm();
-                spring4.ks = this->linesStiffness.getValue() / spring4.initpos;
-                spring4.kd = this->linesDamping.getValue() / spring4.initpos;
-                for (int z=0; z<nz-1; z++)
-                    for (int y=0; y<ny-1; y++)
-                        for (int x=0; x<nx-1; x++)
-                        {
-                            spring1.m1 = topology->point(x,y,z);
-                            spring1.m2 = topology->point(x+1,y+1,z+1);
-                            point1 = DataTypes::getCPos(p1[spring1.m1]);
-                            point2 = DataTypes::getCPos(p2[spring1.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                            spring2.m1 = topology->point(x+1,y,z);
-                            spring2.m2 = topology->point(x,y+1,z+1);
-                            point1 = DataTypes::getCPos(p1[spring2.m1]);
-                            point2 = DataTypes::getCPos(p2[spring2.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                            spring3.m1 = topology->point(x,y+1,z);
-                            spring3.m2 = topology->point(x+1,y,z+1);
-                            point1 = DataTypes::getCPos(p1[spring3.m1]);
-                            point2 = DataTypes::getCPos(p2[spring3.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                            spring4.m1 = topology->point(x,y,z+1);
-                            spring4.m2 = topology->point(x+1,y+1,z);
-                            point1 = DataTypes::getCPos(p1[spring4.m1]);
-                            point2 = DataTypes::getCPos(p2[spring4.m2]);
-                            points.push_back(point1);
-                            points.push_back(point2);
-                        }
-            }
-#endif
         }
     }
 
     vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace interactionforcefield

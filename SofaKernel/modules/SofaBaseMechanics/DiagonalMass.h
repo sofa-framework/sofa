@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -44,6 +42,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -97,7 +96,7 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    VecMass d_mass;
+    VecMass d_vertexMass; ///< values of the particles masses
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -110,7 +109,9 @@ public:
     {
     public:
         typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
-        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data) : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm) {}
+        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data)
+            : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm)
+        {}
 
         void applyCreateFunction(unsigned int pointIndex, TMassType& m, const Point&, const sofa::helper::vector< unsigned int > &,
                                  const sofa::helper::vector< double > &);
@@ -175,7 +176,6 @@ public:
     protected:
         DiagonalMass<DataTypes,TMassType>* dm;
     };
-    DMassPointHandler* m_pointHandler;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > d_massDensity;
 
@@ -187,8 +187,19 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
-    Data< float > d_showAxisSize;
-    core::objectmodel::DataFileName d_fileMass;
+
+    Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
+    core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
+
+    DMassPointHandler* m_pointHandler;
+
+    /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
+    int m_initializationProcess;
+
+    /// Data tracker
+    sofa::core::DataTracker m_dataTrackerVertex;
+    sofa::core::DataTracker m_dataTrackerDensity;
+    sofa::core::DataTracker m_dataTrackerTotal;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -227,7 +238,9 @@ public:
 
     virtual void reinit() override;
     virtual void init() override;
+    virtual void handleEvent(sofa::core::objectmodel::Event* ) override;
 
+    bool update();
 
     TopologyType getMassTopologyType() const
     {
@@ -240,17 +253,45 @@ public:
     }
 
 protected:
+    bool checkTopology();
     void initTopologyHandlers();
+    void massInitialization();
 
 public:
 
-    void setMassDensity(Real m)
-    {
-        d_massDensity.setValue(m);
-    }
-
     SReal getTotalMass() const { return d_totalMass.getValue(); }
-    int getMassCount() { return d_mass.getValue().size(); }
+    int getMassCount() { return d_vertexMass.getValue().size(); }
+
+    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    void printMass();
+
+    /// Compute the mass from input values
+    void computeMass();
+
+
+    /// @name Read and write access functions in mass information
+    /// @{
+    virtual const Real &getMassDensity();
+    virtual const Real &getTotalMass();
+
+    virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
+    virtual void setMassDensity(Real massDensityValue);
+    virtual void setTotalMass(Real totalMass);
+    /// @}
+
+
+    /// @name Check and standard initialization functions from mass information
+    /// @{
+    virtual bool checkVertexMass();
+    virtual void initFromVertexMass();
+
+    virtual bool checkMassDensity();
+    virtual void initFromMassDensity();
+
+    virtual bool checkTotalMass();
+    virtual void checkTotalMassInit();
+    virtual void initFromTotalMass();
+    /// @}
 
 
     void addMass(const MassType& mass);
@@ -294,6 +335,16 @@ public:
         return DataTypes::Name();
     }
 
+    //Temporary function to warn the user when old attribute names are used
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        if (arg->getAttribute("mass"))
+        {
+            msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";
+        }
+        Inherited::parse(arg);
+    }
+
 private:
     template <class T>
     SReal getPotentialEnergyRigidImpl( const core::MechanicalParams* mparams,
@@ -321,68 +372,36 @@ private:
 
 
 // Specialization for rigids
-#ifndef SOFA_FLOAT
 template <>
-SReal DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+SReal DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
 template <>
-SReal DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+SReal DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
 template <>
-void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
+void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::draw(const core::visual::VisualParams* vparams);
 template <>
-void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
+void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::reinit();
 template <>
-void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::reinit();
+void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::reinit();
 template <>
-void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::init();
+void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::init();
 template <>
-void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::init();
+void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::init();
 template <>
-void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::draw(const core::visual::VisualParams* vparams);
+void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
 template <>
-defaulttype::Vector6 DiagonalMass<defaulttype::Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+defaulttype::Vector6 DiagonalMass<defaulttype::Vec3Types, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
-defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
-#endif
-
-#ifndef SOFA_DOUBLE
-template <>
-SReal DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
-template <>
-SReal DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
-template <>
-void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
-template <>
-void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
-template <>
-void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::reinit();
-template <>
-void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::init();
-template <>
-void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::init();
-template <>
-void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
-template <>
-defaulttype::Vector6 DiagonalMass<defaulttype::Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
-template <>
-defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
-#endif
+defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3dTypes,double>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2dTypes,double>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec1dTypes,double>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3fTypes,float>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2fTypes,float>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec1fTypes,float>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
-extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3Types,double>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2Types,double>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec1Types,double>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>;
+
 #endif
 
 } // namespace mass

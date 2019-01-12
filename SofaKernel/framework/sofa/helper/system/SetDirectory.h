@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,13 +68,16 @@ public:
     /// Get the full path of the current process. The given filename should be the value of argv[0].
     static std::string GetProcessFullPath(const char* filename);
 
-    /// Get the file relative to a directory, i.e. if given "../e" and "a/b/c", return "a/b/e".
+    /// Get the ABSOLUTE path of a file relative to a directory
+    /// i.e. if given "../e" and "a/b/c", return "a/b/e".
     static std::string GetRelativeFromDir(const char* filename, const char* basename);
 
-    /// Get the file relative to another file path, i.e. if given "../e" and "a/b/c", return "a/e".
+    /// Get the ABSOLUTE path of a file relative to another file path
+    /// i.e. if given "../e" and "a/b/c", return "a/e".
     static std::string GetRelativeFromFile(const char* filename, const char* basename);
 
-    /// Get the file relative to current process path, i.e. if given "../e" and "a/b/c", return "a/e".
+    /// Get the ABSOLUTE path of a file relative to current process path
+    /// i.e. if given "../e" and "a/b/c", return "a/e".
     static std::string GetRelativeFromProcess(const char* filename, const char* basename=NULL);
 
 };

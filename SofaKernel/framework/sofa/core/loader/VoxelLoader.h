@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,6 @@
 #define SOFA_CORE_VOXELLOADER_H
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {
@@ -51,8 +48,8 @@ protected:
     virtual ~VoxelLoader();
 public:
 
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
-    Data< helper::vector<Hexahedron > > hexahedra;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Coordinates of the nodes loaded
+    Data< helper::vector<Hexahedron > > hexahedra; ///< Hexahedra loaded
 
 
     void addHexahedron(helper::vector< Hexahedron >* pHexahedra, const helper::fixed_array<unsigned int,8> &p);

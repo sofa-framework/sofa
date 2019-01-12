@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,8 +41,6 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
@@ -591,37 +589,27 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
 template <class DataTypes>
 void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    glDisable(GL_LIGHTING);
+    if (!vparams->displayFlags().getShowBehaviorModels())
+        return;
 
     if (edgeGeo && this->mState)
     {
         helper::ReadAccessor<Data<VecCoord> > x = *this->mState->read(core::VecCoordId::position());
 
-        glBegin(GL_LINES);
-        for (int i=0; i<_topology->getNbEdges(); i++)
+        vparams->drawTool()->saveLastState();
+        vparams->drawTool()->disableLighting();
+        sofa::defaulttype::RGBAColor color(1.0,1.0,0.0,1.0);
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        for (size_t i=0; i<_topology->getNbEdges(); i++)
         {
-            glColor4f(1.0,1.0,0.0,1.0);
-            helper::gl::glVertexT(x[_topology->getEdge(i)[0]]);
-            helper::gl::glVertexT(x[_topology->getEdge(i)[1]]);
+            Coord x0 = x[_topology->getEdge(i)[0]];
+            Coord x1 = x[_topology->getEdge(i)[1]];
+            vertices.push_back(sofa::defaulttype::Vector3(x0[0],x0[1],x0[2]));
+            vertices.push_back(sofa::defaulttype::Vector3(x1[0],x1[1],x1[2]));
         }
-        glEnd();
-        /*
-        		glPointSize(10);
-        		glBegin(GL_POINTS);
-        		for (int i=0; i<_topology->getNbEdges(); i++)
-        		{
-        			glColor4f(1.0,0.0,0.0,1.0);
-        			helper::gl::glVertexT((this->mstate->read(core::ConstVecCoordId::position())->getValue())[_topology->getEdge(i)[0]]);
-        			helper::gl::glVertexT((this->mstate->read(core::ConstVecCoordId::position())->getValue())[_topology->getEdge(i)[1]]);
-        		}
-        		glEnd();
-        		glPointSize(1);
-        */
+        vparams->drawTool()->drawLines(vertices,1,color);
+        vparams->drawTool()->restoreLastState();
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

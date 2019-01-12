@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,7 @@
 
 #include <SofaGeneralRigid/LineSetSkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -196,37 +197,34 @@ void LineSetSkinningMapping<TIn, TOut>::reinit()
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowMappings()) return;
-    glDisable (GL_LIGHTING);
-    glLineWidth(1);
+    if (!vparams->displayFlags().getShowMappings())
+        return;
 
-    glBegin (GL_LINES);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
     const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
     for (unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
-        //out[verticeIndex] = typename Out::Coord();
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
 
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            //Vec<3,Real> v = xfrom[t->getLine(iline.lineIndex)[0]].getCenter() + xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
             const sofa::core::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
             defaulttype::Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
-            glColor3f ((GLfloat) iline.weight, (GLfloat) 0, (GLfloat) (1.0-iline.weight));
-            helper::gl::glVertexT(xto[verticeIndex]);
-            helper::gl::glVertexT(v);
-
+            colorVector.push_back(sofa::defaulttype::RGBAColor(iline.weight, 0.0, (1.0-iline.weight),1.0));
+            vertices.push_back(sofa::defaulttype::Vector3( xto[verticeIndex] ));
+            vertices.push_back(sofa::defaulttype::Vector3( v ));
         }
     }
-
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,1,colorVector);
 }
 
 template <class TIn, class TOut>

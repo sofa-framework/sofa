@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,7 @@
 
 
 // for memory :
-// SOFA_NEW_HEXA :
+// HEXA :
 //
 // 	     7----6
 //      /|   /|
@@ -105,10 +105,10 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
 
-    Data<bool> _finestToCoarse;
-    Data<int> _homogenizationMethod;
-    Data<bool> _completeInterpolation;
-    Data<bool> _useRamification;
+    Data<bool> _finestToCoarse; ///< Does the homogenization is done directly from the finest level to the coarse one?
+    Data<int> _homogenizationMethod; ///< 0->static, 1->constrained static, 2->modal analysis
+    Data<bool> _completeInterpolation; ///< Is the non-linear, complete interpolation used?
+    Data<bool> _useRamification; ///< If SparseGridRamification, are ramifications taken into account?
     Data<int> _drawType;
     Data<int> _drawColor;
     Data<float> _drawSize;
@@ -157,13 +157,9 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELDANDMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELDANDMASS_CPP)
+extern template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,8 +56,6 @@ namespace visualmodel
 
 //TODO(dmarchal): There is a large amount of #ifdef SOFA_HAVE_GLEW why ? Too much #ifdef is
 //a sign it is time to refactor the code.
-
-SOFA_DECL_CLASS(LightManager)
 
 //Register LightManager in the Object Factory
 int LightManagerClass = RegisterObject
@@ -170,7 +168,7 @@ void LightManager::putLight(Light::SPtr light)
 {
     if (m_lights.size() >= MAX_NUMBER_OF_LIGHTS)
     {
-        msg_error(this) << "The maximum of lights permitted ( "<< MAX_NUMBER_OF_LIGHTS << " ) has been reached." ;
+        msg_warning(this) << "The maximum of lights permitted ( "<< MAX_NUMBER_OF_LIGHTS << " ) has been reached." ;
         return ;
     }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,16 +23,14 @@
 #define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -67,7 +65,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -92,15 +90,15 @@ public:
         return DataTypes::Name();
     }
     bool initialized;
-    Data<std::string> InputMeshName;
-    Data<VecCoord> InputPositions;
-    Data<VecCoord> MappedPointPositions;
-    Data<VecCoord> BarycentricPositions;
-    Data< VecIndices> TableElements;
-    Data<bool> computeLinearInterpolation;
+    Data<std::string> InputMeshName; ///< Name and path of Input mesh Topology
+    Data<VecCoord> InputPositions; ///< Initial positions of the master points
+    Data<VecCoord> MappedPointPositions; ///< Initial positions of the mapped points
+    Data<VecCoord> BarycentricPositions; ///< Output : Barycentric positions of the mapped points
+    Data< VecIndices> TableElements; ///< Output : Table that provides the element index to which each input point belongs
+    Data<bool> computeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
 
-    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
-    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
+    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices; ///< Indices of a linear interpolation
+    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues; ///< Values of a linear interpolation
 
 private:
 
@@ -119,13 +117,9 @@ private:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

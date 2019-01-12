@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,12 +60,10 @@ void NormEngine<DataType>::reinit()
 }
 
 template <class DataType>
-void NormEngine<DataType>::update()
+void NormEngine<DataType>::doUpdate()
 {
     helper::ReadAccessor<Data<VecData> > in = d_input;
     int l = d_normType.getValue();
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecReal> > out = d_output;
 
@@ -73,7 +71,6 @@ void NormEngine<DataType>::update()
 
     for( size_t i=0 ; i<in.size() ; ++i )
         out[i] = in[i].lNorm(l);
-
 
 }
 

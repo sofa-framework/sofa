@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,18 +45,12 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(TESTPLUGIN_COMPONENT_B_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(TESTPLUGIN_COMPONENT_B_CPP)
 extern template class SOFA_TESTPLUGIN_API ComponentB<double>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2dTypes>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_TESTPLUGIN_API ComponentB<float>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2fTypes>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Rigid3fTypes>;
-#endif
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(TESTPLUGIN_COMPONENT_B_CPP)
+extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2Types>;
+extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Rigid3Types>;
+
+#endif //  !defined(TESTPLUGIN_COMPONENT_B_CPP)
 
 } // namespace test
 

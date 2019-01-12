@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -164,7 +164,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         OutVecCoord xout = create_childCoord();
         InVecCoord xin_init = create_initial_parentCoord();
 
-        const int Nin=xin_init.size(), Nout=xout.size();
+        size_t Nin=xin_init.size(), Nout=xout.size();
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
@@ -180,7 +180,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         OutVecCoord xout = create_childCoord();
         InVecCoord xin_init = create_initial_parentCoord();
 
-        const int Nin=xin_init.size(), Nout=xout.size();
+        size_t Nin=xin_init.size(), Nout=xout.size();
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
@@ -197,7 +197,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         OutVecCoord xout = create_childCoord();
         InVecCoord xin_init = create_initial_parentCoord();
 
-        const int Nin=xin_init.size(), Nout=xout.size();
+        size_t Nin=xin_init.size(), Nout=xout.size();
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
@@ -222,7 +222,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         OutVecCoord xout = create_childCoord();
         InVecCoord xin_init = create_initial_parentCoord();
 
-        const int Nin=xin_init.size(), Nout=xout.size();
+        size_t Nin=xin_init.size(), Nout=xout.size();
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
@@ -249,7 +249,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         OutVecCoord xout = create_childCoord();
         InVecCoord xin_init = create_initial_parentCoord();
 
-        const int Nin=xin_init.size(), Nout=xout.size();
+        size_t Nin = xin_init.size(), Nout=xout.size();
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 

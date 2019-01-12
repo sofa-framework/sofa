@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,23 +34,13 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(OglTetrahedralModel)
-
 int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
-#ifndef SOFA_FLOAT
-        .add< OglTetrahedralModel<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< OglTetrahedralModel<Vec3fTypes> >()
-#endif
+        .add< OglTetrahedralModel<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3fTypes>;
-#endif
+template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3Types>;
+
 
 }
 }

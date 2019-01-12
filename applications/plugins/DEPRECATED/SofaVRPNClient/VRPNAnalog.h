@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -70,7 +70,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels;
+    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels; ///< Channels
 
     VRPNAnalogData analogData;
 
@@ -91,13 +91,9 @@ private:
     //static void handle_analog(void *userdata, const vrpn_ANALOGCB a);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
+extern template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3Types>;
+ 
 #endif
 
 }

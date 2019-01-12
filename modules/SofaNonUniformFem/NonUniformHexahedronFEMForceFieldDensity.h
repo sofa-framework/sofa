@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,7 +98,7 @@ public:
 
 protected:
     sofa::core::objectmodel::DataFileName densityFile;
-    Data< Vec<3,unsigned int> > dimensionDensityFile;
+    Data< Vec<3,unsigned int> > dimensionDensityFile; ///< dimension of the RAW file
     vector< vector < vector<unsigned char > > >voxels;
     // 	  vector< int > stiffnessFactor;
     void computeCoarseElementStiffness( ElementStiffness &K, ElementMass &coarseMassElement, const int elementIndice,  int level);
@@ -109,16 +109,12 @@ protected:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldDensity<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldDensity<Vec3fTypes>;
-#endif
+extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldDensity<Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
 
 } // namespace forcefield
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,48 +33,26 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(DistanceMapping)
-SOFA_DECL_CLASS(DistanceMultiMapping)
-
-
 using namespace defaulttype;
 
 
 // Register in the Factory
 int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
-#ifndef SOFA_FLOAT
-        .add< DistanceMapping< Vec3dTypes, Vec1dTypes > >()
-        .add< DistanceMapping< Rigid3dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DistanceMapping< Vec3fTypes, Vec1fTypes > >()
-        .add< DistanceMapping< Rigid3fTypes, Vec1fTypes > >()
-#endif
+        .add< DistanceMapping< Vec3Types, Vec1Types > >()
+        .add< DistanceMapping< Rigid3Types, Vec1Types > >()
+
         ;
 int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
-#ifndef SOFA_FLOAT
-        .add< DistanceMultiMapping< Vec3dTypes, Vec1dTypes > >()
-        .add< DistanceMultiMapping< Rigid3dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DistanceMultiMapping< Vec3fTypes, Vec1fTypes > >()
-        .add< DistanceMultiMapping< Rigid3fTypes, Vec1fTypes > >()
-#endif
+        .add< DistanceMultiMapping< Vec3Types, Vec1Types > >()
+        .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Vec3dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Rigid3dTypes, Vec1dTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3Types, Vec1Types >;
+template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Vec3Types, Vec1Types >;
+template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Vec3fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Rigid3fTypes, Vec1fTypes >;
-#endif
 
 
 

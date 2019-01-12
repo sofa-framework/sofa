@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,10 +66,7 @@ public:
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
-
 protected:
-    //TopologyEngineImpl();
-
     TopologyEngineImpl(t_topologicalData* _topologicalData,
             sofa::core::topology::BaseMeshTopology* _topology,
             sofa::core::topology::TopologyHandler* _topoHandler);
@@ -80,7 +77,7 @@ public:
 
     virtual void reinit() override;
 
-    virtual void update() override;
+    virtual void doUpdate() override;
 
     void ApplyTopologyChanges();
 

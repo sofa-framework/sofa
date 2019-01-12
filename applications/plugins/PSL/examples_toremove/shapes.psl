@@ -1,0 +1,33 @@
+Template : {
+    name : "Sphere"
+    Node : {
+        MechanicalObject : { template="Rigid" }
+        UniformMass : { value="1.0" }
+        OglModel : {
+            filename : "meshes/sphere.obj"
+        }
+        TSphereModel : {}
+    }
+}
+Template : {
+    name : "Cube"
+    Node : {
+        MechanicalObject : { template="Rigid" }
+        UniformMass : { value="1.0" }
+        OglModel : {
+            filename : "meshes/cube.obj"
+        }
+        TSphereModel : {}
+    }
+}
+Template : {
+    name : "Plane"
+    Node : {
+        MechanicalObject : { template="Rigid" }
+        UniformMass : { value="1.0" }
+        OglModel : {
+            filename : "meshes/plane.obj"
+        }
+        TSphereModel : {}
+    }
+}

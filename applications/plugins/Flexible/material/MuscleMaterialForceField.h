@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,9 +51,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > f_lambda0;
-    Data<helper::vector<Real> > f_sigmaMax;
-    Data<helper::vector<Real> > f_a;
+    Data<helper::vector<Real> > f_lambda0; ///< optimal fiber stretch
+    Data<helper::vector<Real> > f_sigmaMax; ///< maximum isometric stress
+    Data<helper::vector<Real> > f_a; ///< activation level
     Data<helper::vector<Real> > f_b;
     Data<helper::vector<Real> > f_Vvm;
     Data<helper::vector<Real> > f_Ver;

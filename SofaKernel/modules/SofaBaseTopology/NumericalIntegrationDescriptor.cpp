@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,18 +32,11 @@ namespace topology
 using namespace sofa::defaulttype;
 
 
-#ifndef SOFA_FLOAT
 template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,4>;
 template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,3>;
 template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,1>;
 
-#endif
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,4>;
-template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,3>;
-template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,1>;
-#endif
 
 } // namespace topology
 

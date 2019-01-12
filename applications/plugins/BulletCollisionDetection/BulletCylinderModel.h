@@ -43,7 +43,7 @@ public:
 
     //typedef TBtTriangle<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     virtual void initBullet();
     virtual void updateBullet();
@@ -74,13 +74,9 @@ protected:
 
 typedef TBulletCylinderModel<defaulttype::RigidTypes> BulletCylinderModel;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3dTypes>;//je pense que les cylindres sont définis sur des rigides dans bullet
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylindres sont définis sur des rigides dans bullet
+
 #endif
 
 }}}

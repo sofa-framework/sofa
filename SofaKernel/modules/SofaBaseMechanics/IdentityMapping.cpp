@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,108 +39,43 @@ using namespace core;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(IdentityMapping)
-
 // Register in the Factory
 int IdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
-#ifndef SOFA_FLOAT
         .add< IdentityMapping< Vec3dTypes, Vec3dTypes > >()
-        .add< IdentityMapping< Vec2dTypes, Vec2dTypes > >()
-        .add< IdentityMapping< Vec1dTypes, Vec1dTypes > >()
-        .add< IdentityMapping< Vec6dTypes, Vec3dTypes > >()
-        .add< IdentityMapping< Vec6dTypes, Vec6dTypes > >()
-        .add< IdentityMapping< Rigid3dTypes, Rigid3dTypes > >()
-        .add< IdentityMapping< Rigid2dTypes, Rigid2dTypes > >()
-        .add< IdentityMapping< Vec3dTypes, ExtVec3fTypes > >()
-        .add< IdentityMapping< Vec6dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< IdentityMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< IdentityMapping< Vec2fTypes, Vec2fTypes > >()
-        .add< IdentityMapping< Vec1fTypes, Vec1fTypes > >()
-        .add< IdentityMapping< Vec6fTypes, Vec6fTypes > >()
-        .add< IdentityMapping< Rigid3fTypes, Rigid3fTypes > >()
-        .add< IdentityMapping< Rigid2fTypes, Rigid2fTypes > >()
-        .add< IdentityMapping< Vec3fTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< IdentityMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< IdentityMapping< Vec3dTypes, Vec3fTypes > >()
-        .add< IdentityMapping< Vec2fTypes, Vec2dTypes > >()
-        .add< IdentityMapping< Vec2dTypes, Vec2fTypes > >()
-        .add< IdentityMapping< Vec1fTypes, Vec1dTypes > >()
-        .add< IdentityMapping< Vec1dTypes, Vec1fTypes > >()
-        .add< IdentityMapping< Vec6fTypes, Vec6dTypes > >()
-        .add< IdentityMapping< Vec6dTypes, Vec6fTypes > >()
-        .add< IdentityMapping< Rigid3dTypes, Rigid3fTypes > >()
-        .add< IdentityMapping< Rigid3fTypes, Rigid3dTypes > >()
-        .add< IdentityMapping< Rigid2dTypes, Rigid2fTypes > >()
-        .add< IdentityMapping< Rigid2fTypes, Rigid2dTypes > >()
-#endif
-#endif
+        .add< IdentityMapping< Vec2Types, Vec2Types > >()
+        .add< IdentityMapping< Vec1Types, Vec1Types > >()
+        .add< IdentityMapping< Vec6Types, Vec3dTypes > >()
+        .add< IdentityMapping< Vec6Types, Vec6Types > >()
+        .add< IdentityMapping< Rigid3Types, Rigid3Types > >()
+        .add< IdentityMapping< Rigid2Types, Rigid2Types > >()
+        .add< IdentityMapping< Vec3dTypes, ExtVec3Types > >()
+        .add< IdentityMapping< Vec6Types, ExtVec3Types > >()
+
+
 
 // Rigid -> Vec
-#ifndef SOFA_FLOAT
-        .add< IdentityMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< IdentityMapping< Rigid2dTypes, Vec2dTypes > >()
-        .add< IdentityMapping< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< IdentityMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< IdentityMapping< Rigid2fTypes, Vec2fTypes > >()
-        .add< IdentityMapping< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< IdentityMapping< Rigid3Types, Vec3dTypes > >()
+        .add< IdentityMapping< Rigid2Types, Vec2Types > >()
+        .add< IdentityMapping< Rigid3Types, ExtVec3Types > >()
+
         ;
 
 
-#ifndef SOFA_FLOAT
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
-#endif
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2Types, Vec2Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1Types, Vec1Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, Vec6Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6Types, ExtVec3Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2Types, Rigid2Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3Types, ExtVec3Types >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2Types, Vec2Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
-template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
-#endif
-#endif
+
+
 
 
 } // namespace mapping

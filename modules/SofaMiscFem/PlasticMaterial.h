@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,15 +22,6 @@
 #ifndef SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
 #define SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
 #include "config.h"
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-//#define SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-#define SOFA_DOUBLE
-#endif
 
 #include <SofaMiscFem/BaseMaterial.h>
 #include <newmat/newmat.h>
@@ -63,8 +54,8 @@ public:
     typedef sofa::helper::vector<Vector3> VecStress;
 
 	// Material properties
-    Data<SReal> _poissonRatio;
-    Data<SReal> _youngModulus;
+    Data<SReal> _poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<SReal> _youngModulus; ///< Young modulus in Hooke's law
 
     // Stress-strain curve description
     VecDouble _E;

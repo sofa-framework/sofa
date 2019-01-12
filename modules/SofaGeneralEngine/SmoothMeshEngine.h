@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
@@ -60,18 +60,18 @@ protected:
 public:
     void init() override;
     void reinit() override;
-    void update() override;
+    void doUpdate() override;
 	void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<VecCoord> input_position;
-    Data<helper::vector <unsigned int> > input_indices;
-    Data<VecCoord> output_position;
+    Data<VecCoord> input_position; ///< Input position
+    Data<helper::vector <unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions
+    Data<VecCoord> output_position; ///< Output position
 
-    Data<unsigned int> nb_iterations;
+    Data<unsigned int> nb_iterations; ///< Number of iterations of laplacian smoothing
 
-    Data<bool> showInput;
-    Data<bool> showOutput;
+    Data<bool> showInput; ///< showInput
+    Data<bool> showOutput; ///< showOutput
 
     virtual std::string getTemplateName() const override
     {
@@ -87,13 +87,9 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

@@ -13,7 +13,7 @@
     <Node name="Cube" gravity="0 -9.81 0">
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-30 -10 -10" computeHexaList="0"/>
         <MechanicalObject template="Vec3d" name="Hexa" />
-        <UniformMass template="Vec3d" name="default25" mass="10" />
+        <UniformMass template="Vec3d" name="default25" vertexMass="10" />
         <HexahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="500" assembling="0" />
         <BoxROI template="Vec3d" name="box_roi" box="-31 9 -11 -9 11 11" indices="0" drawSize="0" />
         <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
@@ -36,7 +36,7 @@
     <Node name="Square" gravity="0 -9.81 0">
         <RegularGridTopology name="grid" n="6 1 6" min="-10 -10 -10" max="10 10 10" p0="-6 10 -10" computeHexaList="0"/>
         <MechanicalObject template="Vec3d" name="Tri" />
-        <UniformMass template="Vec3d" name="default25" mass="10" />
+        <UniformMass template="Vec3d" name="default25" vertexMass="10" />
         <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />
 <!--        <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" /> -->
         <BoxROI template="Vec3d" name="box_roi" box="-7 9 -11 17 11 -9" indices="0" drawBoxes="0" />
@@ -53,13 +53,12 @@
     <Node name="Line" gravity="0 -9.81 0">
         <RegularGridTopology name="grid" n="1 1 6" min="-10 -10 -10" max="10 10 10" p0="18 10 -10" computeHexaList="0"/>
         <MechanicalObject template="Vec3d" name="Edge" />
-        <UniformMass template="Vec3d" name="default25" mass="10" />
+        <UniformMass template="Vec3d" name="default25" vertexMass="10" />
 
         <RegularGridSpringForceField name="Springs" stiffness="300" damping="2" />
         <BoxROI template="Vec3d" name="box_roi" box="17 9 -11 20 11 -9" indices="0" drawBoxes="0" />
         <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
 
-        <EdgeSet />
         <Node name="Visu">
             <OglModel name="Visual" color="white" edges="@../grid.edges" />
             <IdentityMapping input="@../Edge" output="@Visual" />

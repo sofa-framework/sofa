@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,15 +23,13 @@
 #define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -66,8 +64,6 @@ public:
 
     void reinit() override;
 
-    void update() override;
-
     virtual std::string getTemplateName() const override
     {
         return templateName(this);
@@ -76,34 +72,27 @@ public:
     static std::string templateName(const TransformEngine<DataTypes>* = NULL)
     {
         return DataTypes::Name();
-    }
-
+    }    
 protected:
-    Data<VecCoord> f_inputX; // input position
-    Data<VecCoord> f_outputX; // ouput position
-    Data<defaulttype::Vector3> translation; // translation
-    Data<defaulttype::Vector3> rotation; // rotation
-    Data<defaulttype::Quaternion> quaternion; // quaternion rotation
-    Data<defaulttype::Vector3> scale; // scale
-    Data<bool> inverse;
+    void doUpdate() override;
+
+    Data<VecCoord> f_inputX; ///< input position
+    Data<VecCoord> f_outputX; ///< ouput position
+    Data<defaulttype::Vector3> translation; ///< translation
+    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<defaulttype::Quaternion> quaternion; ///< quaternion rotation
+    Data<defaulttype::Vector3> scale; ///< scale
+    Data<bool> inverse; ///< true to apply inverse transformation
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
+extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
+ 
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 #endif
 

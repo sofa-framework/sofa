@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,8 +41,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS ( CenterPointTopologicalMapping )
-
 // Register in the Factory
 int CenterPointTopologicalMappingClass = core::RegisterObject ( "" )
         .add< CenterPointTopologicalMapping >()
@@ -59,13 +57,7 @@ void CenterPointTopologicalMapping::init()
     {
         toModel->setNbPoints(fromModel->getNbHexahedra());
 
-#ifdef SOFA_FLOAT
-        typedef Vec3fTypes DataTypes;
-#else
-        typedef Vec3dTypes DataTypes;
-#endif
-
-        PointSetGeometryAlgorithms<DataTypes> *geomAlgo = NULL;
+        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = NULL;
         toModel->getContext()->get(geomAlgo);
 
         geomAlgo->getDOF()->resize(fromModel->getNbHexahedra());
@@ -90,7 +82,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
             {
             case core::topology::HEXAHEDRAADDED:
             {
-                const unsigned int nbHexaAdded = ( static_cast< const HexahedraAdded *>( *changeIt ) )->getNbAddedHexahedra();
+                const size_t nbHexaAdded = ( static_cast< const HexahedraAdded *>( *changeIt ) )->getNbAddedHexahedra();
                 to_pstm->addPointsProcess(nbHexaAdded);
                 to_pstm->addPointsWarning(nbHexaAdded, true);
                 to_pstm->propagateTopologicalChanges();

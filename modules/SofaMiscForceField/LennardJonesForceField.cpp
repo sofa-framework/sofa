@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
 
 #include <SofaMiscForceField/LennardJonesForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -38,23 +38,13 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
-SOFA_DECL_CLASS(LennardJonesForceField)
-
 int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
-#ifndef SOFA_FLOAT
-        .add< LennardJonesForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LennardJonesForceField<Vec3fTypes> >()
-#endif
+        .add< LennardJonesForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

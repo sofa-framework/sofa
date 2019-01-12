@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,8 +36,6 @@ namespace qt
 {
 
 using namespace defaulttype;
-
-SOFA_DECL_CLASS(HistogramDataWidget);
 
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<unsigned char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<double> >;

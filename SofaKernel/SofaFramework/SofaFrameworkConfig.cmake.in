@@ -14,7 +14,6 @@ sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLU
 
 set(SOFA_HAVE_ZLIB "@SOFA_HAVE_ZLIB@")
 set(SOFA_HAVE_GLEW "@SOFA_HAVE_GLEW@")
-set(SOFA_HAVE_GLUT "@SOFA_HAVE_GLUT@")
 set(SOFA_HAVE_BOOST "@SOFA_HAVE_BOOST@")
 set(SOFA_NO_OPENGL "@SOFA_NO_OPENGL@")
 set(SOFA_HAVE_GTEST "@SOFA_HAVE_GTEST@")
@@ -33,18 +32,14 @@ if(SOFA_HAVE_GLEW)
     sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}")
 endif()
 
-if(SOFA_HAVE_GLUT)
-    find_package(GLUT REQUIRED)
-    sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}")
-endif()
-
 if(SOFA_HAVE_BOOST)
-    find_package(Boost QUIET REQUIRED COMPONENTS system filesystem locale OPTIONAL_COMPONENTS date_time thread)
+    find_package(Boost QUIET REQUIRED COMPONENTS system filesystem locale program_options OPTIONAL_COMPONENTS date_time thread)
     
-    if(Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+    if(Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND AND Boost_PROGRAM_OPTIONS_FOUND)
         sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-        sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
         sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        sofa_create_target(BoostProgramOptions SofaFramework "${Boost_PROGRAM_OPTIONS_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     endif()
 
     if(Boost_DATE_TIME_FOUND)

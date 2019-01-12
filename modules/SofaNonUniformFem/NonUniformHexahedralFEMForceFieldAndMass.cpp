@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,24 +36,14 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
-
 // Register in the Factory
 int NonUniformHexahedralFEMForceFieldAndMassClass = core::RegisterObject("Non uniform Hexahedral finite elements")
-#ifndef SOFA_FLOAT
-        .add< NonUniformHexahedralFEMForceFieldAndMass<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< NonUniformHexahedralFEMForceFieldAndMass<Vec3fTypes> >()
-#endif
+        .add< NonUniformHexahedralFEMForceFieldAndMass<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedralFEMForceFieldAndMass<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedralFEMForceFieldAndMass<Vec3fTypes>;
-#endif
+template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedralFEMForceFieldAndMass<Vec3Types>;
+
 
 } // namespace forcefield
 

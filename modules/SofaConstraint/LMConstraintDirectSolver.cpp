@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -231,13 +231,10 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
                 {
                 case VANISHING:
                 {
-                    //                    serr <<"Constraint " << idxEquation << " VANISHING" << sendl;
-                    //0 equation
                     break;
                 }
                 case STICKING:
                 {
-                    //                    serr << "Constraint " <<idxEquation << " STICKING" << sendl;
                     const unsigned int i=rowsL.size();
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation  ));
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+1));
@@ -255,7 +252,6 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
                 }
                 case SLIDING:
                 {
-                    //                    serr << "Constraint " <<idxEquation << " SLIDING" << sendl;
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation  ));
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+1));
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+2));
@@ -312,15 +308,11 @@ void LMConstraintDirectSolver::buildLeftRectangularMatrix(const DofToMatrix& inv
         SparseMatrixEigen invMass_LT=invMass*LT.transpose();
 
         invMass_Ltrans.insert(std::make_pair(dofs, invMass_LT));
-        //SparseColMajorMatrixEigen temp=L*invMass_LT;
         LeftMatrix += L*invMass_LT;
     }
 }
 int LMConstraintDirectSolverClass = core::RegisterObject("A Direct Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintDirectSolver >();
-
-SOFA_DECL_CLASS(LMConstraintDirectSolver);
-
 
 } // namespace constraintset
 

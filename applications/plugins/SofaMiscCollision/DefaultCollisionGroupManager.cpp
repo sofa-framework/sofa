@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,8 +39,6 @@ namespace collision
 using core::collision::Contact;
 
 
-SOFA_DECL_CLASS(DefaultCollisionGroupManager);
-
 int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
         .add< DefaultCollisionGroupManager >()
         .addAlias( "CollisionGroupManager" )
@@ -48,15 +46,31 @@ int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for ga
         .addAlias( "TreeCollisionGroupManager" ) // for backward compatibility with old scene files but could be removed
         ;
 
+DefaultCollisionGroupManager::DefaultCollisionGroupManager(){}
+DefaultCollisionGroupManager::~DefaultCollisionGroupManager(){}
 
-
-
-DefaultCollisionGroupManager::DefaultCollisionGroupManager()
+template <class Container>
+void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,
+                                              simulation::Node::SPtr group)
 {
+    core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
+    while(!group->child.empty()) parent->moveChild(*group->child.begin());
+
+    simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
+    cleanupvis.execute(group.get());
+    simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
+    vis.execute(group.get());
+    group->detachFromGraph();
+    //delete group;
+    group.reset();
 }
 
-DefaultCollisionGroupManager::~DefaultCollisionGroupManager()
+
+void DefaultCollisionGroupManager::changeInstance(Instance inst)
 {
+    core::collision::CollisionGroupManager::changeInstance(inst);
+    storedGroupSet[instance].swap(groupSet);
+    groupSet.swap(storedGroupSet[inst]);
 }
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts)
@@ -240,7 +254,6 @@ void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /
     groupSet.clear();
     groups.clear();
 }
-
 
 
 simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)

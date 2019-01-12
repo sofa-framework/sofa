@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,22 +64,22 @@ public:
     Data< TransformType > transform;
 
     typedef defaulttype::RigidCoord<3,Real> RigidCoord;
-    Data< RigidCoord > d_position;
+    Data< RigidCoord > d_position; ///< position
 
     /** @name  Outputs */
     //@{
-    Data< Real > d_mass;
-    Data< Coord > d_inertia;
+    Data< Real > d_mass; ///< mass
+    Data< Coord > d_inertia; ///< axis-aligned inertia tensor
 
     typedef defaulttype::RigidMass<3,Real> RigidMass;
     typedef typename RigidMass::Mat3x3 Mat3x3;
-    Data< RigidMass > d_rigidMass;
+    Data< RigidMass > d_rigidMass; ///< rigidMass
     //@}
 
     /** @name  Inputs */
     //@{
-    Data< Real > d_density;
-    Data< bool > d_mult;
+    Data< Real > d_density; ///< density (in kg/m^3)
+    Data< bool > d_mult; ///< multiply density by image intensity?
     //@}
 
 
@@ -120,7 +120,7 @@ protected:
 
     unsigned int time;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         raTransform inT(this->transform);
         raImage in(this->image);
@@ -130,8 +130,6 @@ protected:
         Real d = d_density.getValue();
         bool mult = d_mult.getValue();
 
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< RigidCoord > > pos(this->d_position);
         helper::WriteOnlyAccessor<Data< RigidMass > > rigidMass(this->d_rigidMass);

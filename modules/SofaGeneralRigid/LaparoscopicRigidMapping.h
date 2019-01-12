@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,8 +58,8 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
 public:
-    Data< defaulttype::Vector3 > pivot;
-    Data< defaulttype::Quat > rotation;
+    Data< defaulttype::Vector3 > pivot; ///< Pivot point position
+    Data< defaulttype::Quat > rotation; ///< TODO-rotation
 protected:
     LaparoscopicRigidMapping()
         : Inherit()
@@ -91,7 +91,7 @@ protected:
     sofa::defaulttype::Quat currentRotation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
 extern template class SOFA_GENERAL_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 #endif
 

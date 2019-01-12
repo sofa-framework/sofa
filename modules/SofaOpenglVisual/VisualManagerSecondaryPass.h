@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,8 +51,8 @@ class SOFA_OPENGL_VISUAL_API VisualManagerSecondaryPass : public component::visu
 public:
     SOFA_CLASS(VisualManagerSecondaryPass, component::visualmodel::VisualManagerPass);
 
-    Data< sofa::core::objectmodel::TagSet > input_tags;
-    Data< sofa::core::objectmodel::TagSet > output_tags;
+    Data< sofa::core::objectmodel::TagSet > input_tags; ///< list of input passes used as source textures
+    Data< sofa::core::objectmodel::TagSet > output_tags; ///< output reference tag (use it if the resulting fbo is used as a source for another secondary pass)
     sofa::core::objectmodel::DataFileName fragFilename;
 
 protected:
@@ -74,9 +74,9 @@ public:
     void bindInput(core::visual::VisualParams* /*vp*/);
     void unbindInput();
 
-    helper::gl::FrameBufferObject* getFBO() override {return fbo;};
+    helper::gl::FrameBufferObject& getFBO() override {return *fbo;}
 
-    const sofa::core::objectmodel::TagSet& getOutputTags() {return output_tags.getValue();};
+    const sofa::core::objectmodel::TagSet& getOutputTags() {return output_tags.getValue();}
 
 private:
 

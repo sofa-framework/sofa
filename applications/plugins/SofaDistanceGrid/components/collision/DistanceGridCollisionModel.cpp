@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,8 +44,6 @@ namespace component
 
 namespace collision
 {
-
-SOFA_DECL_CLASS(DistanceGridCollisionModel)
 
 int RigidDistanceGridCollisionModelClass = core::RegisterObject("Grid-based distance field")
         .add< RigidDistanceGridCollisionModel >()
@@ -496,13 +494,9 @@ void FFDDistanceGridCollisionModel::init()
     }
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
-#ifdef SOFA_NEW_HEXA
     elems.resize(ffdMesh->getNbHexahedra());
     sout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
-#else
-    elems.resize(ffdMesh->getNbHexahedra());
-    sout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbCubes()<<" cubes."<<sendl;
-#endif
+
     for (int i=0; i<nbp; i++)
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
@@ -526,26 +520,18 @@ void FFDDistanceGridCollisionModel::init()
     }
     /// fill other data and remove inactive elements
 
-#ifdef SOFA_NEW_HEXA
     sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
     int c=0;
     for (int e=0; e<ffdMesh->getNbHexahedra(); e++)
-#else
-    sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbCubes()<<" cubes."<<sendl;
-    int c=0;
-    for (int e=0; e<ffdMesh->getNbCubes(); e++)
-#endif
     {
         if (c != e)
             elems[c].points.swap(elems[e].points); // move the list of points to the new
         elems[c].elem = e;
-#ifdef SOFA_NEW_HEXA
+
         core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
         { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
         { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
-#else
-        core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
-#endif
+
         elems[c].initP0 = GCoord(ffdMesh->getPX(cube[0]), ffdMesh->getPY(cube[0]), ffdMesh->getPZ(cube[0]));
         elems[c].initDP = GCoord(ffdMesh->getPX(cube[7]), ffdMesh->getPY(cube[7]), ffdMesh->getPZ(cube[7]))-elems[c].initP0;
         elems[c].invDP[0] = 1/elems[c].initDP[0];
@@ -562,13 +548,10 @@ void FFDDistanceGridCollisionModel::init()
     for (unsigned i = 0; i < elems.size(); ++i)
     {
         int e = elems[i].elem;
-#ifdef SOFA_NEW_HEXA
         core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
         { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
         { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
-#else
-        core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
-#endif
+
         for (int j=0; j<8; ++j)
             shells[cube[j]].insert(i);
     }
@@ -576,13 +559,10 @@ void FFDDistanceGridCollisionModel::init()
     for (unsigned i = 0; i < elems.size(); ++i)
     {
         int e = elems[i].elem;
-#ifdef SOFA_NEW_HEXA
         core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
         { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
         { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
-#else
-        core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
-#endif
+
         for (int j=0; j<8; ++j)
             elems[i].neighbors.insert(shells[cube[j]].begin(), shells[cube[j]].end());
         elems[i].neighbors.erase(i);
@@ -647,22 +627,15 @@ void FFDDistanceGridCollisionModel::updateGrid()
     for (int index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
-#ifdef SOFA_NEW_HEXA
         const sofa::helper::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
-#else
-        const sofa::helper::vector<core::topology::BaseMeshTopology::Cube>& cubeCorners = ffdMesh->getCubes();
-#endif
+
         const Vec3Types::VecCoord& x = ffd->read(core::ConstVecCoordId::position())->getValue();
         {
             int e = cube.elem;
             DistanceGrid::Coord center;
-#ifdef SOFA_NEW_HEXA
             core::topology::BaseMeshTopology::Hexa c = cubeCorners[e];
             { int t = c[2]; c[2] = c[3]; c[3] = t; }
             { int t = c[6]; c[6] = c[7]; c[7] = t; }
-#else
-            core::topology::BaseMeshTopology::Cube c = cubeCorners[e];
-#endif
 
             for (int j=0; j<8; j++)
             {

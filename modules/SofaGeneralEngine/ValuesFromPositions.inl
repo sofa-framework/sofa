@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,9 @@
 #ifndef SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_INL
 #define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/ValuesFromPositions.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
@@ -280,12 +276,8 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::update()
+void ValuesFromPositions<DataTypes>::doUpdate()
 {
-    updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
-
-    cleanDirty();
-
     TempData data;
     data.dir = f_direction.getValue();
     data.inputValues = f_inputValues.getValue();
@@ -415,22 +407,24 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
+void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (p_drawVectors.getValue())
     {
-        glDisable(GL_LIGHTING);
+        vparams->drawTool()->disableLighting();
+
         const VecCoord* x0 = &f_X0.getValue();
         helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
         helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;
-        sofa::defaulttype::Vec<3,float> colors(0,0,1);
+        std::vector<sofa::defaulttype::Vec4f> colors;
 
         float vectorLength = p_vectorLength.getValue();
-        glBegin(GL_LINES);
-
+        sofa::defaulttype::Vec4f color = sofa::defaulttype::RGBAColor::black();
+        std::vector<sofa::defaulttype::Vector3> vertices;
         for (unsigned int i =0; i<tetrahedronVectors.size(); i++)
         {
             Tetra t = tetrahedra[i];
@@ -442,17 +436,18 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
             point2 = point1 + tetrahedronVectors[i]*vectorLength;
 
             for(unsigned int j=0; j<3; j++)
-                colors[j] = (float)fabs (tetrahedronVectors[i][j]);
+                color[j] = (float)fabs (tetrahedronVectors[i][j]);
 
-            glColor3f (colors[0], colors[1], colors[2]);
-
-            glVertex3d(point1[0], point1[1], point1[2]);
-            glVertex3d(point2[0], point2[1], point2[2]);
+            colors.push_back(color);
+            colors.push_back(color);
+            
+            vertices.push_back(point1);
+            vertices.push_back(point2);
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 1.0, colors);
 
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

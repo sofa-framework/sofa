@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -286,13 +286,12 @@ void FrameFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
 }
 
 //            // Specialization for rigids
-//#ifndef SOFA_FLOAT
+////            template <>
+//                    void FrameFixedConstraint<Rigid3Types >::draw();
 //            template <>
-//                    void FrameFixedConstraint<Rigid3dTypes >::draw();
-//            template <>
-//                    void FrameFixedConstraint<Rigid2dTypes >::draw();
-//#endif
-//#ifndef SOFA_DOUBLE
+//                    void FrameFixedConstraint<Rigid2Types >::draw();
+//
+//#ifdef SOFA_WITH_FLOAT
 //            template <>
 //                    void FrameFixedConstraint<Rigid3fTypes >::draw();
 //            template <>

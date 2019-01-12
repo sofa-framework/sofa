@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,8 +29,6 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
-#include <sofa/helper/gl/template.h>
 
 #include <string>
 #include <iostream>
@@ -141,6 +139,10 @@ void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams
 template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowMapping()) return;
+
+    vparams->drawTool()->saveLastState();
+
     const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< sofa::defaulttype::Vector3 > points;
@@ -156,6 +158,8 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
     }
 
     vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

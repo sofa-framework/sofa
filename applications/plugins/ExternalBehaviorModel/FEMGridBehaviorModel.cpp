@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP
 
 #include "FEMGridBehaviorModel.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -35,24 +35,11 @@ namespace externalBehaviorModel
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FEMGridBehaviorModel)
-
 // Register in the Factory (XML read/write...)
 int FEMGridBehaviorModelModelClass = core::RegisterObject("FEMGridBehaviorModel Example")
-#ifndef SOFA_FLOAT
-        .add< FEMGridBehaviorModel<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FEMGridBehaviorModel<Vec3fTypes> >()
-#endif
-        ;
+        .add< FEMGridBehaviorModel<Vec3Types> >();
 
-#ifndef SOFA_FLOAT
-template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<Vec3fTypes>;
-#endif
+template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<Vec3Types>;
 
 
 } // namespace externalBehaviorModel

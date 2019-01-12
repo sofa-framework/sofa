@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,9 @@
 #define SOFA_COMPONENT_ENGINE_CLUSTERING_INL
 
 #include <SofaGeneralEngine/ClusteringEngine.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -89,7 +89,7 @@ void ClusteringEngine<DataTypes>::init()
 
 
 template <class DataTypes>
-void ClusteringEngine<DataTypes>::update()
+void ClusteringEngine<DataTypes>::doUpdate()
 {
     if(load()) return;
 
@@ -158,7 +158,6 @@ void ClusteringEngine<DataTypes>::update()
     }
 
     save();
-    cleanDirty();
 }
 
 
@@ -305,7 +304,6 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
-    input_filename.update();
     string fname(this->input_filename.getFullPath());
     if(!fname.compare(loadedFilename)) return true;
 
@@ -371,22 +369,21 @@ bool ClusteringEngine<DataTypes>::save()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (vparams->displayFlags().getShowBehaviorModels())
     {
         if(this->mstate==NULL)
             return;
 
+        vparams->drawTool()->saveLastState();
+
         const VecCoord& currentPositions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         ReadAccessor< Data< VVI > > clust = this->d_cluster;
         const unsigned int nbp = currentPositions.size();
 
-        glPushAttrib( GL_LIGHTING_BIT);
-
-        glDisable(GL_LIGHTING);
-
-        glBegin(GL_LINES);
-
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::defaulttype::Vec4f> colors;
+        vparams->drawTool()->disableLighting();
+        
         float r, g, b;
 
         for (unsigned int i=0 ; i<clust.size() ; ++i)
@@ -395,21 +392,21 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
             g = (float)((i*1357)%13)/13;
             b = (float)((i*4829)%17)/17;
 
-            glColor3f(r,g,b);
+            colors.push_back(sofa::defaulttype::RGBAColor(r, g, b, 1.0));
+            colors.push_back(sofa::defaulttype::RGBAColor(r, g, b, 1.0));
 
             VI::const_iterator it, itEnd;
             for (it = clust[i].begin()+1, itEnd = clust[i].end(); it != itEnd ; ++it)
                 if(*it<nbp) // discard visualization of fixed particles (as their current positions is unknown)
                 {
-                    helper::gl::glVertexT(currentPositions[clust[i].front()]);
-                    helper::gl::glVertexT(currentPositions[*it]);
+                    vertices.push_back(currentPositions[clust[i].front()]);
+                    vertices.push_back(currentPositions[*it]);
                 }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 1.0, colors);
 
-        glPopAttrib();
+        vparams->drawTool()->restoreLastState();
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,13 @@ namespace core
     /// to be able to check when selected Data changed since their last clean.
     ///
     /// The Data must be added to tracking system by calling "trackData".
-    /// Then it can be checked if it changed with "isDirty" since its last "clean".
+    /// Then it can be checked if it changed with "hasChanged" since its last "clean".
+    /// 
+    /// Use datatrackers to check if your data have changed! Do not use 
+    /// BaseData's "isDirty()" method, as it has a completely different purpose:
+    /// BaseData::isDirty() checks whether or not the data is up-to-date with its
+    /// parent values while DataTracker::hasChanged(myData) checks whether the data
+    /// has been modified since it has last been checked 
     struct SOFA_CORE_API DataTracker
     {
         /// select a Data to track to be able to check
@@ -42,12 +48,12 @@ namespace core
         /// @see isTrackedDataDirty
         void trackData( const objectmodel::BaseData& data );
 
-        /// Was the tracked Data dirtied since last update?
+        /// Did the data change since its last access?
         /// @warning data must be a tracked Data @see trackData
-        bool isDirty( const objectmodel::BaseData& data );
+        bool hasChanged( const objectmodel::BaseData& data );
 
-        /// Was one of the tracked Data dirtied since last update?
-        bool isDirty();
+        /// Did one of the tracked data change since the last call to clean()?
+        bool hasChanged();
 
         /// comparison point is cleaned for the specified tracked Data
         /// @warning data must be a tracked Data @see trackData

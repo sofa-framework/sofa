@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,7 +51,6 @@ using namespace helper::gl;
 using namespace simulation;
 using namespace core::visual;
 
-SOFA_DECL_CLASS(VisualManagerPass)
 //Register LightManager in the Object Factory
 int VisualManagerPassClass = core::RegisterObject("VisualManagerPass")
         .add< VisualManagerPass >()
@@ -96,7 +95,6 @@ void VisualManagerPass::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);
-    fbo = new FrameBufferObject(true, true, true, true);
 }
 
 /* herited from VisualModel */
@@ -108,6 +106,8 @@ void VisualManagerPass::initVisual()
     passWidth = (GLint) ((float)viewport[2]*factor.getValue());
     passHeight = (GLint)((float)viewport[3] * factor.getValue());
 
+    fbo = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new FrameBufferObject(true, true, true, true));
     fbo->init(passWidth, passHeight);
 }
 

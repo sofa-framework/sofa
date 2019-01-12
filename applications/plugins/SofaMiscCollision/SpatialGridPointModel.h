@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaSphFluid/SpatialGridContainer.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
 namespace sofa
@@ -46,7 +46,7 @@ public:
     typedef container::SpatialGridContainer<defaulttype::Vec3Types> GridContainer;
     typedef GridContainer::Grid Grid;
 
-    Data<int> d_leafScale;
+    Data<int> d_leafScale; ///< at which level should the first cube layer be constructed. Note that this must not be greater than GRIDDIM_LOG2
 protected:
     SpatialGridPointModel();
 public:

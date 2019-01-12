@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include "initMiscFEM.h"
 #include <sofa/core/behavior/ForceField.h>
@@ -154,13 +152,13 @@ public :
     bool m_updateMatrix;
     bool  m_meshSaved ;
 
-    Data<bool> d_stiffnessMatrixRegularizationWeight;
-    Data<string> d_materialName; /// the name of the material
-    Data<SetParameterArray> d_parameterSet;
-    Data<SetAnisotropyDirectionArray> d_anisotropySet;
+    Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
+    Data<string> d_materialName; ///< the name of the material
+    Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
+    Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material
 
-    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo;
-    EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo;
+    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo; ///< Internal tetrahedron data
+    EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo; ///< Internal edge data
    
 public:
 
@@ -229,16 +227,12 @@ public:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3fTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 

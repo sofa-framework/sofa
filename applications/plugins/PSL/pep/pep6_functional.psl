@@ -1,0 +1,22 @@
+/// Could we expose Scene functionalities as Template
+Node : {
+    /// This would load all the files in the directory to build a big "imported" ast.
+    Import : "functionals"
+    Alias : functionals.Repeat as Repeat
+    Alias : functionals.Do as Do
+
+    Repeat : {
+        times : 10
+        Node : {
+            name : "test"
+        }
+    }
+
+    Do : {
+        Node : {
+            Cube
+        }
+        if : p"3==3"
+    }
+
+}

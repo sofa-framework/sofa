@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,13 +24,10 @@
 #include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/IntrCapsuleOBB.h>
-#include <cmath>
 
 namespace sofa
 {
@@ -155,7 +152,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP)
 extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>&, TCapsule<sofa::defaulttype::Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>&, TCapsule<sofa::defaulttype::RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::RigidTypes>&, TCapsule<sofa::defaulttype::RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);

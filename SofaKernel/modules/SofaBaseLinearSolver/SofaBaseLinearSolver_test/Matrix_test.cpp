@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 /** Sparse matrix test suite.
  *
  * The same suite is instanciated using different parameters: entry types
- * (float/double) and BlockMN size in CompressedRowSparse.
+ * (float/Real) and BlockMN size in CompressedRowSparse.
 */
 
 #include <SofaTest/Sofa_test.h>
@@ -47,14 +47,14 @@
 #if BENCHMARK_MATRIX_PRODUCT
 #include <ctime>
 using sofa::helper::system::thread::CTime;
-double get_time() {
+Real get_time() {
     CTime * timer;
-    return (double) timer->getTime();
+    return (Real) timer->getTime();
 }
 #endif
 
-
-namespace sofa {
+namespace sofa
+{
 
 
 /** Sparse matrix test suite.
@@ -244,7 +244,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             a.beginRow(i);
             for( unsigned j=0; j<NCOLS; j++)
             {
-                double valij = i*NCOLS+j;
+                Real valij = i*NCOLS+j;
                 a.insertBack(i,j,valij);
                 if( i==j )
                     b.add(i,j,valij);
@@ -253,21 +253,17 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         a.compress();
         b.compress();
 
-        //    cerr<<"MatrixTest<Real,RN,CN>::checkEigenMatrixUpdate, a = " << a << endl;
-        //    cerr<<"MatrixTest<Real,RN,CN>::checkEigenMatrixUpdate, b incomplete = " << b << endl;
-
         // second pass for b. Some values are set with the right value, some with the wrong value, some are not set
         for( unsigned j=0; j<NCOLS; j++)
         {
             for( unsigned i=0; i<NROWS; i++)
             {
-                double valij = i*NCOLS+j;
+                Real valij = i*NCOLS+j;
                 if( i!=j )
                     b.add(i,j,valij);
             }
         }
         b.compress();
-        //    cerr<<"MatrixTest<Real,RN,CN>::checkEigenMatrixUpdate, b complete = " << b << endl;
         return Sofa_test<_Real>::matrixMaxDiff(a,b) < 100 * Sofa_test<_Real>::epsilon();
     }
 
@@ -279,11 +275,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         unsigned br=3, bc=3;
         ma.resize(br*BROWS,bc*BCOLS);
 
-
-
-
         // building with unordered blocks
-
         mb.resizeBlocks(br,bc);
         for( unsigned i=0; i<br; i++ )
         {
@@ -307,14 +299,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         }
         mb.compress();
 
-
-        //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
-        //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, mb = " << mb << endl;
         ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
-
-
-
-
 
         // building with ordered blocks
 
@@ -404,10 +389,6 @@ struct TestSparseMatrices : public Sofa_test<_Real>
 
     bool checkEigenMatrixBlockFromCompressedRowSparseMatrix()
     {
-//        if( !matricesAreEqual(crs1,eiBlock3)){
-//            cout<<"heckEigenMatrixBlockFromCompressedRowSparseMatrix, crs1 = " << crs1 << endl;
-//            cout<<"heckEigenMatrixBlockFromCompressedRowSparseMatrix, eiBlock3 = " << eiBlock3 << endl;
-//        }
         return Sofa_test<_Real>::matrixMaxDiff(crs1,eiBlock3) < 100*Sofa_test<_Real>::epsilon();
     }
 
@@ -425,35 +406,34 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     }
 };
 
-#ifndef SOFA_FLOAT
 ///////////////////
-// double precision
+// Real precision
 ///////////////////
 // trivial blocs
-typedef TestSparseMatrices<double,4,8,4,8> Ts4848;
+typedef TestSparseMatrices<SReal,4,8,4,8> Ts4848;
 #define TestMatrix Ts4848
 #include "Matrix_test.inl"
 #undef TestMatrix
 
 //// semi-trivial blocs
-typedef TestSparseMatrices<double,4,8,4,2> Ts4842;
+typedef TestSparseMatrices<SReal,4,8,4,2> Ts4842;
 #define TestMatrix Ts4842
 #include "Matrix_test.inl"
 #undef TestMatrix
 
-typedef TestSparseMatrices<double,4,8,1,8> Ts4818;
+typedef TestSparseMatrices<SReal,4,8,1,8> Ts4818;
 #define TestMatrix Ts4818
 #include "Matrix_test.inl"
 #undef TestMatrix
 
 // well-fitted blocs
-typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
+typedef TestSparseMatrices<SReal,4,8,2,2> Ts4822;
 #define TestMatrix Ts4822
 #include "Matrix_test.inl"
 #undef TestMatrix
 
 /// not fitted blocs
-//typedef TestSparseMatrices<double,4,8,2,3> Ts4823;
+//typedef TestSparseMatrices<Real,4,8,2,3> Ts4823;
 //#define TestMatrix Ts4823
 //#include "Matrix_test.inl"
 //#undef TestMatrix
@@ -461,12 +441,12 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 
 #if BENCHMARK_MATRIX_PRODUCT
 ///// product timing
-typedef TestSparseMatrices<double,360,300,3,3> TsProductTimings;
+typedef TestSparseMatrices<Real,360,300,3,3> TsProductTimings;
 TEST_F(TsProductTimings, benchmark )
 {
     msg_info()<<"=== Matrix-Matrix Products:"<<std::endl;
 
-    double start, stop;
+    Real start, stop;
 
     matMultiplication.clear();
     start = get_time();
@@ -541,13 +521,13 @@ TEST_F(TsProductTimings, benchmark )
             }
         }
 
-        double min=std::numeric_limits<double>::max(), max=0, sum=0;
+        Real min=std::numeric_limits<Real>::max(), max=0, sum=0;
         for( int i=0; i<100 ; ++i )
         {
             start = get_time();
             res.noalias() = A * rhs;
             stop = get_time();
-            double current = stop-start;
+            Real current = stop-start;
             sum+=current;
             if( current<min ) min=current;
             if( current>max ) max=current;
@@ -558,7 +538,7 @@ TEST_F(TsProductTimings, benchmark )
 
 
     #ifdef _OPENMP
-        min=std::numeric_limits<double>::max(), max=0, sum=0;
+        min=std::numeric_limits<Real>::max(), max=0, sum=0;
         for( int i=0; i<100 ; ++i )
         {
             start = get_time();
@@ -566,7 +546,7 @@ TEST_F(TsProductTimings, benchmark )
 //            component::linearsolver::mul_EigenSparseDenseMatrix_MT( res, A, rhs );
             res.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( A, rhs );
             stop = get_time();
-            double current = stop-start;
+            Real current = stop-start;
             sum+=current;
             if( current<min ) min=current;
             if( current>max ) max=current;
@@ -579,38 +559,6 @@ TEST_F(TsProductTimings, benchmark )
 
     ASSERT_TRUE( true );
 }
-
-#endif
-
-#endif
-
-#ifndef SOFA_DOUBLE
-///////////////////
-// simple precision
-// The macro EIGEN_DONT_ALIGN is needed for float on windows
-///////////////////
-// trivial blocs
-typedef TestSparseMatrices<float,4,8,4,8> Ts4848f;
-#define TestMatrix Ts4848f
-#include "Matrix_test.inl"
-#undef TestMatrix
-
-// semi-trivial blocs
-typedef TestSparseMatrices<float,4,8,4,2> Ts4842f;
-#define TestMatrix Ts4842f
-#include "Matrix_test.inl"
-#undef TestMatrix
-
-typedef TestSparseMatrices<float,4,8,1,8> Ts4818f;
-#define TestMatrix Ts4818f
-#include "Matrix_test.inl"
-#undef TestMatrix
-
-/// well-fitted blocs
-typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
-#define TestMatrix Ts4822f
-#include "Matrix_test.inl"
-#undef TestMatrix
 
 #endif
 

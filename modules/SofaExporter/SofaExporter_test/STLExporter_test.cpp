@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,7 +76,8 @@ public:
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <OglModel fileMesh='mesh/liver-smooth.obj'/>                   \n"
+                "   <MeshObjLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
+                "   <OglModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
@@ -108,7 +109,8 @@ public:
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <OglModel fileMesh='mesh/liver-smooth.obj'/>                   \n"
+                "   <MeshObjLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
+                "   <OglModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,22 +33,15 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(VolumePreservationForceField);
-
 using namespace defaulttype;
 
 // Register in the Factory
 int VolumePreservationForceFieldClass = core::RegisterObject("volume Preservation law for isotropic homogeneous materials")
-
         .add< VolumePreservationForceField< I331Types > >(true)
-//.add< VolumePreservationForceField< I332Types > >()
-//.add< VolumePreservationForceField< I333Types > >()
         .add< VolumePreservationForceField< U331Types > >()
         ;
 
 template class SOFA_Flexible_API VolumePreservationForceField< I331Types >;
-//template class SOFA_Flexible_API VolumePreservationForceField< I332Types >;
-//template class SOFA_Flexible_API VolumePreservationForceField< I333Types >;
 template class SOFA_Flexible_API VolumePreservationForceField< U331Types >;
 
 }

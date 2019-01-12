@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/gl/template.h>
 #include <SofaOpenglVisual/OglShader.h>
@@ -280,7 +280,7 @@ class SOFA_OPENGL_VISUAL_API OglMatrix2Variable : public OglVariable<helper::vec
 public:
     SOFA_CLASS(OglMatrix2Variable,OglVariable<helper::vector<float> >);
 
-    Data<bool> transpose;
+    Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
 
     OglMatrix2Variable();
     virtual ~OglMatrix2Variable() { }
@@ -398,7 +398,7 @@ public:
     virtual void init() override;
     virtual void initVisual() override;
 
-    Data<bool> transpose;
+    Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
     virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
 
 };

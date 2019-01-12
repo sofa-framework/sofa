@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,25 +34,14 @@ namespace mass {
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(AffineMass)
-
 // Register in the Factory
 int AffineMassClass = core::RegisterObject("Mass for affine frames")
-        #ifndef SOFA_FLOAT
-        .add< AffineMass< Affine3dTypes > >()
-        #endif
-        #ifndef SOFA_DOUBLE
-        .add< AffineMass< Affine3fTypes > >()
-        #endif
+                .add< AffineMass< Affine3Types > >()
+        
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API AffineMass<  Affine3dTypes >;
-#endif
+template class SOFA_Flexible_API AffineMass<  Affine3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API AffineMass< Affine3fTypes >;
-#endif
 
 
 } // namespace mass

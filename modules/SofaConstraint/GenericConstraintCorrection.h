@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,26 +23,24 @@
 #define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
 #include "config.h"
 
-#include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
+namespace sofa
+{
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+namespace core { namespace behavior { class OdeSolver; class LinearSolver; } }
 
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 
-namespace sofa {
+namespace component
+{
 
-namespace component {
+namespace constraintset
+{
 
-namespace constraintset {
-
-class GenericConstraintCorrection : public sofa::core::behavior::BaseConstraintCorrection {
+class GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
+{
 public:
-    SOFA_CLASS(GenericConstraintCorrection, sofa::core::behavior::BaseConstraintCorrection);
+    SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
 
 protected:
     GenericConstraintCorrection();
@@ -50,7 +48,7 @@ protected:
 
 public:
     virtual void bwdInit() override;
-    
+
     virtual void cleanup() override;
 
     virtual void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
@@ -59,17 +57,20 @@ private:
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
 public:
-    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
+
+    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
+
+    virtual void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
+    virtual void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda) override;
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
     virtual void rebuildSystem(double massFactor, double forceFactor) override;
 
@@ -77,20 +78,26 @@ public:
 
     virtual void resetContactForce() override;
 
-    virtual void computeResidual(const sofa::core::ExecParams* /*params*/, sofa::defaulttype::BaseVector *lambda) override;
+    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
-    Data< helper::vector< std::string > >  solverName;
+    Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
+    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
+    Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
-    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg) {
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
         return BaseConstraintCorrection::canCreate(obj, context, arg);
     }
 
 protected:
 
-    sofa::core::behavior::OdeSolver* odesolver;
-    std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
+    void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
+                               core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
+
+    core::behavior::OdeSolver* m_ODESolver;
+    std::vector< core::behavior::LinearSolver* > m_linearSolvers;
 };
 
 } // namespace collision
@@ -99,4 +106,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H

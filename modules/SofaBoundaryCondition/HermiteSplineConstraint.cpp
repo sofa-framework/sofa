@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP
 #include <SofaBoundaryCondition/HermiteSplineConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -35,28 +35,15 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS(HermiteSplineConstraint)
-
-
 int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
-#ifndef SOFA_FLOAT
-        .add< HermiteSplineConstraint<defaulttype::Vec3dTypes> >()
-        .add< HermiteSplineConstraint<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HermiteSplineConstraint<defaulttype::Vec3fTypes> >()
-        .add< HermiteSplineConstraint<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< HermiteSplineConstraint<defaulttype::Vec3Types> >()
+        .add< HermiteSplineConstraint<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
-template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class HermiteSplineConstraint<defaulttype::Rigid3fTypes>;
-template class HermiteSplineConstraint<defaulttype::Vec3fTypes>;
-#endif
+template class HermiteSplineConstraint<defaulttype::Rigid3Types>;
+template class HermiteSplineConstraint<defaulttype::Vec3Types>;
+
 
 
 

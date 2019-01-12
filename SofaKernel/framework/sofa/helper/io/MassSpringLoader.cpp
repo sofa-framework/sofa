@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,6 +105,7 @@ bool MassSpringLoader::load(const char *filename)
                 msg_error("MassSpringLoader") << "fscanf function has encountered an error." ;
                 setNumMasses(0);
                 setNumSprings(0);
+                fclose(file);
                 return false;
             }
             setNumMasses(totalNumMasses);
@@ -114,6 +115,7 @@ bool MassSpringLoader::load(const char *filename)
                 msg_error("MassSpringLoader") << "fscanf function has encountered an error." ;
                 setNumMasses(0);
                 setNumSprings(0);
+                fclose(file);
                 return false;
             }
             setNumSprings(totalNumSprings);
@@ -130,6 +132,7 @@ bool MassSpringLoader::load(const char *filename)
                                       << "Either the file is broken or is a file describing a rigid object." ;
         setNumMasses(0);
         setNumSprings(0);
+        fclose(file);
         return false;
     }
 

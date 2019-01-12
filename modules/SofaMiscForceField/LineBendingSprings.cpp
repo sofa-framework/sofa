@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,7 @@
 #include <SofaMiscForceField/LineBendingSprings.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -50,28 +50,16 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(LineBendingSprings)
-
 // Register in the Factory
 int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline to prevent bending")
-#ifndef SOFA_FLOAT
-        .add< LineBendingSprings<Vec3dTypes> >()
-        .add< LineBendingSprings<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LineBendingSprings<Vec3fTypes> >()
-        .add< LineBendingSprings<Vec2fTypes> >()
-#endif
+        .add< LineBendingSprings<Vec3Types> >()
+        .add< LineBendingSprings<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3dTypes>;
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3fTypes>;
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2fTypes>;
-#endif
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3Types>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2Types>;
+
 
 } // namespace interactionforcefield
 

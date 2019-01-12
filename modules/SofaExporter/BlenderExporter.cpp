@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,19 +32,11 @@ namespace sofa
         {
             using namespace defaulttype;
 
-            SOFA_DECL_CLASS(BlenderExporter)
-
                 int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
-#ifndef SOFA_FLOAT
                 .add< BlenderExporter<Vec3dTypes> >()
-                .add< BlenderExporter<Rigid3dTypes> >()
-				.add< BlenderExporter<ExtVec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-				.add< BlenderExporter<Vec3fTypes> >()
-				.add< BlenderExporter<Rigid3fTypes> >()
-				.add< BlenderExporter<ExtVec3fTypes> >()
-#endif
+                .add< BlenderExporter<Rigid3Types> >()
+				.add< BlenderExporter<ExtVec3Types> >()
+
 				;
 
         } // namespace misc

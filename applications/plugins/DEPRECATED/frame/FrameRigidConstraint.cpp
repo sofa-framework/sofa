@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,30 +38,16 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameRigidConstraint);
-
 int FrameRigidConstraintClass = core::RegisterObject("Rigidify a deformable frame")
-#ifndef SOFA_FLOAT
         .add< FrameRigidConstraint<Affine3dTypes> >()
         .add< FrameRigidConstraint<Quadratic3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FrameRigidConstraint<Affine3fTypes> >()
-        .add< FrameRigidConstraint<Quadratic3fTypes> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameRigidConstraint<Affine3dTypes>;
 
 template class SOFA_FRAME_API FrameRigidConstraint<Affine3fTypes>;
-#endif
-#ifndef SOFA_DOUBLE
 
-template class SOFA_FRAME_API FrameRigidConstraint<Quadratic3dTypes>;
-
-template class SOFA_FRAME_API FrameRigidConstraint<Quadratic3fTypes>;
-#endif
 
 } // namespace projectiveconstraintset
 

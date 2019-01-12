@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ void UniformMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassCuda3f_addMDx(dx.size(), (float)(d_mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassCuda3f_addMDx(dx.size(), (float)(d_vertexMass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -92,7 +92,7 @@ void UniformMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* 
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassCuda3f_accFromF(f.size(), d_mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassCuda3f_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -108,7 +108,7 @@ void UniformMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* 
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_mass.getValue();
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassCuda3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
@@ -120,7 +120,7 @@ void UniformMass<CudaVec3f1Types, float>::addMDx(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassCuda3f1_addMDx(dx.size(), (float)(d_mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassCuda3f1_addMDx(dx.size(), (float)(d_vertexMass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -131,7 +131,7 @@ void UniformMass<CudaVec3f1Types, float>::accFromF(const core::MechanicalParams*
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassCuda3f1_accFromF(f.size(), d_mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassCuda3f1_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -147,7 +147,7 @@ void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams*
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_mass.getValue();
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassCuda3f1_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
@@ -160,7 +160,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
         const VecDeriv& _dx = dx.getValue();
 
 
-        UniformMassCudaRigid3f_addMDx(_dx.size(), (float)(d_mass.getValue().mass*factor), _f.deviceWrite(), _dx.deviceRead());
+        UniformMassCudaRigid3f_addMDx(_dx.size(), (float)(d_vertexMass.getValue().mass*factor), _f.deviceWrite(), _dx.deviceRead());
 
 //	for(int i = 0 ; i < _f.size() ; ++i)
 //		std::cout << "CPU "<< i << "  : " << _f[i] << std::endl;
@@ -174,7 +174,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
         VecDeriv& _a = *a.beginEdit();
         VecDeriv _f = f.getValue();
 
-        UniformMassCudaRigid3f_accFromF(_a.size(), d_mass.getValue().mass, _a.deviceWrite(), _f.deviceRead());
+        UniformMassCudaRigid3f_accFromF(_a.size(), d_vertexMass.getValue().mass, _a.deviceWrite(), _f.deviceRead());
 
         a.endEdit();
 }
@@ -186,7 +186,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
         VecDeriv& _f = *f.beginEdit();
         defaulttype::Vec3d g(this->getContext()->getGravity());
 
-        float m = d_mass.getValue().mass;
+        float m = d_vertexMass.getValue().mass;
         const float mg[] = { (float)(m*g(0)), (float)(m*g(1)), (float)(m*g(2)) };
         UniformMassCudaRigid3f_addForce(_f.size(), mg, _f.deviceWrite());
 
@@ -205,7 +205,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*d_mass.getValue().mass*x[i].getCenter();
+        e += g*d_vertexMass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
@@ -213,7 +213,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 template <>
 SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(unsigned int ) const
 {
-    return (SReal)(d_mass.getValue().mass);
+    return (SReal)(d_vertexMass.getValue().mass);
 }
 
 template <>
@@ -231,9 +231,9 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >:
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = d_mass.getValue().inertiaMatrix[0][0];
-    double m11 = d_mass.getValue().inertiaMatrix[1][1];
-    double m22 = d_mass.getValue().inertiaMatrix[2][2];
+    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
@@ -254,7 +254,7 @@ void UniformMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassCuda3d_addMDx(dx.size(), (double)(d_mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassCuda3d_addMDx(dx.size(), (double)(d_vertexMass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -265,7 +265,7 @@ void UniformMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams*
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassCuda3d_accFromF(f.size(), d_mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassCuda3d_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -281,7 +281,7 @@ void UniformMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams*
     Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_mass.getValue();
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassCuda3d_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
@@ -311,7 +311,7 @@ void UniformMass<CudaVec3d1Types, double>::addMDx(const core::MechanicalParams* 
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassCuda3d1_addMDx(dx.size(), (double)(d_mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassCuda3d1_addMDx(dx.size(), (double)(d_vertexMass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -322,7 +322,7 @@ void UniformMass<CudaVec3d1Types, double>::accFromF(const core::MechanicalParams
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassCuda3d1_accFromF(f.size(), d_mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassCuda3d1_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -338,7 +338,7 @@ void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams
     Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_mass.getValue();
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassCuda3d1_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
@@ -372,7 +372,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,dou
     Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*d_mass.getValue().mass*x[i].getCenter();
+        e += g*d_vertexMass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
@@ -380,7 +380,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,dou
 template <>
 SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(unsigned int ) const
 {
-    return (SReal)(d_mass.getValue().mass);
+    return (SReal)(d_vertexMass.getValue().mass);
 }
 
 template <>
@@ -398,9 +398,9 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes, sofa::defaulttype::RigidMass<3,dou
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = d_mass.getValue().inertiaMatrix[0][0];
-    double m11 = d_mass.getValue().inertiaMatrix[1][1];
-    double m22 = d_mass.getValue().inertiaMatrix[2][2];
+    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);

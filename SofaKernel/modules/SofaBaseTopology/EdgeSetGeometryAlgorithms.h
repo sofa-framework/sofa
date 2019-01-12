@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,8 @@ template < class DataTypes >
 class EdgeSetGeometryAlgorithms : public PointSetGeometryAlgorithms<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes));    
+    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
@@ -115,11 +116,11 @@ public:
     void getRestEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
 
     // test if a point is on the triangle indexed by ind_e
-    bool isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const;
+    bool isPointOnEdge(const sofa::defaulttype::Vec<3, double> &pt, const EdgeID ind_e) const;
 
     // compute barycentric coefficients
-    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
-    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
+    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::defaulttype::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
@@ -153,40 +154,32 @@ public:
       \param edges attached to the vertices
       \param weights associated with the edges. Each Vec3d represents the contribution of the associated edge to x,y and z of the deformed basis.
       */
-   void computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
+   void computeLocalFrameEdgeWeights( helper::vector<EdgeID>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
+    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
 
     /** return a pointer to the container of cubature points */
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
 protected:
-    Data<bool> showEdgeIndices;
-    Data<bool>  _draw;
-    Data<RGBAColor> _drawColor;
+    Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
+    Data<bool>  _draw; ///< if true, draw the edges in the topology.
+    Data<RGBAColor> _drawColor; ///< RGB code color used to draw edges.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,1> edgeNumericalIntegration;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
+extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec1Types>;
+extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
-#endif
+
 #endif
 
 } // namespace topology

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,13 @@
 #ifndef SOFAMESHCOLLISION_CONFIG_H
 #define SOFAMESHCOLLISION_CONFIG_H
 
-#include <SofaCommon/config.h>
+#include <sofa/config.h>
+
+#ifdef SOFA_BUILD_MESH_COLLISION
+#  define SOFA_TARGET SofaMeshCollision
+#  define SOFA_MESH_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MESH_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

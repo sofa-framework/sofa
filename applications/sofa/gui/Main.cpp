@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,14 +27,8 @@
 #ifdef SOFA_GUI_QT
 #include "qt/RealGUI.h"
 #endif
-#ifdef SOFA_GUI_GLUT
-#include "glut/SimpleGUI.h"
-#endif
-
-#ifdef SOFA_GUI_GLUT
-#ifdef SOFA_HAVE_BOOST
-#include "glut/MultithreadGUI.h"
-#endif
+#ifdef SOFA_GUI_HEADLESS_RECORDER
+#include "headlessRecorder/HeadlessRecorder.h"
 #endif
 
 namespace sofa
@@ -49,27 +43,22 @@ void initMain()
     static bool first = true;
     if (first)
     {
-
         first = false;
     }
 }
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
+int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
 
-#ifdef SOFA_GUI_GLUT
-int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI, &glut::SimpleGUI::InitGUI, 0);
-
-#ifdef SOFA_HAVE_BOOST
-int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::CreateGUI, &glut::MultithreadGUI::InitGUI, 0);
+#ifdef SOFA_GUI_HEADLESS_RECORDER
+int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
 #endif
-#endif
-
+  
 #ifdef SOFA_GUI_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 3 );
+int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
 #endif
 
 #ifdef SOFA_GUI_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 2 );
+int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, NULL, 2 );
 #endif
 
 } // namespace gui

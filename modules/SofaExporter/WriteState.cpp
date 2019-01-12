@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,8 +30,6 @@ namespace component
 
 namespace misc
 {
-
-SOFA_DECL_CLASS(WriteState)
 
 using namespace defaulttype;
 
@@ -100,9 +98,9 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         {
             ws = sofa::core::objectmodel::New<WriteState>();
             gnode->addObject(ws);
-            ws->f_writeX.setValue(recordX);
-            ws->f_writeV.setValue(recordV);
-            ws->f_writeF.setValue(recordF);
+            ws->d_writeX.setValue(recordX);
+            ws->d_writeV.setValue(recordV);
+            ws->d_writeF.setValue(recordF);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
                 ws->addTag(*it);
 
@@ -110,7 +108,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
+        ws->d_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
 
         ++counterWriteState;
 

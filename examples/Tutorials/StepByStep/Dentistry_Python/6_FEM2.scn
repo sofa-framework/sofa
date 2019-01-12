@@ -40,16 +40,16 @@ FEM force field of the tongue
                 <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
             </Node>
             <Node name="TongueCollisionModel">
-		<TriangleSetTopologyContainer name="TriContainer" />
+	            <TriangleSetTopologyContainer name="TriContainer" />
                 <TriangleSetTopologyModifier name="Modifier" />
                 <TriangleSetTopologyAlgorithms name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />
+                <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
                 <Triangle name="tongue" contactStiffness="5" />
                 <Line name="tongue" contactStiffness="5" />
                 <Point name="tongue" contactStiffness="5" />
-                <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
             </Node>
         </Node>
     </Node>
@@ -69,7 +69,7 @@ FEM force field of the tongue
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
         <MechanicalObject name="instrumentState" template="Rigid" position="0.05 0.5 -7.65  0 0 0 1" />
-        <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+        <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
             <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />

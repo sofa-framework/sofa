@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,8 +34,6 @@ namespace engine
 {
 
 using namespace defaulttype;
-
-SOFA_DECL_CLASS(ImageDataDisplay)
 
 int ImageDataDisplayClass = core::RegisterObject("Store custom data in an image. A template input image with non zero voxels (where data will be stored) has to be provided")
         .add<ImageDataDisplay<ImageUC, ImageD> >(true)

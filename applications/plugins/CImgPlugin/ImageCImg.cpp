@@ -1,12 +1,12 @@
-#include <ImageCImg.h>
+#include <iostream>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/logging/Messaging.h>
 
-#define cimg_display 0
-#include <CImg/SOFACImg.h>
+#include "ImageCImg.h"
+#include "SOFACImg.h"
 
-#include <iostream>
+MSG_REGISTER_CLASS(sofa::helper::io::ImageCImg, "ImageCImg")
 
 namespace sofa
 {
@@ -14,10 +14,9 @@ namespace sofa
 namespace helper
 {
 
+
 namespace io
 {
-
-SOFA_DECL_CLASS(ImageCImg)
 
 std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
 #ifdef CIMGPLUGIN_HAVE_PNG
@@ -59,7 +58,7 @@ bool ImageCImg::load(std::string filename)
 
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        msg_error("ImageCImg") << "File " << filename << " not found ";
+        msg_error() << "File " << filename << " not found ";
         return false;
     }
 
@@ -70,7 +69,7 @@ bool ImageCImg::load(std::string filename)
     }
     catch(cimg_library::CImgIOException e)
     {
-        msg_error("ImageCImg") << "Caught exception while loading: " << e.what();
+        msg_error() << "Caught exception while loading: " << e.what();
         return false;
     }
 
@@ -88,7 +87,7 @@ bool ImageCImg::load(std::string filename)
     }
     else
     {
-        msg_error("ImageCImg") << "in " << filename << ", unsupported bit depth: " << cimgImage.pixel_type();
+        msg_error() << "in " << filename << ", unsupported bit depth: " << cimgImage.pixel_type();
         return false;
     }
 
@@ -107,7 +106,7 @@ bool ImageCImg::load(std::string filename)
         channelFormat = Image::RGBA;
         break;
     default:
-        msg_error("ImageCImg") << "in " << filename << ", unsupported number of channels: " << channels;
+        msg_error() << "in " << filename << ", unsupported number of channels: " << channels;
         return false;
     }
 
@@ -160,7 +159,7 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     }
     catch (cimg_library::CImgIOException e)
     {
-        msg_error("ImageCImg") << "Caught exception while saving: " << e.what();
+        msg_error() << "Caught exception while saving: " << e.what();
         res = false;
     }
 
@@ -172,7 +171,7 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     {
         if(ext.empty())
         {
-            msg_error("ImageCImg") << "Cannot recognize extension or file format not supported,"
+            msg_error() << "Cannot recognize extension or file format not supported,"
                                    << "image will be saved as a PNG file.";
             cimgImage.save_png(filename.c_str());
         }
@@ -183,7 +182,7 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     }
     catch(cimg_library::CImgIOException e)
     {
-        msg_error("ImageCImg") << "Caught exception while saving: " << e.what();
+        msg_error() << "Caught exception while saving: " << e.what();
         res = false;
     }
 

@@ -11,7 +11,7 @@ namespace sofa {
 
 
 /// a Python_test is defined by a python filepath and optional arguments
-struct SOFA_TestPlugin_API Python_test_data
+struct SOFA_SOFATEST_API Python_test_data
 {
     Python_test_data( const std::string& filepath,
                       const std::vector<std::string>& arguments )
@@ -21,8 +21,15 @@ struct SOFA_TestPlugin_API Python_test_data
     std::vector<std::string> arguments; // argc/argv in the python script
 };
 
+/// This function is used by gtest to print the content of the struct in a human friendly way
+/// eg:
+///        test.all_tests/2, where GetParam() = /path/to/file.py with args {1,2,3}
+/// instead of the defautl googletest printer that output things like the following:
+///        test.all_tests/2, where GetParam() = 56-byte object <10-48 EC-37 18-56 00-00 67-00-00-00>
+void SOFA_SOFATEST_API PrintTo(const sofa::Python_test_data& d, ::std::ostream* os);
+
 /// utility to build a static list of Python_test_data
-struct SOFA_TestPlugin_API Python_test_list
+struct SOFA_SOFATEST_API Python_test_list
 {
     std::vector<Python_test_data> list;
 protected:
@@ -57,7 +64,7 @@ private:
 
 
 /// A test written in python (but not as a sofa class to perform unitary testing on python functions)
-class SOFA_TestPlugin_API Python_test : public ::testing::TestWithParam<Python_test_data> {
+class SOFA_SOFATEST_API Python_test : public ::testing::TestWithParam<Python_test_data> {
 
 protected:
 
@@ -83,7 +90,7 @@ public:
 
 
 /// A test written as a sofa scene in python
-class SOFA_TestPlugin_API Python_scene_test : public Python_test {
+class SOFA_SOFATEST_API Python_scene_test : public Python_test {
 
 public:
     std::size_t max_steps;

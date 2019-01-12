@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,23 +38,14 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameConstantForceField)
-
 int FrameConstantForceFieldClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
         .add< ConstantForceField<Affine3dTypes> >()
         .add< ConstantForceField<Quadratic3dTypes> >()
 //.add< ConstantForceField<DeformationGradient331dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ConstantForceField<Affine3fTypes> >()
-        .add< ConstantForceField<Quadratic3fTypes> >()
-//.add< ConstantForceField<DeformationGradient331fTypes> >()
-#endif
+
         ;
 
 
-#ifndef SOFA_FLOAT
 template <>
 double ConstantForceField<Affine3dTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
 {
@@ -67,36 +58,14 @@ double ConstantForceField<Quadratic3dTypes>::getPotentialEnergy(const core::Mech
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
-#endif
-
-#ifndef SOFA_DOUBLE
-template <>
-double ConstantForceField<Affine3fTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
-{
-    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
-template <>
-double ConstantForceField<Quadratic3fTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
-{
-    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-#endif
 
 
 
-#ifndef SOFA_FLOAT
+
 template class SOFA_FRAME_API ConstantForceField<Affine3dTypes>;
 template class SOFA_FRAME_API ConstantForceField<Quadratic3dTypes>;
 //         template class SOFA_FRAME_API ConstantForceField<DeformationGradient331dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API ConstantForceField<Affine3fTypes>;
-template class SOFA_FRAME_API ConstantForceField<Quadratic3fTypes>;
-//         template class SOFA_FRAME_API ConstantForceField<DeformationGradient331fTypes>;
-#endif
+
 
 
 } // namespace forcefield

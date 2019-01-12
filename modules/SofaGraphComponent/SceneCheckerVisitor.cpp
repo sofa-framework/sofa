@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,32 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "SceneCheckerVisitor.h"
+
 #include <algorithm>
 #include <sofa/version.h>
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/system/FileRepository.h>
-
-#include "SceneChecks.h"
-#include "SceneCheckerVisitor.h"
-#include "RequiredPlugin.h"
-
-
-#include "APIVersion.h"
-using sofa::component::APIVersion ;
 
 namespace sofa
 {
 namespace simulation
 {
-using sofa::core::objectmodel::Base ;
-using sofa::component::misc::RequiredPlugin ;
-using sofa::core::ObjectFactory ;
-using sofa::core::ExecParams ;
-using sofa::helper::system::PluginRepository ;
-using sofa::helper::system::PluginManager ;
+namespace _scenechecking_
+{
 
+using sofa::core::ExecParams ;
 
 SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
 {
@@ -72,17 +59,25 @@ void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
 void SceneCheckerVisitor::validate(Node* node)
 {
     std::stringstream tmp;
+    bool first = true;
     for(SceneCheck::SPtr& check : m_checkset)
     {
-        tmp << "- " << check->getName() << msgendl ;
+        tmp << (first ? "" : ", ") << check->getName() ;
+        first = false;
+    }
+    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
         check->doInit(node) ;
     }
 
-    msg_info("SceneChecker") << "Validating node '"<< node->getPathName() << "'. " << msgendl
-                             << "Activate checkers: " << msgendl
-                             << tmp.str() ;
-
     execute(node) ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doPrintSummary() ;
+    }
 }
 
 
@@ -96,7 +91,6 @@ Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
     return RESULT_CONTINUE;
 }
 
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,15 +98,10 @@ protected :
     vector< StressStrainMatrix > stressStrainMatrices;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331fTypes>;
-extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332fTypes>;
-#endif
+
 #endif
 
 } //

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,14 +80,14 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
 
-    Data< Coord > f_translation;
-    Data< Real > f_scale;
-    Data< helper::vector<Coord> > f_center;
-    Data< Coord > f_radius;
-    Data< Deriv > f_velocity;
-    Data< Real > f_delay;
-    Data< Real > f_start;
-    Data< Real > f_stop;
+    Data< Coord > f_translation; ///< translation applied to center(s)
+    Data< Real > f_scale; ///< scale applied to center(s)
+    Data< helper::vector<Coord> > f_center; ///< Source center(s)
+    Data< Coord > f_radius; ///< Source radius
+    Data< Deriv > f_velocity; ///< Particle initial velocity
+    Data< Real > f_delay; ///< Delay between particles creation
+    Data< Real > f_start; ///< Source starting time
+    Data< Real > f_stop; ///< Source stopping time
     Data< bool > f_canHaveEmptyVector;
 
     ParticleSource()
@@ -120,7 +120,7 @@ public:
     Real maxdist;
     //int lastparticle;
     typedef typename VecCoord::template rebind<unsigned int>::other VecIndex;
-    sofa::component::topology::PointSubsetData< VecIndex > lastparticles;
+    sofa::component::topology::PointSubsetData< VecIndex > lastparticles; ///< lastparticles indices
     VecCoord lastpos;
 
     class PSPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >
@@ -224,7 +224,7 @@ public:
         lasttime = f_start.getValue()-f_delay.getValue();
         maxdist = 0;
 
-        helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+        helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->lastparticles; ///< lastparticles indices
         _lastparticles.clear();
         lastpos.clear();
     }
@@ -262,7 +262,7 @@ public:
 
         if (nbParticlesToCreate > 0)
         {
-            helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+            helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->lastparticles; ///< lastparticles indices
 
             helper::vector< Coord > newX;
             helper::vector< Deriv > newV;
@@ -379,7 +379,7 @@ public:
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
 
-        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles; ///< lastparticles indices
         // constraint the last value
         for (unsigned int s=0; s<_lastparticles.size(); s++)
         {
@@ -422,7 +422,7 @@ public:
         // constraint the most recent particles
         Deriv v0 = f_velocity.getValue();
 
-        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles; ///< lastparticles indices
         for (unsigned int s=0; s<_lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
@@ -443,7 +443,7 @@ public:
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         Deriv dpos = f_velocity.getValue()*(time - lasttime);
 
-        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles; ///< lastparticles indices
         // constraint the most recent particles
         for (unsigned int s = 0; s < _lastparticles.size(); s++)
         {
@@ -504,15 +504,10 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3dTypes>;
-extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3fTypes>;
-extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
+extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3Types>;
+extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace misc

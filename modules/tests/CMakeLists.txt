@@ -17,6 +17,7 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaMeshCollision/SofaMeshCol
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test tests/SofaRigid)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test tests/SofaSimpleFem)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/simulation/simulation_test tests/simulation)
+add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/frameworkextra/frameworkextra_test tests/frameworkextra)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaComponentBase/SofaComponentBase_test tests/SofaComponentBase)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaBoundaryCondition/SofaBoundaryCondition_test tests/SofaBoundaryCondition)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaConstraint/SofaConstraint_test tests/SofaConstraint)
@@ -27,7 +28,7 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralExplicitOdeSolver/Sof
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralImplicitOdeSolver/SofaGeneralImplicitOdeSolver_test tests/SofaGeneralImplicitOdeSolver)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralTopology/SofaGeneralTopology_test tests/SofaGeneralTopology)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLinearSolver/SofaGeneralLinearSolver_test tests/SofaGeneralLinearSolver)
-# add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLoader/SofaGeneralLoader_test tests/SofaGeneralLoader)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLoader/SofaGeneralLoader_test tests/SofaGeneralLoader)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralMeshCollision/SofaGeneralMeshCollision_test tests/SofaGeneralMeshCollision)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralRigid/SofaGeneralRigid_test tests/SofaGeneralRigid)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test tests/SofaGeneralSimpleFem)
@@ -38,5 +39,6 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test tests/SofaMiscSolver)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test tests/SofaMiscTopology)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaExporter/SofaExporter_test tests/SofaExporter)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscForceField/SofaMiscForceField_test tests/SofaMiscForceField)
 
 

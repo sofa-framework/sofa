@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(runSofa)
 
-option(RUNSOFA_INSTALL_AS_BUNDLE "Create a bundle containing all the installation files (Only Mac OS X for now)" OFF)
+set(RESOURCE_FILES
+    resources/docs/runsofa.html
+    )
 
 if(APPLE)
     set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSOFA.icns")
@@ -9,14 +11,12 @@ else()
     set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sofa.rc")
 endif()
 
-find_package(SofaFramework) # to get SOFA_HAVE_GLUT
-
 include(cmake/GeneratePluginConfig.cmake)
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
 if(MSVC)
-	set(_pluginLocation "bin")
+    set(_pluginLocation "bin")
 else()
-	set(_pluginLocation "lib")
+    set(_pluginLocation "lib")
 endif()
 set(_configPluginFileName plugin_list.conf)
 set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
@@ -25,17 +25,17 @@ sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
 message("Write Plugin list at ${_defaultConfigPluginFilePath}")
 
 if(APPLE)
-	set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+    set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
-if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
-	add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} Main.cpp )
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp )
 else()
-	add_executable(${PROJECT_NAME} ${RC_FILES} Main.cpp)
+    add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp)
 endif()
 
 if(APPLE)
-	set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "runSOFA.icns" )
+    set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "runSOFA.icns" )
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
@@ -44,10 +44,6 @@ target_link_libraries(${PROJECT_NAME} SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
-if(SOFA_HAVE_GLUT)
-	target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT_GUI")
-endif()
-
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
@@ -55,15 +51,23 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
-	# set(CPACK_COMPONENTS_ALL BundlePack)
-	set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
-	include(cmake/bundle.cmake)
+# Create build and install versions of .ini file for resources finding
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
+set(RESOURCES_DIR "../share/sofa/gui/runSofa")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
+
+install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
+install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
+
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    find_package(CImgPlugin REQUIRED)
+    find_package(SofaMiscCollision REQUIRED)
+    find_package(SofaPython REQUIRED)
+    target_link_libraries(${PROJECT_NAME} SofaAllCommonComponents CImgPlugin SofaMiscCollision SofaPython SofaSparseSolver SofaPreconditioner)
+    set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
+    include(cmake/bundle.cmake)
 else()
-	sofa_install_targets(SofaGui runSofa "")
+    sofa_install_targets(SofaGui runSofa "")
 endif()
-
-# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
-
-install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/)
-

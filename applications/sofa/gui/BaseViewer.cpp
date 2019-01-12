@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -227,8 +227,8 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
         {
             helper::vector<std::string> validExtensions;
             helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
-            msg_error("BaseViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
-                                    << "Valid extensions: " << validExtensions ;
+            msg_warning("BaseViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
+                    << "  Valid extensions: " << validExtensions;
         }
         else
         {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -108,7 +108,6 @@ public:
             core::behavior::ConstraintGroup * group) override;
 
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const override;
-    //
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
@@ -178,13 +177,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
+extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

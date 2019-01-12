@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/Link.h>
 #include "PythonToSofa.inl"
 
+#include <SofaPython/PythonFactory.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -105,16 +106,87 @@ static PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
 }
 
 
+static PyObject * Link_setValueString(PyObject* self, PyObject* args)
+{
+    char* str {nullptr};
+
+    BaseLink* link = get_baselink( self );
+
+    if (!PyArg_ParseTuple(args, "s", &str))
+        return nullptr ;
+
+    link->read(str);
+    Py_RETURN_NONE;
+}
+
+static PyObject * Link_getLinkedBase(PyObject *self, PyObject * /*args*/)
+{
+    BaseLink* link = get_baselink( self );
+
+    if( link->getLinkedBase() )
+        return sofa::PythonFactory::toPython(link->getLinkedBase()) ;
+
+    Py_RETURN_NONE;
+}
+
+
+static PyObject * Link_getLinkedData(PyObject *self, PyObject * /*args*/)
+{
+    BaseLink* link = get_baselink( self );
+
+    if( link->getLinkedData() )
+        return SP_BUILD_PYPTR(Data,BaseData,link->getLinkedData(),false);
+
+    Py_RETURN_NONE;
+}
+
 static PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link = get_baselink( self );
     return PyInt_FromLong( link->getSize() );
 }
 
+static PyObject * Link_isPersistant(PyObject *self, PyObject * args)
+{
+    BaseLink* link = get_baselink( self );
+
+    const size_t argSize = PyTuple_Size(args);
+    if( argSize != 0 ) {
+        PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
+        return NULL;
+    }
+
+    return PyBool_FromLong(link->isPersistent());
+}
+
+static PyObject * Link_setPersistant(PyObject* self, PyObject* args)
+{
+    BaseLink* link = get_baselink( self );
+
+    PyObject* state = nullptr ;
+    if (!PyArg_ParseTuple(args, "O", &state))
+    {
+        return NULL;
+    }
+
+    link->setPersistent(PyObject_IsTrue(state));
+    Py_RETURN_NONE ;
+}
+
+
 
 SP_CLASS_METHODS_BEGIN(Link)
 SP_CLASS_METHOD(Link,getValueTypeString)
 SP_CLASS_METHOD(Link,getValueString)
+SP_CLASS_METHOD(Link,setValueString)
+SP_CLASS_METHOD_DOC(Link,isPersistant, "Returns True if the PERSISTANT(STORE) flag is set. This is used to \n"
+                                       "indicate that the field should be saved.")
+SP_CLASS_METHOD_DOC(Link,setPersistant,  "Change the value of the PERSISTANT(STORE) flag. This is used to \n"
+                                         "control if the field should be saved.")
+SP_CLASS_METHOD_DOC(Link,getLinkedBase,  "Return the sofa object pointed by the link")
+SP_CLASS_METHOD_DOC(Link,getLinkedData,  "Return the sofa data pointed by the link")
+
+
 SP_CLASS_METHOD(Link,getSize)
 SP_CLASS_METHODS_END
 

@@ -13,7 +13,7 @@
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" />
     <Mesh src="@loader" />
     <MechanicalObject src="@loader"  />
-    <UniformMass totalmass="5" />
+    <UniformMass totalMass="5" />
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.01" plasticMaxThreshold="0.025" plasticCreep="1"/>
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
@@ -34,7 +34,7 @@
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" translation="-6 0 0"/>
     <Mesh src="@loader" />
     <MechanicalObject src="@loader"  />
-    <UniformMass totalmass="5" />
+    <UniformMass totalMass="5" />
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.005" plasticMaxThreshold="0.5" plasticCreep="1"/>
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
@@ -55,7 +55,7 @@
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" translation="-12 0 0"/>
     <Mesh src="@loader" />
     <MechanicalObject src="@loader"  />
-    <UniformMass totalmass="5" />
+    <UniformMass totalMass="5" />
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.005" plasticMaxThreshold="0.5" plasticCreep=".1"/>
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
@@ -75,7 +75,7 @@
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" translation="6 0 0" />
     <Mesh src="@loader" />
     <MechanicalObject src="@loader"  />
-    <UniformMass totalmass="5" />
+    <UniformMass totalMass="5" />
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">

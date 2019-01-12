@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,8 +45,6 @@ BaseData::BaseData(const char* h, DataFlags dataflags)
     addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
-    //setAutoLink(true);
-    //if (owner) owner->addData(this);
 }
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
@@ -60,8 +58,6 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
     m_isSets.assign(false);
     setFlag(FLAG_DISPLAYED,isDisplayed);
     setFlag(FLAG_READONLY,isReadOnly);
-    //setAutoLink(true);
-    //if (owner) owner->addData(this);
 }
 
 BaseData::BaseData( const BaseInitData& init)
@@ -85,7 +81,6 @@ BaseData::BaseData( const BaseInitData& init)
         sofa::helper::BackTrace::dump();
         exit( EXIT_FAILURE );
     }
-    //setAutoLink(true);
     if (m_owner) m_owner->addData(this, m_name);
 }
 

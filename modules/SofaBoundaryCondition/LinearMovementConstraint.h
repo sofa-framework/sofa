@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,10 +86,14 @@ public :
     /// the motions corresponding to the key frames
     Data<VecDeriv > m_keyMovements;
 
+    /// indicates whether movements are relative to the dof or absolute
+    Data< bool > d_relativeMovements;
+
     /// attributes to precise display
     /// if showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
     Data< bool > showMovement;
+
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
@@ -181,21 +185,13 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 

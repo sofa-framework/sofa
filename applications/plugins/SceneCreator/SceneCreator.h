@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,7 +27,7 @@
 #include <string>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 /// @warning this can only manage one scene at a time
 /// (root singleton)
@@ -39,8 +39,8 @@ using sofa::core::objectmodel::BaseObject ;
 
 typedef SReal Scalar;
 typedef sofa::defaulttype::Vec3Types::Deriv Deriv3;
-typedef sofa::defaulttype::Vec<3,SReal> Vec3;
-typedef sofa::defaulttype::Vec<1,SReal> Vec1;
+using sofa::defaulttype::Vec3;
+using sofa::defaulttype::Vec1;
 
 typedef enum
 {

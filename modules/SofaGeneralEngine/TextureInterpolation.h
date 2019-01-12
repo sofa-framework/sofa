@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,12 +23,10 @@
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/map.h>
@@ -70,7 +68,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -100,15 +98,15 @@ protected:
 
     /// Data for interpolation scale:
     Data <Real> _minVal;
-    Data <Real> _maxVal;
-    Data <bool> _changeScale;
+    Data <Real> _maxVal; ///< maximum value of state value for interpolation.
+    Data <bool> _changeScale; ///< compute texture interpolation on manually scale defined above.
 
     /// Data for interpolation scale:
     Data <bool> drawPotentiels;
-    Data <float> showIndicesScale;
+    Data <float> showIndicesScale; ///< Debug : scale of state values displayed.
 
-    Data <unsigned int> _vertexPloted;
-    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph;
+    Data <unsigned int> _vertexPloted; ///< Vertex index of values display in graph for each iteration.
+    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph; ///< Vertex state value per iteration
 
     void updateGraph();
     void resetGraph();
@@ -116,17 +114,11 @@ protected:
     void standardLinearInterpolation();
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
+extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

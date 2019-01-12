@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,19 +32,11 @@
 #include <SofaMiscFem/Ogden.h>
 #include "StandardTetrahedralFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
-#ifndef SOFA_NO_OPENGL
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#endif
 #include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
 #include <iterator>
@@ -234,17 +226,16 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints=p;
     }
-    int i;
 
     /// initialize the data structure associate with each tetrahedron
-    for (int i=0; i<_topology->getNbEdges(); i++)
+    for (size_t i=0; i<_topology->getNbEdges(); i++)
     {
         edgeInf[i].vertices[0] = (float) _topology->getEdge(i)[0];
         edgeInf[i].vertices[1] = (float) _topology->getEdge(i)[1];
     }
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<_topology->getNbTetrahedra();++i) {
+    for (size_t i=0;i<_topology->getNbTetrahedra();++i) {
             tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                         _topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
                         (const helper::vector< double >)0);
@@ -617,31 +608,11 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttyp
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     //	unsigned int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-#endif /* SOFA_NO_OPENGL */
 }
 
-/*
-template<class DataTypes>
-defaulttype::Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
-{
-    tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-    TetrahedronRestInformation *tetInfo;
-    tetInfo=&tetrahedronInf[TetrahedronIndex];
-    return tetInfo->deformationGradient;
-
-}
-*/
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 {

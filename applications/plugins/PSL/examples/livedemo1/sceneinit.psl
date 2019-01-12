@@ -1,0 +1,28 @@
+Template : {
+    name : "BasicSceneSetup"
+
+    Node : {
+        name : "BasicSceneSetup"
+        DefaultAnimationLoop : {}
+        DefaultVisualManagerLoop : {}
+        EulerImplicitSolver : {}
+        DefaultPipeline : {}
+        BruteForceDetection : {}
+        MinProximityIntersection : {
+            alarmDistance: "0.3"
+            contactDistance: "0.2"
+        }
+        DefaultContactManager : { response : "default" }
+        DefaultCollisionGroupManager : {}
+        CGLinearSolver : {
+            iterations : "100"
+            threshold : "0.000001"
+            tolerance : "0.000001"
+        }
+
+        Python : '''
+                 for obj in self.getObjects():
+                     self.getParents()[0].addObject(obj)
+                 '''
+    }
+ }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -272,8 +272,6 @@ SOFA_XITACTPLUGIN_API int initDevice(XiToolDataIHP& /*data*/)
     return 0;
 }
 
-
-SOFA_DECL_CLASS(IHPDriver)
 
 int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
         .add< IHPDriver >();

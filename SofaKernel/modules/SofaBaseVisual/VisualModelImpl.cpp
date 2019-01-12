@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,7 +40,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/io/MeshOBJ.h>
-#include <sofa/helper/io/MeshSTL.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sstream>
@@ -60,6 +59,72 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using namespace sofa::core::loader;
 using helper::vector;
+
+ExtVec3State::ExtVec3State()
+    : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
+    , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
+    , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
+    , modified(false)
+{
+    m_positions.setGroup("Vector");
+    m_restPositions.setGroup("Vector");
+    m_vnormals.setGroup("Vector");
+}
+
+void ExtVec3State::resize(size_t vsize)
+{
+    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+    if( positions.size() == vsize ) return;
+    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
+    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
+
+    positions.resize(vsize);
+    restPositions.resize(vsize); // todo allocate restpos only when it is necessary
+    normals.resize(vsize);
+
+    modified = true;
+}
+
+size_t ExtVec3State::getSize() const { return m_positions.getValue().size(); }
+
+Data<ExtVec3State::VecCoord>* ExtVec3State::write(     core::VecCoordId  v )
+{
+    modified = true;
+
+    if( v == core::VecCoordId::position() )
+        return &m_positions;
+    if( v == core::VecCoordId::restPosition() )
+        return &m_restPositions;
+
+    return NULL;
+}
+
+const Data<ExtVec3State::VecCoord>* ExtVec3State::read(core::ConstVecCoordId  v )  const
+{
+    if( v == core::VecCoordId::position() )
+        return &m_positions;
+    if( v == core::VecCoordId::restPosition() )
+        return &m_restPositions;
+
+    return NULL;
+}
+
+Data<ExtVec3State::VecDeriv>*	ExtVec3State::write(core::VecDerivId v )
+{
+    if( v == core::VecDerivId::normal() )
+        return &m_vnormals;
+
+    return NULL;
+}
+
+const Data<ExtVec3State::VecDeriv>* ExtVec3State::read(core::ConstVecDerivId v ) const
+{
+    if( v == core::VecDerivId::normal() )
+        return &m_vnormals;
+
+    return NULL;
+}
+
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -110,8 +175,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
                                   (Real)arg->getAttributeAsFloat("sz",1.0)));
     }
 }
-
-SOFA_DECL_CLASS(VisualModelImpl)
 
 int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
         .add< VisualModelImpl >()
@@ -306,7 +369,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             g.quad0 = facet2tq[g0.p0][NBQ];
             g.nbq = facet2tq[g0.p0+g0.nbp][NBQ] - g.quad0;
             if (g.materialId == -1 && !g0.materialName.empty())
-                sout << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << "   " << sendl;
+                msg_info() << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << "   ";
         }
     }
 
@@ -337,7 +400,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         nbVOut += s;
     }
 
-    sout << nbVIn << " input positions, " << nbVOut << " final vertices.   " << sendl;
+    msg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.   ";
 
     if (nbVIn != nbVOut)
         vsplit = true;
@@ -440,7 +503,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))];
             if ((unsigned)idxs[j] >= (unsigned)nbVOut)
             {
-                serr << this->getPathName()<<" index "<<idxs[j]<<" out of range"<<sendl;
+                msg_error() << this->getPathName()<<" index "<<idxs[j]<<" out of range";
                 idxs[j] = 0;
             }
         }
@@ -481,11 +544,17 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         std::string textureFilename(textureName);
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
         {
-            sout << "loading file " << textureName << sendl;
-            loadTexture(textureName);
+            msg_info() << "loading file " << textureName;
+            bool textureLoaded = loadTexture(textureName);
+            if(!textureLoaded)
+            {
+                msg_error()<<"Texture "<<textureName<<" cannot be loaded";
+            }
         }
         else
-            serr << "Texture \"" << textureName << "\" not found" << sendl;
+        {
+            msg_error() << "Texture \"" << textureName << "\" not found";
+        }
     }
 
     // Make sure all Data are up-to-date
@@ -516,20 +585,29 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
 
             if (objLoader.get() == 0)
             {
+                msg_error() << "Mesh creation failed. Loading mesh file directly inside the VisualModel is not maintained anymore. Use a MeshLoader and link the Data to the VisualModel. E.g:" << msgendl
+                    << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                    << "<OglModel src='@myLoader'/>";
                 return false;
             }
             else
-            {
-                //if( MeshSTL *Loader = dynamic_cast< MeshSTL *>(objLoader.get()) )
-                if(objLoader.get()->loaderType == "stl" || objLoader.get()->loaderType == "vtu")
-                {
-                    setMesh(*objLoader, false);
-                }
-                else
+            {				
+                if(objLoader.get()->loaderType == "obj")
                 {
                     //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
                     //setMesh(*objLoader,tex);
-                    setMesh(*objLoader, true);
+                    msg_warning() << "Loading obj mesh file directly inside the VisualModel will be deprecated soon. Use a MeshObjLoader and link the Data to the VisualModel. E.g:" << msgendl
+                        << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                        << "<OglModel src='@myLoader'/>";
+                    
+                    setMesh(*objLoader, true); 
+                }
+                else
+                {
+                    msg_error() << "Loading mesh file directly inside the VisualModel is not anymore supported since release 18.06. Use a MeshLoader and link the Data to the VisualModel. E.g:" << msgendl
+                        << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                        << "<OglModel src='@myLoader'/>";
+                    return false;
                 }
             }
 
@@ -554,14 +632,14 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         }
         else
         {
-            serr << "Mesh \"" << filename << "\" not found" << sendl;
+            msg_error() << "Mesh \"" << filename << "\" not found";
         }
     }
     else
     {
         if ((m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
         {
-            sout << "VisualModel: will use Topology." << sendl;
+            msg_info() << "will use Topology.";
             useTopology = true;
         }
 
@@ -759,8 +837,34 @@ void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int alg
 
 void VisualModelImpl::init()
 {
-    load(fileMesh.getFullPath(), "", texturename.getFullPath());
     m_topology = getContext()->getMeshTopology();
+    if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
+    { // handle case where vertPosIdx was initialized through a loader
+        m_vertices2.setValue(m_positions.getValue());
+        if (m_positions.getParent())
+        {
+            m_positions.delInput(m_positions.getParent()); // remove any link to positions, as we need to recompute it
+        }
+        helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
+        helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
+        helper::ReadAccessor<Data<sofa::defaulttype::ResizableExtVector<int>>> vertPosIdx = m_vertPosIdx;
+        int nbVIn = 0;
+        for (int i = 0; i < (int)vertPosIdx.size(); ++i)
+        {
+            if (vertPosIdx[i] >= nbVIn)
+            {
+                nbVIn = vertPosIdx[i]+1;
+            }
+        }
+        vIn.resize(nbVIn);
+        for (int i = 0; i < (int)vertPosIdx.size(); ++i)
+        {
+            vIn[vertPosIdx[i]] = vOut[i];
+        }
+        m_topology = nullptr; // make sure we don't use the topology
+    }
+
+    load(fileMesh.getFullPath(), "", texturename.getFullPath());
 
     if (m_topology == 0 || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != (unsigned int)m_topology->getNbPoints()))
     {
@@ -770,7 +874,7 @@ void VisualModelImpl::init()
     }
     else
     {
-        sout << "Use topology " << m_topology->getName() << sendl;
+        msg_info() << "Use topology " << m_topology->getName();
         // add the functions to handle topology changes.
         if (m_handleDynamicTopology.getValue())
         {
@@ -817,7 +921,6 @@ void VisualModelImpl::computeNormals()
     if (vertNormIdx.empty())
     {
         int nbn = (vertices).size();
-        //serr << "CN0("<<nbn<<")"<<sendl;
 
         ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
 
@@ -868,7 +971,6 @@ void VisualModelImpl::computeNormals()
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
-        //serr << "CN1("<<nbn<<")"<<sendl;
 
         normals.resize(nbn);
         for (int i = 0; i < nbn; i++)
@@ -1116,11 +1218,6 @@ void VisualModelImpl::updateVisual()
             last = m_vtexcoords.getValue().size();
         }
     */
-    //sout << "VMI::updateVisual()" << sendl;
-    //if ((m_positions.getValue()).size()>10)
-    //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
-    //if ((m_vertices.getValue()).size()>10)
-    //    sout << "vertices[10] = " << m_vertices.getValue()[10] << sendl;
     if (modified && (!getVertices().empty() || useTopology))
     {
         if (useTopology)
@@ -1505,26 +1602,26 @@ void VisualModelImpl::handleTopologyChange()
 
                             if(is_forgotten)
                             {
-                                int ind_forgotten = j_loc;
+                                unsigned int ind_forgotten = j_loc;
 
                                 bool is_in_shell = false;
                                 for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
                                 {
-                                    is_in_shell = is_in_shell || ((int)shell[j_glob] == ind_forgotten);
+                                    is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
                                 }
 
                                 if(!is_in_shell)
                                 {
-                                    sout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << sendl;
+                                    msg_info() << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )";
 
                                     if(ind_forgotten<m_topology->getNbTriangles())
                                     {
                                         const core::topology::BaseMeshTopology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
-                                        sout << "INFO_print : Vis - last = " << last << sendl;
-                                        sout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << sendl;
-                                        sout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << sendl;
-                                        sout << "INFO_print : Vis - t_local rectified = " << triangles[j_loc] << sendl;
-                                        sout << "INFO_print : Vis - t_global = " << t_forgotten << sendl;
+                                        msg_info() << "Vis - last = " << last << msgendl
+                                                   << "Vis - lastIndexVec[i] = " << lastIndexVec[i] << msgendl
+                                                   << "Vis - tab.size() = " << tab.size() << " , tab = " << tab << msgendl
+                                                   << "Vis - t_local rectified = " << triangles[j_loc] << msgendl
+                                                   << "Vis - t_global = " << t_forgotten;
                                     }
                                 }
                             }

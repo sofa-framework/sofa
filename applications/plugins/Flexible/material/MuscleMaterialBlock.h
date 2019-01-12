@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,9 +122,6 @@ class MuscleMaterialBlock< E311(_Real) >:
         Real Fv = Vsh*(Vmax + ldot)/fact;
 
         Real F = C*Fl*Fv;
-//        std::cout<<"ldot,vmax = "<<ldot<<","<<Vmax<<std::endl;
-//        std::cout<<"Fv = "<<Fv<<std::endl;
-
         K = F*D*EN;
         B = C*Fl*Vmax*(Vsh+1.)*Vsh/fact/fact;
 

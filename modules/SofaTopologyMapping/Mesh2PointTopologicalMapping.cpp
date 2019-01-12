@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,8 +43,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 using helper::vector;
-
-SOFA_DECL_CLASS ( Mesh2PointTopologicalMapping )
 
 // Register in the Factory
 int Mesh2PointTopologicalMappingClass = core::RegisterObject ( "This class maps any mesh primitive (point, edge, triangle...) into a point using a relative position from the primitive" )
@@ -118,7 +116,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[POINT].resize(fromModel->getNbPoints());
                 for (int i=0; i<fromModel->getNbPoints(); i++)
                 {
-                    toModelLastPointIndex+=addInputPoint(i);
+                    toModelLastPointIndex+=(int)addInputPoint((unsigned int)i);
                 }
             }
 
@@ -126,7 +124,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!edgeBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[EDGE].resize(fromModel->getNbEdges());
-                for (int i=0; i<fromModel->getNbEdges(); i++)
+                for (unsigned int i=0; i<fromModel->getNbEdges(); i++)
                 {
                     addInputEdge(i, NULL);
                 }
@@ -136,7 +134,7 @@ void Mesh2PointTopologicalMapping::init()
             if (copyEdges.getValue())
             {
                 sout << "Copying " << fromModel->getNbEdges() << " edges" << sendl;
-                for (int i=0; i<fromModel->getNbEdges(); i++)
+                for (unsigned int i=0; i<fromModel->getNbEdges(); i++)
                 {
                     Edge e = fromModel->getEdge(i);
                     for (unsigned int j=0; j<e.size(); ++j)
@@ -152,7 +150,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!triangleBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[TRIANGLE].resize(fromModel->getNbTriangles());
-                for (int i=0; i<fromModel->getNbTriangles(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTriangles(); i++)
                 {
                     addInputTriangle(i, NULL);
                 }
@@ -162,7 +160,7 @@ void Mesh2PointTopologicalMapping::init()
             if (copyTriangles.getValue())
             {
                 sout << "Copying " << fromModel->getNbTriangles() << " triangles" << sendl;
-                for (int i=0; i<fromModel->getNbTriangles(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTriangles(); i++)
                 {
                     Triangle t = fromModel->getTriangle(i);
                     for (unsigned int j=0; j<t.size(); ++j)
@@ -178,7 +176,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!quadBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[QUAD].resize(fromModel->getNbQuads());
-                for (int i=0; i<fromModel->getNbQuads(); i++)
+                for (unsigned int i=0; i<fromModel->getNbQuads(); i++)
                 {
                     for (unsigned int j=0; j<quadBaryCoords.getValue().size(); j++)
                     {
@@ -210,7 +208,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!tetraBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[TETRA].resize(fromModel->getNbTetrahedra());
-                for (int i=0; i<fromModel->getNbTetrahedra(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
 					addInputTetrahedron(i, NULL);
                 }
@@ -220,7 +218,7 @@ void Mesh2PointTopologicalMapping::init()
             {
 
                 sout << "Copying " << fromModel->getNbTetrahedra() << " tetrahedra" << sendl;
-                for (int i=0; i<fromModel->getNbTetrahedra(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
                     Tetrahedron t = fromModel->getTetrahedron(i);
                     for (unsigned int j=0; j<t.size(); ++j)
@@ -235,7 +233,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!hexaBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[HEXA].resize(fromModel->getNbHexahedra());
-                for (int i=0; i<fromModel->getNbHexahedra(); i++)
+                for (unsigned int i=0; i<fromModel->getNbHexahedra(); i++)
                 {
                     for (unsigned int j=0; j<hexaBaryCoords.getValue().size(); j++)
                     {
@@ -277,7 +275,7 @@ void Mesh2PointTopologicalMapping::init()
 }
 
 /// Check consistency of internal maps and output topology
-bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper::fixed_array <int, NB_ELEMENTS >& nbInputRemoved)
+bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved)
 {
     bool ok = true;
     unsigned int nbPOut = (unsigned int)toModel->getNbPoints();
@@ -286,13 +284,13 @@ bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper:
         serr << "Internal Error after " << step << ": pointSource size " << pointSource.size() << " != output topology size " << nbPOut << sendl;
         ok = false;
     }
-    unsigned int nbPMapped = 0;
+    size_t nbPMapped = 0;
     for (int type=0; type<NB_ELEMENTS; ++type)
     {
         const vector< vector<int> >& pointsMapped = pointsMappedFrom[type];
         std::string typestr;
-        unsigned int nbEIn = 0;
-        unsigned int nbEPOut = 0;
+        size_t nbEIn = 0;
+        size_t nbEPOut = 0;
         switch (type)
         {
         case POINT :    typestr="Point";    nbEIn = fromModel->getNbPoints();     nbEPOut = pointBaryCoords.getValue().size(); break;
@@ -410,7 +408,7 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(unsigned int i, PointSetTopol
     
     for (unsigned int j = 0; j < pBaryCoords.size(); j++)
     {        
-        pointsMappedFrom[POINT][i].push_back(pointSource.size());
+        pointsMappedFrom[POINT][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(POINT, i));
     }
     
@@ -440,7 +438,7 @@ void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, PointSetTopology
 
     for (unsigned int j = 0; j < eBaryCoords.size(); j++)
     {
-        pointsMappedFrom[EDGE][i].push_back(pointSource.size());
+        pointsMappedFrom[EDGE][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(EDGE, i));
     }
 
@@ -484,7 +482,7 @@ void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, PointSetTopo
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
-        pointsMappedFrom[TRIANGLE][i].push_back(pointSource.size());
+        pointsMappedFrom[TRIANGLE][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(TRIANGLE,i));
     }
 
@@ -531,7 +529,7 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(unsigned int i, PointSetT
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
-        pointsMappedFrom[TETRA][i].push_back(pointSource.size());
+        pointsMappedFrom[TETRA][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(TETRA,i));
     }
 
@@ -576,7 +574,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
         toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
         bool check = false;
-        helper::fixed_array <int, NB_ELEMENTS > nbInputRemoved;
+        helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
         nbInputRemoved.assign(0);
         std::string laststep = "";
         while( changeIt != itEnd )
@@ -875,7 +873,7 @@ void Mesh2PointTopologicalMapping::swapInput(Element elem, int i1, int i2)
 void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper::vector<unsigned int>& index )
 {
     if (pointsMappedFrom[elem].empty()) return;
-    unsigned int last = pointsMappedFrom[elem].size() -1;
+    unsigned int last = (unsigned int)pointsMappedFrom[elem].size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -950,7 +948,7 @@ void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeL
 
 void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    unsigned int last = pointSource.size() - 1;
+    unsigned int last = (unsigned int)pointSource.size() - 1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {

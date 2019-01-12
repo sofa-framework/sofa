@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 
 namespace sofa
@@ -36,7 +37,7 @@ namespace constraintset
 {
 
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class UncoupledConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
@@ -82,13 +83,13 @@ public:
     /// @name Correction API
     /// @{
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyMotionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &correction) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data<VecDeriv>& dx, const Data< VecDeriv > & correction) override;
 
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &v, Data<VecDeriv>& dv, const Data< VecDeriv > & correction) override;
 
     /// @}
 
@@ -118,24 +119,32 @@ public:
 
     /// @}
 
-    Data< VecReal > compliance;
+    Data< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
-    Data< Real > defaultCompliance;
+    Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
+
+    Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for compliance vector (disable if another component takes care of this)
+      
+    Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
+    Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
+
+    Data < bool > d_useOdeSolverIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
 
 private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
 
-    //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
-
 protected:
+
+    sofa::core::behavior::OdeSolver* m_pOdeSolver;
+
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(const Data< VecDeriv > &f);
+    void computeDx(const Data< VecDeriv > &f, VecDeriv& x);
 };
 
 template<>
@@ -145,36 +154,15 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix * /*W*/);
-
-template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::defaulttype::BaseMatrix * /*m*/) const;
 
-template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::computeDx(const sofa::core::objectmodel::Data< VecDeriv > &/*f*/);
 
-template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::applyContactForce(const sofa::defaulttype::BaseVector * /*f*/);
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2Types>;
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1Types>;
+extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3Types>;
 
-template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);
-
-template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCompliance(defaulttype::BaseMatrix * /*W*/, int /*begin*/, int /*end*/);
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2dTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1dTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2fTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1fTypes>;
-extern template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>;
-#endif
 #endif
 
 } // namespace constraintset

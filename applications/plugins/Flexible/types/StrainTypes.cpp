@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,6 +27,9 @@
 #include <sofa/core/State.inl>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
+#include <sofa/defaulttype/TemplatesAliases.h>
+using sofa::defaulttype::RegisterTemplateAlias;
+
 namespace sofa
 {
 namespace component
@@ -34,96 +37,68 @@ namespace component
 namespace container
 {
 
+
 // ==========================================================================
 // Instanciation
-
-SOFA_DECL_CLASS ( StrainMechanicalObject )
 
 using namespace sofa::defaulttype;
 
 int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
-        .add< MechanicalObject<E331dTypes> >()
-        .add< MechanicalObject<E321dTypes> >()
-        .add< MechanicalObject<E311dTypes> >()
-        .add< MechanicalObject<E332dTypes> >()
-        .add< MechanicalObject<E333dTypes> >()
-        .add< MechanicalObject<E221dTypes> >()
+        .add< MechanicalObject<E331Types> >()
+        .add< MechanicalObject<E321Types> >()
+        .add< MechanicalObject<E311Types> >()
+        .add< MechanicalObject<E332Types> >()
+        .add< MechanicalObject<E333Types> >()
+        .add< MechanicalObject<E221Types> >()
+        .add< MechanicalObject<I331Types> >()
+        .add< MechanicalObject<U331Types> >()
+        .add< MechanicalObject<U321Types> >();
 
-//        .add< MechanicalObject<D331dTypes> >()
-//        .add< MechanicalObject<D321dTypes> >()
-//        .add< MechanicalObject<D332dTypes> >()
-//        .add< MechanicalObject<D333dTypes> >()
+template class SOFA_Flexible_API MechanicalObject<E331Types>;
+template class SOFA_Flexible_API MechanicalObject<E321Types>;
+template class SOFA_Flexible_API MechanicalObject<E311Types>;
+template class SOFA_Flexible_API MechanicalObject<E332Types>;
+template class SOFA_Flexible_API MechanicalObject<E333Types>;
+template class SOFA_Flexible_API MechanicalObject<E221Types>;
+template class SOFA_Flexible_API MechanicalObject<I331Types>;
+template class SOFA_Flexible_API MechanicalObject<U331Types>;
+template class SOFA_Flexible_API MechanicalObject<U321Types>;
 
-        .add< MechanicalObject<I331dTypes> >()
-//.add< MechanicalObject<I332dTypes> >()
-//.add< MechanicalObject<I333dTypes> >()
+static RegisterTemplateAlias alias1("E331", E331Types::Name());
+static RegisterTemplateAlias alias2("E321", E321Types::Name());
+static RegisterTemplateAlias alias3("E311", E311Types::Name());
+static RegisterTemplateAlias alias4("E332", E332Types::Name());
+static RegisterTemplateAlias alias5("E333", E333Types::Name());
+static RegisterTemplateAlias alias6("E221", E221Types::Name());
+static RegisterTemplateAlias alias7("I331", I331Types::Name());
+static RegisterTemplateAlias alias8("U331", U331Types::Name());
+static RegisterTemplateAlias alias9("U321", U321Types::Name());
 
-        .add< MechanicalObject<U331dTypes> >()
-        .add< MechanicalObject<U321dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<E331fTypes> >()
-        .add< MechanicalObject<E321fTypes> >()
-        .add< MechanicalObject<E311fTypes> >()
-        .add< MechanicalObject<E332fTypes> >()
-        .add< MechanicalObject<E333fTypes> >()
-        .add< MechanicalObject<E221fTypes> >()
+namespace f
+{
+static RegisterTemplateAlias alias1("E331f", E331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias2("E321f", E321Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias3("E311f", E311Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias4("E332f", E332Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias5("E333f", E333Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias6("E221f", E221Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias7("I331f", I331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias8("U331f", U331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias9("U321f", U321Types::Name(), isSRealDouble());
+}
 
-//        .add< MechanicalObject<D331fTypes> >()
-//        .add< MechanicalObject<D321fTypes> >()
-//        .add< MechanicalObject<D332fTypes> >()
-//        .add< MechanicalObject<D333fTypes> >()
-
-        .add< MechanicalObject<I331fTypes> >()
-//.add< MechanicalObject<I332fTypes> >()
-//.add< MechanicalObject<I333fTypes> >()
-
-        .add< MechanicalObject<U331fTypes> >()
-        .add< MechanicalObject<U321fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API MechanicalObject<E331dTypes>;
-template class SOFA_Flexible_API MechanicalObject<E321dTypes>;
-template class SOFA_Flexible_API MechanicalObject<E311dTypes>;
-template class SOFA_Flexible_API MechanicalObject<E332dTypes>;
-template class SOFA_Flexible_API MechanicalObject<E333dTypes>;
-template class SOFA_Flexible_API MechanicalObject<E221dTypes>;
-
-//template class SOFA_Flexible_API MechanicalObject<D331dTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D321dTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D332dTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D333dTypes>;
-
-template class SOFA_Flexible_API MechanicalObject<I331dTypes>;
-//template class SOFA_Flexible_API MechanicalObject<I332dTypes>;
-//template class SOFA_Flexible_API MechanicalObject<I333dTypes>;
-
-template class SOFA_Flexible_API MechanicalObject<U331dTypes>;
-template class SOFA_Flexible_API MechanicalObject<U321dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<E331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E321fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E311fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E332fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E333fTypes>;
-template class SOFA_Flexible_API MechanicalObject<E221fTypes>;
-
-//template class SOFA_Flexible_API MechanicalObject<D331fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D321fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D332fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<D333fTypes>;
-
-template class SOFA_Flexible_API MechanicalObject<I331fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<I332fTypes>;
-//template class SOFA_Flexible_API MechanicalObject<I333fTypes>;
-
-template class SOFA_Flexible_API MechanicalObject<U331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<U321fTypes>;
-#endif
+namespace d
+{
+static RegisterTemplateAlias alias1("E331d", E331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias2("E321d", E321Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias3("E311d", E311Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias4("E332d", E332Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias5("E333d", E333Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias6("E221d", E221Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias7("I331d", I331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias8("U331d", U331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias9("U321d", U321Types::Name(), isSRealFloat());
+}
 
 } // namespace container
 } // namespace component

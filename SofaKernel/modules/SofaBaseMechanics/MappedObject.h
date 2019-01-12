@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,8 +70,8 @@ protected:
 public:
     virtual void init() override;
 
-    Data<VecCoord> f_X;
-    Data<VecDeriv> f_V;
+    Data<VecCoord> f_X; ///< position vector
+    Data<VecDeriv> f_V; ///< velocity vector
 
     virtual void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
 
@@ -129,23 +129,14 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
-#ifndef SOFA_FLOAT
-extern template class MappedObject<defaulttype::Vec3dTypes>;
-extern template class MappedObject<defaulttype::Vec2dTypes>;
-extern template class MappedObject<defaulttype::Vec1dTypes>;
-extern template class MappedObject<defaulttype::Vec6dTypes>;
-extern template class MappedObject<defaulttype::Rigid3dTypes>;
-extern template class MappedObject<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class MappedObject<defaulttype::Vec3fTypes>;
-extern template class MappedObject<defaulttype::Vec2fTypes>;
-extern template class MappedObject<defaulttype::Vec1fTypes>;
-extern template class MappedObject<defaulttype::Vec6fTypes>;
-extern template class MappedObject<defaulttype::Rigid3fTypes>;
-extern template class MappedObject<defaulttype::Rigid2fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
+extern template class MappedObject<defaulttype::Vec3Types>;
+extern template class MappedObject<defaulttype::Vec2Types>;
+extern template class MappedObject<defaulttype::Vec1Types>;
+extern template class MappedObject<defaulttype::Vec6Types>;
+extern template class MappedObject<defaulttype::Rigid3Types>;
+extern template class MappedObject<defaulttype::Rigid2Types>;
+
 #endif
 
 } // namespace container

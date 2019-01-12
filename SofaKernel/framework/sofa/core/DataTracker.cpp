@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,12 +37,12 @@ void DataTracker::trackData( const objectmodel::BaseData& data )
     m_dataTrackers[&data] = data.getCounter();
 }
 
-bool DataTracker::isDirty( const objectmodel::BaseData& data )
+bool DataTracker::hasChanged( const objectmodel::BaseData& data )
 {
     return m_dataTrackers[&data] != data.getCounter();
 }
 
-bool DataTracker::isDirty()
+bool DataTracker::hasChanged()
 {
     for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
         if( it->second != it->first->getCounter() ) return true;

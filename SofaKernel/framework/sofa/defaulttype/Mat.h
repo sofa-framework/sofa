@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,15 +62,6 @@ public:
     explicit Mat(NoInit)
     {
     }
-
-    /*
-      /// Specific constructor with a single line.
-      explicit Mat(Line r1)
-      {
-        static_assert(L == 1, "");
-        this->elems[0]=r1;
-      }
-    */
 
     /// Specific constructor with 2 lines.
     Mat(Line r1, Line r2)
@@ -991,16 +982,13 @@ typedef Mat<3,4,double> Mat3x4d;
 typedef Mat<4,4,float> Mat4x4f;
 typedef Mat<4,4,double> Mat4x4d;
 
-#ifdef SOFA_FLOAT
-typedef Mat2x2f Matrix2;
-typedef Mat3x3f Matrix3;
-typedef Mat4x4f Matrix4;
-#else
-typedef Mat2x2d Matrix2;
-typedef Mat3x3d Matrix3;
-typedef Mat4x4d Matrix4;
-#endif
+typedef Mat<2,2,SReal> Mat2x2;
+typedef Mat<3,3,SReal> Mat3x3;
+typedef Mat<4,4,SReal> Mat4x4;
 
+typedef Mat<2,2,SReal> Matrix2;
+typedef Mat<3,3,SReal> Matrix3;
+typedef Mat<4,4,SReal> Matrix4;
 
 template <int L, int C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)

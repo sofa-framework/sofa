@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,13 +24,13 @@
 
 #include "TriangleFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include "config.h"
 
 // #define DEBUG_TRIANGLEFEM
@@ -696,20 +696,20 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;
-    //     if (!this->_object)
-    //         return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
+
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_TRIANGLES);
     typename VecElement::const_iterator it;
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it)
     {
@@ -717,18 +717,16 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index b = (*it)[1];
         Index c = (*it)[2];
 
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0,1,0,1));
+        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0,0,1,1));
+        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices,colorVector);
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 

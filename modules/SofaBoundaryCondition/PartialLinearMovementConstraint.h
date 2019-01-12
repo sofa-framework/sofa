@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,13 +100,15 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
-    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices;
-    core::objectmodel::Data<unsigned> mainIndice;
-    core::objectmodel::Data<unsigned> minDepIndice;
-    core::objectmodel::Data<unsigned> maxDepIndice;
+    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices; ///< Take into account the linear movement between the constrained points
+    core::objectmodel::Data<unsigned> mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes 
+    core::objectmodel::Data<unsigned> minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment 
+    core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
     core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
-    Data<Real> X0,Y0,Z0;
+    Data<Real> X0; ///< Size of specimen in X-direction
+    Data<Real> Y0; ///< Size of specimen in Y-direction
+    Data<Real> Z0; ///< Size of specimen in Z-direction
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
@@ -191,21 +193,13 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 

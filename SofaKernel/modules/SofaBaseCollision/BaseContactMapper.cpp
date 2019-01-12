@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,14 +38,21 @@ namespace collision
 
 using namespace defaulttype;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3fTypes>;
-template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3dTypes>;
-template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3dTypes>;
-#endif
+std::string GenerateStringID::generate(){
+    static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    std::string result;
+    result.resize(length);
+    for (int i = 0; i < length; i++)
+        result[i] = alphanum[rand() % length];
+
+    return result;
+}
+
+
+//template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec2Types>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3Types>;
+
 
 } // namespace collision
 
@@ -53,14 +60,9 @@ template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3dTyp
 
 namespace helper
 {
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
-template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3fTypes>, core::CollisionModel* >;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
-template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3dTypes>, core::CollisionModel* >;
-#endif
+//template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec2Types>, core::CollisionModel* >;
+template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
 } // namespace helper
 
 } // namespace sofa

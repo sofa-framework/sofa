@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,7 +127,7 @@ sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavio
     sofa::defaulttype::BaseMatrix* result;
     if( !this->areMatricesMapped() )
     {
-        sout << "Mapping::createMappedMatrix() this mapping do not support matrices building. Set mapMatrices to true" << getClassName() << sendl;
+        msg_warning() << "Mapping::createMappedMatrix() this mapping do not support matrices building. Set mapMatrices to true" << getClassName();
         return NULL;
     }
 
@@ -224,7 +224,7 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivI
 template <class In, class Out>
 void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
 {
-    //sout<<"Mapping<In,Out>::applyDJT"<<sendl;
+    //applyDJT
 }
 
 

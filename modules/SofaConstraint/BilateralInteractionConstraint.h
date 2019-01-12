@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,14 +66,9 @@ using sofa::defaulttype::BaseVector ;
 using sofa::defaulttype::Quaternion ;
 using sofa::defaulttype::Vec3d ;
 
-#ifdef SOFA_WITH_DOUBLE
-    using sofa::defaulttype::Rigid3dTypes ;
-    using sofa::defaulttype::Vec3dTypes ;
-#endif //
-#ifdef SOFA_WITH_FLOAT
-    using sofa::defaulttype::Rigid3fTypes ;
-    using sofa::defaulttype::Vec3fTypes ;
-#endif //
+using sofa::defaulttype::Rigid3Types ;
+using sofa::defaulttype::Vec3Types ;
+
 
 template<class T>
 class BilateralInteractionConstraintSpecialization {};
@@ -113,16 +108,16 @@ protected:
 
     std::vector<unsigned int> cid;
 
-    Data<helper::vector<int> > m1;
-    Data<helper::vector<int> > m2;
-    Data<VecDeriv> restVector;    
+    Data<helper::vector<int> > m1; ///< index of the constraint on the first model
+    Data<helper::vector<int> > m2; ///< index of the constraint on the second model
+    Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
-    Data<double> d_numericalTolerance;
-    Data<int> activateAtIteration;
-    Data<bool> merge;
-    Data<bool> derivative;
-    Data<bool> keepOrientDiff;
+    Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+    Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
+    Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
+    Data<bool> derivative; ///< TEST: derivative
+    Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
     std::vector<Vec3d> prevForces;
 
     // grouped square constraints
@@ -149,14 +144,14 @@ public:
     virtual void reset() override;
 
     virtual void buildConstraintMatrix(const ConstraintParams* cParams,
-                               DataMatrixDeriv &c1, DataMatrixDeriv &c2,
-                               unsigned int &cIndex,
-                               const DataVecCoord &x1, const DataVecCoord &x2) override;
+                                       DataMatrixDeriv &c1, DataMatrixDeriv &c2,
+                                       unsigned int &cIndex,
+                                       const DataVecCoord &x1, const DataVecCoord &x2) override;
 
     virtual void getConstraintViolation(const ConstraintParams* cParams,
-                                BaseVector *v,
-                                const DataVecCoord &x1, const DataVecCoord &x2,
-                                const DataVecDeriv &v1, const DataVecDeriv &v2) override;
+                                        BaseVector *v,
+                                        const DataVecCoord &x1, const DataVecCoord &x2,
+                                        const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
     void getVelocityViolation(BaseVector *v,
                               const DataVecCoord &x1, const DataVecCoord &x2,
@@ -183,55 +178,32 @@ public:
                     long id=0, PersistentID localid=0) ;
 
 private:
-     void unspecializedInit() ;
+    void unspecializedInit() ;
 };
 
-#ifdef SOFA_WITH_DOUBLE
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const ConstraintParams *cParams,
-                                                                                      DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d,
-                                                                                      unsigned int &cIndex
-        , const DataVecCoord &x1, const DataVecCoord &x2);
-
-template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const ConstraintParams *cParams,
-                                                                                       BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
-        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
+void BilateralInteractionConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams *cParams,
+                                                                        DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d,
+                                                                        unsigned int &cIndex
+                                                                        , const DataVecCoord &x1, const DataVecCoord &x2);
 
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::addContact(Deriv /*norm*/,
-                                                                           Coord P, Coord Q, Real /*contactDistance*/,
-                                                                           int m1, int m2, Coord /*Pfree*/,
-                                                                           Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
-
-#endif
-
-#ifdef SOFA_WITH_FLOAT
-template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const ConstraintParams *cParams,
-                                                                                      DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d,
-                                                                                      unsigned int &cIndex
-        , const DataVecCoord &x1_d, const DataVecCoord &x2_d);
+void BilateralInteractionConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams *cParams,
+                                                                         BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+                                                                         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
 
 template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const ConstraintParams *cParams,
-                                                                                       BaseVector *v,
-                                                                                       const DataVecCoord &x1_d, const DataVecCoord &x2_d
-        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
+void BilateralInteractionConstraint<Rigid3Types>::addContact(Deriv /*norm*/,
+                                                             Coord P, Coord Q, Real /*contactDistance*/,
+                                                             int m1, int m2, Coord /*Pfree*/,
+                                                             Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
 
-template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
-#endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CONSTRAINT)
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Vec3dTypes >;
-extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Rigid3dTypes >;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Vec3fTypes >;
-extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Rigid3fTypes >;
-#endif
+
+#if  !defined(SOFA_BUILD_CONSTRAINT)
+extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Vec3Types >;
+extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Rigid3Types >;
+
 #endif
 
 } // namespace bilateralinteractionconstraint

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,13 +42,16 @@ using sofa::simulation::Node ;
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <string>
 using std::string ;
 
-#include <gtest/gtest.h>
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<SReal>;
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -70,7 +73,7 @@ namespace sofa {
 // Given the positions and the topology, it then checks the expected values for
 // the mass.
 template <class TDataTypes, class TMassType>
-class DiagonalMass_test : public ::testing::Test
+class DiagonalMass_test : public BaseTest
 {
 public:
     typedef TDataTypes DataTypes;
@@ -88,6 +91,8 @@ public:
 
     virtual void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+
         component::initBaseMechanics();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
@@ -108,13 +113,14 @@ public:
         node->addObject(topologyContainer);
         node->addObject(geometryAlgorithms);
         mass = New<DiagonalMass<DataTypes, MassType> >();
+        mass->f_printLog.setValue(1.0);
         node->addObject(mass);
     }
 
     void check(MassType expectedTotalMass, const VecMass& expectedMass)
     {
         // Check that the mass vector has the right size.
-        ASSERT_EQ(mstate->x.getValue().size(), mass->d_mass.getValue().size());
+        ASSERT_EQ(mstate->x.getValue().size(), mass->d_vertexMass.getValue().size());
         // Safety check...
         ASSERT_EQ(mstate->x.getValue().size(), expectedMass.size());
 
@@ -123,7 +129,7 @@ public:
 
         // Check the mass at each index.
         for (size_t i = 0 ; i < mstate->x.getValue().size() ; i++)
-            EXPECT_FLOAT_EQ(expectedMass[i], mass->d_mass.getValue()[i]);
+            EXPECT_FLOAT_EQ(expectedMass[i], mass->d_vertexMass.getValue()[i]);
     }
 
     void runTest(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms,
@@ -140,7 +146,9 @@ public:
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "    <MechanicalObject />                                                                       "
+                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
+                "    <HexahedronSetGeometryAlgorithms />                                                        "
                 "   <DiagonalMass name='m_mass'/>                            "
                 "</Node>                                                     " ;
 
@@ -154,7 +162,7 @@ public:
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
 
-        EXPECT_TRUE( mass->findData("mass") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("vertexMass") != nullptr ) ;
         EXPECT_TRUE( mass->findData("totalMass") != nullptr ) ;
         EXPECT_TRUE( mass->findData("massDensity") != nullptr ) ;
         EXPECT_TRUE( mass->findData("computeMassOnRest") != nullptr ) ;
@@ -280,7 +288,41 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getTotalMass(), 8 ) ;
+        }
+
+        return ;
+    }
+
+    void checkTotalMassFromNegativeMassDensity_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' massDensity='-1.0'/>                                        "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
         }
 
         return ;
@@ -320,7 +362,252 @@ public:
         return ;
     }
 
-    void checkAttributeLoadFromFile(const std::string& filename, int masscount, double totalMass){
+    void checkMassDensityFromNegativeTotalMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' totalMass='-10.0'/>                                        "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+        }
+
+        return ;
+    }
+
+    void checkDoubleDeclaration_MassDensityTotalMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='10.0'/>                                        "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 10.0 ) ;
+        }
+
+        return ;
+    }
+
+    void checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' massDensity='-10.0' totalMass='10.0'/>                                        "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ;
+        }
+
+        return ;
+    }
+
+    void checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='-10.0'/>                                        "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+        }
+
+        return ;
+    }
+
+    void checkMassDensityTotalMassFromVertexMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' vertexMass='2 2 2 2 2 2 2 2'/>                             "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 16.0 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 2.0 ) ;
+        }
+
+        return ;
+    }
+
+    void checkTotalMassFromNegativeMassDensityVertexMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' massDensity = '-1.0' vertexMass='2.08334 1.25 1.25 0.416667 0.416667 1.25 1.25 2.08333'/>"
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+        }
+
+        return ;
+    }
+
+    void checkWrongSizeVertexMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
+                "            <DiagonalMass name='m_mass' vertexMass='10 2.08334 1.25 1.25 0.416667 0.416667 1.25 1.25 2.08333'/>"
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+        }
+
+        return ;
+    }
+
+    void checkAttributeLoadFromFile(const std::string& filename, int masscount, double totalMass, bool shouldFail)
+    {
+
         std::stringstream scene;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
@@ -332,10 +619,21 @@ public:
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
+
+        if(shouldFail)
+        {
+            EXPECT_MSG_EMIT(Error);
+            root->init(ExecParams::defaultInstance());
+            EXPECT_FALSE( mass->isComponentStateValid() );
+        }else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            root->init(ExecParams::defaultInstance()) ;
+            EXPECT_TRUE( mass->isComponentStateValid() );
+        }
 
         if(mass!=nullptr){
             // The number of mass in card.rigid is one so this should be
@@ -389,7 +687,7 @@ TEST_F(DiagonalMass3_test, singleTriangle)
     TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
-    const MassType expectedTotalMass = 0.5f;
+    const MassType expectedTotalMass = 1.0f;
     const VecMass expectedMass(3, (MassType)(expectedTotalMass/3));
 
     runTest(positions,
@@ -437,7 +735,7 @@ TEST_F(DiagonalMass3_test, singleTetrahedron)
     TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
 
-    const MassType expectedTotalMass = 1.0f/6.0f;
+    const MassType expectedTotalMass = 1.0f;
     const VecMass expectedMass(4, (MassType)(expectedTotalMass/4));
 
     runTest(positions,
@@ -495,17 +793,50 @@ TEST_F(DiagonalMass3_test, checkTotalMassFromMassDensity_Tetra){
     checkTotalMassFromMassDensity_Tetra();
 }
 
+TEST_F(DiagonalMass3_test, checkTotalMassFromNegativeMassDensity_Tetra){
+    checkTotalMassFromNegativeMassDensity_Tetra();
+}
+
 TEST_F(DiagonalMass3_test, checkMassDensityFromTotalMass_Tetra){
     checkMassDensityFromTotalMass_Tetra();
 }
 
-/// Rigid file are not handled only xs3....
-TEST_F(DiagonalMass3_test, checkAttributeLoadFromXps){
-    checkAttributeLoadFromFile("BehaviorModels/card.rigid", 0, 0);
+TEST_F(DiagonalMass3_test, checkMassDensityFromNegativeTotalMass_Tetra){
+    checkMassDensityFromNegativeTotalMass_Tetra();
 }
 
-TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile){
-    checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6);
+TEST_F(DiagonalMass3_test, checkDoubleDeclaration_MassDensityTotalMass_Tetra){
+    checkDoubleDeclaration_MassDensityTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra){
+    checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra){
+    checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkMassDensityTotalMassFromVertexMass_Tetra){
+    checkMassDensityTotalMassFromVertexMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkTotalMassFromNegativeMassDensityVertexMass_Tetra){
+    checkTotalMassFromNegativeMassDensityVertexMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkWrongSizeVertexMass_Tetra){
+    checkWrongSizeVertexMass_Tetra();
+}
+
+
+/// Rigid file are not handled only xs3....
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsRigid){
+    checkAttributeLoadFromFile("BehaviorModels/card.rigid", 0, 0, true);
+}
+
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsMassSpring){
+    checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6, false);
 }
 
 

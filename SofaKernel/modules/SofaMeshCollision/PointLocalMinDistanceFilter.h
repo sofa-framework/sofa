@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,7 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Point collision primitive.
  */
-class PointInfo : public InfoFilter //< Point >
+class SOFA_MESH_COLLISION_API PointInfo : public InfoFilter //< Point >
 {
 public:
     typedef std::vector< std::pair< sofa::defaulttype::Vector3, double > > TDataContainer;
@@ -162,7 +162,7 @@ public:
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
     PointInfoHandler* pointInfoHandler;
     core::topology::BaseMeshTopology *bmt;
 };

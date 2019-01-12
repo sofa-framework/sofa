@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -170,8 +170,6 @@ public:
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
-            //        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-            //            if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
             for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
             {
                 out[i]=Deriv();
@@ -199,11 +197,6 @@ public:
             const VecDeriv& out = dOut.getValue();
             const VecVRef& indices = this->d_index.getValue();
 
-//#ifdef _OPENMP
-//#pragma omp parallel for if (this->d_parallel.getValue())
-//#endif
-            //        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-            //            if( this->maskTo->getEntry(i) )
             for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
             {
                 for(size_t j=0; j<jacobian[i].size(); j++)
@@ -259,26 +252,9 @@ public:
     {
     }
 
-    //void updateForceMask()
-    //{
-    //    const VecVRef& indices = this->d_index.getValue();
-    //    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-    //    {
-    //        if( this->maskTo->getEntry(i) )
-    //        {
-    //            for(size_t j=0; j<jacobian[i].size(); j++)
-    //            {
-    //                size_t index = indices[i][j];
-    //                this->maskFrom->insertEntry( index );
-    //            }
-    //        }
-    //    }
-
-    //    //    serr<<"updateForceMask "<<this->maskTo->nbActiveDofs()<<" "<<this->maskFrom->nbActiveDofs()<<sendl;
-    //}
     //@}
 
-    Data<bool> d_assemble;
+    Data<bool> d_assemble; ///< Assemble the matrices (Jacobian and Geometric Stiffness) or use optimized matrix/vector multiplications
     Data< bool > d_parallel;		///< use openmp ?
 
 protected:
@@ -310,7 +286,6 @@ protected:
     void updateJ()
     {
         unsigned int insize = this->fromModel->getSize();
-        //        unsigned int outsize = this->toModel->getSize();
 
         SparseMatrixEigen& J = eigenJacobian;
         const VecVRef& indices = this->d_index.getValue();

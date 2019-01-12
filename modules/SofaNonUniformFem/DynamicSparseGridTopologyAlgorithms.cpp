@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP
 #include <SofaNonUniformFem/DynamicSparseGridTopologyAlgorithms.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -33,36 +33,16 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(DynamicSparseGridTopologyAlgorithms);
 int DynamicSparseGridTopologyAlgorithmsClass = core::RegisterObject("Hexahedron set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< DynamicSparseGridTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< DynamicSparseGridTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< DynamicSparseGridTopologyAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< DynamicSparseGridTopologyAlgorithms<Vec2dTypes> >()
-        .add< DynamicSparseGridTopologyAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DynamicSparseGridTopologyAlgorithms<Vec2fTypes> >()
-        .add< DynamicSparseGridTopologyAlgorithms<Vec1fTypes> >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class DynamicSparseGridTopologyAlgorithms<Vec3dTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec2dTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec1dTypes>;
-#endif
+        .add< DynamicSparseGridTopologyAlgorithms<Vec3Types> >(true) // default template
+        .add< DynamicSparseGridTopologyAlgorithms<Vec2Types> >()
+        .add< DynamicSparseGridTopologyAlgorithms<Vec1Types> >()
 
-#ifndef SOFA_DOUBLE
-template class DynamicSparseGridTopologyAlgorithms<Vec3fTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec2fTypes>;
-template class DynamicSparseGridTopologyAlgorithms<Vec1fTypes>;
-#endif
+        ;
+template class DynamicSparseGridTopologyAlgorithms<Vec3Types>;
+template class DynamicSparseGridTopologyAlgorithms<Vec2Types>;
+template class DynamicSparseGridTopologyAlgorithms<Vec1Types>;
+
 
 } // namespace topology
 

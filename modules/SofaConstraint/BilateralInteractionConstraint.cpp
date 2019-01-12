@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 
 #include <SofaConstraint/BilateralInteractionConstraint.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -81,7 +81,7 @@ public:
             qQ = Q.getOrientation();
             qP.normalize();
             qQ.normalize();
-            dQP = qDiff(qQ, qP);
+            dQP = qP.quatDiff(qQ, qP);
             dQP.normalize();
 
             qQ2 = qP*dQP;
@@ -109,7 +109,7 @@ public:
             resTab[offset] = new BilateralConstraintResolution3Dof();
             offset += 3;
             BilateralConstraintResolution3Dof* temp = new BilateralConstraintResolution3Dof();
-            temp->tolerance = tolerance;	// specific (smaller) tolerance for the rotation
+            temp->setTolerance(tolerance);	// specific (smaller) tolerance for the rotation
             resTab[offset] = temp;
             offset += 3;
         }
@@ -263,19 +263,18 @@ public:
 };
 
 
-#ifdef SOFA_WITH_DOUBLE
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::init(){
+void BilateralInteractionConstraint<Rigid3Types>::init(){
     unspecializedInit() ;
 }
 
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::bwdInit() {
+void BilateralInteractionConstraint<Rigid3Types>::bwdInit() {
     BilateralInteractionConstraintSpecialization<RigidImpl>::bwdInit(*this);
 }
 
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(const ConstraintParams* cParams,
+void BilateralInteractionConstraint<Rigid3Types>::getConstraintResolution(const ConstraintParams* cParams,
                                                                            std::vector<ConstraintResolution*>& resTab,
                                                                            unsigned int& offset)
 {
@@ -285,7 +284,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(const
 }
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
+void BilateralInteractionConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams* cParams,
                                                                          DataMatrixDeriv &c1_d,
                                                                          DataMatrixDeriv &c2_d,
                                                                          unsigned int &constraintId,
@@ -298,7 +297,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const C
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const ConstraintParams* cParams,
+void BilateralInteractionConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams* cParams,
                                                                           BaseVector *v,
                                                                           const DataVecCoord &d_x1, const DataVecCoord &d_x2,
                                                                           const DataVecDeriv &v1, const DataVecDeriv &v2)
@@ -310,7 +309,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const 
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::getVelocityViolation(BaseVector * /*v*/,
+void BilateralInteractionConstraint<Rigid3Types>::getVelocityViolation(BaseVector * /*v*/,
                                                                         const DataVecCoord &/*x1*/,
                                                                         const DataVecCoord &/*x2*/,
                                                                         const DataVecDeriv &/*v1*/,
@@ -320,7 +319,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getVelocityViolation(BaseVect
 }
 
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv norm,
+void BilateralInteractionConstraint<defaulttype::Rigid3Types>::addContact(Deriv norm,
                                                                            Coord P, Coord Q, Real contactDistance,
                                                                            int m1, int m2,
                                                                            Coord Pfree, Coord Qfree,
@@ -330,112 +329,18 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv
                                                                         norm, P, Q, contactDistance, m1, m2, Pfree, Qfree,
                                                                         id, localid) ;
 }
-#endif
-
-#ifdef SOFA_WITH_FLOAT
-template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::init()
-{
-    unspecializedInit() ;
-
-    if(!d_numericalTolerance.isSet()){
-        msg_warning(this) << "The numericalTolerance attribute is not set. The default value is now 0.0001.  "
-                             "This value is different to the one used in SOFA 1.0 if you are experiencing problems "
-                             "in your scene you can set the attribute to the old value of 0.01.  "
-                             "To remove this warning message you need to explicitely specify the desired tolerance in"
-                             "your scene.  ";
-    }
-}
-
-template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::bwdInit() {
-    BilateralInteractionConstraintSpecialization<RigidImpl>::bwdInit(*this);
-}
 
 
-template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(const ConstraintParams* cParams,
-                                                                           std::vector<ConstraintResolution*>& resTab,
-                                                                           unsigned int& offset)
-{
-
-    BilateralInteractionConstraintSpecialization<RigidImpl>::getConstraintResolution(*this,
-                                                                                     cParams, resTab, offset,
-                                                                                     d_numericalTolerance.getValue());
-}
-
-template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
-                                                                         DataMatrixDeriv &c1_d,
-                                                                         DataMatrixDeriv &c2_d,
-                                                                         unsigned int &constraintId,
-                                                                         const DataVecCoord &x1, const DataVecCoord &x2)
-{
-    BilateralInteractionConstraintSpecialization<RigidImpl>::buildConstraintMatrix(*this,
-                                                                                   cParams, c1_d, c2_d, constraintId,
-                                                                                   x1, x2) ;
-}
-
-
-template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                          BaseVector *v,
-                                                                          const DataVecCoord &d_x1,
-                                                                          const DataVecCoord &d_x2,
-                                                                          const DataVecDeriv &v1, const DataVecDeriv &v2)
-{
-    BilateralInteractionConstraintSpecialization<RigidImpl>::getConstraintViolation(*this,
-                                                                                    cParams, v, d_x1, d_x2,
-                                                                                    v1, v2) ;
-}
-
-template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::getVelocityViolation(BaseVector * /*v*/,
-                                                                        const DataVecCoord &/*x1*/,
-                                                                        const DataVecCoord &/*x2*/,
-                                                                        const DataVecDeriv &/*v1*/,
-                                                                        const DataVecDeriv &/*v2*/)
-{
-
-}
-
-template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv norm,
-                                                                           Coord P, Coord Q,
-                                                                           Real contactDistance,
-                                                                           int m1, int m2, Coord Pfree,
-                                                                           Coord Qfree,
-                                                                           long id, PersistentID localid)
-{
-    BilateralInteractionConstraintSpecialization<RigidImpl>::addContact(*this,
-                                                                        norm, P, Q, contactDistance, m1, m2, Pfree, Qfree,
-                                                                        id, localid) ;
-}
-
-#endif
-
-
-SOFA_DECL_CLASS(BilateralInteractionConstraint)
 
 int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
-        #ifdef SOFA_WITH_DOUBLE
-        .add< BilateralInteractionConstraint<Vec3dTypes> >()
-        .add< BilateralInteractionConstraint<Rigid3dTypes> >()
-        #endif
-        #ifdef SOFA_WITH_FLOAT
-        .add< BilateralInteractionConstraint<Vec3fTypes> >()
-        .add< BilateralInteractionConstraint<Rigid3fTypes> >()
-        #endif
+                .add< BilateralInteractionConstraint<Vec3Types> >()
+        .add< BilateralInteractionConstraint<Rigid3Types> >()
+        
         ;
 
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Vec3dTypes>;
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Rigid3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Vec3fTypes>;
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Rigid3fTypes>;
-#endif
+template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Vec3Types>;
+template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Rigid3Types>;
+
 
 }
 

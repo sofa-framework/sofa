@@ -49,7 +49,6 @@ int ExternalComponent::nbcalls = 0;
 
 
 //////////////////// //////// Registering the new component in the factory /////////////////////////
-SOFA_DECL_CLASS (ExternalComponent)
 int ExternalComponentClass = core::RegisterObject ( "An dummy External Component" )
         .add<ExternalComponent>(true);
 }

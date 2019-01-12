@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -61,13 +61,13 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
-    core::objectmodel::Data<VecValue> f_in;
-    core::objectmodel::Data<VecIndex> f_indices;
-    core::objectmodel::Data<VecValue> f_out;
-    core::objectmodel::Data<std::string> f_outStr;
-    core::objectmodel::Data<bool> f_transpose;
+    core::objectmodel::Data<VecValue> f_in; ///< input indices
+    core::objectmodel::Data<VecIndex> f_indices; ///< array containing in ith cell the input index corresponding to the output index i (or reversively if transpose=true)
+    core::objectmodel::Data<VecValue> f_out; ///< Output indices
+    core::objectmodel::Data<std::string> f_outStr; ///< Output indices, converted as a string
+    core::objectmodel::Data<bool> f_transpose; ///< Should the transposed mapping be used ?
 
     template<class V>
     void applyIndex(V& v, const MapIndex& m)
@@ -80,7 +80,7 @@ public:
     void apply(Value& v, const MapIndex& m);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<unsigned int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;

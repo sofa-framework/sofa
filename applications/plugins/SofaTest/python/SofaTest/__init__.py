@@ -3,6 +3,8 @@ import Sofa
 import inspect
 import os
 
+from Macro import *
+
 ## @package SofaTest
 #  Python helper to perform test in Sofa
 

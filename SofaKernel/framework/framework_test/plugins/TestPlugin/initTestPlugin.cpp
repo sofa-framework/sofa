@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,7 +48,7 @@ SOFA_TESTPLUGIN_API const char* getModuleVersion()
 
 SOFA_TESTPLUGIN_API const char* getModuleLicense()
 {
-    return "LicenceTest";
+    return "LicenseTest";
 }
 
 SOFA_TESTPLUGIN_API const char* getModuleDescription()
@@ -64,5 +64,3 @@ SOFA_TESTPLUGIN_API const char* getModuleComponentList()
 } // extern "C"
 
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)

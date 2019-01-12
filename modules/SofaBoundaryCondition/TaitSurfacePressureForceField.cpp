@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_CPP
 #include <SofaBoundaryCondition/TaitSurfacePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -36,8 +36,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TaitSurfacePressureForceField)
-
 int TaitSurfacePressureForceFieldClass = core::RegisterObject("\
 This component computes the volume enclosed by a surface mesh \
 and apply a pressure force following Tait's equation: $P = P_0 - B((V/V_0)^\\gamma - 1)$.\n\
@@ -45,20 +43,12 @@ This ForceField can be used to apply :\n\
  * a constant pressure (set $B=0$ and use $P_0$)\n\
  * an ideal gas pressure (set $\\gamma=1$ and use $B$)\n\
  * a pressure from water (set $\\gamma=7$ and use $B$)")
-#ifndef SOFA_FLOAT
-        .add< TaitSurfacePressureForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TaitSurfacePressureForceField<Vec3fTypes> >()
-#endif
+        .add< TaitSurfacePressureForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

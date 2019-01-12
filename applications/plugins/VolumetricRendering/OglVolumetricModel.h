@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,7 @@
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaOpenglVisual/OglVariable.h>
 #include <SofaOpenglVisual/OglAttribute.h>
 
@@ -46,23 +46,23 @@ namespace visualmodel
  *
  */
 
-class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public ExtVec3fState
+class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public ExtVec3State
 {
 public:
-    SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, ExtVec3fState);
+    SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, ExtVec3State);
 
     typedef sofa::core::topology::Tetrahedron Tetrahedron;
     typedef sofa::core::topology::Hexahedron Hexahedron;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
-    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra;
-    Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra;
+    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra; ///< Tetrahedra to draw
+    Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra; ///< Hexahedra to draw
 
-    Data<float> d_volumeScale;
-    Data<bool> d_depthTest;
-    Data<bool> d_blending;
-    Data<defaulttype::Vec4f> d_defaultColor;
+    Data<float> d_volumeScale; ///< Scale for each volumetric primitive
+    Data<bool> d_depthTest; ///< Set Depth Test
+    Data<bool> d_blending; ///< Set Blending
+    Data<defaulttype::Vec4f> d_defaultColor; ///< Color for each volume (if the attribute a_vertexColor is not detected)
 
     virtual ~OglVolumetricModel();
 

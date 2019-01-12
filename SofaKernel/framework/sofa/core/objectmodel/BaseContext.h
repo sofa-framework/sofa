@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,16 +23,9 @@
 #define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
 
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
-#include <sofa/core/ExecParams.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/defaulttype/SolidTypes.h>
-#endif
 
-#include <set>
 
 namespace sofa
 {
@@ -72,11 +65,6 @@ public:
     /// @name Types defined for local coordinate system handling
     /// @{
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    typedef defaulttype::SolidTypes<SReal> SolidTypes;
-    typedef SolidTypes::Transform Frame;
-    typedef SolidTypes::SpatialVector SpatialVector;
-#endif
 //    typedef SolidTypes::Rot Quat;
 //    typedef SolidTypes::Mat Mat33;
     /// @}
@@ -86,11 +74,11 @@ public:
 protected:
     BaseContext();
     virtual ~BaseContext();
-	
-private:	
-	BaseContext(const BaseContext&);
+
+private:
+    BaseContext(const BaseContext&);
     BaseContext& operator=(const BaseContext& );
-    
+
 public:
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
@@ -108,11 +96,11 @@ public:
     /// State of the context
     virtual void setActive(bool) {}
 
-	/// Sleeping state of the context
-	virtual bool isSleeping() const;
+    /// Sleeping state of the context
+    virtual bool isSleeping() const;
 
-	/// Whether the context can change its sleeping state or not
-	virtual bool canChangeSleepingState() const;
+    /// Whether the context can change its sleeping state or not
+    virtual bool canChangeSleepingState() const;
 
     /// Simulation time
     virtual SReal getTime() const;
@@ -122,51 +110,8 @@ public:
 
     /// Animation flag
     virtual bool getAnimate() const;
-
-
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCurrentLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    virtual int getCoarsestLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    virtual int getFinestLevel() const;
-
-    /// Multiresolution support (UNSTABLE)
-    //     virtual unsigned int nbLevels() const;
-#endif
-
     /// @}
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    /// @name Local Coordinate System
-    /// @{
-    /// Projection from the local coordinate system to the world coordinate system.
-    virtual const Frame& getPositionInWorld() const;
-    /// Projection from the local coordinate system to the world coordinate system.
-    virtual void setPositionInWorld(const Frame&)
-    {}
-
-    /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual const SpatialVector& getVelocityInWorld() const;
-    /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual void setVelocityInWorld(const SpatialVector&)
-    {}
-
-    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual const Vec3& getVelocityBasedLinearAccelerationInWorld() const;
-    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& )
-    {}
-    /// Gravity in local coordinates  TODO: replace with world coordinates
-    virtual Vec3 getLocalGravity() const;
-    ///// Gravity in local coordinates
-    //virtual void setGravity( const Vec3& ) { }
-    /// @}
-#endif
 
     /// Gravity in local coordinates
     virtual const Vec3& getGravity() const;
@@ -191,6 +136,13 @@ public:
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
     virtual core::topology::BaseMeshTopology* getMeshTopology() const;
+
+    /// Mesh Topology that is local to this context (i.e. not within parent contexts)
+    virtual core::topology::BaseMeshTopology* getLocalMeshTopology() const;
+
+    /// Mesh Topology that is relevant for this context, either local or within
+    /// a parent until a mapping is reached that does not preserve topologies.
+    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const;
 
     /// Mass
     virtual core::behavior::BaseMass* getMass() const;
@@ -229,6 +181,42 @@ public:
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
+
+    /// List all objects of this node deriving from a given class
+    template<class Object, class Container>
+    void getObjects(Container* list, SearchDirection dir = SearchUp)
+    {
+        this->get<Object, Container>(list, dir);
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    template<class Container>
+    Container* getObjects(Container* result, SearchDirection dir = SearchUp){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(result, dir);
+        return result ;
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    /// eg:
+    ///       sofa::helper::vector<VisualModel*> results;
+    ///       context->getObjects(results) ;
+    template<class Container>
+    Container& getObjects(Container& result, SearchDirection dir = SearchUp){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(&result, dir);
+        return result ;
+    }
+
+    /// Returns a list of object of type passed as a parameter. There shoud be no
+    /// Copy constructor because of Return Value Optimization.
+    /// eg:
+    ///    for(BaseObject* o : context->getObjects() ){ ... }
+    ///    for(VisualModel* o : context->getObjects<VisualModel>() ){ ... }
+    template<class Object=sofa::core::objectmodel::BaseObject>
+    std::vector<Object*> getObjects(SearchDirection dir = SearchUp){
+        std::vector<Object*> o;
+        getObjects(o, dir) ;
+        return o ;
+    }
 
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
@@ -366,28 +354,13 @@ public:
     virtual void setAnimate(bool /*val*/)
     { }
 
-	/// Sleeping state of the context
-	virtual void setSleeping(bool /*val*/) 
-	{ }
+    /// Sleeping state of the context
+    virtual void setSleeping(bool /*val*/)
+    { }
 
-	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool /*val*/)
-	{ }
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
-    virtual bool setCurrentLevel(int )
-    {
-        return false;
-    }
-
-    /// Multiresolution support (UNSTABLE)
-    virtual void setCoarsestLevel(int ) {}
-
-    /// Multiresolution support (UNSTABLE)
-    virtual void setFinestLevel(int ) {}
-#endif
-
+    /// Sleeping state change of the context
+    virtual void setChangeSleepingState(bool /*val*/)
+    { }
     /// @}
 
     /// @name Variables Setters

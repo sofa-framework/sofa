@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,6 @@ Visitor::Result ParallelMechanicalVOpVisitor::fwdMechanicalState(Node* /*node*/,
 }
 Visitor::Result ParallelMechanicalVOpVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
 {
-    //mm->vOp(v,a,b,f);
     return RESULT_CONTINUE;
 }
 
@@ -55,7 +54,6 @@ Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMechanicalState(Node* /*node
 
 Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
 {
-    //mm->vOp(v,a,b,f);
     return RESULT_CONTINUE;
 }
 Visitor::Result ParallelMechanicalVDotVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)

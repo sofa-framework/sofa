@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,11 +52,8 @@ inline void parseIndices(helper::vector<unsigned int>& pairs, const container1& 
 
 
 template <class DataTypes>
-void MeshSplittingEngine<DataTypes>::update()
+void MeshSplittingEngine<DataTypes>::doUpdate()
 {
-    updateAllInputsIfDirty();
-    cleanDirty();
-
     helper::ReadAccessor<Data< SeqPositions > > i_pos(this->inputPosition);
     const size_t& nb = nbInputs.getValue();
 

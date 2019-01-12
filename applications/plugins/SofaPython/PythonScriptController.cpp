@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -91,6 +91,7 @@ public:
         if(!m_controller->scriptControllerInstance()){
             m_controller->doLoadScript();
         }else{
+            PythonEnvironment::gil state {__func__ } ;
             std::string file=filepath;
             SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
                              const_cast<char*>("s"),
@@ -106,8 +107,6 @@ public:
 int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
         ;
-
-SOFA_DECL_CLASS(PythonScriptController)
 
 PythonScriptController::PythonScriptController()
     : ScriptController()
@@ -168,6 +167,7 @@ void PythonScriptController::refreshBinding()
             BIND_OBJECT_METHOD(bwdInitGraph)
             BIND_OBJECT_METHOD(onKeyPressed)
             BIND_OBJECT_METHOD(onKeyReleased)
+            BIND_OBJECT_METHOD(onMouseMove)
             BIND_OBJECT_METHOD(onMouseButtonLeft)
             BIND_OBJECT_METHOD(onMouseButtonRight)
             BIND_OBJECT_METHOD(onMouseButtonMiddle)
@@ -299,6 +299,15 @@ bool PythonScriptController::script_onKeyReleased(const char c)
     PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEBOOLFUNC(m_Func_onKeyReleased,"(c)", c);
     return b;
+}
+
+void PythonScriptController::script_onMouseMove(const int posX,const int posY)
+{
+     ActivableScopedAdvancedTimer advancedTimer(m_timingEnabled.getValue(),
+                                                "PythonScriptController_onMouseMove",this);
+
+     PythonEnvironment::gil lock(__func__);
+     SP_CALL_MODULEFUNC(m_Func_onMouseMove, "(ii)", posX, posY);
 }
 
 void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)

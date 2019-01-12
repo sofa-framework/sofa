@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -60,18 +58,18 @@ protected:
 public:
     void init() override;
     void reinit() override;
-    void update() override;
+    void doUpdate() override;
 
     //Input
-    Data<helper::vector<sofa::core::loader::PrimitiveGroup > > f_groups;
-    Data<helper::vector<unsigned int> > f_primitives; //not mandatory
-    Data<helper::vector<int > > f_elementsGroup;
+    Data<helper::vector<sofa::core::loader::PrimitiveGroup > > f_groups; ///< Groups
+    Data<helper::vector<unsigned int> > f_primitives; ///< not mandatory
+    Data<helper::vector<int > > f_elementsGroup; ///< Vector of groups (each element gives its group
     //Output
-    Data<helper::vector<Real> > f_youngModulus;
+    Data<helper::vector<Real> > f_youngModulus; ///< Vector of young modulus for each primitive
     //Parameters
-    Data<std::string> p_mapGroupModulus;
-    Data<Real> p_defaultModulus;
-    Data<helper::vector<Real> > p_groupMod;
+    Data<std::string> p_mapGroupModulus; ///< Mapping between groups and modulus
+    Data<Real> p_defaultModulus; ///< Default value if the primitive is not in a group
+    Data<helper::vector<Real> > p_groupMod; ///< list of young modulus for each group
 
     virtual std::string getTemplateName() const override
     {
@@ -85,13 +83,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
+extern template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

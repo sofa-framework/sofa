@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -427,8 +427,6 @@ simulation::Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation:
 
 int SleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object")
 .add< SleepController >();
-
-SOFA_DECL_CLASS(SleepController)
 
 } // namespace controller
 

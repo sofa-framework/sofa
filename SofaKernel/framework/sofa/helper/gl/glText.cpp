@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,15 +93,12 @@ void GlText::update ( const double& scale )
 
 void GlText::draw()
 {
-#ifndef PS3
     Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
     const char* s = text.c_str();
 
     GlText::draw(s, position, scale);
-
-#endif
 }
 
 void GlText::textureDraw_Overlay(const char* text, const double scale)

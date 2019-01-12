@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,24 +38,15 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS ( FrameSpringForceField )
 // Register in the Factory
 
 int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" )
-#ifndef SOFA_FLOAT
-        .add< FrameSpringForceField<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FrameSpringForceField<Rigid3fTypes> >()
-#endif
+        .add< FrameSpringForceField<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3fTypes>;
-#endif
+template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3Types>;
+
 
 } // namespace interactionforcefield
 

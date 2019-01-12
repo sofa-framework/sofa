@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,13 +66,13 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef PlaneForceField<DataTypes> PlaneForceFieldT;
 protected:
-    core::objectmodel::Data<Coord> _center;
-    core::objectmodel::Data<Deriv> _size;
-    core::objectmodel::Data<Real> _speed;
-    core::objectmodel::Data<Deriv> _axis;
+    core::objectmodel::Data<Coord> _center; ///< box center
+    core::objectmodel::Data<Deriv> _size; ///< box size
+    core::objectmodel::Data<Real> _speed; ///< rotation speed
+    core::objectmodel::Data<Deriv> _axis; ///< rotation axis
 
-    core::objectmodel::Data<Real> _stiffness;
-    core::objectmodel::Data<Real> _damping;
+    core::objectmodel::Data<Real> _stiffness; ///< penality force stiffness
+    core::objectmodel::Data<Real> _damping; ///< penality force damping
 
     defaulttype::Vec<6, typename PlaneForceFieldT::SPtr> _planes;
 
@@ -173,13 +173,9 @@ protected :
     bool _alreadyInit;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class WashingMachineForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class WashingMachineForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP)
+extern template class WashingMachineForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

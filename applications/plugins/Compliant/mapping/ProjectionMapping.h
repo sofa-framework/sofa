@@ -1,5 +1,5 @@
-#ifndef PROJECTIONMAPPING_H
-#define PROJECTIONMAPPING_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_H
+#define SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_H
 
 #include "AssembledMapping.h"
 #include <Compliant/config.h>
@@ -117,6 +117,11 @@ protected:
     }
 	
 };
+
+#if !defined(SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP)
+extern template class SOFA_Compliant_API ProjectionMapping<  sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
+#endif
+
 
 }
 }

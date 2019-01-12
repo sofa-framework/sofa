@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,8 +56,8 @@ public:
     /// potentially other parameters.
     virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-    Data<std::string>   d_targetcomponent       ;
-    Data<std::string>   d_alias                 ;
+    Data<std::string>   d_targetcomponent       ; ///< The component class for which to create an alias.
+    Data<std::string>   d_alias                 ; ///< The new alias of the component.
 
 
     static std::string className(const MakeAliasComponent* ptr)

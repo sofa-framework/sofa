@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,8 +80,8 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
-    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
+    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices; ///< Table that provides interpolation Indices
+    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues; ///< Table that provides interpolation Values
 
     void clear(int /*reserve*/) {}
 
@@ -114,32 +114,15 @@ private:
     bool doNotMap;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP)
 extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec2dTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::ExtVec2fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::Vec2fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::ExtVec2fTypes >;
-#endif
+extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec2Types >;
+extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3Types >;
+extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::ExtVec2Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec2fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::Vec2dTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API ExternalInterpolationMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1dTypes >;
-#endif
-#endif
+
+
 #endif
 
 } // namespace mapping

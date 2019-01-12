@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,17 +22,9 @@
 #ifndef SOFA_CORE_OBJECTMODEL_DATA_H
 #define SOFA_CORE_OBJECTMODEL_DATA_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/vector.h>
-#include <memory>
-#include <string>
-#include <sofa/helper/logging/Message.h>
 namespace sofa
 {
 
@@ -316,7 +308,6 @@ public:
 //    }
 };
 
-
 /** \brief Container that holds a variable for a component.
  *
  * This is a fundamental class template in Sofa.  Data are used to encapsulated
@@ -384,6 +375,9 @@ public:
 
         T value;
     };
+
+    // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
+    virtual BaseData* getNewInstance() { return new Data();}
 
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
@@ -550,6 +544,8 @@ private:
     Data& operator=(const Data& );
 };
 
+class EmptyData : public Data<void*> {};
+
 /// Specialization for reading strings
 template<>
 bool TData<std::string>::read( const std::string& str );
@@ -586,7 +582,7 @@ std::string TData<T>::getValueTypeString() const
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 
 extern template class SOFA_CORE_API TData< std::string >;
 extern template class SOFA_CORE_API Data< std::string >;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,13 +46,13 @@ public:
     struct GLBuffers
     {
         GLuint VBO, IBO;
-        GLuint verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize;
-        GLuint indicesSize;
+        GLuint64 verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize;
+        GLuint64 indicesSize;
     };
     struct CustomGLBuffer
     {
         GLuint VBO;
-        GLuint bufferSize;
+        GLuint64 bufferSize;
         GLint location;
     };
 };
@@ -126,12 +126,12 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
+#if  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
+#endif //  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 
 } //gl
 

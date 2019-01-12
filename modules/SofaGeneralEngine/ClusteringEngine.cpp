@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP
 #include <SofaGeneralEngine/ClusteringEngine.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -35,23 +35,13 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ClusteringEngine)
-
 int ClusteringEngineClass = core::RegisterObject("Group points into overlapping clusters according to a user defined number of clusters and radius")
-#ifndef SOFA_FLOAT
-        .add< ClusteringEngine<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ClusteringEngine<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ClusteringEngine<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API ClusteringEngine<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ClusteringEngine<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API ClusteringEngine<Vec3Types>;
+ 
 
 
 

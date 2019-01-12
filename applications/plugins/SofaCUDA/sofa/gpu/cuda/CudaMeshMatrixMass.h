@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,11 +36,40 @@ using namespace sofa::gpu::cuda;
 using namespace sofa::component::mass;
 
 template<>
+class MeshMatrixMassInternalData<CudaVec3fTypes,float>
+{
+public:
+    /// Cuda vector copying the vertex mass (enabling deviceRead)
+    CudaVector<float> vMass;
+
+    /// assumes the geometry object type is 3D
+    typedef CudaVec3fTypes GeometricalTypes ;
+};
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::copyVertexMass();
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+
+
+
+
+template<>
 class MeshMatrixMassInternalData<CudaVec2fTypes,float>
 {
 public:
     /// Cuda vector copying the vertex mass (enabling deviceRead)
     CudaVector<float> vMass;
+
+    /// assumes the geometry object type is 3D
+    typedef CudaVec3fTypes GeometricalTypes ;
 };
 
 template<>
@@ -54,6 +83,32 @@ void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::addForce(const core
 
 template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+
+
+
+
+template<>
+class MeshMatrixMassInternalData<CudaVec1fTypes,float>
+{
+public:
+    /// Cuda vector copying the vertex mass (enabling deviceRead)
+    CudaVector<float> vMass;
+
+    /// assumes the geometry object type is 3D
+    typedef CudaVec3fTypes GeometricalTypes ;
+};
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::copyVertexMass();
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+
+template<>
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 } // namespace mass
 

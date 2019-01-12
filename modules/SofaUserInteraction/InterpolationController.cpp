@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,27 +35,15 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(InterpolationController)
-
 int InterpolationControllerClass = core::RegisterObject("Interpolates nodes between two meshes")
-#ifndef SOFA_FLOAT
-.add< InterpolationController<Vec3dTypes> > ()
-.add< InterpolationController<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< InterpolationController<Vec3fTypes> > ()
-.add< InterpolationController<Rigid3fTypes> >()
-#endif
+.add< InterpolationController<Vec3Types> > ()
+.add< InterpolationController<Rigid3Types> >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API InterpolationController<Vec3dTypes>;
-template class SOFA_USER_INTERACTION_API InterpolationController<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API InterpolationController<Vec3fTypes>;
-template class SOFA_USER_INTERACTION_API InterpolationController<Rigid3fTypes>;
-#endif
+template class SOFA_USER_INTERACTION_API InterpolationController<Vec3Types>;
+template class SOFA_USER_INTERACTION_API InterpolationController<Rigid3Types>;
+
 
 } // namespace forcefield
 

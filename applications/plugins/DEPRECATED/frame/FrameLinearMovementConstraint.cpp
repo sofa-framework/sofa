@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,31 +38,19 @@ namespace component
 namespace projectiveconstraintset
 {
 
-SOFA_DECL_CLASS ( FrameLinearMovementConstraint )
-
 using namespace sofa::defaulttype;
 
 int LinearMovementConstraintClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
         .add< LinearMovementConstraint<Affine3dTypes> >()
         .add< LinearMovementConstraint<Quadratic3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LinearMovementConstraint<Affine3fTypes> >()
-        .add< LinearMovementConstraint<Quadratic3fTypes> >()
-#endif
+
         ;
 
 
 
-#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API LinearMovementConstraint<Affine3dTypes>;
 template class SOFA_FRAME_API LinearMovementConstraint<Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API LinearMovementConstraint<Affine3fTypes>;
-template class SOFA_FRAME_API LinearMovementConstraint<Quadratic3fTypes>;
-#endif
+
 } // namespace behavior
 
 } // namespace core

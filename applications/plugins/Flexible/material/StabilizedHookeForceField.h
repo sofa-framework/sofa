@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,8 +57,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _poissonRatio;
+    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<helper::vector<Real> > _poissonRatio; ///< Poisson Ratio ]-1,0.5[
     //@}
 
     virtual void reinit()
@@ -82,7 +82,6 @@ protected:
         : Inherit(mm)
         , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
         , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
-//        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
     }
 

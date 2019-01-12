@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,7 +54,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
 
-    Data < Real > maxDist;
+    Data < Real > maxDist; ///< alarm distance for proximity detection
 protected:
     DevAngleCollisionMonitor();
     virtual ~DevAngleCollisionMonitor() { };
@@ -132,13 +132,9 @@ protected:
     typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_CPP)
-#ifndef SOFA_FLOAT
-extern template class DevAngleCollisionMonitor<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class DevAngleCollisionMonitor<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_CPP)
+extern template class DevAngleCollisionMonitor<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace misc

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP
 
 #include <SofaBoundaryCondition/EllipsoidForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,31 +36,17 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(EllipsoidForceField)
-
 int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
 
-#ifndef SOFA_FLOAT
-        .add< EllipsoidForceField<Vec3dTypes> >()
-        .add< EllipsoidForceField<Vec2dTypes> >()
-        .add< EllipsoidForceField<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EllipsoidForceField<Vec3fTypes> >()
-        .add< EllipsoidForceField<Vec2fTypes> >()
-        .add< EllipsoidForceField<Vec1fTypes> >()
-#endif
+        .add< EllipsoidForceField<Vec3Types> >()
+        .add< EllipsoidForceField<Vec2Types> >()
+        .add< EllipsoidForceField<Vec1Types> >()
+
         ;
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1Types>;
+
 
 } // namespace forcefield
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,8 +52,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(Hexa2TetraTopologicalMapping)
-
 // Register in the Factory
 int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to TetrahedronSetTopology")
         .add< Hexa2TetraTopologicalMapping >()
@@ -101,11 +99,8 @@ void Hexa2TetraTopologicalMapping::init()
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
 
-#ifdef SOFA_NEW_HEXA
-            int nbcubes = fromModel->getNbHexahedra();
-#else
-            int nbcubes = fromModel->getNbCubes();
-#endif
+            size_t nbcubes = fromModel->getNbHexahedra();
+
             // These values are only correct if the mesh is a grid topology
             int nx = 2;
             int ny = 1;
@@ -121,9 +116,8 @@ void Hexa2TetraTopologicalMapping::init()
             }
 
             // Tesselation of each cube into 6 tetrahedra
-            for (int i=0; i<nbcubes; i++)
+            for (size_t i=0; i<nbcubes; i++)
             {
-#ifdef SOFA_NEW_HEXA
                 core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
                 // TODO : swap indexes where needed (currently crash in TriangleSetContainer)
@@ -180,23 +174,9 @@ void Hexa2TetraTopologicalMapping::init()
                     to_tstm->addTetrahedronProcess(Tetra(c[6],c[7],c[5],c[0]));
                     to_tstm->addTetrahedronProcess(Tetra(c[7],c[5],c[0],c[4]));
                 }
-#else
-                core::topology::BaseMeshTopology::Cube c = fromModel->getCube(i);
-                int sym = 0;
-                if (!((i%nx)&1)) sym+=1;
-                if (((i/nx)%ny)&1) sym+=2;
-                if ((i/(nx*ny))&1) sym+=4;
-                typedef core::topology::BaseMeshTopology::Tetra Tetra;
-                to_tstm->addTetrahedronProcess(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
-                to_tstm->addTetrahedronProcess(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
-                to_tstm->addTetrahedronProcess(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
-                to_tstm->addTetrahedronProcess(Tetra(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
-                to_tstm->addTetrahedronProcess(Tetra(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
-                to_tstm->addTetrahedronProcess(Tetra(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
-#endif
                 for(int j=0; j<6; j++)
                     Loc2GlobVec.push_back(i);
-                Glob2LocMap[i]=Loc2GlobVec.size()-1;
+                Glob2LocMap[i] = (unsigned int)Loc2GlobVec.size()-1;
             }
 
             //to_tstm->propagateTopologicalChanges();

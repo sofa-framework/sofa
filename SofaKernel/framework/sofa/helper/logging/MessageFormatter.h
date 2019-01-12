@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,7 @@
 
 #include <sstream>
 #include <sofa/helper/helper.h>
+#include <sofa/helper/system/console.h>
 
 namespace sofa
 {
@@ -46,7 +47,11 @@ public:
     virtual void formatMessage(const Message& m,std::ostream& out) = 0 ;
 
 protected:
-    MessageFormatter(){} // no public default constructor, it should be enough to have singleton for MessageFormatters
+    MessageFormatter() {} // no public default constructor, it should be enough to have singleton for MessageFormatters
+
+    virtual std::string getPrefixText(unsigned int type) const;
+
+    virtual std::ostream & setColor(std::ostream &stream, unsigned int type) const;
 
 };
 

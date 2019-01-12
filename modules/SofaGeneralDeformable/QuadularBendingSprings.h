@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -191,12 +191,12 @@ public:
 protected:
     bool updateMatrix;
 
-    Data<double> f_ks;
-    Data<double> f_kd;
+    Data<double> f_ks; ///< uniform stiffness for the all springs
+    Data<double> f_kd; ///< uniform damping for the all springs
 
     SReal m_potentialEnergy;
 
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -206,17 +206,13 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadularBendingSprings<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API QuadularBendingSprings<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API QuadularBendingSprings<sofa::defaulttype::Vec3Types>;
 
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
 
 } // namespace forcefield
 

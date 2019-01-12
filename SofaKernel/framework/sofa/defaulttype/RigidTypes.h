@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -95,6 +95,12 @@ public:
     RigidDeriv(const Vec<6,real2> &v)
         : vCenter(Vec<3,real2>(v.data())), vOrientation(Vec<3,real2>(v.data()+3))
     {}
+
+    template<typename real2>
+    RigidDeriv(const real2* ptr)
+        :vCenter(ptr),vOrientation(ptr+3)
+    {
+    }
 
     void clear()
     {
@@ -637,6 +643,15 @@ public:
     inline friend std::istream& operator >> ( std::istream& in, RigidCoord<3,real>& v )
     {
         in>>v.center>>v.orientation;
+        if (!v.orientation.isNormalized())
+        {
+            std::stringstream text;
+            text << "Rigid Object with invalid quaternion (non-unitary norm)! Normalising quaternion value... " << msgendl;
+            text << "Previous value was: " << v.orientation << msgendl ;
+            v.orientation.normalize();
+            text << "New value is: " << v.orientation;
+            msg_warning("Rigid") << text.str();
+        }
         return in;
     }
     static int max_size()
@@ -985,34 +1000,19 @@ public:
 
 };
 
-
-#ifndef SOFA_FLOAT
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef RigidMass<3,double> Rigid3dMass;
-#endif
 
 typedef StdRigidTypes<3,float> Rigid3fTypes;
-//#ifndef SOFA_DOUBLE
 typedef RigidMass<3,float> Rigid3fMass;
-//#endif
 
 /// We now use template aliases so we do not break backward compatibility.
-#ifndef SOFA_FLOAT
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
-#endif
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
-
-#ifdef SOFA_FLOAT
-typedef Rigid3fTypes Rigid3Types;
-typedef Rigid3fMass Rigid3Mass;
-#else
-typedef Rigid3dTypes Rigid3Types;
-typedef Rigid3dMass Rigid3Mass;
-#endif
-
-typedef Rigid3Types RigidTypes;
-
+typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
+typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
+typedef RigidMass<3,SReal>     Rigid3Mass;   ///< un-defined precision type
 
 //=============================================================================
 // 2D Rigids
@@ -1826,29 +1826,16 @@ public:
 
 
 
-#ifndef SOFA_FLOAT
 typedef StdRigidTypes<2,double> Rigid2dTypes;
 typedef RigidMass<2,double> Rigid2dMass;
 template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
-#endif
-#ifndef SOFA_DOUBLE
+
 typedef StdRigidTypes<2,float> Rigid2fTypes;
 typedef RigidMass<2,float> Rigid2fMass;
 template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
-#endif
 
-
-#ifdef SOFA_FLOAT
-typedef Rigid2fTypes Rigid2Types;
-typedef Rigid2fMass Rigid2Mass;
-#else
-typedef Rigid2dTypes Rigid2Types;
-typedef Rigid2dMass Rigid2Mass;
-#endif
-
-
-
-// Specialization of the defaulttype::DataTypeInfo type traits template
+typedef StdRigidTypes<2,SReal> Rigid2Types;
+typedef RigidMass<2,SReal> Rigid2Mass;
 
 template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
@@ -1866,22 +1853,13 @@ struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArray
 /// \cond TEMPLATE_OVERRIDES
 
 
-#ifndef SOFA_FLOAT
-template<> struct DataTypeName< defaulttype::Rigid2dTypes::Coord > { static const char* name() { return "Rigid2dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2dTypes::Deriv > { static const char* name() { return "Rigid2dTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dTypes::Coord > { static const char* name() { return "Rigid3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dTypes::Deriv > { static const char* name() { return "Rigid3dTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2dMass > { static const char* name() { return "Rigid2dMass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* name() { return "Rigid3dMass"; } };
-#endif
-#ifndef SOFA_DOUBLE
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Coord > { static const char* name() { return "Rigid2fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Coord > { static const char* name() { return "Rigid3fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Deriv > { static const char* name() { return "Rigid3fTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fMass > { static const char* name() { return "Rigid2fMass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fMass > { static const char* name() { return "Rigid3fMass"; } };
-#endif
+template<> struct DataTypeName< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
+
 
 
 

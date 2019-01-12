@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,7 +89,7 @@ public:
             const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double > &) {t = m_defaultValue;}
 
-    /// WARNING NEEED TO UNIFY THIS
+    /// WARNING NEED TO UNIFY THIS
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(unsigned int i, value_type&t , const TopologyElementType& ,
             const sofa::helper::vector< unsigned int > &ancestors,

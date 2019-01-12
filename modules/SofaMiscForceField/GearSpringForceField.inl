@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,11 +26,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #include <cassert>
 #include <iostream>
@@ -173,8 +170,10 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
          newAngle2 = getAngleAroundAxis(*cp2,*cc2,spring.freeAxis[1]);
 
     Real PI2=(Real)2.*(Real)pi;
-    while(newAngle1 - spring.previousAngle1 > pi) newAngle1 -= PI2;		while(newAngle1 - spring.previousAngle1 < -pi) newAngle1 += PI2;
-    while(newAngle2 - spring.previousAngle2 > pi) newAngle2 -= PI2;		while(newAngle2 - spring.previousAngle2 < -pi) newAngle2 += PI2;
+    while(newAngle1 - spring.previousAngle1 > pi) newAngle1 -= PI2;
+    while(newAngle1 - spring.previousAngle1 < -pi) newAngle1 += PI2;
+    while(newAngle2 - spring.previousAngle2 > pi) newAngle2 -= PI2;
+    while(newAngle2 - spring.previousAngle2 < -pi) newAngle2 += PI2;
 
     spring.angle1 += newAngle1 - spring.previousAngle1; spring.previousAngle1 = newAngle1;
     spring.angle2 += newAngle2 - spring.previousAngle2; spring.previousAngle2 = newAngle2;
@@ -309,45 +308,79 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
+
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(1, 1, 0, 1);
     const helper::vector<Spring>& springs = this->springs.getValue();
+
+    float radius = showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp
 
     for (unsigned int i=0; i<springs.size(); i++)
     {
         if(springs[i].freeAxis[0] == 0)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector((Real)(1.0*showFactorSize.getValue()),0,0));
+            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1 , radius, color);
         }
         if(springs[i].freeAxis[0] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,(Real)(1.0*showFactorSize.getValue()),0));
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[0] == 2)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,0,(Real)(1.0*showFactorSize.getValue())) );
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
 
         if(springs[i].freeAxis[1] == 0)
         {
-            helper::gl::Cylinder::draw(p2[springs[i].m2].getCenter(), p2[springs[i].m2].getOrientation(), Vector((Real)(1.0*showFactorSize.getValue()),0,0));
+            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+
+            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[1] == 1)
         {
-            helper::gl::Cylinder::draw(p2[springs[i].m2].getCenter(), p2[springs[i].m2].getOrientation(), Vector(0,(Real)(1.0*showFactorSize.getValue()),0));
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+
+            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[1] == 2)
         {
-            helper::gl::Cylinder::draw(p2[springs[i].m2].getCenter(), p2[springs[i].m2].getOrientation(), Vector(0,0,(Real)(1.0*showFactorSize.getValue())) );
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+
+            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+
+            vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
-        //	if (showExtraTorsion.getValue())
-        //		helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].pointToParent(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

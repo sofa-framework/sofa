@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,10 +64,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
         if (vparams->displayFlags().getShowWireFrame ())
             glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 
-        glEnable (GL_LIGHTING);
-        //Enable<GL_BLEND> blending;
-        //glLightModeli(GL  _LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
+        glEnable (GL_LIGHTING); 
         glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, getColor4f());
         static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -143,21 +140,6 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     {
         pNorms[i].normalize();
     }
-#if 0
-    if(!pTri.size())
-    {
-        /*creates the list of triangles that are associated to a point*/
-        pTri.resize(size2);
-        for(int i=0; i<size; i++)
-        {
-            pTri[tri[i][0]].push_back(i);
-
-            pTri[tri[i][1]].push_back(i);
-            pTri[tri[i][2]].push_back(i);
-        }
-    }
-#endif
-
 }
 
 void TriangleOctreeModel::computeContinuousBoundingTree(double/* dt*/, int maxDepth)

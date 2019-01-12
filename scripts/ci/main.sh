@@ -78,7 +78,7 @@ count_warnings() {
     if [[ $(uname) = Darwin || $(uname) = Linux ]]; then
         warning_count=$(grep '^[^:]\+:[0-9]\+:[0-9]\+: warning:' "$build_dir/make-output.txt" | sort -u | wc -l | tr -d ' ')
     else
-        warning_count=$(grep ' : warning [A-Z]\+[0-9]\+:' "$build_dir/make-output.txt" | sort | uniq | wc -l)
+        warning_count=$(grep 'warning [A-Z]\+[0-9]\+:' "$build_dir/make-output.txt" | sort | uniq | wc -l)
     fi
     echo "$warning_count"
 }
@@ -100,15 +100,23 @@ if [[ -n "$CI_TEST_SCENES" ]]; then
     grep -v "SofaCUDA NO_VERSION" "$plugin_conf" > "${plugin_conf}.tmp" && mv "${plugin_conf}.tmp" "$plugin_conf"
 
     "$src_dir/scripts/ci/scene-tests.sh" run "$build_dir" "$src_dir"
+    scenes_total_count=$("$src_dir/scripts/ci/scene-tests.sh" count-tested-scenes "$build_dir" "$src_dir")
+    scenes_successes_count=$("$src_dir/scripts/ci/scene-tests.sh" count-successes "$build_dir" "$src_dir")
     scenes_errors_count=$("$src_dir/scripts/ci/scene-tests.sh" count-errors "$build_dir" "$src_dir")
-    send-message-to-dashboard "scenes_errors=$scenes_errors_count"
     scenes_crashes_count=$("$src_dir/scripts/ci/scene-tests.sh" count-crashes "$build_dir" "$src_dir")
-    send-message-to-dashboard "scenes_crashes=$scenes_crashes_count"
+    send-message-to-dashboard \
+        "scenes_total=$scenes_total_count" \
+        "scenes_successes=$scenes_successes_count" \
+        "scenes_errors=$scenes_errors_count" \
+        "scenes_crashes=$scenes_crashes_count"
 fi
 
 "$src_dir/scripts/ci/tests.sh" print-summary "$build_dir" "$src_dir"
 if [[ -n "$CI_TEST_SCENES" ]]; then
     "$src_dir/scripts/ci/scene-tests.sh" print-summary "$build_dir" "$src_dir"
+
+    # Clamping warning file to avoid Jenkins overflow
+    "$src_dir/scripts/ci/scene-tests.sh" clamp-warnings "$build_dir" "$src_dir" 5000
 fi
 
 send-message-to-dashboard "status=success"

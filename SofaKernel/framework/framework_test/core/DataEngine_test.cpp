@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,9 @@
 ******************************************************************************/
 #include <sofa/core/DataEngine.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 namespace sofa {
 
@@ -51,10 +53,7 @@ public:
     void init() override
     {
         addInput(&input);
-        m_dataTracker.trackData(input); // to connect a DataTracker to the Data 'input'
-
         addOutput(&output);
-
         setDirtyValue();
     }
 
@@ -63,22 +62,21 @@ public:
         update();
     }
 
-    void update() override
+    void doUpdate() override
     {
         // true only iff the DataTracker associated to the Data 'input' is Dirty
         // that could only happen if 'input' was dirtied since last update
-        if( m_dataTracker.isDirty( input ) )
+        if( m_dataTracker.hasChanged( input ) )
             output.setValue(CHANGED);
         else
             output.setValue(NO_CHANGED);
-
-        cleanDirty();
     }
 
 };
 
 
-struct DataEngine_test: public ::testing::Test
+
+struct DataEngine_test: public BaseTest
 {
     TestEngine engine;
 
@@ -88,7 +86,8 @@ struct DataEngine_test: public ::testing::Test
     }
 
     /// to test tracked Data
-    void testTrackedData()
+    template < class T >
+    void testTrackedData(T& engine)
     {
         // input did not change, it is not dirtied, so neither its associated DataTracker
         ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
@@ -111,10 +110,9 @@ struct DataEngine_test: public ::testing::Test
 };
 
 // Test
-TEST_F(DataEngine_test, testTrackedData )
+TEST_F(DataEngine_test, testDataEngine )
 {
-    this->testTrackedData();
+    this->testTrackedData<TestEngine>(this->engine);
 }
-
 
 }// namespace sofa

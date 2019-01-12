@@ -7,7 +7,6 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(LumpedResponse)
 int LumpedResponseClass = core::RegisterObject("A diagonal factorization of the lumped response matrix.").add< LumpedResponse >();
 
 

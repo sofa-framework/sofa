@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "ManifoldEdgeSetGeometryAlgorithms.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
@@ -33,45 +33,21 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(ManifoldEdgeSetGeometryAlgorithms)
 int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge set geometry algorithms")
-#ifdef SOFA_FLOAT
-        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec1dTypes> >()
-        .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3dTypes> >()
-        .add< ManifoldEdgeSetGeometryAlgorithms<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec1fTypes> >()
-        .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3fTypes> >()
-        .add< ManifoldEdgeSetGeometryAlgorithms<Rigid2fTypes> >()
-#endif
+        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> >(true) // default template
+        .add< ManifoldEdgeSetGeometryAlgorithms<Vec2Types> >()
+        .add< ManifoldEdgeSetGeometryAlgorithms<Vec1Types> >()
+        .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3Types> >()
+        .add< ManifoldEdgeSetGeometryAlgorithms<Rigid2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec2dTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec1dTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid3dTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid2dTypes>;
-#endif
+template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
+template class ManifoldEdgeSetGeometryAlgorithms<Vec2Types>;
+template class ManifoldEdgeSetGeometryAlgorithms<Vec1Types>;
+template class ManifoldEdgeSetGeometryAlgorithms<Rigid3Types>;
+template class ManifoldEdgeSetGeometryAlgorithms<Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec2fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec1fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid3fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid2fTypes>;
-#endif
 
 } // namespace topology
 

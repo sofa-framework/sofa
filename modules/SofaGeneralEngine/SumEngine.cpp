@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,27 +34,15 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(SumEngine)
-
 int SumEngineClass = core::RegisterObject("Computing the Sum between two vector of dofs")
-#ifndef SOFA_FLOAT
         .add< SumEngine<Vec1d> >()
         .add< SumEngine<Vec3d> >(true) // default template
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SumEngine<Vec1f> >()
-        .add< SumEngine<Vec3f> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
 template class SOFA_GENERAL_ENGINE_API SumEngine<Vec1d>;
 template class SOFA_GENERAL_ENGINE_API SumEngine<Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API SumEngine<Vec1f>;
-template class SOFA_GENERAL_ENGINE_API SumEngine<Vec3f>;
-#endif
+
 
 } // namespace engine
 

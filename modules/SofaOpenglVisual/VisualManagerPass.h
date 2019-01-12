@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,7 +37,7 @@
 #include <SofaOpenglVisual/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -57,14 +57,14 @@ class SOFA_OPENGL_VISUAL_API VisualManagerPass : public core::visual::VisualMana
 public:
     SOFA_CLASS(VisualManagerPass, core::visual::VisualManager);
 
-    Data<float> factor;
-    Data<bool> renderToScreen;
-    Data<std::string> outputName;
+    Data<float> factor; ///< set the resolution factor for the output pass. default value:1.0
+    Data<bool> renderToScreen; ///< if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)
+    Data<std::string> outputName; ///< name the output texture
 protected:
     bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
     bool multiPassEnabled;
 
-    helper::gl::FrameBufferObject* fbo;
+    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
     bool prerendered;
 
     GLint passWidth;
@@ -88,9 +88,9 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
 
-    virtual bool isPrerendered() {return prerendered;};
+    virtual bool isPrerendered() {return prerendered;}
 
-    virtual helper::gl::FrameBufferObject* getFBO() {return fbo;};
+    virtual helper::gl::FrameBufferObject& getFBO() {return *fbo;}
     bool hasFilledFbo();
     std::string getOutputName();
 };

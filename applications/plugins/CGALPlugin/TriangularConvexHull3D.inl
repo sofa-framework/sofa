@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,6 +34,7 @@
 #include <CGAL/algorithm.h>
 #include <CGAL/Convex_hull_traits_3.h>
 #include <CGAL/convex_hull_3.h>
+#include <CGAL/Polyhedron_3.h>
 
 
 using namespace sofa;
@@ -83,7 +84,7 @@ void TriangularConvexHull3D<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void TriangularConvexHull3D<DataTypes>::update()
+void TriangularConvexHull3D<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data<VecCoord> > cloudPoints = f_X0;
     helper::WriteAccessor< Data<VecCoord> > newPoints = f_newX0;

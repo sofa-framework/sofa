@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,24 +86,12 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
 extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes >;
-#endif
+extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3dTypes >;
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
-#endif
-#endif
+
+
 #endif
 
 } // namespace mapping

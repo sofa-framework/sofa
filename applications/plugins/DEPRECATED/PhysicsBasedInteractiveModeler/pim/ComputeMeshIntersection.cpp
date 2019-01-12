@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #include "ComputeMeshIntersection.inl"
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace plugins
@@ -32,23 +32,13 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ComputeMeshIntersection)
-
 int ComputeMeshIntersectionClass = sofa::core::RegisterObject("Compute Mesh Intersection")
-#ifndef SOFA_FLOAT
-        .add< ComputeMeshIntersection<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ComputeMeshIntersection<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ComputeMeshIntersection<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3Types>;
+ 
 
 } // namespace pim
 

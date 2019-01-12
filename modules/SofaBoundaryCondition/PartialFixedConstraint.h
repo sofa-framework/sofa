@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_H
 #include "config.h"
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -44,22 +44,17 @@ namespace component
 namespace projectiveconstraintset
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template <class DataTypes>
-class PartialFixedConstraintInternalData
-{
-};
-
 /**
  * Attach given particles to their initial positions, in some directions only.
  * The fixed and free directioons are the same for all the particles, defined  in the fixedDirections attribute.
  **/
 template <class DataTypes>
-class PartialFixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class PartialFixedConstraint : public sofa::component::projectiveconstraintset::FixedConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PartialFixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PartialFixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::component::projectiveconstraintset::FixedConstraint, DataTypes));
 
+    typedef sofa::component::projectiveconstraintset::FixedConstraint<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -73,34 +68,23 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-    typedef sofa::defaulttype::Vector3 Vector3;
-
-protected:
-    PartialFixedConstraintInternalData<DataTypes> data;
-    friend class PartialFixedConstraintInternalData<DataTypes>;
 
 public:
-    SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<SReal> _drawSize;
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
-    Data<VecBool> fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
+    Data<VecBool> d_fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
+
 protected:
     PartialFixedConstraint();
-
     virtual ~PartialFixedConstraint();
+
 public:
-    void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
 
     // -- Constraint interface
     void init() override;
+    void reinit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
@@ -108,79 +92,21 @@ public:
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
     virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
-
-
-    virtual void draw(const core::visual::VisualParams*) override;
-
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
-
-
-    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename PartialFixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(PartialFixedConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        PartialFixedConstraint<DataTypes> *fc;
-    };
 
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
-
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
-    /// Handler for subset Data
-    FCPointHandler* pointHandler;
 };
 
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid2Types>;
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void PartialFixedConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PartialFixedConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PartialFixedConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PartialFixedConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Rigid2fTypes>;
-#endif
 #endif
 
 } // namespace projectiveconstraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,26 +30,16 @@
 #include <CGALPlugin/config.h>
 #include "TriangularConvexHull3D.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
-SOFA_DECL_CLASS(TriangularConvexHull3D)
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
 int TriangularConvexHull3DClass = sofa::core::RegisterObject("Generate triangular convex hull around points")
-#ifndef SOFA_FLOAT
-        .add< TriangularConvexHull3D<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< TriangularConvexHull3D<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< TriangularConvexHull3D<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3Types>;
+ 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,8 +40,6 @@ int InertiaAlignClass = core::RegisterObject("An engine computing inertia matrix
         .add< InertiaAlign >()
         ;
 
-
-SOFA_DECL_CLASS(InertiaAlign)
 
 InertiaAlign::InertiaAlign()
     : targetC( initData(&targetC,"targetCenter","input: the gravity center of the target mesh") )

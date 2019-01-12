@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,12 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/SetDirectory.h>
-
+#include <sofa/helper/system/FileSystem.h>
 #ifdef WIN32
 #include <windows.h>
 #include <direct.h>
-#elif defined(_XBOX)
-#include <xtl.h>
 #else
 #include <unistd.h>
 #endif
@@ -50,13 +48,6 @@ namespace system
 #if defined(WIN32)
     #define chdir _chdir
     #define getcwd _getcwd
-#elif defined(_XBOX)
-    int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
-    char* getcwd(char *buffer, int maxlen) { return ""; } // NOT IMPLEMENTED
-#elif defined(PS3)
-    std::string g_currentWorkingDir = std::string("/app_home/");
-    char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); return buffer;}
-    int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
 #endif
 
 SetDirectory::SetDirectory(const char* filename)
@@ -137,12 +128,7 @@ std::string SetDirectory::GetFileNameWithoutExtension(const char* filename)
 
 std::string SetDirectory::GetExtension(const char* filename)
 {
-    std::string s = filename;
-    std::string::size_type pos = s.find_last_of('.');
-    if (pos == std::string::npos)
-        return ""; // no extension
-    else
-        return s.substr(pos+1);
+    return FileSystem::getExtension(filename) ;
 }
 
 std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)

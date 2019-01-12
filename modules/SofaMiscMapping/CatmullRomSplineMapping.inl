@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,10 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/Color.h>
-#include <sofa/helper/gl/glText.inl>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/io/Mesh.h>
 #include <limits>
 #include <sofa/simulation/Simulation.h>
@@ -259,33 +255,36 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintP
 template <class TIn, class TOut>
 void CatmullRomSplineMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowMappings()) return;
+    if (!vparams->displayFlags().getShowMappings())
+        return;
 
     const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
-    glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
-    glDisable ( GL_LIGHTING );
 
-    // Display mapping links between in and out elements
-    glPointSize ( 1 );
-    glBegin ( GL_LINES );
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(1.0,1.0,1.0,1.0);
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     for ( unsigned int i=0; i<xto.size(); i++ )
     {
         for ( unsigned int m=0 ; m<4 ; m++ )
         {
-            if(m_weight[i][m]<0) glColor4d ( -m_weight[i][m]*4.0,0.5,0,1 );
-            else glColor4d ( 0,0.5, m_weight[i][m],1 );
-            helper::gl::glVertexT ( xfrom[m_index[i][m]] );
-            helper::gl::glVertexT ( xto[i] );
+            if(m_weight[i][m]<0)
+            {
+                color = sofa::defaulttype::RGBAColor( -m_weight[i][m]*4.0,0.5,0,1.0 );
+            }
+            else
+            {
+                color = sofa::defaulttype::RGBAColor( 0,0.5, m_weight[i][m],1.0 );
+            }
+            vertices.push_back(sofa::defaulttype::Vector3(xfrom[m_index[i][m]][0],xfrom[m_index[i][m]][1],xfrom[m_index[i][m]][2]));
+            vertices.push_back(sofa::defaulttype::Vector3(xto[i][0],xto[i][1],xto[i][2]));
         }
     }
-    glEnd();
-
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,1,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 

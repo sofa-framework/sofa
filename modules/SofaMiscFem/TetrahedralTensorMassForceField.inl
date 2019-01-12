@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,9 +24,9 @@
 
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -311,7 +311,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         _initialPoints=p;
     }
 
-    int i;
+    size_t i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
@@ -469,39 +469,33 @@ void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0,true);
 
-// 	VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-// 	int nbTriangles=_topology->getNbTriangles();
+    sofa::defaulttype::RGBAColor color(0,1,0,1);
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
-    /*
-        glDisable(GL_LIGHTING);
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    int nbTriangles=_topology->getNbTriangles();
 
-        glBegin(GL_TRIANGLES);
-        for(i=0;i<nbTriangles; ++i)
-        {
-            int a = _topology->getTriangle(i)[0];
-            int b = _topology->getTriangle(i)[1];
-            int c = _topology->getTriangle(i)[2];
+    for(int i=0;i<nbTriangles; ++i)
+    {
+        int a = _topology->getTriangle(i)[0];
+        int b = _topology->getTriangle(i)[1];
+        int c = _topology->getTriangle(i)[2];
 
-            glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[a]);
-            glColor4f(0,0.5,0.5,1);
-            helper::gl::glVertexT(x[b]);
-            glColor4f(0,0,1,1);
-            helper::gl::glVertexT(x[c]);
-        }
-        glEnd();
-
-    */
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+    }
+    vparams->drawTool()->drawTriangles(vertices,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

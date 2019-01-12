@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,8 @@
 
 #include "HexahedralFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
@@ -84,7 +84,6 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
     , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
-    , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     , hexahedronInfo(initData(&hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
     , hexahedronHandler(NULL)
 {
@@ -141,7 +140,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
     hexahedronInf.resize(_topology->getNbHexahedra());
 
-    for (int i=0; i<_topology->getNbHexahedra(); ++i)
+    for (size_t i=0; i<_topology->getNbHexahedra(); ++i)
     {
         hexahedronHandler->applyCreateFunction(i,hexahedronInf[i],
                 _topology->getHexahedron(i),  (const std::vector< unsigned int > )0,
@@ -165,7 +164,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     {
     case LARGE :
     {
-        for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
         {
             accumulateForceLarge( _f, _p, i);
         }
@@ -173,7 +172,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     }
     case POLAR :
     {
-        for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+        for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
         {
             accumulateForcePolar( _f, _p, i);
         }
@@ -194,7 +193,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(unsigned int i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
         Transformation R_0_2;
         R_0_2.transpose(hexahedronInf[i].rotation);
@@ -598,7 +597,7 @@ template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     // Build Matrix Block for this ForceField
-    int i,j,n1, n2, e;
+    int i,j,n1, n2;
 
     Index node1, node2;
 
@@ -606,7 +605,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(e=0 ; e<_topology->getNbHexahedra() ; ++e)
+    for(unsigned int e=0 ; e<_topology->getNbHexahedra() ; ++e)
     {
         const ElementStiffness &Ke = hexahedronInf[e].stiffness;
 
@@ -636,19 +635,20 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
-    if (!f_drawing.getValue()) return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
-    glDisable(GL_LIGHTING);
-
-    for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Hexahedron &t=_topology->getHexahedron(i);
 
@@ -672,54 +672,62 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         Coord p6 = x[g]-(x[g]-center)*percentage;
         Coord p7 = x[h]-(x[h]-center)*percentage;
 
-        glColor4f(0.7f, 0.7f, 0.1f, (1.0f));
-        glBegin(GL_QUADS);
-        helper::gl::glVertexT(p5);
-        helper::gl::glVertexT(p1);
-        helper::gl::glVertexT(p3);
-        helper::gl::glVertexT(p7);
-        //glEnd();
-        glColor4f(0.7f, 0, 0, (1.0f));
-        //glBegin(GL_POLYGON);
-        helper::gl::glVertexT(p1);
-        helper::gl::glVertexT(p0);
-        helper::gl::glVertexT(p2);
-        helper::gl::glVertexT(p3);
-        //glEnd();
-        glColor4f(0, 0.7f, 0, (1.0f)); // ok
-        //glBegin(GL_POLYGON);
-        helper::gl::glVertexT(p0);
-        helper::gl::glVertexT(p4);
-        helper::gl::glVertexT(p6);
-        helper::gl::glVertexT(p2);
-        //glEnd();
-        glColor4f(0, 0, 0.7f, (1.0f));
-        //glBegin(GL_POLYGON);
-        helper::gl::glVertexT(p4);
-        helper::gl::glVertexT(p5);
-        helper::gl::glVertexT(p7);
-        helper::gl::glVertexT(p6);
-        //glEnd();
-        glColor4f(0.1f, 0.7f, 0.7f, (1.0f)); // ok
-        //glBegin(GL_POLYGON);
-        helper::gl::glVertexT(p7);
-        helper::gl::glVertexT(p3);
-        helper::gl::glVertexT(p2);
-        helper::gl::glVertexT(p6);
-        //glEnd();
-        glColor4f(0.7f, 0.1f, 0.7f, (1.0f));
-        //glBegin(GL_POLYGON);
-        helper::gl::glVertexT(p1);
-        helper::gl::glVertexT(p5);
-        helper::gl::glVertexT(p4);
-        helper::gl::glVertexT(p0);
-        glEnd();
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.7, 0.1, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.7, 0.1, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.7, 0.1, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.7, 0.1, 1.0));
+        vertices.push_back(DataTypes::getCPos(p5));
+        vertices.push_back(DataTypes::getCPos(p1));
+        vertices.push_back(DataTypes::getCPos(p3));
+        vertices.push_back(DataTypes::getCPos(p7));
+
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0, 0, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0, 0, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0, 0, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0, 0, 1.0));
+        vertices.push_back(DataTypes::getCPos(p1));
+        vertices.push_back(DataTypes::getCPos(p0));
+        vertices.push_back(DataTypes::getCPos(p2));
+        vertices.push_back(DataTypes::getCPos(p3));
+
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.0, 0.7, 0, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.0, 0.7, 0, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.0, 0.7, 0, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.0, 0.7, 0, 1.0));
+        vertices.push_back(DataTypes::getCPos(p0));
+        vertices.push_back(DataTypes::getCPos(p4));
+        vertices.push_back(DataTypes::getCPos(p6));
+        vertices.push_back(DataTypes::getCPos(p2));
+
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0, 0, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0, 0, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0, 0, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0, 0, 0.7, 1.0));
+        vertices.push_back(DataTypes::getCPos(p4));
+        vertices.push_back(DataTypes::getCPos(p5));
+        vertices.push_back(DataTypes::getCPos(p7));
+        vertices.push_back(DataTypes::getCPos(p6));
+
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.1, 0.7, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.1, 0.7, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.1, 0.7, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.1, 0.7, 0.7, 1.0));
+        vertices.push_back(DataTypes::getCPos(p7));
+        vertices.push_back(DataTypes::getCPos(p3));
+        vertices.push_back(DataTypes::getCPos(p2));
+        vertices.push_back(DataTypes::getCPos(p6));
+
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.1, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.1, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.1, 0.7, 1.0));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0.7, 0.1, 0.7, 1.0));
+        vertices.push_back(DataTypes::getCPos(p1));
+        vertices.push_back(DataTypes::getCPos(p5));
+        vertices.push_back(DataTypes::getCPos(p4));
+        vertices.push_back(DataTypes::getCPos(p0));
     }
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawQuads(vertices,colorVector);
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

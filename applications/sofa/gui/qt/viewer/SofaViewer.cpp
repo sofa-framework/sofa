@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -51,7 +51,6 @@ void SofaViewer::redraw()
 
 void SofaViewer::keyPressEvent(QKeyEvent * e)
 {
-
     if (currentCamera)
     {
         sofa::core::objectmodel::KeypressedEvent kpe(e->key());
@@ -63,6 +62,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_T:
     {
         if (!currentCamera) break;
+
         if (currentCamera->getCameraType() == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
             setCameraMode(core::visual::VisualParams::PERSPECTIVE_TYPE);
         else
@@ -121,7 +121,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             if (SofaVideoRecorderManager::getInstance()->realtime())
             {
                 unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
-                std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
+                msg_info("SofaViewer") << "Starting capture timer ( " << framerate << " Hz )";
                 unsigned int interv = (1000+framerate-1)/framerate;
                 captureTimer.start(interv);
             }
@@ -131,7 +131,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         {
             if(captureTimer.isActive())
             {
-                std::cout << "Stopping capture timer" << std::endl;
+                msg_info("SofaViewer") << "Stopping capture timer";
                 captureTimer.stop();
             }
             switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
@@ -166,21 +166,21 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         // --- enable stereo mode
     {
         currentCamera->setStereoEnabled(!currentCamera->getStereoEnabled());
-        std::cout << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled") << std::endl;
+        msg_info("SofaViewer") << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled");
         break;
     }
     case Qt::Key_F2:
         // --- reduce shift distance
     {
         currentCamera->setStereoShift(currentCamera->getStereoShift()-0.1);
-        std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
+        msg_info("SofaViewer") << "Stereo separation = " << currentCamera->getStereoShift();
         break;
     }
     case Qt::Key_F3:
         // --- increase shift distance
     {
         currentCamera->setStereoShift(currentCamera->getStereoShift()+0.1);
-        std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
+        msg_info("SofaViewer") << "Stereo separation = " << currentCamera->getStereoShift();
         break;
     }
     case Qt::Key_F4:
@@ -189,11 +189,11 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         switch (currentCamera->getStereoStrategy()) {
         case sofa::component::visualmodel::BaseCamera::PARALLEL:
             currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::TOEDIN);
-            std::cout << "Stereo Strategy: TOEDIN" << std::endl;
+            msg_info("SofaViewer") << "Stereo Strategy: TOEDIN";
             break;
         case sofa::component::visualmodel::BaseCamera::TOEDIN:
             currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
-            std::cout << "Stereo Strategy: Parallel" << std::endl;
+            msg_info("SofaViewer") << "Stereo Strategy: Parallel";
             break;
         default:
             currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
@@ -209,24 +209,24 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         switch (currentCamera->getStereoMode())
         {
         case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
-            std::cout << "Stereo mode: Interlaced" << std::endl;
+            msg_info("SofaViewer") << "Stereo mode: Interlaced";
             break;
         case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
-            std::cout << "Stereo mode: Side by Side" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: Side by Side"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
-            std::cout << "Stereo mode: Side by Side Half" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: Side by Side Half"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
-            std::cout << "Stereo mode: Frame Packing" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: Frame Packing"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
-            std::cout << "Stereo mode: Top Bottom" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: Top Bottom"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
-            std::cout << "Stereo mode: Top Bottom Half" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: Top Bottom Half"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
-            std::cout << "Stereo mode: Automatic" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: Automatic"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
-            std::cout << "Stereo mode: None" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: None"; break;
         default:
-            std::cout << "Stereo mode: INVALID" << std::endl; break;
+            msg_info("SofaViewer") << "Stereo mode: INVALID"; break;
             break;
         }
         break;
@@ -234,7 +234,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Control:
     {
         m_isControlPressed = true;
-        //msg_info()<<"QtViewer::keyPressEvent, CONTROL pressed"<<std::endl;
+        msg_info("SofaViewer")<<"QtViewer::keyPressEvent, CONTROL pressed";
         break;
     }
     default:
@@ -255,9 +255,9 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
     {
         if (getPickHandler())
             getPickHandler()->deactivateRay();
-
         break;
     }
+
     case Qt::Key_Control:
     {
         m_isControlPressed = false;
@@ -297,10 +297,8 @@ void SofaViewer::wheelEvent(QWheelEvent *e)
     currentCamera->manageEvent(&me);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-#endif
 }
 
 void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
@@ -311,10 +309,8 @@ void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
     currentCamera->manageEvent(&me);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-#endif
 }
 
 void SofaViewer::mousePressEvent ( QMouseEvent * e)
@@ -335,10 +331,8 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
     currentCamera->manageEvent(mEvent);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
-#endif
 }
 
 void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
@@ -360,15 +354,14 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
     currentCamera->manageEvent(mEvent);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
-#endif
 }
 
 bool SofaViewer::mouseEvent(QMouseEvent *e)
 {
     if (!currentCamera) return true;
+
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
 

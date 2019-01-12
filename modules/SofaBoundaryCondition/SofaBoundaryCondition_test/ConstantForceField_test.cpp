@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,7 @@ using sofa::simulation::Simulation ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 using namespace sofa::defaulttype;
 
@@ -222,23 +222,13 @@ struct ConstantForceField_test : public Sofa_test<>
 using testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
-#ifdef SOFA_WITH_DOUBLE
 ,TypeTuple<Vec1dTypes, double>
 ,TypeTuple<Vec2dTypes, double>
 ,TypeTuple<Vec3dTypes, double>
 ,TypeTuple<Vec6dTypes, double>
 ,TypeTuple<Rigid3dTypes, Rigid3dMass>
 ,TypeTuple<Rigid2dTypes, Rigid2dMass>
-#endif
-#ifdef SOFA_WITH_FLOAT
-,TypeTuple<Vec1fTypes, float>
-,TypeTuple<Vec2fTypes, float>
-,TypeTuple<Vec3fTypes, float>
-,TypeTuple<Vec6fTypes, float>
-,TypeTuple<Rigid3fTypes, Rigid3fMass>
-,TypeTuple<Rigid2fTypes, Rigid2fMass>
-#
-#endif
+
 > DataTypes;
 
 // Test suite for all the instanciations

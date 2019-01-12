@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/system/gl.h>
 #include <assert.h>
 #include <iostream>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -191,21 +190,21 @@ void VaccumSphereForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Eve
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!active.getValue()) return;
-
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!bDraw.getValue()) return;
+
+    vparams->drawTool()->saveLastState();
 
     defaulttype::Vec3d center;
     DataTypes::get(center[0], center[1], center[2], sphereCenter.getValue());
     const Real r = sphereRadius.getValue();
 
-	glEnable(GL_LIGHTING);
+    vparams->drawTool()->enableLighting();
     vparams->drawTool()->drawSphere(center, (float)(r*0.99));
-	glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
 
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
+
 }
 
 

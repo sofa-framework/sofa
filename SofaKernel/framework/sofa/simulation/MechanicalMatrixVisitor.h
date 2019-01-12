@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,9 +22,7 @@
 #ifndef SOFA_SIMULATION_MECHANICALMATRIXVISITOR_H
 #define SOFA_SIMULATION_MECHANICALMATRIXVISITOR_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -68,7 +66,7 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         //ms->contributeToMatrixDimension(nbRow, nbCol);
-        const unsigned int n = ms->getMatrixSize();
+        size_t n = ms->getMatrixSize();
         if (nbRow) *nbRow += n;
         if (nbCol) *nbCol += n;
         if (matrix) matrix->addMechanicalState(ms);
@@ -97,13 +95,14 @@ public:
 class SOFA_SIMULATION_CORE_API MechanicalGetConstraintJacobianVisitor : public BaseMechanicalVisitor
 {
 public:
+    const core::ConstraintParams* cparams;
     defaulttype::BaseMatrix * J;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalGetConstraintJacobianVisitor(
-        const core::ExecParams* params, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        : BaseMechanicalVisitor(params) , J(_J), matrix(_matrix), offset(0)
+        const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        : BaseMechanicalVisitor(cparams) , cparams(cparams), J(_J), matrix(_matrix), offset(0)
     {}
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
@@ -111,7 +110,7 @@ public:
         if (matrix) offset = matrix->getGlobalOffset(ms);
 
         unsigned int o = (unsigned int)offset;
-        ms->getConstraintJacobian(this->params,J,o);
+        ms->getConstraintJacobian(cparams,J,o);
         offset = (int)o;
         return RESULT_CONTINUE;
     }
@@ -121,43 +120,65 @@ public:
     virtual const char* getClassName() const { return "MechanicalGetConstraintJacobianVisitor"; }
 };
 
-/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
+/** Apply the motion correction computed from constraint force influence  */
 class SOFA_SIMULATION_CORE_API MechanicalIntegrateConstraintsVisitor : public BaseMechanicalVisitor
 {
 public:
 
-
-    const sofa::defaulttype::BaseVector *src;
+    const sofa::core::ConstraintParams* cparams;
     const double positionFactor;// use the OdeSolver to get the position integration factor
     const double velocityFactor;// use the OdeSolver to get the position integration factor
+    sofa::core::ConstMultiVecDerivId correctionId;
+    sofa::core::MultiVecDerivId dxId;
+    sofa::core::MultiVecCoordId xId;
+    sofa::core::MultiVecDerivId vId;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalIntegrateConstraintsVisitor(
-        const core::ExecParams* params, defaulttype::BaseVector * _src, double pf,double vf, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        : BaseMechanicalVisitor(params) , src(_src), positionFactor(pf), velocityFactor(vf), matrix(_matrix), offset(0)
+        const core::ConstraintParams* cparams,
+        double pf, double vf,
+        sofa::core::ConstMultiVecDerivId correction,
+        sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::dx()),
+        sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),
+        sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()),
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        :BaseMechanicalVisitor(cparams)
+        ,cparams(cparams)
+        ,positionFactor(pf)
+        ,velocityFactor(vf)
+        ,correctionId(correction)
+        ,dxId(dx)
+        ,xId(x)
+        ,vId(v)
+        ,matrix(_matrix)
+        ,offset(0)
     {}
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         if (matrix) offset = matrix->getGlobalOffset(ms);
-        if (src!= NULL && offset >= 0)
+        if (offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
-            ms->copyFromBaseVector(core::VecDerivId::dx(), src, o);
             offset = (int)o;
 
-            //x = x_free + dx * positionFactor;
-            ms->vOp(params,core::VecCoordId::position(),core::ConstVecCoordId::freePosition(),core::VecDerivId::dx(),positionFactor);
+            if (positionFactor != 0)
+            {
+                //x = x_free + correction * positionFactor;
+                ms->vOp(params, xId.getId(ms), cparams->x().getId(ms), correctionId.getId(ms), positionFactor);
+            }
 
-            //v = v_free + dx * velocityFactor;
-            ms->vOp(params,core::VecDerivId::velocity(),core::ConstVecDerivId::freeVelocity(),core::VecDerivId::dx(),velocityFactor);
+            if (velocityFactor != 0)
+            {
+                //v = v_free + correction * velocityFactor;
+                ms->vOp(params, vId.getId(ms), cparams->v().getId(ms), correctionId.getId(ms), velocityFactor);
+            }
 
-            //dx *= positionFactor;
-            ms->vOp(params,core::VecDerivId::dx(),core::VecDerivId::null(),core::ConstVecDerivId::dx(),positionFactor);
+            const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintParams::ConstOrder::VEL ? velocityFactor : positionFactor;
 
-            //force = 0
-//            ms->vOp(params,core::VecDerivId::force(),core::ConstVecDerivId::null(),core::VecDerivId::null(),0.0);
+            //dx *= correctionFactor;
+            ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);
         }
 
         return RESULT_CONTINUE;
@@ -202,8 +223,12 @@ public:
         return RESULT_CONTINUE;
     }
 
-    //Masses are now added in the addMBKToMatrix call for all ForceFields
 
+    virtual bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    {
+        SOFA_UNUSED(node);
+        return !map->areMatricesMapped();
+    }
 };
 
 /** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene ONLY ON THE subMatrixIndex */
@@ -244,19 +269,19 @@ public:
 };
 
 /** Apply projective constaints of the whole scene */
-class SOFA_SIMULATION_CORE_API MechanicalAddProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalApplyProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalAddProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
+    MechanicalApplyProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAddProjectiveConstraint_ToMatrixVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalApplyProjectiveConstraint_ToMatrixVisitor"; }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/)
     {

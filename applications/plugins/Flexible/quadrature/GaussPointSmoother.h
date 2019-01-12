@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,20 +98,11 @@ protected:
     }
 
 
-    virtual void update()
+    virtual void doUpdate()
     {
-        this->updateAllInputsIfDirty();
-        cleanDirty();
-
         BaseShapeFunction* _shapeFunction=NULL;
         this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);
         if( !_shapeFunction ) { serr<<"Shape function not found"<< sendl; return;}
-
-        //        engine::BaseGaussPointSampler* sampler=NULL;
-        //        this->getContext()->get(sampler,core::objectmodel::BaseContext::SearchUp);
-        //        if( !sampler ) { serr<<"Gauss point sampler not found"<< sendl; }
-        //        helper::ReadAccessor<Data< VTransform > > inputTransforms(sampler->f_transforms);
-        //        helper::ReadAccessor< Data< helper::vector<volumeIntegralType> > > inputVolumes(sampler->f_volume);
 
         helper::ReadAccessor<Data< VTransform > > inputTransforms(this->d_inputTransforms);
         helper::ReadAccessor< Data< helper::vector<volumeIntegralType> > > inputVolumes(this->d_inputVolume);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -24,7 +24,7 @@
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/io/ImageBMP.h>
+#include <sofa/helper/io/Image.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <SofaSimulationTree/TreeSimulation.h>
@@ -38,7 +38,6 @@
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>
@@ -221,9 +220,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         {
           sofa::gui::initMain();
 
-          int argc= 1;
           char* argv[]= { const_cast<char*>("a") };
-          glutInit(&argc,argv);
 
           if (sofa::gui::GUIManager::Init(argv[0],"qt"))
               std::cerr << "ERROR in sofa::gui::GUIManager::Init()" << std::endl;
@@ -651,9 +648,20 @@ void SofaPhysicsSimulation::drawGL()
         glewInit();
 #endif
         //Load texture for logo
-        texLogo = new sofa::helper::gl::Texture(new sofa::helper::io::ImageBMP( sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp")));
-        texLogo->init();
+        std::string imageFileName = "textures/SOFA_logo.bmp";
+        if (sofa::helper::system::DataRepository.findFile(imageFileName))
+        {            
+            if (texLogo)
+            {
+                delete texLogo;
+                texLogo = NULL;
+            }
 
+            sofa::helper::io::Image* image = sofa::helper::io::Image::FactoryImage::getInstance()->createObject("bmp", sofa::helper::system::DataRepository.getFile(imageFileName));
+            texLogo = new sofa::helper::gl::Texture(image);
+            texLogo->init();
+        }
+        
         initGLDone = true;
     }
 

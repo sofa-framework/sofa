@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
@@ -183,13 +183,12 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 
 template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
 {
-//	serr << "initializing TriangularBiquadraticSpringsForceField" << sendl;
     this->Inherited::init();
     _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        serr << "ERROR(TriangularBiquadraticSpringsForceField): object must have a Triangular Set Topology."<<sendl;
+        msg_error() << "Object must have a Triangular Set Topology." ;
         return;
     }
     updateLameCoefficients();
@@ -209,7 +208,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints.setValue(p);
     }
-    int i;
+    unsigned int i;
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i,edgeInf[i], _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
@@ -243,8 +242,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     const VecDeriv& v = d_v.getValue();
 
     unsigned int j,k,l,v0,v1;
-    int nbEdges=_topology->getNbEdges();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbEdges=_topology->getNbEdges();
+    size_t nbTriangles=_topology->getNbTriangles();
     bool compressible=f_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
 
@@ -263,7 +262,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     Real _dampingRatio=f_dampingRatio.getValue();
 
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
@@ -281,7 +280,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     if (f_useAngularSprings.getValue()==true)
     {
         Real JJ;
-        for(int i=0; i<nbTriangles; i++ )
+        std::vector<int> flippedTriangles ;
+        for(unsigned int i=0; i<nbTriangles; i++ )
         {
             tinfo=&triangleInf[i];
             /// describe the jth edge index of triangle no i
@@ -322,7 +322,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                             tinfo->lastValidNormal=tinfo->currentNormal;
                         else
                         {
-                            serr << "triangle "<<i<<" has flipped"<<sendl;
+                            flippedTriangles.push_back(i);
                             tinfo->currentNormal*= -1.0;
                         }
                     }
@@ -336,8 +336,23 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                 }
             }
         }
-        //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
-
+        /// Prints the flipped triangles in a single message to avoid flooding the user.
+        /// Only the 50 first indices are showned.
+        if(flippedTriangles.size()!=0){
+            std::stringstream tmp ;
+            tmp << "[" ;
+            for(size_t i=0;i<std::min((size_t)50, flippedTriangles.size());i++)
+            {
+                tmp << ", " << flippedTriangles[i] ;
+            }
+            if(flippedTriangles.size()>=50){
+                tmp << ", ..." << flippedTriangles.size()-50 << " more]" ;
+            }
+            else{
+                tmp << "]" ;
+            }
+            msg_warning() << "The following triangles have flipped: " << tmp.str() ;
+        }
     }
     edgeInfo.endEdit();
     triangleInfo.endEdit();
@@ -373,7 +388,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
         Coord dpj,dpk,dpi,dp;
         Mat3 m1,m2;
 
-        //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
@@ -381,7 +395,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
             /// describe the jth edge index of triangle no i
             const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
-//			const Triangle &ta= _topology->getTriangle(l);
 
             // store points
             for(k=0; k<3; ++k)
@@ -515,45 +528,49 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
 template<class DataTypes>
 void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbTriangles=_topology->getNbTriangles();
 
-    glDisable(GL_LIGHTING);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::defaulttype::Vector3> normals;
 
-    glBegin(GL_TRIANGLES);
-    for(int i=0; i<nbTriangles; ++i)
+    vparams->drawTool()->disableLighting();
+
+    for(unsigned int i=0; i<nbTriangles; ++i)
     {
         int a = _topology->getTriangle(i)[0];
         int b = _topology->getTriangle(i)[1];
         int c = _topology->getTriangle(i)[2];
 
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
+        colors.push_back(sofa::defaulttype::RGBAColor::green());
+        vertices.push_back(x[a]);
+        colors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(x[b]);
+        colors.push_back(sofa::defaulttype::RGBAColor::blue());
+        vertices.push_back(x[c]);
     }
-    glEnd();
-
+    vparams->drawTool()->drawTriangles(vertices, normals, colors);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

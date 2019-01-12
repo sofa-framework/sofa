@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -236,37 +236,33 @@ void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
 template<class DataTypes>
 void TTriangleModel<DataTypes>::handleTopologyChange()
 {
-    //bool debug_mode = false;
-    updateFromTopology();
-    if (triangles != &mytriangles)
+
+    // We use the same triangle array as the topology -> only resize and recompute flags
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+    //elems.handleTopologyEvents(itBegin,itEnd);
+
+    while( itBegin != itEnd )
     {
-        // We use the same triangle array as the topology -> only resize and recompute flags
+        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-        //elems.handleTopologyEvents(itBegin,itEnd);
-
-        while( itBegin != itEnd )
+        switch( changeType )
         {
-            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-            switch( changeType )
-            {
 
 
-            case core::topology::ENDING_EVENT:
-            {
-                sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
-                resize(_topology->getNbTriangles());
-                needsUpdate=true;
-                updateFlags();
+        case core::topology::ENDING_EVENT:
+        {
+            updateFromTopology();
 
-                //                 updateNormals();
-                break;
-            }
-                /*
-            case core::topology::TRIANGLESADDED:
-            {
+            sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
+            resize(_topology->getNbTriangles());
+            needsUpdate=true;
+            updateFlags();            
+            break;
+        }
+        /*
+        case core::topology::TRIANGLESADDED:
+        {
             //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
@@ -276,15 +272,14 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
             const defaulttype::Vector3& pt3 = t.p3();
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
-            }
-            break;
-            }*/
-            default: break;
-            }
-            ++itBegin;
         }
-        return;
+        break;
+        }*/
+        default: break;
+        }
+        ++itBegin;
     }
+    return;
 #if 0
     sofa::core::topology::TopologyModifier* topoMod;
     this->getContext()->get(topoMod);
@@ -770,7 +765,7 @@ void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFil
 }
 
 template<class DataTypes>
-int TTriangleModel<DataTypes>::getTriangleFlags(int i)
+int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
@@ -808,7 +803,7 @@ void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool
     if( !onlyVisible ) return;
 
     static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::min();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 

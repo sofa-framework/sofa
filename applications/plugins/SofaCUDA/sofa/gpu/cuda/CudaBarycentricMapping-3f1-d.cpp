@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,10 +44,9 @@ using namespace sofa::gpu::cuda;
 
 
 
-#ifndef SOFA_FLOAT
-template class BarycentricMapping< Vec3dTypes, CudaVec3f1Types>;
-template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
-#endif
+template class BarycentricMapping< Vec3Types, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3Types>;
+
 
 } // namespace mapping
 
@@ -64,13 +63,10 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaBarycentricMapping_3f1_d)
-
 int BarycentricMappingCudaClass_3f1_d = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, CudaVec3f1Types> >()
-        .add< BarycentricMapping< CudaVec3f1Types, Vec3dTypes> >()
-#endif
+        .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >()
+
         ;
 
 } // namespace cuda

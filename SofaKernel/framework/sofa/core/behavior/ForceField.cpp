@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,22 +32,13 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
-template class SOFA_CORE_API ForceField<Vec3dTypes>;
-template class SOFA_CORE_API ForceField<Vec2dTypes>;
-template class SOFA_CORE_API ForceField<Vec1dTypes>;
-template class SOFA_CORE_API ForceField<Vec6dTypes>;
-template class SOFA_CORE_API ForceField<Rigid3dTypes>;
-template class SOFA_CORE_API ForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_CORE_API ForceField<Vec3fTypes>;
-template class SOFA_CORE_API ForceField<Vec2fTypes>;
-template class SOFA_CORE_API ForceField<Vec1fTypes>;
-template class SOFA_CORE_API ForceField<Vec6fTypes>;
-template class SOFA_CORE_API ForceField<Rigid3fTypes>;
-template class SOFA_CORE_API ForceField<Rigid2fTypes>;
-#endif
+template class SOFA_CORE_API ForceField<Vec3Types>;
+template class SOFA_CORE_API ForceField<Vec2Types>;
+template class SOFA_CORE_API ForceField<Vec1Types>;
+template class SOFA_CORE_API ForceField<Vec6Types>;
+template class SOFA_CORE_API ForceField<Rigid3Types>;
+template class SOFA_CORE_API ForceField<Rigid2Types>;
+
 } // namespace behavior
 
 } // namespace core

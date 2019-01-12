@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,14 +22,9 @@
 #ifndef SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaGeneralEngine/ShapeMatching.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/helper/IndexOpenMP.h>
 
@@ -84,7 +79,6 @@ ShapeMatching<DataTypes>::ShapeMatching()
     , oldRestPositionSize(0)
     , oldfixedweight(0)
 {
-    //affineRatio.setWidget("0to1RatioWidget");
 }
 
 template <class DataTypes>
@@ -111,18 +105,14 @@ void ShapeMatching<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ShapeMatching<DataTypes>::update()
+void ShapeMatching<DataTypes>::doUpdate()
 {
-    bool clusterdirty = this->cluster.isDirty();
-
     const VecCoord& restPositions = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
     helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;
     helper::WriteOnlyAccessor<Data< VecCoord > > targetPos = targetPosition;
     helper::ReadAccessor<Data< VVI > > clust = cluster;
-
-    //this->mstate->resize(restPositions.size());
 
     VI::const_iterator it, itEnd;
     size_t nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
@@ -134,7 +124,7 @@ void ShapeMatching<DataTypes>::update()
     if(!nbc || !nbp  || !currentPositions.size()) return;
 
     //if mechanical state or cluster have changed, we must compute again xcm0
-    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || clusterdirty)
+    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || m_dataTracker.hasChanged(this->cluster))
     {
         dmsg_info() <<"shape matching: update Xcm0" ;
 
@@ -193,7 +183,6 @@ void ShapeMatching<DataTypes>::update()
             if(affineRatio.getValue()!=(Real)1.0)
             {
                 helper::Decompose<Real>::polarDecomposition(T[i], R);
-                //if (determinant(R) < 0) for(unsigned int j=0 ; j<3;j++) R[j][0] *= -1;  // handle symmetry
             }
             if(affineRatio.getValue()!=(Real)0.0)
                 T[i] = T[i] * Qxinv[i] * (affineRatio.getValue()) + R * (1.0f-affineRatio.getValue());
@@ -212,19 +201,12 @@ void ShapeMatching<DataTypes>::update()
                 targetPos[i] /= (Real)nbClust[i];
             else targetPos[i]=currentPositions[i];
     }
-
-    cleanDirty();
 }
 
 // Specialization for rigids
-#ifndef SOFA_FLOAT
 template <>
-void ShapeMatching<sofa::defaulttype::Rigid3dTypes >::update();
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void ShapeMatching<sofa::defaulttype::Rigid3fTypes >::update();
-#endif
+void ShapeMatching<sofa::defaulttype::Rigid3Types >::doUpdate();
+
 
 
 

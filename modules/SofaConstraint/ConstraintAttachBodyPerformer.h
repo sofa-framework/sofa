@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -108,26 +108,24 @@ protected:
     sofa::core::behavior::MechanicalState<DataTypes> *mstate1, *mstate2;
 };
 
-/*#ifndef SOFA_FLOAT
-      template<>
-      bool ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked);
-#endif
+/*      template<>
+      bool ConstraintAttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPicked& picked);
 
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
       template<>
       bool ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked);
 #endif*/
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
-// #ifndef SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
+// #ifdef SOFA_WITH_FLOAT
 // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
 // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
 // #endif
-// #ifndef SOFA_FLOAT
-// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
-// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
-// #endif
+// // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3Types>;
+// 
 
 extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 #endif

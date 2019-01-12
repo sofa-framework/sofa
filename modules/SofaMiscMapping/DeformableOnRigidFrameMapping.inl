@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,23 +25,6 @@
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/MechanicalState.h>
-
-#include <sofa/core/VecId.h>
-
-#include <sofa/simulation/Simulation.h>
-
-#include <string.h>
-#include <iostream>
-
-
-/*!
-*   This mapping is derived from the RigidMapping. The difference is :
-*   In the RigidMapping, the rigid is considered like a perfect rigid (non-deformable)
-*   In this one, the rigid allow a low deformation of the rigid.
-*
-*   Principale difference with the RigidMapping is in the fonctions apply, applyJ and applyJT
-*/
 
 namespace sofa
 {
@@ -86,13 +69,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 
     if(this->getFromModels1().empty())
     {
-        serr << "Error while initializing ; input Model not found" << sendl;
+        msg_error() << "Error while initializing ; input Model not found" ;
         return;
     }
 
     if(this->getToModels().empty())
     {
-        serr << "Error while initializing ; output Model not found" << sendl;
+        msg_error() << "Error while initializing ; output Model not found" ;
         return;
     }
 
@@ -104,7 +87,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
     if(!this->getFromModels2().empty())
     {
         m_fromRootModel = this->getFromModels2()[0];
-        sout << "Root Model found : Name = " << m_fromRootModel->getName() << sendl;
+        msg_info() << "Root Model found : Name = " << m_fromRootModel->getName() ;
     }
 
     Inherit::init();
@@ -210,7 +193,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
         default :
             if (repartition.getValue().size() != (*inRigid).size())
             {
-                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                msg_error()<<"Error : mapping dofs repartition is not correct";
                 return;
             }
             cptOut=0;
@@ -243,6 +226,28 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
         }
     }
 }
+template <class TIn, class TInRoot, class TOut>
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply(
+    const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+    const helper::vector<const InDataVecCoord*>& dataVecInPos ,
+    const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos)
+{
+    if(dataVecOutPos.empty() || dataVecInPos.empty())
+        return;
+
+    const InRootVecCoord* inroot = NULL;
+
+    //We need only one input In model and input Root model (if present)
+    OutVecCoord& out = *dataVecOutPos[0]->beginEdit();
+    const InVecCoord& in = dataVecInPos[0]->getValue();
+
+    if (!dataVecInRootPos.empty())
+        inroot = &dataVecInRootPos[0]->getValue();
+
+    apply(out, in, inroot);
+
+    dataVecOutPos[0]->endEdit();
+}
 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeriv&  out , const typename In::VecDeriv& inDeformed , const typename InRoot::VecDeriv* inRigid)
@@ -251,13 +256,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
     {
         Deriv v,omega;//Vec3d
         out.resize(inDeformed.size());
-        //unsigned int cptOut;
-        //unsigned int val;
-
-
-        //switch (repartition.getValue().size())
-        //  {
-        //  case 0:
         if (indexFromEnd.getValue())
         {
             v = getVCenter((*inRigid)[(*inRigid).size() - 1 - index.getValue()]);
@@ -276,47 +274,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
             out[i] += rootX.getOrientation().rotate(inDeformed[i]); //velocity on the local system : (Vrigid + Vdeform)
             out[i]+= v; //center velocity
         }
-        //         break;
-        /* case 1://one value specified : uniform repartition mapping on the input dofs
-        val = repartition.getValue()[0];
-        cptOut=0;
-        for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++){
-        v = (*inRigid)[ifrom].getVCenter();
-        omega = (*inRigid)[ifrom].getVOrientation();
-
-        for(unsigned int ito=0; ito<val; ito++){
-        out[cptOut] = -cross(rotatedPoints[ito],omega)+ rootX.getOrientation().rotate(inDeformed[ito]);
-        out[cptOut] += v;
-        cptOut++;
-        }
-        }
-        break;
-        default:
-        if (repartition.getValue().size() != (*inRigid).size()){
-        serr<<"Error : mapping dofs repartition is not correct"<<sendl;
-        return;
-        }
-        cptOut=0;
-        for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++){
-        v = (*inRigid)[ifrom].getVCenter();
-        omega = (*inRigid)[ifrom].getVOrientation();
-
-        for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++){
-        out[cptOut] = -cross(rotatedPoints[cptOut],omega) + rootX.getOrientation().rotate(inDeformed[cptOut]);
-        out[cptOut] += v;
-        cptOut++;
-        }
-        }
-        break;
-        }
-        */
     }
-
-
-
     else // no root model!
     {
-        serr<<"NO ROOT MODEL"<<sendl;
+        msg_error()<<"NO ROOT MODEL";
         out.resize(inDeformed.size());
         for(unsigned int i=0; i<inDeformed.size(); i++)
         {
@@ -324,6 +285,30 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
         }
     }
 }
+
+template <class TIn, class TInRoot, class TOut>
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ(
+    const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+    const helper::vector<const InDataVecDeriv*>& dataVecInVel,
+    const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
+{
+    if(dataVecOutVel.empty() || dataVecInVel.empty())
+        return;
+
+    const InRootVecDeriv* inroot = NULL;
+
+    //We need only one input In model and input Root model (if present)
+    OutVecDeriv& out = *dataVecOutVel[0]->beginEdit();
+    const InVecDeriv& in = dataVecInVel[0]->getValue();
+
+    if (!dataVecInRootVel.empty())
+        inroot = &dataVecInRootVel[0]->getValue();
+
+    applyJ(out,in, inroot);
+
+    dataVecOutVel[0]->endEdit();
+}
+
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outRoot)
 {
@@ -381,6 +366,39 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
 }
 
 template <class TIn, class TInRoot, class TOut>
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
+    const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
+    const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
+    const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+{
+    if(dataVecOutForce.empty() || dataVecInForce.empty())
+        return;
+
+    InRootVecDeriv* outroot = NULL;
+
+    //We need only one input In model and input Root model (if present)
+    InVecDeriv& out = *dataVecOutForce[0]->beginEdit();
+    const OutVecDeriv& in = dataVecInForce[0]->getValue();
+
+    if (!dataVecOutRootForce.empty())
+        outroot = dataVecOutRootForce[0]->beginEdit();
+
+    applyJT(out,in, outroot);
+
+    dataVecOutForce[0]->endEdit();
+    if (outroot != NULL)
+        dataVecOutRootForce[0]->endEdit();
+}
+
+template <class TIn, class TInRoot, class TOut>
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(inForce);
+    SOFA_UNUSED(outForce);
+}
+
+template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::MatrixDeriv&  out , const typename Out::MatrixDeriv&  in , typename InRoot::MatrixDeriv*  outroot)
 {
     if (m_fromRootModel)
@@ -392,7 +410,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
             typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
             typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-            // Creates a constraints if the input constraint is not empty.
+            // Creates a constraint if the input constraint is not empty.
             if (colIt != colItEnd)
             {
                 Vector v, omega;
@@ -403,10 +421,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                 while (colIt != colItEnd)
                 {
                     const unsigned int node_index = colIt.index();
-                    // out = Jt in
-                    // Jt = [ I     ]
-                    //      [ -OM^t ]
-                    // -OM^t = OM^
 
                     const Deriv f = colIt.val();
                     v += f;
@@ -426,10 +440,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                 }
                 else
                 {
-                    // Commented by PJ. Bug??
-                    // todo(dmarchal 2017-05-03) so what ?
-                    // oRoot.addCol(out.size() - 1 - index.getValue(), result);
-
                     const unsigned int numDofs = m_fromModel->getSize();
                     oRoot.addCol(numDofs - 1 - index.getValue(), result);
                 }
@@ -438,14 +448,37 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
     }
 }
 
+template <class TIn, class TInRoot, class TOut>
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
+    const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
+    const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
+    const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
+{
+    if(dataMatOutConst.empty() || dataMatInConst.empty())
+        return;
 
+    InRootMatrixDeriv* outroot = NULL;
+
+    //We need only one input In model and input Root model (if present)
+    InMatrixDeriv& out = *dataMatOutConst[0]->beginEdit();
+    const OutMatrixDeriv& in = dataMatInConst[0]->getValue();
+
+    if (!dataMatOutRootConst.empty())
+        outroot = dataMatOutRootConst[0]->beginEdit();
+
+    applyJT(out,in, outroot);
+
+    dataMatOutConst[0]->endEdit();
+    if (outroot != NULL)
+        dataMatOutRootConst[0]->endEdit();
+}
 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
     core::topology::BaseMeshTopology* from = t->toBaseMeshTopology();
     if(from == NULL ) {
-        this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl;
+        msg_error() << __FUNCTION__ << ": could not cast topology to BaseMeshTopology";
         return;
     }
     std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
@@ -473,234 +506,11 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 
 }
 
-
-/// Template specialization for 2D rigids
-// template<typename real1, typename real2>
-// void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
-// {
-//     Deriv v;
-//     Real omega;
-//     v = in[index.getValue()].getVCenter();
-//     omega = (Real)in[index.getValue()].getVOrientation();
-//     out.resize(points.size());
-//     for(unsigned int i=0;i<points.size();i++)
-//     {
-//         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
-//     }
-// }
-//#ifndef SOFA_FLOAT
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
-//#endif
-//#ifndef SOFA_DOUBLE
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
-//#endif
-//
-//#ifndef SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//template<>
-//void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-//template<>
-//void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
-//template<>
-//    void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in );
-//#endif
-//#endif
-/// Template specialization for 2D rigids
-// template<typename real1, typename real2>
-// void DeformableOnRigidFrameMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
-// {
-//     Deriv v;
-//     Real omega;
-//     for(unsigned int i=0;i<points.size();i++)
-//     {
-//         Deriv f = in[i];
-//         v += f;
-//         omega += cross(rotatedPoints[i],f);
-//     }
-//     out[index.getValue()].getVCenter() += v;
-//     out[index.getValue()].getVOrientation() += (typename In::Real)omega;
-// }
-
-
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateX()
-//{
-//	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL)
-//		apply(*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue(),m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
-//
-//
-//	if( notMuted())	{
-//		serr<<"DeformableOnRigidFrameMapping::propageX processed :"<<sendl;
-//		if (m_fromRootModel!=NULL)
-//			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue();
-//		serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
-//	}
-//
-//
-//}
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateXfree()
-//{
-//	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL)
-//		apply(*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), *m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()));
-//
-//	if( notMuted()){
-//		serr<<"DeformableOnRigidFrameMapping::propageXfree processed"<<sendl;
-//		if (m_fromRootModel!=NULL)
-//			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue();
-//		serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<sendl;
-//	}
-//
-//}
-//
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateV()
-//{
-//	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
-//		applyJ(m_toModel->read(core::ConstVecDerivId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
-//
-//	if( notMuted()){
-//		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
-//		if (m_fromRootModel!=NULL)
-//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
-//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecDerivId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
-//	}
-//
-//}
-//
-//
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateDx()
-//{
-//	if (m_fromModel!=NULL && m_toModel->getDx()!=NULL && m_fromModel->getDx()!=NULL)
-//		applyJ(*m_toModel->getDx(), *m_fromModel->getDx(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getDx()));
-//
-//
-//	if( notMuted()){
-//		serr<<"DeformableOnRigidFrameMapping::propagateDx processed"<<sendl;
-//		if (m_fromRootModel!=NULL)
-//			serr<<"input root: "<<*m_fromRootModel->getDx();
-//		serr<<"  - input: "<<*m_fromModel->getDx()<<"  output : "<<*m_toModel->getDx()<<sendl;
-//	}
-//
-//}
-//
-//
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::accumulateForce()
-//{
-//	if (m_fromModel!=NULL && m_toModel->getF()!=NULL && m_fromModel->getF()!=NULL)
-//		applyJT(*m_fromModel->getF(), *m_toModel->getF(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getF()));
-//
-//
-//	if( notMuted()){
-//		serr<<"DeformableOnRigidFrameMapping::accumulateForce processed"<<sendl;
-//		serr<<" input f : "<<*m_toModel->getF();
-//		if (m_fromRootModel!=NULL)
-//			serr<<"- output root: "<<*m_fromRootModel->getF();
-//		serr<<"  - output F: "<<*m_fromModel->getF()<<sendl;
-//	}
-//
-//}
-//
-//
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::accumulateDf()
-//{
-//	//if (m_fromModel!=NULL && m_toModel->getF()!=NULL && m_fromModel->getF()!=NULL)
-//	applyJT(*m_fromModel->getF(), *m_toModel->getF(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getF()));
-//
-//
-//	if( notMuted()){
-//		serr<<"DeformableOnRigidFrameMapping::accumulateDf processed"<<sendl;
-//		serr<<" input df : "<<*m_toModel->getF();
-//		if (m_fromRootModel!=NULL)
-//			serr<<"- output root: "<<*m_fromRootModel->getF();
-//		serr<<"  - output: "<<*m_fromModel->getF()<<sendl;
-//	}
-//
-//}
-//
-//
-//
-//template <class TIn, class TInRoot, class TOut>
-//void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::accumulateConstraint()
-//{
-//	if (m_fromModel!=NULL && m_toModel->getC()!=NULL && m_fromModel->getC()!=NULL)
-//	{
-//		//propagateX();
-//		applyJT(*m_fromModel->getC(), *m_toModel->getC(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getC()));
-//
-//		//// Accumulate contacts indices through the MechanicalMapping
-//		//std::vector<unsigned int>::iterator it = m_toModel->getConstraintId().begin();
-//		//std::vector<unsigned int>::iterator itEnd = m_toModel->getConstraintId().end();
-//
-//		//while (it != itEnd)
-//		//{
-//		//	m_fromModel->setConstraintId(*it);
-//		//	// in case of a "multi-mapping" (the articulation system is placed on a  simulated object)
-//		//	// the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
-//		//	if (m_fromRootModel!=NULL)
-//		//		m_fromRootModel->setConstraintId(*it);
-//		//	it++;
-//		//}
-//	}
-//}
-
-/*
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::recomputeRigidMass()
 {
-
-if (m_fromModel==NULL || m_fromRootModel==NULL)
-return;
-
-
-masses = m_fromModel->getContext()->getMass();
-if(!masses)
-return;
-
-totalMass = 0.0;
-//compute the total mass of the object
-for (unsigned int i=0 ; i<m_fromModel->getSize() ; i++)
-totalMass += masses->getElementMass(i);
-
-
-
-
-
-
-
-sofa::core::objectmodel::
-m_fromModel->getContext()->get(m_fromRootModel, core::objectmodel::BaseContext::SearchUp);
-
-
+    // (30-11-2018, Olivier Goury): Not implemented yet. Someone want to do it?
 }
-*/
-
-
 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)

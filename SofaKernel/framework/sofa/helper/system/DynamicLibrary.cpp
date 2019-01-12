@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,6 @@
 #include <sofa/helper/system/DynamicLibrary.h>
 #ifdef WIN32
 # include <Windows.h>
-#elif defined(_XBOX)
-# include <xtl.h>
-#elif defined(PS3)
-# include <sys/prx.h>
 #else
 # include <dlfcn.h>
 #endif
@@ -66,10 +62,6 @@ const std::string& DynamicLibrary::Handle::filename() const
 
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
-#if defined(_XBOX) || defined(PS3)
-    // not supported
-    return Handle();
-#else
 # if defined(WIN32)
     void *handle = ::LoadLibraryA(filename.c_str());
 # else
@@ -78,15 +70,10 @@ DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
     if (handle == NULL)
         fetchLastError();
     return handle ? Handle(filename, handle) : Handle();
-#endif
 }
 
 int DynamicLibrary::unload(Handle handle)
 {
-#if defined(_XBOX) || defined(PS3)
-    // not supported
-    return 1;
-#else
 # if defined(WIN32)
     int error = (::FreeLibrary((HMODULE)(handle.m_realHandle)) == 0);
 # else
@@ -95,16 +82,11 @@ int DynamicLibrary::unload(Handle handle)
     if (error)
         fetchLastError();
     return error;
-#endif
 }
 
 void * DynamicLibrary::getSymbolAddress(Handle handle,
                                         const std::string& symbol)
 {
-#if defined(_XBOX) || defined(PS3)
-    // not supported
-    return NULL;
-#else
     if (!handle.isValid()) {
         m_lastError = "DynamicLibrary::getSymbolAddress(): invalid handle";
         return NULL;
@@ -118,7 +100,6 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
     if(symbolAddress == NULL)
         fetchLastError();
     return symbolAddress;
-#endif
 }
 
 std::string DynamicLibrary::getLastError()
@@ -130,9 +111,7 @@ std::string DynamicLibrary::getLastError()
 
 void DynamicLibrary::fetchLastError()
 {
-#if defined(_XBOX) || defined(PS3)
-    // not supported
-#elif defined(WIN32)
+#if defined(WIN32)
     LPTSTR pMsgBuf;
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
                   | FORMAT_MESSAGE_FROM_SYSTEM
@@ -160,8 +139,6 @@ void DynamicLibrary::fetchLastError()
 const std::string DynamicLibrary::extension = "dll";
 #elif defined(__APPLE__)
 const std::string DynamicLibrary::extension = "dylib";
-#elif defined(_XBOX) || defined(PS3)
-const std::string DynamicLibrary::extension = "";
 #else
 const std::string DynamicLibrary::extension = "so";
 #endif

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -313,9 +313,9 @@ public:
 
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
-    sofa::core::objectmodel::DataFileName f_filename;
-    Data < Real > f_period;
-    Data<bool> f_reinit;
+    sofa::core::objectmodel::DataFileName f_filename; ///< output file name
+    Data < Real > f_period; ///< period between outputs
+    Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
     Real lastTime;
 
     /// bool to allow the display of the extra torsion
@@ -325,15 +325,10 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
+extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
+
 #endif
 } // namespace interactionforcefield
 

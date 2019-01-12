@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,6 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
@@ -85,7 +84,7 @@ public:
     SetIndex f_indices;    ///< the indices of the points to project to the target
     Data<Coord> f_point;    ///< the target of the projection
     Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in f_indices
-    Data<SReal> f_drawSize;
+    Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
 
 protected:
@@ -153,23 +152,13 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid2fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,8 +49,6 @@ using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
-
-SOFA_DECL_CLASS(Hexa2QuadTopologicalMapping)
 
 // Register in the Factory
 int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology")
@@ -124,7 +122,7 @@ void Hexa2QuadTopologicalMapping::init()
                     to_tstm->addQuadProcess(q);
 
                     Loc2GlobVec.push_back(i);
-                    Glob2LocMap[i]=Loc2GlobVec.size()-1;
+                    Glob2LocMap[i]= (unsigned int)Loc2GlobVec.size()-1;
                 }
             }
 
@@ -189,17 +187,14 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - QUADSREMOVED" << sendl;
 
-                    int last;
-                    int ind_last;
-
-                    last= fromModel->getNbQuads() - 1;
+                    unsigned int last = (unsigned int)fromModel->getNbQuads() - 1;
+                    unsigned int ind_last = (unsigned int)toModel->getNbQuads();
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
                     unsigned int ind_tmp;
 
                     unsigned int ind_real_last;
-                    ind_last=toModel->getNbQuads();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
@@ -220,7 +215,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 ind_real_last = Glob2LocMap[last];
 
-                                if((int) k != last)
+                                if(k != last)
                                 {
 
                                     Glob2LocMap.erase(Glob2LocMap.find(k));
@@ -235,7 +230,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                             }
 
-                            if((int) ind_k != ind_last)
+                            if(ind_k != ind_last)
                             {
 
                                 Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
@@ -284,7 +279,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                         sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
                         sofa::helper::vector< unsigned int > quadsIndexList;
-                        int nb_elems = toModel->getNbQuads();
+                        unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
                         const bool flipN = flipNormals.getValue();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
@@ -359,7 +354,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                             sout << "INFO_print : Hexa2QuadTopologicalMapping - fail to add quad " << k << " which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
+                                        Glob2LocMap[k]=(unsigned int)Loc2GlobVec.size()-1;
                                     }
                                 }
                             }

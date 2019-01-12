@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP
 
 #include <SofaSphFluid/SPHFluidForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -39,27 +39,15 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(SPHFluidForceField)
-
 int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamics")
-#ifndef SOFA_FLOAT
-        .add< SPHFluidForceField<Vec3dTypes> >()
-//.add< SPHFluidForceField<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SPHFluidForceField<Vec3fTypes> >()
-//.add< SPHFluidForceField<Vec2fTypes> >()
-#endif
+        .add< SPHFluidForceField<Vec3Types> >()
+//.add< SPHFluidForceField<Vec2Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3dTypes>;
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3fTypes>;
-template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2fTypes>;
-#endif
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3Types>;
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2Types>;
+
 
 
 } // namespace forcefield

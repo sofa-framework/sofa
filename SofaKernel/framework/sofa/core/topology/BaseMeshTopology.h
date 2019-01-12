@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,19 +22,15 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
-
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseTopologyEngine.h>
-
-
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/vector.h>
 
-#include <sofa/core/core.h>
+#ifndef NDEBUG
+#define CHECK_TOPOLOGY true
+#else
+#define CHECK_TOPOLOGY false
+#endif
 
 namespace sofa
 {
@@ -44,8 +40,6 @@ namespace core
 
 namespace topology
 {
-
-#define SOFA_NEW_HEXA
 
 class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 {
@@ -64,11 +58,6 @@ public:
     typedef EdgeID		                LineID;
     typedef Edge		                Line;
     typedef SeqEdges	                SeqLines;
-#ifndef SOFA_NEW_HEXA
-    typedef HexaID                              CubeID;
-    typedef Hexa                                Cube;
-    typedef SeqHexahedra                        SeqCubes;
-#endif
     /// @}
 
     /// fixed-size neighbors arrays
@@ -122,23 +111,25 @@ public:
     /// Random accessors
     /// @{
 
-    virtual int getNbEdges()                   { return (int)getEdges().size(); }
-    virtual int getNbTriangles()               { return (int)getTriangles().size(); }
-    virtual int getNbQuads()                   { return (int)getQuads().size(); }
-    virtual int getNbTetrahedra()              { return (int)getTetrahedra().size(); }
-    virtual int getNbHexahedra()	       { return (int)getHexahedra().size(); }
+    virtual size_t getNbEdges()                   { return getEdges().size(); }
+    virtual size_t getNbTriangles()               { return getTriangles().size(); }
+    virtual size_t getNbQuads()                   { return getQuads().size(); }
+    virtual size_t getNbTetrahedra()              { return getTetrahedra().size(); }
+    virtual size_t getNbHexahedra()	              { return getHexahedra().size(); }
 
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
     virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
     virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
-    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }
+    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
+	   
+    virtual sofa::core::topology::TopologyObjectType getTopologyType() const = 0 ;
     /// @}
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
     ///@{
-    virtual int getNbTetras()    { return (int)getTetrahedra().size(); }
-    virtual int getNbHexas()     { return (int)getHexahedra().size(); }
+    virtual size_t getNbTetras()    { return getNbTetrahedra(); }
+    virtual size_t getNbHexas()     { return getNbHexahedra(); }
 
     virtual Tetra getTetra(TetraID i)          { return getTetrahedra()[i]; }
     virtual Hexa getHexa(HexaID i)             { return getHexahedra()[i]; }
@@ -193,16 +184,16 @@ public:
     /// @}
 
 
-    /// Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
-    virtual int getEdgeIndex(PointID v1, PointID v2);
-    /// Returns the index of the triangle given three vertex indices; returns -1 if no triangle exists
-    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
-    /// Returns the index of the quad given four vertex indices; returns -1 if no quad exists
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the tetrahedron given four vertex indices; returns -1 if no tetrahedron exists
-    virtual int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the hexahedron given eight vertex indices; returns -1 if no hexahedron exists
-    virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
+    /// Returns the index of the edge joining vertex v1 and vertex v2; returns InvalidID if no edge exists
+    virtual EdgeID getEdgeIndex(PointID v1, PointID v2);
+    /// Returns the index of the triangle given three vertex indices; returns InvalidID if no triangle exists
+    virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3);
+    /// Returns the index of the quad given four vertex indices; returns InvalidID if no quad exists
+    virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    /// Returns the index of the tetrahedron given four vertex indices; returns InvalidID if no tetrahedron exists
+    virtual TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    /// Returns the index of the hexahedron given eight vertex indices; returns InvalidID if no hexahedron exists
+    virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
 
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
@@ -242,13 +233,8 @@ public:
     /// @name Deprecated names, for backward-compatibility
     /// @{
     const SeqLines& getLines() { return getEdges(); }
-    int getNbLines() { return getNbEdges(); }
+    size_t getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
-#ifndef SOFA_NEW_HEXA
-    const SeqCubes& getCubes() { return getHexahedra(); }
-    int getNbCubes() { return getNbHexahedra(); }
-    Cube getCube(CubeID i) { return getHexahedron(i); }
-#endif
     /// @}
 
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
@@ -277,7 +263,7 @@ public:
     /// Checks if the topology has only one connected component. @return Return true if so.
     virtual bool checkConnexity() {return true;}
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() {return 0;}
+    virtual size_t getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const sofa::helper::vector<index_type> getConnectedElement(index_type elem);
     /// @}

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -315,20 +315,8 @@ inline void glMultMatrix(const float* p)
 
 inline void glMultMatrix(const double* p)
 {
-#ifdef PS3
-	float f[16];
-	
-	for(int i=0; i<16; i++)
-	{
-		f[i] = (float) p[i];
-	}
-	glMultMatrixf(f);
-#else
     glMultMatrixd(p);
-#endif
 }
-
-
 
 } // namespace gl
 

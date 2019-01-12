@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -37,27 +37,17 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FastTetrahedralCorotationalForceField)
-
 using namespace sofa::defaulttype;
 
 
 // Register in the Factory
 int FastTetrahedralCorotationalForceFieldClass = core::RegisterObject("Fast Corotational Tetrahedral Mesh")
-#ifndef SOFA_FLOAT
-        .add< FastTetrahedralCorotationalForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FastTetrahedralCorotationalForceField<Vec3fTypes> >()
-#endif
+        .add< FastTetrahedralCorotationalForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3Types>;
+
 
 } // namespace forcefield
 

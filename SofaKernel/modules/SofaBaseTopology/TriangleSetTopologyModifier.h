@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,27 +77,27 @@ public:
     *
     */
     virtual void addTriangles(const sofa::helper::vector< Triangle > &triangles,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+            const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs) ;
 
 
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
      * \sa addTrianglesProcess
      */
-    void addTrianglesWarning(const unsigned int nTriangles,
+    void addTrianglesWarning(const size_t nTriangles,
             const sofa::helper::vector< Triangle >& trianglesList,
-            const sofa::helper::vector< unsigned int >& trianglesIndexList) ;
+            const sofa::helper::vector< TriangleID >& trianglesIndexList) ;
 
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
      * \sa addTrianglesProcess
      */
-    void addTrianglesWarning(const unsigned int nTriangles,
+    void addTrianglesWarning(const size_t nTriangles,
             const sofa::helper::vector< Triangle >& trianglesList,
-            const sofa::helper::vector< unsigned int >& trianglesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+            const sofa::helper::vector< TriangleID >& trianglesIndexList,
+            const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs) ;
 
     /** \brief Effectively add a triangle to the topology.
      */
@@ -111,15 +111,15 @@ public:
      *
      * \sa addPointsWarning
      */
-    virtual void addPointsProcess(const unsigned int nPoints) override;
+    virtual void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const unsigned int nEdges,
+    void addEdgesWarning(const size_t nEdges,
             const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList) override
+            const sofa::helper::vector< EdgeID >& edgesIndexList) override
     {
         EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList);
     }
@@ -128,11 +128,11 @@ public:
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const unsigned int nEdges,
+    void addEdgesWarning(const size_t nEdges,
             const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) override
+            const sofa::helper::vector< EdgeID >& edgesIndexList,
+            const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs) override
     {
         EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
     }
@@ -146,7 +146,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
      */
-    virtual void removeItems(const sofa::helper::vector< unsigned int >& items) override;
+    virtual void removeItems(const sofa::helper::vector< TriangleID >& items) override;
 
     /** \brief Remove a set  of triangles
         @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
@@ -155,7 +155,7 @@ public:
         @param removeIsolatedPoints if true isolated vertices are also removed
         *
         */
-    virtual void removeTriangles(const sofa::helper::vector< unsigned int >& triangleIds,
+    virtual void removeTriangles(const sofa::helper::vector< TriangleID >& triangleIds,
             const bool removeIsolatedEdges,
             const bool removeIsolatedPoints);
 
@@ -166,7 +166,7 @@ public:
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removeTrianglesWarning(sofa::helper::vector<unsigned int> &triangles);
+    virtual void removeTrianglesWarning(sofa::helper::vector<TriangleID> &triangles);
 
 
     /** \brief Remove a subset of  triangles. Eventually remove isolated edges and vertices
@@ -177,7 +177,7 @@ public:
      * @param removeIsolatedEdges if true isolated edges are also removed
      * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void removeTrianglesProcess( const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeTrianglesProcess( const sofa::helper::vector<TriangleID> &indices,
             const bool removeIsolatedEdges=false,
             const bool removeIsolatedPoints=false);
 
@@ -197,12 +197,12 @@ public:
      * @param baryCoefs - their barycoefs related to these ancestors.
      * @param trianglesIndex2remove - List of triangle indices to remove.
      */
-    virtual void addRemoveTriangles(const unsigned int nTri2Add,
+    virtual void addRemoveTriangles(const size_t nTri2Add,
             const sofa::helper::vector< Triangle >& triangles2Add,
-            const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            sofa::helper::vector< unsigned int >& trianglesIndex2remove);
+            const sofa::helper::vector< TriangleID >& trianglesIndex2Add,
+            const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs,
+            sofa::helper::vector< TriangleID >& trianglesIndex2remove);
 
 
 
@@ -214,7 +214,7 @@ public:
      * @param removeIsolatedItems if true isolated vertices are also removed
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
+    virtual void removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
             const bool removeIsolatedItems=false) override;
 
 
@@ -226,7 +226,7 @@ public:
      * \sa removePointsWarning
      * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
+    virtual void removePointsProcess(const sofa::helper::vector<PointID> &indices,
             const bool removeDOF = true) override;
 
 
@@ -235,15 +235,15 @@ public:
      * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &inv_index,
+    virtual void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
+            const sofa::helper::vector<PointID> &inv_index,
             const bool renumberDOF = true) override;
 
 
     /** \brief Generic method for points renumbering
      */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &inv_index) override;
+    virtual void renumberPoints( const sofa::helper::vector<PointID> &index,
+            const sofa::helper::vector<PointID> &inv_index) override;
 
 
     /** \brief Move input points indices to input new coords.
@@ -254,9 +254,9 @@ public:
      * @param coefs : barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+    virtual void movePointsProcess (const sofa::helper::vector < PointID >& id,
+            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool moveDOF = true) override;
 
 
@@ -265,13 +265,13 @@ protected:
     /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
      *
      */
-    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items);
+    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< TriangleID >& items);
 
 
     /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be inplemented in children classes.
      *
      */
-    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved );
+    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< TriangleID >& edgeToBeRemoved, const sofa::helper::vector< TriangleID >& vertexToBeRemoved );
 
 
     /** \brief Precondition to fulfill before adding triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
@@ -285,7 +285,7 @@ protected:
      */
     virtual void addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles);
 
-    Data<sofa::helper::vector <unsigned int> > list_Out;
+    Data<sofa::helper::vector <TriangleID> > list_Out; ///< triangles with at least one null values.
 private:
     TriangleSetTopologyContainer*	m_container;
 };

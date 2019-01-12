@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP
 
 #include <SofaUserInteraction/SuturePointPerformer.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa
@@ -34,19 +34,11 @@ namespace component
 
 namespace collision
 {
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3dTypes>;
-#endif
+template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3fTypes> >  SuturePointPerformerVec3fClass("SuturePoints",true);
-#endif
-#ifndef SOFA_FLOAT
+
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3dTypes> >  SuturePointPerformerVec3dClass("SuturePoints",true);
-#endif
+
 
 }
 }

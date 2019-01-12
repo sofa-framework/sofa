@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -46,8 +47,6 @@ namespace component
 
 namespace misc
 {
-
-SOFA_DECL_CLASS(VTKExporter)
 
 int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
         .add< VTKExporter >();
@@ -78,17 +77,24 @@ VTKExporter::~VTKExporter()
 }
 
 void VTKExporter::init()
-{
+{    
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(topology);
     context->get(mstate);
 
+    // if not set, set the printLog to true to read the msg_info()
+    if(!this->f_printLog.isSet())
+        f_printLog.setValue(true);
+
     if (!topology)
     {
-        serr << "VTKExporter : error, no topology ." << sendl;
+        msg_error() << "VTKExporter : error, no topology ." ;
         return;
     }
-    else sout << "VTKExporter: found topology " << topology->getName() << sendl;
+    else
+    {
+        msg_info() << "VTKExporter: found topology " << topology->getName() ;
+    }
 
     nbFiles = 0;
 
@@ -129,7 +135,7 @@ void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, he
         }
         else
         {
-            serr << "VTKExporter : error while parsing dataField names" << sendl;
+            msg_error() << "VTKExporter : error while parsing dataField names" ;
             continue;
         }
         if (name.empty()) name = dataFieldName;
@@ -155,13 +161,13 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
         if (!obj || !field)
         {
             if (!obj)
-                serr << "VTKExporter : error while fetching data field '"
-                     << fields[i] << "' of object '" << objects[i]
-                     << "', check object name" << sendl;
+                msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                            << fields[i] << "' of object '" << objects[i] << msgendl
+                            << "', check object name"  << msgendl;
             else if (!field)
-                serr << "VTKExporter : error while fetching data field "
-                     << fields[i] << " of object '" << objects[i]
-                     << "', check field name " << sendl;
+                msg_error() << "VTKExporter : error while fetching data field " << msgendl
+                            << fields[i] << " of object '" << objects[i] << msgendl
+                            << "', check field name " << msgendl;
         }
         else
         {
@@ -237,13 +243,13 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
         if (!obj || !field)
         {
             if (!obj)
-                serr << "VTKExporter : error while fetching data field '"
-                     << fields[i] << "' of object '" << objects[i]
-                     << "', check object name" << sendl;
+                msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                            << fields[i] << "' of object '" << objects[i] << msgendl
+                            << "', check object name" << msgendl;
             else if (!field)
-                serr << "VTKExporter : error while fetching data field "
-                     << fields[i] << " of object '" << objects[i]
-                     << "', check field name " << sendl;
+                msg_error()  << "VTKExporter : error while fetching data field " << msgendl
+                             << fields[i] << " of object '" << objects[i] << msgendl
+                             << "', check field name " << msgendl;
         }
         else
         {
@@ -388,7 +394,7 @@ void VTKExporter::writeVTKSimple()
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
     {
-        serr << "Error creating file "<<filename<<sendl;
+        msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = NULL;
         return;
@@ -399,7 +405,7 @@ void VTKExporter::writeVTKSimple()
 
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
 
-    const int nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
+    const size_t nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
 
     //Write header
     *outfile << "# vtk DataFile Version 2.0" << std::endl;
@@ -419,7 +425,7 @@ void VTKExporter::writeVTKSimple()
     //write Points
     if (!pointsPos.empty())
     {
-        for (int i=0 ; i<nbp; i++)
+        for (size_t i=0 ; i<nbp; i++)
         {
             *outfile << pointsPos[i] << std::endl;
         }
@@ -433,7 +439,7 @@ void VTKExporter::writeVTKSimple()
     }
     else
     {
-        for (int i=0 ; i<nbp ; i++)
+        for (size_t i=0 ; i<nbp ; i++)
         {
             *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
         }
@@ -442,7 +448,7 @@ void VTKExporter::writeVTKSimple()
     *outfile << std::endl;
 
     //Write Cells
-    unsigned int numberOfCells, totalSize;
+    size_t numberOfCells, totalSize;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
             +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
@@ -459,29 +465,29 @@ void VTKExporter::writeVTKSimple()
 
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << 2 << " " << topology->getEdge(i) << std::endl;
     }
 
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << 3 << " " <<  topology->getTriangle(i) << std::endl;
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << 4 << " " << topology->getQuad(i) << std::endl;
     }
 
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << 4 << " " <<  topology->getTetra(i) << std::endl;
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << 8 << " " <<  topology->getHexa(i) << std::endl;
     }
 
@@ -491,29 +497,29 @@ void VTKExporter::writeVTKSimple()
 
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << 3 << std::endl;
     }
 
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << 5 << std::endl;
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << 9 << std::endl;
     }
 
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << 10 << std::endl;
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << 12 << std::endl;
     }
 
@@ -531,10 +537,12 @@ void VTKExporter::writeVTKSimple()
         *outfile << "CELL_DATA " << numberOfCells << std::endl;
         writeData(cellsDataObject, cellsDataField, cellsDataName);
     }
+
     outfile->close();
-    sout << filename << " written" << sendl;
 
     ++nbFiles;
+
+    msg_info() << "Export VTK in file " << filename << "  done.";
 }
 
 void VTKExporter::writeVTKXML()
@@ -559,7 +567,7 @@ void VTKExporter::writeVTKXML()
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
     {
-        serr << "Error creating file "<<filename<<sendl;
+        msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = NULL;
         return;
@@ -569,9 +577,9 @@ void VTKExporter::writeVTKXML()
 
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
 
-    const int nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
+    const size_t nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
 
-    unsigned int numberOfCells;
+    size_t numberOfCells;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
             +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
@@ -617,7 +625,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
     if (!pointsPos.empty())
     {
-        for (int i = 0 ; i < nbp; i++)
+        for (size_t i = 0 ; i < nbp; i++)
         {
             *outfile << "\t" << pointsPos[i] << std::endl;
         }
@@ -629,7 +637,7 @@ void VTKExporter::writeVTKXML()
     }
     else
     {
-        for (int i = 0; i < nbp; i++)
+        for (size_t i = 0; i < nbp; i++)
             *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
     }
     *outfile << "        </DataArray>" << std::endl;
@@ -641,28 +649,28 @@ void VTKExporter::writeVTKXML()
     *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << std::endl;
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << "          " << topology->getEdge(i) << std::endl;
     }
 
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << "          " <<  topology->getTriangle(i) << std::endl;
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << "          " << topology->getQuad(i) << std::endl;
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << "          " <<  topology->getTetra(i) << std::endl;
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << "          " <<  topology->getHexa(i) << std::endl;
     }
     *outfile << "        </DataArray>" << std::endl;
@@ -672,7 +680,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "          ";
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
         {
             num += 2;
             *outfile << num << " ";
@@ -680,7 +688,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
         {
             num += 3;
             *outfile << num << " ";
@@ -688,7 +696,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
         {
             num += 4;
             *outfile << num << " ";
@@ -696,7 +704,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
         {
             num += 4;
             *outfile << num << " ";
@@ -704,7 +712,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
         {
             num += 8;
             *outfile << num << " ";
@@ -717,27 +725,27 @@ void VTKExporter::writeVTKXML()
     *outfile << "          ";
     if (writeEdges.getValue())
     {
-        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbEdges() ; i++)
             *outfile << 3 << " ";
     }
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTriangles() ; i++)
             *outfile << 5 << " ";
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbQuads() ; i++)
             *outfile << 9 << " ";
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbTetras() ; i++)
             *outfile << 10 << " ";
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++)
+        for (unsigned int i=0 ; i<topology->getNbHexas() ; i++)
             *outfile << 12 << " ";
     }
     *outfile << std::endl;
@@ -749,8 +757,9 @@ void VTKExporter::writeVTKXML()
     *outfile << "  </UnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    sout << filename << " written" << sendl;
     ++nbFiles;
+
+    msg_info() << "Export VTK XML in file " << filename << "  done.";
 }
 
 void VTKExporter::writeParallelFile()
@@ -762,7 +771,7 @@ void VTKExporter::writeParallelFile()
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
     {
-        serr << "Error creating file "<<filename<<sendl;
+        msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = NULL;
         return;
@@ -790,13 +799,13 @@ void VTKExporter::writeParallelFile()
             if (!obj || !field)
             {
                 if (!obj)
-                    serr << "VTKExporter : error while fetching data field '"
-                         << pointsDataField[i] << "' of object '" << pointsDataObject[i]
-                         << "', check object name" << sendl;
+                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                                << pointsDataField[i] << "' of object '" << pointsDataObject[i] << msgendl
+                                << "', check object name" << msgendl;
                 else if (!field)
-                    serr << "VTKExporter : error while fetching data field '"
-                         << pointsDataField[i] << "' of object '" << pointsDataObject[i]
-                         << "', check field name " << sendl;
+                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                                << pointsDataField[i] << "' of object '" << pointsDataObject[i] << msgendl
+                                << "', check field name " << msgendl;
             }
             else
             {
@@ -863,13 +872,13 @@ void VTKExporter::writeParallelFile()
             if (!obj || !field)
             {
                 if (!obj)
-                    serr << "VTKExporter : error while fetching data field '"
+                    msg_error() << "VTKExporter : error while fetching data field '"
                          << cellsDataField[i] << "' of object '" << cellsDataObject[i]
                          << "', check object name" << sendl;
                 else if (!field)
-                    serr << "VTKExporter : error while fetching data field '"
-                         << cellsDataField[i] << "' of object '" << cellsDataObject[i]
-                         << "', check field name " << sendl;
+                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                                << cellsDataField[i] << "' of object '" << cellsDataObject[i] << msgendl
+                                << "', check field name " << msgendl;
             }
             else
             {
@@ -938,7 +947,8 @@ void VTKExporter::writeParallelFile()
     *outfile << "  </PUnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    sout << "parallel file " << filename << " written" << sendl;
+
+    msg_info() << "Export VTK in file " << filename << "  done.";
 }
 
 

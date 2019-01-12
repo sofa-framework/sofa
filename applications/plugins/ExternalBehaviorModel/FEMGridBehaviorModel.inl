@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,7 +127,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
     m_internalNode->setGravity(this->getContext()->getGravity());
     m_internalNode->setDt(this->getContext()->getDt());
 
-    constraint->f_indices.beginEdit()->clear();
+    constraint->d_indices.beginEdit()->clear();
 
     for( unsigned x=0 ; x<2 ; ++x )
         for( unsigned y=0 ; y<2 ; ++y )
@@ -135,10 +135,10 @@ void FEMGridBehaviorModel<DataTypes>::init()
             {
                 mapExposedInternalIndices[x+y*2+z*4] = x*(_subdivisions.getValue())+y*_subdivisions.getValue()*(_subdivisions.getValue()+1)+z*_subdivisions.getValue()*(_subdivisions.getValue()+1)*(_subdivisions.getValue()+1);
 //                std::cerr<<x+y*2+z*4<<" "<<mapExposedInternalIndices[x+y*2+z*4]<<std::endl;
-                constraint->f_indices.beginEdit()->push_back(mapExposedInternalIndices[x+y*2+z*4]);
+                constraint->d_indices.beginEdit()->push_back(mapExposedInternalIndices[x+y*2+z*4]);
             }
 
-    constraint->f_indices.endEdit();
+    constraint->d_indices.endEdit();
 
 
     /////////////////////////////

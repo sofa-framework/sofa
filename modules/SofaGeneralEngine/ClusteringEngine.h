@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_CLUSTERING_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -81,22 +79,22 @@ public:
     virtual ~ClusteringEngine() {}
 
     void init() override;
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<bool> d_useTopo;
+    Data<bool> d_useTopo; ///< Use avalaible topology to compute neighborhood.
     //Data<unsigned int> maxIter;
 
-    Data<Real> d_radius;
-    Data<Real> d_fixedRadius;
-    Data<int> d_nbClusters;
+    Data<Real> d_radius; ///< Neighborhood range.
+    Data<Real> d_fixedRadius; ///< Neighborhood range (for non mechanical particles).
+    Data<int> d_nbClusters; ///< Number of clusters (-1 means that all input points are selected).
     Data< VecCoord > d_fixedPosition;  ///< input (non mechanical particle reference position)
     Data< VecCoord > d_position; ///< input (reference mstate position)
     Data< VVI > d_cluster;       ///< result
 
-    sofa::core::objectmodel::DataFileName input_filename;
-    sofa::core::objectmodel::DataFileName output_filename;
+    sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
+    sofa::core::objectmodel::DataFileName output_filename; ///< export clusters
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ClusteringEngine<DataTypes>* = NULL) {   return DataTypes::Name(); }
@@ -126,13 +124,9 @@ private:
     bool save();
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

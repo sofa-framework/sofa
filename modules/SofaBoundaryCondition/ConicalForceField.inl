@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <assert.h>
@@ -39,6 +39,18 @@ namespace component
 
 namespace forcefield
 {
+
+template<class DataTypes>
+ConicalForceField<DataTypes>::ConicalForceField()
+    : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))
+    , coneHeight(initData(&coneHeight, "coneHeight", "cone height"))
+    , coneAngle(initData(&coneAngle, (Real)10, "coneAngle", "cone angle"))
+
+    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
+    , damping(initData(&damping, (Real)5, "damping", "force damping"))
+    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
+{
+}
 
 template<class DataTypes>
 void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
@@ -159,31 +171,27 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 template<class DataTypes>
 void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!bDraw.getValue()) return;
 
     const Real a = coneAngle.getValue();
     Coord height = coneHeight.getValue();
     const Real h = sqrt(pow(coneHeight.getValue()[0],2) + pow(coneHeight.getValue()[1],2) +	pow(coneHeight.getValue()[2],2));
     const Real b = (Real)tan((a/180*M_PI)) * h;
     const Coord c = coneCenter.getValue();
-//    Coord axis = height.cross(Coord(0,0,1));
 
-    glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_BLEND) ;
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
-    sofa::defaulttype::Vec4f color4(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
+    vparams->drawTool()->saveLastState();
 
-    glPushMatrix();
-    vparams->drawTool()->drawCone(c, c+height, 0, b, color4);
-    glPopMatrix();
+    vparams->drawTool()->enableBlending();
+    vparams->drawTool()->enableLighting();
 
-    glDisable(GL_BLEND) ;
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-#endif /* SOFA_NO_OPENGL */
+    sofa::defaulttype::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
+
+    vparams->drawTool()->drawCone(c, c+height, 0, b, rgbcolor);
+
+    vparams->drawTool()->disableBlending();
+    vparams->drawTool()->disableBlending();
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>
@@ -209,6 +217,26 @@ bool ConicalForceField<DataTypes>::isIn(Coord p)
         return false;
     }
     return true;
+}
+
+template<class DataTypes>
+void ConicalForceField<DataTypes>::setCone(const Coord& center, Coord height, Real angle)
+{
+    coneCenter.setValue( center );
+    coneHeight.setValue( height );
+    coneAngle.setValue( angle );
+}
+
+template<class DataTypes>
+void ConicalForceField<DataTypes>::setStiffness(Real stiff)
+{
+    stiffness.setValue( stiff );
+}
+
+template<class DataTypes>
+void ConicalForceField<DataTypes>::setDamping(Real damp)
+{
+    damping.setValue( damp );
 }
 
 } // namespace forcefield

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,6 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(OglViewport)
 //Register OglViewport in the Object Factory
 int OglViewportClass = core::RegisterObject("OglViewport")
         .add< OglViewport >()
@@ -88,7 +87,8 @@ void OglViewport::initVisual()
     if (p_useFBO.getValue())
     {
         const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
-        fbo.init(screenSize[0],screenSize[1]);
+        fbo = std::unique_ptr<helper::gl::FrameBufferObject>(new helper::gl::FrameBufferObject());
+        fbo->init(screenSize[0],screenSize[1]);
     }
 }
 
@@ -100,7 +100,7 @@ bool OglViewport::isVisible(const core::visual::VisualParams*)
     {
         VisualStyle* vstyle = NULL;
         this->getContext()->get(vstyle);
-        if (vstyle && !vstyle->displayFlags.getValue().getShowRendering())
+        if (vstyle && !vstyle->displayFlags.getValue().getShowAdvancedRendering())
             return false;
     }
     return true;
@@ -233,8 +233,8 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
     if (p_useFBO.getValue())
     {
-        fbo.init(screenSize[0],screenSize[1]);
-        fbo.start();
+        fbo->init(screenSize[0],screenSize[1]);
+        fbo->start();
         glViewport(0,0,screenSize[0],screenSize[1]);
     }
     else
@@ -367,7 +367,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 
     if (p_useFBO.getValue())
     {
-        fbo.stop();
+        fbo->stop();
     }
     else
     {
@@ -415,7 +415,7 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
 
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, fbo.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, fbo->getColorTexture());
 
     glBegin(GL_QUADS);
     {

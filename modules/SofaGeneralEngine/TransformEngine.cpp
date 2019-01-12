@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,46 +32,22 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(TransformEngine)
-
 int TransformEngineClass = core::RegisterObject("Transform position of 3d points")
-#ifdef SOFA_FLOAT
-        .add< TransformEngine<defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< TransformEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< TransformEngine<defaulttype::Vec3fTypes> >()
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< TransformEngine<defaulttype::Vec1dTypes> >()
-        .add< TransformEngine<defaulttype::Vec2dTypes> >()
-        .add< TransformEngine<defaulttype::Rigid2dTypes> >()
-        .add< TransformEngine<defaulttype::Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< TransformEngine<defaulttype::Vec1fTypes> >()
-        .add< TransformEngine<defaulttype::Vec2fTypes> >()
-        .add< TransformEngine<defaulttype::Rigid2fTypes> >()
-        .add< TransformEngine<defaulttype::Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< TransformEngine<defaulttype::Vec3Types> >(true) // default template
+        .add< TransformEngine<defaulttype::Vec1Types> >()
+        .add< TransformEngine<defaulttype::Vec2Types> >()
+        .add< TransformEngine<defaulttype::Rigid2Types> >()
+        .add< TransformEngine<defaulttype::Rigid3Types> >()
+ 
         .add< TransformEngine<defaulttype::ExtVec3fTypes> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
-template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1Types>;
+template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec2Types>;
+template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec3Types>;
+template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid2Types>;
+template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Rigid3Types>;
+ 
 template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 
 

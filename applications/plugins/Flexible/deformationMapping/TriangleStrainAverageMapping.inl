@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,6 +24,8 @@
 
 #include "TriangleStrainAverageMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+
 #include <map>
 #include <iostream>
 using std::cerr;
@@ -59,8 +61,10 @@ TriangleStrainAverageMapping<TIn, TOut>::~TriangleStrainAverageMapping()
 template <class TIn, class TOut>
 void TriangleStrainAverageMapping<TIn, TOut>::init()
 {
-    triangleContainer = this->core::objectmodel::BaseObject::searchUp<topology::TriangleSetTopologyContainer>();
-    if( !triangleContainer ) serr<<"No TriangleSetTopologyContainer found ! "<<sendl;
+    triangleContainer = this->template searchUp<sofa::component::topology::TriangleSetTopologyContainer>();
+
+    if( !triangleContainer )
+        serr<<"No TriangleSetTopologyContainer found ! "<<sendl;
 
     const SeqTriangles& triangles = triangleContainer->getTriangles();
 
@@ -107,11 +111,6 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
         startIndex = endIndices[i];
     }
 
-//    cerr<<"TriangleStrainAverageMapping<TIn, TOut>::init, indices = "<< triangleIndices << endl;
-//    cerr<<"TriangleStrainAverageMapping<TIn, TOut>::init, bounds = "<< endIndices << endl;
-//    cerr<<"TriangleStrainAverageMapping<TIn, TOut>::init, weights = "<< weights << endl;
-//    cerr<<"TriangleStrainAverageMapping<TIn, TOut>::init, diagMatrix = "<< diagMat << endl;
-
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
@@ -129,21 +128,17 @@ void TriangleStrainAverageMapping<TIn, TOut>::mult( Data<OutVecCoord>& dOut, con
     helper::ReadAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices);
     helper::ReadAccessor< Data<helper::vector<Real> > > weights(f_weights);
 
-//    cerr<<"begin TriangleStrainAverageMapping<TIn, TOut>::mult, parent: " << triangleValues << endl;
     unsigned startIndex=0;
     for(unsigned i=0; i<endIndices.size(); i++ )
     {
-//        cerr<<"TriangleStrainAverageMapping<TIn, TOut>::mult, node " << i << endl;
         nodeValues[i] = OutCoord();
         for( unsigned j=startIndex; j<endIndices[i]; j++)  // product with J
         {
             nodeValues[i] += triangleValues[triangleIndices[j]] * weights[j];
-//            cerr<<"  TriangleStrainAverageMapping<TIn, TOut>::mult, add contribution from triangle " << triangleIndices[j] << " with weight " << weights[j] << ": " << triangleValues[triangleIndices[j]] * weights[j] << endl;
         }
         nodeValues[i] *= diagMat[i];                       // product with the diagonal matrix
         startIndex = endIndices[i];
     }
-//    cerr<<"==== end TriangleStrainAverageMapping<TIn, TOut>::mult, final out: " << nodeValues << endl;
 }
 
 
@@ -168,28 +163,22 @@ void TriangleStrainAverageMapping<TIn, TOut>::applyJT(const core::MechanicalPara
     helper::ReadAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices);
     helper::ReadAccessor< Data<helper::vector<Real> > > weights(f_weights);
 
-//    cerr<<"begin TriangleStrainAverageMapping<TIn, TOut>::applyJT, child vector : " << nodeValues << endl;
     unsigned startIndex=0;
     for(unsigned i=0; i<endIndices.size(); i++ )
     {
-//        cerr<<"TriangleStrainAverageMapping<TIn, TOut>::applyJT, node " << i << endl;
         OutCoord val = nodeValues[i] * diagMat[i];          // product with the diagonal matrix
         for( unsigned j=startIndex; j<endIndices[i]; j++)   // product with J^T
         {
             triangleValues[triangleIndices[j]] +=  val * weights[j];
-//           cerr<<"  TriangleStrainAverageMapping<TIn, TOut>::applyJT, add contribution to triangle " << triangleIndices[j] << " with weight " << weights[j] << ": " << val * weights[j] << endl;
         }
         startIndex = endIndices[i];
     }
-//    cerr<<"==== end TriangleStrainAverageMapping<TIn, TOut>::applyJT, final in: " << triangleValues << endl;
-
 }
 
 
 template <class TIn, class TOut>
 void TriangleStrainAverageMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"TriangleStrainAverageMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
 }
 
 

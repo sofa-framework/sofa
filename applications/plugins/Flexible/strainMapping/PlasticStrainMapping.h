@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,8 +61,8 @@ public:
 
     /// @name  Plasticity parameters such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     //@{
-    Data<helper::vector<Real> > _max;
-    Data<helper::vector<Real> > _yield;
+    Data<helper::vector<Real> > _max; ///< Plastic Max Threshold (2-norm of the strain)
+    Data<helper::vector<Real> > _yield; ///< Plastic Yield Threshold (2-norm of the strain)
     helper::vector<Real> _squaredYield;
     Data<helper::vector<Real> > _creep; ///< this parameter is different from the article, here it includes the multiplication by dt
     //@}

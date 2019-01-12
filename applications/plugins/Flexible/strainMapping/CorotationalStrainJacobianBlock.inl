@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,7 +105,6 @@ bool computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s, Mat
     // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
     r = U.multTransposed( V ); // r = U * Vt
     s = r.multTranspose( F ); // s = rt * F
-    //s = V.multDiagonal( F_diag ).multTransposed( V ); // s = V * F_diag * Vt
 
     return degenerated;
 }
@@ -569,17 +568,6 @@ public:
 
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
-
-        if( order > 0 )
-        {
-            // order 1
-            /*for(unsigned int k=0;k<spatial_dimensions;k++)
-            {
-                df.getGradientF(k) += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
-                helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_dJ_Mat1, dx.getF(), dR );
-                df.getF() += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
-            }*/
-        }
     }
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
@@ -590,27 +578,13 @@ public:
 
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
-
-        if( order > 0 )
-        {
-            // order 1
-            /*for(unsigned int k=0;k<spatial_dimensions;k++)
-            {
-                df.getGradientF(k) += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
-                helper::Decompose<Real>::polarDecompositionGradient_dQ( *_dJ_Mat1, _R, dx.getF(), dR );
-                df.getF() += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
-            }*/
-        }
     }
     void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         if( _geometricStiffnessData.degenerated() ) return;  // inverted or too flat -> no geometric stiffness for robustness
 
-//        df.getVec() += getK( childForce ) * dx.getVec() * kfactor;
-//        return;
 
         Affine dR;
-        //if( !helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR ) ) return;
 
         const Mat<frame_size,frame_size,Real> &dROverdF = *_geometricStiffnessData.dROverdF();
         for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
@@ -622,22 +596,6 @@ public:
 
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
-
-
-
-//        if( order > 0 )
-//        {
-//            // order 1
-//            for( unsigned int g=0 ; g<spatial_dimensions ; g++ )
-//            {
-//                for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
-//                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
-//                for( int j=0 ; j<material_dimensions ; ++j ) // col of dR
-//                for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
-//                    dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
-//                df.getGradientF(g) += dR * StressVoigtToMat( childForce.getStrainGradient(g) ) * kfactor;
-//            }
-//        }
     }
     void addDForce_frobenius( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor*/ )
     {
@@ -714,9 +672,6 @@ public:
     void addapply_qr( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
-
-        //computeQR( data.getF(), _R, strainmat );
-
 
         if( _geometricStiffnessData.invT() )
         {
@@ -856,7 +811,6 @@ public:
         if( _geometricStiffnessData.degenerated() ) return;
 
         Affine dR;
-        //if( !helper::Decompose<Real>::polarDecompositionGradient_dQ( U, Fdiag, V, dx.getF(), dR ) ) return;
 
         const Mat<frame_size,frame_size,Real> &dROverdF = *_geometricStiffnessData.dROverdF();
         for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
@@ -1107,45 +1061,18 @@ public:
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
 
-//        if( order > 0 )
-//        {
-//            // order 1
-//            for(unsigned int k=0; k<spatial_dimensions; k++)
-//            {
-//                StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-//                result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
-//            }
-//        }
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         // order 0
         result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
-
-//        if( order > 0 )
-//        {
-//            // order 1
-//            for(unsigned int k=0; k<spatial_dimensions; k++)
-//            {
-//                result.getStrainGradient(k) += StrainMatToVoigt( _R.multTranspose( data.getGradientF(k) ) );
-//            }
-//        }
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         // order 0
         result.getF() += _R*StressVoigtToMat( data.getStrain() );
-
-//        if( order > 0 )
-//        {
-//            // order 1
-//            for(unsigned int k=0; k<spatial_dimensions; k++)
-//            {
-//                result.getGradientF(k) += _R*StressVoigtToMat( data.getStrainGradient(k) );
-//            }
-//        }
     }
 
     MatBlock getJ()
@@ -1158,18 +1085,6 @@ public:
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         JBlock J = this->assembleJ( _R );
         eB.block(0,0,strain_size,frame_size) = J;
-
-//        if( order > 0 )
-//        {
-//            // order 1
-//            unsigned int offsetE=strain_size;
-//            for(unsigned int k=0; k<spatial_dimensions; k++)
-//            {
-//                eB.block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
-//                offsetE+=strain_size;
-//            }
-//        }
-
         return B;
     }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,12 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <algorithm>
 
 #ifdef WIN32
 # include <Windows.h>
 # include <StrSafe.h>
-#elif defined _XBOX
-# include <xtl.h>
 #elif defined __APPLE__
 # include <mach-o/dyld.h>       // for _NSGetExecutablePath()
 # include <errno.h>
@@ -134,8 +133,7 @@ std::string Utils::upcaseString(const std::string& s)
 }
 
 
-#if defined WIN32 || defined _XBOX
-# ifdef WIN32
+#if defined WIN32
 std::string Utils::GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
@@ -165,24 +163,13 @@ std::string Utils::GetLastError() {
     LocalFree(lpMessageBuf);
     return narrowString(wsMessage);
 }
-# else  // XBOX
-std::string Utils::GetLastError() {
-    DWORD dwErrorCode = ::GetLastError();
-    char buffer[32];
-    sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
-    return buffer;
-}
-# endif
 #endif
 
 static std::string computeExecutablePath()
 {
     std::string path = "";
 
-#if defined(_XBOX) || defined(PS3)
-    msg_error("Utils::computeExecutablePath()") << "Utils::computeExecutablePath() is not implemented on this platform.";
-
-#elif defined(WIN32)
+#if defined(WIN32)
     std::vector<TCHAR> lpFilename(MAX_PATH);
     int ret = GetModuleFileName(NULL, /* NULL --> executable of the current process */
         &lpFilename[0],
@@ -233,15 +220,8 @@ const std::string& Utils::getExecutableDirectory()
 
 const std::string& Utils::getPluginDirectory()
 {
-    static std::string pluginDir;
-
-#ifdef WIN32
-    pluginDir = helper::Utils::getExecutableDirectory();
-#else
-    pluginDir = helper::Utils::getSofaPathPrefix() + "/lib";
-#endif
-
-    return pluginDir;
+    static const std::string path = system::PluginRepository.getFirstPath();
+    return path;
 }
 
 static std::string computeSofaPathPrefix()
@@ -255,7 +235,9 @@ static std::string computeSofaPathPrefix()
         const std::string exePath = Utils::getExecutablePath();
         std::size_t pos = exePath.rfind("/bin/");
         if (pos == std::string::npos) {
-            msg_error("Utils::getSofaPathPrefix()") << "failed to deduce the root path of Sofa from the application path: (" << exePath << ")";
+            // This triggers a segfault on MacOS (static call problem): see https://github.com/sofa-framework/sofa/issues/636
+            // msg_error("Utils::getSofaPathPrefix()") << "failed to deduce the root path of Sofa from the application path: (" << exePath << ")";
+
             // Safest thing to return in this case, I guess.
             return Utils::getExecutableDirectory();
         }
@@ -269,6 +251,19 @@ const std::string& Utils::getSofaPathPrefix()
 {
     static const std::string prefix = computeSofaPathPrefix();
     return prefix;
+}
+
+const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
+{
+    std::string path = Utils::getSofaPathPrefix() + "/" + pathFromBuildDir;
+    if(FileSystem::exists(path))
+    {
+        return path;
+    }
+    else
+    {
+        return Utils::getSofaPathPrefix();
+    }
 }
 
 std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)

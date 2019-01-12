@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,32 +38,18 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameFixedConstraint);
-
 int FrameFixedConstraintClass = core::RegisterObject("Cancel some degrees of freedom in the frames")
-#ifndef SOFA_FLOAT
-        .add< FrameFixedConstraint<Rigid3dTypes> >()
+        .add< FrameFixedConstraint<Rigid3Types> >()
         .add< FrameFixedConstraint<Affine3dTypes> >()
         .add< FrameFixedConstraint<Quadratic3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< FrameFixedConstraint<Rigid3fTypes> >()
-        .add< FrameFixedConstraint<Affine3fTypes> >()
-        .add< FrameFixedConstraint<Quadratic3fTypes> >()
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_FRAME_API FrameFixedConstraint<Rigid3dTypes>;
+template class SOFA_FRAME_API FrameFixedConstraint<Rigid3Types>;
 template class SOFA_FRAME_API FrameFixedConstraint<Affine3dTypes>;
 template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3dTypes>;
 
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API FrameFixedConstraint<Rigid3fTypes>;
-template class SOFA_FRAME_API FrameFixedConstraint<Affine3fTypes>;
-template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3fTypes>;
-#endif
+
 
 } // namespace projectiveconstraintset
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -96,10 +96,14 @@ public:
     SofaListViewAttribute getAttribute() const { return attribute_; }
 
     void contextMenuEvent(QContextMenuEvent *event);
+
+    void expandPathFrom(const std::vector<std::string>& pathes);
+    void getExpandedNodes(std::vector<std::string>&);
 public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
     void UpdateOpenedDialogs();
+
 Q_SIGNALS:
     void Close();
     void Lock(bool);
@@ -143,7 +147,10 @@ protected Q_SLOTS:
     void nodeNameModification( simulation::Node*);
     void focusObject();
     void focusNode();
+
 protected:
+    void expandPath(const std::string& path) ;
+    void getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>&) ;
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);
     void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );

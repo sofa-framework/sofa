@@ -26,7 +26,7 @@ class SOFA_Compliant_API NNCGSolver : public SequentialSolver {
                             real damping) const;
 
 	
-	Data<bool> verbose;
+	Data<bool> verbose; ///< print stuff
 };
 
 }

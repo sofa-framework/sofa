@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,28 +35,16 @@ namespace core
 namespace behavior
 {
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunctiond>;
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2d>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunctionf>;
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2f>;
-#endif
-
+template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3>;
+template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2>;
 
 }
 }
 
 namespace defaulttype {
-#ifndef SOFA_FLOAT
-RegisterTemplateAlias ShapeFunctionAlias("ShapeFunction", "ShapeFunctiond");
-RegisterTemplateAlias ShapeFunctionAlias2("ShapeFunction2", "ShapeFunction2d");
-#else
-RegisterTemplateAlias ShapeFunctionAlias("ShapeFunction", "ShapeFunctionf");
-RegisterTemplateAlias ShapeFunctionAlias2("ShapeFunction2", "ShapeFunction2f");
-#endif
-
+RegisterTemplateAlias ShapeFunctionAlias0("ShapeFunctiond", core::behavior::ShapeFunction3d::Name(), true);
+RegisterTemplateAlias ShapeFunctionAlias1("ShapeFunction3", core::behavior::ShapeFunction3::Name() );
+RegisterTemplateAlias ShapeFunctionAlias2("ShapeFunction2", core::behavior::ShapeFunction2::Name() );
 }
 
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,13 +27,13 @@
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include "SimpleApi.h"
+#include <SofaSimulationGraph/SimpleApi.h>
 using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;
@@ -180,7 +180,7 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
                                 {"moving", "false"},
                             });
 
-    simpleapi::createObject(nodeFixed, "VisualModel", {
+    simpleapi::createObject(nodeFixed, "OglModel", {
                                 {"name", "visual"},
                                 {"filename", DataRepository.getFile(filenameVisual)},
                                 {"color", color},
@@ -234,7 +234,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
     const std::string refVisual = "@" + nameVisual;
     const std::string refDof = "@..";
 
-    simpleapi::createObject(node, "VisualModel", {
+    simpleapi::createObject(node, "OglModel", {
                                 {"name", nameVisual},
                                 {"filename", DataRepository.getFile(filename)},
                                 {"color", color},
@@ -290,7 +290,7 @@ Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRig
 
     addCollisionModels(node, elements);
 
-    simpleapi::createObject(node, "RigidMappingRigid", {
+    simpleapi::createObject(node, "RigidMapping", {
                                 {"input", refdofRigid},
                                 {"output", refdofSurf}});
 
@@ -307,14 +307,14 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
 
     Node::SPtr node=simpleapi::createChild(parent, "Visu");
 
-    simpleapi::createObject(node, "VisualModel", {
+    simpleapi::createObject(node, "OglModel", {
                                 {"name",nameVisual},
                                 {"filename", DataRepository.getFile(filename)},
                                 {"color", color},
                                 {"translation", str(translation)},
                                 {"rotation",str(rotation)}});
 
-    simpleapi::createObject(node, "RigidMappingRigid", {
+    simpleapi::createObject(node, "RigidMapping", {
                                 {"name", "Mapping Visual"},
                                 {"input", refdofRigid},
                                 {"output", refVisual}
@@ -676,7 +676,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
     simpleapi::createObject(node, "UniformMass", {
                                 {"name",oss.str()+"_mass"},
-                                {"mass", str(totalMass/numParticles)}});
+                                {"vertexMass", str(totalMass/numParticles)}});
 
     simpleapi::createObject(node, "StiffSpringForceField", {
                                 {"name", oss.str()+"_spring"},

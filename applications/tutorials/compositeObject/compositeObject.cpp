@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -267,9 +267,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot);
 
-#ifdef PS3
     groot->setAnimate(true);
-#endif
 
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot))

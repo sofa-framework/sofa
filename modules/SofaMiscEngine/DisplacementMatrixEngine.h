@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,7 +73,7 @@ public:
     // methods
     DisplacementTransformEngine();
     virtual void init() override;   // compute the inverse matrices
-    virtual void update() override; // compute the displacements wrt original positions
+    virtual void doUpdate() override; // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const override { return templateName(this); }
@@ -123,7 +123,7 @@ public:
 
     virtual void init() override;   // compute the inverse matrices
     virtual void reinit() override; // compute S*inverse and store it once and for all.
-    virtual void update() override; // compute the displacements wrt original positions
+    virtual void doUpdate() override; // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const override { return templateName(this); }

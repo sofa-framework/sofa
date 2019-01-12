@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,7 +60,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -74,30 +74,22 @@ public:
 
     bool           initDone;
 
-    Data<VecCoord> f_X1;
-    Data<VecCoord> f_X2;
-    Data<SetIndex> f_X2_mapping;
-    Data<SetIndex> f_indices1;
-    Data<SetIndex> f_indices2;
-    Data<VecCoord> f_points;
-    Data<bool>     f_noUpdate;
+    Data<VecCoord> f_X1; ///< position coordinates of the degrees of freedom of the first object
+    Data<VecCoord> f_X2; ///< Rest position coordinates of the degrees of freedom of the second object
+    Data<SetIndex> f_X2_mapping; ///< Mapping of indices to inject position2 inside position1 vertex buffer
+    Data<SetIndex> f_indices1; ///< Indices of the points of the first object
+    Data<SetIndex> f_indices2; ///< Indices of the points of the second object
+    Data<VecCoord> f_points; ///< position coordinates of the merge
+    Data<bool>     f_noUpdate; ///< do not update the output at eacth time step (false)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2Types>;
+extern template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

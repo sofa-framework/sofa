@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -20,58 +20,67 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SceneCreator/SceneCreator.h>
-
-#include <sofa/helper/ArgumentParser.h>
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
-#include <sofa/simulation/Node.h>
-
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::ExtVec3Types;
+using Coord3 = sofa::defaulttype::Vector3;
+using Deriv3 = sofa::defaulttype::Vec3Types::Deriv;
+using VecCoord3 = sofa::helper::vector<Coord3>;
+#include <sofa/defaulttype/RigidTypes.h>
+using sofa::defaulttype::Rigid3Types;
+using sofa::defaulttype::Rigid3Mass;
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
+#include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
-
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
 
 #include <SofaGeneralLoader/MeshGmshLoader.h>
+using sofa::component::loader::MeshGmshLoader;
+#include <SofaBaseMechanics/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types>;
+using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<Rigid3Types>;
+#include <SofaBaseMechanics/UniformMass.h>
+using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types, SReal>;
+using UniformMassRigid3 = sofa::component::mass::UniformMass<Rigid3Types, Rigid3Mass>;
 #include <SofaBaseTopology/MeshTopology.h>
+using sofa::component::topology::MeshTopology;
 #include <SofaBaseTopology/RegularGridTopology.h>
+using sofa::component::topology::RegularGridTopology;
+#include <SofaDeformable/MeshSpringForceField.h>
+using MeshSpringForceField3 = sofa::component::interactionforcefield::MeshSpringForceField<Vec3Types>;
+#include <SofaGeneralDeformable/RegularGridSpringForceField.h>
+using RegularGridSpringForceField3 = sofa::component::interactionforcefield::RegularGridSpringForceField<Vec3Types>;
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 
-
-// ---------------------------------------------------------------------
-// ---
-// ---------------------------------------------------------------------
-using namespace sofa::simulation;
-using namespace sofa::component::container;
-using namespace sofa::component::loader;
-using namespace sofa::component::topology;
 using sofa::core::objectmodel::New;
+
+#include <SceneCreator/SceneCreator.h>
+
 
 Node *createChainHybrid(Node *root)
 {
     const std::string visualModel="mesh/torus.obj";
     const std::string collisionModel="mesh/torus_for_collision.obj";
+    std::vector<std::string> collisionModelTypes = { "Triangle", "Line", "Point" };
 
-    std::vector<std::string> modelTypes;
-    modelTypes.push_back("Triangle");
-    modelTypes.push_back("Line");
-    modelTypes.push_back("Point");
-
-    //Elements of the scene
+    // Elements of the scene
     //------------------------------------
     Node::SPtr  chain = root->createChild("Chain");
 
     //************************************
-    //Torus Fixed
+    // Torus Fixed
     {
         Node::SPtr  torusFixed = sofa::modeling::createObstacle(chain,"mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
     }
     //************************************
-    //Torus FEM
+    // Torus FEM
     {
         Node::SPtr  torusFEM = sofa::modeling::createEulerSolverNode(chain,"FEM");
 
@@ -104,14 +113,14 @@ Node *createChainHybrid(Node *root)
         tetraFEMFF->setYoungModulus(1000);
         torusFEM->addObject(tetraFEMFF);
 
-        //Node VISUAL
-        Node::SPtr  FEMVisualNode = sofa::modeling::createVisualNodeVec3(torusFEM, dofFEM.get(),visualModel, "red", translation, rotation);
+        // Visual node
+        sofa::modeling::createVisualNodeVec3(torusFEM, dofFEM.get(), visualModel, "red", translation, rotation);
 
-        //Node COLLISION
-        Node::SPtr  FEMCollisionNode = sofa::modeling::createCollisionNodeVec3(torusFEM, dofFEM.get(),collisionModel,modelTypes, translation, rotation );
+        // Collision node
+        sofa::modeling::createCollisionNodeVec3(torusFEM, dofFEM.get(), collisionModel, collisionModelTypes, translation, rotation );
     }
     //************************************
-    //Torus Spring
+    // Torus Spring
     {
         Node::SPtr  torusSpring = sofa::modeling::createEulerSolverNode(chain,"Spring");
 
@@ -147,14 +156,14 @@ Node *createChainHybrid(Node *root)
         torusSpring->addObject(springFF);
 
 
-        //Node VISUAL
-        Node::SPtr  SpringVisualNode = sofa::modeling::createVisualNodeVec3(torusSpring, dofSpring.get(), visualModel,"green", translation, rotation);
+        // Visual node
+        Node::SPtr  SpringVisualNode = sofa::modeling::createVisualNodeVec3(torusSpring, dofSpring.get(), visualModel, "green", translation, rotation);
 
-        //Node COLLISION
-        Node::SPtr  SpringCollisionNode = sofa::modeling::createCollisionNodeVec3(torusSpring, dofSpring.get(), collisionModel,modelTypes,translation, rotation);
+        // Collision node
+        Node::SPtr  SpringCollisionNode = sofa::modeling::createCollisionNodeVec3(torusSpring, dofSpring.get(), collisionModel, collisionModelTypes, translation, rotation);
     }
     //************************************
-    //Torus FFD
+    // Torus FFD
     {
         Node::SPtr  torusFFD = sofa::modeling::createEulerSolverNode(chain,"FFD");
 
@@ -184,15 +193,15 @@ Node *createChainHybrid(Node *root)
         FFDFF->setDamping(0);
         torusFFD->addObject(FFDFF);
 
-        //Node VISUAL
-        Node::SPtr  FFDVisualNode = sofa::modeling::createVisualNodeVec3(torusFFD, dofFFD.get(), visualModel,"yellow", translation);
+        // Visual node
+        sofa::modeling::createVisualNodeVec3(torusFFD, dofFFD.get(), visualModel, "yellow");
 
-        //Node COLLISION
-        Node::SPtr  FFDCollisionNode = sofa::modeling::createCollisionNodeVec3(torusFFD ,dofFFD.get(),collisionModel,modelTypes, translation);
+        // Collision node
+        sofa::modeling::createCollisionNodeVec3(torusFFD, dofFFD.get(), collisionModel, collisionModelTypes);
     }
 
     //************************************
-    //Torus Rigid
+    // Torus Rigid
     {
         Node::SPtr  torusRigid = sofa::modeling::createEulerSolverNode(chain,"Rigid");
 
@@ -208,11 +217,11 @@ Node *createChainHybrid(Node *root)
         uniMassRigid->setTotalMass(1); //the whole object will have 5 as given mass
         torusRigid->addObject(uniMassRigid);
 
-        //Node VISUAL
-        Node::SPtr  RigidVisualNode = sofa::modeling::createVisualNodeRigid(torusRigid, dofRigid.get(), visualModel,"gray");
+        // Visual node
+        sofa::modeling::createVisualNodeRigid(torusRigid, dofRigid.get(), visualModel, "gray");
 
-        //Node COLLISION
-        Node::SPtr  RigidCollisionNode = sofa::modeling::createCollisionNodeRigid(torusRigid, dofRigid.get(),collisionModel,modelTypes);
+        // Collision node
+        sofa::modeling::createCollisionNodeRigid(torusRigid, dofRigid.get(), collisionModel, collisionModelTypes);
     }
     return root;
 }
@@ -222,24 +231,20 @@ Node *createChainHybrid(Node *root)
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-    (argc,argv);
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    ArgumentParser argParser(argc, argv);
+    sofa::gui::GUIManager::RegisterParameters(&argParser);
+    argParser.parse();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
-
     // The graph root node
+    sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaMiscCollision");
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     root->setGravity( Coord3(0,0,-10) );
 
-    //Add the objects
+    // Add the objects
     createChainHybrid(root.get());
 
     root->setAnimate(false);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,8 +32,6 @@ namespace collision
 
 using namespace defaulttype;
 using namespace sofa::helper;
-
-SOFA_DECL_CLASS(PersistentFrictionContact)
 
 Creator<Contact::Factory, PersistentFrictionContact<PointModel, PointModel> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
 Creator<Contact::Factory, PersistentFrictionContact<LineModel, PointModel> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,8 +35,6 @@ namespace topology
 
 
 
-SOFA_DECL_CLASS(SparseGridMultipleTopology)
-
 int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .addAlias("SparseGridMultiple")
         .add< SparseGridMultipleTopology >()
@@ -51,7 +49,6 @@ SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : Spar
     _erasePreviousCoef(initData(&_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
 {
 }
-
 
 
 void SparseGridMultipleTopology::buildAsFinest()
@@ -159,7 +156,7 @@ void SparseGridMultipleTopology::buildAsFinest()
     _stiffnessCoefs.resize( this->getNbHexahedra());
     _massCoefs.resize( this->getNbHexahedra());
 
-    for(int i=0; i<this->getNbHexahedra(); ++i)
+    for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         _stiffnessCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
         _massCoefs[i] = regularMassCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
@@ -194,7 +191,6 @@ void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, u
 }
 
 
-
 void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs)
 {
     _regularGrid->setSize(getNx(),getNy(),getNz());
@@ -205,9 +201,9 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
     regularStiffnessCoefs.resize( _regularGridTypes[0].size() );
     regularMassCoefs.resize( _regularGridTypes[0].size() );
 
-    for(unsigned i=0; i<_regularGrids.size(); ++i)
+    for(size_t i=0; i<_regularGrids.size(); ++i)
     {
-        for(int w=0; w<_regularGrids[i]->getNbHexahedra(); ++w)
+        for(size_t w=0; w<_regularGrids[i]->getNbHexahedra(); ++w)
         {
             if( _regularGridTypes[i][w] == INSIDE || (_regularGridTypes[i][w] == BOUNDARY && !this->_fillWeighted.getValue()) )
             {
@@ -225,8 +221,6 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
         }
     }
 }
-
-
 
 
 void SparseGridMultipleTopology::buildVirtualFinerLevels()

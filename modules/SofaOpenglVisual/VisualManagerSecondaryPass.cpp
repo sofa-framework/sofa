@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,7 +44,6 @@ using namespace helper::gl;
 using namespace simulation;
 using namespace core::visual;
 
-SOFA_DECL_CLASS(VisualManagerSecondaryPass)
 //Register LightManager in the Object Factory
 int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSecondaryPass")
         .add< VisualManagerSecondaryPass >()
@@ -68,7 +67,6 @@ void VisualManagerSecondaryPass::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);
-    fbo = new FrameBufferObject(true, true, true, true);
 }
 
 void VisualManagerSecondaryPass::initVisual()
@@ -105,6 +103,8 @@ void VisualManagerSecondaryPass::initVisual()
     passWidth = (GLint)(viewport[2]*factor.getValue());
     passHeight = (GLint)(viewport[3]*factor.getValue());
 
+    fbo = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new FrameBufferObject(true, true, true, true));
     fbo->init(passWidth, passHeight);
 }
 
@@ -237,7 +237,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                 }
                 glActiveTexture(GL_TEXTURE0+nbFbo);
                 glEnable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, currentSecondaryPass->getFBO()->getColorTexture());
+                glBindTexture(GL_TEXTURE_2D, currentSecondaryPass->getFBO().getColorTexture());
                 glGenerateMipmap(GL_TEXTURE_2D);
 
                 ++nbFbo;
@@ -258,13 +258,13 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
 
                     glActiveTexture(GL_TEXTURE0+nbFbo);
                     glEnable(GL_TEXTURE_2D);
-                    glBindTexture(GL_TEXTURE_2D, currentPass->getFBO()->getColorTexture());
+                    glBindTexture(GL_TEXTURE_2D, currentPass->getFBO().getColorTexture());
                     glGenerateMipmap(GL_TEXTURE_2D);
                     ++nbFbo;
 
                     glActiveTexture(GL_TEXTURE0+nbFbo);
                     glEnable(GL_TEXTURE_2D);
-                    glBindTexture(GL_TEXTURE_2D, currentPass->getFBO()->getDepthTexture());
+                    glBindTexture(GL_TEXTURE_2D, currentPass->getFBO().getDepthTexture());
                     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
                     ++nbFbo;

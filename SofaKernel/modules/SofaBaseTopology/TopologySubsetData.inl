@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ void TopologySubsetDataImpl <TopologyElementType, VecT>::createTopologicalEngine
         this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SubsetEngine_"));
         if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
         this->m_topologicalEngine->init();
-        this->linkToElementDataArray();
+        this->linkToElementDataArray((TopologyElementType*)NULL);
         this->getOwner()->sout<<"TopologySubsetDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology." << this->getOwner()->sendl;
     }
     else if (_topology)

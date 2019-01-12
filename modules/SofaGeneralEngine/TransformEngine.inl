@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/rmath.h> //M_PI
+#include <sofa/helper/rmath.h> //R_PI
 
 #include <cassert>
 
@@ -125,7 +125,7 @@ struct RotationSpecialized : public TransformOperation<DataTypes>
 
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
-        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(R_PI/180.0));
         if (inverse)
             q = q.inverse();
     }
@@ -158,8 +158,8 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
 
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
-        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
-		rotZ = static_cast<Real>(r.z() * (M_PI/180.0f));
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(R_PI/180.0));
+		rotZ = static_cast<Real>(r.z() * (R_PI/180.0f));
         if (inverse)
             rotZ = -rotZ;
     }
@@ -189,7 +189,7 @@ struct RotationSpecialized<DataTypes, 3, false> : public TransformOperation<Data
 
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
-        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(R_PI/180.0));
         if (inverse)
             q = q.inverse();
     }
@@ -270,7 +270,7 @@ private:
 
 
 template <class DataTypes>
-void TransformEngine<DataTypes>::update()
+void TransformEngine<DataTypes>::doUpdate()
 {
     const defaulttype::Vector3 &s=scale.getValue();
     const defaulttype::Vector3 &r=rotation.getValue();
@@ -294,9 +294,6 @@ void TransformEngine<DataTypes>::update()
 
     //Get input
     const VecCoord& in = f_inputX.getValue();
-
-    cleanDirty();
-
     VecCoord& out = *(f_outputX.beginWriteOnly());
 
     //Set Output
@@ -313,7 +310,6 @@ void TransformEngine<DataTypes>::update()
         delete operations.back();
         operations.pop_back();
     }
-
     f_outputX.endEdit();
 }
 

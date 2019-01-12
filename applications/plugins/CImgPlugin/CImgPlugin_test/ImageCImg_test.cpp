@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,16 +25,16 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
-#include <gtest/gtest.h>
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
 //used to compare lossy images
 const float PIXEL_TOLERANCE = 1.28; //0.5% difference on the average of the image
 
-class ImageCImg_test : public Sofa_test<>
+class ImageCImg_test : public BaseTest
 {
 protected:
     ImageCImg_test() {

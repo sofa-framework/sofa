@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -130,33 +130,9 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_LINK_CLASS(CudaBoxROI)
-SOFA_LINK_CLASS(CudaFixedConstraint)
-SOFA_LINK_CLASS(CudaMechanicalObject)
-//SOFA_LINK_CLASS(CudaSpringForceField)
-SOFA_LINK_CLASS(CudaUniformMass)
-SOFA_LINK_CLASS(CudaDiagonalMass)
-SOFA_LINK_CLASS(CudaPlaneForceField)
-SOFA_LINK_CLASS(CudaSphereForceField)
-SOFA_LINK_CLASS(CudaEllipsoidForceField)
-SOFA_LINK_CLASS(CudaIdentityMapping)
-SOFA_LINK_CLASS(CudaBarycentricMapping)
-SOFA_LINK_CLASS(CudaRigidMapping)
-SOFA_LINK_CLASS(CudaSubsetMapping)
 #ifdef SOFA_HAVE_MINIFLOWVR
-SOFA_LINK_CLASS(CudaDistanceGridCollisionModel)
-SOFA_LINK_CLASS(CudaCollisionDetection)
 #endif
-SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
-SOFA_LINK_CLASS(CudaMouseInteractor)
-//SOFA_LINK_CLASS(CudaCollision)
-SOFA_LINK_CLASS(CudaPointModel)
-SOFA_LINK_CLASS(CudaSphereModel)
-SOFA_LINK_CLASS(CudaSetTopology)
-SOFA_LINK_CLASS(CudaVisualModel)
-
 #ifdef SOFACUDA_ENABLE_VOLUMETRICRENDERING
-SOFA_LINK_CLASS(CudaOglTetrahedralModel)
 #endif // SOFACUDA_ENABLE_VOLUMETRICRENDERING
 
 extern "C"

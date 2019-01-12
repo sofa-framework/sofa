@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -105,14 +103,6 @@ public:
     typedef sofa::helper::Quater<Real> Quat;
 
 protected:
-
-//    typedef Vec<6, Real> Displacement;					    ///< the displacement vector
-//    typedef Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
-//    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
-//    typedef Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
-//    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
-//    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
-//    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
     typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
@@ -122,7 +112,6 @@ protected:
 
 protected:
     /// ForceField API
-    //{
     TriangularFEMForceFieldOptim();
 
     virtual ~TriangularFEMForceFieldOptim();
@@ -136,7 +125,6 @@ public:
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams) override;
-    //}
 
     // parse method attribute (for compatibility with non-optimized version)
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
@@ -259,10 +247,10 @@ public:
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
     typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
     typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    topology::TriangleData<VecTriangleInfo> triangleInfo;
-    topology::TriangleData<VecTriangleState> triangleState;
-    topology::PointData<VecVertexInfo> vertexInfo;
-    topology::EdgeData<VecEdgeInfo> edgeInfo;
+    topology::TriangleData<VecTriangleInfo> triangleInfo; ///< Internal triangle data (persistent)
+    topology::TriangleData<VecTriangleState> triangleState; ///< Internal triangle data (time-dependent)
+    topology::PointData<VecVertexInfo> vertexInfo; ///< Internal point data
+    topology::EdgeData<VecEdgeInfo> edgeInfo; ///< Internal edge data
 
 
     class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
@@ -323,19 +311,19 @@ public:
 
     /// Forcefield intern paramaters
     Data<Real> f_poisson;
-    Data<Real> f_young;
-    Data<Real> f_damping;
-    Data<Real> f_restScale;
+    Data<Real> f_young; ///< Young modulus in Hooke's law
+    Data<Real> f_damping; ///< Ratio damping/stiffness
+    Data<Real> f_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
     /// Display parameters
     Data<bool> showStressValue;
-    Data<bool> showStressVector;
+    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
 #ifdef SIMPLEFEM_COLORMAP
-    Data<std::string> showStressColorMap;
+    Data<std::string> showStressColorMap; ///< Color map used to show stress values
 #endif
-    Data<Real> showStressMaxValue;
+    Data<Real> showStressMaxValue; ///< Max value for rendering of stress values
 #ifdef SIMPLEFEM_COLORMAP
-    Data<float> showStressValueAlpha;
+    Data<float> showStressValueAlpha; ///< Alpha (1-transparency) value for rendering of stress values
 #endif
 
 
@@ -348,17 +336,12 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<defaulttype::Vec3fTypes>;
-#endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
 } // namespace forcefield
 

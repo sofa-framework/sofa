@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,44 +36,24 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ArticulatedSystemMapping)
-
 // Register in the Factory
 int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
 
-#ifndef SOFA_FLOAT
-        .add< ArticulatedSystemMapping< Vec1dTypes, Rigid3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ArticulatedSystemMapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes > >()
-#endif
+        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >()
+
         /*
-        #ifndef SOFA_FLOAT
-        #ifndef SOFA_DOUBLE
-            .add< ArticulatedSystemMapping< Vec1fTypes, Rigid3dTypes > >()
-            .add< ArticulatedSystemMapping< Vec1dTypes, Rigid3fTypes > >()
-        #endif
+                #ifdef SOFA_WITH_FLOAT
+            .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types > >()
+            .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types > >()
+        
         #endif
         */
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1dTypes, Rigid3dTypes, Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes >;
-#endif
+template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1fTypes, Rigid3fTypes, Rigid3dTypes >;
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1fTypes, Rigid3dTypes, Rigid3dTypes >;
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1dTypes, Rigid3fTypes, Rigid3dTypes >;
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1fTypes, Rigid3dTypes, Rigid3fTypes >;
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1dTypes, Rigid3fTypes, Rigid3fTypes >;
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1dTypes, Rigid3dTypes, Rigid3fTypes >;
-#endif
-#endif
+
+
 
 
 } // namespace mapping

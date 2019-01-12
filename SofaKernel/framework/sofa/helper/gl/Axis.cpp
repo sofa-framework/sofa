@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -148,90 +148,19 @@ void Axis::draw( const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ )
     glMultMatrixd(matTransOpenGL);
 
     // X Axis
-
-#ifndef PS3
 	glColor4f( colorX[0], colorX[1], colorX[2], colorX[3] );
     glCallList(displayLists);
-#else
-	// No static list on PS3 yet
-	Vector3 L= length;
-    SReal Lmin = L[0];
-    if (L[1]<Lmin) Lmin = L[1];
-    if (L[2]<Lmin) Lmin = L[2];
-    SReal Lmax = L[0];
-    if (L[1]>Lmax) Lmax = L[1];
-    if (L[2]>Lmax) Lmax = L[2];
-    if (Lmax > Lmin*2 && Lmin > 0.0)
-        Lmax = Lmin*2;
-    if (Lmax > Lmin*2)
-        Lmin = Lmax/(SReal)1.414;
-    Vector3 l(Lmin / (SReal)10, Lmin / (SReal)10, Lmin / (SReal)10);
-    Vector3 lc(Lmax / (SReal)5, Lmax / (SReal)5, Lmax / (SReal)5); // = L / 5;
-    Vector3 Lc = lc;
-	glColor3f( colorX[0], colorX[1], colorX[2] );
-	    // Center
-    gluSphere(quadratic,l[0],quadricDiscretisation,quadricDiscretisation/2);
-
-    if (L[0] > 0.0)
-    {
-        // X Axis
-        glRotatef(90,0,1,0);
-        gluCylinder(quadratic,l[0],l[0],L[0],quadricDiscretisation,quadricDiscretisation);
-        glRotatef(-90,0,1,0);
-
-        glTranslated(L[0],0,0);
-        glRotatef(90,0,1,0);
-        gluDisk(quadratic,0,lc[0],quadricDiscretisation,quadricDiscretisation);
-        gluCylinder(quadratic,lc[0],0,Lc[0],quadricDiscretisation,quadricDiscretisation);
-        glRotatef(-90,0,1,0);
-        glTranslated(-L[0],0,0);
-    }
-#endif
    
 	// Y Axis
-#ifndef PS3
 	glColor4f( colorY[0], colorY[1], colorY[2], colorY[3] );
 	glCallList(displayLists+1);
-#else
-	glColor3f( colorY[0], colorY[1], colorY[2] );
-	if (L[1] > 0.0)
-    {
-        // Y Axis
-        glRotatef(-90,1,0,0);
-        gluCylinder(quadratic,l[1],l[1],L[1],quadricDiscretisation,quadricDiscretisation);
-        glRotatef(90,1,0,0);
-
-        glTranslated(0,L[1],0);
-        glRotatef(-90,1,0,0);
-        gluDisk(quadratic,0,lc[1],quadricDiscretisation,quadricDiscretisation);
-        gluCylinder(quadratic,lc[1],0,Lc[1],quadricDiscretisation,quadricDiscretisation);
-        glRotatef(90,1,0,0);
-        glTranslated(0,-L[1],0);
-    }
-#endif
    
 	// Z Axis
-#ifndef PS3
 	glColor4f( colorZ[0], colorZ[1], colorZ[2], colorZ[3] );
     glCallList(displayLists+2);
-#else
-	glColor3f( colorZ[0], colorZ[1], colorZ[2] );
-	if (L[2] > 0.0)
-    {
-        // Z Axis
-        gluCylinder(quadratic,l[2],l[2],L[2],quadricDiscretisation,quadricDiscretisation);
-        glTranslated(0,0,L[2]);
-        gluDisk(quadratic,0,lc[2],quadricDiscretisation,quadricDiscretisation);
-        gluCylinder(quadratic,lc[2],0,Lc[2],quadricDiscretisation,quadricDiscretisation);
-        glTranslated(0,0,-L[2]);
-    }
-#endif
-
 
     glPopMatrix();
-
     glPopAttrib();
-
 }
 
 void Axis::update(const double *mat)

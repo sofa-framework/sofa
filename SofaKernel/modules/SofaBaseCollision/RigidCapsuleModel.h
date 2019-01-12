@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,10 +25,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/accessor.h>
 
 
 namespace sofa
@@ -111,11 +108,11 @@ public:
     typedef TCapsule<DataTypes> Element;
     friend class TCapsule<DataTypes>;
 protected:
-    Data<VecReal > _capsule_radii;
-    Data<VecReal > _capsule_heights;
+    Data<VecReal > _capsule_radii; ///< Radius of each capsule
+    Data<VecReal > _capsule_heights; ///< The capsule heights
 
-    Data<Real> _default_radius;
-    Data<Real> _default_height;
+    Data<Real> _default_radius; ///< The default radius
+    Data<Real> _default_height; ///< The default height
 
     sofa::helper::vector<std::pair<int,int> > _capsule_points;
 
@@ -201,15 +198,10 @@ inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(const cor
 typedef TCapsuleModel<sofa::defaulttype::Rigid3Types> RigidCapsuleModel;
 typedef TCapsule<sofa::defaulttype::Rigid3Types> RigidCapsule;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace collision

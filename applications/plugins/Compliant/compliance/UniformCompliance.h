@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -35,9 +35,9 @@ public:
 
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
 
-    Data< Real > damping;
+    Data< Real > damping; ///< uniform viscous damping.
 
-    Data< bool > resizable;
+    Data< bool > resizable; ///< can the associated dofs can be resized? (in which case the matrices must be updated)
 
 
     virtual void init();
@@ -76,10 +76,17 @@ protected:
 
 };
 
+#if !defined(SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_Compliant_API UniformCompliance<sofa::defaulttype::Vec6Types>;
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_UNIFORMCOMPLIANCE_H
 
 

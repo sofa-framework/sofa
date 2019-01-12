@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,9 +81,9 @@ protected:
     {
     }
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     double getStep() const { return mStep.getValue(); }
     void setStep(double val) { mStep.setValue(val); }
@@ -102,25 +102,25 @@ public:
     void setGridMax(const InCoord& val) { mGridMax.setValue(val); }
     void setGridMax(double x, double y, double z) { mGridMax.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
-    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
-    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
-    void applyJT( const sofa::core::MechanicalParams* /*mparams*/, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/)
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
+    void applyJT( const sofa::core::MechanicalParams* /*mparams*/, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/) override
     {
         serr << "applyJT(dx) is not implemented" << sendl;
     }
 
-    void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
+    void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/) override
     {
         serr << "applyJT(constraint) is not implemented" << sendl;
     }
 
 protected:
-    Data <double > mStep;
-    Data <double > mRadius;
-    Data <double > mIsoValue;
+    Data <double > mStep; ///< Step
+    Data <double > mRadius; ///< Radius
+    Data <double > mIsoValue; ///< Iso Value
 
-    Data< InCoord > mGridMin;
-    Data< InCoord > mGridMax;
+    Data< InCoord > mGridMin; ///< Grid Min
+    Data< InCoord > mGridMax; ///< Grid Max
 
     // Marching cube data
 
@@ -180,8 +180,8 @@ protected:
     }
 
 public:
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 
@@ -213,22 +213,12 @@ Y
 */
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
 extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes >;
-#endif
+extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
-#endif
-#endif
+
+
 #endif
 
 

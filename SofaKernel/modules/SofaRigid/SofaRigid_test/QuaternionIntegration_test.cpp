@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -62,8 +62,6 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
 
         const real expected_angle = dt * deriv.getVOrientation().norm();
 
-        // std::clog << expected_angle << " " << angle << std::endl;
-
         // child coordinates given directly in parent frame
         ASSERT_TRUE(this->isSmall(expected_angle - angle, 10));
     }
@@ -73,19 +71,7 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using testing::Types;
-typedef Types<
-#ifndef SOFA_FLOAT
-    defaulttype::Rigid3dTypes
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-    ,
-#endif
-#endif
-#ifndef SOFA_DOUBLE
-    defaulttype::Rigid3fTypes
-#endif
-> DataTypes; // the types to instanciate.
+typedef Types<defaulttype::Rigid3Types> DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(QuaternionIntegrationTest, DataTypes);

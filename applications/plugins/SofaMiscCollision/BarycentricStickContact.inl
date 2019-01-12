@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,8 +75,8 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     if (ff==NULL)
     {
         msg_info() << "Creating BarycentricStickContact springs" ;
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName());
         setInteractionTags(mstate1, mstate2);

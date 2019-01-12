@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -176,11 +176,8 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
     if (pq.norm2() >= enough_to_touch*enough_to_touch)
         return 0;
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    //detection->id = cap.getCollisionModel()->getSize() > lin.getCollisionModel()->getSize() ? cap.getIndex() : lin.getIndex();
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
@@ -211,68 +208,61 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
     SReal alpha = 0.5;
     SReal beta = 0.5;
 
-    //if (det < -0.000000000001 || det > 0.000000000001)
+    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 ||
-        //    beta  < 0.000001 ||
-        //    alpha + beta  > 0.999999)
-        //        return 0;
-        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        // nearest point is on an edge or corner
+        // barycentric coordinate on AB
+        SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        // barycentric coordinate on AC
+        SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+        if (pAB < 0.000001 && pAC < 0.0000001)
         {
-            // nearest point is on an edge or corner
-            // barycentric coordinate on AB
-            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
-            // barycentric coordinate on AC
-            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
-            if (pAB < 0.000001 && pAC < 0.0000001)
+            // closest point is A
+            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            alpha = 0.0;
+            beta = 0.0;
+        }
+        else if (pAB < 0.999999 && beta < 0.000001)
+        {
+            // closest point is on AB
+            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            alpha = pAB;
+            beta = 0.0;
+        }
+        else if (pAC < 0.999999 && alpha < 0.000001)
+        {
+            // closest point is on AC
+            if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+            alpha = 0.0;
+            beta = pAC;
+        }
+        else
+        {
+            // barycentric coordinate on BC
+            // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+            SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            if (pBC < 0.000001)
             {
-                // closest point is A
-                if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
-                alpha = 0.0;
+                // closest point is B
+                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
+                alpha = 1.0;
                 beta = 0.0;
             }
-            else if (pAB < 0.999999 && beta < 0.000001)
+            else if (pBC > 0.999999)
             {
-                // closest point is on AB
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = pAB;
-                beta = 0.0;
-            }
-            else if (pAC < 0.999999 && alpha < 0.000001)
-            {
-                // closest point is on AC
-                if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+                // closest point is C
+                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
                 alpha = 0.0;
-                beta = pAC;
+                beta = 1.0;
             }
             else
             {
-                // barycentric coordinate on BC
-                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0.000001)
-                {
-                    // closest point is B
-                    if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
-                    alpha = 1.0;
-                    beta = 0.0;
-                }
-                else if (pBC > 0.999999)
-                {
-                    // closest point is C
-                    if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
-                    alpha = 0.0;
-                    beta = 1.0;
-                }
-                else
-                {
-                    // closest point is on BC
-                    if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
-                    alpha = 1.0-pBC;
-                    beta = pBC;
-                }
+                // closest point is on BC
+                if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
+                alpha = 1.0-pBC;
+                beta = pBC;
             }
         }
     }
@@ -353,68 +343,61 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
     SReal alpha = 0.5;
     SReal beta = 0.5;
 
-    //if (det < -0.000000000001 || det > 0.000000000001)
+    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 ||
-        //    beta  < 0.000001 ||
-        //    alpha + beta  > 0.999999)
-        //        return 0;
-        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        // nearest point is on an edge or corner
+        // barycentric coordinate on AB
+        SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        // barycentric coordinate on AC
+        SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+        if (pAB < 0.000001 && pAC < 0.0000001)
         {
-            // nearest point is on an edge or corner
-            // barycentric coordinate on AB
-            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
-            // barycentric coordinate on AC
-            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
-            if (pAB < 0.000001 && pAC < 0.0000001)
+            // closest point is A
+            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            alpha = 0.0;
+            beta = 0.0;
+        }
+        else if (pAB < 0.999999 && beta < 0.000001)
+        {
+            // closest point is on AB
+            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            alpha = pAB;
+            beta = 0.0;
+        }
+        else if (pAC < 0.999999 && alpha < 0.000001)
+        {
+            // closest point is on AC
+            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            alpha = 0.0;
+            beta = pAC;
+        }
+        else
+        {
+            // barycentric coordinate on BC
+            // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+            SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            if (pBC < 0.000001)
             {
-                // closest point is A
-                if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
-                alpha = 0.0;
+                // closest point is B
+                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
+                alpha = 1.0;
                 beta = 0.0;
             }
-            else if (pAB < 0.999999 && beta < 0.000001)
+            else if (pBC > 0.999999)
             {
-                // closest point is on AB
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = pAB;
-                beta = 0.0;
-            }
-            else if (pAC < 0.999999 && alpha < 0.000001)
-            {
-                // closest point is on AC
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+                // closest point is C
+                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
                 alpha = 0.0;
-                beta = pAC;
+                beta = 1.0;
             }
             else
             {
-                // barycentric coordinate on BC
-                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0.000001)
-                {
-                    // closest point is B
-                    if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
-                    alpha = 1.0;
-                    beta = 0.0;
-                }
-                else if (pBC > 0.999999)
-                {
-                    // closest point is C
-                    if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
-                    alpha = 0.0;
-                    beta = 1.0;
-                }
-                else
-                {
-                    // closest point is on BC
-                    if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
-                    alpha = 1.0-pBC;
-                    beta = pBC;
-                }
+                // closest point is on BC
+                if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+                alpha = 1.0-pBC;
+                beta = pBC;
             }
         }
     }
@@ -440,67 +423,59 @@ void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector
     alpha = 0.5;
     beta = 0.5;
 
-    //if (det < -0.000000000001 || det > 0.000000000001)
+    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    if (alpha < 0 || beta < 0 || alpha + beta > 1)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 ||
-        //    beta  < 0.000001 ||
-        //    alpha + beta  > 0.999999)
-        //        return 0;
-        if (alpha < 0 || beta < 0 || alpha + beta > 1)
+        // nearest point is on an edge or corner
+        // barycentric coordinate on AB
+        SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        // barycentric coordinate on AC
+        SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
+        if (pAB < 0 && pAC < 0)
         {
-            // nearest point is on an edge or corner
-            // barycentric coordinate on AB
-            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
-            // barycentric coordinate on AC
-            SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
-            if (pAB < 0 && pAC < 0)
+            // closest point is A
+            alpha = 0.0;
+            beta = 0.0;
+        }
+        else if (pAB < 1 && beta < 0)
+        {
+            // closest point is on AB
+            alpha = pAB;
+            beta = 0.0;
+        }
+        else if (pAC < 1 && alpha < 0)
+        {
+            // closest point is on AC
+            alpha = 0.0;
+            beta = pAC;
+        }
+        else
+        {
+            // barycentric coordinate on BC
+            // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+            SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            if (pBC < 0)
             {
-                // closest point is A
-                alpha = 0.0;
+                // closest point is B
+                alpha = 1.0;
                 beta = 0.0;
             }
-            else if (pAB < 1 && beta < 0)
+            else if (pBC > 1)
             {
-                // closest point is on AB
-                alpha = pAB;
-                beta = 0.0;
-            }
-            else if (pAC < 1 && alpha < 0)
-            {
-                // closest point is on AC
+                // closest point is C
                 alpha = 0.0;
-                beta = pAC;
+                beta = 1.0;
             }
             else
             {
-                // barycentric coordinate on BC
-                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0)
-                {
-                    // closest point is B
-                    alpha = 1.0;
-                    beta = 0.0;
-                }
-                else if (pBC > 1)
-                {
-                    // closest point is C
-                    alpha = 0.0;
-                    beta = 1.0;
-                }
-                else
-                {
-                    // closest point is on BC
-                    alpha = 1.0-pBC;
-                    beta = pBC;
-                }
+                // closest point is on BC
+                alpha = 1.0-pBC;
+                beta = pBC;
             }
         }
     }
 }
-
 
 class SOFA_MESH_COLLISION_API MeshIntTool;
 

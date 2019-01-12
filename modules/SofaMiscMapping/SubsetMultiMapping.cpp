@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
 
 #include <SofaMiscMapping/SubsetMultiMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -37,36 +37,20 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SubsetMultiMapping)
-
 // Register in the Factory
 int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
-#ifndef SOFA_FLOAT
-    .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
-    .add< SubsetMultiMapping< Vec1dTypes, Vec1dTypes > >()
-    .add< SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
-    .add< SubsetMultiMapping< Rigid3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
-    .add< SubsetMultiMapping< Vec1fTypes, Vec1fTypes > >()
-    .add< SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
-    .add< SubsetMultiMapping< Rigid3fTypes, Vec3fTypes > >()
-#endif
+    .add< SubsetMultiMapping< Vec3Types, Vec3Types > >()
+    .add< SubsetMultiMapping< Vec1Types, Vec1Types > >()
+    .add< SubsetMultiMapping< Rigid3Types, Rigid3Types > >()
+    .add< SubsetMultiMapping< Rigid3Types, Vec3Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Vec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1Types, Vec1Types >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3Types, Vec3Types >;
+
 
 } // namespace mapping
 

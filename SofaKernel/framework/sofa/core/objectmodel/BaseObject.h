@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
-#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/Link.h>
 
 namespace sofa
 {
@@ -421,7 +418,7 @@ public:
     ///   Methods related to Event processing
     /// @{
 
-    Data<bool> f_listening;
+    Data<bool> f_listening; ///< if true, handle the events, otherwise ignore the events
 
     /// Handle an event
     virtual void handleEvent( Event* );

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -181,7 +181,6 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
 template <class In, class Out>
 std::string MultiMapping<In,Out>::templateName(const MultiMapping<In, Out>* /*mapping*/)
 {
-    //return std::string("MultiMapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
     return In::Name() + std::string(",") + Out::Name();
 }
 

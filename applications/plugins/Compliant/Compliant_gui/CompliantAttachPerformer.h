@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/gui/MouseOperations.h>
 
@@ -110,25 +110,14 @@ public:
     ~CompliantAttachPerformer();
     virtual void configure(configurationsetting::MouseButtonSetting* setting);
 
-
     void start();
     void execute();
-
 };
 
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3fTypes>;
-extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3fTypes>;
+#if !defined(SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP)
+extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3Types>;
 #endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Vec3dTypes>;
-extern template class SOFA_Compliant_gui_API  CompliantAttachPerformer<defaulttype::Rigid3dTypes>;
-#endif
-#endif
-
 
 }
 }

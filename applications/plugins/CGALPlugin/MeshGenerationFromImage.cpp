@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,31 +21,19 @@
 ******************************************************************************/
 #define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
 
-#define CGAL_MESH_3_VERBOSE
-
 #include <CGALPlugin/config.h>
 #include "MeshGenerationFromImage.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
-SOFA_DECL_CLASS(MeshGenerationFromImage)
 
 using namespace sofa::defaulttype;
 using namespace cgal;
 
 int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahedral mesh from image")
-#ifndef SOFA_FLOAT
-        .add< MeshGenerationFromImage<Vec3dTypes,ImageUC> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< MeshGenerationFromImage<Vec3fTypes, ImageUC> >()
-#endif //SOFA_DOUBLE
+        .add< MeshGenerationFromImage<Vec3Types,ImageUC> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3dTypes, ImageUC>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3fTypes, ImageUC>;
-#endif //SOFA_DOUBLE
+template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3Types, ImageUC>;
+ 

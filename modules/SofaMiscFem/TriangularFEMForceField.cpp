@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 
 #include "TriangularFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <assert.h>
 
 // #define DEBUG_TRIANGLEFEM
@@ -37,27 +37,16 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(TriangularFEMForceField)
-
-
 using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TriangularFEMForceFieldClass = core::RegisterObject("Corotational Triangular finite elements")
-#ifndef SOFA_FLOAT
-        .add< TriangularFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangularFEMForceField<Vec3fTypes> >()
-#endif
+        .add< TriangularFEMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

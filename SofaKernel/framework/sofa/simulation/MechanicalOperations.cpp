@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -326,11 +326,7 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-            a,
-#endif
-            true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v, true) );
     computeForce(f);
 
     accFromF(a,f);
@@ -343,11 +339,7 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-            a,
-#endif
-            true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,true) );
     computeForce(f,true,true,neglectingCompliance);
 
     projectResponse(f);
@@ -361,11 +353,7 @@ void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, c
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-            a,
-#endif
-            true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v, true) );
     computeContactForce(f);
 
     accFromF(a,f);

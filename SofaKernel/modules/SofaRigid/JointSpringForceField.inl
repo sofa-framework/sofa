@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -468,8 +468,6 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  params, bool /* onlyVisible */)
 {
-//    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
     Real maxBBox[3] = { min_real,min_real,min_real };
@@ -509,6 +507,38 @@ void JointSpringForceField<DataTypes>::updateForceMask()
         this->mstate1->forceMask.insertEntry(s.m1);
         this->mstate2->forceMask.insertEntry(s.m2);
     }
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::clear(int reserve)
+{
+    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    springs.clear();
+    if (reserve) springs.reserve(reserve);
+    this->springs.endEdit();
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::addSpring(const Spring& s)
+{
+    springs.beginEdit()->push_back(s);
+    springs.endEdit();
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr,
+                                                 Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
+{
+    Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
+
+    const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+    s.initTrans = x2[m2].getCenter() - x1[m1].getCenter();
+    s.initRot = x2[m2].getOrientation()*x1[m1].getOrientation().inverse();
+
+    springs.beginEdit()->push_back(s);
+    springs.endEdit();
 }
 
 } // namespace interactionforcefield

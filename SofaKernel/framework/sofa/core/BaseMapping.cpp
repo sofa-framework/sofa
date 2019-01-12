@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,22 +42,16 @@ BaseMapping::BaseMapping()
 BaseMapping::~BaseMapping()
 {}
 
-//void BaseMapping::computeLocalCoordinates()
-//{
-//    serr<<"Mapping "<< getName() <<", BaseMapping::computeLocalCoordinates() is not implemented for this class. It may be still implemented in the init() method." << sendl;
-//}
-
-
 bool BaseMapping::setFrom(BaseState*  )
 {
-    this->serr<<"BaseMapping::setFrom is not implemented for " << this->getName()<< sendl;
+    dmsg_error() << "Calling a virtual method not implemented." ;
     return false;
 }
 
 
 bool BaseMapping::setTo( BaseState*  )
 {
-    this->serr<<"BaseMapping::setTo is not implemented for " << this->getName()<< sendl;
+    dmsg_error() << "Calling a virtual method not implemented." ;
     return false;
 }
 
@@ -128,23 +122,21 @@ bool BaseMapping::isMechanical() const
 /// provided implementations for debugging.
 const sofa::defaulttype::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /*mparams*/)
 {
-    serr << "BaseMapping::getJ() NOT IMPLEMENTED BY " << getClassName() << sendl;
-
+    dmsg_error() << "Calling a virtual method not implemented." ;
     return getJ();
 }
 
 const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
 {
-    serr << helper::logging::Message::Deprecated << "Calling deprecated getJ() method in " << getClassName() << ". Use getJ(const MechanicalParams *) instead." << sendl;
-    return NULL;
+    dmsg_error() << "Calling a virtual method not implemented." ;
+    return nullptr;
 }
 
 sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix)
 {
-    serr << "BaseMapping::createMappedMatrix() NOT IMPLEMENTED BY " << getClassName() << sendl;
-    return NULL;
+    dmsg_error() << "Calling a virtual method not implemented." ;
+    return nullptr;
 }
-
 
 bool BaseMapping::testMechanicalState(BaseState* state)
 {

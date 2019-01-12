@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,16 +22,10 @@
 #ifndef SOFA_CORE_OBJECTMODEL_LINK_H
 #define SOFA_CORE_OBJECTMODEL_LINK_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/helper/stable_vector.h>
 
 #include <sstream>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -426,6 +420,19 @@ public:
         return true;
     }
 
+    bool removeAt(unsigned int index)
+    {
+        const int aspect = core::ExecParams::currentAspect();
+        if (index >= m_value[aspect].size())
+            return false;
+
+        TraitsContainer::remove(m_value[aspect],index);
+        this->updateCounter(aspect);
+        DestPtr v=m_value[aspect][index];
+        removed(v, index);
+        return true;
+    }
+
     bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
@@ -557,7 +564,10 @@ public:
             }
 
             // Remove the objects from the container that are not in the new list
-            for (size_t i = 0; i != container.size(); i++)
+            // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
+            // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
+            unsigned int csize = (unsigned int)container.size();
+            for (unsigned int i = 0; i != csize; i++)
             {
                 DestPtr dest(container[i]);
                 bool destFound = false;
@@ -709,8 +719,8 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        std::size_t n = this->size();
-		for (std::size_t i = 0; i<n; ++i)
+        unsigned int n = (unsigned int)this->getSize();
+        for (unsigned int i = 0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];
             std::string path;

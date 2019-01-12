@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,13 +73,6 @@ const char* getModuleComponentList()
            " ParticleSink ParticuleSource ParticlesRepulsionForceField";
 }
 
-
-SOFA_LINK_CLASS(SpatialGridContainer)
-SOFA_LINK_CLASS(SPHFluidForceField)
-SOFA_LINK_CLASS(SPHFluidSurfaceMapping)
-SOFA_LINK_CLASS(ParticleSink)
-SOFA_LINK_CLASS(ParticleSource)
-SOFA_LINK_CLASS(ParticlesRepulsionForceField)
 
 } // namespace component
 

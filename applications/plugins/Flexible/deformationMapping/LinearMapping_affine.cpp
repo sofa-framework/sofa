@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,14 +40,12 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping_affine)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int LinearMappingClass_affine = core::RegisterObject("Map child positions as a linear combination of parents.")
         .add< LinearMapping< Affine3Types, Vec3Types > >()
-        .add< LinearMapping< Affine3Types, ExtVec3fTypes > >()
+        .add< LinearMapping< Affine3Types, ExtVec3Types > >()
         .add< LinearMapping< Affine3Types, F331Types > >()
         .add< LinearMapping< Affine3Types, F321Types > >()
         .add< LinearMapping< Affine3Types, F311Types > >()
@@ -56,7 +54,7 @@ int LinearMappingClass_affine = core::RegisterObject("Map child positions as a l
         ;
 
 template class SOFA_Flexible_API LinearMapping< Affine3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, ExtVec3Types >;
 template class SOFA_Flexible_API LinearMapping< Affine3Types, F331Types >;
 template class SOFA_Flexible_API LinearMapping< Affine3Types, F332Types >;
 template class SOFA_Flexible_API LinearMapping< Affine3Types, F321Types >;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,15 +30,9 @@ namespace sofa
 namespace helper
 {
 
-#ifndef SOFA_FLOAT
 template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2d>;
 template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3d>;
-#endif
 
-#ifndef SOFA_DOUBLE
-template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2f>;
-template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3f>;
-#endif
 
 }
 

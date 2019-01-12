@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,7 +93,7 @@ protected:
     CatmullRomSplineMapping ();
     virtual ~CatmullRomSplineMapping();
 
-    Data<unsigned int> SplittingLevel;
+    Data<unsigned int> SplittingLevel; ///< Number of recursive splits
     //Data<Real> Radius;
 
     //Both mesh topology must be Edge Mesh
@@ -123,22 +123,12 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
 extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
-#endif
-#endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3Types >;
+
+
+#endif // !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)
 
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,11 +32,7 @@ namespace defaulttype
 {
 typedef helper::Quater<double> Quatd; ///< alias
 typedef helper::Quater<float>  Quatf; ///< alias
-#ifdef SOFA_FLOAT
-typedef Quatf Quat; ///< alias
-#else
-typedef Quatd Quat; ///< alias
-#endif
+typedef helper::Quater<SReal>  Quat; ///< alias
 typedef Quat Quaternion; ///< alias
 
 // Specialization of the defaulttype::DataTypeInfo type traits template

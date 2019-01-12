@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,15 +75,10 @@ protected:
     void registerLine( unsigned, unsigned, std::map<Index, unsigned>& );
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec3dTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec3fTypes>;
-extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec2fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP)
+extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec3Types>;
+extern template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace interactionforcefield

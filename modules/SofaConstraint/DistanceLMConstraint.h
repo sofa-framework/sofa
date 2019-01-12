@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -117,7 +117,7 @@ public:
     }
 
     //Edges involving a distance constraint
-    Data< SeqEdges > vecConstraint;
+    Data< SeqEdges > vecConstraint; ///< List of the edges to constrain
 
 protected :
 
@@ -136,24 +136,14 @@ protected :
     sofa::helper::vector< double > l0;
 };
 
-#ifndef SOFA_FLOAT
 template<>
-defaulttype::Rigid3dTypes::Deriv DistanceLMConstraint<defaulttype::Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-defaulttype::Rigid3fTypes::Deriv DistanceLMConstraint<defaulttype::Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-#endif
+defaulttype::Rigid3Types::Deriv DistanceLMConstraint<defaulttype::Rigid3Types>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Rigid3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_CPP)
+extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace constraintset

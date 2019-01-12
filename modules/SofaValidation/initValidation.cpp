@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,14 +38,6 @@ void initValidation()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(DevAngleCollisionMonitor)
-SOFA_LINK_CLASS(DevTensionMonitor)
-SOFA_LINK_CLASS(DevMonitorManager)
-SOFA_LINK_CLASS(ExtraMonitor)
-SOFA_LINK_CLASS(Monitor)
-SOFA_LINK_CLASS(EvalPointsDistance)
-SOFA_LINK_CLASS(EvalSurfaceDistance)
 
 } // namespace component
 

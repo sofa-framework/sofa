@@ -1,7 +1,7 @@
  
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -71,19 +71,15 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecReal> d_output;
-    Data<int> d_normType;
+    Data<VecData> d_input; ///< input array of 3d points
+    Data<VecReal> d_output; ///< output array of scalar norms
+    Data<int> d_normType; ///< The type of norm. Use a negative value for the infinite norm.
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3f>;
-#endif
+
 #endif
 
 } // namespace engine

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,17 +22,10 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/VecId.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -66,10 +59,10 @@ private:
     BaseMapping& operator=(const BaseMapping& n);
 	
 public:
-    Data<bool> f_mapForces;
-    Data<bool> f_mapConstraints;
-    Data<bool> f_mapMasses;
-    Data<bool> f_mapMatrices;
+    Data<bool> f_mapForces; ///< Are forces mapped ?
+    Data<bool> f_mapConstraints; ///< Are constraints mapped ?
+    Data<bool> f_mapMasses; ///< Are masses mapped ?
+    Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
@@ -156,7 +149,7 @@ public:
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
     /// For efficiency concerns, please return pointers to defaulttype::EigenBaseSparseMatrix
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() { serr<<"getJs not implemented"<<sendl; return 0; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() { dmsg_error() << "Calling a virtual method not implemented."; return nullptr; }
 
     /// Compute the geometric stiffness matrix based on given child forces
     /// K = dJ^T * outForce
@@ -167,7 +160,7 @@ public:
     /// This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.
     /// This matrix is associated with the parent DOFs. It is a square matrix with a size of the total number of parent DOFs.
     /// For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
-    virtual const defaulttype::BaseMatrix* getK() { return NULL; }
+    virtual const defaulttype::BaseMatrix* getK() { return nullptr; }
 
     /// @}
 

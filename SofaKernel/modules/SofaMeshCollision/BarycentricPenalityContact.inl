@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,8 +70,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
@@ -155,15 +155,10 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     }
     dmsg_info() << " "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new).";
 
-    //int size = contacts.size();
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
-    //int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];
@@ -176,27 +171,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
 
-        // Just make it work, some changes have been done in rev 10382 so that BarycentricPenaltyContact doesn't
-        // map well the contact points because o->baryCoords is used ant not initialized. It means that
-        // the mapped contact point is random ! So I replaced addPointB by addPoint to make it work.
-        // Create mapping for first point
-//        index1 = mapper1.addPointB(o->point[0], index1, r1
-//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-//                , o->baryCoords[0]
-//#endif
-//                                  );
-
         index1 = mapper1.addPoint(o->point[0], index1, r1);
-
-        // Create mapping for second point
-//        index2 = mapper2.addPointB(o->point[1], index2, r2
-//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-//                , o->baryCoords[1]
-//#endif
-//                                  );
-
         index2 = mapper2.addPoint(o->point[1], index2, r2);
-
 
         double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
@@ -223,7 +199,6 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         parent = group;
         if (parent!=NULL)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -237,7 +212,6 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         if (parent!=NULL)
         {
-            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(ff);
         }
@@ -248,8 +222,6 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
 {
-    //	if (ff!=NULL)
-    //		ff->draw(vparams);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >

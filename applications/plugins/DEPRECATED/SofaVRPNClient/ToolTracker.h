@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -65,19 +65,19 @@ public:
     typedef typename sofa::defaulttype::RigidTypes::Coord RCoord;
 
     //input
-    sofa::core::objectmodel::Data<VecCoord > f_points;
+    sofa::core::objectmodel::Data<VecCoord > f_points; ///< Incoming 3D Points
     //distances between each point for the given tool
-    sofa::core::objectmodel::Data<sofa::helper::vector<double> > f_distances;
+    sofa::core::objectmodel::Data<sofa::helper::vector<double> > f_distances; ///< Distances between each point
 
 
     //output
-    sofa::core::objectmodel::Data<Coord> f_center;
-    sofa::core::objectmodel::Data<sofa::defaulttype::Quat> f_orientation;
+    sofa::core::objectmodel::Data<Coord> f_center; ///< Tool's center
+    sofa::core::objectmodel::Data<sofa::defaulttype::Quat> f_orientation; ///< Tool's orientation
     //the same...
-    sofa::core::objectmodel::Data<RCoord> f_rigidCenter;
+    sofa::core::objectmodel::Data<RCoord> f_rigidCenter; ///< Rigid center of the tool
 
     //parameters
-    sofa::core::objectmodel::Data<bool> f_drawTool;
+    sofa::core::objectmodel::Data<bool> f_drawTool; ///< Draw tool's contour
 
     ToolTracker();
     virtual ~ToolTracker();
@@ -91,13 +91,9 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
+extern template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3Types>;
+ 
 #endif
 
 }

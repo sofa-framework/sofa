@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,8 @@
 #ifndef SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_INL
 #define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <sofa/helper/RandomGenerator.h>
 
@@ -385,7 +380,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 
 
 template <class DataTypes>
-void TransformPosition<DataTypes>::update()
+void TransformPosition<DataTypes>::doUpdate()
 {
     selectTransformationMethod();
 
@@ -400,8 +395,6 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
     helper::ReadAccessor< Data<long> > seed = f_seed;
     helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor< Data<VecCoord> > out = f_outputX;
 
@@ -487,6 +480,8 @@ void TransformPosition<DataTypes>::update()
 template <class DataTypes>
 void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    vparams->drawTool()->saveLastState();
+
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
@@ -504,6 +499,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
             points.push_back(out[i]);
         vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2f, 0.8f, 0.2f, 1.0f));
     }
+    vparams->drawTool()->restoreLastState();
 }
 
 

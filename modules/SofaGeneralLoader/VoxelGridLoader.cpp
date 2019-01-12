@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::core;
 
-SOFA_DECL_CLASS(VoxelGridLoader);
 int VoxelGridLoaderClass = RegisterObject("Voxel loader based on RAW files").add<VoxelGridLoader>();
 
 VoxelGridLoader::VoxelGridLoader()
@@ -337,11 +336,7 @@ void VoxelGridLoader::addBackgroundValue ( const int value )
     helper::vector<int>& vecVal = ( *backgroundValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-
-    helper::vector<int>::iterator it;
-    it = std::unique(vecVal.begin(), vecVal.end());
-    vecVal.resize( std::distance(vecVal.begin(),it) );
-
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     backgroundValue.endEdit();
     reinit();
 }
@@ -360,11 +355,7 @@ void VoxelGridLoader::addActiveDataValue(const int value)
     helper::vector<int>& vecVal = ( *activeValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-
-    helper::vector<int>::iterator it;
-    it = std::unique(vecVal.begin(), vecVal.end());
-    vecVal.resize( std::distance(vecVal.begin(),it) );
-
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     activeValue.endEdit();
     reinit();
 }

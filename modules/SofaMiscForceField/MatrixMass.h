@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,9 +63,9 @@ public:
     typedef helper::vector<MassType> VecMass;
 
 
-    Data< VecMass > f_mass;
+    Data< VecMass > f_mass; ///< values of the particles masses
     Data< bool >    _lumped;
-    Data< Real >    _defaultValue;
+    Data< Real >    _defaultValue; ///< real default value
 
     VecMass _lumpedMasses; ///< lumped mass matrices
 
@@ -124,17 +124,11 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_MATRIXMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class MatrixMass<defaulttype::Vec3dTypes, defaulttype::Mat3x3d>;
-extern template class MatrixMass<defaulttype::Vec2dTypes, defaulttype::Mat2x2d>;
-extern template class MatrixMass<defaulttype::Vec1dTypes, defaulttype::Mat1x1d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class MatrixMass<defaulttype::Vec3fTypes, defaulttype::Mat3x3f>;
-extern template class MatrixMass<defaulttype::Vec2fTypes, defaulttype::Mat2x2f>;
-extern template class MatrixMass<defaulttype::Vec1fTypes, defaulttype::Mat1x1f>;
-#endif
+#if  !defined(SOFA_COMPONENT_MASS_MATRIXMASS_CPP)
+extern template class MatrixMass<defaulttype::Vec3Types, defaulttype::Mat3x3d>;
+extern template class MatrixMass<defaulttype::Vec2Types, defaulttype::Mat2x2d>;
+extern template class MatrixMass<defaulttype::Vec1Types, defaulttype::Mat1x1d>;
+
 #endif
 
 } // namespace mass

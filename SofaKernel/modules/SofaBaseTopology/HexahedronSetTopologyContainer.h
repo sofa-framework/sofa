@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -136,9 +136,9 @@ public:
 
     /** \brief Get the index of a hexahedron from the indices of its vertices.
      *
-     * @return The index of the corresponding hexahedron if it exists, -1 otherwise.
+     * @return The index of the corresponding hexahedron if it exists, InvalidID otherwise.
      */
-    virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
+    virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
                    PointID v5, PointID v6, PointID v7, PointID v8) override;
 
 
@@ -254,7 +254,7 @@ public:
     virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const VecHexaID getConnectedElement(HexaID elem) override;
@@ -269,13 +269,13 @@ public:
     /** \brief Returns the number of hexahedra in this topology.
      *	The difference to getNbHexahedra() is that this method does not generate the hexa array if it does not exist.
      */
-    unsigned int getNumberOfHexahedra() const;
+    size_t getNumberOfHexahedra() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const override;
+    virtual size_t getNumberOfElements() const override;
 
 
     /** \brief Returns the Hexahedron array. */
@@ -315,6 +315,9 @@ public:
     bool hasHexahedraAroundQuad() const;
 
     /// @}
+
+    /** \brief Returns the type of the topology */
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::HEXAHEDRON;}
 
 
 protected:

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,8 +38,6 @@ namespace io
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
-
-SOFA_DECL_CLASS(MeshOBJ)
 
 Creator<Mesh::FactoryMesh,MeshOBJ> MeshOBJClass("obj");
 
@@ -87,7 +85,7 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
         {
             /* vertex */
             values >> result[0] >> result[1] >> result[2];
-            vertices.push_back(result);
+            m_vertices.push_back(result);
         }
         else if (token == "vn")
         {
@@ -196,14 +194,14 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
     curGroup.nbp = nbf - curGroup.p0;
     if (curGroup.nbp > 0) groups.push_back(curGroup);
 
-    if (vertices.size()>0)
+    if (m_vertices.size()>0)
     {
         // compute bbox
-        Vector3 minBB = vertices[0];
-        Vector3 maxBB = vertices[0];
-        for (unsigned int i=1; i<vertices.size(); ++i)
+        Vector3 minBB = m_vertices[0];
+        Vector3 maxBB = m_vertices[0];
+        for (unsigned int i=1; i<m_vertices.size(); ++i)
         {
-            Vector3 p = vertices[i];
+            Vector3 p = m_vertices[i];
             for (int c=0; c<3; ++c)
             {
                 if (minBB[c] > p[c])
@@ -390,8 +388,9 @@ void MeshOBJ::readMTL(const char* filename)
                     stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
                     mat->textureFilename = stringFilename;
                 }
-            }
-            break;
+
+				break;
+            }            
             case 'b':
             {
                 if( !mat )
@@ -417,8 +416,9 @@ void MeshOBJ::readMTL(const char* filename)
                     stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
                     mat->bumpTextureFilename = stringFilename;
                 }
-            }
-            break;
+
+				break;
+            }            
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == NULL)

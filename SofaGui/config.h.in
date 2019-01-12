@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,15 +24,14 @@
 
 #include <sofa/config.h>
 
-// Glut GUI
-#cmakedefine SOFA_GUI_GLUT
-
+#cmakedefine SOFA_GUI_HEADLESS_RECORDER
 // Qt GUI
 #cmakedefine SOFA_GUI_QT
 #cmakedefine SOFA_GUI_QGLVIEWER
 #cmakedefine SOFA_GUI_QTVIEWER
-#cmakedefine SOFA_GUI_INTERACTION
 #cmakedefine SOFA_GUI_NATIVE_MENU
 #cmakedefine SOFA_HAVE_QWT
+
+#define SOFA_GUI_VSYNC ${SOFA_GUI_VSYNC_}
 
 #endif

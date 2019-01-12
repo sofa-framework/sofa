@@ -15,7 +15,7 @@ class Frame:
                         self.translation = [0, 0, 0]
                         self.rotation = [0, 0, 0, 1]
 
-        def insert(self, parent, template='Rigid', **args):
+        def insert(self, parent, template='Rigid3', **args):
                 self.node = parent
                 return parent.createObject('MechanicalObject',
                                            template = template,

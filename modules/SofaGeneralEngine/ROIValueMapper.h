@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define ROIValueMapper_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -54,15 +52,15 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> nbROIs;
+    Data<unsigned int> nbROIs; ///< size of indices/value vector
     helper::vectorData<helper::vector<Index> > f_indices;
     helper::vectorData<Real> f_value;
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New vector of values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices out of ROIs
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const ROIValueMapper* = NULL)    {        return std::string();    }
@@ -114,7 +112,7 @@ protected:
 
     virtual ~ROIValueMapper() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
@@ -142,8 +140,6 @@ protected:
                 outputValues[ind] = value;
             }
         }
-
-        cleanDirty();
     }
 
 };

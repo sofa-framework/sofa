@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,15 +22,14 @@
 #ifndef SOFA_DEFAULTTYPE_BOUNDINGBOX_H
 #define SOFA_DEFAULTTYPE_BOUNDINGBOX_H
 
-#include <sofa/defaulttype/VecTypes.h>
+#include <utility> /// for std::pair
 #include <sofa/defaulttype/defaulttype.h>
-
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
 namespace defaulttype
 {
-
 
 class SOFA_DEFAULTTYPE_API BoundingBox
 {
@@ -68,10 +67,6 @@ public:
     Vector3& minBBox();
     Vector3& maxBBox();
 
-
-
-
-
     bool contains( const sofa::defaulttype::Vector3& point) const;
     bool contains( const BoundingBox& other) const;
 
@@ -87,7 +82,6 @@ public:
     BoundingBox getInclude( const sofa::defaulttype::Vector3& point ) const;
     BoundingBox getInclude( const BoundingBox& other ) const;
     BoundingBox getInflate( SReal amount ) const;
-
 
     friend std::ostream& operator << ( std::ostream& out, const BoundingBox& bbox)
     {
@@ -157,10 +151,6 @@ public:
     Vector2& minBBox();
     Vector2& maxBBox();
 
-
-
-
-
     bool contains( const sofa::defaulttype::Vector2& point) const;
     bool contains( const BoundingBox2D& other) const;
 
@@ -226,10 +216,6 @@ public:
     const SReal&  maxBBox() const;
     SReal& minBBox();
     SReal& maxBBox();
-
-
-
-
 
     bool contains( SReal point) const;
     bool contains( const BoundingBox1D& other) const;

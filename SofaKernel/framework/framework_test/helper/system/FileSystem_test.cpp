@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,10 @@
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message;
+#include <fstream>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 
 using sofa::helper::system::FileSystem;
@@ -186,6 +188,31 @@ TEST(FileSystemTest, isDirectory_yes_trailingSlash)
 TEST(FileSystemTest, isDirectory_nope)
 {
     EXPECT_FALSE(FileSystem::isDirectory(getPath("non-empty-directory/fileA.txt")));
+}
+
+TEST(FileSystemTest, isFile_yes)
+{
+    // Absolute path
+    EXPECT_TRUE(FileSystem::isFile(getPath("non-empty-directory/fileA.txt")));
+
+    // Relative path
+    std::ofstream ofs ("FileSystemTest_isFile_yes.txt", std::ofstream::out);
+    ofs.close();
+    EXPECT_TRUE(FileSystem::isFile("FileSystemTest_isFile_yes.txt"));
+    std::remove("FileSystemTest_isFile_yes.txt");
+    EXPECT_FALSE(FileSystem::isFile("FileSystemTest_isFile_yes.txt"));
+
+}
+
+TEST(FileSystemTest, isFile_nope)
+{
+    // Absolute path
+    EXPECT_FALSE(FileSystem::isFile(getPath("non-empty-directory")));
+
+    // Relative path
+    FileSystem::createDirectory("FileSystemTest_isFile_no");
+    EXPECT_FALSE(FileSystem::isFile("FileSystemTest_isFile_no"));
+    FileSystem::removeDirectory("FileSystemTest_isFile_no");
 }
 
 TEST(FileSystemTest, isAbsolute)

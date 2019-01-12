@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,7 +33,6 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-//#include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
@@ -48,13 +47,14 @@ namespace sofa
 namespace simulation
 {
 
-SOFA_DECL_CLASS(DefaultAnimationLoop)
-
-int DefaultAnimationLoopClass = core::RegisterObject("The simplest animation loop, created by default when user do not put on scene")
+int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
         .add< DefaultAnimationLoop >()
-        ;
-
-
+        .addDescription(R"(
+This loop do the following steps:
+- build and solve all linear systems in the scene : collision and time integration to compute the new values of the dofs
+- update the context (dt++)
+- update the mappings
+- update the bounding box (volume covering all objects of the scene))");
 
 DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()
@@ -131,11 +131,12 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    gnode->execute< UpdateBoundingBoxVisitor >(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
+        gnode->execute< UpdateBoundingBoxVisitor >(params);
+    }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

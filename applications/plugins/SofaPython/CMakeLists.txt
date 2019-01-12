@@ -29,6 +29,7 @@ set(HEADER_FILES
     Binding_DataFileNameVector.h
     Binding_DisplayFlagsData.h
     Binding_OptionsGroupData.h
+    Binding_BoundingBoxData.h
     Binding_GridTopology.h
     Binding_LinearSpring.h
     Binding_Link.h
@@ -44,6 +45,7 @@ set(HEADER_FILES
     Binding_OBJExporter.h
     Binding_STLExporter.h
     Binding_PythonScriptController.h
+    Binding_PythonScriptDataEngine.h
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
     Binding_SofaModule.h
@@ -59,13 +61,14 @@ set(HEADER_FILES
     PythonMainScriptController.h
     PythonScriptController.h
     PythonScriptControllerHelper.h
+    PythonScriptDataEngine.h
     PythonScriptEvent.h
     PythonScriptFunction.h
     PythonToSofa.inl
     PythonVisitor.h
     SceneLoaderPY.h
     ScriptController.h
-    ScriptEvent.h
+    ScriptDataEngine.h
     ScriptFunction.h
 )
 
@@ -87,6 +90,7 @@ set(SOURCE_FILES
     Binding_DataFileNameVector.cpp
     Binding_DisplayFlagsData.cpp
     Binding_OptionsGroupData.cpp
+    Binding_BoundingBoxData.cpp
     Binding_GridTopology.cpp
     Binding_LinearSpring.cpp
     Binding_Link.cpp
@@ -102,6 +106,7 @@ set(SOURCE_FILES
     Binding_OBJExporter.cpp
     Binding_STLExporter.cpp
     Binding_PythonScriptController.cpp
+    Binding_PythonScriptDataEngine.cpp
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
     Binding_SofaModule.cpp
@@ -115,13 +120,14 @@ set(SOURCE_FILES
     PythonMacros.cpp
     PythonMainScriptController.cpp
     PythonScriptController.cpp
+    PythonScriptDataEngine.cpp
     PythonScriptControllerHelper.cpp
     PythonScriptEvent.cpp
     PythonScriptFunction.cpp
     PythonVisitor.cpp
     SceneLoaderPY.cpp
     ScriptController.cpp
-    ScriptEvent.cpp
+    ScriptDataEngine.cpp
     ScriptFunction.cpp
     initSofaPython.cpp
     ctypes.cpp
@@ -154,7 +160,7 @@ add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
 # SofaPython/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython" COMPONENT headers)
 
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
@@ -183,6 +189,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaPython ${SOFAPYTHON_VERSION} ${PROJECT_NAME} SofaPython)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

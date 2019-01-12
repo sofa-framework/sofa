@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -145,7 +145,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
         outDofs = modeling::addNew<OutDOFs>(childNode);
-        mapping = modeling::addNew<Mapping>(root).get();
+        mapping = modeling::addNew<Mapping>(childNode).get();
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
@@ -275,7 +275,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
 
         /// test applyJ and everything related to Jacobians
-        const unsigned Np=inDofs->getSize(), Nc=outDofs->getSize();
+        size_t Np = inDofs->getSize(), Nc=outDofs->getSize();
 
         InVecCoord xp(Np),xp1(Np);
         InVecDeriv vp(Np),fp(Np),dfp(Np),fp2(Np);

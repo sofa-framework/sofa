@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -121,8 +121,8 @@ public:
 protected:
     bool maskInUse;
     SReal m_potentialEnergy;
-    Data<double> youngModulus;
-    Data<double> poissonRatio;
+    Data<double> youngModulus; ///< Young Modulus
+    Data<double> poissonRatio; ///< Poisson Ratio.
     Mat66 H;
     VVMatInxIn K;
     VVMatInxIn K0;
@@ -188,17 +188,11 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
+#if  !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
+extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3Types>;
 extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;
 //extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3fTypes>;
-//extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3fTypes>;
-//extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3fTypes>;
-#endif
+
 #endif
 
 } // namespace forcefield

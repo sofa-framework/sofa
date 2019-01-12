@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,25 +37,14 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(SpatialGridContainer)
-
 int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid container, used for SPH fluids for instance.")
-#ifndef SOFA_FLOAT
-        .add< SpatialGridContainer<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SpatialGridContainer<Vec3fTypes> >()
-#endif
+        .add< SpatialGridContainer<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SpatialGridContainer< Vec3dTypes >;
-template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SpatialGridContainer< Vec3fTypes >;
-template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
-#endif
+template class SpatialGridContainer< Vec3Types >;
+template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3Types > >;
+
 
 } // namespace container
 

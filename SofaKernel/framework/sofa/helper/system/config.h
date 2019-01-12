@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 
 #include <cstddef>              // For NULL
 
-#if defined(_WIN32) || defined(_XBOX)
+#if defined(_WIN32)
 #  ifndef NOMINMAX
 #    define NOMINMAX
 #  endif
@@ -34,51 +34,13 @@
 
 // snprintf() has been provided since MSVC++ 14 (Visual Studio 2015).  For other
 // versions, it is simply #defined to _snprintf().
-#if (defined(_MSC_VER) && _MSC_VER < 1900) || defined(_XBOX)
+#if (defined(_MSC_VER) && _MSC_VER < 1900)
 #  define snprintf _snprintf
 #endif
 
 #ifdef _WIN32
 #  include <windows.h>
 #endif
-
-#ifdef _XBOX
-#  include <xtl.h>
-#endif
-
-#ifdef __PS3__
-#  include <cstring>
-#  include <ctype.h>
-#  include <math.h>
-#  include <sys/timer.h>
-#  include <typeinfo>
-
-#  define usleep(x) sys_timer_usleep((usecond_t)x)
-
-namespace std
-{
-	// Stub provided for CImg dependency
-	inline int system(const char* command)
-	{
-		return 1;
-	}
-
-	// todo note that this is only used with host serialization from devkit
-	inline char* getenv( const char* env_var )
-	{
-		if (strcmp("TEMP", env_var) == 0)
-		{
-			return "/SYS_APP_HOME/TEMP";
-		}
-        else
-        {
-            return "/SYS_APP_HOME/";
-        }
-	}
-}
-
-#endif // __PS3__
-
 
 #ifdef BOOST_NO_EXCEPTIONS
 #  include<exception>

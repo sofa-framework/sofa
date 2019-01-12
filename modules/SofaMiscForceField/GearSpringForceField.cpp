@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,26 +41,15 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(GearSpringForceField)
-
 // Register in the Factory
 int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
-#ifndef SOFA_FLOAT
-        .add< GearSpringForceField<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< GearSpringForceField<Rigid3fTypes> >()
-#endif
+        .add< GearSpringForceField<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
-template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
-template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
+template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
+
 
 
 } // namespace interactionforcefield

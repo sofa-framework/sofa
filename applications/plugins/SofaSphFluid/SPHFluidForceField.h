@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -448,17 +448,17 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 public:
-    Data< Real > particleRadius;
-    Data< Real > particleMass;
+    Data< Real > particleRadius; ///< Radius of a Particle
+    Data< Real > particleMass; ///< Mass of a Particle
     Data< Real > pressureStiffness; ///< 100 - 1000 m2/s2
     Data< Real > density0; ///< 1000 kg/m3 for water
-    Data< Real > viscosity;
-    Data< Real > surfaceTension;
+    Data< Real > viscosity; ///< Viscosity
+    Data< Real > surfaceTension; ///< Surface Tension
     //Data< int  > pressureExponent;
-    Data< int > kernelType;
-    Data< int > pressureType;
-    Data< int > viscosityType;
-    Data< int > surfaceTensionType;
+    Data< int > kernelType; ///< 0 = default kernels, 1 = cubic spline
+    Data< int > pressureType; ///< 0 = none, 1 = default pressure
+    Data< int > viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
+    Data< int > surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
 
 protected:
     struct Particle
@@ -576,28 +576,13 @@ protected:
     void computeForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec2dTypes;
-#endif
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::Vec2Types;
 
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec2fTypes;
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
-
-#ifndef SOFA_FLOAT
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3dTypes>;
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3fTypes>;
-extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2fTypes>;
-#endif
-
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
+extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3Types>;
+extern template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2Types>;
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 } // namespace forcefield
 

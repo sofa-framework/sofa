@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -119,22 +119,14 @@ public:
     // Data fields will automatically appear in qt-based GUI and in read/write XML scene files
     // in this simple example, there is only one young modulus for all elements and one similar mass to every particle
     // Note that Data must be initialized in the constructor, giving the default value, the field name and a description
-    Data<Real> _youngModulus;
-    Data<Real> _poissonRatio;
-    Data<Real> _totalMass;
-    Data<unsigned> _subdivisions;
-
-
-
+    Data<Real> _youngModulus; ///< Uniform Young modulus
+    Data<Real> _poissonRatio; ///< Uniform Poisson ratio
+    Data<Real> _totalMass; ///< Total Mass (lumped and uniformly distributed on particles
+    Data<unsigned> _subdivisions; ///< nb grid subdivisions
 
 protected:
-
     FEMGridBehaviorModel();
-
     virtual ~FEMGridBehaviorModel() {}
-
-
-
 
     /// @name internal sofa stuff that could be replaced by any library
     /// @{
@@ -144,33 +136,13 @@ protected:
     typename component::mass::UniformMass<DataTypes,Real>::SPtr m_internalMass;
     sofa::simulation::Node::SPtr m_internalNode;
 
-
-
     int mapExposedInternalIndices[8]; ///< identity mapping between exposed SOFA dofs and internal model dofs
-
-
-
     /// @}
-
-
-
-
-
 }; // class FEMGridBehaviorModel
 
-
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3dTypes>;
+#if !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
+extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3Types>;
 #endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3fTypes>;
-#endif
-#endif
-
-
 
 } // namespace externalBehaviorModel
 

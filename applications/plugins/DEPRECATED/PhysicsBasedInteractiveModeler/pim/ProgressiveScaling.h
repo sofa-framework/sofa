@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,9 +22,7 @@
 #ifndef PLUGINS_PIM_PROGRESSIVESCALING_H
 #define PLUGINS_PIM_PROGRESSIVESCALING_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -70,12 +68,13 @@ public:
 
     void draw();
 
-    Data<VecCoord> f_X0;
-    Data<VecCoord> f_X;
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<VecCoord> f_X; ///< scaled position coordiates
     VecCoord local_X0;
-    Data<double> from_scale, to_scale;
+    Data<double> from_scale;
+    Data<double> to_scale;
 
-    Data<double> d_scale;
+    Data<double> d_scale; ///< initial scale applied to the degrees of freedom
     Data<Vec3d> d_axis;
     Data<Vec3d> d_center;
     Data<double> d_angle;
@@ -108,15 +107,10 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace pim

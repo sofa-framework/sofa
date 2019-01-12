@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,13 +57,10 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
-        //serr<<"creation of the visitor"<<sendl;
     }
 
     virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
     {
-        //serr<<"fwdConstraint called on "<<c->getName()<<sendl;
-
         if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
         {
             ctime_t t0 = begin(node, c);
@@ -198,7 +195,7 @@ class SOFA_CONSTRAINT_API ConstraintProblem
 {
 protected:
     sofa::component::linearsolver::LPtrFullMatrix<double> _W;
-    sofa::component::linearsolver::FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
+    sofa::component::linearsolver::FullVector<double> _dFree, _force, _d, _df;// cf. These Duriez + _df for scheme correction
     std::vector<core::behavior::ConstraintResolution*> _constraintsResolutions;
     double _tol;
     int _dim;
@@ -237,25 +234,24 @@ protected:
 public:
 
     virtual void step(const core::ExecParams* params, SReal dt) override;
-
-    //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
-
     virtual void init() override;
 
-    Data<bool> displayTime;
-    Data<double> _tol;
-    Data<int> _maxIt;
-    Data<bool> doCollisionsFirst;
-    Data<bool> doubleBuffer;
-    Data<bool> scaleTolerance;
-    Data<bool> _allVerified;
-    Data<double> _sor;
-    Data<bool> schemeCorrection;
-    Data<bool> _realTimeCompensation;
+    Data<bool> displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
+    Data<double> _tol; ///< Tolerance of the Gauss-Seidel
+    Data<int> _maxIt; ///< Maximum number of iterations of the Gauss-Seidel
+    Data<bool> doCollisionsFirst; ///< Compute the collisions first (to support penality-based contacts)
+    Data<bool> doubleBuffer; ///< Buffer the constraint problem in a double buffer to be accessible with an other thread
+    Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
+    Data<bool> _allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
+    Data<double> _sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+    Data<bool> _realTimeCompensation; ///< If the total computational time T < dt, sleep(dt-T)
 
     Data<bool> activateSubGraph;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints, _graphForces;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphForces; ///< Graph of each constraint's force at each step of the resolution
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
 

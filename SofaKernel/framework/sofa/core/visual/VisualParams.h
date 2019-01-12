@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,16 +23,11 @@
 #ifndef SOFA_CORE_VISUAL_VISUALPARAMS_H
 #define SOFA_CORE_VISUAL_VISUALPARAMS_H
 
-#include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/Vec.h>
 
-#include <sofa/helper/system/gl.h>
 
 
 namespace sofa

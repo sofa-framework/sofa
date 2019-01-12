@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-
 
 namespace sofa
 {
@@ -65,41 +64,31 @@ public:
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::SeqTriangles seqTriangles;
 
-
-
     enum FLUID { AABOX, PLANE };
 
 protected:
-
-
-
     FLUID fluidModel;
-    Data< Real > m_fluidModel;
+    Data< Real > m_fluidModel; ///< 1 for a plane, 2 for a box
 
     Data< Coord >   m_minBox;                       ///< Lower bound of the liquid box.
     Data< Coord >   m_maxBox;                       ///< Upper bound of the liquid box.
 
-    Data <Real>     m_heightPlane;              //orthogonal to the gravity
+    Data <Real>     m_heightPlane;              ///< orthogonal to the gravity
 
-    Data <Real>     m_fluidDensity;
-    Data <Real>     m_fluidViscosity;
-    Data <Real>     m_atmosphericPressure;
+    Data <Real>     m_fluidDensity; ///< Fluid Density
+    Data <Real>     m_fluidViscosity; ///< Fluid Viscosity
+    Data <Real>     m_atmosphericPressure; ///< atmospheric pressure
 
-    Data<bool>      m_enableViscosity;
-    Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
+    Data<bool>      m_enableViscosity; ///< enable the effects of viscosity
+    Data<bool>      m_turbulentFlow;    ///< 1 for turbulent, 0 for laminar
 
     sofa::helper::vector<ID> m_triangles;
 
-//    Data<Real>      m_immersedVolume;
-//    Data<Real>      m_immersedArea;
-//    Data<Real>      m_globalForce;
-
-    Data<bool>      m_flipNormals;
-
-    Data<bool>      m_showPressureForces;
-    Data<bool>      m_showViscosityForces;
-    Data<bool>      m_showBoxOrPlane;
-    Data<Real>      m_showFactorSize;
+    Data<bool>      m_flipNormals; ///< flip normals to inverse the forces applied on the object
+    Data<bool>      m_showPressureForces; ///< Show the pressure forces applied on the surface of the mesh if true
+    Data<bool>      m_showViscosityForces; ///< Show the viscosity forces applied on the surface of the mesh if true
+    Data<bool>      m_showBoxOrPlane; ///< Show the box or the plane
+    Data<Real>      m_showFactorSize; ///< Size factor applied to shown forces
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -116,10 +105,9 @@ protected:
     Coord       m_minBoxPrev;
     Coord       m_maxBoxPrev;
 
-
-
     BuoyantForceField();
     virtual ~BuoyantForceField();
+
 public:
     virtual void init() override;
 
@@ -145,12 +133,7 @@ protected:
     /**
      * @brief Returns the number of point of a tetra included in the liquid
      */
-    //inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x);
     inline int isTriangleInFluid(const Triangle& /*tetra*/, const VecCoord& x);
-
-    //inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x);
-
-    //inline bool isCornerInTetra(const Tetra &tetra, const VecCoord& x) const;
 
     inline Real distanceFromFluidSurface(const Coord& x);
     inline Real D_distanceFromFluidSurface(const Deriv& dx);
@@ -159,15 +142,11 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3fTypes>;
-#endif
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3Types>;
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
 
 
 } // namespace forcefield

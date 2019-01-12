@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H
 
 #include <Compliant/config.h>
 #include "DiagonalCompliance.h"
@@ -32,7 +32,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef helper::WriteOnlyAccessor< Data< typename Inherit::VecDeriv > > WriteOnlyVecDeriv;
 
-    Data< Real > d_complianceMin, d_errorMin;
+    Data< Real > d_complianceMin; ///< Minimum compliance
+    Data< Real > d_errorMin; ///< complianceMin is reached for this error value
 
     virtual void init();
 
@@ -55,8 +56,13 @@ protected:
 
 };
 
+#if !defined(SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3Types>;
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H

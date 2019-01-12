@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 #include <sofa/core/CollisionElement.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
-#include <set>
 
 
 namespace sofa
@@ -90,7 +89,7 @@ private:
     bool _is_initialized;
     sofa::helper::vector<core::CollisionModel*> collisionModels;
 
-    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
+    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeModel::SPtr boxModel;
 

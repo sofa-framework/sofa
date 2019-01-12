@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,8 +26,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+
 
 namespace sofa
 {
@@ -53,19 +52,14 @@ class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredMatrix
 {
 public:
     typedef SReal Real;
-    //simulation::SolverImpl* parent;
-    //double mFact, bFact, kFact;
     core::MechanicalParams mparams;
     simulation::common::MechanicalOperations* parent;
 public:
     GraphScatteredMatrix()
-        : parent(NULL) //, mFact(0.0), bFact(0.0), kFact(0.0)
+        : parent(nullptr)
     {
     }
-    void setMBKFacts(const core::MechanicalParams* mparams)
-    {
-        this->mparams = *mparams;
-    }
+    void setMBKFacts(const core::MechanicalParams* mparams){ this->mparams = *mparams;}
     MultExpr<GraphScatteredMatrix,GraphScatteredVector> operator*(GraphScatteredVector& v)
     {
         return MultExpr<GraphScatteredMatrix,GraphScatteredVector>(*this, v);
@@ -74,21 +68,9 @@ public:
 
 
     // compatibility with baseMatrix
-    unsigned int rowSize()
-    {
-        unsigned int nbRow=0, nbCol=0;
-        this->parent->getMatrixDimension(&nbRow, &nbCol);
-        return nbRow;
+    unsigned int rowSize(); /// provides the number of rows of the Graph Scattered Matrix
 
-    }
-    int colSize()
-    {
-        unsigned int nbRow=0, nbCol=0;
-        this->parent->getMatrixDimension(&nbRow, &nbCol);
-        return nbCol;
-    }
-
-    //void papply(GraphScatteredVector& res, GraphScatteredVector& x);
+    unsigned int colSize();  /// provides the number of columns of the Graph Scattered Matrix
 
     static const char* Name() { return "GraphScattered"; }
 };
@@ -141,15 +123,9 @@ public:
 
     friend class GraphScatteredMatrix;
 
-    void operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr)
-    {
-        expr.a.apply(*this,expr.b);
-    }
+    void operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr);
 
-    //void operator+=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr)
-    //{
-    //    expr.a.papply(*this,expr.b);
-    //}
+
 
     static const char* Name() { return "GraphScattered"; }
 };

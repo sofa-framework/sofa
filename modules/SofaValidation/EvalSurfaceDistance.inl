@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include "EvalSurfaceDistance.h"
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/gl/template.h>
 
 #include <fstream>
 
@@ -158,14 +157,14 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
 
 //-------------------------------- draw------------------------------------
 template<class DataTypes>
-void EvalSurfaceDistance<DataTypes>::draw(const core::visual::VisualParams* )
+void EvalSurfaceDistance<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->f_draw.getValue())
         return;
     if (!this->mstate1 || !this->mstate2 || xproj.empty()) return;
     const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2 = xproj; //this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    this->doDraw(x1, x2);
+    this->doDraw(vparams, x1, x2);
 }
 
 } // namespace misc

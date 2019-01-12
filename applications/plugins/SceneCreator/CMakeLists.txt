@@ -10,7 +10,6 @@ set(HEADER_FILES
     GetVectorVisitor.h
     SceneCreator.h
     SceneUtils.h
-    SimpleApi.h
 )
 
 set(SOURCE_FILES
@@ -18,15 +17,15 @@ set(SOURCE_FILES
     GetVectorVisitor.cpp
     SceneCreator.cpp
     SceneUtils.cpp
-    SimpleApi.cpp
     initSceneCreator.cpp
 )
 
 find_package(SofaSimulation REQUIRED)
+find_package(Metis QUIET)
 
 ## SceneCreator/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h" DESTINATION "include/SceneCreator")
+install(FILES "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h" DESTINATION "include/SceneCreator" COMPONENT headers)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
@@ -34,10 +33,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BIN
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SCENECREATOR_VERSION})
-
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SCENECREATOR")
-
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+
+if(Metis_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_METIS")
+endif()
 
 ## Install rules for the library; CMake package configurations files
 sofa_create_package(SceneCreator ${SCENECREATOR_VERSION} SceneCreator SceneCreator)

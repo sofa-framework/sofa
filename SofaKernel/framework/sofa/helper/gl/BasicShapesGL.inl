@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 #define SOFA_HELPER_GL_BASICSHAPESGL_INL
 
 #include <sofa/helper/gl/BasicShapesGL.h>
-
+#include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/shaders/generateSphere.cppglsl>
 
 namespace sofa
@@ -59,10 +59,10 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     glGenBuffers(1, &buffer.VBO);
     glGenBuffers(1, &buffer.IBO);
 
-    float radius = 1.0;
+    float radius = 1.0f;
 
-    float const R = 1. / (float)(desc.rings - 1);
-    float const S = 1. / (float)(desc.sectors - 1);
+    float const R = 1.f / (float)(desc.rings - 1);
+    float const S = 1.f / (float)(desc.sectors - 1);
     unsigned int r, s;
 
     std::vector<GLfloat> vertices;
@@ -83,20 +83,20 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     {
         for (s = 0; s < desc.sectors; s++)
         {
-            float const y = sin(-M_PI_2 + M_PI * r * R);
-            float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
-            float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
+            const double y = sin(-M_PI_2 + M_PI * r * R);
+            const double  x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
+            const double  z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
 
             *t++ = s*S;
             *t++ = r*R;
 
-            *v++ = x * radius;
-            *v++ = y * radius;
-            *v++ = z * radius;
+            *v++ = (float)x * radius;
+            *v++ = (float)y * radius;
+            *v++ = (float)z * radius;
 
-            *n++ = x;
-            *n++ = y;
-            *n++ = z;
+            *n++ = (float)x;
+            *n++ = (float)y;
+            *n++ = (float)z;
         }
     }
 
@@ -151,10 +151,10 @@ template<class VertexType>
 void BasicShapesGL_Sphere<VertexType>::internalDraw(const GLBuffers &buffer, const VertexType& center, const float& radius)
 {
     glPushMatrix();
-    glTranslatef(center[0], center[1], center[2]);
+    helper::gl::glTranslate(center[0], center[1], center[2]);
     glScalef(radius, radius, radius);
 
-    glDrawElements(GL_QUADS, buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_QUADS, (GLsizei)buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
 
     glPopMatrix();
 }
@@ -312,21 +312,21 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
         //Should try to avoid this test...
         const float& radius = (p < radii.size()) ? radii[p] : radii[0];
 
-        *v++ = vertex[0];
-        *v++ = vertex[1];
-        *v++ = vertex[2];
+        *v++ = (float)vertex[0];
+        *v++ = (float)vertex[1];
+        *v++ = (float)vertex[2];
 
-        *v++ = vertex[0];
-        *v++ = vertex[1];
-        *v++ = vertex[2];
+        *v++ = (float)vertex[0];
+        *v++ = (float)vertex[1];
+        *v++ = (float)vertex[2];
 
-        *v++ = vertex[0];
-        *v++ = vertex[1];
-        *v++ = vertex[2];
+        *v++ = (float)vertex[0];
+        *v++ = (float)vertex[1];
+        *v++ = (float)vertex[2];
 
-        *v++ = vertex[0];
-        *v++ = vertex[1];
-        *v++ = vertex[2];
+        *v++ = (float)vertex[0];
+        *v++ = (float)vertex[1];
+        *v++ = (float)vertex[2];
 
         *t++ = -1.0;
         *t++ = -1.0;
@@ -419,7 +419,7 @@ void BasicShapesGL_FakeSphere<VertexType>::internalDraw()
     m_shader->TurnOn();
 
     glPushMatrix();
-    glDrawElements(GL_QUADS, m_buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_QUADS, (GLsizei)m_buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
     glPopMatrix();
     m_shader->TurnOff();
 }

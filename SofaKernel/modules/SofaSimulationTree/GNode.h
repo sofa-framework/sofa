@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,8 +122,9 @@ public:
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
 
-
-
+    /// Mesh Topology that is relevant for this context
+    /// (within it or its parents until a mapping is reached that does not preserve topologies).
+    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children

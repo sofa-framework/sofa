@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -986,8 +986,6 @@ void OptiTrackNatNetClient::draw(const sofa::core::visual::VisualParams* vparams
         vparams->drawTool()->drawSpheres(markers, otherMarkersSize, drawOtherMarkersColor.getValue());
     }
 }
-
-SOFA_DECL_CLASS(OptiTrackNatNetClient)
 
 int OptiTrackNatNetClientClass = sofa::core::RegisterObject("Network client to receive tracked points and rigids from NaturalPoint OptiTrack devices using NatNet protocol")
         .add< OptiTrackNatNetClient >()

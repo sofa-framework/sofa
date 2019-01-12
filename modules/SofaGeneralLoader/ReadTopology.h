@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,13 +23,9 @@
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_H
 #include "config.h"
 
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>
@@ -54,9 +50,9 @@ public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < double > f_interval;
-    Data < double > f_shift;
-    Data < bool > f_loop;
+    Data < double > f_interval; ///< time duration between inputs
+    Data < double > f_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
 
 protected:
     core::topology::BaseMeshTopology* m_topology;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,6 +44,7 @@ using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
     : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
@@ -91,7 +92,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
-    MultiVecDeriv dx (&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 
     const SReal r = f_rayleighMass.getValue();
@@ -164,8 +165,6 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     }
 
 }
-
-SOFA_DECL_CLASS(CentralDifferenceSolver)
 
 int CentralDifferenceSolverClass = core::RegisterObject("Explicit time integrator using central difference (also known as Verlet of Leap-frop)")
         .add< CentralDifferenceSolver >()

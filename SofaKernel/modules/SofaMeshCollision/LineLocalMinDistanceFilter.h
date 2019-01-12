@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,7 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Line collision primitive.
  */
-class LineInfo : public InfoFilter //< topology::Edge >
+class LineInfo : public InfoFilter
 {
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
@@ -58,7 +58,6 @@ public:
         , m_computedLeftAngleCone(0.0)
         , m_twoTrianglesAroundEdge(false)
     {
-//        todo=false;
     }
 
     /**
@@ -70,7 +69,6 @@ public:
         , m_computedLeftAngleCone(0.0)
         , m_twoTrianglesAroundEdge(false)
     {
-//        todo=false;
     }
 
     /**
@@ -115,7 +113,6 @@ protected:
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
-//    bool todo;
 };
 
 
@@ -190,8 +187,8 @@ public:
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
-    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
+    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo; ///< line filter data
 
     PointInfoHandler* pointInfoHandler;
     LineInfoHandler* lineInfoHandler;

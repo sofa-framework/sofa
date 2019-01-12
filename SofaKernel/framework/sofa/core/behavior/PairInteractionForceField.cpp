@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,23 +32,13 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
-template class SOFA_CORE_API PairInteractionForceField<Vec6dTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Vec3dTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Vec2dTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Vec1dTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Rigid3dTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Rigid2dTypes>;
-#endif
+template class SOFA_CORE_API PairInteractionForceField<Vec6Types>;
+template class SOFA_CORE_API PairInteractionForceField<Vec3Types>;
+template class SOFA_CORE_API PairInteractionForceField<Vec2Types>;
+template class SOFA_CORE_API PairInteractionForceField<Vec1Types>;
+template class SOFA_CORE_API PairInteractionForceField<Rigid3Types>;
+template class SOFA_CORE_API PairInteractionForceField<Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_CORE_API PairInteractionForceField<Vec6fTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Vec3fTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Vec2fTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Vec1fTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Rigid3fTypes>;
-template class SOFA_CORE_API PairInteractionForceField<Rigid2fTypes>;
-#endif
 
 } // namespace behavior
 

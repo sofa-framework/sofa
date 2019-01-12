@@ -3,55 +3,37 @@ project(SofaTest)
 
 set(SOFATEST_VERSION 0.1)
 
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
-
 set(HEADER_FILES
     InitPlugin_test.h
     Sofa_test.h
-)
+    )
 
 set(SOURCE_FILES
     InitPlugin_test.cpp
     Sofa_test.cpp
-)
+    )
 
 set(PYTHON_FILES "")
 
+list(APPEND HEADER_FILES
+    BroadPhase_test.h
+    DataEngine_test.h
+    Elasticity_test.h
+    Elasticity_test.inl
+    ForceField_test.h
+    Mapping_test.h
+    MultiMapping_test.h
+    Multi2Mapping_test.h
+    PrimitiveCreation.h
+    TestMessageHandler.h
+    #LogMessage.h
+    )
+list(APPEND SOURCE_FILES
+    Elasticity_test.cpp
+    PrimitiveCreation.cpp
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
-
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        BroadPhase_test.h
-        DataEngine_test.h
-        Elasticity_test.h
-        Elasticity_test.inl
-        ForceField_test.h
-        Mapping_test.h
-        MultiMapping_test.h
-        Multi2Mapping_test.h
-        PrimitiveCreation.h
-        TestMessageHandler.h
-        #LogMessage.h
-        )
-    list(APPEND SOURCE_FILES
-        Elasticity_test.cpp
-        PrimitiveCreation.cpp
-        TestMessageHandler.cpp
-        )
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
         Elasticity_test_deprecated.h
         Elasticity_test_deprecated.inl
@@ -59,10 +41,7 @@ if(SOFA_BUILD_COMPONENTSET_FULL)
     list(APPEND SOURCE_FILES
         Elasticity_test_deprecated.cpp
         )
-
 endif()
-
-
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -75,7 +54,7 @@ if(SofaPython_FOUND)
     set(PYTHON_FILES
         python/SofaTest/Macro.py
         python/SofaTest/__init__.py
-    )
+        )
     message(STATUS "SofaTest: optional dependency SofaPython found, Python_test will be built")
 else()
     message(STATUS "SofaTest: optional dependency SofaPython NOT found, Python_test won't be built")
@@ -89,11 +68,11 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
-target_link_libraries(${PROJECT_NAME} gtest)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files

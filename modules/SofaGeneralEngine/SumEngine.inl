@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,12 +60,9 @@ void SumEngine<DataType>::reinit()
 }
 
 template <class DataType>
-void SumEngine<DataType>::update()
+void SumEngine<DataType>::doUpdate()
 {
-
     helper::ReadAccessor<Data<VecData> > in = d_input;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<DataType> > out = d_output;
     out.wref() = std::accumulate(in.begin(), in.end(), DataType() );

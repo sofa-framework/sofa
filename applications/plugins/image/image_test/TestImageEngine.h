@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,7 +85,7 @@ public:
         update();
     }
 
-    void update() override
+    void doUpdate() override
     {
         waImage out(this->outputImage);
         raImage in(this->inputImage);
@@ -101,7 +101,6 @@ public:
 
         out->getCImg(0) = in->getCImg(0);
 //        std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override

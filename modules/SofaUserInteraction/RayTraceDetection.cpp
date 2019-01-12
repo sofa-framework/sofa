@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,7 +37,6 @@
 #include <map>
 #include <queue>
 #include <stack>
-#include <sofa/helper/system/gl.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 
@@ -56,7 +55,6 @@ using namespace collision;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 
-SOFA_DECL_CLASS (RayTraceDetection)
 int RayTraceDetectionClass =
     core::
     RegisterObject
@@ -300,15 +298,15 @@ void RayTraceDetection::addCollisionPair (const std::pair <
 
 void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!bDraw.getValue ())
         return;
 
-    glDisable (GL_LIGHTING);
-    glColor3f (1.0, 0.0, 1.0);
-    glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-    glLineWidth (3);
-    glPointSize (5);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    sofa::defaulttype::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    vparams->drawTool()->setPolygonMode(0, true);
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
 
@@ -324,22 +322,17 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
                 it2 != outputs->end (); ++it2)
         {
-            glBegin (GL_LINES);
-            glVertex3d (it2->point[0][0], it2->point[0][1],
-                    it2->point[0][2]);
-            glVertex3d (it2->point[1][0], it2->point[1][1],
-                    it2->point[1][2]);
-            glEnd ();
-            serr << it2->point[0] << " " << it2->
-                    point[0] << sendl;
+            vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
+            vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
+
+            msg_error() << it2->point[0] << " " << it2->point[0];
+
             it2->elem.first.draw(vparams);
             it2->elem.second.draw(vparams);
         }
     }
-    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-    glLineWidth (1);
-    glPointSize (1);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,3,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 }				// namespace collision

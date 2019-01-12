@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/accessor.h>
 #include <iostream>
 
@@ -101,8 +100,6 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::C
     helper::ReadAccessor<Data<VecCoord> > x2 = *cParams->readX(this->constrainedObject2);
 
     const SeqEdges &edges =  pointPairs.getValue();
-
-    //if (this->l0.size() != edges.size()) updateRestLength();
 
     scalarConstraintsIndices.clear();
     constraintGroupToContact.clear();
@@ -225,13 +222,12 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
         Contact &out=*(this->constraintGroupToContact[group]);
         ContactDescription &contact=this->getContactDescription(group);
 
-        //                        //The force cannot be attractive!
+        //The force cannot be attractive!
         if (Lambda[0] <= 0)
         {
             contact.state=VANISHING;
             group->setActive(false);
             out.contactForce=Deriv();
-            //                            msg_info()<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, deactivate attractive force"<<std::endl;
             return;
         }
 
@@ -277,9 +273,6 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
             Lambda[0]=out.contactForce*out.n;
             Lambda[1]=out.contactForce*out.t1;
             Lambda[2]=out.contactForce*out.t2;
-
-            //                                msg_info()<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, , friction = "<<contactFriction.getValue()<<std::endl<<", cut excessive friction force, bounded Lambda = "<<std::endl<<Lambda<<std::endl;
-
         }
         else contact.state=STICKING;
 
@@ -323,10 +316,10 @@ bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDO
 template <class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    //if (this->l0.size() != pointPairs.getValue().size()) updateRestLength();
-
     if (vparams->displayFlags().getShowBehaviorModels())
     {
+        vparams->drawTool()->saveLastState();
+
         const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
         const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
@@ -367,6 +360,7 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
 
         vparams->drawTool()->drawLines(slidingConstraints, 1, colorsContactState.back());
 
+        vparams->drawTool()->restoreLastState();
 
     }
 }

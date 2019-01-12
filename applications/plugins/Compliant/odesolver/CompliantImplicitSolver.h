@@ -140,23 +140,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
             mparams().setImplicitVelocity( alpha );
             mparams().setImplicitPosition( beta );
-
-//            mparams().setX( posId );
-//            mparams().setV( velId );
-
             mop.mparams = mparams();
         }
-
-//        SolverOperations( const SolverOperations& sop )
-//            : vop(sop.vop)
-//            , mop(sop.mop)
-//            , ctx(sop.ctx)
-//            , alpha(sop.alpha)
-//            , beta(sop.beta)
-//            , _mparams(sop._mparams)
-//            , posId(sop.posId)
-//            ,velId(sop.velId)
-//        {}
 
         inline const core::MechanicalParams& mparams() const { return /*mop.*/_mparams; }
         inline       core::MechanicalParams& mparams()       { return /*mop.*/_mparams; }
@@ -189,9 +174,11 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
     Data<helper::OptionsGroup> stabilization;
 
-    Data<bool> warm_start, debug;
+    Data<bool> warm_start;
+    Data<bool> debug;
     Data<helper::OptionsGroup> constraint_forces;
-    Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
+    Data<SReal> alpha;     ///< the \alpha and \beta parameters of the integration scheme
+    Data<SReal> beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
 
     enum { FORMULATION_VEL=0, FORMULATION_DV, FORMULATION_ACC, NB_FORMULATION };
@@ -292,7 +279,7 @@ public:
     system_type::vec getLambda() const { assert(storeDSol); return dynamics_solution.tail(sys.n); }
     system_type::vec getDv() const { assert(storeDSol); return dynamics_solution.head(sys.m); }
     system_type::vec getPhi() const { assert(storeDSol); return dynamics_rhs.tail(sys.n); }
-//    system_type::vec getF() const { assert(storeDSol); return dynamics_rhs.head(sys.m); }  FF: I suspect this one is wrong, because rhs does not contain forces but momenta, does it ?
+
     // assembled matrices
     const system_type::rmat& H() const {return sys.H;}
     const system_type::rmat& P() const {return sys.P;}
