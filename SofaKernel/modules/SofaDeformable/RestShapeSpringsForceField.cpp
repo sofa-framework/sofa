@@ -189,8 +189,6 @@ void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualPar
 
 
 
-
-
 int RestShapeSpringsForceFieldClass = core::RegisterObject("Elastic springs generating forces on degrees of freedom between their current and rest shape position")
         .add< RestShapeSpringsForceField<Vec3Types> >()
         .add< RestShapeSpringsForceField<Vec1Types> >()

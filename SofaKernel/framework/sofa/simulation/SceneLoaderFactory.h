@@ -72,7 +72,7 @@ public:
     /// write scene graph in the file
     virtual void write(sofa::simulation::Node* /*node*/, const char * /*filename*/) {}
 
-    /// get the file type description 
+    /// get the file type description
     virtual std::string getFileTypeDesc() = 0;
 
     /// get the list of file extensions
