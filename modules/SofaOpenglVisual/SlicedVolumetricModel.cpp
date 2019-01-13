@@ -240,8 +240,8 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
     lastPoint += _planeNormal * .1;
 
-    std::list<int>positiveCubes;
-    for(int i=0; i<_topology->getNbHexahedra(); ++i)
+    std::list<unsigned int>positiveCubes;
+    for(unsigned int i=0; i<_topology->getNbHexahedra(); ++i)
         positiveCubes.push_back( i );
 
     do
@@ -258,7 +258,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 		for(Octree::CellPtrList::iterator itcell=_octree->getLeafLists(animal::octree::GEOMETRY).begin();   itcell!=_octree->getLeafLists(animal::octree::GEOMETRY).end();itcell++)
 
         // seulement les nouveaux cubes potentiellement intersectable, ie proches ou devant le plan
-        for(std::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
+        for(std::list<unsigned int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
         {
             const BaseMeshTopology::Hexa& cell = _topology->getHexahedron( *itcell );
 
@@ -276,7 +276,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 }
                 else // pas du bon cote, on oublie le cube
                 {
-                    std::list<int>::iterator it = positiveCubes.erase( itcell );
+                    std::list<unsigned int>::iterator it = positiveCubes.erase( itcell );
                     itcell = it;
                     continue;
                 }

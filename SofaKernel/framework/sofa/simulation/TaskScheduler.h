@@ -93,7 +93,7 @@ namespace sofa
 
 
 
-        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask );
+        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *);
 
 
 	} // namespace simulation
