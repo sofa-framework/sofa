@@ -86,13 +86,19 @@ endif(UNIX)
 include(CompilerOptions)
 
 ## Boost (1.54.0 or higher) is now mandatory.
-if(WIN32)
-    message("Boost autodetection on Windows was removed.\n"
-        "Please follow CMake documentation to find Boost on your system.\n"
-        "Hint: set BOOST_ROOT to your Boost location.")
-endif()
 set(BOOST_MIN_VERSION "1.54.0")
-find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
+find_package(Boost ${BOOST_MIN_VERSION} QUIET)
+if(NOT Boost_FOUND)
+    if(WIN32)
+        message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.\n"
+            "Note that Boost autodetection on Windows was removed.\n"
+            "Please follow CMake documentation to find Boost on your system.\n"
+            "Hint: set BOOST_ROOT to your Boost location."
+            )
+    else()
+        message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.")
+    endif()
+endif()
 
 ### Dependency pack for Windows
 if(MSVC)
