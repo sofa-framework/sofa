@@ -109,6 +109,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
+
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     std::stringstream availabletemplate;
