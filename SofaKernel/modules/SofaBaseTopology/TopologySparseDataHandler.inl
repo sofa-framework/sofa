@@ -130,7 +130,7 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::
         unsigned int elemId = index[i];
         unsigned int id = _topologyData->indexOfElement(elemId);
 
-        if (id == sofa::defaulttype::InvalidID)
+        if (id == sofa::core::topology::Topology::InvalidID)
             continue;
 
         cptDone++;

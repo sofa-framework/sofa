@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP
-#include <SofaGeneralObjectInteraction/AttachConstraint.inl>
+#define SOFA_COMPONENT_ENGINE_NearestPointROI_CPP
+#include <SofaGeneralEngine/NearestPointROI.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/Node.h>
@@ -31,52 +31,21 @@ namespace sofa
 namespace component
 {
 
-namespace projectiveconstraintset
+namespace engine
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-int AttachConstraintClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
-        .add< AttachConstraint<Vec3Types> >()
-        .add< AttachConstraint<Vec2Types> >()
-        .add< AttachConstraint<Vec1Types> >()
-        .add< AttachConstraint<Rigid3Types> >()
-        .add< AttachConstraint<Rigid2Types> >()
+int NearestPointROIClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
+        .add< NearestPointROI<Vec3Types> >()
+        .add< NearestPointROI<Vec2Types> >()
+        .add< NearestPointROI<Vec1Types> >()
+        .add< NearestPointROI<Rigid3Types> >()
+        .add< NearestPointROI<Rigid2Types> >()
         ;
 
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec2Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec1Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid2Types>;
-
-
-template <> SOFA_GENERAL_OBJECT_INTERACTION_API
-void AttachConstraint<Rigid3Types>::calcRestRotations()
-{
-    const SetIndexArray & indices2 = f_indices2.getValue();
-    const VecCoord& x0 = this->mstate2->read(core::ConstVecCoordId::restPosition())->getValue();
-    restRotations.resize(indices2.size());
-    for (unsigned int i=0; i<indices2.size(); ++i)
-    {
-        Quat q(0,0,0,1);
-        if (indices2[i] < x0.size()-1)
-        {
-            Vector3 dp0 = x0[indices2[i]].unprojectVector(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
-            dp0.normalize();
-            Vector3 y = cross(dp0, Vector3(1,0,0));
-            y.normalize();
-            double alpha = acos(dp0[0]);
-            q = Quat(y,alpha);
-            sout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0))<<sendl;
-        }
-        restRotations[i] = q;
-    }
-}
-
-
-} // namespace projectiveconstraintset
+} // namespace engine
 
 } // namespace component
 

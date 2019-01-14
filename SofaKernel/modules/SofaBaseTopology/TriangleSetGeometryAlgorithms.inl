@@ -2451,7 +2451,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
         }
 
-
         {//   Draw triangle edges for better display
             const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
             std::vector<defaulttype::Vector3> pos;
@@ -2463,16 +2462,26 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                     pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
                     pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
                 }
-            } else {
+            }
+            else
+            {
                 for (size_t i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
+
+                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                    std::vector<defaulttype::Vector3> tmpPos;
+                    tmpPos.resize(3);
 
                     for (unsigned int j = 0; j<3; j++)
                     {
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
                     }
+                    bary /= 3;
+
+                    for (unsigned int j = 0; j<3; j++)
+                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
                 }
             }
 

@@ -598,7 +598,6 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2;
-    size_t e;
 
     Index node1, node2;
 
@@ -606,7 +605,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(e=0 ; e<_topology->getNbHexahedra() ; ++e)
+    for(unsigned int e=0 ; e<_topology->getNbHexahedra() ; ++e)
     {
         const ElementStiffness &Ke = hexahedronInf[e].stiffness;
 
