@@ -83,10 +83,8 @@ public:
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    template<class _In, class _Out, class _MappingDataType, class _Element>
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<_In, _Out, _MappingDataType, _Element> &b );
-    template<class _In, class _Out, class _MappingDataType, class _Element>
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<_In, _Out, _MappingDataType, _Element> & b );
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> &b );
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> & b );
 
     bool isEmpty();
 

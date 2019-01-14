@@ -89,10 +89,8 @@ public:
 
     sofa::helper::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
 
-    template<class _In, class _Out>
-    friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<_In, _Out> &b );
-    template<class _In, class _Out>
-    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<_In, _Out> & b );
+    friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b );
+    friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b );
 
     virtual ~BarycentricMapperMeshTopology() override ;
 
