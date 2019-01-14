@@ -23,6 +23,7 @@ set(HEADER_FILES
     SolidTypes.inl
     # SparseConstraintTypes.h
     TemplatesAliases.h
+    TopologyTypes.h
     Vec.h
     Vec3Types.h
     VecTypes.h

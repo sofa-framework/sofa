@@ -19,62 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
+#define SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 
-#include <sofa/simulation/StateChangeVisitor.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/core/BaseMapping.h>
+#include <limits.h>
 
 namespace sofa
 {
-
-namespace simulation
+namespace defaulttype
 {
 
-StateChangeVisitor::StateChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source)
-    : Visitor(params), root(true), m_source(source)
-{
-}
+typedef unsigned int index_type;
+constexpr index_type InvalidID = UINT_MAX;
 
-void StateChangeVisitor::processStateChange(core::behavior::BaseMechanicalState* obj)
-{
-    obj->handleStateChange(m_source);
-}
 
-Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
-{
-    if (!root && node->mechanicalMapping)
-    {
-        if (!node->mechanicalMapping->sameTopology())
-        {
-            // stop all topological computations
-            return RESULT_PRUNE;
-        }
-    }
-
-    if (node->mechanicalState && testTags(node->mechanicalState))
-    {
-        this->processStateChange(node->mechanicalState);
-    }
-
-    // TODO 2019-01-04: epernod remove this hack when mechanicalMapping could be updated directly form MechanicalObject through Data link
-    // search for mechanical mapping,
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        sofa::core::BaseMapping* obj = dynamic_cast<sofa::core::BaseMapping*>(it->get());
-        if (obj != NULL)
-        {
-            ctime_t t0=begin(node,obj);
-            obj->handleTopologyChange(); // update the specific TopologicalMapping
-            end(node,obj,t0);
-        }
-    }
-
-    root = false; // now we process child nodes
-    return RESULT_CONTINUE; // continue the propagation of state changes
-}
-
-} // namespace simulation
+} // namespace defaulttype
 
 } // namespace sofa
+
+
+#endif //SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 

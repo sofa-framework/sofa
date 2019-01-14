@@ -27,6 +27,7 @@
 #include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -115,7 +116,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 		assert(t[2] != t[3]);
 
 		// check if there already exists a tetrahedron with the same indices
-		// assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3])== -1);
+        assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3]) == InvalidID);
 	}
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
     const TetrahedronID tetrahedronIndex = (TetrahedronID)m_tetrahedron.size();
@@ -124,9 +125,9 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
     {
         for (PointID j=0; j<4; ++j)
         {
-            int triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
+            TriangleID triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
 
-            if(triangleIndex == -1)
+            if(triangleIndex == InvalidID)
             {
                 // first create the traingle
                 sofa::helper::vector< Triangle > v;
@@ -136,6 +137,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
                 addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
 
                 triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
+                assert(triangleIndex != InvalidID);
 
                 sofa::helper::vector< TriangleID > triangleIndexList;
                 triangleIndexList.push_back(triangleIndex);
@@ -168,9 +170,9 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
                 p0=2; p1=3;
             }
 
-            int edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+            EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
             // we must create the edge
-            if (edgeIndex==-1)
+            if (edgeIndex == InvalidID)
             {
                 sofa::helper::vector< Edge > v;
                 Edge e1(t[p0],t[p1]);
@@ -179,6 +181,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
                 addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
                 edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+                assert(edgeIndex != InvalidID);
 
                 sofa::helper::vector< EdgeID > edgeIndexList;
                 edgeIndexList.push_back(edgeIndex);
@@ -588,18 +591,25 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector
     for (size_t i = 0; i < tetrahedraIds.size(); i++)
     {
         if( tetrahedraIds[i] >= m_container->getNumberOfTetrahedra())
-            msg_error() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
+            dmsg_warning() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
         else
             tetrahedraIds_filtered.push_back(tetrahedraIds[i]);
     }
 
+    /// add the topological changes in the queue
+    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraWarning");
     removeTetrahedraWarning(tetrahedraIds_filtered);
+    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraWarning");
 
     // inform other objects that the triangles are going to be removed
+    sofa::helper::AdvancedTimer::stepBegin("propagateTopologicalChanges");
     propagateTopologicalChanges();
+    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
 
     // now destroy the old tetrahedra.
+    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraProcess");
     removeTetrahedraProcess(tetrahedraIds_filtered ,true);
+    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraProcess");
 
     m_container->checkTopology();
 

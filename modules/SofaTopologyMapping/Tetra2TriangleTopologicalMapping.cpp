@@ -330,7 +330,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             break;
         }
-
         case core::topology::TETRAHEDRAREMOVED:
         {
             if (noNewTriangles.getValue())
@@ -422,6 +421,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
+
             m_outTopoModifier->addTrianglesProcess(triangles_to_create) ;
             m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
             m_outTopoModifier->propagateTopologicalChanges();
@@ -476,10 +476,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             sofa::helper::vector<unsigned int> indices;
             sofa::helper::vector<unsigned int> inv_indices;
 
+
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
-
-                //msg_info() << " : Hexa2QuadTopologicalMapping - point = " << tab[i];
                 indices.push_back(tab[i]);
                 inv_indices.push_back(inv_tab[i]);
             }

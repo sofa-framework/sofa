@@ -192,14 +192,14 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     if(tetraDiff.size()==0)
     {
         tetraDiff.resize(topology->getNbTetrahedra());
-        for(int i=0; i<topology->getNbTetrahedra(); i++)
+        for(size_t i=0; i<topology->getNbTetrahedra(); i++)
             tetraDiff[i]=this->d_constantDiffusionCoefficient.getValue();
     }
     /// possible input tetrahedral diffusion coefficient
     else
     {
         loadedDiffusivity = true;
-        if((int)(tetraDiff.size())!=topology->getNbTetrahedra())
+        if(tetraDiff.size() != topology->getNbTetrahedra())
         {
             msg_error() <<"Wrong size of potential input vector.";
             return;
@@ -267,7 +267,7 @@ template <class DataTypes>
 typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(unsigned int i)
 {
     sofa::helper::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
-    if((int) i <= topology->getNbTetrahedra())
+    if(i <= topology->getNbTetrahedra())
     {
         return tetraDiff[i];
     }
@@ -291,7 +291,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
     sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
     tetraDiff.clear();
     tetraDiff.resize(topology->getNbTetrahedra());
-    for(int i=0; i<topology->getNbTetrahedra(); i++)
+    for(size_t i=0; i<topology->getNbTetrahedra(); i++)
         tetraDiff[i] = d_constantDiffusionCoefficient.getValue();
     d_tetraDiffusionCoefficient.endEdit();
 
@@ -309,7 +309,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
 
     // Save the new diffusion coefficient for each tetrahedron
     sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
-    for(int i=0; i<topology->getNbTetrahedra(); i++)
+    for(size_t i=0; i<topology->getNbTetrahedra(); i++)
         tetraDiff[i] = val[i];
     d_tetraDiffusionCoefficient.endEdit();
 
