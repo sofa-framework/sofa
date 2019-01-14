@@ -217,13 +217,6 @@ const std::string& Utils::getExecutableDirectory()
     return path;
 }
 
-
-const std::string& Utils::getPluginDirectory()
-{
-    static const std::string path = system::PluginRepository.getFirstPath();
-    return path;
-}
-
 static std::string computeSofaPathPrefix()
 {
     char* pathVar = getenv("SOFA_ROOT");
