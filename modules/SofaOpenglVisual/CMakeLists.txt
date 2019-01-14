@@ -30,7 +30,6 @@ list(APPEND SOURCE_FILES
     OglColorMap.cpp
     CompositingVisualLoop.cpp
     DataDisplay.cpp
-    OglGrid.cpp
     OglLabel.cpp
     OglModel.cpp
     PointSplatModel.cpp
@@ -78,23 +77,6 @@ if(SOFA_HAVE_GLEW)
         SlicedVolumetricModel.cpp
         VisualManagerPass.cpp
         VisualManagerSecondaryPass.cpp
-        )
-endif()
-
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        OglCylinderModel.h
-        OglGrid.h
-        OglRenderingSRGB.h
-        OglLineAxis.h
-        OglSceneFrame.h
-        )
-    list(APPEND SOURCE_FILES
-        OglCylinderModel.cpp
-        OglGrid.cpp
-        OglRenderingSRGB.cpp
-        OglLineAxis.cpp
-        OglSceneFrame.cpp
         )
 endif()
 
