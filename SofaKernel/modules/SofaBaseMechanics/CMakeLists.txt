@@ -74,11 +74,5 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_MECHANICS")
 
-## Hand-crafted install rules for the headers, to preserve the directory structure
-foreach(HEADER ${HEADER_FILES})
-    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
-endforeach(HEADER HEADERS)
-
 ## Will create duplicates of SofaBaseMechanics/BarycentricMappers/*.{h,inl} in SofaBaseMechanics/
 sofa_install_targets(SofaBase ${PROJECT_NAME} ${PROJECT_NAME})
