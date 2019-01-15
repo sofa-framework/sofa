@@ -84,7 +84,7 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
     
     const std::string& tmp = ss.str();
 
-#ifdef _WIN32
+#ifdef WIN32
     _ffmpeg = _popen(tmp.c_str(), "wb");
 #else
     _ffmpeg = popen(tmp.c_str(), "b");
@@ -115,7 +115,12 @@ void VideoRecorderFFMPEG::addFrame()
 
 void VideoRecorderFFMPEG::finishVideo()
 {    
+#ifdef WIN32
     _pclose(_ffmpeg);
+#else
+    pclose(_ffmpeg);
+#endif
+    
     delete _buffer;
     std::cout << p_filename << " written" << std::endl;
 }
