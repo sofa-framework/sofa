@@ -63,7 +63,7 @@ find_program(FFMPEG_EXEC
 if (FFMPEG_EXEC )
 	message(STATUS "-- FFmpeg executable was found  "  ${FFMPEG_EXEC})
 	set(FFMPEG_EXEC_FOUND TRUE)
-	set(FFMPEG_EXEC_FILE "${FFMPEG_EXEC}")
+	set(FFMPEG_EXEC_FILE ${FFMPEG_EXEC})
 	add_definitions("-DSOFA_HAVE_FFMPEG_EXEC")
 	add_definitions( "-DFFMPEG_EXEC_FILE=\"${FFMPEG_EXEC_FILE}\"" )
 endif()

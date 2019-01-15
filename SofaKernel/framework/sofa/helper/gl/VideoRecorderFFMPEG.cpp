@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <sofa/helper/gl/VideoRecorderFFMPEG.h>
 
-//#include <sys/types.h>
-//#include <sys/stat.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>      //popen
 #include <cstdio>		// sprintf and friends
 #include <sstream>
 
@@ -87,7 +87,7 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 #ifdef _WIN32
     _ffmpeg = _popen(tmp.c_str(), "wb");
 #else
-    _ffmpeg = _popen(tmp.c_str(), "b");
+    _ffmpeg = popen(tmp.c_str(), "b");
 #endif
 
     std::cout << "Start Recording in " << filename << std::endl;
