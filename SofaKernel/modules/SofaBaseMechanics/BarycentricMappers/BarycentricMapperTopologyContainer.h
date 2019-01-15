@@ -90,6 +90,20 @@ public:
 
 protected:
 
+    struct HashEntry
+    {
+      HashEntry(const int& xId, const int& yId, const int& zId, const int& elementId)
+      {
+          this->xId=xId;
+          this->yId=yId;
+          this->zId=zId;
+          this->elementId=elementId;
+      }
+
+      int xId,yId,zId; // cell indices
+      int elementId;
+    };
+
     using Inherit1::m_fromTopology;
 
     topology::PointData< helper::vector<MappingDataType > > d_map;
@@ -100,7 +114,7 @@ protected:
     Real m_gridCellSize;
     Real m_convFactor;
     unsigned int m_hashTableSize;
-    helper::vector<helper::vector<unsigned int>> m_hashTable;
+    helper::vector<helper::vector<HashEntry>> m_hashTable;
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
 
@@ -120,13 +134,13 @@ protected:
 
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    unsigned int getHashIndexFromCoord(const Vector3& x);
+    unsigned int getHashIndexFromCoord(const Vector3& pos);
     unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z);
-    defaulttype::Vec3i getGridIndices(const Vector3& x);
-    void addToHashTable(const unsigned int& hId, const unsigned int& vertexId);
+    defaulttype::Vec3i getGridIndices(const Vector3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
+    bool sameGridCell(const HashEntry& entry, const Vector3& pos);
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)

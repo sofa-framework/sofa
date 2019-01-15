@@ -120,11 +120,11 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
 
         for(unsigned int j=0; j<element.size(); j++)
         {
-            unsigned int elementId = element[j];
+            unsigned int pointId = element[j];
             for(int k=0; k<3; k++)
             {
-                if(in[elementId][k]<min[k]) min[k]=in[elementId][k];
-                if(in[elementId][k]>max[k]) max[k]=in[elementId][k];
+                if(in[pointId][k]<min[k]) min[k]=in[pointId][k];
+                if(in[pointId][k]>max[k]) max[k]=in[pointId][k];
             }
         }
 
@@ -136,7 +136,8 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
                 for(int l=i_min[2]; l<=i_max[2]; l++)
                 {
                     unsigned int h = getHashIndexFromIndices(j,k,l);
-                    addToHashTable(h, i);
+                    HashEntry entry(j,k,l,i);
+                    m_hashTable[h].push_back(entry);
                 }
     }
 }
@@ -180,17 +181,21 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
         unsigned int h = getHashIndexFromCoord(outPos);
         for ( unsigned int j=0; j<m_hashTable[h].size(); j++)
         {
-            unsigned int e = m_hashTable[h][j];
-            Vec3d bary = bases[e] * ( outPos - in[elements[e][0]] );
-            double dist;
-            computeDistance(dist, bary);
-            if ( dist>0 )
-                dist = ( outPos-centers[e] ).norm2();
-            if ( dist<distance )
+            HashEntry entry = m_hashTable[h][j];
+            if(sameGridCell(entry, outPos))
             {
-                baryCoords = bary;
-                distance = dist;
-                elementIndex = int(e);
+                unsigned int e = entry.elementId;
+                Vec3d bary = bases[e] * ( outPos - in[elements[e][0]] );
+                double dist;
+                computeDistance(dist, bary);
+                if ( dist>0 )
+                    dist = ( outPos-centers[e] ).norm2();
+                if ( dist<distance )
+                {
+                    baryCoords = bary;
+                    distance = dist;
+                    elementIndex = int(e);
+                }
             }
         }
 
@@ -411,10 +416,10 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
 
 
 template <class In, class Out, class MappingDataType, class Element>
-unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getHashIndexFromCoord(const Vector3& x)
+unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getHashIndexFromCoord(const Vector3& pos)
 {
-    Vec3i v = getGridIndices(x);
-    return getHashIndexFromIndices(v[0],v[1],v[2]);
+    Vec3i gridIds = getGridIndices(pos);
+    return getHashIndexFromIndices(gridIds[0],gridIds[1],gridIds[2]);
 }
 
 template <class In, class Out, class MappingDataType, class Element>
@@ -430,21 +435,22 @@ unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>:
 }
 
 template <class In, class Out, class MappingDataType, class Element>
-Vec3i BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getGridIndices(const Vector3& x)
+bool BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::sameGridCell(const HashEntry& entry, const Vector3& pos)
+{
+    Vec3i gridIds = getGridIndices(pos);
+    return (gridIds[0]==entry.xId && gridIds[1]==entry.yId && gridIds[2]==entry.zId);
+}
+
+template <class In, class Out, class MappingDataType, class Element>
+Vec3i BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getGridIndices(const Vector3& pos)
 {
     Vec3i i_x;
     for(int i=0; i<3; i++)
-        i_x[i]=floor(x[i]*m_convFactor);
+        i_x[i]=floor(pos[i]*m_convFactor);
 
     return i_x;
 }
 
-template <class In, class Out, class MappingDataType, class Element>
-void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::addToHashTable(const unsigned int& hId, const unsigned int& vertexId)
-{
-    if(hId<m_hashTableSize)
-        m_hashTable[hId].push_back(vertexId);
-}
 
 template<class In, class Out, class MappingData, class Element>
 std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingData, Element> &b )
