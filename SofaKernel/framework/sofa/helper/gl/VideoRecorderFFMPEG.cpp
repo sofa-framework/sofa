@@ -125,7 +125,7 @@ void VideoRecorderFFMPEG::finishVideo()
     std::cout << p_filename << " written" << std::endl;
 }
 
-std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, const unsigned int bitrate, std::string& extension)
+std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, const unsigned int bitrate, const std::string& extension)
 {
     std::string filename;
     char buf[32];

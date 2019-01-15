@@ -77,7 +77,7 @@ public:
     
     void setPrefix(const std::string v) { _prefix = v; }
 
-    std::string findFilename(const unsigned int bitrate, const unsigned int framerate, std::string& extension);
+    std::string findFilename(const unsigned int bitrate, const unsigned int framerate, const std::string& extension);
 
 protected:
 
