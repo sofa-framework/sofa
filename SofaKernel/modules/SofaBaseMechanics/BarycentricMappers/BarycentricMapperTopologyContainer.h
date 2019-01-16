@@ -39,6 +39,7 @@ namespace _barycentricmappertopologycontainer_
 
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3i;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
@@ -127,20 +128,16 @@ protected:
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
-    void exhaustiveSearch ( defaulttype::Vec3d outPos,
-                            const typename In::VecCoord& in,
-                            const helper::vector<Mat3x3d>& bases,
-                            const helper::vector<Vector3>& centers);
-
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
     unsigned int getHashIndexFromCoord(const Vector3& pos);
+    unsigned int getHashIndexFromIndices(const Vec3i& ids);
     unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z);
     defaulttype::Vec3i getGridIndices(const Vector3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
-    bool sameGridCell(const HashEntry& entry, const Vector3& pos);
+    bool sameGridCell(const HashEntry& entry, const Vec3i& gridIds);
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
