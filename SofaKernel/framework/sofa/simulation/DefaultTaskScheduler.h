@@ -106,7 +106,7 @@ namespace sofa  {
 
             bool start(DefaultTaskScheduler* const& taskScheduler);
 
-            std::thread* create_and_attach(DefaultTaskScheduler* const& /*taskScheduler*/);
+            std::thread* create_and_attach(DefaultTaskScheduler* const& taskScheduler);
 
             void runTask(Task* task);
 

@@ -76,8 +76,9 @@ namespace sofa
 
         // called once by each thread used
         // by the TaskScheduler
-        bool runThreadSpecificTask(const Task* /*task*/)
+        bool runThreadSpecificTask(const Task* task)
         {
+            SOFA_UNUSED(task);
             std::atomic<int> atomicCounter;
             TaskScheduler* scheduler = TaskScheduler::getInstance();
             atomicCounter = scheduler->getThreadCount();

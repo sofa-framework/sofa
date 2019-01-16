@@ -242,8 +242,9 @@ namespace sofa
 			return  true;
 		}
 
-        std::thread* WorkerThread::create_and_attach(DefaultTaskScheduler* const & /*taskScheduler*/)
+        std::thread* WorkerThread::create_and_attach(DefaultTaskScheduler* const & taskScheduler)
         {
+            SOFA_UNUSED(taskScheduler);
             _stdThread = std::thread(std::bind(&WorkerThread::run, this));
             return &_stdThread;
         }
