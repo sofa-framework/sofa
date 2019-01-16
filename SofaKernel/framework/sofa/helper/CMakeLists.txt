@@ -145,6 +145,7 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
+    StringUtils.cpp
     TagFactory.cpp
     UnitTest.cpp
     Utils.cpp

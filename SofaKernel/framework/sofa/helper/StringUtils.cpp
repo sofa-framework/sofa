@@ -19,54 +19,66 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
+#include <cstring>
+#include "StringUtils.h"
 
-#include <string>
-#include <vector>
-#include <sstream>
-#include <sofa/config.h>
 namespace sofa
 {
 
 namespace helper
 {
 
-///@brief Split one string by a given delimiter and returns that into a std::vector
-std::vector<std::string> SOFA_HELPER_API split(const std::string& s, char delimiter);
-
-///@brief Join a std::vector into a single string, separated by the provided delimiter.
-///
-/// Taken from https://github.com/ekg/split/blob/master/join.h (I don't know what is the licence
-/// but thank for the author.
-template<class S, class T>
-std::string join(std::vector<T>& elems, S& delim) {
-    std::stringstream ss;
-    if(elems.empty())
-        return "";
-    typename std::vector<T>::iterator e = elems.begin();
-    ss << *e++;
-    for (; e != elems.end(); ++e) {
-        ss << delim << *e;
-    }
-    return ss.str();
+/// Taken from https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+std::vector<std::string> split(const std::string& s, char delimiter)
+{
+   std::vector<std::string> tokens;
+   std::string token;
+   std::istringstream tokenStream(s);
+   while (std::getline(tokenStream, token, delimiter))
+   {
+      tokens.push_back(token);
+   }
+   return tokens;
 }
-///@brief returns a copy of the string given in argument.
-SOFA_HELPER_API char* getAStringCopy(const char *c);
 
-///@brief replace all occurence of "search" by the "replace" string.
-SOFA_HELPER_API void replaceAll(std::string& str,
-                                const std::string& search,
-                                const std::string& replace);
+char* getAStringCopy(const char *c)
+{
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
 
-///@brief returns true if the prefix if located at the beginning of the "full" string.
-SOFA_HELPER_API bool starts_with(const std::string& prefix, const std::string& full);
+void replaceAll(std::string& str, const std::string& search, const std::string& replace)
+{
+    size_t pos = 0;
+    while((pos = str.find(search, pos)) != std::string::npos)
+    {
+        str.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+}
 
-///@brief returns true if the suffix if located at the end of the "full" string.
-SOFA_HELPER_API bool ends_with(const std::string& suffix, const std::string& full);
+bool ends_with(const std::string& suffix, const std::string& full)
+{
+    const std::size_t lf = full.length();
+    const std::size_t ls = suffix.length();
+
+    if(lf < ls) return false;
+
+    return (0 == full.compare(lf - ls, ls, suffix));
+}
+
+bool starts_with(const std::string& prefix, const std::string& full)
+{
+    const std::size_t lf = full.length();
+    const std::size_t lp = prefix.length();
+
+    if(lf < lp) return false;
+
+    return (0 == full.compare(0, lp, prefix));
+}
 
 } // namespace helper
 
 } // namespace sofa
 
-#endif //SOFA_HELPER_STRING_UTILS_H
