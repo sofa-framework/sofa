@@ -7,8 +7,6 @@ find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 
 find_package(PythonLibs 2.7 REQUIRED)
-sofa_create_target(PythonLibs SofaPython "${PYTHON_LIBRARIES}" "${PYTHON_INCLUDE_DIRS}")
-
 set(SOFA_HAVE_PYTHON "@SOFA_HAVE_PYTHON@")
 
 if(NOT TARGET SofaPython)
