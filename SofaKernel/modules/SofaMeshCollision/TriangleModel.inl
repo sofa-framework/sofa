@@ -765,7 +765,7 @@ void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFil
 }
 
 template<class DataTypes>
-int TTriangleModel<DataTypes>::getTriangleFlags(int i)
+int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];

@@ -43,7 +43,6 @@ int AttachConstraintClass = core::RegisterObject("Attach given pair of particles
         .add< AttachConstraint<Vec1Types> >()
         .add< AttachConstraint<Rigid3Types> >()
         .add< AttachConstraint<Rigid2Types> >()
-
         ;
 
 template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec3Types>;

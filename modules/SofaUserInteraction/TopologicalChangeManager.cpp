@@ -231,7 +231,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
             return 0;
         }
 
-        int nbt = topo_curr->getNbTriangles();
+        size_t nbt = topo_curr->getNbTriangles();
         for (unsigned int i = 0; i<tItems.size(); ++i)
         {
             items.insert(tItems[i] < nbt ? tItems[i] : (tItems[i] + nbt) / 2);

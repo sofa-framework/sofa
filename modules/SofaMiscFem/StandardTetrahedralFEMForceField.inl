@@ -226,17 +226,16 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints=p;
     }
-    int i;
 
     /// initialize the data structure associate with each tetrahedron
-    for (int i=0; i<_topology->getNbEdges(); i++)
+    for (size_t i=0; i<_topology->getNbEdges(); i++)
     {
         edgeInf[i].vertices[0] = (float) _topology->getEdge(i)[0];
         edgeInf[i].vertices[1] = (float) _topology->getEdge(i)[1];
     }
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<_topology->getNbTetrahedra();++i) {
+    for (size_t i=0;i<_topology->getNbTetrahedra();++i) {
             tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                         _topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
                         (const helper::vector< double >)0);

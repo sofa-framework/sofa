@@ -391,7 +391,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                                     ind_real_last = In2OutMap[last];
 
-                                    if((int) k != last)
+                                    if (k != last)
                                     {
 
                                         In2OutMap.erase(In2OutMap.find(k));
@@ -414,7 +414,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                     sout << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << last << sendl;
                                 }
 
-                                if( (int) ind_k[N-1] != ind_last)
+                                if (ind_k[N-1] != ind_last)
                                 {
 
                                     In2OutMap.erase(In2OutMap.find(Loc2GlobVec[ind_last]));
@@ -440,7 +440,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                                     ind_last = ind_last-1;
 
-                                    if( (int) ind_k[N-1-j] != ind_last)
+                                    if (ind_k[N-1-j] != ind_last)
                                     {
 
                                         ind_tmp = Loc2GlobVec[ind_k[N-1-j]];

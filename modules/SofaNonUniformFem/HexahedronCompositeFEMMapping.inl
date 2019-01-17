@@ -230,7 +230,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
 
     // les deplacements des noeuds grossiers
     helper::vector< sofa::defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
-    for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
+    for(topology::MeshTopology::HexahedronID i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
 // 		InCoord translation = computeTranslation( hexa, i );
@@ -307,7 +307,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
 
     // les deplacements des noeuds grossiers
     helper::vector< sofa::defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
-    for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
+    for(topology::MeshTopology::HexahedronID i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
 

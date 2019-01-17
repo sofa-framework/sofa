@@ -74,7 +74,7 @@ protected:
         ,initializedCubatureTables(false)
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(0.2f,1.0f,1.0f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::helper::types::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
         , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
@@ -285,7 +285,7 @@ public:
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
-    Data<sofa::defaulttype::Vec4f> _drawColor; ///< RGBA code color used to draw edges.
+    Data<sofa::helper::types::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles.
     Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
     Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
     Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals.

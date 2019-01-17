@@ -116,7 +116,7 @@ void Hexa2TetraTopologicalMapping::init()
             }
 
             // Tesselation of each cube into 6 tetrahedra
-            for (int i=0; i<nbcubes; i++)
+            for (size_t i=0; i<nbcubes; i++)
             {
                 core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
