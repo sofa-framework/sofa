@@ -55,27 +55,27 @@ public:
                 Real kd = 0);
 
     /// Attributes
-    int  m1, m2;                    /// the two extremities of the spring: masses m1 and m2
-    Real kd;                        /// damping factor
-    Vector torsion;                 /// torsion of the springs in axis/angle format
-    Vector lawfulTorsion;           /// projected torsion in allowed angles
-    Vector KT;                      /// linear stiffness
-    Vector KR;                      /// angular stiffness
-    defaulttype::Quat ref;          /// referential of the spring (p1) to use it in addSpringDForce()
+    int  m1, m2;                    ///< the two extremities of the spring: masses m1 and m2
+    Real kd;                        ///< damping factor
+    Vector torsion;                 ///< torsion of the springs in axis/angle format
+    Vector lawfulTorsion;           ///< projected torsion in allowed angles
+    Vector KT;                      ///< linear stiffness
+    Vector KR;                      ///< angular stiffness
+    defaulttype::Quat ref;          ///< referential of the spring (p1) to use it in addSpringDForce()
 
-    Vector  initTrans;              /// offset length of the spring
-    defaulttype::Quat initRot;      /// offset orientation of the spring
+    Vector  initTrans;              ///< offset length of the spring
+    defaulttype::Quat initRot;      ///< offset orientation of the spring
 
-    sofa::defaulttype::Vec<6,bool> freeMovements;	///defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
-    Real softStiffnessTrans;                        ///stiffness to apply on axis where the translations are free (default 0.0)
-    Real hardStiffnessTrans;                        ///stiffness to apply on axis where the translations are forbidden (default 10000.0)
-    Real softStiffnessRot;                          ///stiffness to apply on axis where the rotations are free (default 0.0)
-    Real hardStiffnessRot;                          ///stiffness to apply on axis where the rotations are forbidden (default 10000.0)
-    Real blocStiffnessRot;                          ///stiffness to apply on axis where the rotations are bloqued (=hardStiffnessRot/100)
+    sofa::defaulttype::Vec<6,bool> freeMovements;	///< defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
+    Real softStiffnessTrans;                        ///< stiffness to apply on axis where the translations are free (default 0.0)
+    Real hardStiffnessTrans;                        ///< stiffness to apply on axis where the translations are forbidden (default 10000.0)
+    Real softStiffnessRot;                          ///< stiffness to apply on axis where the rotations are free (default 0.0)
+    Real hardStiffnessRot;                          ///< stiffness to apply on axis where the rotations are forbidden (default 10000.0)
+    Real blocStiffnessRot;                          ///< stiffness to apply on axis where the rotations are bloqued (=hardStiffnessRot/100)
     bool needToInitializeTrans;
     bool needToInitializeRot;
 
-    sofa::defaulttype::Vec<6,Real> limitAngles; ///limit angles on rotation axis (default no limit)
+    sofa::defaulttype::Vec<6,Real> limitAngles; ///< limit angles on rotation axis (default no limit)
 
 
     /// Accessors
@@ -218,13 +218,9 @@ public:
 };
 
 #if  !defined(SOFA_JOINTSPRING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
+extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
 #endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3fTypes>;
-#endif
-#endif
+
 } // namespace interactionforcefield
 
 } // namespace component
