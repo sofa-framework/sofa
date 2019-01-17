@@ -345,10 +345,9 @@ int main(int argc, char** argv)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     // Output FileRepositories
-    msg_info("runSofa") << "PluginRepository paths:";
-    PluginRepository.print();
-    msg_info("runSofa") << "DataRepository paths:";
-    DataRepository.print();
+    msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
+    msg_info("runSofa") << "DataRepository paths = " << DataRepository.getPathsJoined();
+    msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
