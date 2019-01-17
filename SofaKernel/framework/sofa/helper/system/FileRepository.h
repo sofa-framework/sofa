@@ -88,6 +88,8 @@ public:
 
     const std::vector< std::string > &getPaths() const {return vpath;}
 
+    const std::string getPathsJoined();
+
     const std::string& getDirectAccessProtocolPrefix() const { return directAccessProtocolPrefix; }
     void setDirectAccessProtocolPrefix(const std::string& protocolPrefix) { directAccessProtocolPrefix = protocolPrefix; }
 
