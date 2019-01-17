@@ -147,51 +147,15 @@ template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     initHashing(in);
-
-    const helper::vector<Element>& elements = getElements();
-    helper::vector<Mat3x3d> bases;
-    helper::vector<Vector3> centers;
-
     this->clear ( int(out.size()) );
-    bases.resize ( elements.size() );
-    centers.resize ( elements.size() );
-
-    // Compute bases and centers of each element
-    for ( unsigned int e = 0; e < elements.size(); e++ )
-    {
-        Element element = elements[e];
-
-        Mat3x3d base;
-        computeBase(base,in,element);
-        bases[e] = base;
-
-        Vector3 center;
-        computeCenter(center,in,element);
-        centers[e] = center;
-    }
+    computeBasesAndCenters(in);
 
     // Compute distances to get nearest element and corresponding bary coef
+    const helper::vector<Element>& elements = getElements();
     for ( unsigned int i=0; i<out.size(); i++ )
     {
         Vector3 outPos = Out::getCPos(out[i]);
-        Vector3 baryCoords;
-        int elementIndex = -1;
-        double distance = std::numeric_limits<double>::max();
-
-        auto checkDistanceFromElement = [&] (unsigned int e)
-        {
-            Vector3 bary = bases[e] * ( outPos - in[elements[e][0]] );
-            double dist;
-            computeDistance(dist, bary);
-            if ( dist>0 )
-                dist = ( outPos-centers[e] ).norm2();
-            if ( dist<distance )
-            {
-                baryCoords = bary;
-                distance = dist;
-                elementIndex = int(e);
-            }
-        };
+        NearestParams nearestParams;
 
         // Search nearest element in grid cell
         Vec3i gridIds = getGridIndices(outPos);
@@ -202,16 +166,20 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
             if(sameGridCell(entry, gridIds))
             {
                 unsigned int e = entry.elementId;
-                checkDistanceFromElement(e);
+                Vector3 inPos = in[elements[e][0]];
+                checkDistanceFromElement(e, outPos, inPos, nearestParams);
             }
         }
 
-        if(elementIndex==-1) // No element in grid cell, perform exhaustive search
+        if(nearestParams.elementIndex==-1) // No element in grid cell, perform exhaustive search
         {
             for ( unsigned int e = 0; e < elements.size(); e++ )
-                checkDistanceFromElement(e);
+            {
+                Vector3 inPos = in[elements[e][0]];
+                checkDistanceFromElement(e, outPos, inPos, nearestParams);
+            }
         }
-        else if(abs(distance)>m_gridCellSize/2.) // Nearest element in grid cell may not be optimal, check neighbors
+        else if(abs(nearestParams.distance)>m_gridCellSize/2.) // Nearest element in grid cell may not be optimal, check neighbors
         {
             Vec3i centerGridIds = gridIds;
             for(int xId=-1; xId<=1; xId++)
@@ -226,15 +194,58 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
                             if(sameGridCell(entry, gridIds))
                             {
                                 unsigned int e = entry.elementId;
-                                checkDistanceFromElement(e);
+                                Vector3 inPos = in[elements[e][0]];
+                                checkDistanceFromElement(e, outPos, inPos, nearestParams);
                             }
                         }
                     }
         }
 
-        addPointInElement(elementIndex, baryCoords.ptr());
+        addPointInElement(nearestParams.elementIndex, nearestParams.baryCoords.ptr());
     }
 }
+
+
+template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::computeBasesAndCenters( const typename In::VecCoord& in )
+{
+    const helper::vector<Element>& elements = getElements();
+    m_bases.resize ( elements.size() );
+    m_centers.resize ( elements.size() );
+
+    for ( unsigned int e = 0; e < elements.size(); e++ )
+    {
+        Element element = elements[e];
+
+        Mat3x3d base;
+        computeBase(base,in,element);
+        m_bases[e] = base;
+
+        Vector3 center;
+        computeCenter(center,in,element);
+        m_centers[e] = center;
+    }
+}
+
+
+template <class In, class Out, class MappingDataType, class Element>
+void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::checkDistanceFromElement(unsigned int e,
+                                                                                                  const Vector3& outPos,
+                                                                                                  const Vector3& inPos,
+                                                                                                  NearestParams& nearestParams)
+{
+    Vector3 bary = m_bases[e] * ( outPos - inPos);
+    double dist;
+    computeDistance(dist, bary);
+    if ( dist>0 )
+        dist = ( outPos-m_centers[e] ).norm2();
+    if ( dist<nearestParams.distance )
+    {
+        nearestParams.baryCoords = bary;
+        nearestParams.distance = dist;
+        nearestParams.elementIndex = int(e);
+    }
+};
 
 
 template <class In, class Out, class MappingDataType, class Element>

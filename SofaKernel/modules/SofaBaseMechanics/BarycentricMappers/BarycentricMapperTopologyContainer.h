@@ -93,16 +93,29 @@ protected:
 
     struct HashEntry
     {
-      HashEntry(const int& xId, const int& yId, const int& zId, const int& elementId)
-      {
-          this->xId=xId;
-          this->yId=yId;
-          this->zId=zId;
-          this->elementId=elementId;
-      }
+        HashEntry(const int& xId, const int& yId, const int& zId, const int& elementId)
+        {
+            this->xId=xId;
+            this->yId=yId;
+            this->zId=zId;
+            this->elementId=elementId;
+        }
 
-      int xId,yId,zId; // cell indices
-      int elementId;
+        int xId,yId,zId; // cell indices
+        int elementId;
+    };
+
+    struct NearestParams
+    {
+        NearestParams()
+        {
+            distance = std::numeric_limits<double>::max();
+            elementIndex = -1;
+        }
+
+        Vector3 baryCoords;
+        double distance;
+        int elementIndex;
     };
 
     using Inherit1::m_fromTopology;
@@ -110,6 +123,9 @@ protected:
     topology::PointData< helper::vector<MappingDataType > > d_map;
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
+
+    helper::vector<Mat3x3d> m_bases;
+    helper::vector<Vector3> m_centers;
 
     // Spacial hashing utils
     Real m_gridCellSize;
@@ -128,6 +144,13 @@ protected:
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
+    void checkDistanceFromElement(unsigned int e,
+                                  const Vector3& outPos,
+                                  const Vector3& inPos,
+                                  NearestParams& nearestParams);
+
+    void computeBasesAndCenters( const typename In::VecCoord& in );
+
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
     unsigned int getHashIndexFromCoord(const Vector3& pos);
@@ -138,6 +161,7 @@ protected:
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
     bool sameGridCell(const HashEntry& entry, const Vec3i& gridIds);
+
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
