@@ -163,13 +163,13 @@ protected:
 #endif
 
 #ifdef SOFA_HAVE_FFMPEG_EXEC
-    sofa::helper::gl::VideoRecorderFFMPEG _videoRecorderFFMPEG;
+    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
 #elif SOFA_HAVE_FFMPEG
     sofa::helper::gl::VideoRecorder videoRecorder;
 #endif // SOFA_HAVE_FFMPEG_EXEC
 
     bool _video;
-    bool _isVideoButtonPressed;
+    bool m_isVideoButtonPressed;
     bool _axis;
     bool _fullScreen;
     int _background;

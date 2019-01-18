@@ -97,7 +97,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_V:
         // --- save video
     {
-        if (_isVideoButtonPressed == false)
+        if (m_isVideoButtonPressed == false)
         {
             if (!_video)
             {
@@ -115,10 +115,10 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                     unsigned int framerate = videoManager->getFramerate();
 
 #ifdef SOFA_HAVE_FFMPEG_EXEC
-                    std::string videoFilename = _videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, videoManager->getCodecExtension());
+                    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, videoManager->getCodecExtension());
                     int width = getQWidget()->width();
                     int height = getQWidget()->height();
-                    _videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
+                    m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
 #elif SOFA_HAVE_FFMPEG
                     std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
                     videoRecorder.init(videoFilename, framerate, bitrate, videoManager->getCodecName());
@@ -151,7 +151,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                 case SofaVideoRecorderManager::MOVIE:
                 {
 #ifdef SOFA_HAVE_FFMPEG_EXEC
-                    _videoRecorderFFMPEG.finishVideo();
+                    m_videoRecorderFFMPEG.finishVideo();
 #elif SOFA_HAVE_FFMPEG
                     videoRecorder.finishVideo();
 #endif //SOFA_HAVE_FFMPEG_EXEC
@@ -165,7 +165,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             _video = !_video;
         }
 
-        _isVideoButtonPressed = true;
+        m_isVideoButtonPressed = true;
         break;
     }
     case Qt::Key_W:
@@ -266,7 +266,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
     {
     case Qt::Key_V:
     {
-        _isVideoButtonPressed = false;
+        m_isVideoButtonPressed = false;
         break;
     }
     case Qt::Key_Shift:
@@ -472,7 +472,7 @@ void SofaViewer::captureEvent()
                 break;
             case SofaVideoRecorderManager::MOVIE :
 #ifdef SOFA_HAVE_FFMPEG_EXEC
-                _videoRecorderFFMPEG.addFrame();
+                m_videoRecorderFFMPEG.addFrame();
 #elif SOFA_HAVE_FFMPEG
                 videoRecorder.addFrame();
 #endif //SOFA_HAVE_FFMPEG_EXEC
