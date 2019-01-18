@@ -39,6 +39,7 @@ namespace component
 namespace topology
 {
 
+class TriangleSetTopologyModifier;
 
 /**
  * This class, called Tetra2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -49,7 +50,6 @@ namespace topology
  * Tetra2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
 */
-
 class SOFA_TOPOLOGY_MAPPING_API Tetra2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
@@ -85,7 +85,8 @@ protected:
     Data<bool> noNewTriangles; ///< If true no new triangles are being created
     Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
 
-    std::vector<unsigned int> addedTriangleIndex;
+    sofa::helper::vector<unsigned int> addedTriangleIndex;
+    TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };
 
 } // namespace topology
