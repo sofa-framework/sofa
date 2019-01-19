@@ -25,16 +25,6 @@
 #include <sofa/config.h>
 
 #include <sofa/simulation/TaskScheduler.h>
-//#include "Task.h"
-//#include "Locks.h"
-//
-//#include <thread>
-//#include <mutex>
-//#include <condition_variable>
-//#include <memory>
-//#include <map>
-//#include <deque>
-//#include <string> 
 
 
 namespace sofa
