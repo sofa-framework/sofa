@@ -33,6 +33,8 @@ set(HEADER_FILES
     MutationListener.h
     Node.h
     Node.inl
+	ParallelFor.h
+	ParallelFor2d.h
     ParallelVisitorScheduler.h
     PauseEvent.h
     PipelineImpl.h
@@ -97,6 +99,8 @@ set(SOURCE_FILES
     MechanicalVisitor.cpp
     MutationListener.cpp
     Node.cpp
+	ParallelFor.cpp
+	ParallelFor2d.cpp
     ParallelVisitorScheduler.cpp
     PauseEvent.cpp
     PipelineImpl.cpp
