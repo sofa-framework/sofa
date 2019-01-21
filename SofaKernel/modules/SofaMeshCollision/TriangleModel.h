@@ -137,9 +137,9 @@ public:
 protected:
     VecDeriv normals;
 
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles;
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles* p_triangles;
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles mytriangles;
+    sofa::core::topology::BaseMeshTopology::SeqTriangles my_triangles;
 
     bool needsUpdate;
     virtual void updateFromTopology();
@@ -147,13 +147,13 @@ protected:
     virtual void updateNormals();
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
 
-    core::behavior::MechanicalState<DataTypes>* mstate;
+    core::behavior::MechanicalState<DataTypes>* m_mstate;
     Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
     int meshRevision;
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
-    PointModel* mpoints;
+    PointModel* m_pointModels;
 
     TriangleLocalMinDistanceFilter *m_lmdFilter;
 
@@ -179,11 +179,11 @@ public:
 
     virtual void handleTopologyChange() override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
-    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
+    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return m_mstate; }
 
     const VecCoord& getX() const { return(getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()); }
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *triangles; }
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *p_triangles; }
     const VecDeriv& getNormals() const { return normals; }
 
     TriangleLocalMinDistanceFilter *getFilter() const;
@@ -232,42 +232,42 @@ inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index, helper::Re
 {}
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][0]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->p_triangles))[this->index][0]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][1]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->p_triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][2]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->p_triangles))[this->index][2]]; }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p(int i) const {
-    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][i]];
+    return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->p_triangles))[this->index][i]];
 }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::operator[](int i) const {
-    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][i]];
+    return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->p_triangles))[this->index][i]];
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1Free() const { return (*this->model->mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue())[(*(this->model->triangles))[this->index][0]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1Free() const { return (*this->model->m_mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue())[(*(this->model->p_triangles))[this->index][0]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2Free() const { return (*this->model->mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue())[(*(this->model->triangles))[this->index][1]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2Free() const { return (*this->model->m_mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue())[(*(this->model->p_triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3Free() const { return (*this->model->mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue())[(*(this->model->triangles))[this->index][2]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3Free() const { return (*this->model->m_mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue())[(*(this->model->p_triangles))[this->index][2]]; }
 
 template<class DataTypes>
-inline int TTriangle<DataTypes>::p1Index() const { return (*(this->model->triangles))[this->index][0]; }
+inline int TTriangle<DataTypes>::p1Index() const { return (*(this->model->p_triangles))[this->index][0]; }
 template<class DataTypes>
-inline int TTriangle<DataTypes>::p2Index() const { return (*(this->model->triangles))[this->index][1]; }
+inline int TTriangle<DataTypes>::p2Index() const { return (*(this->model->p_triangles))[this->index][1]; }
 template<class DataTypes>
-inline int TTriangle<DataTypes>::p3Index() const { return (*(this->model->triangles))[this->index][2]; }
+inline int TTriangle<DataTypes>::p3Index() const { return (*(this->model->p_triangles))[this->index][2]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v1() const { return (this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue())[(*(this->model->triangles))[this->index][0]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v1() const { return (this->model->m_mstate->read(core::ConstVecDerivId::velocity())->getValue())[(*(this->model->p_triangles))[this->index][0]]; }
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v2() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->triangles))[this->index][1]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v2() const { return this->model->m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->p_triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v3() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->triangles))[this->index][2]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v3() const { return this->model->m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->p_triangles))[this->index][2]]; }
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v(int i) const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->triangles))[this->index][i]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v(int i) const { return this->model->m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->p_triangles))[this->index][i]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TTriangle<DataTypes>::n() const { return this->model->normals[this->index]; }
@@ -278,11 +278,11 @@ template<class DataTypes>
 inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangleFlags(this->index); }
 
 template<class DataTypes>
-inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->m_mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 template<class DataTypes>
-inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][1]] +
-                                                                                                mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][2]])/((Real)(3.0)); }
+inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(p_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(p_triangles))[index][1]] +
+                                                                                                m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(p_triangles))[index][2]])/((Real)(3.0)); }
 typedef TTriangleModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 

@@ -50,12 +50,13 @@ namespace collision
 template<class DataTypes>
 TTriangleModel<DataTypes>::TTriangleModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
-    , mstate(NULL)
+    , m_mstate(NULL)
+    , m_topology(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , meshRevision(-1)
     , m_lmdFilter(NULL)
 {
-    triangles = &mytriangles;
+    p_triangles = &my_triangles;
     enum_type = TRIANGLE_TYPE;
 }
 
@@ -72,20 +73,21 @@ void TTriangleModel<DataTypes>::resize(int size)
 template<class DataTypes>
 void TTriangleModel<DataTypes>::init()
 {
-    _topology = this->getContext()->getMeshTopology();
+    m_topology = this->getContext()->getMeshTopology();
 
+    // TODO epernod 2019-01-21: Check if this call super is needed.
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
+    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
 
-    this->getContext()->get(mpoints);
+    this->getContext()->get(m_pointModels);
 
-    if (mstate==NULL)
+    if (m_mstate == NULL)
     {
         msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
         return;
     }
 
-    if (!_topology)
+    if (m_topology == NULL)
     {
         msg_error() << "No Topology found. TriangleModel requires a Triangular Topology in the same Node.";
         return;
@@ -97,10 +99,9 @@ void TTriangleModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
     }
 
-    //sout << "INFO_print : Col - init TRIANGLE " << sendl;
-    sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << sendl;
-    triangles = &_topology->getTriangles();
-    resize(_topology->getNbTriangles());
+
+    p_triangles = &m_topology->getTriangles();
+    resize(m_topology->getNbTriangles());
 
     updateFromTopology();
     updateNormals();
@@ -118,7 +119,6 @@ void TTriangleModel<DataTypes>::updateNormals()
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
-        //sout << i << " " << t.n() << sendl;
     }
 }
 
@@ -126,12 +126,12 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFromTopology()
 {
     //    needsUpdate = false;
-    const unsigned npoints = mstate->getSize();
-    const unsigned ntris = _topology->getNbTriangles();
-    const unsigned nquads = _topology->getNbQuads();
+    const unsigned npoints = m_mstate->getSize();
+    const unsigned ntris = m_topology->getNbTriangles();
+    const unsigned nquads = m_topology->getNbQuads();
     const unsigned newsize = ntris+2*nquads;
 
-    int revision = _topology->getRevision();
+    int revision = m_topology->getRevision();
     if (newsize==(unsigned)size && revision == meshRevision)
         return;
     meshRevision = revision;
@@ -143,16 +143,16 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     if (newsize == ntris)
     {
         // no need to copy the triangle indices
-        triangles = & _topology->getTriangles();
+        p_triangles = & m_topology->getTriangles();
     }
     else
     {
-        triangles = &mytriangles;
-        mytriangles.resize(newsize);
+        p_triangles = &my_triangles;
+        my_triangles.resize(newsize);
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
-            core::topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
+            core::topology::BaseMeshTopology::Triangle idx = m_topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
                 msg_error() << "Vertex index out of range in triangle " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] <<" ( total points=" << npoints << ")";
@@ -160,12 +160,12 @@ void TTriangleModel<DataTypes>::updateFromTopology()
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
             }
-            mytriangles[index] = idx;
+            my_triangles[index] = idx;
             ++index;
         }
         for (unsigned i=0; i<nquads; i++)
         {
-            core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
+            core::topology::BaseMeshTopology::Quad idx = m_topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
                 msg_error() << "Vertex index out of range in quad " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] << " " << idx[3] << " ( total points=" << npoints << ")";
@@ -174,13 +174,13 @@ void TTriangleModel<DataTypes>::updateFromTopology()
                 if (idx[2] >= npoints) idx[2] = npoints-1;
                 if (idx[3] >= npoints) idx[3] = npoints-1;
             }
-            mytriangles[index][0] = idx[1];
-            mytriangles[index][1] = idx[2];
-            mytriangles[index][2] = idx[0];
+            my_triangles[index][0] = idx[1];
+            my_triangles[index][1] = idx[2];
+            my_triangles[index][2] = idx[0];
             ++index;
-            mytriangles[index][0] = idx[3];
-            mytriangles[index][1] = idx[0];
-            mytriangles[index][2] = idx[2];
+            my_triangles[index][0] = idx[3];
+            my_triangles[index][1] = idx[0];
+            my_triangles[index][2] = idx[2];
             ++index;
         }
     }
@@ -192,15 +192,15 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
 {
 #if 0
-    if (ntri < 0) ntri = triangles->size();
-    //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
-    vector<bool> pflags(mstate->getSize());
+    if (ntri < 0) ntri = p_triangles->size();
+    //VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
+    //VecDeriv& v = m_mstate->read(core::ConstVecDerivId::velocity())->getValue();
+    vector<bool> pflags(m_mstate->getSize());
     std::set<std::pair<int,int> > eflags;
-    for (unsigned i=0; i<triangles->size(); i++)
+    for (unsigned i=0; i<p_triangles->size(); i++)
     {
         int f = 0;
-        topology::Triangle t = (*triangles)[i];
+        topology::Triangle t = (*p_triangles)[i];
         if (!pflags[t[0]])
         {
             f |= FLAG_P1;
@@ -238,8 +238,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 {
 
     // We use the same triangle array as the topology -> only resize and recompute flags
-    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=m_topology->endChange();
     //elems.handleTopologyEvents(itBegin,itEnd);
 
     while( itBegin != itEnd )
@@ -254,8 +254,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
         {
             updateFromTopology();
 
-            sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
-            resize(_topology->getNbTriangles());
+            msg_info() << "TriangleModel: now " << m_topology->getNbTriangles() << " triangles.";
+            resize(m_topology->getNbTriangles());
             needsUpdate=true;
             updateFlags();            
             break;
@@ -263,7 +263,6 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
         /*
         case core::topology::TRIANGLESADDED:
         {
-            //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
             Triangle t(this, size - ta->getNbAddedTriangles() + i);
@@ -287,8 +286,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
     if (topoMod)   // dynamic topology
     {
 
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
 
         while( itBegin != itEnd )
@@ -301,7 +300,6 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
             case core::topology::ENDING_EVENT:
             {
-                //sout << "INFO_print : Col - ENDING_EVENT" << sendl;
                 needsUpdate=true;
                 break;
             }
@@ -309,14 +307,13 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
             case core::topology::TRIANGLESADDED:
             {
-                //sout << "INFO_print : Col - TRIANGLESADDED" << sendl;
                 TriangleInfo t;
                 const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
                 for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
                 {
-                    mytriangles.push_back(ta->triangleArray[i]);
+                    my_triangles.push_back(ta->triangleArray[i]);
                 }
-                resize( mytriangles.size());
+                resize( my_triangles.size());
                 needsUpdate=true;
 
                 break;
@@ -324,11 +321,10 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
             case core::topology::TRIANGLESREMOVED:
             {
-                //sout << "INFO_print : Col - TRIANGLESREMOVED" << sendl;
                 unsigned int last;
                 unsigned int ind_last;
 
-                last= _topology->getNbPoints() - 1;
+                last= m_topology->getNbPoints() - 1;
 
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
 
@@ -344,9 +340,9 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                     elems[ind_k] = elems[last];
                     elems[last] = tmp;
 
-                    tmp2 = mytriangles[ind_k];
-                    mytriangles[ind_k] = mytriangles[last];
-                    mytriangles[last] = tmp2;
+                    tmp2 = my_triangles[ind_k];
+                    my_triangles[ind_k] = my_triangles[last];
+                    my_triangles[last] = tmp2;
 
                     ind_last = elems.size() - 1;
 
@@ -357,12 +353,12 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                         elems[last] = elems[ind_last];
                         elems[ind_last] = tmp;
 
-                        tmp2 = mytriangles[last];
-                        mytriangles[last] = mytriangles[ind_last];
-                        mytriangles[ind_last] = tmp2;
+                        tmp2 = my_triangles[last];
+                        my_triangles[last] = my_triangles[ind_last];
+                        my_triangles[ind_last] = tmp2;
                     }
 
-                    mytriangles.resize( elems.size() - 1 );
+                    my_triangles.resize( elems.size() - 1 );
                     resize( elems.size() - 1 );
 
                     --last;
@@ -376,11 +372,10 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
             case core::topology::POINTSREMOVED:
             {
-                //sout << "INFO_print : Col - POINTSREMOVED" << sendl;
-                if (_topology->getNbTriangles()>0)
+                if (m_topology->getNbTriangles()>0)
                 {
 
-                    unsigned int last = _topology->getNbPoints() -1;
+                    unsigned int last = m_topology->getNbPoints() -1;
 
                     unsigned int i,j;
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
@@ -410,46 +405,46 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell=_topology->getTrianglesAroundVertex(lastIndexVec[i]);
+                        const sofa::helper::vector<unsigned int> &shell=m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
                         for (j=0; j<shell.size(); ++j)
                         {
 
                             unsigned int ind_j =shell[j];
 
-                            if ((unsigned)mytriangles[ind_j][0]==last)
-                                mytriangles[ind_j][0]=tab[i];
-                            else if ((unsigned)mytriangles[ind_j][1]==last)
-                                mytriangles[ind_j][1]=tab[i];
-                            else if ((unsigned)mytriangles[ind_j][2]==last)
-                                mytriangles[ind_j][2]=tab[i];
+                            if ((unsigned)my_triangles[ind_j][0]==last)
+                                my_triangles[ind_j][0]=tab[i];
+                            else if ((unsigned)my_triangles[ind_j][1]==last)
+                                my_triangles[ind_j][1]=tab[i];
+                            else if ((unsigned)my_triangles[ind_j][2]==last)
+                                my_triangles[ind_j][2]=tab[i];
                         }
 
                         if (debug_mode)
                         {
 
-                            for (unsigned int j_loc=0; j_loc<mytriangles.size(); ++j_loc)
+                            for (unsigned int j_loc=0; j_loc<my_triangles.size(); ++j_loc)
                             {
 
                                 bool is_forgotten = false;
-                                if ((unsigned)mytriangles[j_loc][0]==last)
+                                if ((unsigned)my_triangles[j_loc][0]==last)
                                 {
-                                    mytriangles[j_loc][0]=tab[i];
+                                    my_triangles[j_loc][0]=tab[i];
                                     is_forgotten=true;
 
                                 }
                                 else
                                 {
-                                    if ((unsigned)mytriangles[j_loc][1]==last)
+                                    if ((unsigned)my_triangles[j_loc][1]==last)
                                     {
-                                        mytriangles[j_loc][1]=tab[i];
+                                        my_triangles[j_loc][1]=tab[i];
                                         is_forgotten=true;
 
                                     }
                                     else
                                     {
-                                        if ((unsigned)mytriangles[j_loc][2]==last)
+                                        if ((unsigned)my_triangles[j_loc][2]==last)
                                         {
-                                            mytriangles[j_loc][2]=tab[i];
+                                            my_triangles[j_loc][2]=tab[i];
                                             is_forgotten=true;
                                         }
                                     }
@@ -469,7 +464,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
                                     if(!is_in_shell)
                                     {
-                                        sout << "INFO_print : Col - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << sendl;
+                                        msg_info() << "INFO_print : Col - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten;
                                     }
 
                                 }
@@ -491,20 +486,18 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
             case core::topology::POINTSRENUMBERING:
             {
-                //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
-
-                if (_topology->getNbTriangles()>0)
+                if (m_topology->getNbTriangles()>0)
                 {
 
                     unsigned int i;
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-                    for ( i = 0; i < mytriangles.size(); ++i)
+                    for ( i = 0; i < my_triangles.size(); ++i)
                     {
-                        mytriangles[i][0]  = tab[mytriangles[i][0]];
-                        mytriangles[i][1]  = tab[mytriangles[i][1]];
-                        mytriangles[i][2]  = tab[mytriangles[i][2]];
+                        my_triangles[i][0]  = tab[my_triangles[i][0]];
+                        my_triangles[i][1]  = tab[my_triangles[i][1]];
+                        my_triangles[i][2]  = tab[my_triangles[i][2]];
                     }
 
                 }
@@ -520,7 +513,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 break;
             }; // switch( changeType )
 
-            mytriangles.resize( elems.size() ); // not necessary
+            my_triangles.resize( elems.size() ); // not necessary
             resize( elems.size() ); // not necessary
 
             ++itBegin;
@@ -542,7 +535,6 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,
     vparams->drawTool()->setLightingEnabled(true);
     vparams->drawTool()->drawTriangle( t.p1(), t.p2(), t.p3(), t.n() );
     vparams->drawTool()->setLightingEnabled(false);
-
 }
 
 
@@ -551,7 +543,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        //if( size != _topology->getNbTriangles())
+        //if( size != m_topology->getNbTriangles())
         //  updateFromTopology();
 
         if (bothSide.getValue() || vparams->displayFlags().getShowWireFrame())
@@ -609,7 +601,7 @@ bool TTriangleModel<DataTypes>::canCollideWithElement(int index, CollisionModel*
     if (this->getContext() != model2->getContext()) return true;
 
     Element t(this,index);
-    if (model2 == mpoints)
+    if (model2 == m_pointModels)
     {
         // if point belong to the triangle, return false
         if ( index2==t.p1Index() || index2==t.p2Index() || index2==t.p3Index())
@@ -650,7 +642,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 
     needsUpdate=false;
     defaulttype::Vector3 minElem, maxElem;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const bool calcNormals = computeNormals.getValue();
 
@@ -663,6 +655,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
         for (int i=0; i<size; i++)
         {
             Element t(this,i);
+
             const defaulttype::Vector3& pt1 = x[t.p1Index()];
             const defaulttype::Vector3& pt2 = x[t.p2Index()];
             const defaulttype::Vector3& pt3 = x[t.p3Index()];
@@ -768,22 +761,22 @@ template<class DataTypes>
 int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
-    sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
+    sofa::core::topology::BaseMeshTopology::Triangle t = (*p_triangles)[i];
 
-    if (i < _topology->getNbTriangles())
+    if (i < m_topology->getNbTriangles())
     {
         for (unsigned int j=0; j<3; ++j)
         {
-            const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = _topology->getTrianglesAroundVertex(t[j]);
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = m_topology->getTrianglesAroundVertex(t[j]);
             if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
                 f |= (FLAG_P1 << j);
         }
 
-        const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
+        const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = m_topology->getEdgesInTriangle(i);
 
         for (unsigned int j=0; j<3; ++j)
         {
-            const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& tae = _topology->getTrianglesAroundEdge(e[j]);
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& tae = m_topology->getTrianglesAroundEdge(e[j]);
             if (tae[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
                 f |= (FLAG_E23 << j);
             if (tae.size() == 1)
