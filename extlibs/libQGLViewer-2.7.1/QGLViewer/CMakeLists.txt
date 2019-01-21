@@ -67,7 +67,6 @@ if(Qt5Core_FOUND)
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
-    message("QT_LIBRARIES_DIR = ${QT_LIBRARIES_DIR}")
     # Get Qt plugins dir
     list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
     if(TARGET ${QT_PLUGIN_ANY})
@@ -80,7 +79,6 @@ if(Qt5Core_FOUND)
             set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
         endif()
     endif()
-    message("QT_PLUGINS_DIR = ${QT_PLUGINS_DIR}")
     # Install Qt plugins
     install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
     # Install Qt XCB libraries
