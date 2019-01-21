@@ -6,9 +6,9 @@ set(RESOURCE_FILES
     )
 
 if(APPLE)
-    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSOFA.icns")
+    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.icns")
 else()
-    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sofa.rc")
+    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.rc")
 endif()
 
 include(cmake/GeneratePluginConfig.cmake)
