@@ -81,13 +81,13 @@ void TTriangleModel<DataTypes>::init()
 
     if (mstate==NULL)
     {
-        serr << "TriangleModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
         return;
     }
 
     if (!_topology)
     {
-        serr << "TriangleModel requires a BaseMeshTopology" << sendl;
+        msg_error() << "No Topology found. TriangleModel requires a Triangular Topology in the same Node.";
         return;
     }
 
@@ -155,7 +155,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             core::topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
-                serr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")"<<sendl;
+                msg_error() << "Vertex index out of range in triangle " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] <<" ( total points=" << npoints << ")";
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
@@ -168,7 +168,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
-                serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
+                msg_error() << "Vertex index out of range in quad " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] << " " << idx[3] << " ( total points=" << npoints << ")";
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
