@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en_US</string>
+	<key>CFBundleExecutable</key>
+	<string>runSofa</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Created by the SOFA Team</string>
+	<key>CFBundleIconFile</key>
+	<string>runSOFA.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.sofa-framework.runsofa</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>runSOFA</string>
+	<key>CFBundleDisplayName</key>
+	<string>SOFA Framework - Real-time multi-physics simulation</string>
+	<key>CFBundleVersion</key>
+	<string>@Sofa_VERSION@</string>
+	<key>CFBundleShortVersionString</key>
+	<string>v@Sofa_VERSION@</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>LGPL + GPL</string>
+	<key>CSResourcesFileMapped</key>
+	<false/>
+</dict>
+</plist>

@@ -110,14 +110,14 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 ## Boost
 # required boost libraries
 find_package(Boost
-    REQUIRED system filesystem locale program_options
+    REQUIRED system filesystem locale program_options chrono atomic
     OPTIONAL_COMPONENTS thread date_time
     )
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
-set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS})
+set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
@@ -153,8 +153,10 @@ if(SOFA_HAVE_BOOST_SYSTEM
 
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BOOST_TARGETS})
     sofa_install_libraries_from_targets(${BOOST_TARGETS})
+    sofa_install_libraries(${Boost_CHRONO_LIBRARY} ${Boost_ATOMIC_LIBRARY})
     if(WIN32)
         sofa_copy_libraries_from_targets(${BOOST_TARGETS})
+        sofa_copy_libraries(${Boost_CHRONO_LIBRARY} ${Boost_ATOMIC_LIBRARY})
     endif()
 endif()
 

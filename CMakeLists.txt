@@ -78,7 +78,7 @@ if(UNIX)
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
 
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
     endif()
 endif(UNIX)
@@ -488,6 +488,11 @@ if(CPACK_BINARY_IFW)
         "https://www.sofa-framework.org/community/forum/" "SOFA Forum")
 endif()
 #######################
+
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    find_package(ICU COMPONENTS data i18n uc)
+    sofa_install_libraries(${ICU_LIBRARIES})
+endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
