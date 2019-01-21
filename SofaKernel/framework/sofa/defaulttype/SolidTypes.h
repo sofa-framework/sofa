@@ -93,7 +93,6 @@ public:
             return SpatialVector( lineVec *a, freeVec * a);
         }
 
-        //template<class Real2>
         SpatialVector& operator *= ( Real a )
         {
             lineVec *=a;

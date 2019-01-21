@@ -38,14 +38,10 @@ using namespace sofa::defaulttype;
 
 
 int FixedRotationConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
-
         .add< FixedRotationConstraint<Rigid3Types> >()
-
         ;
 
 template class FixedRotationConstraint<Rigid3Types>;
-
-
 
 } // namespace projectiveconstraintset
 

@@ -131,8 +131,6 @@ void LinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv moveme
 }
 
 // -- Constraint interface
-
-
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::init()
 {

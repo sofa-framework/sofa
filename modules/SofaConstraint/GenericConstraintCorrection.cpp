@@ -59,7 +59,7 @@ GenericConstraintCorrection::GenericConstraintCorrection()
 , d_ODESolverName( initData(&d_ODESolverName, "ODESolverName", "name of the ode solver") )
 , d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
-    m_ODESolver = NULL;
+    m_ODESolver = nullptr;
 }
 
 GenericConstraintCorrection::~GenericConstraintCorrection() {}
@@ -73,7 +73,7 @@ void GenericConstraintCorrection::bwdInit()
     const vector<std::string>& solverNames = d_linearSolversName.getValue();
     if(solverNames.size() == 0)
     {
-        LinearSolver* s = NULL;
+        LinearSolver* s = nullptr;
         context->get(s);
         if(s)
         {
@@ -87,7 +87,7 @@ void GenericConstraintCorrection::bwdInit()
     {
         for(unsigned int i=0; i<solverNames.size(); ++i)
         {
-            LinearSolver* s = NULL;
+            LinearSolver* s = nullptr;
             context->get(s, solverNames[i]);
 
             if(s)
@@ -107,13 +107,13 @@ void GenericConstraintCorrection::bwdInit()
     if(d_ODESolverName.isSet())
         context->get(m_ODESolver, d_ODESolverName.getValue());
 
-    if(m_ODESolver == NULL)
+    if(m_ODESolver == nullptr)
     {
         context->get(m_ODESolver, BaseContext::Local);
-        if (m_ODESolver == NULL)
+        if (m_ODESolver == nullptr)
         {
             context->get(m_ODESolver, BaseContext::SearchRoot);
-            if (m_ODESolver == NULL)
+            if (m_ODESolver == nullptr)
             {
                 msg_error() << "No OdeSolver found.";
                 return;
@@ -291,16 +291,10 @@ void GenericConstraintCorrection::applyPredictiveConstraintForce(const Constrain
     SOFA_UNUSED(lambda);
 }
 
-void GenericConstraintCorrection::resetContactForce()
-{
-}
+void GenericConstraintCorrection::resetContactForce(){}
 
-
-int GenericConstraintCorrectionClass = RegisterObject("")
-.add< GenericConstraintCorrection >()
-;
-
-class SOFA_CONSTRAINT_API GenericConstraintCorrection;
+static int GenericConstraintCorrectionClass = RegisterObject("")
+    .add< GenericConstraintCorrection >();
 
 } // namespace constraintset
 

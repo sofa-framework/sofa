@@ -19,10 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEINTERACTIONCONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_BASEINTERACTIONCONSTRAINT_H
-
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 
 namespace sofa
 {
@@ -33,38 +30,31 @@ namespace core
 namespace behavior
 {
 
-/**
- *  \brief BaseInteractionConstraint is a constraint linking several bodies (MechanicalState) together.
- *
- *  A BaseInteractionConstraint computes constraints applied to several simulated
- *  bodies given their current positions and velocities.
- *
- */
-class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint
+BaseConstraintCorrection::BaseConstraintCorrection(){}
+BaseConstraintCorrection::~BaseConstraintCorrection(){}
+
+void BaseConstraintCorrection::rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+
+void BaseConstraintCorrection::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
 {
-public:
-    SOFA_ABSTRACT_CLASS(BaseInteractionConstraint, BaseConstraint);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionConstraint)
+    msg_warning() << "getComplianceWithConstraintMerge is not implemented yet " ;
+}
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
+void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/)
+{
+    dmsg_warning() << "ComputeResidual is not implemented in " << this->getName() ;
+}
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
-	
-protected:
-    BaseInteractionConstraint() {}
-    virtual ~BaseInteractionConstraint()override {}
-	
-private:
-	BaseInteractionConstraint(const BaseInteractionConstraint& n) ;
-	BaseInteractionConstraint& operator=(const BaseInteractionConstraint& n) ;
-	
-};
+void BaseConstraintCorrection::getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
+{
+    dmsg_warning() << "getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() ;
+}
+
+bool BaseConstraintCorrection::hasConstraintNumber(int /*index*/) {return true;}
+void BaseConstraintCorrection::resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/) {}
+void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/) {}
+void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
+
 
 } // namespace behavior
 
@@ -72,4 +62,3 @@ private:
 
 } // namespace sofa
 
-#endif // SOFA_CORE_BEHAVIOR_BASEINTERACTIONCONSTRAINT_H

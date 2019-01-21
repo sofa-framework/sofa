@@ -38,7 +38,7 @@ namespace component
 namespace visualmodel
 {
 
-int RecordedCameraClass = core::RegisterObject("Camera moving along a predetermined path (currently only a rotation)")
+static int RecordedCameraClass = core::RegisterObject("A camera that is moving along a predetermined path.")
         .add< RecordedCamera >()
         ;
 

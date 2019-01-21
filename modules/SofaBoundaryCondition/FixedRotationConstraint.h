@@ -59,7 +59,7 @@ public:
 
 protected:
     FixedRotationConstraint();
-    virtual ~FixedRotationConstraint();
+    virtual ~FixedRotationConstraint() override;
 public:
     void init() override;
 
