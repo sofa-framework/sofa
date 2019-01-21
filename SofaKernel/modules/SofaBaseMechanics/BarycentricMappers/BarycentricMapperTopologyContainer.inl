@@ -39,7 +39,7 @@ namespace _barycentricmappertopologycontainer_
 
 using defaulttype::Vec3d;
 using defaulttype::Vec3i;
-typedef typename sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
 
 template <class In, class Out, class MappingDataType, class Element>
 BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology,
@@ -266,7 +266,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
             for ( ; colIt != colItEnd; ++colIt)
             {
                 unsigned indexIn = colIt.index();
-                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
+                InDeriv data = InDeriv(Out::getDPos(colIt.val()));
 
                 const Element& element = elements[d_map.getValue()[indexIn].in_index];
 
@@ -281,13 +281,13 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
 
 
 template <class In, class Out, class MappingDataType, class Element>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,MappingDataType, Element>::getJ(int outSize, int inSize)
+const defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,MappingDataType, Element>::getJ(int outSize, int inSize)
 {
     if (m_matrixJ && !m_updateJ)
         return m_matrixJ;
 
     if (!m_matrixJ) m_matrixJ = new MatrixType;
-    if (m_matrixJ->rowBSize() != (MatrixTypeIndex)outSize || m_matrixJ->colBSize() != (MatrixTypeIndex)inSize)
+    if (m_matrixJ->rowBSize() != MatrixTypeIndex(outSize) || m_matrixJ->colBSize() != MatrixTypeIndex(inSize))
         m_matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         m_matrixJ->clear();
@@ -420,7 +420,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
 
@@ -434,7 +434,7 @@ unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>:
 template <class In, class Out, class MappingDataType, class Element>
 unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getHashIndexFromIndices(const Vec3i& ids)
 {
-    getHashIndexFromIndices(ids[0],ids[1],ids[2]);
+    return getHashIndexFromIndices(ids[0],ids[1],ids[2]);
 }
 
 template <class In, class Out, class MappingDataType, class Element>
@@ -446,7 +446,7 @@ unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>:
     if(h<0)
         h += m_hashTableSize;
 
-    return h;
+    return static_cast<unsigned int>(h);
 }
 
 template <class In, class Out, class MappingDataType, class Element>
@@ -472,7 +472,7 @@ std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer
     unsigned int size_vec;
 
     in >> size_vec;
-    sofa::helper::vector<MappingData>& m = *(b.d_map.beginEdit());
+    helper::vector<MappingData>& m = *(b.d_map.beginEdit());
     m.clear();
 
     MappingData value;
