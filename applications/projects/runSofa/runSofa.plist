@@ -11,7 +11,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>Created by the SOFA Team</string>
 	<key>CFBundleIconFile</key>
-	<string>runSOFA.icns</string>
+	<string>runSofa.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.sofa-framework.runsofa</string>
 	<key>CFBundleInfoDictionaryVersion</key>
