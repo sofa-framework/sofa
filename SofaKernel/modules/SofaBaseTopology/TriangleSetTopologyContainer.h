@@ -46,8 +46,6 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopolo
 public:
     SOFA_CLASS(TriangleSetTopologyContainer,EdgeSetTopologyContainer);
 
-
-
     typedef core::topology::BaseMeshTopology::PointID                      PointID;
     typedef core::topology::BaseMeshTopology::EdgeID                       EdgeID;
     typedef core::topology::BaseMeshTopology::TriangleID                   TriangleID;
@@ -334,8 +332,8 @@ protected:
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setTriangleTopologyToDirty() {m_triangleTopologyDirty = true;}
-    void cleanTriangleTopologyFromDirty() {m_triangleTopologyDirty = false;}
+    void setTriangleTopologyToDirty();
+    void cleanTriangleTopologyFromDirty();
     const bool& isTriangleTopologyDirty() {return m_triangleTopologyDirty;}
 
 public:

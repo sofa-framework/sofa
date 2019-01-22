@@ -428,8 +428,8 @@ protected:
 
     /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setHexahedronTopologyToDirty() {m_hexahedronTopologyDirty = true;}
-    void cleanHexahedronTopologyFromDirty() {m_hexahedronTopologyDirty = false;}
+    void setHexahedronTopologyToDirty();
+    void cleanHexahedronTopologyFromDirty();
     const bool& isHexahedronTopologyDirty() {return m_hexahedronTopologyDirty;}
 
 public:
