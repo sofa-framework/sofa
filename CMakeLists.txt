@@ -307,7 +307,7 @@ endif()
 ################
 # Package config
 include(CPackComponent)
-if(WIN32)
+if(WIN32 AND ${CMAKE_VERSION} VERSION_LESS "3.13.0")
     include(CPackNSIS)
 endif()
 include(CPackIFW)
