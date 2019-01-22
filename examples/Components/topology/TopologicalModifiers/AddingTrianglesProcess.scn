@@ -18,6 +18,7 @@
         <UniformMass totalMass="0.1" />
         <FixedConstraint template="Vec3" name="default6" indices="0 2 18 20" />
         <TriangularFEMForceField template="Vec3" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
+        <TriangleModel name="CollisionModel" />
         
         <OglModel template="ExtVec3f" name="Visual" color="red" />
 		<IdentityMapping template="Vec3d,ExtVec3f" name="default8"  input="@."  output="@Visual" />
