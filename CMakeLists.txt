@@ -341,9 +341,9 @@ set(CPACK_PACKAGE_FILE_NAME "SOFA_v${CPACK_PACKAGE_VERSION}")
 if(WIN32)
     set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA\\\\v${CPACK_PACKAGE_VERSION}")
-    if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "AMD64")
+    if(CMAKE_EXE_LINKER_FLAGS MATCHES ".*machine:x64")
         set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_Win64")
-    else()
+    else() # x86
         set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_Win32")
     endif()
 elseif(UNIX)
@@ -424,9 +424,9 @@ if(CPACK_BINARY_IFW)
     set(CPACK_IFW_PACKAGE_LOGO "${CPACK_PACKAGE_ICON}")
     set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
     if(WIN32)
-         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/SOFA.ico")
+         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.ico")
     elseif(APPLE)
-         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSOFA.icns")
+         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.icns")
     endif()
 
     cpack_ifw_configure_component_group(runtime
@@ -470,18 +470,20 @@ endif()
 
 #######################
 # NSIS Generator config
-if(CPACK_BINARY_IFW)
+if(CPACK_BINARY_NSIS)
     # There is a bug in NSIS that does not handle full unix paths properly. Make
     # sure there is at least one set of four (4) backslashes.
+    set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.ico")
     set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
-    set(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
-    set(CPACK_NSIS_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
-    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_DISPLAY_NAME ${CPACK_PACKAGE_NAME})
+    set(CPACK_NSIS_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+    set(CPACK_NSIS_HELP_LINK ${CPACK_PACKAGE_HOMEPAGE_URL})
+    set(CPACK_NSIS_URL_INFO_ABOUT ${CPACK_PACKAGE_HOMEPAGE_URL})
     set(CPACK_NSIS_MODIFY_PATH ON)
     set(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
     set(CPACK_NSIS_INSTALL_ROOT "$PROFILE")
-    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecShell \\\"open\\\" \\\"https://www.sofa-framework.org/thank-you?sofa=\\\${CPACK_PACKAGE_VERSION}&os=windows\\\"")
+    string(CONCAT EXTRA_INSTALL_COMMAND "ExecShell \\\"open\\\" \\\"https://www.sofa-framework.org/thank-you?sofa=" ${CPACK_PACKAGE_VERSION} "&os=windows\\\"")
+    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${EXTRA_INSTALL_COMMAND}")
     set(CPACK_NSIS_MENU_LINKS
         "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
         "https://www.sofa-framework.org/api/" "SOFA Developper API"
