@@ -50,10 +50,12 @@ namespace collision
 template<class DataTypes>
 TTriangleModel<DataTypes>::TTriangleModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
+    , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , m_mstate(NULL)
     , m_topology(NULL)
-    , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
-    , meshRevision(-1)
+    , needsUpdate(true)
+    , m_topologyRevision(-1)
+    , m_pointModels(NULL)
     , m_lmdFilter(NULL)
 {
     p_triangles = &my_triangles;
@@ -64,9 +66,6 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
-    //helper::vector<TriangleInfo>& e = *(elems.beginEdit());
-    //e.resize(size);
-    //elems.endEdit();
     normals.resize(size);
 }
 
