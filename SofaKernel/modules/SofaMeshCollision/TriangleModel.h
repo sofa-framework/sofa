@@ -100,6 +100,11 @@ public:
 	}
 };
 
+/**
+ * This class will create collision elements based on a triangle and/or quad mesh.
+ * It uses directly the information of the topology and the dof to compute the triangle normals, BB and BoundingTree.
+ * The class \sa TTriangle is used to access specific triangle of this collision Model.
+ */
 template<class TDataTypes>
 class SOFA_MESH_COLLISION_API TTriangleModel : public core::CollisionModel
 {
@@ -134,24 +139,25 @@ public:
 	enum { NBARY = 2 };
 
     Data<bool> bothSide; ///< to activate collision on both side of the triangle model
-protected:
-    VecDeriv normals;
+    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
 
+protected:
+    core::behavior::MechanicalState<DataTypes>* m_mstate; ///< Pointer to the corresponding MechanicalState
+    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the corresponding Topology
+
+    VecDeriv normals; ///< Vector of normal direction per triangle.
+
+    /** Pointer to the triangle array of this collision model.
+     * Will point directly to the topology triangle buffer if only triangles are present. If topology is using/mixing quads and triangles,
+     * This pointer will target \sa my_triangles
+     * @brief p_triangles
+     */
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* p_triangles;
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles my_triangles;
+    sofa::core::topology::BaseMeshTopology::SeqTriangles my_triangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.
 
-    bool needsUpdate;
-    virtual void updateFromTopology();
-    virtual void updateFlags(int ntri=-1);
-    virtual void updateNormals();
-    int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
-
-    core::behavior::MechanicalState<DataTypes>* m_mstate;
-    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
-    int meshRevision;
-
-    sofa::core::topology::BaseMeshTopology* m_topology;
+    bool needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
+    int m_topologyRevision; ///< internal revision number to check if topology has changed.
 
     PointModel* m_pointModels;
 
@@ -160,6 +166,11 @@ protected:
 protected:
 
     TTriangleModel();
+
+    virtual void updateFromTopology();
+    virtual void updateFlags(int ntri=-1);
+    virtual void updateNormals();
+
 public:
     virtual void init() override;
 
@@ -185,6 +196,7 @@ public:
     const VecCoord& getX() const { return(getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()); }
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *p_triangles; }
     const VecDeriv& getNormals() const { return normals; }
+    int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
 
     TriangleLocalMinDistanceFilter *getFilter() const;
 
@@ -215,6 +227,9 @@ public:
 
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
+
+
+
 
 template<class DataTypes>
 inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)
