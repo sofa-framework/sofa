@@ -80,15 +80,23 @@ void TTriangleModel<DataTypes>::init()
 
     this->getContext()->get(m_pointModels);
 
+    // Check object pointer access
+    bool modelsOk = true;
     if (m_mstate == NULL)
     {
         msg_error() << "No MechanicalObject found. TriangleModel requires a Vec3 Mechanical Model in the same Node.";
-        return;
+        modelsOk = false;
     }
 
     if (m_topology == NULL)
     {
         msg_error() << "No Topology found. TriangleModel requires a Triangular Topology in the same Node.";
+        modelsOk = false;
+    }
+
+    if (!modelsOk)
+    {
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
@@ -98,12 +106,19 @@ void TTriangleModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
     }
 
-
-    p_triangles = &m_topology->getTriangles();
-    resize(m_topology->getNbTriangles());
-
-    updateFromTopology();
-    updateNormals();
+    // check if topology is using triangles and quads at the same time.
+    if (m_topology->getNbQuads() != 0)
+    {
+        updateFromTopology(); // in this case, need to create a single buffer with both topology
+        // updateNormals will be call in updateFromTopology
+    }
+    else
+    {
+        // just redirect to the topology buffer.
+        p_triangles = &m_topology->getTriangles();
+        resize(m_topology->getNbTriangles());
+        updateNormals();
+    }
 }
 
 template<class DataTypes>
@@ -124,28 +139,32 @@ void TTriangleModel<DataTypes>::updateNormals()
 template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFromTopology()
 {
-    //    needsUpdate = false;
-    const unsigned npoints = m_mstate->getSize();
-    const unsigned ntris = m_topology->getNbTriangles();
-    const unsigned nquads = m_topology->getNbQuads();
-    const unsigned newsize = ntris+2*nquads;
-
     int revision = m_topology->getRevision();
-    if (newsize==(unsigned)size && revision == meshRevision)
+    if (revision == m_topologyRevision)
         return;
-    meshRevision = revision;
 
-    needsUpdate=true;
+    m_topologyRevision = revision;
 
-    resize(newsize);
+    const unsigned nquads = m_topology->getNbQuads();
+    const unsigned ntris = m_topology->getNbTriangles();
 
-    if (newsize == ntris)
+    if (nquads == 0) // only triangles
     {
-        // no need to copy the triangle indices
+        if (ntris == (unsigned)size) // revision changed but no changes on the triangulation.
+            return;
+
+        resize(ntris);
         p_triangles = & m_topology->getTriangles();
     }
     else
     {
+        const unsigned newsize = ntris+2*nquads;
+
+        if (newsize==(unsigned)size) // revision changed but no changes on the triangulation/quads.
+            return;
+
+        const unsigned npoints = m_mstate->getSize();
+
         p_triangles = &my_triangles;
         my_triangles.resize(newsize);
         int index = 0;
@@ -185,6 +204,9 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     }
     updateFlags();
     updateNormals();
+
+    // topology has changed, force boudingTree recomputation
+    needsUpdate = true;
 }
 
 template<class DataTypes>
