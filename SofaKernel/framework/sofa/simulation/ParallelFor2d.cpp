@@ -21,11 +21,11 @@ namespace sofa
 
             virtual bool run() final
             {
-                if (_partition == ForTask2d::Partition::simple)
+                if (_partition & ForTask2d::Partition::simple)
                 {
                     simplePartition();
                 }
-                else if (_partition == ForTask2d::Partition::avoid_shared_data)
+                else if (_partition & ForTask2d::Partition::avoid_shared_data)
                 {
                     preventSharedDataPartition();
                 }

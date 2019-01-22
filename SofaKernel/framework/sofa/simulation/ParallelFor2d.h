@@ -76,8 +76,8 @@ namespace sofa
 
             enum Partition
             {
-                simple = 0,
-                avoid_shared_data = 1
+                simple              = 0,
+                avoid_shared_data   = 1 << 0
             };
 
         public:

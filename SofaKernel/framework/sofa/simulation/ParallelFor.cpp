@@ -7,7 +7,7 @@ namespace sofa
        
         ForTask::Range ForTask::Range::split(Range& r)
         {
-            assert(r.is_divisible(), "for range is not divisible");
+            assert(r.is_divisible()); // for range is not divisible
             Range second_half(r._first + (r._last - r._first) / 2u, r._last, r._grainsize);
             r._last = second_half._first;
             return second_half;
