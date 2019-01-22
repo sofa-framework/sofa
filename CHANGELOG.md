@@ -2,14 +2,43 @@
 
 
 
-## On master branch (not released yet - Kernel modules are in **bold**)
+## On master branch (not released yet)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v18.06...HEAD)
+[Full log](https://github.com/sofa-framework/sofa/compare/v18.12...HEAD)
 
 
 ### Deprecated
 
-**Will be removed in v18.12**
+
+
+
+### Breaking
+
+
+
+
+### Improvements
+
+
+
+
+### Bug Fixes
+
+
+
+
+____________________________________________________________
+
+
+
+## [v18.12](https://github.com/sofa-framework/sofa/tree/v18.12)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v18.06...v18.12)
+
+
+### Deprecated
+
+**Removed in v18.12**
 - [SofaBoundaryCondition] BuoyantForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaBoundaryCondition] VaccumSphereForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
 - **[SofaHelper]** Utils::getPluginDirectory() [#518](https://github.com/sofa-framework/sofa/pull/518) - Use PluginRepository.getFirstPath() instead
@@ -108,6 +137,7 @@
 - [CMake] FIX: cyclic recursion [#766](https://github.com/sofa-framework/sofa/pull/766)
 - [CMake] Backport fixes [#791](https://github.com/sofa-framework/sofa/pull/791)
 - [CMake] Fix compilation issues due to CPackNSIS [#867](https://github.com/sofa-framework/sofa/pull/867)
+- [CMake] Add check to prevent the inclusion of non-existant file in cmake 3.13 [#897](https://github.com/sofa-framework/sofa/pull/897)
 
 **Modules**
 - [All] ISSofa bugfix, lot of fixes [#756](https://github.com/sofa-framework/sofa/pull/756)
