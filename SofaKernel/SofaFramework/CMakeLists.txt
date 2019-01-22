@@ -60,7 +60,6 @@ find_package(GTest CONFIG QUIET)
 set(SOFA_HAVE_GTEST ${GTest_FOUND})
 
 if(NOT SOFA_NO_OPENGL)
-
     # OpenGL (glu)
     find_package(OpenGL REQUIRED)
     # no target support for OpenGL on windows yet see
@@ -69,6 +68,11 @@ if(NOT SOFA_NO_OPENGL)
     # that can be consumed upon install on the target system.
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
+
+    if(OPENGL_GLU_FOUND AND UNIX AND NOT APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+        # Add GLU to Linux binaries
+        sofa_install_libraries_from_targets(OpenGL::GLU)
+    endif()
 
     ## GLEW
     find_package(GLEW)
@@ -85,7 +89,6 @@ if(NOT SOFA_NO_OPENGL)
         message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
-
 endif()
 
 ## tinyxml
