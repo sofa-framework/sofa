@@ -146,7 +146,7 @@ public:
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
-        msg_error() << "Error computeComplianceMatrix has not been implemented" << sendl;
+        msg_error() << "computeComplianceMatrix has not been implemented" << sendl;
         return false;
     }
 
@@ -162,7 +162,7 @@ public:
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
-        msg_error() << "Error addComplianceMatrix has not been implemented" << sendl;
+        msg_error() << "addComplianceMatrix has not been implemented" << sendl;
         return false;
     }
 

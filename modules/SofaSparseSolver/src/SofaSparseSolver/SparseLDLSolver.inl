@@ -103,7 +103,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::computeJMInvJtLocal(TMat
     Jdense.clear();
     Jdense.resize(J->rowSize(), data->n);
     Jminv.resize(J->rowSize(), data->n);
-    _JMinvJT.resize(J->rowSize(), J->rowSize());
+    m_JMinvJT.resize(J->rowSize(), J->rowSize());
 
     for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin(), jitend = J->end(); jit != jitend; ++jit) {
         int l = jit->first;
@@ -147,8 +147,8 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::computeJMInvJtLocal(TMat
             for (unsigned k = 0; k<(unsigned)J->colSize(); k++) {
                 acc += lineJ[k] * lineI[k];
             }
-            _JMinvJT.set(j, i, acc);
-            if (i != j) _JMinvJT.set(i, j, acc);
+            m_JMinvJT.set(j, i, acc);
+            if (i != j) m_JMinvJT.set(i, j, acc);
         }
     }
 
@@ -167,7 +167,7 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
         for (typename SparseMatrix<Real>::LineConstIterator iit = J->begin(), iitend = J->end(); iit != iitend; ++iit)
         {
             const int i = iit->first;
-            result->add(j, i, _JMinvJT[j][i]);
+            result->add(j, i, m_JMinvJT[j][i]);
         }
     }
 

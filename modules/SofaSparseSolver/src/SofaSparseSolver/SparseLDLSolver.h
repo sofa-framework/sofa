@@ -77,7 +77,7 @@ protected :
 
     FullMatrix<Real> Jminv,Jdense;
     sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
-    FullMatrix<Real> _JMinvJT; ///< store JMinvJT computation
+    FullMatrix<Real> m_JMinvJT; ///< store JMinvJT computation
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
