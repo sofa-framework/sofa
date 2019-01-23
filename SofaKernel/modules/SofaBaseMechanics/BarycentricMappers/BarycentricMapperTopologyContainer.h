@@ -110,7 +110,7 @@ protected:
         NearestParams()
         {
             distance = std::numeric_limits<double>::max();
-            elementId = UINT_MAX;
+            elementId = std::numeric_limits<unsigned int>::max();
         }
 
         Vector3 baryCoords;
