@@ -164,6 +164,7 @@ set(SOURCE_FILES
     State.cpp
     behavior/BaseAnimationLoop.cpp
     behavior/BaseConstraint.cpp
+    behavior/BaseConstraintCorrection.cpp
     behavior/BaseConstraintSet.cpp
     behavior/BaseForceField.cpp
     behavior/BaseInteractionForceField.cpp

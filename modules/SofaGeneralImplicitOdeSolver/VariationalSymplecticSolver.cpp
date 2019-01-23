@@ -66,11 +66,13 @@ void VariationalSymplecticSolver::init()
 {
     if (!this->getTags().empty())
     {
-        sout << "VariationalSymplecticSolver: responsible for the following objects with tags " << this->getTags() << " :" << sendl;
         helper::vector<core::objectmodel::BaseObject*> objs;
         this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
+        std::stringstream tmp;
         for (unsigned int i=0;i<objs.size();++i)
-            sout << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << sendl;
+            tmp << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << msgendl;
+
+        msg_info() << "Responsible for the following objects with tags " << this->getTags() << " :" << tmp.str();
     }
     sofa::core::behavior::OdeSolver::init();
     energies.open((f_fileName.getValue()).c_str(),std::ios::out);
@@ -123,7 +125,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 	cpt++;
     MultiVecDeriv pPrevious(&vop, pID); // get previous momemtum value
     p.eq(pPrevious); // set p to previous momemtum
-
 
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
  
@@ -178,7 +179,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		unsigned int nbMaxIterNewton = f_newtonSteps.getValue();
 		unsigned int i_newton=0;
 		double err_newton =0; // initialisation
-		//    MultiVecDeriv F(&vop);
 
 		oldpos.eq(pos); // save initial position
 		double positionNorm=oldpos.norm(); // the norm of the position to compute the stopping criterion
@@ -216,7 +216,6 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			mop.projectResponse(b);
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
             core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-//			matrix = MechanicalMatrix::K * (-1.0-rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+rM);
 			matrix = MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h);
 
 			sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
@@ -258,9 +257,9 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             m_incrementalPotentialEnergy = m_incrementalPotentialEnergy + deltaPotentialEnergy;
         }
 
-		if (verbose) 
-			std::cout<<" i_newton "<<i_newton<<"    err_newton "<<err_newton<<std::endl;
-		/// Updates of v, p and final position ///
+        msg_info() <<" i_newton "<<i_newton<<"    err_newton "<<err_newton ;
+
+        /// Updates of v, p and final position ///
 		//v(k+1,0)=(2/h)(q(k,i_end)-q(k,0))
 		VMultiOp opsfin;
 		opsfin.resize(1);
@@ -336,11 +335,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
                 if (f_saveEnergyInFile.getValue())
                     energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<potentialEnergy<<","<<hamiltonianKineticEnergy+potentialEnergy<<std::endl;
             }
-
-
-
         }
-
 	}
 
     sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");

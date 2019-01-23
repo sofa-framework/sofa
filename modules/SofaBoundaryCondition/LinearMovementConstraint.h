@@ -103,21 +103,21 @@ public :
     VecCoord x0;
 protected:
     LinearMovementConstraint();
+    virtual ~LinearMovementConstraint() override;
 
-    virtual ~LinearMovementConstraint();
 public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
     void addIndex(unsigned int index);
     void removeIndex(unsigned int index);
     void clearKeyMovements();
-    /**add a new key movement
-    @param time : the simulation time you want to set a movement (in sec)
-    @param movement : the corresponding motion
-    for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
-    **/
-    void addKeyMovement(Real time, Deriv movement);
 
+    ///@brief Add a new key movement
+    /// @param time : the simulation time you want to set a movement (in sec)
+    /// @param movement : the corresponding motion
+    /// for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
+    ///
+    void addKeyMovement(Real time, Deriv movement);
 
     /// -- Constraint interface
     void init() override;
@@ -144,10 +144,7 @@ public:
         FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
-
-
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
 
         bool applyTestCreateFunction(unsigned int /*index*/,
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
@@ -191,9 +188,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defau
 extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
-
 #endif
-
 
 } // namespace projectiveconstraintset
 

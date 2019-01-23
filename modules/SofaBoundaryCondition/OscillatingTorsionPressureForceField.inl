@@ -46,10 +46,10 @@ OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForce
     , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
     , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
     , center(initData(&center,"center", "Center of rotation"))
-    , penalty(initData(&penalty, (Real)1000, "penalty", "Strength of the penalty force"))
-    , frequency(initData(&frequency, (Real)1, "frequency", "frequency of oscillation"))
-    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , penalty(initData(&penalty, Real(1000), "penalty", "Strength of the penalty force"))
+    , frequency(initData(&frequency, Real(1), "frequency", "frequency of oscillation"))
+    , dmin(initData(&dmin,Real(0.0), "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,Real(0.0), "dmax", "Maximum distance from the origin along the normal direction"))
     , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
 {
     rotationAngle = 0;
@@ -129,11 +129,6 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
 
     rotationAngle = avgRotAngle;
 
-
-    //SReal da = 360.0 / 6.2831853 * rotationAngle;
-    //  file <<this->getContext()->getTime() << " " << getAmplitude()*0.01 << " " << avgRotAngle << std::endl;
-
-
     // calculate and apply penalty forces to ideal positions
     defaulttype::Quat quat( axis.getValue(), avgRotAngle );
     Real avgError = 0, maxError = 0;
@@ -167,7 +162,6 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
             if (distFromCenter[i] > 1e-10)
             {
                 force = momentDir[i] * remainingMoment * relMomentToApply[i] / distFromCenter[i];
-                //check += force.norm() * distFromCenter[i];
                 f[i] += force;
             }
         }
@@ -325,6 +319,35 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
         vparams->drawTool()->setPolygonMode(0, false);
 
     vparams->drawTool()->restoreLastState();
+}
+
+template<class DataTypes>
+bool OscillatingTorsionPressureForceField<DataTypes>::isPointInPlane(Coord p)
+{
+    Real d=dot(p,axis.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+        return true;
+    else
+        return false;
+}
+
+template<class DataTypes>
+typename OscillatingTorsionPressureForceField<DataTypes>::Coord OscillatingTorsionPressureForceField<DataTypes>::getVecFromRotAxis( const Coord &x )
+{
+    Coord vecFromCenter = x - center.getValue();
+    Coord axisProj = axis.getValue() * dot( vecFromCenter, axis.getValue() ) + center.getValue();
+    return (x - axisProj);
+}
+
+template<class DataTypes>
+typename OscillatingTorsionPressureForceField<DataTypes>::Real OscillatingTorsionPressureForceField<DataTypes>::getAngle( const Coord &v1, const Coord &v2 )
+{
+    Real dp = dot( v1, v2 ) / (v1.norm()*v2.norm());
+    if (dp>1.0) dp=1.0; else if (dp<-1.0) dp=-1.0;
+    Real angle = acos( dp );
+    // check direction!
+    if (dot( axis.getValue(), v1.cross( v2 ) ) > 0) angle *= -1;
+    return angle;
 }
 
 } // namespace forcefield

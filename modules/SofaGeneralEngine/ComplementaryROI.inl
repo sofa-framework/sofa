@@ -132,7 +132,7 @@ void ComplementaryROI<DataTypes>::doUpdate()
     for (unsigned int i=0;i<indices.size();++i)
         pointsInROI.push_back(position[indices[i]]);
 
-    sout << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" << sendl;
+    msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" ;
 }
 
 template <class DataTypes>

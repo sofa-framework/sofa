@@ -19,54 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-#include <string>
-#include <vector>
-#include <sstream>
-#include <sofa/config.h>
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-///@brief Split one string by a given delimiter and returns that into a std::vector
-std::vector<std::string> SOFA_HELPER_API split(const std::string& s, char delimiter);
+namespace behavior
+{
 
-///@brief Join a std::vector into a single string, separated by the provided delimiter.
-///
-/// Taken from https://github.com/ekg/split/blob/master/join.h (I don't know what is the licence
-/// but thank for the author.
-template<class S, class T>
-std::string join(std::vector<T>& elems, S& delim) {
-    std::stringstream ss;
-    if(elems.empty())
-        return "";
-    typename std::vector<T>::iterator e = elems.begin();
-    ss << *e++;
-    for (; e != elems.end(); ++e) {
-        ss << delim << *e;
-    }
-    return ss.str();
+BaseConstraintCorrection::BaseConstraintCorrection(){}
+BaseConstraintCorrection::~BaseConstraintCorrection(){}
+
+void BaseConstraintCorrection::rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+
+void BaseConstraintCorrection::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
+{
+    msg_warning() << "getComplianceWithConstraintMerge is not implemented yet " ;
 }
-///@brief returns a copy of the string given in argument.
-SOFA_HELPER_API char* getAStringCopy(const char *c);
 
-///@brief replace all occurence of "search" by the "replace" string.
-SOFA_HELPER_API void replaceAll(std::string& str,
-                                const std::string& search,
-                                const std::string& replace);
+void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/)
+{
+    dmsg_warning() << "ComputeResidual is not implemented in " << this->getName() ;
+}
 
-///@brief returns true if the prefix if located at the beginning of the "full" string.
-SOFA_HELPER_API bool starts_with(const std::string& prefix, const std::string& full);
+void BaseConstraintCorrection::getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
+{
+    dmsg_warning() << "getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() ;
+}
 
-///@brief returns true if the suffix if located at the end of the "full" string.
-SOFA_HELPER_API bool ends_with(const std::string& suffix, const std::string& full);
+bool BaseConstraintCorrection::hasConstraintNumber(int /*index*/) {return true;}
+void BaseConstraintCorrection::resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/) {}
+void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/) {}
+void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
 
-} // namespace helper
+
+} // namespace behavior
+
+} // namespace core
 
 } // namespace sofa
 
-#endif //SOFA_HELPER_STRING_UTILS_H

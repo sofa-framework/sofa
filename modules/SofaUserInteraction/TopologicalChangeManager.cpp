@@ -204,7 +204,6 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
     }
 
     std::set< unsigned int > items;
-    //std::cout << topo_curr->getName() << " - Tri to remove: " << tItems << std::endl;
 
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
@@ -251,8 +250,6 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
             if (topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
-                //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
-                //ind_curr = topoMap->getFromIndex(ind_glob);
                 std::set< unsigned int > loc_items = items;
                 items.clear();
                 if (topoMap->isTheOutputTopologySubdividingTheInputOne())
@@ -278,7 +275,6 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
                 }
                 topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
                 node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
-                //std::cout << topo_curr->getName() << " - Tri to remove2: " << items << std::endl;
                 break;
             }
         }
@@ -295,10 +291,7 @@ int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collisi
     topo_curr->getContext()->get(topoMod);
 
     topoMod->removeItems(vitems);
-
     topoMod->notifyEndingEvent();
-
-
     topoMod->propagateTopologicalChanges();
 
     return res;

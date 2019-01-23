@@ -81,6 +81,22 @@ Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
     return root ;
 }
 
+BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
+{
+    /// Create the object.
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
+    if (obj==nullptr)
+    {
+        std::stringstream msg;
+        msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
+        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+            msg << " " << *it << msgendl ;
+        msg_error(parent.get()) << msg.str() ;
+        return nullptr;
+    }
+
+    return obj ;
+}
 
 BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
 {
@@ -92,18 +108,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
         desc.setAttribute(kv.first.c_str(), kv.second);
     }
 
-    /// Create the object.
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
-    if (obj==0)
-    {
-        std::stringstream msg;
-        msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
-        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
-            msg << " " << *it << msgendl ;
-        msg_error(parent.get()) << msg.str() ;
-        return NULL;
-    }
-    return obj ;
+    return createObject(parent, desc);
 }
 
 Node::SPtr createChild(Node::SPtr& node, const std::string& name, const std::map<std::string, std::string>& params)
@@ -113,7 +118,12 @@ Node::SPtr createChild(Node::SPtr& node, const std::string& name, const std::map
     {
         desc.setAttribute(kv.first.c_str(), kv.second);
     }
-    Node::SPtr tmp = node->createChild(name);
+    return createChild(node, desc);
+}
+
+Node::SPtr createChild(Node::SPtr node, BaseObjectDescription& desc)
+{
+    Node::SPtr tmp = node->createChild(desc.getName());
     tmp->parse(&desc);
     return tmp;
 }
