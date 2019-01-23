@@ -150,19 +150,12 @@ void TTriangleModel<DataTypes>::updateFromTopology()
 
     if (nquads == 0) // only triangles
     {
-        if (ntris == (unsigned)size) // revision changed but no changes on the triangulation.
-            return;
-
         resize(ntris);
         p_triangles = & m_topology->getTriangles();
     }
     else
     {
         const unsigned newsize = ntris+2*nquads;
-
-        if (newsize==(unsigned)size) // revision changed but no changes on the triangulation/quads.
-            return;
-
         const unsigned npoints = m_mstate->getSize();
 
         p_triangles = &my_triangles;
