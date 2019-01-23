@@ -102,7 +102,7 @@ protected:
         }
 
         int xId,yId,zId; // cell indices
-        int elementId;
+        unsigned int elementId;
     };
 
     struct NearestParams
@@ -110,12 +110,12 @@ protected:
         NearestParams()
         {
             distance = std::numeric_limits<double>::max();
-            elementIndex = -1;
+            elementId = UINT_MAX;
         }
 
         Vector3 baryCoords;
         double distance;
-        int elementIndex;
+        unsigned int elementId;
     };
 
     using Inherit1::m_fromTopology;
@@ -144,11 +144,20 @@ protected:
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
+    /// Compute the distance between outPos and the element e. If this distance is smaller than the previously stored one,
+    /// update nearestParams.
+    /// \param e id of the element
+    /// \param outPos position of the point we want to compute the barycentric coordinates
+    /// \param inPos position of one point of the element
+    /// \param nearestParams output parameters (nearest element id, distance, and barycentric coordinates)
     void checkDistanceFromElement(unsigned int e,
                                   const Vector3& outPos,
                                   const Vector3& inPos,
                                   NearestParams& nearestParams);
 
+
+    /// Compute the datas needed to find the nearest element
+    /// \param in is the vector of points
     void computeBasesAndCenters( const typename In::VecCoord& in );
 
     // Spacial hashing following paper:

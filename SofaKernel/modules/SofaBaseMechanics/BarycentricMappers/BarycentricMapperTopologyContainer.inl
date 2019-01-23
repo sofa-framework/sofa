@@ -171,13 +171,14 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
             }
         }
 
-        if(nearestParams.elementIndex==-1) // No element in grid cell, perform exhaustive search
+        if(nearestParams.elementId==UINT_MAX) // No element in grid cell, perform exhaustive search
         {
             for ( unsigned int e = 0; e < elements.size(); e++ )
             {
                 Vector3 inPos = in[elements[e][0]];
                 checkDistanceFromElement(e, outPos, inPos, nearestParams);
             }
+            addPointInElement(nearestParams.elementId, nearestParams.baryCoords.ptr());
         }
         else if(abs(nearestParams.distance)>m_gridCellSize/2.) // Nearest element in grid cell may not be optimal, check neighbors
         {
@@ -199,9 +200,10 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
                             }
                         }
                     }
+            addPointInElement(nearestParams.elementId, nearestParams.baryCoords.ptr());
         }
-
-        addPointInElement(nearestParams.elementIndex, nearestParams.baryCoords.ptr());
+        else
+            addPointInElement(nearestParams.elementId, nearestParams.baryCoords.ptr());
     }
 }
 
@@ -243,7 +245,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::checkDi
     {
         nearestParams.baryCoords = bary;
         nearestParams.distance = dist;
-        nearestParams.elementIndex = int(e);
+        nearestParams.elementId = e;
     }
 };
 
