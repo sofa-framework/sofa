@@ -45,7 +45,10 @@ namespace sofa
 
             TaskSchedulerCreatorFunction& creatorFunc = iter->second;
             _currentScheduler = creatorFunc();
+            
             _currentSchedulerName = iter->first;
+
+            Task::setAllocator(_currentScheduler->getTaskAllocator());
 
             return _currentScheduler;
         }

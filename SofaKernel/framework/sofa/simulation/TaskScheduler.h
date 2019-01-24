@@ -33,7 +33,7 @@
 #include <condition_variable>
 #include <memory>
 #include <map>
-#include <deque>
+//#include <deque>
 #include <string> 
 
 
@@ -75,9 +75,8 @@ namespace sofa
 
             virtual void workUntilDone(Task::Status* status) = 0;
 
-            virtual void* allocateTask(size_t size) = 0;
+            virtual Task::Allocator* getTaskAllocator() = 0;
 
-            virtual void releaseTask(Task*) = 0;
 
         protected:
 

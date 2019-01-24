@@ -177,8 +177,7 @@ namespace sofa  {
             // queue task if there is space, and run it otherwise
             virtual bool addTask(Task* task) final;
             virtual void workUntilDone(Task::Status* status) final;
-            virtual void* allocateTask(size_t size) final;
-            virtual void releaseTask(Task*) final;
+            virtual Task::Allocator* getTaskAllocator() final;
 
         public:
 
