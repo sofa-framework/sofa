@@ -130,9 +130,6 @@ void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
 #ifndef SOFA_NO_OPENGL
     capture.setPrefix(fullPrefix);
 #endif
-#ifdef SOFA_HAVE_FFMPEG
-    videoRecorder.setPrefix(fullPrefix);
-#endif
 #ifdef SOFA_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.setPrefix(fullPrefix);
 #endif

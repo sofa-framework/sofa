@@ -119,9 +119,6 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                     int width = getQWidget()->width();
                     int height = getQWidget()->height();
                     m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
-#elif SOFA_HAVE_FFMPEG
-                    std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
-                    videoRecorder.init(videoFilename, framerate, bitrate, videoManager->getCodecName());
 #endif // SOFA_HAVE_FFMPEG_EXEC
 
                     break;
@@ -152,8 +149,6 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                 {
 #ifdef SOFA_HAVE_FFMPEG_EXEC
                     m_videoRecorderFFMPEG.finishVideo();
-#elif SOFA_HAVE_FFMPEG
-                    videoRecorder.finishVideo();
 #endif //SOFA_HAVE_FFMPEG_EXEC
                     break;
                 }
@@ -473,8 +468,6 @@ void SofaViewer::captureEvent()
             case SofaVideoRecorderManager::MOVIE :
 #ifdef SOFA_HAVE_FFMPEG_EXEC
                 m_videoRecorderFFMPEG.addFrame();
-#elif SOFA_HAVE_FFMPEG
-                videoRecorder.addFrame();
 #endif //SOFA_HAVE_FFMPEG_EXEC
                 break;
             default :

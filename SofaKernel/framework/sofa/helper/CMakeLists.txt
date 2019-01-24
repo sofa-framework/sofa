@@ -298,13 +298,6 @@ if (FFMPEG_EXEC_FOUND)
 endif( FFMPEG_EXEC_FOUND)
 
 
- if(SOFA-EXTERNAL_FFMPEG)
-    list(APPEND HEADER_FILES gl/VideoRecorder.h)
-
-    list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
-        include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)
     # Windows library, used in system::FileSystem
@@ -319,45 +312,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
     target_include_directories(${PROJECT_NAME} PRIVATE ${X11_X11_INCLUDE_PATH})
 endif()
-if(SOFA-EXTERNAL_FFMPEG)
-        if (WIN32)
-                 set( FFMPEG_LIBS
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avformat.lib"
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avcodec.lib"
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avutil.lib"
-                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/swscale.lib"
-                 )
-                target_link_libraries(${PROJECT_NAME} PRIVATE ${FFMPEG_LIBS} )
-        elseif (APPLE)
-                set( FFMPEG_LIBS
-                        "libavcodec.a"
-                        "libavformat.a"
-                        "libavutil.a"
-                        "libswscale.a"
-                        "libbz2.a"
-                        "libmp3lame.a"
-                        "libx264.a"
-                        "libfaac.a"
-                        "libxvidcore.a"
-                        "libswresample.a"
-                        "/usr/lib/libiconv.dylib"
-                        )
-                                                find_library(FOUNDATION CoreFoundation)
-                        find_library(VIDEO CoreVideo)
-                        find_library(VIDEO_DECOD_ACC VideoDecodeAcceleration)
-                        find_library(ICONV iconv)
-                        target_link_libraries(${PROJECT_NAME}  ${FFMPEG_LIBS} ${FOUNDATION} ${VIDEO} ${VIDEO_DECOD_ACC})
-        elseif (UNIX)
-            AddLinkerDependencies(avcodec)
-                    AddLinkerDependencies(avformat)
-                        AddLinkerDependencies(avutil)
-                        AddLinkerDependencies(swscale)
-                        AddLinkerDependencies(avdevice)
-                        AddLinkerDependencies(avfilter)
-                        AddLinkerDependencies(swresample)
-                endif()
 
-endif()
 if(APPLE)
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
