@@ -355,7 +355,6 @@ protected:
 			
 			return;
 		}
-        OutDataTypes::deriv_total_size;
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
         for(size_t i = 0, n = data.size(); i < n; ++i) {

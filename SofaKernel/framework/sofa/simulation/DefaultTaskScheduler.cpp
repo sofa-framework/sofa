@@ -208,9 +208,9 @@ namespace sofa
 
 
         WorkerThread::WorkerThread(DefaultTaskScheduler* const& pScheduler, const int index, const std::string& name)
-            : _tasks()
+            : _name(name + std::to_string(index))
             , _index(index)
-            , _name(name + std::to_string(index))
+            , _tasks()
             , _taskScheduler(pScheduler)
 		{
 			assert(pScheduler);
@@ -244,6 +244,7 @@ namespace sofa
 
         std::thread* WorkerThread::create_and_attach(DefaultTaskScheduler* const & taskScheduler)
         {
+            SOFA_UNUSED(taskScheduler);
             _stdThread = std::thread(std::bind(&WorkerThread::run, this));
             return &_stdThread;
         }

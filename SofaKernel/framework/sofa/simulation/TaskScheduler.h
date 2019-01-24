@@ -23,6 +23,7 @@
 #define TaskScheduler_std_h__
 
 #include <sofa/config.h>
+#include <sofa/helper/system/config.h>
 
 #include "Task.h"
 #include "Locks.h"
@@ -93,7 +94,7 @@ namespace sofa
 
 
 
-        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask );
+        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask);
 
 
 	} // namespace simulation

@@ -288,9 +288,11 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     sofa::helper::system::thread::CTime *timer;
     double timeScale, time, totime ;
-    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
+    timeScale = time = totime = 0;
 
+    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     totime = (double)timer->getTime();
+
     sofa::core::behavior::MechanicalState<DataTypes1>* ms1 = this->getMState1();
     sofa::core::behavior::MechanicalState<DataTypes2>* ms2 = this->getMState2();
 
