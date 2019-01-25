@@ -96,21 +96,28 @@ namespace sofa
             virtual MemoryAlloc run() = 0;
 
 
+
             static void* operator new (std::size_t sz)
             {
                 return _allocator->allocate(sz);
             }
-             
-            // not available now. 
+            
+            // when c++14 is available delete the void  operator delete  (void* ptr)
+            // and define the void operator delete  (void* ptr, std::size_t sz)
+            static void  operator delete  (void* ptr)
+            {
+                _allocator->free(ptr, 0);
+            }
+
+            // only available in c++14. 
             static void operator delete  (void* ptr, std::size_t sz)
             {
                 _allocator->free(ptr, sz);
             }
-            
 
-        private:
-            // to force call to delete (void* ptr, std::size_t sz)
-            static void  operator delete  (void* ptr) = delete;
+            // no array new and delete operators
+            static void* operator new[](std::size_t sz) = delete;
+            static void operator delete[](void* ptr) = delete;
 
 
         public:
