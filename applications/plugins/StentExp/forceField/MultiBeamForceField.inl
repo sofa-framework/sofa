@@ -24,6 +24,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 #include "MultiBeamForceField.h"
+#include "RambergOsgood.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
@@ -64,6 +65,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _inputLocalOrientations(initData(&_inputLocalOrientations, { defaulttype::Quat(0, 0, 0, 1) }, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
+    , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
@@ -95,6 +97,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _inputLocalOrientations(initData(&_inputLocalOrientations, localOrientations, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
+    , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
@@ -151,6 +154,23 @@ void MultiBeamForceField<DataTypes>::init()
         _VFPlasticMaxThreshold = (Real)0.f;
         _VFPlasticCreep = (Real)0.1f;
     }
+
+    // Retrieving the 1D plastic constitutive law model
+    std::string constitutiveModel = d_modelName.getValue();
+    if (constitutiveModel == "RambergOsgood")
+    {
+        Real youngModulus = _youngModulus.getValue();
+        Real yieldStress = _yieldStress.getValue();
+        fem::RambergOsgood<DataTypes> *RambergOsgoodModel = new (fem::RambergOsgood<DataTypes>)(youngModulus, yieldStress);
+        m_ConstitutiveLaw = RambergOsgoodModel;
+        if (this->f_printLog.getValue())
+            msg_info() << "The model is " << constitutiveModel;
+    }
+    else
+    {
+        msg_error() << "constitutive law model name " << constitutiveModel << " is not valid (should be RambergOsgood)";
+    }
+
 
     if (_topology==NULL)
     {
@@ -773,7 +793,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                         K0 = beamsData.getValue()[i]._Kt_loc;
                     else
                         K0 = beamsData.getValue()[i]._Ke_loc;
-                    
+
                     for (int x1 = 0; x1<12; x1 += 3)
                         for (int y1 = 0; y1<12; y1 += 3)
                         {
@@ -1971,6 +1991,18 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
 };
 
 
+
+template<class DataTypes>
+void MultiBeamForceField<DataTypes>::updateYieldStress(int beamIndex, double yieldStressIncrement)
+{
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    double &yieldStress = bd[beamIndex]._yS;
+    yieldStress += yieldStressIncrement;
+    beamsData.endEdit();
+}
+
+
+
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor,
                                                             const double yieldStress,
@@ -2004,19 +2036,6 @@ bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2
         std::cout << cp << std::scientific << " "; //DEBUG
     }
     return !(cp < threshold); //if true, the stress point still represents a plastic state
-}
-
-
-
-template< class DataTypes>
-double MultiBeamForceField<DataTypes>::tangentModulus(const VoigtTensor2 &stressTensor)
-{
-    //Computation of the tangent modulus, as defined in Krabbenhoft's lecture notes
-
-    //Here we choose to represent the tangent modulus thanks to the Ramberg-Osgood
-    //model, which parameters are those found in TO DO: include ref, for TO DO: include metallic alloy
-
-    return 0;
 }
 
 
@@ -2550,14 +2569,28 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         // Computation of the plastic strain increment, to keep track of the plastic loading history
 
+        double plasticMultiplier = totalIncrement(6, 0);
+
         //TO DO: check if the increments should be stored independently rather than summed
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-        plasticStrainHistory[gaussPointIt] += totalIncrement(6, 0)*gradient;
+        plasticStrainHistory[gaussPointIt] += plasticMultiplier*gradient;
         beamsData.endEdit();
 
         // Updating the new stress point
         newStressPoint = currentStressPoint;
+
+        // Updating the yield stress [isotropic hardening]
+        const double previousYieldStress = beamsData.getValue()[index]._yS;
+        const double youngModulus = beamsData.getValue()[index]._E;
+        const double tangentModulus = m_ConstitutiveLaw->getTangentModulus(previousYieldStress);
+
+        const double H = tangentModulus / (1 - tangentModulus / youngModulus);
+        // NB: Updating the yield stress requires the definition of an equivalent plastic
+        //     strain, i.e. a scalar value computed from the plastic strain tensor.
+        //     Using a Von Mises yield criterion and an associative flow rule, this
+        //     equivalent plastic strain can be shown to be equal to the plastic multiplier.
+        updateYieldStress(index, H*plasticMultiplier);
 
     } //end if (!_isPerfectlyPlastic)
 }
@@ -2730,6 +2763,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
+    const double E = bd[i]._E;
     helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
     // Reduced integration
@@ -2740,7 +2774,6 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     Eigen::Matrix<double, 6, 12> Be;
     VoigtTensor4 Cep = VoigtTensor4::Zero(); //plastic behaviour tensor
     VoigtTensor2 VMgradient;
-    double yieldStress;
 
     //Auxiliary matrices
     VoigtTensor2 Cgrad;
@@ -2752,16 +2785,20 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     VoigtTensor2 currentStressPoint;
     int gaussPointIt = 0;
 
+    // Retrieving H, common to all Gauss points [isotropic hardening]
+    double const yieldStress = bd[i]._yS;
+    double const tangentModulus = m_ConstitutiveLaw->getTangentModulus(yieldStress);
+    double const H = tangentModulus / (1 - tangentModulus / E);
+
     // Stress matrix, to be integrated
     LambdaType computeTangentStiffness = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         // Be
         Be = bd[i]._BeMatrices[gaussPointIt];
 
-        //Cep
+        // Cep
         currentStressPoint = _prevStresses[i][gaussPointIt];
 
-        yieldStress = bd[i]._yS;
         VMgradient = vonMisesGradient(currentStressPoint, yieldStress);
 
         if (VMgradient.isZero() || isPlasticPoint[gaussPointIt] != PLASTIC)
@@ -2770,8 +2807,8 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         {
             Cgrad = C*VMgradient;
             gradTC = VMgradient.transpose()*C;
-            //Assuming associative flow rule
-            Cep = C - (Cgrad*gradTC) / (gradTC*VMgradient);
+            //Assuming associative flow rule and isotropic hardening
+            Cep = C - (Cgrad*gradTC) / (H + gradTC*VMgradient);
         }
 
         tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;

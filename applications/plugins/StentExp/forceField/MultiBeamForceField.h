@@ -21,9 +21,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
+
 #include "../config.h"
 #include "../initStentExp.h"
-
+#include "PlasticConstitutiveLaw.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
@@ -32,6 +33,7 @@
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 #include <Eigen/Geometry>
+#include <string>
 
 #include "../quadrature/Gaussian.h"
 #include "../quadrature/quadrature.h"
@@ -342,6 +344,13 @@ protected:
 
     MultiBeamForceField<DataTypes>* ff;
 
+    // 1D Contitutive law model, which is in charge of computing the
+    // tangent modulus during plastic deformation
+    fem::PlasticConstitutiveLaw<DataTypes> *m_ConstitutiveLaw;
+    Data<std::string> d_modelName; ///< name of the model, for specialisation
+
+    void updateYieldStress(int beamIndex, double yieldStressIncrement);
+
     bool goInPlasticDeformation(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
     bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
                                   const double yieldStress, const bool verbose = FALSE);
@@ -354,7 +363,6 @@ protected:
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
 
-    double tangentModulus(const VoigtTensor2 &stressTensor);
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
