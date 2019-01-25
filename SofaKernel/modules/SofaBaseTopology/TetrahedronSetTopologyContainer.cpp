@@ -43,7 +43,7 @@ int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 ///convention triangles in tetra (orientation interior)
-const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0},{0,2,1}};
+const unsigned int trianglesInTetrahedronArray[4][3]= {{0,2,1}, {0,1,3}, {1,2,3}, {0,3,2}};
 
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
@@ -261,22 +261,11 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
     {
         const Tetrahedron &t = m_tetrahedron[i];
 
-        for (PointID j=0; j<4; ++j)
+        for (TriangleID j=0; j<4; ++j)
         {
             PointID v[3];
-
-            if (j%2)
-            {
-                v[0]=t[(j+1)%4];
-                v[1]=t[(j+2)%4];
-                v[2]=t[(j+3)%4];
-            }
-            else
-            {
-                v[0]=t[(j+1)%4];
-                v[2]=t[(j+2)%4];
-                v[1]=t[(j+3)%4];
-            }
+            for (PointID k=0; k<3; ++k)
+                v[k] = t[trianglesInTetrahedronArray[j][k]];
 
             // sort v such that v[0] is the smallest one
             while ((v[0]>v[1]) || (v[0]>v[2]))
