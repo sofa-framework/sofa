@@ -15,7 +15,7 @@ namespace sofa
         DEFINE_TASK_SCHEDULER_PROFILER(Steal);
 
 
-        class DefaultTaskAllocator : public Task::Allocator
+        class StdTaskAllocator : public Task::Allocator
         {
         public:
 
@@ -30,7 +30,7 @@ namespace sofa
             }
         };
 
-        static DefaultTaskAllocator defaultTaskAllocator;
+        static StdTaskAllocator defaultTaskAllocator;
 
 
 
