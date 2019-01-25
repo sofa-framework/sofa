@@ -10,6 +10,10 @@ set(HEADER_FILES
 	config.h
 	forceField/MultiBeamForceField.h
 	forceField/MultiBeamForceField.inl
+    forceField/PlasticConstitutiveLaw.h
+    forceField/RambergOsgood.h
+    mass/MultiBeamMass.h
+    mass/MultiBeamMass.inl
 	quadrature/Gaussian.h
 	quadrature/quadrature.h
 	PoissonContainer.h
