@@ -29,7 +29,7 @@ set(SOURCE_FILES
     ../GuiDataRepository.cpp
 )
 
-find_package(FFMPEG QUIET)
+find_package(FFMPEGexec QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)

@@ -151,7 +151,7 @@ endif()
 
 set(QT_USE_IMPORTED_TARGETS 1)
 
-find_package(FFMPEG QUIET)
+find_package(FFMPEGexec QUIET)
 
 find_package(Qt5 COMPONENTS Core QUIET)
 
