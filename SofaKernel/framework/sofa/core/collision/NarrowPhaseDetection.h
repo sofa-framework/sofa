@@ -138,7 +138,7 @@ protected:
         m_outputsMap.swap(m_storedOutputsMap[inst]);
     }
 
-private:
+protected:
     std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
 
 protected:

@@ -148,6 +148,7 @@ public:
     }
 
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    virtual void updateNormals();
 
 protected:
 
@@ -162,9 +163,7 @@ protected:
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
-
-    void updateNormals();
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)    
 
     PointActiver *myActiver;
 };
