@@ -35,6 +35,9 @@ namespace sofa
 	namespace simulation
     {
 
+
+
+
         class SOFA_SIMULATION_CORE_API Task
         {
         public:
@@ -67,22 +70,69 @@ namespace sofa
             };
 
 
+            class Allocator
+            {
+            public:
+                virtual void* allocate(std::size_t sz) = 0;
+
+                virtual void free(void* ptr, std::size_t sz) = 0;
+            };
+
+
             Task(const Task::Status* status = nullptr);
 
             virtual ~Task();
 
         public:
 
-            virtual bool run() = 0;
+            enum MemoryAlloc
+            {
+                Stack     = 1 << 0,
+                Dynamic   = 1 << 1,
+                Static    = 1 << 2,
+            };
 
 
-            // remove from this interface
+            virtual MemoryAlloc run() = 0;
+
+
+
+            static void* operator new (std::size_t sz)
+            {
+                return _allocator->allocate(sz);
+            }
+            
+            // when c++14 is available delete the void  operator delete  (void* ptr)
+            // and define the void operator delete  (void* ptr, std::size_t sz)
+            static void  operator delete  (void* ptr)
+            {
+                _allocator->free(ptr, 0);
+            }
+
+            // only available in c++14. 
+            static void operator delete  (void* ptr, std::size_t sz)
+            {
+                _allocator->free(ptr, sz);
+            }
+
+            // no array new and delete operators
+            static void* operator new[](std::size_t sz) = delete;
+
+            // visual studio 2015 complains about the = delete but it doens't explain where this operator is call
+            // no problem with other sompilers included visual studio 2017
+            //static void operator delete[](void* ptr) = delete;
+
+
         public:
-
             inline Task::Status* getStatus(void) const
             {
                 return const_cast<Task::Status*>(_status);
             }
+
+
+            static Task::Allocator* getAllocator() { return _allocator; }
+
+            static void setAllocator(Task::Allocator* allocator) { _allocator = allocator; }
 
         protected:
 
@@ -90,6 +140,10 @@ namespace sofa
 
         public:
             int _id;
+
+        private:
+
+            static Task::Allocator * _allocator;
         };
 
 
@@ -106,7 +160,7 @@ namespace sofa
 
 			virtual ~ThreadSpecificTask();
 
-            virtual bool run() final;
+            virtual MemoryAlloc run() final;
 
 
         private:

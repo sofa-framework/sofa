@@ -42,7 +42,7 @@ namespace sofa
 
             virtual ~InitPerThreadDataTask();
 
-            virtual bool run() override;
+            virtual MemoryAlloc run() override;
 
         private:
 

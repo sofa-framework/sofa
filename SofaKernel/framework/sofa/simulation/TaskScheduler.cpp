@@ -45,7 +45,10 @@ namespace sofa
 
             TaskSchedulerCreatorFunction& creatorFunc = iter->second;
             _currentScheduler = creatorFunc();
+            
             _currentSchedulerName = iter->first;
+
+            Task::setAllocator(_currentScheduler->getTaskAllocator());
 
             return _currentScheduler;
         }
@@ -78,6 +81,7 @@ namespace sofa
         // by the TaskScheduler
         bool runThreadSpecificTask(const Task* task)
         {
+            SOFA_UNUSED(task);
             std::atomic<int> atomicCounter;
             TaskScheduler* scheduler = TaskScheduler::getInstance();
             atomicCounter = scheduler->getThreadCount();
