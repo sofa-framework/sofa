@@ -118,7 +118,7 @@ void VideoRecorderFFMPEG::finishVideo()
 #ifdef WIN32
     _pclose(m_ffmpeg);
 #else
-    pclose(_ffmpeg);
+    pclose(m_ffmpeg);
 #endif
     
     delete m_buffer;
