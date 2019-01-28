@@ -44,25 +44,18 @@ class SOFA_HELPER_API VideoRecorderFFMPEG
 {
 protected:
     
+    FILE* m_File;
+    int m_Width, m_Height;
+    int m_FrameCount;
 
-    unsigned int bitrate;
-    uint8_t *videoOutbuf;
-    int videoOutbufSize;
+    std::string m_filename;
+    unsigned int m_framerate;
 
-    
-    FILE* pFile;
-    int pWidth, pHeight;
-    int pFrameCount;
+    std::string m_prefix;
+    int m_counter;    
 
-    std::string p_filename;
-    unsigned int p_framerate;
-
-    std::string _prefix;
-    int _counter;
-    
-
-    FILE* _ffmpeg;
-    unsigned char* _buffer;
+    FILE* m_ffmpeg;
+    unsigned char* m_buffer;
 
 public:
 
@@ -75,7 +68,7 @@ public:
     void finishVideo();
 
     
-    void setPrefix(const std::string v) { _prefix = v; }
+    void setPrefix(const std::string v) { m_prefix = v; }
 
     std::string findFilename(const unsigned int bitrate, const unsigned int framerate, const std::string& extension);
 

@@ -37,11 +37,11 @@ namespace gl
 {
 
 VideoRecorderFFMPEG::VideoRecorderFFMPEG()
-    : p_framerate(25)
-    , _prefix("sofa_video")
-    , _counter(-1)
-    , _ffmpeg(nullptr)
-    , _buffer(nullptr)
+    : m_framerate(25)
+    , m_prefix("sofa_video")
+    , m_counter(-1)
+    , m_ffmpeg(nullptr)
+    , m_buffer(nullptr)
 {
 
 }
@@ -59,33 +59,33 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
     std::cout << framerate << " FPS, " << bitrate << " b/s";
     std::cout << " )" << std::endl;
     //std::string filename = findFilename();
-    p_filename = filename;
-    p_framerate = framerate;
+    m_filename = filename;
+    m_framerate = framerate;
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
-    pWidth = width;// viewport[2];
-    pHeight = height;// viewport[3];
+    m_Width = width;// viewport[2];
+    m_Height = height;// viewport[3];
 
-    pFrameCount = 0;
+    m_FrameCount = 0;
 
-    _buffer = new unsigned char [4*pWidth*pHeight];
+    m_buffer = new unsigned char [4*m_Width*m_Height];
 
     std::stringstream ss;
-    ss << FFMPEG_EXEC_FILE << " -r " << p_framerate
+    ss << FFMPEG_EXEC_FILE << " -r " << m_framerate
         << " -f rawvideo -pix_fmt rgba "
-        << " -s " << pWidth << "x" << pHeight
+        << " -s " << m_Width << "x" << m_Height
         << " -i - -threads 0  -y"
         << " -preset fast "
         << " -pix_fmt " << codec // yuv420p " // " yuv444p "
         << " -crf 17 "
         << " -vf vflip "
-        << p_filename;
+        << m_filename;
     
     const std::string& tmp = ss.str();
 
 #ifdef WIN32
-    _ffmpeg = _popen(tmp.c_str(), "wb");
+    m_ffmpeg = _popen(tmp.c_str(), "wb");
 #else
     _ffmpeg = popen(tmp.c_str(), "b");
 #endif
@@ -99,16 +99,16 @@ void VideoRecorderFFMPEG::addFrame()
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
    
-    if ((viewport[2] != pWidth) || (viewport[3] != pHeight))
+    if ((viewport[2] != m_Width) || (viewport[3] != m_Height))
     {
-        std::cout << "WARNING viewport changed during video capture from " << pWidth << "x" << pHeight << "  to  " << viewport[2] << "x" << viewport[3] << std::endl;
+        std::cout << "WARNING viewport changed during video capture from " << m_Width << "x" << m_Height << "  to  " << viewport[2] << "x" << viewport[3] << std::endl;
     }
 
-    //glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+    //glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, m_buffer);
 
-    glReadPixels(0, 0, pWidth, pHeight, GL_RGBA, GL_UNSIGNED_BYTE, (void*)_buffer);
+    glReadPixels(0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_buffer);
 
-    fwrite(_buffer, sizeof(unsigned char)*4*pWidth*pHeight, 1, _ffmpeg);
+    fwrite(m_buffer, sizeof(unsigned char)*4*m_Width*m_Height, 1, m_ffmpeg);
     
     return;
 }
@@ -116,13 +116,13 @@ void VideoRecorderFFMPEG::addFrame()
 void VideoRecorderFFMPEG::finishVideo()
 {    
 #ifdef WIN32
-    _pclose(_ffmpeg);
+    _pclose(m_ffmpeg);
 #else
     pclose(_ffmpeg);
 #endif
     
-    delete _buffer;
-    std::cout << p_filename << " written" << std::endl;
+    delete m_buffer;
+    std::cout << m_filename << " written" << std::endl;
 }
 
 std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, const unsigned int bitrate, const std::string& extension)
@@ -136,17 +136,17 @@ std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, cons
     {
         ++c;
         sprintf(buf, "%04d", c);
-        filename = _prefix;
+        filename = m_prefix;
         filename += "_r" + std::to_string(framerate) + "_";
         //filename += +"_b" + std::to_string(bitrate) + "_";
         filename += buf;
         filename += ".";
         filename += extension;
     } while (stat(filename.c_str(), &st) == 0);
-    _counter = c + 1;
+    m_counter = c + 1;
 
     sprintf(buf, "%04d", c);
-    filename = _prefix;
+    filename = m_prefix;
     filename += "_r" + std::to_string(framerate) + "_";
     //filename += +"_b" + std::to_string(bitrate) + "_";
     filename += buf;
