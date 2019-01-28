@@ -95,16 +95,17 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
 
 /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
 template<class TMatrix, class TVector, class TThreadManager>
-bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) {
-    if (J->rowSize()==0) return true;
+bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::computeJMInvJtLocal(TMatrix * M, const JMatrixType * J, double fact) {
+    if (J->rowSize() == 0) return true;
 
-    InvertData * data = (InvertData *) this->getMatrixInvertData(M);
+    InvertData * data = (InvertData *)this->getMatrixInvertData(M);
 
     Jdense.clear();
-    Jdense.resize(J->rowSize(),data->n);
-    Jminv.resize(J->rowSize(),data->n);
+    Jdense.resize(J->rowSize(), data->n);
+    Jminv.resize(J->rowSize(), data->n);
+    m_JMinvJT.resize(J->rowSize(), J->rowSize());
 
-    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin() , jitend = J->end(); jit != jitend; ++jit) {
+    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin(), jitend = J->end(); jit != jitend; ++jit) {
         int l = jit->first;
         Real * line = Jdense[l];
         for (typename SparseMatrix<Real>::LElementConstIterator it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
@@ -116,11 +117,11 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     }
 
     //Solve the lower triangular system
-    for (unsigned c=0;c<(unsigned)J->rowSize();c++) {
+    for (unsigned c = 0; c<(unsigned)J->rowSize(); c++) {
         Real * line = Jdense[c];
 
-        for (int j=0; j<data->n; j++) {
-            for (int p = data->LT_colptr[j] ; p<data->LT_colptr[j+1] ; p++) {
+        for (int j = 0; j<data->n; j++) {
+            for (int p = data->LT_colptr[j]; p<data->LT_colptr[j + 1]; p++) {
                 int col = data->LT_rowind[p];
                 double val = data->LT_values[p];
                 line[j] -= val * line[col];
@@ -129,25 +130,44 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     }
 
     //apply diagonal
-    for (unsigned j=0; j<(unsigned)J->rowSize(); j++) {
+    for (unsigned j = 0; j<(unsigned)J->rowSize(); j++) {
         Real * lineD = Jdense[j];
         Real * lineM = Jminv[j];
-        for (unsigned i=0;i<(unsigned)J->colSize();i++) {
+        for (unsigned i = 0; i<(unsigned)J->colSize(); i++) {
             lineM[i] = lineD[i] * data->invD[i];
         }
     }
 
-    for (unsigned j=0; j<(unsigned)J->rowSize(); j++) {
+    for (unsigned j = 0; j<(unsigned)J->rowSize(); j++) {
         Real * lineJ = Jminv[j];
-        for (unsigned i=j;i<(unsigned)J->rowSize();i++) {
+        for (unsigned i = j; i<(unsigned)J->rowSize(); i++) {
             Real * lineI = Jdense[i];
 
             double acc = 0.0;
-            for (unsigned k=0;k<(unsigned)J->colSize();k++) {
+            for (unsigned k = 0; k<(unsigned)J->colSize(); k++) {
                 acc += lineJ[k] * lineI[k];
             }
-            result->add(j,i,acc*fact);
-            if(i!=j) result->add(i,j,acc*fact);
+            m_JMinvJT.set(j, i, acc);
+            if (i != j) m_JMinvJT.set(i, j, acc);
+        }
+    }
+
+    return true;
+}
+
+/// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+template<class TMatrix, class TVector, class TThreadManager>
+bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result, const JMatrixType * J, double fact) {
+    if (J->rowSize()==0) return true;
+
+    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin(), jitend = J->end(); jit != jitend; ++jit)
+    {
+        const int j = jit->first;
+
+        for (typename SparseMatrix<Real>::LineConstIterator iit = J->begin(), iitend = J->end(); iit != iitend; ++iit)
+        {
+            const int i = iit->first;
+            result->add(j, i, m_JMinvJT[j][i]);
         }
     }
 

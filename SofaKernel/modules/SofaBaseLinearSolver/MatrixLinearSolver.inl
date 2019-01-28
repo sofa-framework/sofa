@@ -379,6 +379,16 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
 }
 
 template<class Matrix, class Vector>
+bool MatrixLinearSolver<Matrix, Vector>::computeJMInvJt(defaulttype::BaseMatrix* J, double fact)
+{
+    if (J->rowSize() == 0) return true;
+
+    JMatrixType * j_local = internalData.getLocalJ(J);
+    bool res = computeJMInvJtLocal(currentGroup->systemMatrix, j_local, fact);
+    return res;
+}
+
+template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
 {
     if (J->rowSize()==0) return true;
@@ -403,20 +413,26 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::computeComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
 {
-    JMatrixType * j_local = internalData.getLocalJ();
-    j_local->clear();
-    j_local->resize(result->rowSize(), currentGroup->systemMatrix->colSize());
+    _j_local = internalData.getLocalJ();
+    _j_local->clear();
+    _j_local->resize(result->rowSize(), currentGroup->systemMatrix->colSize());
 
     if (result->rowSize() == 0)
     {
         return true;
     }
 
-    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(cparams,j_local));
+    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(cparams, _j_local));
 
-    return addJMInvJt(result,j_local,fact);
+    return computeJMInvJt(_j_local,fact);
+}
+
+template<class Matrix, class Vector>
+bool MatrixLinearSolver<Matrix, Vector>::addComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
+{
+    return addJMInvJt(result, _j_local, fact);
 }
 
 template<class Matrix, class Vector>

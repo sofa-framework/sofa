@@ -158,6 +158,39 @@ void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceF
         m_linearSolvers[i]->rebuildSystem(massFactor, forceFactor);
 }
 
+
+void GenericConstraintCorrection::computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+{
+    if (!m_ODESolver) return;
+    const double complianceFactor = d_complianceFactor.getValue();
+
+    // use the OdeSolver to get the position integration factor
+    double factor = 1.0;
+
+    switch (cparams->constOrder())
+    {
+    case ConstraintParams::POS_AND_VEL:
+    case ConstraintParams::POS:
+        factor = m_ODESolver->getPositionIntegrationFactor();
+        break;
+
+    case ConstraintParams::ACC:
+    case ConstraintParams::VEL:
+        factor = m_ODESolver->getVelocityIntegrationFactor();
+        break;
+
+    default:
+        break;
+    }
+
+    factor *= complianceFactor;
+    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
+    {
+        m_linearSolvers[i]->computeComplianceMatrix(cparams, W, factor);
+    }
+}
+
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
     if (!m_ODESolver) return;
@@ -186,7 +219,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < m_linearSolvers.size(); i++)
     {
-        m_linearSolvers[i]->buildComplianceMatrix(cparams, W, factor);
+        m_linearSolvers[i]->addComplianceMatrix(cparams, W, factor);
     }
 }
 
@@ -279,6 +312,7 @@ void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* M
         return;
 
     ConstraintParams cparams(*ExecParams::defaultInstance());
+    const_cast<GenericConstraintCorrection*>(this)->computeComplianceInConstraintSpace(&cparams, Minv);
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
 }
 
