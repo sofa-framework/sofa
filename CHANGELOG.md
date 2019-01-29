@@ -46,7 +46,7 @@ ____________________________________________________________
 - [SofaMiscForceField] ForceMaskOff [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscForceField] LineBendingSprings [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscForceField] WashingMachineForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
-- [SofaMiscForceField] LennardJonesForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
+- ~~[SofaMiscForceField] LennardJonesForceField [#457](https://github.com/sofa-framework/sofa/pull/457)~~
 - [SofaMiscMapping] CatmullRomSplineMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscMapping] CenterPointMechanicalMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscMapping] CurveMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
