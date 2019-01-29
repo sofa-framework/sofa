@@ -38,80 +38,56 @@ namespace lifecycle
 class SOFA_HELPER_API ComponentChange
 {
 public:
-    std::string m_sinceVersion;
-
-    ComponentChange(std::string sinceVersion)
-        : m_sinceVersion(sinceVersion) {}
-
-    virtual std::string getMessage()
-    {
+    ComponentChange() {}
+    ComponentChange(std::string sinceVersion) {
         std::stringstream output;
-        output << "This component changed since SOFA " << m_sinceVersion;
-        return output.str();
+        output << "This component changed since SOFA " << sinceVersion;
+        m_message = output.str();
     }
+    virtual ~ComponentChange() {}
+
+    std::string m_message;
+    const std::string& getMessage() { return m_message; }
 };
 
 class SOFA_HELPER_API Deprecated : public ComponentChange
 {
 public:
-    std::string m_untilVersion;
-
-    Deprecated(std::string sinceVersion, std::string untilVersion)
-        : ComponentChange(sinceVersion), m_untilVersion(untilVersion) {}
-
-    virtual ~Deprecated(){}
-
-    std::string getMessage()
-    {
+    Deprecated(std::string sinceVersion, std::string untilVersion) {
         std::stringstream output;
-        output << "This component has been DEPRECATED since SOFA " << m_sinceVersion << " "
-                  "and will be removed in SOFA " << m_untilVersion << ". "
+        output << "This component has been DEPRECATED since SOFA " << sinceVersion << " "
+                  "and will be removed in SOFA " << untilVersion << ". "
                   "Please consider updating your scene as using "
                   "deprecated component may result in poor performance and undefined behavior. "
                   "If this component is crucial to you please report that to sofa-dev@ so we can  "
                   "reconsider this component for future re-integration.";
-        return output.str();
+        m_message = output.str();
     }
 };
 
 class SOFA_HELPER_API Pluginized : public ComponentChange
 {
 public:
-    std::string m_plugin;
-
-    Pluginized(std::string sinceVersion, std::string plugin)
-        : ComponentChange(sinceVersion), m_plugin(plugin) {}
-
-    virtual ~Pluginized(){}
-
-    std::string getMessage()
-    {
+    Pluginized(std::string sinceVersion, std::string plugin) {
         std::stringstream output;
-        output << "This component has been PLUGINIZED since SOFA " << m_sinceVersion << ". "
+        output << "This component has been PLUGINIZED since SOFA " << sinceVersion << ". "
                   "To continue using this component you need to update you scene "
-                  "and add <RequiredPlugin pluginName='" <<  m_plugin << "'/>";
-        return output.str();
+                  "and add <RequiredPlugin pluginName='" <<  plugin << "'/>";
+        m_message = output.str();
     }
 };
 
 class SOFA_HELPER_API Removed : public ComponentChange
 {
 public:
-    std::string m_atVersion;
-    Removed(std::string  sinceVersion, std::string atVersion)
-        : ComponentChange(sinceVersion), m_atVersion(atVersion) {}
-
-    virtual ~Removed() {}
-
-    std::string getMessage()
-    {
+    Removed(std::string  sinceVersion, std::string atVersion) {
         std::stringstream output;
-        output << "This component has been REMOVED since SOFA " << m_atVersion << " "
-                  "(deprecated since " << m_sinceVersion << "). "
+        output << "This component has been REMOVED since SOFA " << atVersion << " "
+                  "(deprecated since " << sinceVersion << "). "
                   "Please consider updating your scene. "
                   "If this component is crucial to you please report that to sofa-dev@ so that we can "
                   "reconsider this component for future re-integration.";
-        return output.str();
+        m_message = output.str();
     }
 };
 
