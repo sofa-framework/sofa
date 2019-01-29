@@ -62,7 +62,7 @@ public:
     std::string getMessage()
     {
         std::stringstream output;
-        output << "This component has been deprecated since SOFA " << m_sinceVersion << " "
+        output << "This component has been DEPRECATED since SOFA " << m_sinceVersion << " "
                   "and will be removed in SOFA " << m_untilVersion << ". "
                   "Please consider updating your scene as using "
                   "deprecated component may result in poor performance and undefined behavior. "
@@ -83,10 +83,9 @@ public:
     std::string getMessage()
     {
         std::stringstream output;
-        output << "This component has been pluginized to " << m_plugin << " "
-                  "since SOFA " << m_sinceVersion << ". "
+        output << "This component has been PLUGINIZED since SOFA " << m_sinceVersion << ". "
                   "To continue using this component you need to update you scene "
-                  "and add <RequiredPlugin name='" <<  m_plugin << "'/>";
+                  "and add <RequiredPlugin pluginName='" <<  m_plugin << "'/>";
         return output.str();
     }
 };
@@ -94,13 +93,17 @@ public:
 class SOFA_HELPER_API Removed : public ComponentChange
 {
 public:
-    Removed(std::string sinceVersion)
-        : ComponentChange(sinceVersion) {}
+    std::string m_atVersion;
+    Removed(std::string  sinceVersion, std::string atVersion)
+        : ComponentChange(sinceVersion), m_atVersion(atVersion) {}
+
+    virtual ~Removed() {}
 
     std::string getMessage()
     {
         std::stringstream output;
-        output << "This component has been removed since SOFA " << m_sinceVersion << ". "
+        output << "This component has been REMOVED since SOFA " << m_atVersion << " "
+                  "(deprecated since " << m_sinceVersion << "). "
                   "Please consider updating your scene. "
                   "If this component is crucial to you please report that to sofa-dev@ so that we can "
                   "reconsider this component for future re-integration.";
