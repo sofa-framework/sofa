@@ -1,4 +1,4 @@
-#include "DefaultTaskScheduler.h"
+#include <sofa/simulation/DefaultTaskScheduler.h>
 
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 

@@ -27,15 +27,11 @@
 #include <atomic>
 #include <mutex>
 
-#include <boost/pool/singleton_pool.hpp>
-
 
 namespace sofa
 {
 	namespace simulation
     {
-
-
 
 
         class SOFA_SIMULATION_CORE_API Task

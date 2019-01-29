@@ -25,7 +25,7 @@
 #include <sofa/config.h>
 #include <sofa/helper/system/config.h>
 
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 
 #include <atomic>
 
@@ -40,7 +40,7 @@
 
 
 // workerthread
-#include "Locks.h"
+#include <sofa/simulation/Locks.h>
 
 
 namespace sofa  {

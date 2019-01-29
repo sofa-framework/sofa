@@ -1,7 +1,4 @@
-#include "Task.h"
-
-//#include "TaskScheduler.h"
-//#include "TasksAllocator.h"
+#include <sofa/simulation/Task.h>
 
 #include <assert.h>
 #include <thread>

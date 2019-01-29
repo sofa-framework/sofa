@@ -25,15 +25,14 @@
 #include <sofa/config.h>
 #include <sofa/helper/system/config.h>
 
-#include "Task.h"
-#include "Locks.h"
+#include <sofa/simulation/Task.h>
+#include <sofa/simulation/Locks.h>
 
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <memory>
 #include <map>
-//#include <deque>
 #include <string> 
 
 
