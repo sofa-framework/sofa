@@ -72,4 +72,4 @@ if(CSparse_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC csparse)
 endif()
 
-sofa_create_package(SofaSparseSolver ${PROJECT_VERSION} SofaSparseSolver SofaSparseSolver)
+sofa_generate_package(NAME SofaSparseSolver VERSION ${PROJECT_VERSION} TARGETS SofaSparseSolver INCLUDES SofaSparseSolver)

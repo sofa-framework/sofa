@@ -384,7 +384,44 @@ macro(sofa_write_package_config_files package_name version)
 endmacro()
 
 
+
+# - Create a target for SOFA plugin or module
+# - write the package Config, Version & Target files
+# - Deploy the headers, resources, scenes & examples
+# - Replaces the now deprecated sofa_create_package macro
+#
+# sofa_generate_package(NAME VERSION TARGETS INCLUDES)
+#  NAME               - (input) the name of the generated package (usually ${PROJECT_NAME}).
+#  VERSION            - (input) the package version (usually ${${PROJECT_NAME}_VERSION}).
+#  TARGETS            - (input) list of targets to install. For standard plugins & modules, ${PROJECT_NAME}
+#  INCLUDE            - (input) [OPTIONAL] For Multi-dir install of header files.
+#
+# Example:
+# project(ExamplePlugin VERSION 1.0)
+# find_package(SofaFramework)
+# set(SOURCES_FILES  initExamplePlugin.cpp myComponent.cpp )
+# set(HEADER_FILES   initExamplePlugin.h myComponent.h )
+# add_library( ${PROJECT_NAME} SHARED ${SOURCE_FILES})
+# target_link_libraries(${PROJECT_NAME} SofaCore)
+#
+# # Single include dir to install, use public headers: 
+# set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+# # No need for INCLUDES, all headers are in the same repository
+# sofa_generate_package(${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} ${PROJECT_NAME}       )
+#                           ^                      ^                  ^            ^
+#                         NAME                  VERSION            TARGETS     NO_INCLUDES
+#
+function(sofa_generate_package)
+    set(oneValueArgs NAME VERSION)
+    set(multiValueArgs TARGETS)
+    set(options INCLUDES)
+    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    sofa_install_targets("${_NAME}" "${_TARGETS}" "${_INCLUDES}")
+    sofa_write_package_config_files("${_NAME}" "${_VERSION}")
+endfunction()
+
 macro(sofa_create_package package_name version the_targets include_subdir)
+    message("WARNING: Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
     sofa_install_targets("${package_name}" "${the_targets}" "${include_subdir}")
     sofa_write_package_config_files("${package_name}" "${version}")
 endmacro()
