@@ -34,7 +34,7 @@
 #include <memory>
 #include <map>
 #include <string> 
-
+#include <functional>
 
 namespace sofa
 {
