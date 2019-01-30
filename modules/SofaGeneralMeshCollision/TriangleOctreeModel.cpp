@@ -84,7 +84,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 {
-    const helper::vector<topology::Triangle>& tri = *p_triangles;
+    const helper::vector<topology::Triangle>& tri = *m_triangles;
     if(octreeRoot)
     {
         delete octreeRoot;
