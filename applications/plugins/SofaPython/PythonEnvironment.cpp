@@ -32,6 +32,9 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/StringUtils.h>
 using sofa::helper::getAStringCopy ;
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+using sofa::helper::system::Plugin;
 
 #if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
@@ -256,12 +259,39 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
         if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
         {
             const std::string pythonDir = pluginPath + "/python";
+            const std::string python27Dir = pluginPath + "/python2.7";
             if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
             {
                 addPythonModulePath(pythonDir);
             }
+            else if (FileSystem::exists(python27Dir) && FileSystem::isDirectory(python27Dir))
+            {
+                addPythonModulePath(python27Dir);
+            }
+            else
+            {
+                msg_warning("PythonEnvironment") << "No python dir found in " << pluginPath;
+            }
         }
     }
+}
+
+void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& pluginName)
+{
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == pluginName )
+        {
+            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(elem.first));
+            msg_info("PythonEnvironment") << pluginName << " moduleRoot = " << moduleRoot;
+
+            addPythonModulePathsForPlugins(moduleRoot);
+            return;
+        }
+    }
+    msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
 }
 
 // some basic RAII stuff to handle init/termination cleanly
