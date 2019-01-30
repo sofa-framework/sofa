@@ -49,11 +49,11 @@ namespace collision
 
 template<class DataTypes>
 TTriangleModel<DataTypes>::TTriangleModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
-    , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
+    , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , m_mstate(NULL)
     , m_topology(NULL)
-    , needsUpdate(true)
+    , m_needsUpdate(true)
     , m_topologyRevision(-1)
     , m_pointModels(NULL)
     , m_lmdFilter(NULL)
@@ -66,7 +66,7 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
-    normals.resize(size);
+    m_normals.resize(size);
 }
 
 template<class DataTypes>
@@ -199,7 +199,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     updateNormals();
 
     // topology has changed, force boudingTree recomputation
-    needsUpdate = true;
+    m_needsUpdate = true;
 }
 
 template<class DataTypes>
@@ -294,17 +294,17 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
+    if (m_needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
 
-    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
 
     // set to false to avoid excesive loop
-    needsUpdate=false;
+    m_needsUpdate=false;
 
     defaulttype::Vector3 minElem, maxElem;
     const VecCoord& x = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    const bool calcNormals = computeNormals.getValue();
+    const bool calcNormals = d_computeNormals.getValue();
 
     cubeModel->resize(size);  // size = number of triangles
     if (!empty())
@@ -356,10 +356,10 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    if (needsUpdate) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
+    if (m_needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
 
-    needsUpdate=false;
+    m_needsUpdate=false;
     defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
@@ -507,7 +507,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         if (m_topology->getRevision() != m_topologyRevision)
             return;
 
-        if (bothSide.getValue() || vparams->displayFlags().getShowWireFrame())
+        if (d_bothSide.getValue() || vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
         else
         {

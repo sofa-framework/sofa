@@ -138,14 +138,14 @@ public:
 
 	enum { NBARY = 2 };
 
-    Data<bool> bothSide; ///< to activate collision on both side of the triangle model
-    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
+    Data<bool> d_bothSide; ///< to activate collision on both side of the triangle model
+    Data<bool> d_computeNormals; ///< set to false to disable computation of triangles normal
 
 protected:
     core::behavior::MechanicalState<DataTypes>* m_mstate; ///< Pointer to the corresponding MechanicalState
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the corresponding Topology
 
-    VecDeriv normals; ///< Vector of normal direction per triangle.
+    VecDeriv m_normals; ///< Vector of normal direction per triangle.
 
     /** Pointer to the triangle array of this collision model.
      * Will point directly to the topology triangle buffer if only triangles are present. If topology is using/mixing quads and triangles,
@@ -156,7 +156,7 @@ protected:
 
     sofa::core::topology::BaseMeshTopology::SeqTriangles m_internalTriangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.
 
-    bool needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
+    bool m_needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
 
     PointModel* m_pointModels;
@@ -193,7 +193,7 @@ public:
 
     const VecCoord& getX() const { return(getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()); }
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }
-    const VecDeriv& getNormals() const { return normals; }
+    const VecDeriv& getNormals() const { return m_normals; }
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
 
     TriangleLocalMinDistanceFilter *getFilter() const;
@@ -283,9 +283,9 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v(int i) const { return this->model->m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(this->model->m_triangles))[this->index][i]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::n() const { return this->model->normals[this->index]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::n() const { return this->model->m_normals[this->index]; }
 template<class DataTypes>
-inline       typename DataTypes::Deriv& TTriangle<DataTypes>::n()       { return this->model->normals[this->index]; }
+inline       typename DataTypes::Deriv& TTriangle<DataTypes>::n()       { return this->model->m_normals[this->index]; }
 
 template<class DataTypes>
 inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangleFlags(this->index); }

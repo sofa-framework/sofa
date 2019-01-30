@@ -108,10 +108,10 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
-    if ( needsUpdate && !cubeModel->empty() ) cubeModel->resize ( 0 );
-    if ( !isMoving() && !cubeModel->empty() && !needsUpdate ) return; // No need to recompute BBox if immobile
+    if ( m_needsUpdate && !cubeModel->empty() ) cubeModel->resize ( 0 );
+    if ( !isMoving() && !cubeModel->empty() && !m_needsUpdate ) return; // No need to recompute BBox if immobile
 
-    needsUpdate=false;
+    m_needsUpdate=false;
     Vector3 minElem, maxElem;
     const VecCoord& xHigh =_higher_mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
