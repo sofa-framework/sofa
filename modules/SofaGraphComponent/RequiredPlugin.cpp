@@ -23,9 +23,11 @@
 #include "RequiredPlugin.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/logging/Messaging.h>
 
 using sofa::helper::system::PluginManager;
+using sofa::helper::system::PluginRepository;
 
 namespace sofa
 {
@@ -41,6 +43,7 @@ int RequiredPluginClass = core::RegisterObject("Load the required plugins")
 
 RequiredPlugin::RequiredPlugin()
     : d_pluginName( initData(&d_pluginName, "pluginName", "plugin name (or several names if you need to load different plugins or a plugin with several alternate names)"))
+    , d_searchPath( initData(&d_searchPath, "searchPath", "Directory to scan before the default ones") )
     , d_suffixMap ( initData(&d_suffixMap , "suffixMap", "standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix"))
     , d_stopAfterFirstNameFound( initData(&d_stopAfterFirstNameFound , false, "stopAfterFirstNameFound", "Stop after the first plugin name that is loaded successfully"))
     , d_stopAfterFirstSuffixFound( initData(&d_stopAfterFirstSuffixFound , true, "stopAfterFirstSuffixFound", "For each plugin name, stop after the first suffix that is loaded successfully"))
@@ -48,12 +51,24 @@ RequiredPlugin::RequiredPlugin()
     , d_requireAll ( initData(&d_requireAll , true, "requireAll", "Display an error message if any plugin names failed to be loaded"))
 {
     this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
+    d_pluginName.setRequired(true);
 }
 
 void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
+
+    if(d_searchPath.isSet())
+    {
+        PluginRepository.addFirstPath(d_searchPath.getValue());
+    }
+
     loadPlugin();
+
+    if(d_searchPath.isSet())
+    {
+        PluginRepository.removePath(d_searchPath.getValue());
+    }
 }
 
 void RequiredPlugin::loadPlugin()
@@ -79,6 +94,7 @@ void RequiredPlugin::loadPlugin()
     /// In case the pluginName is not set we copy the provided name into the set to load.
     if(!d_pluginName.isSet() && name.isSet())
     {
+        msg_warning() << "pluginName is not set. Using Component's name '"<< this->getName() <<"' as pluginName. Consider setting pluginName instead.";
         helper::WriteOnlyAccessor<Data<helper::vector<std::string>>> pluginsName = d_pluginName ;
         pluginsName.push_back(this->getName());
     }

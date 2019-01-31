@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::Data;
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -47,13 +48,17 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<helper::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
-    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix
+    Data<helper::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
+    Data<std::string> d_searchPath; ///< Directory to scan before the default ones
 
-    sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound; ///< Stop after the first plugin name that is loaded successfully
-    sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound; ///< For each plugin name, stop after the first suffix that is loaded successfully
-    sofa::core::objectmodel::Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
-    sofa::core::objectmodel::Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
+    /// standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa
+    /// with a non standard way of differenciating versions), using ! to represent empty suffix
+    Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap;
+
+    Data<bool> d_stopAfterFirstNameFound; ///< Stop after the first plugin name that is loaded successfully
+    Data<bool> d_stopAfterFirstSuffixFound; ///< For each plugin name, stop after the first suffix that is loaded successfully
+    Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
+    Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
 
 protected:
     RequiredPlugin();
