@@ -160,6 +160,8 @@ void TTriangleModel<DataTypes>::updateFromTopology()
 
         m_triangles = &m_internalTriangles;
         m_internalTriangles.resize(newsize);
+        resize(newsize);
+
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
