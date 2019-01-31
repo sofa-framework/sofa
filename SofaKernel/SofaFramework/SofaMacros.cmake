@@ -394,7 +394,7 @@ endmacro()
 #  NAME               - (input) the name of the generated package (usually ${PROJECT_NAME}).
 #  VERSION            - (input) the package version (usually ${${PROJECT_NAME}_VERSION}).
 #  TARGETS            - (input) list of targets to install. For standard plugins & modules, ${PROJECT_NAME}
-#  INCLUDE            - (input) [OPTIONAL] For Multi-dir install of header files.
+#  INCLUDES           - (input) [OPTIONAL] include directory (for Multi-dir install of header files).
 #
 # Example:
 # project(ExamplePlugin VERSION 1.0)
@@ -408,13 +408,12 @@ endmacro()
 # set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 # # No need for INCLUDES, all headers are in the same repository
 # sofa_generate_package(${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} ${PROJECT_NAME}       )
-#                           ^                      ^                  ^            ^
-#                         NAME                  VERSION            TARGETS     NO_INCLUDES
+#                           ^                      ^                  ^              ^
+#                         NAME                  VERSION            TARGETS      NO_INCLUDES
 #
 function(sofa_generate_package)
-    set(oneValueArgs NAME VERSION)
+    set(oneValueArgs NAME VERSION INCLUDES)
     set(multiValueArgs TARGETS)
-    set(options INCLUDES)
     cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     sofa_install_targets("${_NAME}" "${_TARGETS}" "${_INCLUDES}")
     sofa_write_package_config_files("${_NAME}" "${_VERSION}")
