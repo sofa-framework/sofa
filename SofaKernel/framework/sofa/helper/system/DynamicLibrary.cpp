@@ -26,6 +26,7 @@
 # include <dlfcn.h>
 #endif
 #include <string>
+#include <algorithm>
 
 namespace sofa
 {
@@ -63,7 +64,9 @@ const std::string& DynamicLibrary::Handle::filename() const
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
 # if defined(WIN32)
-    void *handle = ::LoadLibraryA(filename.c_str());
+    std::string p(filename);
+    std::replace(p.begin(), p.end(), '/', '\\'); // ensure Windows style path
+    void *handle = ::LoadLibraryExA(p.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 # else
     void *handle = ::dlopen(filename.c_str(), RTLD_NOW);
 # endif
