@@ -421,7 +421,7 @@ function(sofa_generate_package)
 endfunction()
 
 macro(sofa_create_package package_name version the_targets include_subdir)
-    message("WARNING: Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
+    message(WARNING "Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
     sofa_install_targets("${package_name}" "${the_targets}" "${include_subdir}")
     sofa_write_package_config_files("${package_name}" "${version}")
 endmacro()
