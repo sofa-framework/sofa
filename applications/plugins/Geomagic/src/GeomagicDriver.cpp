@@ -208,27 +208,32 @@ GeomagicDriver::GeomagicDriver()
 
 GeomagicDriver::~GeomagicDriver()
 {
-    hdMakeCurrentDevice(m_hHD);
-    
-    if (!m_hStateHandles.empty()) {
-        hdStopScheduler();
-    }
-
-
-    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
-            i != m_hStateHandles.end(); ++i)
-    {
-            hdUnschedule(*i);
-    }
-    m_hStateHandles.clear();
-
-    hdDisableDevice(m_hHD);
+    clearDevice();
 }
 
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void GeomagicDriver::init()
 {
     
+}
+
+void GeomagicDriver::clearDevice()
+{
+    hdMakeCurrentDevice(m_hHD);
+
+    if (!m_hStateHandles.empty()) {
+        hdStopScheduler();
+    }
+
+
+    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
+        i != m_hStateHandles.end(); ++i)
+    {
+        hdUnschedule(*i);
+    }
+    m_hStateHandles.clear();
+
+    hdDisableDevice(m_hHD);
 }
 
 void GeomagicDriver::bwdInit()

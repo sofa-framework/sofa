@@ -128,6 +128,7 @@ public:
     void updatePosition();
     void updateButtonStates(bool emitEvent);
     void initDevice();
+    void clearDevice();
     ForceFeedback::SPtr m_forceFeedback;
 
     /// variable pour affichage graphique
