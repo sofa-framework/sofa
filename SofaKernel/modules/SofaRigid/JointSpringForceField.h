@@ -43,6 +43,9 @@ class JointSpringForceFieldInternalData
 {
 public:
 };
+  
+template<typename DataTypes>
+class JointSpring;
 
 template<typename DataTypes>
 class JointSpring;
