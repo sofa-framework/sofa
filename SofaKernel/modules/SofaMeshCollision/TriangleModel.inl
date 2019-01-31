@@ -167,6 +167,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
 
         p_triangles = &my_triangles;
         my_triangles.resize(newsize);
+        resize(newsize);
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
