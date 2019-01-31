@@ -168,7 +168,7 @@ public:
     void init();
     void init(const std::string& pluginPath);
 
-    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
+    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, int maxRecursiveDepth = 4);
     bool pluginIsLoaded(const std::string& plugin);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
