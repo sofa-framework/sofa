@@ -250,29 +250,33 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
 
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
 {
+    bool added = false;
     std::vector<std::string> files;
     FileSystem::listDirectory(pluginsDirectory, files);
 
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
-        const std::string pluginPath = pluginsDirectory + "/" + *i;
-        if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
+        const std::string pluginSubdir = pluginsDirectory + "/" + *i;
+        if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
         {
-            const std::string pythonDir = pluginPath + "/python";
-            const std::string python27Dir = pluginPath + "/python2.7";
+            const std::string pythonDir = pluginSubdir + "/python";
+            const std::string python27Dir = pluginSubdir + "/python2.7";
             if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
             {
                 addPythonModulePath(pythonDir);
+                added = true;
             }
             else if (FileSystem::exists(python27Dir) && FileSystem::isDirectory(python27Dir))
             {
                 addPythonModulePath(python27Dir);
-            }
-            else
-            {
-                msg_warning("PythonEnvironment") << "No python dir found in " << pluginPath;
+                added = true;
             }
         }
+    }
+
+    if(!added)
+    {
+        msg_warning("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
     }
 }
 
@@ -284,8 +288,9 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
         Plugin p = elem.second;
         if ( p.getModuleName() == pluginName )
         {
-            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(elem.first));
-            msg_info("PythonEnvironment") << pluginName << " moduleRoot = " << moduleRoot;
+            std::string pluginLibraryPath = elem.first;
+            // moduleRoot should be 2 levels above the library (plugin_name/lib/plugin_name.so)
+            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(pluginLibraryPath));
 
             addPythonModulePathsForPlugins(moduleRoot);
             return;
