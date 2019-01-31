@@ -201,6 +201,7 @@ GeomagicDriver::GeomagicDriver()
     , m_simulationStarted(false)
     , m_errorDevice(0)
     , m_isInContact(false)
+    , m_hHD(UINT_MAX)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -259,10 +260,22 @@ void GeomagicDriver::initDevice()
     m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        msg_error() << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
-        d_omniVisu.setValue(false);
+    {        
         m_errorDevice = error.errorCode;
+        if (m_errorDevice == 769) // double initialisation, will try to close and reinit device
+        {
+            msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
+            m_hHD = hdGetCurrentDevice();
+            if (m_hHD != UINT_MAX)
+            {
+                clearDevice();
+                return initDevice();
+            }
+        }
+
+        msg_error() << "Failed to initialize the device ID: " << m_hHD << " | Name: '" << d_deviceName.getValue().c_str() << "' | Error code returned: " << m_errorDevice;
+        d_omniVisu.setValue(false);
+
         //init the positionDevice data to avoid any crash in the scene
         m_posDeviceVisu.clear();
         m_posDeviceVisu.resize(1);
