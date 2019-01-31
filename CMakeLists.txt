@@ -299,6 +299,9 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
+file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
+install(DIRECTORY plugins/ DESTINATION plugins COMPONENT resources)
+
 
 #######################
 # CPack configuration #
