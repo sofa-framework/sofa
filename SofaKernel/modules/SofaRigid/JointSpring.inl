@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-#define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
+#ifndef SOFA_JOINTSPRING_INL
+#define SOFA_JOINTSPRING_INL
 
-#include <SofaRigid/JointSpringForceField.inl>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
+#include <SofaRigid/JointSpring.h>
 
 namespace sofa
 {
@@ -36,23 +33,32 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace sofa::defaulttype;
-
-
-// Register in the Factory
-int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
-        .add< JointSpringForceField<Rigid3Types> >()
-
-        ;
-
-template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
-template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
-
-
+template<class DataTypes>
+JointSpring<DataTypes>::JointSpring(int m1 , int m2,
+                                    Real softKst, Real hardKst , Real softKsr , Real hardKsr , Real blocKsr,
+                                    Real axmin , Real axmax , Real aymin , Real aymax , Real azmin , Real azmax,
+                                    Real kd):
+                                      m1(m1), m2(m2), kd(kd)
+                                    , torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
+                                    , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
+                                    , needToInitializeTrans(true), needToInitializeRot(true)
+{
+    limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
+    freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
+    for (unsigned int i=0; i<3; i++)
+    {
+        if(limitAngles[2*i]==limitAngles[2*i+1])
+            freeMovements[3+i] = false;
+    }
+    initTrans = Vector(0,0,0);
+    initRot = defaulttype::Quat(0,0,0,1);
+}
 
 } // namespace interactionforcefield
 
 } // namespace component
 
 } // namespace sofa
+
+#endif  /* SOFA_JOINTSPRING_INL */
 

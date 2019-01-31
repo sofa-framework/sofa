@@ -19,13 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-#define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
-
-#include <SofaRigid/JointSpringForceField.inl>
+#define SOFA_JOINTSPRING_CPP
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
+#include <SofaRigid/JointSpring.inl>
 
 namespace sofa
 {
@@ -38,17 +34,7 @@ namespace interactionforcefield
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
-        .add< JointSpringForceField<Rigid3Types> >()
-
-        ;
-
 template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
-template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
-
-
 
 } // namespace interactionforcefield
 
