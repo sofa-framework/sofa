@@ -4,7 +4,10 @@
 
 namespace sofa {
 
-namespace sofaTypes {
+namespace gui {
+
+namespace qt {
+
 
 template<class DATA,class WIDGET>
 class GenericDataWidget : public sofa::gui::qt::DataWidget {
@@ -68,7 +71,9 @@ protected:
 
 }
 
+}
+
 template<class DATA,class WIDGET>
-using GenericDataWidget=sofaTypes::GenericDataWidget<DATA,WIDGET>;
+using GenericDataWidget=sofa::gui::qt::GenericDataWidget<DATA,WIDGET>;
 
 }

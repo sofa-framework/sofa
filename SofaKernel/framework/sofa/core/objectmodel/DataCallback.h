@@ -1,15 +1,13 @@
 #pragma once
 
-#include <sofa/helper/system/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/MutationListener.h>
-#include <sofa/gui/qt/GenericWidget.h>
-#include <QLineEdit>
 
 namespace sofa {
 
-namespace sofaTypes {
+namespace core {
+
+namespace objectmodel {
 
 class DataCallback : public sofa::core::objectmodel::DDGNode {
 public:
@@ -81,7 +79,8 @@ private:
 
 }
 
-using DataCallback=sofaTypes::DataCallback;
-
 }
 
+using DataCallback=core::objectmodel::DataCallback;
+
+}
