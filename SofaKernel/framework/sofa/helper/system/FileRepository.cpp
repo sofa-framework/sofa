@@ -127,7 +127,7 @@ FileRepository::~FileRepository()
 {
 }
 
-std::string FileRepository::cleanPath( const std::string& path )
+std::string FileRepository::cleanPath(const std::string& path , bool forceSlash)
 {
     std::string p = path;
     size_t pos = p.find("//");
@@ -140,13 +140,17 @@ std::string FileRepository::cleanPath( const std::string& path )
             p.replace(pos,2,"/");
         pos = p.find("//");
     }
+    if(forceSlash)
+    {
+        std::replace(p.begin(), p.end(), '\\', '/');
+    }
     return p;
 }
 
 void FileRepository::addFirstPath(const std::string& p)
 {
     // replacing every occurences of "//" by "/"
-    std::string path = cleanPath( p );
+    std::string path = cleanPath( p, true );
 
     std::vector<std::string> entries;
     size_t p0 = 0;
@@ -166,7 +170,7 @@ void FileRepository::addFirstPath(const std::string& p)
 void FileRepository::addLastPath(const std::string& p)
 {
     // replacing every occurences of "//" by "/"
-    std::string path = cleanPath( p );
+    std::string path = cleanPath( p, true );
 
     std::vector<std::string> entries;
     size_t p0 = 0;

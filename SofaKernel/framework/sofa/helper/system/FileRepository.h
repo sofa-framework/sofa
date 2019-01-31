@@ -65,7 +65,7 @@ public:
     void addFirstPath(const std::string& path);
 
     /// Replaces every occurrences of "//" by "/"
-    std::string cleanPath( const std::string& path );
+    static std::string cleanPath( const std::string& path, bool forceSlash = false );
 
     /// Adds a path to the back of the set of paths.
     void addLastPath(const std::string& path);
