@@ -109,9 +109,8 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
     const helper::vector<Element>& elements = getElements();
     m_hashTableSize = elements.size()*2; // Next prime number would be better
     m_hashTable.clear();
-    m_hashTable.resize(m_hashTableSize);
-    for (unsigned int i=0; i<m_hashTableSize; i++)
-        m_hashTable[i].clear();
+    if(m_hashTable.size()<m_hashTableSize)
+        m_hashTable.reserve(m_hashTableSize);
 
     for(unsigned int i=0; i<elements.size(); i++)
     {
@@ -134,11 +133,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
         for(int j=i_min[0]; j<=i_max[0]; j++)
             for(int k=i_min[1]; k<=i_max[1]; k++)
                 for(int l=i_min[2]; l<=i_max[2]; l++)
-                {
-                    unsigned int h = getHashIndexFromIndices(j,k,l);
-                    HashEntry entry(j,k,l,i);
-                    m_hashTable[h].push_back(entry);
-                }
+                    m_hashTable[Key(j,k,l)].push_back(i);
     }
 }
 
@@ -159,19 +154,19 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
 
         // Search nearest element in grid cell
         Vec3i gridIds = getGridIndices(outPos);
-        unsigned int h = getHashIndexFromCoord(outPos);
-        for (unsigned int j=0; j<m_hashTable[h].size(); j++)
+        Key key(gridIds[0],gridIds[1],gridIds[2]);
+
+        auto it_entries = m_hashTable.find(key);
+        if( it_entries != m_hashTable.end() )
         {
-            HashEntry entry = m_hashTable[h][j];
-            if(sameGridCell(entry, gridIds))
+            for(auto entry : it_entries->second)
             {
-                unsigned int e = entry.elementId;
-                Vector3 inPos = in[elements[e][0]];
-                checkDistanceFromElement(e, outPos, inPos, nearestParams);
+                Vector3 inPos = in[elements[entry][0]];
+                checkDistanceFromElement(entry, outPos, inPos, nearestParams);
             }
         }
 
-        if(nearestParams.elementId==UINT_MAX) // No element in grid cell, perform exhaustive search
+        if(nearestParams.elementId==std::numeric_limits<unsigned int>::max()) // No element in grid cell, perform exhaustive search
         {
             for ( unsigned int e = 0; e < elements.size(); e++ )
             {
@@ -188,15 +183,15 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::init ( 
                     for(int zId=-1; zId<=1; zId++)
                     {
                         gridIds = Vec3i(centerGridIds[0]+xId,centerGridIds[1]+yId,centerGridIds[2]+zId);
-                        h = getHashIndexFromIndices(gridIds);
-                        for ( unsigned int j=0; j<m_hashTable[h].size(); j++)
+                        Key key(gridIds[0],gridIds[1],gridIds[2]);
+
+                        auto it_entries = m_hashTable.find(key);
+                        if( it_entries != m_hashTable.end() )
                         {
-                            HashEntry entry = m_hashTable[h][j];
-                            if(sameGridCell(entry, gridIds))
+                            for(auto entry : it_entries->second)
                             {
-                                unsigned int e = entry.elementId;
-                                Vector3 inPos = in[elements[e][0]];
-                                checkDistanceFromElement(e, outPos, inPos, nearestParams);
+                                Vector3 inPos = in[elements[entry][0]];
+                                checkDistanceFromElement(entry, outPos, inPos, nearestParams);
                             }
                         }
                     }
@@ -425,37 +420,6 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
     vparams->drawTool()->drawLines ( points, 1, defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 }
 
-
-template <class In, class Out, class MappingDataType, class Element>
-unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getHashIndexFromCoord(const Vector3& pos)
-{
-    Vec3i gridIds = getGridIndices(pos);
-    return getHashIndexFromIndices(gridIds[0],gridIds[1],gridIds[2]);
-}
-
-template <class In, class Out, class MappingDataType, class Element>
-unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getHashIndexFromIndices(const Vec3i& ids)
-{
-    return getHashIndexFromIndices(ids[0],ids[1],ids[2]);
-}
-
-template <class In, class Out, class MappingDataType, class Element>
-unsigned int BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getHashIndexFromIndices(const int& x, const int& y, const int& z)
-{
-    // We use the large prime numbers proposed in paper:
-    // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    int h = (73856093*x^19349663*y^83492791*z)%m_hashTableSize;
-    if(h<0)
-        h += m_hashTableSize;
-
-    return static_cast<unsigned int>(h);
-}
-
-template <class In, class Out, class MappingDataType, class Element>
-bool BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::sameGridCell(const HashEntry& entry, const Vec3i& gridIds)
-{
-    return (gridIds[0]==entry.xId && gridIds[1]==entry.yId && gridIds[2]==entry.zId);
-}
 
 template <class In, class Out, class MappingDataType, class Element>
 Vec3i BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getGridIndices(const Vector3& pos)

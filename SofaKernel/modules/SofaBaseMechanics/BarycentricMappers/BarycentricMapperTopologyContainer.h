@@ -24,6 +24,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
+#include <unordered_map>
 
 namespace sofa
 {
@@ -91,18 +92,35 @@ public:
 
 protected:
 
-    struct HashEntry
+    struct Key
     {
-        HashEntry(const int& xId, const int& yId, const int& zId, const int& elementId)
+        Key(const int& xId, const int& yId, const int& zId)
         {
             this->xId=xId;
             this->yId=yId;
             this->zId=zId;
-            this->elementId=elementId;
         }
 
         int xId,yId,zId; // cell indices
-        unsigned int elementId;
+    };
+
+    struct HashFunction
+    {
+        size_t operator()(const Key &key) const
+        {
+            // We use the large prime numbers proposed in paper:
+            // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
+            int h = (73856093*key.xId^19349663*key.yId^83492791*key.zId);
+            return size_t(h);
+        }
+    };
+
+    struct HashEqual
+    {
+        bool operator()(const Key &key1, const Key &key2) const
+        {
+            return ((key1.xId==key2.xId) && (key1.yId==key2.yId) && (key1.zId==key2.zId));
+        }
     };
 
     struct NearestParams
@@ -130,8 +148,9 @@ protected:
     // Spacial hashing utils
     Real m_gridCellSize;
     Real m_convFactor;
+    std::unordered_map<Key, helper::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
     unsigned int m_hashTableSize;
-    helper::vector<helper::vector<HashEntry>> m_hashTable;
+
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
 
@@ -162,14 +181,10 @@ protected:
 
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    unsigned int getHashIndexFromCoord(const Vector3& pos);
-    unsigned int getHashIndexFromIndices(const Vec3i& ids);
-    unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z);
     defaulttype::Vec3i getGridIndices(const Vector3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
-    bool sameGridCell(const HashEntry& entry, const Vec3i& gridIds);
 
 };
 

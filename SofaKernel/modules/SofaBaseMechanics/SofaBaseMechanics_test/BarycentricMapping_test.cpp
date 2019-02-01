@@ -65,8 +65,6 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
     using Inherit::d_map;
 
     using Inherit::computeHashTable;
-    using Inherit::getHashIndexFromCoord;
-    using Inherit::getHashIndexFromIndices;
     using Inherit::getGridIndices;
     using Inherit::initHashing;
     using Inherit::init;
