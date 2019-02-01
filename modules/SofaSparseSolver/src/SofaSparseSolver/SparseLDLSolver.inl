@@ -147,8 +147,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::computeJMInvJtLocal(TMat
             for (unsigned k = 0; k<(unsigned)J->colSize(); k++) {
                 acc += lineJ[k] * lineI[k];
             }
-            m_JMinvJT.set(j, i, acc);
-            if (i != j) m_JMinvJT.set(i, j, acc);
+            const SReal val = acc * fact;
+            m_JMinvJT.set(j, i, val);
+            if (i != j) m_JMinvJT.set(i, j, val);
         }
     }
 
