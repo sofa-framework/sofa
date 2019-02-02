@@ -22,6 +22,13 @@
 #ifndef SOFAEXPORTER_CONFIG_H
 #define SOFAEXPORTER_CONFIG_H
 
-#include <SofaGeneral/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#ifdef SOFA_BUILD_EXPORTER
+#  define SOFA_TARGET SofaExporter
+#  define SOFA_SOFAEXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAEXPORTER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

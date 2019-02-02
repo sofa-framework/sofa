@@ -47,7 +47,7 @@ namespace component
 namespace _meshexporter_
 {
 
-int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
+static int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
                                              "Supported format are: " msgendl
                                              "- vtkxml" msgendl
                                              "- vtk" msgendl
@@ -59,11 +59,11 @@ int MeshExporterClass = core::RegisterObject("Export topology and positions into
 MeshExporter::MeshExporter()
     : d_fileFormat( initData(&d_fileFormat, sofa::helper::OptionsGroup(6,"ALL","vtkxml","vtk","netgen","tetgen","gmsh"), "format", "File format to use"))
     , d_position( initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
-    , d_writeEdges( initData(&d_writeEdges, (bool) true, "edges", "write edge topology"))
-    , d_writeTriangles( initData(&d_writeTriangles, (bool) true, "triangles", "write triangle topology"))
-    , d_writeQuads( initData(&d_writeQuads, (bool) true, "quads", "write quad topology"))
-    , d_writeTetras( initData(&d_writeTetras, (bool) true, "tetras", "write tetra topology"))
-    , d_writeHexas( initData(&d_writeHexas, (bool) true, "hexas", "write hexa topology"))
+    , d_writeEdges( initData(&d_writeEdges, true, "edges", "write edge topology"))
+    , d_writeTriangles( initData(&d_writeTriangles, true, "triangles", "write triangle topology"))
+    , d_writeQuads( initData(&d_writeQuads, true, "quads", "write quad topology"))
+    , d_writeTetras( initData(&d_writeTetras, true, "tetras", "write tetra topology"))
+    , d_writeHexas( initData(&d_writeHexas, true, "hexas", "write hexa topology"))
 {
 }
 
@@ -825,14 +825,15 @@ void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
         sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         switch(ev->getKey())
         {
-
         case 'E':
         case 'e':
-            //todo(18.06) remove the behavior
-            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
-                                "Scene specific interaction should be implement using an external controller or pythonScriptController."
-                                "Please update your scene because this behavior will be removed in Sofa 18.06";
-            writeMesh();
+            //done(18.12) really remove the behavior and write a message explaining the proper design.
+            //done(17.12) wrote a message to discourage the use of this behavior
+            msg_deprecated() << "Writing the mesh by pressing key is now removed from Sofa."
+                                "To implement component or scene specific interaction it is better to implement it "
+                                "using an external C++ controller or pythonScriptController."
+                                "Ask to the sofa forum for help if needed.";
+            //writeMesh();
             break;
         }
     }

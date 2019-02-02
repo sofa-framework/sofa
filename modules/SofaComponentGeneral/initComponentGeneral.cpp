@@ -35,7 +35,6 @@
 #include <SofaGeneralTopology/initGeneralTopology.h>
 #include <SofaGeneralVisual/initGeneralVisual.h>
 #include <SofaValidation/initValidation.h>
-#include <SofaExporter/initExporter.h>
 #include <SofaGeneralEngine/initGeneralEngine.h>
 #include <SofaGraphComponent/initGraphComponent.h>
 #include <SofaTopologyMapping/initTopologyMapping.h>
@@ -81,7 +80,6 @@ void initComponentGeneral()
     initGeneralTopology();
     initGeneralVisual();
     initValidation();
-    initExporter();
     initGeneralEngine();
     initGraphComponent();
     initTopologyMapping();

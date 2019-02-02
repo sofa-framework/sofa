@@ -57,7 +57,7 @@ namespace sofa
             // TODO: currently the export only support soft body and hair simulations, clothes, smoke and fluid simulation could be added.
             
             template<class T>
-            class SOFA_EXPORTER_API BlenderExporter: public core::objectmodel::BaseObject
+            class SOFA_SOFAEXPORTER_API BlenderExporter: public core::objectmodel::BaseObject
             {
             public:
                 typedef core::objectmodel::BaseObject Inherit;

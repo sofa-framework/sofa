@@ -61,7 +61,7 @@ using sofa::core::visual::VisualModel ;
 using sofa::core::objectmodel::Event ;
 using sofa::simulation::BaseSimulationExporter ;
 
-class SOFA_EXPORTER_API STLExporter : public BaseSimulationExporter
+class SOFA_SOFAEXPORTER_API STLExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(STLExporter, BaseSimulationExporter);

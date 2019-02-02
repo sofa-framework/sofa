@@ -23,17 +23,5 @@
 #define SOFA_COMPONENT_EXPORTER_INIT_H
 #include "config.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-void SOFA_EXPORTER_API initExporter();
-
-} // namespace component
-
-} // namespace sofa
-
 #endif
 

@@ -19,8 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaExporter/initExporter.h>
+#include <string>
+#include <SofaExporter/config.h>
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
 namespace sofa
 {
@@ -30,11 +33,11 @@ namespace component
 
 extern "C" {
 SOFA_SOFAEXPORTER_API void initExternalModule();
-SOFA_SOFASPARSESOLVER_API const char* getModuleName();
-SOFA_SOFASPARSESOLVER_API const char* getModuleVersion();
-SOFA_SOFASPARSESOLVER_API const char* getModuleLicense();
-SOFA_SOFASPARSESOLVER_API const char* getModuleDescription();
-SOFA_SOFASPARSESOLVER_API const char* getModuleComponentList();
+SOFA_SOFAEXPORTER_API const char* getModuleName();
+SOFA_SOFAEXPORTER_API const char* getModuleVersion();
+SOFA_SOFAEXPORTER_API const char* getModuleLicense();
+SOFA_SOFAEXPORTER_API const char* getModuleDescription();
+SOFA_SOFAEXPORTER_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -48,7 +51,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaSparseSolver";
+    return "SofaExporter";
 }
 
 const char* getModuleVersion()
@@ -63,13 +66,14 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains sparse solver for direct solving of linear systems.";
+    return "This plugin contains some exporter to save simulation scenes to various formats. "
+            "Supported format are: Sofa internal state format, VTK, STL, Mesh, Blender.";
 }
 
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
     return classes.c_str();
 }
 

@@ -50,7 +50,7 @@ using sofa::simulation::BaseSimulationExporter ;
 using sofa::core::objectmodel::Event ;
 using sofa::core::objectmodel::Base ;
 
-class SOFA_EXPORTER_API OBJExporter : public BaseSimulationExporter
+class SOFA_SOFAEXPORTER_API OBJExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(OBJExporter, BaseSimulationExporter);
