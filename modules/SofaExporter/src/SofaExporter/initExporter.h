@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaExporter/initExporter.h>
-
+#ifndef SOFA_COMPONENT_EXPORTER_INIT_H
+#define SOFA_COMPONENT_EXPORTER_INIT_H
+#include "config.h"
 
 namespace sofa
 {
@@ -29,16 +29,11 @@ namespace sofa
 namespace component
 {
 
-
-void initExporter()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+void SOFA_EXPORTER_API initExporter();
 
 } // namespace component
 
 } // namespace sofa
+
+#endif
+
