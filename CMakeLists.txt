@@ -200,6 +200,10 @@ add_subdirectory(SofaMisc)
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
 add_subdirectory(modules)
 
+# This is all the applications GUI stuff. As there is a dependency to this one
+# In scene creator and SofaPython...it is located here.
+add_subdirectory(SofaGui)
+
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
@@ -214,9 +218,6 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
     set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
 endif()
 
-# This is all the applications GUI stuff. As there is a dependency to this one
-# In scene creator ...it is located here.
-add_subdirectory(SofaGui)
 
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 if(SOFA_BUILD_SCENECREATOR)
