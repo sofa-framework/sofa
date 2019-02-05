@@ -60,10 +60,10 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 {
     msg_error_when(codec.empty(), "VideoRecorderFFMPEG") << "No codec specified";
     if ( codec.empty() )
-    {      
+    {
         return false;
     }
-   
+
     m_filename = filename;
     m_framerate = framerate;
 
