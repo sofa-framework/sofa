@@ -47,6 +47,8 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+
 namespace sofa
 {
 
@@ -111,7 +113,8 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    std::unique_ptr<VideoRecorderFFmpeg> videorecorder;
+    //std::unique_ptr<VideoRecorderFFmpeg> m_videorecorder;
+    sofa::helper::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;
 
     GLuint fbo;

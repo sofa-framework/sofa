@@ -104,7 +104,8 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
     auto in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::stringstream ss;
-    ss << std::put_time(std::localtime(&in_time_t), "%F-%X");
+    //ss << std::put_time(std::localtime(&in_time_t), "%F-%X");
+    ss << std::put_time(std::localtime(&in_time_t), "%F-%H %M %S");
 
     argumentParser->addArgument(po::value<bool>(&saveAsScreenShot)->default_value(false)->implicit_value(true),         "picture", "enable picture mode (save as png)");
     argumentParser->addArgument(po::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),         "video", "enable video mode (save as avi, x264)");
@@ -292,7 +293,7 @@ bool HeadlessRecorder::canRecord()
 int HeadlessRecorder::mainLoop()
 {
     // Boost program_option doesn't take the order or the options inter-dependencies into account,
-    // so we parse this option after we are certain everythin was parsed.
+    // so we parse this option after we are certain everything else was parsed.
     parseRecordingModeOption();
 
     if(currentCamera)
@@ -328,8 +329,9 @@ int HeadlessRecorder::mainLoop()
             }
             record();
         }
-
-        if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
+        // getAnimate is false unless animate console line flag is provided.
+        // If not provided, code is stuck in an infinite loop...
+        if (currentSimulation()) // && currentSimulation()->getContext()->getAnimate())
         {
             step();
         }
@@ -490,8 +492,12 @@ void HeadlessRecorder::step()
 #endif
     sofa::helper::AdvancedTimer::end("Animate");
     getSimulation()->updateVisual(groot.get());
+<<<<<<< HEAD
     redraw();
 
+=======
+    //redraw();
+>>>>>>> 1a3c25b2e3... Adapt headlessrecorder to use helper::gl::VideoRecorderFFMpeg
 }
 
 void HeadlessRecorder::resetView()
@@ -586,16 +592,23 @@ void HeadlessRecorder::record()
         if (initVideoRecorder)
         {
             std::string videoFilename = fileName;
+            int bitrate = 100000000;
             videoFilename.append(".avi");
             //videoFilename.append(".mp4");
-            videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
-            videorecorder->start();
+            //m_videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
+            //std::string codec = "yuv420p";
+            std::string codec = "yuv444p";
+            m_videorecorder.init(videoFilename, width, height, fps, bitrate, codec);
+            //m_videorecorder->start();
             initVideoRecorder = false;
         }
-        if (canRecord())
-            videorecorder->encodeFrame();
-        else
-            videorecorder->stop();
+        if (canRecord()) {
+            //m_videorecorder->encodeFrame();
+            m_videorecorder.addFrame();
+        } else {
+            //m_videorecorder->stop();
+            m_videorecorder.finishVideo();
+        }
     }
 }
 
