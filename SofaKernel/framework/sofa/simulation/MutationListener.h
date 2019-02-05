@@ -39,25 +39,58 @@ class SOFA_SIMULATION_CORE_API MutationListener
 public:
     virtual ~MutationListener();
 
-    virtual void addChild(Node* parent, Node* child);
+    virtual void addChild(Node* parent, Node* child) final;
 
-    virtual void removeChild(Node* parent, Node* child);
+    virtual void removeChild(Node* parent, Node* child) final;
 
-    virtual void moveChild(Node* previous, Node* parent, Node* child);
+    virtual void moveChild(Node* previous, Node* parent, Node* child) final;
 
-    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
+    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object) final;
 
-    virtual void removeObject(Node* parent, core::objectmodel::BaseObject* object);
+    virtual void removeObject(Node* parent, core::objectmodel::BaseObject* object) final;
 
-    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
+    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) final;
 
-    virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) final;
 
-    virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) final;
 
-    virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) final;
 
-	virtual void sleepChanged(Node* node);
+    virtual void sleepChanged(Node* node);
+
+
+    virtual void addChildDone(Node* parent, Node* child);
+
+    virtual void removeChildDone(Node* parent, Node* child);
+
+    virtual void moveChildDone(Node* previous, Node* parent, Node* child);
+
+    virtual void addObjectDone(Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void removeObjectDone(Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void moveObjectDone(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
+
+
+protected:
+    virtual void doAddChild(Node* parent, Node* child);
+
+    virtual void doRemoveChild(Node* parent, Node* child);
+
+    virtual void doMoveChild(Node* previous, Node* parent, Node* child);
+
+    virtual void doAddObject(Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void doRemoveObject(Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void doMoveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void doAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
+    virtual void doRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
+    virtual void doMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
 };
 
 } // namespace simulation

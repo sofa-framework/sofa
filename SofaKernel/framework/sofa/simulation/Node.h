@@ -113,7 +113,7 @@ public:
 protected:
     Node(const std::string& name="");
 
-    virtual ~Node();
+    virtual ~Node() override;
 public:
     /// Create, add, then return the new child of this Node
     virtual Node::SPtr createChild(const std::string& nodeName)=0;
@@ -551,13 +551,35 @@ protected:
 
     std::stack<Visitor*> actionStack;
 
-    virtual void notifyAddChild(Node::SPtr node);
-    virtual void notifyRemoveChild(Node::SPtr node);
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
-    virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);
-    virtual void notifySleepChanged();
+    virtual void notifyAddChild(Node::SPtr parent, Node::SPtr child) final ;
+    virtual void notifyRemoveChild(Node::SPtr parent, Node::SPtr child) final;
+    virtual void notifyMoveChild(Node::SPtr parent, Node::SPtr child, Node* prev_parent) final;
+    virtual void notifyAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) final;
+    virtual void notifyRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) final;
+    virtual void notifyMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent) final;
+    virtual void notifySleepChanged(Node* node) final;
+
+    virtual void doNotifyAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void doNotifyRemoveChild(Node::SPtr parent, Node::SPtr child);
+    virtual void doNotifyMoveChild(Node::SPtr parent, Node::SPtr child, Node* prev_parent);
+    virtual void doNotifyAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void doNotifyRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void doNotifyMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
+
+    virtual void notifyAddChildDone(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyRemoveChildDone(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyMoveChildDone(Node::SPtr parent, Node::SPtr child, Node* prev_parent);
+    virtual void notifyAddObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyRemoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyMoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
+
+//    virtual void doNotifyAddChildDone(Node::SPtr parent, Node::SPtr child);
+//    virtual void doNotifyRemoveChildDone(Node::SPtr parent, Node::SPtr child);
+//    virtual void doNotifyMoveChildDone(Node::SPtr parent, Node::SPtr child, Node* prev_parent);
+//    virtual void doNotifyAddObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+//    virtual void doNotifyRemoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+//    virtual void doNotifyMoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
+//    virtual void doNotifySleepChangedDone(Node* node);
 
 
     BaseContext* _context;
@@ -566,7 +588,7 @@ protected:
 
 
 public:
-
+    // TODO @marques-bruno: Is it really ecessary to keep those unused methods?
     virtual void notifyAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
     virtual void notifyRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
     virtual void notifyMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;

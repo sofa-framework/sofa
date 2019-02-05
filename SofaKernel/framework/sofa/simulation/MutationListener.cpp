@@ -34,33 +34,35 @@ MutationListener::~MutationListener()
 {
 }
 
-void MutationListener::addChild(Node* /*parent*/, Node* child)
+void MutationListener::addChild(Node* parent, Node* child)
 {
-    child->addListener(this);
+    doAddChild(parent, child);
     for(Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
         addObject(child, it->get());
     for(Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
         addChild(child, it->get());
 }
 
-void MutationListener::removeChild(Node* /*parent*/, Node* child)
+void MutationListener::removeChild(Node* parent, Node* child)
 {
+    doRemoveChild(parent, child);
     for(Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
         removeObject(child, it->get());
     for(Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
         removeChild(child, it->get());
-    child->removeListener(this);
 }
 
-void MutationListener::addObject(Node* /*parent*/, core::objectmodel::BaseObject* object)
+void MutationListener::addObject(Node* parent, core::objectmodel::BaseObject* object)
 {
+    doAddObject(parent, object);
     const core::objectmodel::BaseObject::VecSlaves& slaves = object->getSlaves();
     for (unsigned int i=0; i<slaves.size(); ++i)
         addSlave(object, slaves[i].get());
 }
 
-void MutationListener::removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object)
+void MutationListener::removeObject(Node* parent, core::objectmodel::BaseObject* object)
 {
+    doRemoveObject(parent, object);
     const core::objectmodel::BaseObject::VecSlaves& slaves = object->getSlaves();
     for (unsigned int i=0; i<slaves.size(); ++i)
         removeSlave(object, slaves[i].get());
@@ -68,25 +70,29 @@ void MutationListener::removeObject(Node* /*parent*/, core::objectmodel::BaseObj
 
 void MutationListener::moveChild(Node* previous, Node* parent, Node* child)
 {
+    doMoveChild(previous, parent, child);
     removeChild(previous, child);
     addChild(parent, child);
 }
 
 void MutationListener::moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object)
 {
+    doMoveObject(previous, parent, object);
     removeObject(previous, object);
     addObject(parent, object);
 }
 
-void MutationListener::addSlave(core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* slave)
+void MutationListener::addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
+    doAddSlave(master, slave);
     const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
     for (unsigned int i=0; i<slaves.size(); ++i)
         addSlave(slave, slaves[i].get());
 }
 
-void MutationListener::removeSlave(core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* slave)
+void MutationListener::removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
+    doRemoveSlave(master, slave);
     const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
     for (unsigned int i=0; i<slaves.size(); ++i)
         removeSlave(slave, slaves[i].get());
@@ -94,13 +100,47 @@ void MutationListener::removeSlave(core::objectmodel::BaseObject* /*master*/, co
 
 void MutationListener::moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
+    doMoveSlave(previousMaster, master, slave);
     removeSlave(previousMaster, slave);
     addSlave(master, slave);
 }
 
-void MutationListener::sleepChanged(Node* /*node*/)
+void MutationListener::sleepChanged(Node* node)
 {
+    SOFA_UNUSED(node);
 }
+
+void MutationListener::doAddChild(Node* parent, Node* child) { SOFA_UNUSED(parent); SOFA_UNUSED(child); }
+
+void MutationListener::doRemoveChild(Node* parent, Node* child) { SOFA_UNUSED(parent); SOFA_UNUSED(child); }
+
+void MutationListener::doMoveChild(Node* previous, Node* parent, Node* child) { SOFA_UNUSED(parent); SOFA_UNUSED(previous); SOFA_UNUSED(child); }
+
+void MutationListener::doAddObject(Node* parent, core::objectmodel::BaseObject* object) { SOFA_UNUSED(parent); SOFA_UNUSED(object); }
+
+void MutationListener::doRemoveObject(Node* parent, core::objectmodel::BaseObject* object) { SOFA_UNUSED(parent); SOFA_UNUSED(object); }
+
+void MutationListener::doMoveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) { SOFA_UNUSED(previous); SOFA_UNUSED(parent); SOFA_UNUSED(object); }
+
+void MutationListener::doAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) { SOFA_UNUSED(master); SOFA_UNUSED(slave); }
+
+void MutationListener::doRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) { SOFA_UNUSED(master); SOFA_UNUSED(slave); }
+
+void MutationListener::doMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) { SOFA_UNUSED(previousMaster); SOFA_UNUSED(master); SOFA_UNUSED(slave); }
+
+
+void MutationListener::addChildDone(Node* parent, Node* child) { SOFA_UNUSED(parent); SOFA_UNUSED(child); }
+
+void MutationListener::removeChildDone(Node* parent, Node* child) { SOFA_UNUSED(parent); SOFA_UNUSED(child); }
+
+void MutationListener::moveChildDone(Node* previous, Node* parent, Node* child) { SOFA_UNUSED(previous);  SOFA_UNUSED(parent); SOFA_UNUSED(child); }
+
+void MutationListener::addObjectDone(Node* parent, core::objectmodel::BaseObject* object) { SOFA_UNUSED(parent); SOFA_UNUSED(object); }
+
+void MutationListener::removeObjectDone(Node* parent, core::objectmodel::BaseObject* object) { SOFA_UNUSED(parent); SOFA_UNUSED(object); }
+
+void MutationListener::moveObjectDone(Node* previous, Node* parent, core::objectmodel::BaseObject* object) { SOFA_UNUSED(previous); SOFA_UNUSED(parent); SOFA_UNUSED(object); }
+
 
 } // namespace simulation
 

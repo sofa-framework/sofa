@@ -70,16 +70,16 @@ public:
     /*****************************************************************************************************************/
     QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
 
-    virtual void addChild(Node* parent, Node* child);
-    virtual void removeChild(Node* parent, Node* child);
-    virtual void moveChild(Node* previous, Node* parent, Node* child);
-    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
-    virtual void removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object);
-    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
-    virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void sleepChanged(Node* node);
+    virtual void doAddChild(Node* parent, Node* child) override;
+    virtual void doRemoveChild(Node* parent, Node* child) override;
+    virtual void doMoveChild(Node* previous, Node* parent, Node* child) override;
+    virtual void doAddObject(Node* parent, core::objectmodel::BaseObject* object) override;
+    virtual void doRemoveObject(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
+    virtual void doMoveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) override;
+    virtual void doAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    virtual void doRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    virtual void doMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    virtual void sleepChanged(Node* node) override;
     virtual void addDatas(core::objectmodel::BaseObject* parent);
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);

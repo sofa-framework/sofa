@@ -35,9 +35,6 @@ namespace simulation
 namespace graph
 {
 
-
-
-
 /** Define the structure of the scene as a Directed Acyclic Graph. Contains component objects (as pointer lists) and parents/childs (as DAGNode objects).
  *
  * The visitor traversal is performed in two passes:
@@ -58,9 +55,9 @@ public:
 
 
 protected:
-    DAGNode( const std::string& name="", DAGNode* parent=NULL  );
+    DAGNode( const std::string& name="", DAGNode* parent=nullptr  );
 
-    virtual ~DAGNode();
+    virtual ~DAGNode() override;
 
 public:
     /// Pure Virtual method from Node
@@ -187,12 +184,11 @@ protected:
 
 
     // need to update the ancestor descendancy
-    virtual void notifyAddChild(Node::SPtr node) override;
+    virtual void doNotifyAddChild(Node::SPtr _thisNode, Node::SPtr node) override;
     // need to update the ancestor descendancy
-    virtual void notifyRemoveChild(Node::SPtr node) override;
+    virtual void doNotifyRemoveChild(Node::SPtr _thisNode, Node::SPtr node) override;
     // need to update the ancestor descendancy
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev) override;
-
+    virtual void doNotifyMoveChild(Node::SPtr _thisNode, Node::SPtr node, Node* prev) override;
 
     /// traversal flags
     typedef enum
@@ -246,6 +242,56 @@ protected:
     friend class GetDownObjectsVisitor ;
     friend class GetUpObjectsVisitor ;
     /// @}
+};
+
+/// get all down objects respecting specified class_info and tags
+class GetDownObjectsVisitor : public Visitor
+{
+public:
+
+    GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
+
+    virtual Result processNodeTopDown(simulation::Node* node);
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const;
+
+    /// Return a category name for this action.
+    /// Only used for debugging / profiling purposes
+    virtual const char* getCategoryName() const;
+    virtual const char* getClassName()    const;
+
+
+protected:
+
+    const sofa::core::objectmodel::ClassInfo& _class_info;
+    DAGNode::GetObjectsCallBack& _container;
+    const sofa::core::objectmodel::TagSet& _tags;
+};
+
+/// get all up objects respecting specified class_info and tags
+class GetUpObjectsVisitor : public Visitor
+{
+public:
+    GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
+
+    virtual Result processNodeTopDown(simulation::Node* node);
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const;
+
+    /// Return a category name for this action.
+    /// Only used for debugging / profiling purposes
+    virtual const char* getCategoryName() const;
+    virtual const char* getClassName()    const;
+
+
+protected:
+    DAGNode* _searchNode;
+    const sofa::core::objectmodel::ClassInfo& _class_info;
+    DAGNode::GetObjectsCallBack& _container;
+    const sofa::core::objectmodel::TagSet& _tags;
+
 };
 
 } // namespace graph
