@@ -24,8 +24,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>      //popen
+#include <errno.h>
 #include <cstdio>		// sprintf and friends
 #include <sstream>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -54,16 +56,13 @@ VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
 
 bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec )
 {
-    std::cout << "START recording to " << filename << " ( ";
-    if (!codec.empty()) std::cout << codec << ", ";
-    std::cout << framerate << " FPS, " << bitrate << " b/s";
-    std::cout << " )" << std::endl;
+    msg_error_when(codec.empty(), "VideoRecorderFFMPEG") << "No codec specified";
     //std::string filename = findFilename();
     m_filename = filename;
     m_framerate = framerate;
 
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
+    //GLint viewport[4];
+    //glGetIntegerv(GL_VIEWPORT,viewport);
     m_Width = width;// viewport[2];
     m_Height = height;// viewport[3];
 
@@ -72,7 +71,8 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
     m_buffer = new unsigned char [4*m_Width*m_Height];
 
     std::stringstream ss;
-    ss << FFMPEG_EXEC_FILE << " -r " << m_framerate
+    ss << FFMPEG_EXEC_FILE
+       << " -r " << m_framerate
         << " -f rawvideo -pix_fmt rgba "
         << " -s " << m_Width << "x" << m_Height
         << " -i - -threads 0  -y"
@@ -80,17 +80,23 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
         << " -pix_fmt " << codec // yuv420p " // " yuv444p "
         << " -crf 17 "
         << " -vf vflip "
-        << m_filename;
-    
-    const std::string& tmp = ss.str();
+        << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
+
+    const std::string& command_line = ss.str();
 
 #ifdef WIN32
-    m_ffmpeg = _popen(tmp.c_str(), "wb");
+    m_ffmpeg = _popen(command_line.c_str(), "wb");
 #else
-    m_ffmpeg = popen(tmp.c_str(), "b");
+    m_ffmpeg = popen(command_line.c_str(), "w");
 #endif
-
-    std::cout << "Start Recording in " << filename << std::endl;
+    if (m_ffmpeg == nullptr) {
+        msg_error("VideoRecorderFFMPEG") << "ffmpeg process failed to open (error " << errno << "). Command line : " << command_line;
+        return false;
+    }
+    msg_info("VideoRecorderFFMPEG") << "Start recording to " << filename
+        << " ( " <<  codec << ", "
+        << framerate << " FPS, "
+        << bitrate << " b/s)";
     return true;
 }
 
@@ -127,10 +133,10 @@ void VideoRecorderFFMPEG::finishVideo()
 
 std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, const unsigned int bitrate, const std::string& extension)
 {
+    SOFA_UNUSED(bitrate);
     std::string filename;
     char buf[32];
-    int c;
-    c = 0;
+    int c = 0;
     struct stat st;
     do
     {
@@ -144,15 +150,6 @@ std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, cons
         filename += extension;
     } while (stat(filename.c_str(), &st) == 0);
     m_counter = c + 1;
-
-    sprintf(buf, "%04d", c);
-    filename = m_prefix;
-    filename += "_r" + std::to_string(framerate) + "_";
-    //filename += +"_b" + std::to_string(bitrate) + "_";
-    filename += buf;
-    filename += ".";
-    filename += extension;
-
     return filename;
 }
 
