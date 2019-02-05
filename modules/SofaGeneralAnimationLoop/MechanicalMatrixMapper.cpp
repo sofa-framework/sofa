@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP
 #include "MechanicalMatrixMapper.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -48,10 +49,10 @@ int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template class MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
-template class MechanicalMatrixMapper<Vec3Types, Vec3Types>;
-template class MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
-template class MechanicalMatrixMapper<Vec1Types, Vec1Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
 
 
 } // namespace forcefield
