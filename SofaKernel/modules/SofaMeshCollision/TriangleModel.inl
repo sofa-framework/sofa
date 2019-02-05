@@ -81,13 +81,13 @@ void TTriangleModel<DataTypes>::init()
 
     if (mstate==NULL)
     {
-        serr << "TriangleModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "TriangleModel requires a Vec3 Mechanical Model"msg_error()
         return;
     }
 
     if (!_topology)
     {
-        serr << "TriangleModel requires a BaseMeshTopology" << sendl;
+        msg_error() << "TriangleModel requires a BaseMeshTopology";
         return;
     }
 
@@ -97,8 +97,8 @@ void TTriangleModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
     }
 
-    //sout << "INFO_print : Col - init TRIANGLE " << sendl;
-    sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << sendl;
+    //sout << "INFO_print : Col - init TRIANGLE ";
+    sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles.";
     triangles = &_topology->getTriangles();
     resize(_topology->getNbTriangles());
 
@@ -118,7 +118,7 @@ void TTriangleModel<DataTypes>::updateNormals()
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
-        //sout << i << " " << t.n() << sendl;
+        //sout << i << " " << t.n();
     }
 }
 
@@ -155,7 +155,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             core::topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
-                serr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")"<<sendl;
+                msg_error() << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")"<<sendl;
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
@@ -168,7 +168,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
-                serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
+                msg_error() << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
@@ -254,7 +254,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
         {
             updateFromTopology();
 
-            sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
+            sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles.";
             resize(_topology->getNbTriangles());
             needsUpdate=true;
             updateFlags();            
@@ -263,7 +263,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
         /*
         case core::topology::TRIANGLESADDED:
         {
-            //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
+            //sout << "INFO_print : Vis - TRIANGLESADDED"<< sendl;
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
             Triangle t(this, size - ta->getNbAddedTriangles() + i);
