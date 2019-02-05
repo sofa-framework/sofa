@@ -60,7 +60,6 @@ find_package(GTest CONFIG QUIET)
 set(SOFA_HAVE_GTEST ${GTest_FOUND})
 
 if(NOT SOFA_NO_OPENGL)
-
     # OpenGL (glu)
     find_package(OpenGL REQUIRED)
     # no target support for OpenGL on windows yet see
@@ -70,6 +69,11 @@ if(NOT SOFA_NO_OPENGL)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
 
+    if(OPENGL_GLU_FOUND AND UNIX AND NOT APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+        # Add GLU to Linux binaries
+        sofa_install_libraries_from_targets(OpenGL::GLU)
+    endif()
+
     ## GLEW
     find_package(GLEW)
     if(GLEW_FOUND)
@@ -78,14 +82,13 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
 
         if(WIN32)
-            sofa_copy_libraries_from_targets(GLEW::GLEW) # Windows dependency pack
+            sofa_copy_libraries_from_targets(${GLEW_Target}) # Windows dependency pack
         endif()
-        sofa_install_libraries_from_targets(GLEW::GLEW)
+        sofa_install_libraries_from_targets(${GLEW_Target})
     else()
         message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
-
 endif()
 
 ## tinyxml
@@ -101,23 +104,23 @@ if(ZLIB_FOUND)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
 
     if(WIN32)
-        sofa_copy_libraries_from_targets(ZLIB::ZLIB) # Windows dependency pack
+        sofa_copy_libraries_from_targets(${ZLIB_Target}) # Windows dependency pack
+        sofa_install_libraries_from_targets(${ZLIB_Target})
     endif()
-    sofa_install_libraries_from_targets(ZLIB::ZLIB)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
 ## Boost
 # required boost libraries
 find_package(Boost
-    REQUIRED system filesystem locale program_options
+    REQUIRED system filesystem locale program_options chrono atomic
     OPTIONAL_COMPONENTS thread date_time
     )
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
-set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS})
+set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
@@ -153,8 +156,10 @@ if(SOFA_HAVE_BOOST_SYSTEM
 
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BOOST_TARGETS})
     sofa_install_libraries_from_targets(${BOOST_TARGETS})
+    sofa_install_libraries(${Boost_CHRONO_LIBRARY} ${Boost_ATOMIC_LIBRARY})
     if(WIN32)
         sofa_copy_libraries_from_targets(${BOOST_TARGETS})
+        sofa_copy_libraries(${Boost_CHRONO_LIBRARY} ${Boost_ATOMIC_LIBRARY})
     endif()
 endif()
 
