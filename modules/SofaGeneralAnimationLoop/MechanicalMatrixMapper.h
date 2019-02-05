@@ -123,7 +123,7 @@ using sofa::core::objectmodel::ComponentState ;
  * An example using this component can be found in examples/Components/animationLoop/MechanicalMatrixMapper.pyscn
 */
 template<typename TDataTypes1, typename TDataTypes2>
-class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
+class MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MechanicalMatrixMapper, TDataTypes1, TDataTypes2), SOFA_TEMPLATE2(MixedInteractionForceField, TDataTypes1, TDataTypes2));
@@ -272,6 +272,21 @@ protected:
     ////////////////////////////////////////////////////////////////////////////
 
 };
+
+#if !defined(SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP)
+#ifdef SOFA_WITH_DOUBLE
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3dTypes, Rigid3dTypes>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3dTypes, Vec3dTypes>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1dTypes, Rigid3dTypes>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1dTypes, Vec1dTypes>;
+#endif
+#ifdef SOFA_WITH_FLOAT
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3fTypes, Vec3fTypes>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1fTypes, Rigid3fTypes>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1fTypes, Vec1fTypes>;
+#endif
+#endif
 
 } // namespace interactionforcefield
 

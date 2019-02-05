@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP
 #include "MechanicalMatrixMapper.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -56,16 +57,16 @@ int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef SOFA_WITH_DOUBLE
-template class MechanicalMatrixMapper<Vec3dTypes, Rigid3dTypes>;
-template class MechanicalMatrixMapper<Vec3dTypes, Vec3dTypes>;
-template class MechanicalMatrixMapper<Vec1dTypes, Rigid3dTypes>;
-template class MechanicalMatrixMapper<Vec1dTypes, Vec1dTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3dTypes, Rigid3dTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3dTypes, Vec3dTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1dTypes, Rigid3dTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1dTypes, Vec1dTypes>;
 #endif
 #ifdef SOFA_WITH_FLOAT
-template class MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes>;
-template class MechanicalMatrixMapper<Vec3fTypes, Vec3fTypes>;
-template class MechanicalMatrixMapper<Vec1fTypes, Rigid3fTypes>;
-template class MechanicalMatrixMapper<Vec1fTypes, Vec1fTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3fTypes, Vec3fTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1fTypes, Rigid3fTypes>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1fTypes, Vec1fTypes>;
 #endif
 
 } // namespace forcefield

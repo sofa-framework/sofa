@@ -172,7 +172,7 @@ public:
         d_anisotropySet.setValue(direction);
     }
 
-    class TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
+    class SOFA_MISC_FEM_API TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
     {
     public:
       typedef typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
