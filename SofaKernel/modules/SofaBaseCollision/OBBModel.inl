@@ -74,7 +74,7 @@ void TOBBModel<DataTypes>::init()
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (_mstate==NULL)
     {
-        serr<<"TOBBModel requires a Rigid Mechanical Model" << sendl;
+        msg_error()<<"TOBBModel requires a Rigid Mechanical Model";
         return;
     }
 

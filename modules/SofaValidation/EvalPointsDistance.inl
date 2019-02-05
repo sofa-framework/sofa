@@ -88,19 +88,19 @@ void EvalPointsDistance<DataTypes>::init()
     {
         mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
         box1 = mstate1->f_bbox.getValue();
-        serr << " Mechanical State object1 not found, this will be taken in the same context " << sendl;
+        msg_error()<< " Mechanical State object1 not found, this will be taken in the same context ";
     }
     if (!mstate2)
     {
         mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
         this->box2 = mstate1->f_bbox.getValue();
-        serr << " Mechanical State object2 not found, this will be taken in the same context " << sendl;
+        msg_error()<< " Mechanical State object2 not found, this will be taken in the same context ";
     }
 
 
     if (!mstate1 || !mstate2)
     {
-        serr << " ERROR Mechanical State object1 and object2 expected  " << sendl;
+        msg_error()<< " ERROR Mechanical State object1 and object2 expected ";
         return;
     }
 
@@ -119,7 +119,7 @@ void EvalPointsDistance<DataTypes>::reinit()
         outfile = new std::ofstream(filename.c_str());
         if( !outfile->is_open() )
         {
-            serr << "Error creating file "<<filename<<sendl;
+            msg_error() << "Error creating file "<<filename;
             delete outfile;
             outfile = NULL;
         }
@@ -136,7 +136,7 @@ void EvalPointsDistance<DataTypes>::reinit()
 
     if(f_period.getValue() == 0.0)
     {
-        serr << " ERROR period must be different of zero  " << sendl;
+        msg_error() << " ERROR period must be different of zero  ";
         return;
     }
 
@@ -266,7 +266,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
 
     if (!mstate1 || !mstate2)
             return;
-    // std::ostream *out = (outfile==NULL)? (std::ostream *)(&sout) : outfile;
+
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
         double time = getContext()->getTime();
@@ -277,11 +277,10 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
             eval();
             if (outfile==NULL)
             {
-                sout << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
-                sout << this->getName() << "\t" << time
+                msg_info() << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)";
+                msg_info() << this->getName() << "\t" << time
                      << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue()
-                     << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue()
-                     <<  sendl;
+                     << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue();
             }
             else
             {
