@@ -80,7 +80,7 @@ void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(uns
 }
 
 template <class DataTypes>
-class VectorSpringForceField<DataTypes>::Loader : public sofa::helper::io::MassSpringLoader
+class VectorSpringForceField<DataTypes>::Loader : public sofa::helper::io::XspLoaderDataHook
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -91,11 +91,6 @@ public:
     {
         dest->addSpring(m1,m2,ks,kd,Coord((Real)restx,(Real)resty,(Real)restz));
     }
-    virtual void setNumSprings(int /*n*/)
-    {
-        //dest->resizeArray((unsigned int )n);
-    }
-
 };
 
 template <class DataTypes>
@@ -104,7 +99,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        return loader.load(filename);
+        return helper::io::XspLoader::Load(filename, loader, this);
     }
     else return false;
 }
