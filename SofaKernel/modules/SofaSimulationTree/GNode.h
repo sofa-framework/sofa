@@ -55,19 +55,13 @@ public:
 
     //Pure Virtual method from BaseNode
     /// Add a child node
-    virtual void addChild(BaseNode::SPtr node) override;
+    virtual void doAddChild(BaseNode::SPtr node) override;
 
     /// Remove a child node
-    virtual void removeChild(BaseNode::SPtr node) override;
+    virtual void doRemoveChild(BaseNode::SPtr node) override;
 
     /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr obj) override;
-
-    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::addObject(obj); }
-
-    /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::removeObject(obj); }
+    virtual void doMoveChild(BaseNode::SPtr node) override;
 
     /// Remove the current node from the graph: consists in removing the link to its parent
     virtual void detachFromGraph() override;
@@ -152,10 +146,6 @@ protected:
     inline GNode* parent() const { return l_parent.get(); }
 
     SingleLink<GNode,GNode,BaseLink::FLAG_DOUBLELINK> l_parent;
-
-    virtual void doAddChild(GNode::SPtr node);
-    void doRemoveChild(GNode::SPtr node);
-
 
     /// Execute a recursive action starting from this node.
     void doExecuteVisitor(simulation::Visitor* action, bool=false) override;

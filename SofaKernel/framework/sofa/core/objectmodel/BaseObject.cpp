@@ -209,7 +209,7 @@ BaseObject* BaseObject::getSlave(const std::string& name) const
         if ((*iSlaves)->getName() == name)
             return iSlaves->get();
     }
-    return NULL;
+    return nullptr;
 }
 
 void BaseObject::addSlave(BaseObject::SPtr s)

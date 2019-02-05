@@ -63,22 +63,6 @@ public:
     /// Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
-    /// Pure Virtual method from BaseNode
-    /// Add a child node
-    virtual void addChild(BaseNode::SPtr node) override;
-
-    /// Remove a child node
-    virtual void removeChild(BaseNode::SPtr node) override;
-
-    /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr obj) override;
-
-    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::addObject(obj); }
-
-    /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::removeObject(obj); }
-
     /// Remove the current node from the graph: consists in removing the link to its parent
     virtual void detachFromGraph() override;
 
@@ -161,8 +145,9 @@ protected:
 
     LinkParents l_parents;
 
-    virtual void doAddChild(DAGNode::SPtr node);
-    void doRemoveChild(DAGNode::SPtr node);
+    virtual void doAddChild(BaseNode::SPtr node) override;
+    virtual void doRemoveChild(BaseNode::SPtr node) override;
+    virtual void doMoveChild(BaseNode::SPtr node) override;
 
 
     /// Execute a recursive action starting from this node.
@@ -181,14 +166,6 @@ protected:
 
     /// traversal updating the descendancy
     void updateDescendancy();
-
-
-    // need to update the ancestor descendancy
-    virtual void doNotifyAddChild(Node::SPtr _thisNode, Node::SPtr node) override;
-    // need to update the ancestor descendancy
-    virtual void doNotifyRemoveChild(Node::SPtr _thisNode, Node::SPtr node) override;
-    // need to update the ancestor descendancy
-    virtual void doNotifyMoveChild(Node::SPtr _thisNode, Node::SPtr node, Node* prev) override;
 
     /// traversal flags
     typedef enum

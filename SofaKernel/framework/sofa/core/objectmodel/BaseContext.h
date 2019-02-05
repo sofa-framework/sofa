@@ -73,7 +73,7 @@ public:
 
 protected:
     BaseContext();
-    virtual ~BaseContext();
+    virtual ~BaseContext() override;
 
 private:
     BaseContext(const BaseContext&);

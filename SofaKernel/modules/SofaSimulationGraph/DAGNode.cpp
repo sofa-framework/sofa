@@ -113,68 +113,36 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 }
 
 /// Add a child node
-void DAGNode::doAddChild(DAGNode::SPtr node)
+void DAGNode::doAddChild(BaseNode::SPtr node)
 {
-    child.add(node);
-    node->l_parents.add(this);
-    node->l_parents.updateLinks(); // to fix load-time unresolved links
+    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    setDirtyDescendancy();
+    child.add(dagnode);
+    dagnode->l_parents.add(this);
+    dagnode->l_parents.updateLinks(); // to fix load-time unresolved links
 }
 
 /// Remove a child
-void DAGNode::doRemoveChild(DAGNode::SPtr node)
-{
-    child.remove(node);
-    node->l_parents.remove(this);
-}
-
-
-/// Add a child node
-void DAGNode::addChild(core::objectmodel::BaseNode::SPtr node)
+void DAGNode::doRemoveChild(BaseNode::SPtr node)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
-    notifyAddChild(this, dagnode);
-    doAddChild(dagnode);
-    notifyAddChildDone(this, dagnode);
-}
-
-/// Remove a child
-void DAGNode::removeChild(core::objectmodel::BaseNode::SPtr node)
-{
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
-    notifyRemoveChild(this, dagnode);
-    doRemoveChild(dagnode);
-    notifyRemoveChildDone(this, dagnode);
+    setDirtyDescendancy();
+    child.remove(dagnode);
+    dagnode->l_parents.remove(this);
 }
 
 
 /// Move a node from another node
-void DAGNode::moveChild(BaseNode::SPtr node)
+void DAGNode::doMoveChild(BaseNode::SPtr node)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
-    if (!dagnode->getNbParents())
-    {
-        addChild(node);
-    }
-    else
-    {
-        const LinkParents::Container& parents = dagnode->l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; ++i)
-        {
-            DAGNode *prev = parents[i];
-            notifyMoveChild(this, dagnode,prev);
-            prev->doRemoveChild(dagnode);
-        }
-        doAddChild(dagnode);
-        for ( unsigned int i = 0; i < parents.size() ; ++i)
-        {
-            DAGNode *prev = parents[i];
-            notifyMoveChildDone(this, dagnode, prev);
-        }
-    }
+    setDirtyDescendancy();
+    for (DAGNode* prev : dagnode->l_parents.getValue())
+        prev->removeChild(node);
+    addChild(node);
 }
-
 
 /// Remove a child
 void DAGNode::detachFromGraph()
@@ -183,37 +151,6 @@ void DAGNode::detachFromGraph()
     const LinkParents::Container& parents = l_parents.getValue();
     while(!parents.empty())
         parents.back()->removeChild(this);
-}
-
-void DAGNode::doNotifyAddChild(Node::SPtr _thisNode, Node::SPtr node)
-{
-    SOFA_UNUSED(_thisNode);
-    SOFA_UNUSED(node);
-    // We inherit notifyAddChild from sofa::simulation::Node, so _thisNode
-    // is required in the method's signature. But we use <this> directly in the method
-    // to avoid misuses...
-    setDirtyDescendancy();
-}
-
-void DAGNode::doNotifyRemoveChild(Node::SPtr _thisNode, Node::SPtr node)
-{
-    SOFA_UNUSED(_thisNode);
-    SOFA_UNUSED(node);
-    // We inherit notifyRemoveChild from sofa::simulation::Node, so _thisNode
-    // is required in the method's signature. But we use <this> directly in the method
-    // to avoid misuses...
-    setDirtyDescendancy();
-}
-
-void DAGNode::doNotifyMoveChild(Node::SPtr _thisNode, Node::SPtr node, Node* prev)
-{
-    SOFA_UNUSED(_thisNode);
-    SOFA_UNUSED(node);
-    SOFA_UNUSED(prev);
-    // We inherit notifyMoveChild from sofa::simulation::Node, so _thisNode
-    // is required in the method's signature. But we use <this> directly in the method
-    // to avoid misuses...
-    setDirtyDescendancy();
 }
 
 /// Generic object access, possibly searching up or down from the current context

@@ -60,56 +60,29 @@ Node::SPtr GNode::createChild(const std::string& nodeName)
 }
 
 /// Add a child node
-void GNode::doAddChild(GNode::SPtr node)
+void GNode::doAddChild(BaseNode::SPtr node)
 {
-    child.add(node);
-    node->l_parent.add(this);
+    GNode::SPtr gnode = down_cast<GNode>(node.get());
+    child.add(gnode);
+    gnode->l_parent.add(this);
 }
 
 /// Remove a child
-void GNode::doRemoveChild(GNode::SPtr node)
-{
-    child.remove(node);
-    node->l_parent.remove(this);
-}
-
-
-/// Add a child node
-void GNode::addChild(core::objectmodel::BaseNode::SPtr node)
+void GNode::doRemoveChild(BaseNode::SPtr node)
 {
     GNode::SPtr gnode = down_cast<GNode>(node.get());
-    notifyAddChild(this, gnode);
-    doAddChild(gnode);
+    child.remove(gnode);
+    gnode->l_parent.remove(this);
 }
 
 /// Remove a child
-void GNode::removeChild(core::objectmodel::BaseNode::SPtr node)
+void GNode::doMoveChild(BaseNode::SPtr node)
 {
-    GNode::SPtr gnode = down_cast<GNode>(node.get());
-    notifyRemoveChild(this, gnode);
-    doRemoveChild(gnode);
+    Node* parentNode = down_cast<Node>(node->getContext()->toBaseNode());
+    if (parentNode != nullptr)
+        parentNode->removeChild(node);
+    addChild(node);
 }
-
-
-/// Move a node from another node
-void GNode::moveChild(BaseNode::SPtr node)
-{
-    GNode::SPtr gnode = down_cast<GNode>(node.get());
-    if (!gnode) return;
-    GNode* prev = gnode->parent();
-    if (prev == nullptr)
-    {
-        addChild(node);
-    }
-    else
-    {
-        notifyMoveChild(this, gnode, prev);
-        prev->doRemoveChild(gnode);
-        doAddChild(gnode);
-    }
-}
-
-
 /// Remove a child
 void GNode::detachFromGraph()
 {

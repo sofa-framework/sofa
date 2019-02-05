@@ -120,7 +120,7 @@ void QSofaListView::Clear(Node* rootNode)
     this->setSortingEnabled(false);
 
     header()->hide();
-    graphListener_->addChild ( nullptr, rootNode );
+    graphListener_->addChildBegin ( nullptr, rootNode );
     graphListener_->freeze ( rootNode );
     std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
 
@@ -765,7 +765,7 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
         {
             //Temporary Root : the current graph is empty, and has only a single node "Root"
             object_.ptr.Node->detachFromGraph();
-            graphListener_->addChild ( nullptr, new_node );
+            graphListener_->addChildBegin ( nullptr, new_node );
             simulation::getSimulation()->init(new_node);
             emit RootNodeChanged(new_node, path.c_str());
         }

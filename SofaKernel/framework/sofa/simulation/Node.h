@@ -299,18 +299,39 @@ public:
 
     /// @}
 
+    /// @name Set/get objects
+    /// @{
+
+    /// Pure Virtual method from BaseNode
+    /// Add a child node
+    virtual void addChild(BaseNode::SPtr node) final;
+    /// Remove a child node
+    virtual void removeChild(BaseNode::SPtr node) final;
+    /// Move a node from another node
+    virtual void moveChild(BaseNode::SPtr obj) final;
+
+    /// Delegate methods overridden in child classes
+    /// Add a child node
+    virtual void doAddChild(BaseNode::SPtr node) = 0;
+    /// Remove a child node
+    virtual void doRemoveChild(BaseNode::SPtr node) = 0;
+    /// Move a node from another node
+    virtual void doMoveChild(BaseNode::SPtr obj) = 0;
+
+    /// @}
+
 
     /// @name Set/get objects
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Remove an object
-    virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Move an object from another node
-    virtual void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Find an object given its name
     sofa::core::objectmodel::BaseObject* getObject(const std::string& name) const;
@@ -547,52 +568,41 @@ protected:
 
     virtual void doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-
+    virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;
+private:
+    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child);
 
-    virtual void notifyAddChild(Node::SPtr parent, Node::SPtr child) final ;
-    virtual void notifyRemoveChild(Node::SPtr parent, Node::SPtr child) final;
-    virtual void notifyMoveChild(Node::SPtr parent, Node::SPtr child, Node* prev_parent) final;
-    virtual void notifyAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) final;
-    virtual void notifyRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) final;
-    virtual void notifyMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent) final;
-    virtual void notifySleepChanged(Node* node) final;
+    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyBeginMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
 
-    virtual void doNotifyAddChild(Node::SPtr parent, Node::SPtr child);
-    virtual void doNotifyRemoveChild(Node::SPtr parent, Node::SPtr child);
-    virtual void doNotifyMoveChild(Node::SPtr parent, Node::SPtr child, Node* prev_parent);
-    virtual void doNotifyAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doNotifyRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doNotifyMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
+    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyEndMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
 
-    virtual void notifyAddChildDone(Node::SPtr parent, Node::SPtr child);
-    virtual void notifyRemoveChildDone(Node::SPtr parent, Node::SPtr child);
-    virtual void notifyMoveChildDone(Node::SPtr parent, Node::SPtr child, Node* prev_parent);
-    virtual void notifyAddObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyRemoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyMoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
+    virtual void notifySleepChanged(Node* node);
 
-//    virtual void doNotifyAddChildDone(Node::SPtr parent, Node::SPtr child);
-//    virtual void doNotifyRemoveChildDone(Node::SPtr parent, Node::SPtr child);
-//    virtual void doNotifyMoveChildDone(Node::SPtr parent, Node::SPtr child, Node* prev_parent);
-//    virtual void doNotifyAddObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-//    virtual void doNotifyRemoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-//    virtual void doNotifyMoveObjectDone(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
-//    virtual void doNotifySleepChangedDone(Node* node);
+    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyBeginMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+
+    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyEndMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
 
 
+protected:
     BaseContext* _context;
 
     helper::vector<MutationListener*> listener;
 
 
 public:
-    // TODO @marques-bruno: Is it really ecessary to keep those unused methods?
-    virtual void notifyAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-    virtual void notifyRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-    virtual void notifyMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 

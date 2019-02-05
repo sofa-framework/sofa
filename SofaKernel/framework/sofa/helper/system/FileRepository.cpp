@@ -285,11 +285,11 @@ void FileRepository::print()
 const std::string FileRepository::getPathsJoined()
 {
     std::ostringstream imploded;
-    char* delim = ":";
+    std::string delim = ":";
 #ifdef WIN32
     delim = ";";
 #endif
-    std::copy(vpath.begin(), vpath.end(), std::ostream_iterator<std::string>(imploded, delim));
+    std::copy(vpath.begin(), vpath.end(), std::ostream_iterator<std::string>(imploded, delim.c_str()));
     std::string implodedStr = imploded.str();
     implodedStr = implodedStr.substr(0, implodedStr.size()-1); // remove trailing separator
     return implodedStr;
