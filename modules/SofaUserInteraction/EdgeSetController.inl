@@ -79,13 +79,13 @@ void EdgeSetController<DataTypes>::init()
     this->getContext()->get(edgeMod);
 
     if (edgeGeo == NULL)
-        serr << "EdgeSetController has no binding EdgeSetGeometryAlgorithms." << sendl;
+        smg_error() << "EdgeSetController has no binding EdgeSetGeometryAlgorithms." ;
 
     if (edgeMod == NULL)
-        serr << "EdgeSetController has no binding EdgeSetTopologyModifier." << sendl;
+        smg_error() << "EdgeSetController has no binding EdgeSetTopologyModifier." ;
 
     if (reversed.getValue() && startingIndex.getValue() != 0)
-        serr << "WARNING : startingIndex different from 0 is not implemented for reversed case." << sendl;
+        msg_warning() << "WARNING : startingIndex different from 0 is not implemented for reversed case." ;
 
     Inherit::init();
 
@@ -358,7 +358,7 @@ void EdgeSetController<DataTypes>::applyController()
             sofa::simulation::UpdateMappingVisitor updateVisitor(core::ExecParams::defaultInstance()); updateVisitor.execute(node);
         }
     }
-    //serr<<"applyController ended"<<sendl;
+    //smg_error()<<"applyController ended"<<sendl;
 }
 
 
@@ -495,7 +495,7 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
 
         if (baseEdge.size()==1)
         {
-            serr<<"Warning nothing to be removed"<<sendl;
+            smg_error()<<"Warning nothing to be removed"<<sendl;
         }
 
         if (baseEdge.size() == 2)
