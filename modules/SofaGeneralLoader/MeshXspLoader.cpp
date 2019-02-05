@@ -19,11 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLoader/MeshXspLoader.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <iostream>
-#include <fstream>
+#include <sofa/core/ObjectFactory.h>
+
+#include <sofa/helper/io/MassSpringLoader.h>
+using sofa::helper::io::XspLoader;
+using sofa::helper::io::XspLoaderDataHook;
+
+using sofa::helper::WriteOnlyAccessor;
+
+#include <sofa/defaulttype/Vec.h>
+using sofa::defaulttype::Vec3;
+
+#include <sofa/core/topology/Topology.h>
+using sofa::core::topology::Topology;
 
 namespace sofa
 {
@@ -34,170 +43,53 @@ namespace component
 namespace loader
 {
 
-using namespace sofa::defaulttype;
-
-int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
-        .add< MeshXspLoader >()
-        ;
-
-MeshXspLoader::MeshXspLoader() : MeshLoader()
-    , gravity(initData(&gravity,"gravity","Gravity coordinates loaded in this mesh."))
-    , viscosity(initData(&viscosity,"viscosity","viscosity values loaded in this mesh."))
+class MeshXspLoadDataHook : public XspLoaderDataHook
 {
-    gravity.setPersistent(false);
-    viscosity.setPersistent(false);
-}
+public:
+    MeshXspLoader* m_data;
+    WriteOnlyAccessor<decltype(m_data->d_positions)> m_positions;
+    WriteOnlyAccessor<decltype(m_data->d_edges)> m_edges;
 
+    MeshXspLoadDataHook(MeshXspLoader* data) :
+        m_data(data),
+        m_positions(m_data->d_positions),
+        m_edges(m_data->d_edges)
+    {}
+
+    virtual ~MeshXspLoadDataHook(){}
+
+    void setNumMasses(size_t n) override { m_positions.reserve(n); }
+    void setNumSprings(size_t n) override { m_edges.reserve(n); }
+
+    void addMass(SReal px, SReal py, SReal pz, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    {
+        m_positions.push_back(Vec3(px,py,pz));
+    }
+
+    void addSpring(int index1, int index2, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) override
+    {
+        m_edges.push_back(Topology::Edge(index1, index2));
+    }
+
+    void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) override
+    {
+        addSpring(m1, m2, ks, kd, initpos);
+    }
+};
+
+MeshXspLoader::MeshXspLoader() : MeshLoader() {}
 
 bool MeshXspLoader::load()
 {
-  	dmsg_info() << "Loading Xsp file: " << m_filename;
-
-    std::string cmd;
-    bool fileRead = false;
-
-    // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
-    std::ifstream file(filename);
-
-    if (!file.good())
-    {
-        msg_error() << "Cannot read file '" << m_filename << "'.";
-        return false;
-    }
-
-
-    // -- Check first line.
-    file >> cmd;
-
-    // -- Reading file version
-    if (cmd == "Xsp")
-    {
-        float version = 0.0f;
-        file >> version;
-
-        if (version == 3.0)
-            fileRead = readXsp(file, false);
-        else if (version == 4.0)
-            fileRead = readXsp(file, true);
-
-        file.close();    
-    }
-    else
-    {
-        msg_error() << "File '" << m_filename << "' finally appears not to be a Xsp file.";
-        file.close();
-        return false;
-
-    }
-
-    file.close();
-    return fileRead;
+    MeshXspLoadDataHook data(this);
+    return XspLoader::Load(m_filename.getValue(), data, this);
 }
 
+static int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
+        .add< MeshXspLoader >();
+} /// namespace loader
 
+} /// namespace component
 
-bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
-{
-    dmsg_info() << "Reading Xsp file: " << vector_spring;
-
-    std::string cmd;
-    file >> cmd;
-
-    // then find out number of masses and springs, not used.
-    if (cmd == "numm")
-    {
-        int totalNumMasses = 0;
-        file >> totalNumMasses;
-    }
-
-    if (cmd=="nums")
-    {
-        int totalNumSprings = 0;
-        file >> totalNumSprings;
-    }
-
-
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
-    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
-
-    helper::vector <Vector3>& my_gravity = *(gravity.beginEdit());
-    helper::vector <double>& my_viscosity = *(viscosity.beginEdit());
-
-    while (!file.eof())
-    {
-        file  >> cmd;
-        if (cmd=="mass")
-        {
-            int index;
-            char location;
-            double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            //bool fixed=false;
-            file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-            my_positions.push_back(Vector3(px, py, pz));
-        }
-        else if (cmd=="lspg")	// linear springs connector
-        {
-            int	index;
-            Edge m;
-            double ks = 0.0, kd = 0.0, initpos = -1;
-            if (vector_spring)
-            {
-                double restx=0.0,resty=0.0,restz=0.0;
-                file >> index >> m[0] >> m[1] >> ks >> kd >> initpos >> restx >> resty >> restz;
-            }
-            else
-            {
-                file >> index >> m[0] >> m[1] >> ks >> kd >> initpos;
-            }
-            --m[0];
-            --m[1];
-
-            addEdge(&my_edges, m);
-        }
-        else if (cmd == "grav")
-        {
-            double gx,gy,gz;
-            file >> gx >> gy >> gz;
-            my_gravity.push_back(Vector3(gx, gy, gz));
-        }
-        else if (cmd == "visc")
-        {
-            double visc;
-            file >> visc;
-            my_viscosity.push_back (visc);
-        }
-        else if (cmd == "step")
-        {
-        }
-        else if (cmd == "frce")
-        {
-        }
-        else if (cmd[0] == '#')	// it's a comment
-        {
-        }
-        else		// it's an unknown keyword
-        {
-            msg_error() << "Unknown MassSpring keyword '" << cmd << "'.";
-            d_positions.endEdit();
-            d_edges.endEdit();
-            gravity.endEdit();
-            viscosity.endEdit();
-            return false;
-        }
-    }
-
-    d_positions.endEdit();
-    d_edges.endEdit();
-    gravity.endEdit();
-    viscosity.endEdit();
-
-    return true;
-}
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace sofa
 
