@@ -400,17 +400,8 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
     // Declare all engines to dirty:
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
-    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-    {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
-        topoEngine->setDirtyValue();
-    }
 
     this->propagateTopologicalEngineChanges();
-
-    // security to avoid loops
-    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-        (*it)->cleanDirty();
     
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
@@ -453,6 +444,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
+            std::cout << "PointSetTopologyModifier:update " << topoEngine->name << std::endl;
             topoEngine->update();
         }
     }

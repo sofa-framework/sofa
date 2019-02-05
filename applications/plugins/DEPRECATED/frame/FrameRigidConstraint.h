@@ -70,9 +70,6 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 
-    // Handle topological changes
-    //        virtual void handleTopologyChange();
-
     virtual void draw(const core::visual::VisualParams* vparams);
 
 

@@ -22,7 +22,7 @@
 #ifndef InitTasks_h__
 #define InitTasks_h__
 
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 
 namespace sofa
 {
@@ -42,7 +42,7 @@ namespace sofa
 
             virtual ~InitPerThreadDataTask();
 
-            virtual bool run() override;
+            virtual MemoryAlloc run() override;
 
         private:
 

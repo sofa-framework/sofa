@@ -108,14 +108,14 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
-
     this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
 
-    if (_topology->getNbTetrahedra()==0)
+    if (_topology == NULL)
     {
-        serr << "ERROR(TetrahedralCorotationalFEMForceField): object must have a Tetrahedral Set Topology."<<sendl;
+        msg_error() << "No topology component found. This FEM needs to rely on a Tetrahedral Topology.";
+        this->m_componentstate = core::objectmodel::ComponentState::Invalid;
         return;
     }
 

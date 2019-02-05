@@ -195,7 +195,6 @@ extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1Types >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3Types >;
 
-
 #endif
 
 } // namespace behavior

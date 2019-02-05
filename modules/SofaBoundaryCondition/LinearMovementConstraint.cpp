@@ -42,9 +42,7 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
         .add< LinearMovementConstraint<defaulttype::Vec2Types> >()
         .add< LinearMovementConstraint<defaulttype::Vec1Types> >()
         .add< LinearMovementConstraint<defaulttype::Vec6Types> >()
-        .add< LinearMovementConstraint<defaulttype::Rigid3Types> >()
-
-        ;
+        .add< LinearMovementConstraint<defaulttype::Rigid3Types> >();
 
 template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
 template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;

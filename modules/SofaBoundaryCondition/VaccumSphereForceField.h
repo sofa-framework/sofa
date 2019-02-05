@@ -84,17 +84,13 @@ protected:
             out << c.index << " " << c.normal << " " << c.fact ;
             return out;
         }
-
     };
 
     Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
-
     core::behavior::MechanicalState<DataTypes> * centerDOF;
-
     VaccumSphereForceFieldInternalData<DataTypes> data;
 
 public:
-
     Data<Coord> sphereCenter; ///< sphere center
     Data<Real> sphereRadius; ///< sphere radius
     Data<Real> stiffness; ///< force stiffness
@@ -104,63 +100,29 @@ public:
     Data < bool > active; ///< Activate this object. Note that this can be dynamically controlled by using a key
     Data < char > keyEvent; ///< key to press to activate this object until the key is released
     Data < Real > filter; ///< filter
-protected:
-    VaccumSphereForceField()
-        : contacts(initData(&contacts,"contacts", "Contacts"))
-        , centerDOF(NULL)
-        , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
-        , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
-        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
-        , damping(initData(&damping, (Real)5, "damping", "force damping"))
-        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "sphere color. (default=[0,0,1,1])"))
-        , centerState(initData(&centerState, "centerState", "path to the MechanicalState controlling the center point"))
-        , active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
-        , keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
-        , filter(initData(&filter, (Real)0, "filter", "filter"))
-    {
-    }
-protected:
-    void setSphere(const Coord& center, Real radius)
-    {
-        sphereCenter.setValue( center );
-        sphereRadius.setValue( radius );
-    }
 
-    void setStiffness(Real stiff)
-    {
-        stiffness.setValue( stiff );
-    }
+protected:
+    VaccumSphereForceField();
 
-    void setDamping(Real damp)
-    {
-        damping.setValue( damp );
-    }
+    void setSphere(const Coord& center, Real radius);
+    void setStiffness(Real stiff);
+    void setDamping(Real damp);
 
     virtual void init() override;
-
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        serr << "Get potentialEnergy not implemented" << sendl;
-        return 0.0;
-    }
-
-    virtual void updateStiffness( const VecCoord& x );
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
-
     void draw(const core::visual::VisualParams* vparams) override;
+
+    virtual void updateStiffness( const VecCoord& x );
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
-
 extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<sofa::defaulttype::Vec1Types>;
-
-
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
 
 } // namespace forcefield

@@ -52,7 +52,7 @@ namespace sofa
             
             virtual ~StepTask();
             
-            virtual bool run() final;
+            virtual MemoryAlloc run() final;
             
             
         private:

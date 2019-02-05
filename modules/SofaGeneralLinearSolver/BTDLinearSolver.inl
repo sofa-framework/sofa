@@ -465,7 +465,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
     //debug
     if (indMaxBloc <  current_bloc)
     {
-        std::cout <<" WARNING in bwdAccumulateRHinBloc : indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc<<std::endl;
+        dmsg_warning() <<"indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc ;
     }
 
     SubVector RHbloc;

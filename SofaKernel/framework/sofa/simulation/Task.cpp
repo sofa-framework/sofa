@@ -1,16 +1,16 @@
-#include "Task.h"
-
-//#include "TaskScheduler.h"
-//#include "TasksAllocator.h"
+#include <sofa/simulation/Task.h>
 
 #include <assert.h>
 #include <thread>
-//#include <boost/thread.hpp>
+
 
 namespace sofa
 {
 	namespace simulation
 	{
+        
+
+        Task::Allocator* Task::_allocator = nullptr;
 
 
 		Task::Task(const Task::Status* status)
@@ -34,7 +34,7 @@ namespace sofa
 		{
 		}
 
-		bool ThreadSpecificTask::run()
+        Task::MemoryAlloc ThreadSpecificTask::run()
 		{  
 
 			runThreadSpecific();
@@ -51,7 +51,7 @@ namespace sofa
 				// yield while waiting  
 				std::this_thread::yield();
 			}  
-			return false;
+			return Task::MemoryAlloc::Stack;
 		}  
 
 	

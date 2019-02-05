@@ -70,15 +70,9 @@ protected:
         Real pulsation;
         Real phase;
 
-        Oscillator()
-        {
-        }
-
+        Oscillator();
         Oscillator(unsigned int i, const Coord& m, const Deriv& a,
-                const Real& w, const Real& p) :
-            index(i), mean(m), amplitude(a), pulsation(w), phase(p)
-        {
-        }
+                   const Real& w, const Real& p);
 
         inline friend std::istream& operator >>(std::istream& in, Oscillator& o)
         {
@@ -98,16 +92,12 @@ protected:
 
 
 public:
-    OscillatorConstraint();
+    OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);
+    virtual ~OscillatorConstraint() override ;
 
-    OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate);
-
-    ~OscillatorConstraint();
-public:
-    OscillatorConstraint<TDataTypes>* addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase);
-
-    // -- Constraint interface
-
+    OscillatorConstraint<TDataTypes>* addConstraint(unsigned index,
+                                                    const Coord& mean, const Deriv& amplitude,
+                                                    Real pulsation, Real phase);
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
@@ -123,7 +113,6 @@ protected:
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_CPP)
 extern template class OscillatorConstraint<defaulttype::Rigid3Types>;
 extern template class OscillatorConstraint<defaulttype::Vec3Types>;
-
 #endif
 
 } // namespace projectiveconstraintset

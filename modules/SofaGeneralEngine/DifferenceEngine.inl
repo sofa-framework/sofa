@@ -70,7 +70,7 @@ void DifferenceEngine<DataType>::doUpdate()
 
     if(in.size() != sub.size())
     {
-        msg_warning(this) << "Input vector and vector to substract should have same size. Abort.";
+        msg_warning() << "Input vector and vector to substract should have same size. Abort.";
         return;
     }
 

@@ -30,10 +30,10 @@ namespace sofa
         }
         
         
-        bool StepTask::run()
+        Task::MemoryAlloc StepTask::run()
         {
             animationloop->step( core::ExecParams::defaultInstance(), dt);
-            return true;
+            return Task::MemoryAlloc::Dynamic;
         }        
         
     } // namespace simulation

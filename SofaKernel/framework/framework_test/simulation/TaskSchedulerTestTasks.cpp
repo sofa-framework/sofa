@@ -8,12 +8,12 @@ namespace sofa
 {
 
 
-	bool FibonacciTask::run()
+    Task::MemoryAlloc FibonacciTask::run()
 	{
 		if (_N < 2)
 		{
 			*_sum = _N;
-			return false;
+			return MemoryAlloc::Stack;
 		}
 
 		Task::Status status;
@@ -32,18 +32,18 @@ namespace sofa
 		// Do the sum
 		*_sum = x + y;
 
-		return false;
+		return MemoryAlloc::Stack;
 	}
 
 
 
-	bool IntSumTask::run()
+    Task::MemoryAlloc IntSumTask::run()
 	{
 		const int64_t count = _last - _first;
 		if (count < 1)
 		{
 			*_sum = _first;
-			return false;
+			return MemoryAlloc::Stack;
 		}
 
 		const int64_t mid = _first + (count / 2);
@@ -65,7 +65,7 @@ namespace sofa
 		*_sum = x + y;
 
 
-		return false;
+		return MemoryAlloc::Stack;
 	}
 	
 

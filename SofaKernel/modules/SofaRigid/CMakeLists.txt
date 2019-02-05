@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaRigid)
 
 set(HEADER_FILES
+    JointSpring.h
+    JointSpring.inl
     JointSpringForceField.h
     JointSpringForceField.inl
     RigidMapping.h
@@ -13,6 +15,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    JointSpring.cpp
     JointSpringForceField.cpp
     RigidMapping.cpp
     RigidRigidMapping.cpp

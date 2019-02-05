@@ -324,7 +324,6 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
             vertices.push_back(p);
             vertices.push_back(p + R.col(j)*len[j]);
             colors.push_back(colorSet[j]);
-            colors.push_back(colorSet[j]);;
         }
     }
 

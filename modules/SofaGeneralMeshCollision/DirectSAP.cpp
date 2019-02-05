@@ -120,7 +120,6 @@ void DirectSAP::reinit()
     }
 }
 
-
 inline bool DirectSAP::added(core::CollisionModel *cm) const
 {
     return collisionModels.count(cm->getLast()) >= 1;
@@ -323,6 +322,12 @@ void DirectSAP::beginNarrowPhase()
         }
     }
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+}
+
+inline void DSAPBox::show()const
+{
+    msg_info("DSAPBox") <<"MIN "<<cube.minVect()<< msgendl
+                        <<"MAX "<<cube.maxVect() ;
 }
 
 bool DSAPBox::overlaps(const DSAPBox &other,double alarmDist) const{
