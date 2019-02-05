@@ -47,7 +47,7 @@ static void skipToEOL(FILE* f)
     while ((ch = fgetc(f)) != EOF && ch != '\n') ;
 }
 
-bool SphereLoader::load(const char *filename)
+bool SphereLoader::Load(const std::string& filename, SphereLoaderDataHook& data)
 {
     /// Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
@@ -62,7 +62,7 @@ bool SphereLoader::load(const char *filename)
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        msg_error() << "ERROR: cannot read file '" << filename << "'. (Aborting)";
+        msg_error("SphereLoader") << "ERROR: cannot read file '" << filename << "'. (Aborting)";
         return false;
     }
 
@@ -84,8 +84,8 @@ bool SphereLoader::load(const char *filename)
         if (!strcmp(cmd,"nums"))
         {
             if (fscanf(file, "%d", &totalNumSpheres) == EOF)
-                msg_error() << "fscanf function has encountered an error." ;
-            setNumSpheres(totalNumSpheres);
+                msg_error("SphereLoader") << "fscanf function has encountered an error." ;
+            data.setNumSpheres(totalNumSpheres);
         }
         else if (!strcmp(cmd,"sphe"))
         {
@@ -93,8 +93,8 @@ bool SphereLoader::load(const char *filename)
             double cx=0,cy=0,cz=0,r=1;
             if (fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r) == EOF)
-                msg_error() << "fscanf function has encountered an error." ;
-            addSphere((SReal)cx,(SReal)cy,(SReal)cz,(SReal)r);
+                msg_error("SphereLoader") << "fscanf function has encountered an error." ;
+            data.addSphere((SReal)cx,(SReal)cy,(SReal)cz,(SReal)r);
             ++totalNumSpheres;
         }
         else if (cmd[0]=='#')
@@ -103,7 +103,7 @@ bool SphereLoader::load(const char *filename)
         }
         else			// it's an unknown keyword
         {
-            msg_info() << "'"<< filename << "' unknown Sphere keyword: " << cmd ;
+            msg_info("SphereLoader") << "'"<< filename << "' unknown Sphere keyword: " << cmd ;
             skipToEOL(file);
         }
     }

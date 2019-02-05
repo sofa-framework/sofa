@@ -33,13 +33,18 @@ namespace helper
 namespace io
 {
 
+class SOFA_HELPER_API SphereLoaderDataHook
+{
+public:
+    virtual ~SphereLoaderDataHook(){}
+    virtual void setNumSpheres(int n) {}
+    virtual void addSphere(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*r*/) {}
+};
+
 class SOFA_HELPER_API SphereLoader
 {
 public:
-    virtual ~SphereLoader() {}
-    bool load(const char *filename);
-    virtual void setNumSpheres(int /*n*/) {}
-    virtual void addSphere(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*r*/) {}
+    static bool Load(const std::string& filename, SphereLoaderDataHook& data);
 };
 
 } // namespace io
