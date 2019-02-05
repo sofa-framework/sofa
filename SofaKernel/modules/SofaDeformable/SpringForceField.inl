@@ -73,12 +73,12 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
 
 
 template <class DataTypes>
-class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
+class SpringForceField<DataTypes>::Loader : public helper::io::XspLoaderDataHook
 {
 public:
     SpringForceField<DataTypes>* dest;
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos)
+    void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos) override
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
@@ -93,7 +93,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        ret &= loader.load(filename);
+        ret &= helper::io::XspLoader::Load(filename, loader, this);
     }
     else ret = false;
     return ret;
@@ -218,8 +218,6 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     std::vector< Vector3 > points[4];
     bool external = (this->mstate1!=this->mstate2);
-    //if (!external)
-    //	glColor4f(1,1,1,1);
     const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {

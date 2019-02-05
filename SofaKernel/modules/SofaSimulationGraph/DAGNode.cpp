@@ -171,7 +171,6 @@ void DAGNode::removeChild(core::objectmodel::BaseNode::SPtr node)
     doRemoveChild(dagnode);
 }
 
-
 /// Move a node from another node
 void DAGNode::moveChild(BaseNode::SPtr node)
 {
