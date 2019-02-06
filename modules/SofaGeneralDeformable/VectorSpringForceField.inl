@@ -24,7 +24,7 @@
 
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/system/config.h>
@@ -99,7 +99,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        return helper::io::XspLoader::Load(filename, loader, this);
+        return helper::io::XspLoader::Load(filename, loader);
     }
     else return false;
 }

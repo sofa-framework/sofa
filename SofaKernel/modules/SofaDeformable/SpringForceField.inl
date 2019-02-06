@@ -30,7 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>
@@ -93,7 +93,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        ret &= helper::io::XspLoader::Load(filename, loader, this);
+        ret &= helper::io::XspLoader::Load(filename, loader);
     }
     else ret = false;
     return ret;

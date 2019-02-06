@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <cassert>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/defaulttype/Vec.h>

@@ -55,13 +55,14 @@ set(HEADER_FILES
     io/Image.h
     io/ImageDDS.h
     io/ImageRAW.h
-    io/MassSpringLoader.h
+    io/XspLoader.h
     io/Mesh.h
     io/MeshOBJ.h
     io/MeshGmsh.h
     io/MeshTopologyLoader.h
     io/SphereLoader.h
     io/TriangleLoader.h
+    io/XspLoader.h
     io/bvh/BVHChannels.h
     io/bvh/BVHJoint.h
     io/bvh/BVHLoader.h
@@ -159,13 +160,13 @@ set(SOURCE_FILES
     io/Image.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
-    io/MassSpringLoader.cpp
     io/Mesh.cpp
     io/MeshOBJ.cpp
     io/MeshGmsh.cpp
     io/MeshTopologyLoader.cpp
     io/SphereLoader.cpp
     io/TriangleLoader.cpp
+    io/XspLoader.cpp
     io/bvh/BVHJoint.cpp
     io/bvh/BVHLoader.cpp
     io/bvh/BVHMotion.cpp

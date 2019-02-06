@@ -19,8 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_HELPER_IO_XSPLOADER_H
+#define SOFA_HELPER_IO_XSPLOADER_H
 
-XspLoader.has been deprecated and replaced with XspLoader.
-You shouldn't include this file anymore.
+#include <cstddef>                  /// For size_t
+#include <string>                   /// For std::string
+#include <sofa/helper/helper.h>     /// For SOFA_HELPER_API
 
-It is easy to update your code with the XspLoader.
+namespace sofa {
+namespace core {
+namespace objectmodel {
+class Base;
+}
+}
+}
+
+
+namespace sofa
+{
+
+namespace helper
+{
+
+namespace io
+{
+
+/// @brief Inherit this class to load data from a Xsp file.
+///
+/// Override the virtual methods so you fill the clients data structures from
+/// the XspLoader data ones. And pass the object to
+class SOFA_HELPER_API XspLoaderDataHook
+{
+public:
+    virtual void setNumMasses(size_t /*n*/) {}
+    virtual void setNumSprings(size_t /*n*/) {}
+    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
+    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
+    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
+    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
+    virtual void setViscosity(SReal /*visc*/) {}
+};
+
+class SOFA_HELPER_API XspLoader
+{
+public:
+    static bool Load(const std::string& filename,
+                     XspLoaderDataHook& data);
+};
+
+} // namespace io
+
+} // namespace helper
+
+} // namespace sofa
+
+#endif

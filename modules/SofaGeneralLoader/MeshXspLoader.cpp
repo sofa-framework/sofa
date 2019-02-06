@@ -22,7 +22,7 @@
 #include <SofaGeneralLoader/MeshXspLoader.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 using sofa::helper::io::XspLoader;
 using sofa::helper::io::XspLoaderDataHook;
 
@@ -82,7 +82,7 @@ MeshXspLoader::MeshXspLoader() : MeshLoader() {}
 bool MeshXspLoader::load()
 {
     MeshXspLoadDataHook data(this);
-    return XspLoader::Load(m_filename.getValue(), data, this);
+    return XspLoader::Load(m_filename.getValue(), data);
 }
 
 static int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")

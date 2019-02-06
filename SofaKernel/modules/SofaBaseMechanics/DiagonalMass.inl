@@ -24,7 +24,7 @@
 
 #include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
@@ -1337,7 +1337,7 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
     if (filename!=NULL && filename[0]!='\0')
     {
         Loader loader(this);
-        return helper::io::XspLoader::Load(filename, loader, this);
+        return helper::io::XspLoader::Load(filename, loader);
     }
     return false;
 }
