@@ -83,7 +83,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
-            msg_error() << "WARNING " << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce";
+            msg_warning()  << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce";
 #endif
     }
 }

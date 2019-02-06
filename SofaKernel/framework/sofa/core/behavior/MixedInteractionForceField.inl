@@ -56,7 +56,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::init()
 
     if (mstate1.get() == NULL || mstate2.get() == NULL)
     {
-        serr<< "Init of MixedInteractionForceField " << getContext()->getName() << " failed!" << sendl;
+        msg_error()<< "Init of MixedInteractionForceField " << getContext()->getName() << " failed!";
         //getContext()->removeObject(this);
         return;
     }
