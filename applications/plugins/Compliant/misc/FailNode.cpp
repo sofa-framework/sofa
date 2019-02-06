@@ -57,10 +57,10 @@ void FailNode::doRemoveChild(BaseNode::SPtr /*node*/){ fail(); }
 void FailNode::doMoveChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Add a generic object
-bool FailNode::doAddObject(BaseObject::SPtr /*obj*/){ fail(); return 0; }
+bool FailNode::doAddObject(BaseObject::SPtr /*obj*/){ fail(); return false; }
 
 /// Remove a generic object
-bool FailNode::doRemoveObject(BaseObject::SPtr /*obj*/){ fail(); return 0; }
+bool FailNode::doRemoveObject(BaseObject::SPtr /*obj*/){ fail(); return false; }
 
 /// Move an object from a node to another node
 void FailNode::doMoveObject(BaseObject::SPtr /*obj*/){ fail(); }

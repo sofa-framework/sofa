@@ -206,18 +206,18 @@ void Node::moveChild(BaseNode::SPtr node)
 bool Node::addObject(BaseObject::SPtr obj)
 {
     notifyBeginAddObject(this, obj);
-    doAddObject(obj);
+    bool ret = doAddObject(obj);
     notifyEndAddObject(this, obj);
-    return true;
+    return ret;
 }
 
 /// Remove an object
 bool Node::removeObject(BaseObject::SPtr obj)
 {
     notifyBeginRemoveObject(this, obj);
-    doRemoveObject(obj);
+    bool ret = doRemoveObject(obj);
     notifyEndRemoveObject(this, obj);
-    return true;
+    return ret;
 }
 
 /// Move an object from another node
@@ -591,7 +591,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void Node::doAddObject(BaseObject::SPtr sobj)
+bool Node::doAddObject(BaseObject::SPtr sobj)
 {
     this->setObjectContext(sobj);
     object.add(sobj);
@@ -601,11 +601,11 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     {
         unsorted.add(obj);
     }
-
+    return true;
 }
 
 /// Remove an object
-void Node::doRemoveObject(BaseObject::SPtr sobj)
+bool Node::doRemoveObject(BaseObject::SPtr sobj)
 {
     this->clearObjectContext(sobj);
     object.remove(sobj);
@@ -613,6 +613,7 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
 
     if( !obj->removeInNode( this ) )
         unsorted.remove(obj);
+    return true;
 }
 
 /// Remove an object

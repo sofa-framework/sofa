@@ -566,8 +566,8 @@ protected:
     bool debug_;
     bool initialized;
 
-    virtual void doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;

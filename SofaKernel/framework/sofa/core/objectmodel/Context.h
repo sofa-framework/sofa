@@ -59,7 +59,7 @@ public:
 
 protected:
     Context();
-    virtual ~Context()
+    virtual ~Context() override
     {}
 public:
 
