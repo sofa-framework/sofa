@@ -51,12 +51,12 @@ int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template class MechanicalMatrixMapper<Rigid3Types, Rigid3Types>;
-template class MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
-template class MechanicalMatrixMapper<Vec3Types, Vec3Types>;
-template class MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
-template class MechanicalMatrixMapper<Vec1Types, Vec1Types>;
-template class MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Rigid3Types, Rigid3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
+template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
 
 
 
