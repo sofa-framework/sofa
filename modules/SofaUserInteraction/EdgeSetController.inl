@@ -79,10 +79,10 @@ void EdgeSetController<DataTypes>::init()
     this->getContext()->get(edgeMod);
 
     if (edgeGeo == NULL)
-        smg_error() << "EdgeSetController has no binding EdgeSetGeometryAlgorithms." ;
+        msg_error() << "EdgeSetController has no binding EdgeSetGeometryAlgorithms." ;
 
     if (edgeMod == NULL)
-        smg_error() << "EdgeSetController has no binding EdgeSetTopologyModifier." ;
+        msg_error() << "EdgeSetController has no binding EdgeSetTopologyModifier." ;
 
     if (reversed.getValue() && startingIndex.getValue() != 0)
         msg_warning() << "WARNING : startingIndex different from 0 is not implemented for reversed case." ;
@@ -495,7 +495,7 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
 
         if (baseEdge.size()==1)
         {
-            smg_error()<<"Warning nothing to be removed"<<sendl;
+            msg_error()<<"Warning nothing to be removed"<<sendl;
         }
 
         if (baseEdge.size() == 2)

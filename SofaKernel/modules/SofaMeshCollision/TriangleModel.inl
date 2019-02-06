@@ -81,7 +81,7 @@ void TTriangleModel<DataTypes>::init()
 
     if (mstate==NULL)
     {
-        msg_error() << "TriangleModel requires a Vec3 Mechanical Model"msg_error()
+        msg_error() << "TriangleModel requires a Vec3 Mechanical Model";
         return;
     }
 
@@ -97,8 +97,8 @@ void TTriangleModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
     }
 
-    //sout << "INFO_print : Col - init TRIANGLE ";
-    sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles.";
+
+   msg_info() << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles.";
     triangles = &_topology->getTriangles();
     resize(_topology->getNbTriangles());
 
@@ -155,7 +155,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             core::topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
-                msg_error() << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")"<<sendl;
+                msg_error() << "Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")";
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
@@ -168,7 +168,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
-                msg_error() << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
+                msg_error() << " Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")";
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
