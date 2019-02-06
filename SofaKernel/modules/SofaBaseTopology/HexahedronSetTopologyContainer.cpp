@@ -81,7 +81,7 @@ void HexahedronSetTopologyContainer::init()
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {
 	if (CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createHexahedronSetArray method must be implemented by a child topology.";
 }
 
 void HexahedronSetTopologyContainer::createEdgeSetArray()
@@ -142,7 +142,7 @@ void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
         // adding edge i in the edge shell of both points
         for(PointID j=0; j<12; ++j)
         {
-            const int edgeIndex = getEdgeIndex(t[edgesInHexahedronArray[j][0]],
+            EdgeID edgeIndex = getEdgeIndex(t[edgesInHexahedronArray[j][0]],
                     t[edgesInHexahedronArray[j][1]]);
             m_edgesInHexahedron[i][j] = edgeIndex;
         }
@@ -347,32 +347,32 @@ void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
     for(size_t i = 0; i < getNumberOfHexahedra(); ++i)
     {
         const Hexahedron &h=m_hexahedron[i];
-        int quadIndex;
+        QuadID quadIndex;
 
         // adding the 6 quads in the quad list of the ith hexahedron  i
         // Quad 0 :
         quadIndex=getQuadIndex(h[0],h[3],h[2],h[1]);
-        assert(quadIndex!= -1);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][0]=quadIndex;
         // Quad 1 :
         quadIndex=getQuadIndex(h[4],h[5],h[6],h[7]);
-        assert(quadIndex!= -1);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][1]=quadIndex;
         // Quad 2 :
         quadIndex=getQuadIndex(h[0],h[1],h[5],h[4]);
-        assert(quadIndex!= -1);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][2]=quadIndex;
         // Quad 3 :
         quadIndex=getQuadIndex(h[1],h[2],h[6],h[5]);
-        assert(quadIndex!= -1);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][3]=quadIndex;
         // Quad 4 :
         quadIndex=getQuadIndex(h[2],h[3],h[7],h[6]);
-        assert(quadIndex!= -1);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][4]=quadIndex;
         // Quad 5 :
         quadIndex=getQuadIndex(h[3],h[0],h[4],h[7]);
-        assert(quadIndex!= -1);
+        assert(quadIndex!= InvalidID);
         m_quadsInHexahedron[i][5]=quadIndex;
     }
 }
@@ -452,7 +452,7 @@ const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron> &Hexahedr
     return d_hexahedron.getValue ();
 }
 
-int HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
+core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
         PointID v5, PointID v6, PointID v7, PointID v8)
 {
     if(!hasHexahedraAroundVertex())
@@ -512,11 +512,18 @@ int HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, P
     result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
     out7.erase(result7,out7.end());
 
+    if(CHECK_TOPOLOGY && out7.size() > 1)
+        msg_warning() << "More than one Hexahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
+                         << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
+
     assert(out7.size()==0 || out7.size()==1);
     if(out7.size()==1)
         return (int) (out7[0]);
-    else
-        return -1;
+    else {
+        msg_warning() << "Hexahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
+                         << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
+        return InvalidID;
+    }
 }
 
 const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
@@ -1198,7 +1205,38 @@ void HexahedronSetTopologyContainer::clear()
     QuadSetTopologyContainer::clear();
 }
 
+void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
+{
+    // set this container to dirty
+    m_hexahedronTopologyDirty = true;
 
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
+{
+    m_hexahedronTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
 {

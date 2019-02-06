@@ -424,7 +424,6 @@ int TriangleOctree::trace (const defaulttype::Vector3 & origin,
                 if (idxMin != -1)
                     return nearestTriangle (idxMin, origin1, direction1,result);
             }
-
         case END:
             if(idxMin==-1&&objects.size())
                 return nearestTriangle (objects[0], origin1, direction1,result);
@@ -711,7 +710,6 @@ void TriangleOctree::traceAll (const defaulttype::Vector3 & origin,
                 childVec[7 ^ a]->traceAll (origin, direction, txm, tym,
                         tzm, tx1, ty1, tz1, a, b,origin1,direction1,results);
             }
-
         case END:
             allTriangles (origin1, direction1, results);
             return;

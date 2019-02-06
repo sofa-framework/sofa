@@ -29,7 +29,7 @@
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaOpenglVisual/OglVariable.h>
 #include <SofaOpenglVisual/OglAttribute.h>
 
@@ -46,10 +46,10 @@ namespace visualmodel
  *
  */
 
-class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public ExtVec3fState
+class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public ExtVec3State
 {
 public:
-    SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, ExtVec3fState);
+    SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, ExtVec3State);
 
     typedef sofa::core::topology::Tetrahedron Tetrahedron;
     typedef sofa::core::topology::Hexahedron Hexahedron;

@@ -325,7 +325,7 @@ void GeomagicDriver::initDevice()
     m_omniVisualNode = rootContext->createChild("omniVisu " + d_deviceName.getValue());
     m_omniVisualNode->updateContext();
 
-    rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
+    rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> >();
     m_omniVisualNode->addObject(rigidDOF);
     rigidDOF->name.setValue("rigidDOF");
 
@@ -356,7 +356,7 @@ void GeomagicDriver::initDevice()
             visualNode[i].visu->updateVisual();
 
             // create the visual mapping and at it to the graph //
-            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
+            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, ExtVec3Types > >();
             visualNode[i].node->addObject(visualNode[i].mapping);
             visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
             visualNode[i].mapping->name.setValue("RigidMapping");
@@ -381,7 +381,7 @@ void GeomagicDriver::initDevice()
 
     for (int j = 0; j<NVISUALNODE; j++)
     {
-        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3, float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec3 > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
         for (size_t i = 0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(d_scale.getValue());
         visualNode[j].mapping->points.endEdit();

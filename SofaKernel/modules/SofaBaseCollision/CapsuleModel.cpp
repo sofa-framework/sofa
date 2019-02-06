@@ -38,26 +38,17 @@ using namespace sofa::core::collision;
 using namespace helper;
 
 int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-#ifndef SOFA_FLOAT
-        .add<  TCapsuleModel<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add < TCapsuleModel<Vec3fTypes> >()
-#endif
+        .add<  TCapsuleModel<Vec3Types> >()
+
         .addAlias("Capsule")
         .addAlias("CapsuleModel")
 //.addAlias("CapsuleMesh")
 //.addAlias("CapsuleSet")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
-template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3fTypes>;
-template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3fTypes>;
-#endif
+template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
+template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3Types>;
+
 
 
 } // namespace collision

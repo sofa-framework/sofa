@@ -46,8 +46,6 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopolo
 public:
     SOFA_CLASS(TriangleSetTopologyContainer,EdgeSetTopologyContainer);
 
-
-
     typedef core::topology::BaseMeshTopology::PointID                      PointID;
     typedef core::topology::BaseMeshTopology::EdgeID                       EdgeID;
     typedef core::topology::BaseMeshTopology::TriangleID                   TriangleID;
@@ -104,9 +102,9 @@ public:
      *
      * @param the three vertex indices.
      * @return the ID of the corresponding triangle.
-     * @return -1 if none
+     * @return InvalidID if none
      */
-    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
+    virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 
 
     /** \brief Returns the 3 edges adjacent to a given triangle.
@@ -334,8 +332,8 @@ protected:
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setTriangleTopologyToDirty() {m_triangleTopologyDirty = true;}
-    void cleanTriangleTopologyFromDirty() {m_triangleTopologyDirty = false;}
+    void setTriangleTopologyToDirty();
+    void cleanTriangleTopologyFromDirty();
     const bool& isTriangleTopologyDirty() {return m_triangleTopologyDirty;}
 
 public:

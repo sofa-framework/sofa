@@ -150,7 +150,6 @@ set(PYTHON_FILES
 
 
 find_package(PythonLibs 2.7 REQUIRED)
-sofa_create_target(PythonLibs SofaPython "${PYTHON_LIBRARIES}" "${PYTHON_INCLUDE_DIRS}")
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -175,7 +174,14 @@ if(${CMAKE_COMPILER_IS_GNUCC})
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PythonLibs_Target})
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC ${PYTHON_INCLUDE_DIRS}
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/>"
+    PUBLIC "$<INSTALL_INTERFACE:include>"
+    )
+
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)

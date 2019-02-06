@@ -26,7 +26,7 @@ find_package(TIFF QUIET)
 find_package(PNG QUIET)
 
 ### Configure Paths according to detected packages
-if(TIFF_FOUND)
+if(TIFF_FOUND AND NOT SOFA_BUILD_RELEASE_PACKAGE)
     message(STATUS "CImgPlugin: TIFF Image Format enabled")
     get_filename_component(TIFF_LIB_DIRS ${TIFF_LIBRARIES} PATH)
     list(APPEND CIMG_CFLAGS ${CIMG_TIFF_CCFLAGS} -DCIMGPLUGIN_HAVE_TIFF -Dcimg_use_tiff)

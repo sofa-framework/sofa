@@ -102,9 +102,9 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     } else if (triData.size() > 0 || quadData.size()>0 ) {
         if (!topology ) {
             serr << "Topology is necessary for drawing cell data" << sendl;
-        } else if ((int)triData.size() != topology->getNbTriangles()) {
+        } else if (triData.size() != topology->getNbTriangles()) {
             serr << "Size of triangleData does not match number of triangles" << sendl;
-        } else if ((int)quadData.size() != topology->getNbQuads()) {
+        } else if (quadData.size() != topology->getNbQuads()) {
             serr << "Size of quadData does not match number of quads" << sendl;
         } else {
             bDrawCellData = true;
@@ -112,9 +112,9 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     } else if (pointTriData.size()>0 || pointQuadData.size()>0) {
         if (!topology ) {
             serr << "Topology is necessary for drawing cell data" << sendl;
-        } else if ((int)pointTriData.size() != topology->getNbTriangles()*3) {
+        } else if (pointTriData.size() != topology->getNbTriangles()*3) {
             serr << "Size of pointTriData does not match number of triangles" << sendl;
-        } else if ((int)pointQuadData.size() != topology->getNbQuads()*4) {
+        } else if (pointQuadData.size() != topology->getNbQuads()*4) {
             serr << "Size of pointQuadData does not match number of quads" << sendl;
         } else {
             bDrawCellData = true;
@@ -122,8 +122,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    float& min = *d_currentMin.beginWriteOnly();
-    float& max = *d_currentMax.beginWriteOnly();
+    Real min ;
+    Real max ;
     min = max = 0;
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
@@ -200,8 +200,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         max = oldMax;
         min = oldMin;
     }
-    d_currentMin.endEdit();
-    d_currentMax.endEdit();
+    d_currentMin.setValue(min);
+    d_currentMax.setValue(max);
 
     glPushAttrib ( GL_LIGHTING_BIT );
 
@@ -223,7 +223,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     if (bDrawCellData) {
 
         glDisable( GL_LIGHTING );
-        helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+        auto eval = colorMap->getEvaluator(min, max);
 
         if( !triData.empty() )
         {
@@ -353,7 +353,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
         // Triangles
         glBegin(GL_TRIANGLES);
-        for (int i=0; i<topology->getNbTriangles(); ++i)
+        for (sofa::core::topology::Topology::TriangleID i=0; i<topology->getNbTriangles(); ++i)
         {
             const Triangle &t = topology->getTriangle(i);
             Vec4f color[3];
@@ -380,7 +380,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
         // Quads
         glBegin(GL_QUADS);
-        for (int i=0; i<topology->getNbQuads(); ++i)
+        for (size_t i=0; i<topology->getNbQuads(); ++i)
         {
             const Quad &q = topology->getQuad(i);
             Vec4f color[4];
@@ -424,7 +424,7 @@ void DataDisplay::computeNormals()
 
     m_normals.resize(x.size(),Vec3f(0,0,0));
 
-    for (int i=0; i<topology->getNbTriangles(); ++i)
+    for (size_t i=0; i<topology->getNbTriangles(); ++i)
     {
         const Triangle &t = topology->getTriangle(i);
 
@@ -438,7 +438,7 @@ void DataDisplay::computeNormals()
         m_normals[t[2]] += n;
     }
 
-    for (int i=0; i<topology->getNbQuads(); ++i)
+    for (size_t i=0; i<topology->getNbQuads(); ++i)
     {
         const Quad &q = topology->getQuad(i);
 

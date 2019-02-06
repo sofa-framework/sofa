@@ -40,8 +40,6 @@ namespace sofa {
 namespace {
     static struct raii {
       raii() {
-          const std::string pluginDir = Utils::getPluginDirectory() ;
-          PluginRepository.addFirstPath(pluginDir);
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
           PluginManager::getInstance().loadPlugin("SofaAllCommonComponents") ;
       }
@@ -67,10 +65,6 @@ void BaseSofa_test::clearSceneGraph()
 
 
 
-#ifdef SOFA_WITH_FLOAT
-template struct SOFA_SOFATEST_API Sofa_test<float>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
 template struct SOFA_SOFATEST_API Sofa_test<double>;
-#endif
+
 }

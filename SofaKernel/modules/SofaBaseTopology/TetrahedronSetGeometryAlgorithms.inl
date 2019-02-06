@@ -711,7 +711,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
     pa[0] = (Real) (c[0]);
     pa[1] = (Real) (c[1]);
     pa[2] = (Real) (c[2]);
-    for(int i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
+    for(size_t i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
     {
         if(isPointInTetrahedron(i, pa))
         {

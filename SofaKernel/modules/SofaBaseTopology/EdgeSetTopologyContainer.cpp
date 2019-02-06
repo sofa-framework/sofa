@@ -134,7 +134,7 @@ void EdgeSetTopologyContainer::reinit()
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
 	if(CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createEdgeSetArray method must be implemented by a child topology.";
 
 }
 
@@ -151,7 +151,7 @@ const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyConta
     return d_edge.getValue();
 }
 
-int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
+EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
 {
     if(!hasEdges()) // this method should only be called when edges exist
     {
@@ -167,13 +167,17 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
     const sofa::helper::vector< EdgeID > &es1 = getEdgesAroundVertex(v1) ;
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
-    int result = -1;
-    for(size_t i=0; (i < es1.size()) && (result == -1); ++i)
+    EdgeID result = InvalidID;
+    for(size_t i=0; (i < es1.size()) && (result == InvalidID); ++i)
     {
         const Edge &e = m_edge[ es1[i] ];
         if ((e[0] == v2) || (e[1] == v2))
-            result = (int) es1[i];
+            result = es1[i];
     }
+
+    if (result == InvalidID)
+        msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
+
     return result;
 }
 
@@ -183,7 +187,7 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
         createEdgeSetArray();
 
     if ((size_t)i >= getNbEdges())
-        return Edge(-1, -1);
+        return Edge(InvalidID, InvalidID);
     else
         return (d_edge.getValue())[i];
 }
@@ -573,7 +577,37 @@ void EdgeSetTopologyContainer::clear()
 //    PointSetTopologyContainer::clear();
 }
 
+void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
+{
+    // set this container to dirty
+    m_edgeTopologyDirty = true;
 
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Edge Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
+{
+    m_edgeTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Edge Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 {

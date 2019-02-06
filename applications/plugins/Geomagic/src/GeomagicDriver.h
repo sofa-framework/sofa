@@ -88,7 +88,7 @@ public:
     {
         simulation::Node::SPtr node;
         sofa::component::visualmodel::OglModel::SPtr visu;
-        sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
+        sofa::component::mapping::RigidMapping< Rigid3Types , ExtVec3Types  >::SPtr mapping;
     };
 
     Data< std::string > d_deviceName; ///< Name of device Configuration

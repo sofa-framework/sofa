@@ -23,7 +23,7 @@
 #define SOFA_SOFADISTANCEGRID_DISTANCEGRID_H
 #include <SofaDistanceGrid/config.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 ///// Forward declaration

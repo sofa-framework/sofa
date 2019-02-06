@@ -37,20 +37,12 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int DevTensionMonitorClass = core::RegisterObject("Tension monitoring")
-#ifndef SOFA_FLOAT
-        .add< DevTensionMonitor<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DevTensionMonitor<Rigid3fTypes> >()
-#endif
+        .add< DevTensionMonitor<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_VALIDATION_API DevTensionMonitor<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_VALIDATION_API DevTensionMonitor<Rigid3fTypes>;
-#endif
+template class SOFA_VALIDATION_API DevTensionMonitor<Rigid3Types>;
+
 
 } // namespace misc
 

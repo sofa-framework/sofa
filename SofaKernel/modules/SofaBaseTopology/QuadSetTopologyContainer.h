@@ -97,9 +97,9 @@ public:
      *
      * @param the four vertex indices.
      * @return the ID of the corresponding quad.
-     * @return -1 if none
+     * @return InvalidID if none
      */
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
+    virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
 
     /** \brief Returns the set of edges adjacent to a given quad.
@@ -300,8 +300,8 @@ protected:
 
     /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setQuadTopologyToDirty() {m_quadTopologyDirty = true;}
-    void cleanQuadTopologyFromDirty() {m_quadTopologyDirty = false;}
+    void setQuadTopologyToDirty();
+    void cleanQuadTopologyFromDirty();
     const bool& isQuadTopologyDirty() {return m_quadTopologyDirty;}
 
 protected:

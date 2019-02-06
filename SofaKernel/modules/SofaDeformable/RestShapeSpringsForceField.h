@@ -145,16 +145,10 @@ private :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1dTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1fTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3fTypes>;
-#endif
+extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3Types>;
+
 
 #endif
 

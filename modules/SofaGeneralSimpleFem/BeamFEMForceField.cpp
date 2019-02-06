@@ -40,21 +40,12 @@ namespace _beamfemforcefield_
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements.")
-#ifndef SOFA_FLOAT
-        .add< BeamFEMForceField<Rigid3dTypes> >(true)
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BeamFEMForceField<Rigid3fTypes> >()
-#endif
+int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
+        .add< BeamFEMForceField<Rigid3Types> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3fTypes>;
-#endif
+template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3Types>;
+
 
 } // namespace _beamfemforcefield_
 

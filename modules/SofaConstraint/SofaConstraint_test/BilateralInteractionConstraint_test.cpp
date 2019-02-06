@@ -233,12 +233,8 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<Vec3Types
-#ifdef SOFA_WITH_DOUBLE
               ,Rigid3dTypes
-#endif //
-#ifdef SOFA_WITH_FLOAT
-              ,Rigid3fTypes
-#endif //
+ //
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

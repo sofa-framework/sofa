@@ -69,7 +69,11 @@ template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
     const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
-    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * d_showIndicesScale.getValue());
+    float bbDiff = (bbox.maxBBox() - bbox.minBBox()).norm();
+    if (std::isinf(bbDiff))
+        return d_showIndicesScale.getValue();
+    else
+        return bbDiff * d_showIndicesScale.getValue();
 }
 
 

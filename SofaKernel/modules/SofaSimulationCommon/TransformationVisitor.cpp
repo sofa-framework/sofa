@@ -27,6 +27,15 @@ namespace sofa
 namespace simulation
 {
 
+TransformationVisitor::TransformationVisitor(const sofa::core::ExecParams* params)
+    : Visitor(params)
+{
+    translation = Vector3();
+    rotation = Vector3();
+    scale = Vector3(1.0,1.0,1.0);
+}
+
+
 void TransformationVisitor::processVisualModel(simulation::Node* // node
         , core::visual::VisualModel* v)
 {

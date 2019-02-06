@@ -30,7 +30,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>

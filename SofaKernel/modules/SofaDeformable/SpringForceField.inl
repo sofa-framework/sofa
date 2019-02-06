@@ -124,20 +124,21 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
 {
     int a = spring.m1;
     int b = spring.m2;
-    Coord u = p2[b]-p1[a];
+    typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
         return;
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
-    Real elongation = (Real)(d - spring.initpos);
+    Real elongation = d - spring.initpos;
     ener += elongation * elongation * spring.ks /2;
-    Deriv relativeVelocity = v2[b]-v1[a];
+    typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
     Real elongationVelocity = dot(u,relativeVelocity);
-    Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-    Deriv force = u*forceIntensity;
-    f1[a]+=force;
-    f2[b]-=force;
+    Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
+    typename DataTypes::DPos force = u*forceIntensity;
+
+    DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
+    DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
 }
 
 template<class DataTypes>

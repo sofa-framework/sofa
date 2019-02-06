@@ -84,12 +84,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<sofa::defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<sofa::defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<sofa::defaulttype::Vec3Types>;
+ 
 #endif
 
 

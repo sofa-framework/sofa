@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_CPP
 #include <SofaBaseTopology/QuadSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -34,34 +34,15 @@ namespace topology
 
 using namespace sofa::defaulttype;
 int QuadSetTopologyAlgorithmsClass = core::RegisterObject("Quad set topology algorithms")
-#ifdef SOFA_FLOAT
-        .add< QuadSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
-#else
         .add< QuadSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< QuadSetTopologyAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< QuadSetTopologyAlgorithms<Vec2dTypes> >()
-        .add< QuadSetTopologyAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< QuadSetTopologyAlgorithms<Vec2fTypes> >()
-        .add< QuadSetTopologyAlgorithms<Vec1fTypes> >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec1dTypes>;
-#endif
+        .add< QuadSetTopologyAlgorithms<Vec2Types> >()
+        .add< QuadSetTopologyAlgorithms<Vec1Types> >()
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec1fTypes>;
-#endif
+        ;
+template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec3Types>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec2Types>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec1Types>;
+
 
 } // namespace topology
 

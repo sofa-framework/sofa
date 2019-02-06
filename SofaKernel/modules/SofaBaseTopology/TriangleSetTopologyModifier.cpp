@@ -27,6 +27,7 @@
 #include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 
 namespace sofa
@@ -175,8 +176,8 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 		// Important: getEdgeIndex creates the quad vertex shell array
 		if (m_container->hasTrianglesAroundVertex())
 		{
-			int previd = m_container->getTriangleIndex(t[0], t[1], t[2]);
-			if (previd != -1)
+            TriangleID previd = m_container->getTriangleIndex(t[0], t[1], t[2]);
+            if (previd != InvalidID)
 			{
 				msg_error() << "Triangle " << t[0] << ", " << t[1] << ", " << t[2] << " already exists with index " << previd << ".";
 			}
@@ -197,9 +198,9 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
     for(unsigned int j=0; j<3; ++j)
     {
-        int edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
+        EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
 
-        if(edgeIndex == -1)
+        if(edgeIndex == InvalidID)
         {
             // first create the edges
             sofa::helper::vector< Edge > v(1);
@@ -209,6 +210,8 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
             addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
+            assert (edgeIndex != InvalidID);
+
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
             addEdgesWarning( v.size(), v, edgeIndexList);
@@ -294,11 +297,13 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<Tri
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {    
+    sofa::helper::AdvancedTimer::stepBegin("removeTriangles");
+
     sofa::helper::vector<TriangleID> triangleIds_filtered;
     for (size_t i = 0; i < triangleIds.size(); i++)
     {
         if( triangleIds[i] >= m_container->getNumberOfTriangles())
-            msg_warning() << "RemoveTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed.";
+            dmsg_warning() << "RemoveTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed.";
         else
             triangleIds_filtered.push_back(triangleIds[i]);
     }
@@ -306,12 +311,18 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<Tri
     if (removeTrianglesPreconditions(triangleIds_filtered)) // Test if the topology will still fulfill the conditions if these triangles are removed.
     {
         /// add the topological changes in the queue
-        removeTrianglesWarning(triangleIds_filtered);
+        sofa::helper::AdvancedTimer::stepBegin("removeTrianglesWarning");
+        removeTrianglesWarning(triangleIds_filtered);        
+
         // inform other objects that the triangles are going to be removed
+        sofa::helper::AdvancedTimer::stepNext ("removeTrianglesWarning", "propagateTopologicalChanges");
         propagateTopologicalChanges();
+
         // now destroy the old triangles.
+        sofa::helper::AdvancedTimer::stepNext ("propagateTopologicalChanges", "removeTrianglesProcess");
         removeTrianglesProcess(triangleIds_filtered ,removeIsolatedEdges, removeIsolatedPoints);
 
+        sofa::helper::AdvancedTimer::stepEnd("removeTrianglesProcess");
         m_container->checkTopology();
     }
     else
@@ -319,6 +330,7 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<Tri
 		msg_warning() << "Preconditions for removal are not fulfilled. ";
     }
 
+    sofa::helper::AdvancedTimer::stepEnd("removeTriangles");
 }
 
 
@@ -704,19 +716,21 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
+    sofa::helper::AdvancedTimer::stepBegin("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
- //   for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
-	 for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
+
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
-        {
+        {            
             topoEngine->update();
         }
     }
 
     m_container->cleanTriangleTopologyFromDirty();
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
+    sofa::helper::AdvancedTimer::stepEnd("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
 } // namespace topology

@@ -23,18 +23,18 @@
 #define TaskScheduler_std_h__
 
 #include <sofa/config.h>
+#include <sofa/helper/system/config.h>
 
-#include "Task.h"
-#include "Locks.h"
+#include <sofa/simulation/Task.h>
+#include <sofa/simulation/Locks.h>
 
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <memory>
 #include <map>
-#include <deque>
 #include <string> 
-
+#include <functional>
 
 namespace sofa
 {
@@ -74,9 +74,8 @@ namespace sofa
 
             virtual void workUntilDone(Task::Status* status) = 0;
 
-            virtual void* allocateTask(size_t size) = 0;
+            virtual Task::Allocator* getTaskAllocator() = 0;
 
-            virtual void releaseTask(Task*) = 0;
 
         protected:
 
@@ -93,7 +92,7 @@ namespace sofa
 
 
 
-        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask );
+        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask);
 
 
 	} // namespace simulation

@@ -38,10 +38,10 @@ using namespace core::behavior;
 // Register in the Factory
 int ImageShapeFunctionContainerClass = core::RegisterObject("Provides interface to mapping from precomputed shape functions")
 
-        .add< ImageShapeFunctionContainer<ShapeFunction,ImageUC> >(true)
+        .add< ImageShapeFunctionContainer<ShapeFunction3,ImageUC> >(true)
         ;
 
-template class SOFA_Flexible_API ImageShapeFunctionContainer<ShapeFunction,ImageUC>;
+template class SOFA_Flexible_API ImageShapeFunctionContainer<ShapeFunction3,ImageUC>;
 }
 }
 }

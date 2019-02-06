@@ -57,8 +57,11 @@ void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype:
         for(size_t i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
     }
 
-    for(size_t i=0; i<3; i++)  transformMatrix[i+12]=p[i];
-    for(size_t i=0; i<3; i++)  transformMatrix[4*i+3]=0; transformMatrix[15] = 1;
+    for(unsigned i=0; i<3; i++)
+        transformMatrix[i+12]=p[i];
+    for(unsigned i=0; i<3; i++)
+        transformMatrix[4*i+3]=0;
+    transformMatrix[15] = 1;
     glMultMatrixd(transformMatrix);
 
     GLUquadricObj* ellipsoid = gluNewQuadric();
