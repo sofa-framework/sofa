@@ -46,7 +46,7 @@ int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to
         .add< MechanicalMatrixMapper<Vec3Types, Vec3Types> >(true)
         .add< MechanicalMatrixMapper<Vec1Types, Rigid3Types> >(true)
         .add< MechanicalMatrixMapper<Vec1Types, Vec1Types> >(true)
-        .add< MechanicalMatrixMapper<Rigid3Types, Vec1dTypes> >(true)
+        .add< MechanicalMatrixMapper<Rigid3Types, Vec1Types> >(true)
 
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ template class MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
 template class MechanicalMatrixMapper<Vec3Types, Vec3Types>;
 template class MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
 template class MechanicalMatrixMapper<Vec1Types, Vec1Types>;
-template class MechanicalMatrixMapper<Rigid3Types, Vec1dTypes> ;
+template class MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
 
 
 
