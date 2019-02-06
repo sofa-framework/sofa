@@ -415,7 +415,7 @@ endfunction()
 
 macro(sofa_create_package package_name version the_targets include_subdir)
     message(WARNING "Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
-    sofa_generate_package("${package_name}" "${version}" "${the_targets}" "${include_subdir}")
+    sofa_generate_package(NAME "${package_name}" VERSION "${version}" TARGETS "${the_targets}" INCLUDE_ROOT_DIR "${include_subdir}")
 endmacro()
 
 
