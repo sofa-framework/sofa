@@ -80,16 +80,6 @@ public:
     virtual void beginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
     virtual void beginMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
 
-    virtual void endAddChild(Node* parent, Node* child) override;
-    virtual void endRemoveChild(Node* parent, Node* child) override;
-    virtual void endMoveChild(Node* previous, Node* parent, Node* child) override;
-    virtual void endAddObject(Node* parent, core::objectmodel::BaseObject* object) override;
-    virtual void endRemoveObject(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
-    virtual void endMoveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) override;
-    virtual void endAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    virtual void endRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    virtual void endMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-
     virtual void sleepChanged(Node* node) override;
     virtual void addDatas(core::objectmodel::BaseObject* parent);
     virtual void removeDatas(core::objectmodel::BaseObject* parent);

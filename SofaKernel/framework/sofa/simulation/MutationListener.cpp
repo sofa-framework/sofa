@@ -199,6 +199,118 @@ void MutationListener::moveSlaveEnd(
     addSlaveEnd(master, slave);
 }
 
+void MutationListener::beginAddChild(Node *parent, Node *child)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+void MutationListener::beginRemoveChild(Node *parent, Node *child)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+void MutationListener::beginMoveChild(Node *previous, Node *parent, Node *child)
+{
+    SOFA_UNUSED(previous);
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+void MutationListener::beginAddObject(Node *parent,
+                                      core::objectmodel::BaseObject *object)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(object);
+}
+void MutationListener::beginRemoveObject(Node *parent,
+                                         core::objectmodel::BaseObject *object)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(object);
+}
+void MutationListener::beginMoveObject(Node *previous, Node *parent,
+                                       core::objectmodel::BaseObject *object)
+{
+    SOFA_UNUSED(previous);
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(object);
+}
+void MutationListener::beginAddSlave(core::objectmodel::BaseObject *master,
+                                     core::objectmodel::BaseObject *slave)
+{
+    SOFA_UNUSED(master);
+    SOFA_UNUSED(slave);
+}
+void MutationListener::beginRemoveSlave(core::objectmodel::BaseObject *master,
+                                        core::objectmodel::BaseObject *slave)
+{
+    SOFA_UNUSED(master);
+    SOFA_UNUSED(slave);
+}
+void MutationListener::beginMoveSlave(
+    core::objectmodel::BaseObject *previousMaster,
+    core::objectmodel::BaseObject *master, core::objectmodel::BaseObject *slave)
+{
+    SOFA_UNUSED(previousMaster);
+    SOFA_UNUSED(master);
+    SOFA_UNUSED(slave);
+}
+
+void MutationListener::endAddChild(Node *parent, Node *child)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+void MutationListener::endRemoveChild(Node *parent, Node *child)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+void MutationListener::endMoveChild(Node *previous, Node *parent, Node *child)
+{
+    SOFA_UNUSED(previous);
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+void MutationListener::endAddObject(Node *parent,
+                                    core::objectmodel::BaseObject *object)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(object);
+}
+void MutationListener::endRemoveObject(Node *parent,
+                                       core::objectmodel::BaseObject *object)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(object);
+}
+void MutationListener::endMoveObject(Node *previous, Node *parent,
+                                     core::objectmodel::BaseObject *object)
+{
+    SOFA_UNUSED(previous);
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(object);
+}
+void MutationListener::endAddSlave(core::objectmodel::BaseObject *master,
+                                   core::objectmodel::BaseObject *slave)
+{
+    SOFA_UNUSED(master);
+    SOFA_UNUSED(slave);
+}
+void MutationListener::endRemoveSlave(core::objectmodel::BaseObject *master,
+                                      core::objectmodel::BaseObject *slave)
+{
+    SOFA_UNUSED(master);
+    SOFA_UNUSED(slave);
+}
+void MutationListener::endMoveSlave(
+    core::objectmodel::BaseObject *previousMaster,
+    core::objectmodel::BaseObject *master, core::objectmodel::BaseObject *slave)
+{
+    SOFA_UNUSED(previousMaster);
+    SOFA_UNUSED(master);
+    SOFA_UNUSED(slave);
+}
+
 } // namespace simulation
 
 } // namespace sofa
