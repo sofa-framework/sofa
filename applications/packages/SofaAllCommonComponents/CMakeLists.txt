@@ -25,4 +25,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 #include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(NAME SofaAllCommonComponents VERSION ${SOFAALLCOMMONCOMPONENTS_VERSION} TARGETS ${PROJECT_NAME} INCLUDES SofaAllCommonComponents)
+sofa_generate_package(NAME SofaAllCommonComponents VERSION ${SOFAALLCOMMONCOMPONENTS_VERSION} TARGETS ${PROJECT_NAME}  INCLUDE_ROOT_DIR SofaAllCommonComponents)

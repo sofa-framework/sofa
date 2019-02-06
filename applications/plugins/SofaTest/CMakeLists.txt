@@ -76,4 +76,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(NAME SofaTest VERSION ${SOFATEST_VERSION} TARGETS ${PROJECT_NAME} INCLUDES SofaTest)
+sofa_generate_package(NAME SofaTest VERSION ${SOFATEST_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR SofaTest)
