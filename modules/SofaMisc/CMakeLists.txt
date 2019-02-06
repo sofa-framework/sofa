@@ -18,14 +18,6 @@ list(APPEND SOURCE_FILES
     AddResourceRepository.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    if(SOFA_HAVE_SMP)
-        list(APPEND HEADER_FILES ParallelCGLinearSolver.h)
-        list(APPEND HEADER_FILES ParallelCGLinearSolver.inl)
-        list(APPEND SOURCE_FILES ParallelCGLinearSolver.cpp)
-    endif()
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralMeshCollision SofaMiscTopology SofaTopologyMapping)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC")

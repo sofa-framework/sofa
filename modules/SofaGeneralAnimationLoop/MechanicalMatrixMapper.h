@@ -123,7 +123,7 @@ using sofa::core::objectmodel::ComponentState ;
  * An example using this component can be found in examples/Components/animationLoop/MechanicalMatrixMapper.pyscn
 */
 template<typename TDataTypes1, typename TDataTypes2>
-class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
+class MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MechanicalMatrixMapper, TDataTypes1, TDataTypes2), SOFA_TEMPLATE2(MixedInteractionForceField, TDataTypes1, TDataTypes2));
@@ -275,6 +275,13 @@ protected:
     ////////////////////////////////////////////////////////////////////////////
 
 };
+
+#if !defined(SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP)
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+#endif
 
 } // namespace interactionforcefield
 
