@@ -641,59 +641,6 @@ void GraphListenerQListView::beginMoveSlave(core::objectmodel::BaseObject* previ
     }
 }
 
-void GraphListenerQListView::endAddChild(Node *parent, Node *child)
-{
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(child);
-}
-void GraphListenerQListView::endRemoveChild(Node *parent, Node *child)
-{
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(child);
-}
-void GraphListenerQListView::endMoveChild(Node *previous, Node *parent, Node *child)
-{
-    SOFA_UNUSED(previous);
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(child);
-}
-void GraphListenerQListView::endAddObject(Node *parent, core::objectmodel::BaseObject *object)
-{
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(object);
-}
-void GraphListenerQListView::endRemoveObject(Node *parent, core::objectmodel::BaseObject *object)
-{
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(object);
-}
-void GraphListenerQListView::endMoveObject(Node *previous, Node *parent,
-                   core::objectmodel::BaseObject *object)
-{
-    SOFA_UNUSED(previous);
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(object);
-}
-void GraphListenerQListView::endAddSlave(core::objectmodel::BaseObject *master,
-                 core::objectmodel::BaseObject *slave)
-{
-    SOFA_UNUSED(master);
-    SOFA_UNUSED(slave);
-}
-void GraphListenerQListView::endRemoveSlave(core::objectmodel::BaseObject *master,
-                    core::objectmodel::BaseObject *slave)
-{
-    SOFA_UNUSED(master);
-    SOFA_UNUSED(slave);
-}
-void GraphListenerQListView::endMoveSlave(core::objectmodel::BaseObject *previousMaster,
-                  core::objectmodel::BaseObject *master,
-                  core::objectmodel::BaseObject *slave)
-{
-    SOFA_UNUSED(previousMaster);
-    SOFA_UNUSED(master);
-    SOFA_UNUSED(slave);
-}
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::sleepChanged(Node* node)
