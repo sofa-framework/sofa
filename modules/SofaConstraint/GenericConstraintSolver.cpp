@@ -865,9 +865,8 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
     double *d = _d.ptr();
 
-    int i, j, l, nb;
+    int iter, nb;
 
-    double errF[6] = {0,0,0,0,0,0};
     double error=0.0;
 
     bool convergence = false;
@@ -879,7 +878,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
     if(solver)
     {
-        for(i=0; i<dimension; )
+        for(int i=0; i<dimension; )
         {
             if(!constraintsResolutions[i])
             {
@@ -917,26 +916,28 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         tabErrors.resize(dimension);
     }
 
-    for(i=0; i<maxIterations; i++)
+    for(iter=0; iter<maxIterations; iter++)
     {
         bool constraintsAreVerified = true;
         if(sor != 1.0)
         {
-            for(j=0; j<dimension; j++)
+            for(int j=0; j<dimension; j++)
                 tempForces[j] = force[j];
         }
 
         error=0.0;
-        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint  (max=6)
             nb = constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-            for(l=0; l<nb; l++)
+            std::vector<double> errF(&force[j], &force[j+nb-1]);
+            //double errF[6] = {0,0,0,0,0,0};
+            for(int l=0; l<nb; l++)
             {
-                errF[l] = force[j+l];
+                //errF[l] = force[j+l];
                 d[j+l] = dfree[j+l];
             }
 
@@ -954,7 +955,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             double contraintError = 0.0;
             if(nb > 1)
             {
-                for(l=0; l<nb; l++)
+                for(int l=0; l<nb; l++)
                 {
                     double lineError = 0.0;
                     for (int m=0; m<nb; m++)
@@ -989,15 +990,16 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
             //5. the force is updated for the constraint corrections
             bool update = false;
-            for(l=0; l<nb; l++)
+            for(int l=0; l<nb; l++)
                 update |= (force[j+l] || errF[l]);
 
             if(update)
             {
-                double tempF[6] = {0,0,0,0,0,0};
-                for(l=0; l<nb; l++)
+                //double tempF[6] = {0,0,0,0,0,0};
+                std::vector<double> tempF (&force[j], &force[j+nb-1]);
+                for(int l=0; l<nb; l++)
                 {
-                    tempF[l] = force[j+l];
+                    //tempF[l] = force[j+l];
                     force[j+l] -= errF[l]; // DForce
                 }
 
@@ -1007,7 +1009,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                         (*iter)->setConstraintDForce(force, j, j+nb-1, update);
                 }
 
-                for(l=0; l<nb; l++)
+                for(int l=0; l<nb; l++)
                     force[j+l] = tempF[l];
             }
 
@@ -1016,7 +1018,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
         if(showGraphs)
         {
-            for(j=0; j<dimension; j++)
+            for(int j=0; j<dimension; j++)
             {
                 std::ostringstream oss;
                 oss << "f" << j;
@@ -1033,7 +1035,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
         if(sor != 1.0)
         {
-            for(j=0; j<dimension; j++)
+            for(int j=0; j<dimension; j++)
                 force[j] = sor * force[j] + (1-sor) * tempForces[j];
         }
         if(timeout)
@@ -1044,7 +1046,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             if(dt > timeout)
             {
                 currentError = error;
-                currentIterations = i+1;
+                currentIterations = iter+1;
                 return;
             }
         }
@@ -1062,9 +1064,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             break;
         }
     }
-    
+
     currentError = error;
-    currentIterations = i+1;
+    currentIterations = iter+1;
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
 
@@ -1074,9 +1076,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         {
             msg_info(solver) << "No convergence : error = " << error ;
         }
-        else msg_info_when(solver->displayTime.getValue(),solver) <<" Convergence after " << i+1 << " iterations ";
+        else msg_info_when(solver->displayTime.getValue(),solver) <<" Convergence after " << currentIterations << " iterations ";
 
-        for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
+        for(int i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
             constraintsResolutions[i]->store(i, force, convergence);
     }
 
@@ -1087,7 +1089,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
-        for(j=0; j<dimension; )
+        for(int j=0; j<dimension; )
         {
             nb = constraintsResolutions[j]->getNbLines();
 
