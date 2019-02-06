@@ -2,14 +2,43 @@
 
 
 
-## On master branch (not released yet - Kernel modules are in **bold**)
+## On master branch (not released yet)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v18.06...HEAD)
+[Full log](https://github.com/sofa-framework/sofa/compare/v18.12...HEAD)
 
 
 ### Deprecated
 
-**Will be removed in v18.12**
+
+
+
+### Breaking
+
+
+
+
+### Improvements
+
+
+
+
+### Bug Fixes
+
+
+
+
+____________________________________________________________
+
+
+
+## [v18.12](https://github.com/sofa-framework/sofa/tree/v18.12)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v18.06...v18.12)
+
+
+### Deprecated
+
+**Removed in v18.12**
 - [SofaBoundaryCondition] BuoyantForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaBoundaryCondition] VaccumSphereForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
 - **[SofaHelper]** Utils::getPluginDirectory() [#518](https://github.com/sofa-framework/sofa/pull/518) - Use PluginRepository.getFirstPath() instead
@@ -17,7 +46,7 @@
 - [SofaMiscForceField] ForceMaskOff [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscForceField] LineBendingSprings [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscForceField] WashingMachineForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
-- [SofaMiscForceField] LennardJonesForceField [#457](https://github.com/sofa-framework/sofa/pull/457)
+- ~~[SofaMiscForceField] LennardJonesForceField [#457](https://github.com/sofa-framework/sofa/pull/457)~~
 - [SofaMiscMapping] CatmullRomSplineMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscMapping] CenterPointMechanicalMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscMapping] CurveMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
@@ -57,6 +86,7 @@
 - [CMake] use ccache if available [#692](https://github.com/sofa-framework/sofa/pull/692)
 - [Cmake] Add a findCython.cmake [#734](https://github.com/sofa-framework/sofa/pull/734)
 - [CMake] ADD QtIFW generator + improvements [#796](https://github.com/sofa-framework/sofa/pull/796)
+- [SofaMacros] ADD CMake macro to create pybind11 & cython targets and modules #859(https://github.com/sofa-framework/sofa/pull/859)
 
 **Modules**
 - [All] Use drawtool everywhere [#704](https://github.com/sofa-framework/sofa/pull/704)
@@ -75,6 +105,7 @@
 - **[SofaHelper]** EDIT FileSystem and FileRepository for regression tests [#830](https://github.com/sofa-framework/sofa/pull/830)
 - **[SofaKernel]** Improve Displayflags [#671](https://github.com/sofa-framework/sofa/pull/671)
 - **[SofaKernel]** Add a "sofa_add_module" in SofaMacro.cmake [#732](https://github.com/sofa-framework/sofa/pull/732)
+- **[SofaKernel]** use string in base object description [#862](https://github.com/sofa-framework/sofa/pull/862)
 - [SofaMeshCollision] TriangleModel optimization when topology changes occur [#839](https://github.com/sofa-framework/sofa/pull/839)
 - [SofaSparseSolver] ADD saveMatrixToFile to SparseLDLSolver [#845](https://github.com/sofa-framework/sofa/pull/845)
 - [SofaTest] ADD a PrintTo method so test failure shows human readable informations. [#730](https://github.com/sofa-framework/sofa/pull/730)
@@ -88,6 +119,7 @@
 - [MultiThreading] New components and Task scheduler classes refactoring  [#745](https://github.com/sofa-framework/sofa/pull/745)
 - [MultiThreading] Add Image plugin Data types in DataExchange component [#770](https://github.com/sofa-framework/sofa/pull/770)
 - [MultiThreading] TaskScheduler Interface [#775](https://github.com/sofa-framework/sofa/pull/775)
+- [runSofa] Add data field value change on mouse move [#750](https://github.com/sofa-framework/sofa/pull/750)
 - [SofaCarving] Refresh and enhancement [#712](https://github.com/sofa-framework/sofa/pull/712)
 - [SofaCarving] plugin enhancement [#787](https://github.com/sofa-framework/sofa/pull/787)
 - [SofaPython] ADD forwarding of onMouseMove event into the script controller [#731](https://github.com/sofa-framework/sofa/pull/731)
@@ -96,6 +128,7 @@
 - [SofaPython][PSDE] Update on demand as designed initially [#751](https://github.com/sofa-framework/sofa/pull/751)
 - [SofaPython] ADD a custom __dir__ method in Binding_Base. [#762](https://github.com/sofa-framework/sofa/pull/762)
 - [SofaPython] add getLinkedBase to the binding of a link. [#843](https://github.com/sofa-framework/sofa/pull/843)
+- [SofaPython] ADD binding python to getCategories [#868](https://github.com/sofa-framework/sofa/pull/868)
 
 
 ### Bug Fixes
@@ -104,8 +137,10 @@
 - [CMake] FIX: cyclic recursion [#766](https://github.com/sofa-framework/sofa/pull/766)
 - [CMake] Backport fixes [#791](https://github.com/sofa-framework/sofa/pull/791)
 - [CMake] Fix compilation issues due to CPackNSIS [#867](https://github.com/sofa-framework/sofa/pull/867)
+- [CMake] Add check to prevent the inclusion of non-existant file in cmake 3.13 [#897](https://github.com/sofa-framework/sofa/pull/897)
 
 **Modules**
+- [All] ISSofa bugfix, lot of fixes [#756](https://github.com/sofa-framework/sofa/pull/756)
 - [SofaGuiQt] Change method to allow antialiased screenshots in QtViewer [#728](https://github.com/sofa-framework/sofa/pull/728)
 - **[SofaBaseMechanics]** Fix warning scene mass [#779](https://github.com/sofa-framework/sofa/pull/779)
 - **[SofaBaseMechanics]** FIX DiagonalMass_test [#832](https://github.com/sofa-framework/sofa/pull/832)
@@ -114,6 +149,7 @@
 - [SofaCarving] Modify the CMake config file to allow other plugins link to Sofa Carving  [#781](https://github.com/sofa-framework/sofa/pull/781)
 - **[SofaCore]** FIX: enable ExtVecXf mappings with double floating type [#827](https://github.com/sofa-framework/sofa/pull/827)
 - [SofaDeformable] Fix MeshSpring ForceField and Loader [#815](https://github.com/sofa-framework/sofa/pull/815)
+- **[SofaFramework]** Keep SOFA_EXTERN_TEMPLATE macro definition [#870](https://github.com/sofa-framework/sofa/pull/870)
 - [SofaGui] ADD option to enable VSync (default: OFF) [#722](https://github.com/sofa-framework/sofa/pull/722)
 - **[SofaKernel]** FIX bug in toEulerVector [#399](https://github.com/sofa-framework/sofa/pull/399)
 - **[SofaKernel]** FIX segfault created by static initialisers on OSX/clang compiler [#642](https://github.com/sofa-framework/sofa/pull/642)

@@ -6,9 +6,9 @@ set(RESOURCE_FILES
     )
 
 if(APPLE)
-    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSOFA.icns")
+    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.icns")
 else()
-    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sofa.rc")
+    set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.rc")
 endif()
 
 include(cmake/GeneratePluginConfig.cmake)
@@ -30,12 +30,9 @@ endif()
 
 if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp )
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/runSofa.plist")
 else()
     add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp)
-endif()
-
-if(APPLE)
-    set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "runSOFA.icns" )
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
@@ -54,7 +51,11 @@ endif()
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
-set(RESOURCES_DIR "../share/sofa/gui/runSofa")
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    set(RESOURCES_DIR "share/sofa/gui/runSofa")
+else()
+    set(RESOURCES_DIR "../share/sofa/gui/runSofa")
+endif()
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
