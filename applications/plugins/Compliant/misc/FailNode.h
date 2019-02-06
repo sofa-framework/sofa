@@ -49,10 +49,10 @@ public:
     virtual void doMoveChild(BaseNode::SPtr node);
 
     /// Add a generic object
-    virtual void doAddObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doAddObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Remove a generic object
-    virtual void doRemoveObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doRemoveObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Move an object from a node to another node
     virtual void doMoveObject(core::objectmodel::BaseObject::SPtr obj);
