@@ -64,9 +64,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else if( this->_mesh->getNbHexahedra()<=0 )
     {
         msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a hexahedric MeshTopology.\n"
-        << this->_mesh->getName() << "\n"
-<< this->_mesh->getTypeName() << "\n"
-<<this->_mesh->getNbPoints() << "\n";
+                    << this->_mesh->getName() << "\n"
+                    << this->_mesh->getTypeName() << "\n"
+                    <<this->_mesh->getNbPoints() << "\n";
         return;
     }
 
