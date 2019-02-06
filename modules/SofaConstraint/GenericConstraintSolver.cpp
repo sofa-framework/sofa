@@ -933,7 +933,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-            std::vector<double> errF(&force[j], &force[j+nb-1]);
+            std::vector<double> errF(&force[j], &force[j+nb]);
             //double errF[6] = {0,0,0,0,0,0};
             for(int l=0; l<nb; l++)
             {
@@ -996,7 +996,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             if(update)
             {
                 //double tempF[6] = {0,0,0,0,0,0};
-                std::vector<double> tempF (&force[j], &force[j+nb-1]);
+                std::vector<double> tempF (&force[j], &force[j+nb]);
                 for(int l=0; l<nb; l++)
                 {
                     //tempF[l] = force[j+l];
