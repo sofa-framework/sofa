@@ -38,7 +38,7 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API CollisionVisitor : public Visitor
 {
 public:
-    CollisionVisitor(const core::ExecParams* params) :Visitor(params) {}
+    CollisionVisitor(const core::ExecParams* params) :Visitor(params) , m_primitivesTest(0) {}
 
     virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
 
@@ -50,6 +50,10 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "collision"; }
     virtual const char* getClassName() const { return "CollisionVisitor"; }
+
+    const size_t getPrimitiveTestCount() const {return m_primitivesTest;}
+private:
+    size_t m_primitivesTest;
 };
 
 /// Remove collision response from last step
