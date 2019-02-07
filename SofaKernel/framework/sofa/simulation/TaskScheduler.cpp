@@ -1,6 +1,6 @@
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 
-#include "DefaultTaskScheduler.h"
+#include <sofa/simulation/DefaultTaskScheduler.h>
 
 //#include <sofa/helper/system/thread/CTime.h>
 
@@ -45,7 +45,10 @@ namespace sofa
 
             TaskSchedulerCreatorFunction& creatorFunc = iter->second;
             _currentScheduler = creatorFunc();
+            
             _currentSchedulerName = iter->first;
+
+            Task::setAllocator(_currentScheduler->getTaskAllocator());
 
             return _currentScheduler;
         }

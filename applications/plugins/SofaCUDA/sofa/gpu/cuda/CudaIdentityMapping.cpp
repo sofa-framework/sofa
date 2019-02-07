@@ -54,9 +54,6 @@ template class  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
 template class  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
 template class  IdentityMapping< CudaVec3dTypes, Vec3fTypes>;
 template class  IdentityMapping< CudaVec3dTypes, Vec3dTypes>;
-template class  IdentityMapping< Vec3Types, CudaVec3Types>;
-
-
 template class  IdentityMapping< CudaVec3d1Types, ExtVec3dTypes >;
 template class  IdentityMapping< CudaVec3dTypes, ExtVec3dTypes >;
 #endif

@@ -1,4 +1,4 @@
-#include "InitTasks.h"
+#include <sofa/simulation/InitTasks.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
@@ -22,7 +22,7 @@ namespace sofa
         {
         }
 
-        bool InitPerThreadDataTask::run()
+        Task::MemoryAlloc InitPerThreadDataTask::run()
         {
 
             core::ExecParams::defaultInstance();
@@ -50,7 +50,7 @@ namespace sofa
                 // yield while waiting  
                 std::this_thread::yield();
             }
-            return true;
+            return Task::MemoryAlloc::Dynamic;
         }
 
         

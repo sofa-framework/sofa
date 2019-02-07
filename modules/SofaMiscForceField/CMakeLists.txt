@@ -26,18 +26,10 @@ list(APPEND SOURCE_FILES
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
-        ForceMaskOff.h
-        LineBendingSprings.h
-        LineBendingSprings.inl
-        WashingMachineForceField.h
-        WashingMachineForceField.inl
         LennardJonesForceField.h
         LennardJonesForceField.inl
         )
     list(APPEND SOURCE_FILES
-        ForceMaskOff.cpp
-        LineBendingSprings.cpp
-        WashingMachineForceField.cpp
         LennardJonesForceField.cpp
         )
 endif()
