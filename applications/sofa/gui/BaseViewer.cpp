@@ -39,6 +39,7 @@ BaseViewer::BaseViewer()
     , texLogo(NULL)
 #endif
     , _video(false)
+    , m_isVideoButtonPressed(false)
     , _axis(false)
     , backgroundColour(defaulttype::Vector3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
@@ -129,8 +130,8 @@ void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
 #ifndef SOFA_NO_OPENGL
     capture.setPrefix(fullPrefix);
 #endif
-#ifdef SOFA_HAVE_FFMPEG
-    videoRecorder.setPrefix(fullPrefix);
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    m_videoRecorderFFMPEG.setPrefix(fullPrefix);
 #endif
 }
 
