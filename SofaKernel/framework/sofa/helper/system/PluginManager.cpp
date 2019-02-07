@@ -319,7 +319,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 
             while (iter != end)
             {
-                if ( iter.depth() > maxRecursiveDepth )
+                if ( iter.level() > maxRecursiveDepth )
                 {
                     iter.no_push(); // skip
                 }
