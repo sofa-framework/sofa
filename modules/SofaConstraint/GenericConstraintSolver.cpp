@@ -923,7 +923,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         error=0.0;
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
-            //1. nbLines provide the dimension of the constraint  (max=6)
+            //1. nbLines provide the dimension of the constraint
             nb = constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
