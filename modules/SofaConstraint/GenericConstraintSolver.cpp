@@ -26,6 +26,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include "ConstraintStoreLambdaVisitor.h"
+#include <algorithm>
 
 namespace sofa
 {
@@ -684,8 +685,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         bool constraintsAreVerified = true;
         if(sor != 1.0)
         {
-            for(j=0; j<dimension; j++)
-                tempForces[j] = force[j];
+            std::copy_n(force, dimension, tempForces.begin());
         }
 
         error=0.0;
@@ -697,13 +697,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
             
-            std::vector<double> errF(nb, 0);
+            std::vector<double> errF(&force[j], &force[j+nb]);
+            std::copy_n(&dfree[j], nb, &d[j]);
 
-            for(l=0; l<nb; l++)
-            {
-                errF[l] = force[j+l];
-                d[j+l] = dfree[j+l];
-            }
             //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
             for(k=0; k<dimension; k++)
                 for(l=0; l<nb; l++)
@@ -921,8 +917,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         bool constraintsAreVerified = true;
         if(sor != 1.0)
         {
-            for(int j=0; j<dimension; j++)
-                tempForces[j] = force[j];
+            std::copy_n(force, dimension, tempForces.begin());
         }
 
         error=0.0;
@@ -934,12 +929,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
             std::vector<double> errF(&force[j], &force[j+nb]);
-            //double errF[6] = {0,0,0,0,0,0};
-            for(int l=0; l<nb; l++)
-            {
-                //errF[l] = force[j+l];
-                d[j+l] = dfree[j+l];
-            }
+            std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
             for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
@@ -995,11 +985,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
             if(update)
             {
-                //double tempF[6] = {0,0,0,0,0,0};
                 std::vector<double> tempF (&force[j], &force[j+nb]);
                 for(int l=0; l<nb; l++)
                 {
-                    //tempF[l] = force[j+l];
                     force[j+l] -= errF[l]; // DForce
                 }
 
@@ -1008,9 +996,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                     if(*iter)
                         (*iter)->setConstraintDForce(force, j, j+nb-1, update);
                 }
-
-                for(int l=0; l<nb; l++)
-                    force[j+l] = tempF[l];
+                std::copy(tempF.begin(), tempF.end(), &force[j]);
             }
 
             j += nb;
