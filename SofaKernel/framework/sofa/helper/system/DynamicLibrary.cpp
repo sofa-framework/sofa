@@ -66,11 +66,11 @@ DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 # if defined(WIN32)
     std::string p(filename);
     std::replace(p.begin(), p.end(), '/', '\\'); // ensure Windows style path
-    void *handle = ::LoadLibraryExA(p.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+    void *handle = ::LoadLibraryExA(p.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
 # else
     void *handle = ::dlopen(filename.c_str(), RTLD_NOW);
 # endif
-    if (handle == NULL)
+    if (handle == nullptr)
         fetchLastError();
     return handle ? Handle(filename, handle) : Handle();
 }
