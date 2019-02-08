@@ -68,15 +68,12 @@ void LinearForceField<DataTypes>::addPoint(unsigned index)
     points.beginEdit()->push_back(index);
     points.endEdit();
 
-}// LinearForceField::addPoint
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::removePoint(unsigned /*index*/)
 {
-// removeValue(*points.beginEdit(), index);
-    //points.endEdit();
-
-}// LinearForceField::removePoint
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearPoints()
@@ -84,7 +81,7 @@ void LinearForceField<DataTypes>::clearPoints()
     points.beginEdit()->clear();
     points.endEdit();
 
-}// LinearForceField::clearPoints
+}
 
 
 template<class DataTypes>
@@ -96,7 +93,7 @@ void LinearForceField<DataTypes>::addKeyForce(Real time, Deriv force)
     d_keyForces.beginEdit()->push_back( force );
     d_keyForces.endEdit();
 
-}// LinearForceField::addKeyForce
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearKeyForces()
@@ -106,7 +103,7 @@ void LinearForceField<DataTypes>::clearKeyForces()
     d_keyForces.beginEdit()->clear();
     d_keyForces.endEdit();
 
-}// LinearForceField::clearKeyForces
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
@@ -163,7 +160,14 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
             _f1[index] += targetForce;
         }
     }
-}// LinearForceField::addForce
+}
+
+template<class DataTypes>
+void LinearForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
@@ -194,7 +198,7 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     }
 
     return e;
-}// LinearForceField::getPotentialEnergy
+}
 
 template< class DataTypes>
 void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)

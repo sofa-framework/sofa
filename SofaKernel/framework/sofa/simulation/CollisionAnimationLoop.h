@@ -60,7 +60,7 @@ public:
 protected:
     CollisionAnimationLoop(simulation::Node* gnode);
 
-    virtual ~CollisionAnimationLoop();
+    virtual ~CollisionAnimationLoop() override;
 
 
 public:

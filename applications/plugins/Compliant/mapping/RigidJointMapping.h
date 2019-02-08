@@ -45,7 +45,6 @@ public:
 	Data< pairs_type > pairs; ///< pairs of rigid frames defining joint in source dofs
 	Data< bool > rotation; ///< compute relative rotation
 	Data< bool > translation; ///< compute relative translation
-//	Data< bool > out_joint_angle;
 	
 	Data< bool > exact_dlog;
 
@@ -53,7 +52,6 @@ public:
 		: pairs(initData(&pairs, "pairs", "pairs of rigid frames defining joint in source dofs" )),
 		  rotation(initData(&rotation, true, "rotation", "compute relative rotation" )),
 		  translation(initData(&translation, true, "translation", "compute relative translation" )),
-//		  out_joint_angle(initData(&out_joint_angle, false, "out_joint_angle", "output joint angle to std::cerr(unsigned rad)")),
 		  exact_dlog(initData(&exact_dlog, false, "exact_dlog",
 							  "compute exact rotation dlog. more precise if you know what you're doing, but gets unstable past half turn. for 1d and isotropic 3d springs, you don't need this"))
 		{
@@ -67,11 +65,6 @@ protected:
 
 
 	static coord_type delta(const coord_type& p, const coord_type& c) {
-// 		coord_type res;
-        //res.getOrientation() = p.getOrientation().inverse() * c.getOrientation();
-        //res.getCenter() = c.getCenter() - p.getCenter();
-        //return res;
-
 		return se3::prod( se3::inv(p), c);
 	}
 	
@@ -102,14 +95,6 @@ protected:
 #else
 		std::vector< mat66 , Eigen::aligned_allocator<mat66> > blocks(2);	
 #endif
-
-// 		if( translation.getValue() ) {
-// 			blocks[0] = -mat66::Identity();
-// 			blocks[1] = mat66::Identity();
-// 		} else {
-// 			blocks[0] = mat66::Zero();
-// 			blocks[1] = mat66::Zero();
-// 		}
 		
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 
@@ -217,19 +202,9 @@ protected:
             {
                 out[i] = se3::product_log( diff ).getVAll();
             }
-			
-
-//            if( out_joint_angle.getValue() ) output( out[i] );
-
         }
     }
 
-//	void output(typename TOut::Coord out) const {
-//		out[0] = 0;
-//		out[1] = 0;
-//		out[2] = 0;
-//		std::cerr << this->getContext()->getTime() << ", " << out.norm() << std::endl;
-//	}
 
     virtual void updateForceMask()
     {

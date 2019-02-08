@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -38,23 +38,13 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(DistanceLMContactConstraint)
-
 int DistanceLMContactConstraintClass = core::RegisterObject("Maintain a minimum contact distance between two objects")
-#ifndef SOFA_FLOAT
-        .add< DistanceLMContactConstraint<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< DistanceLMContactConstraint<Vec3fTypes> >()
-#endif
+        .add< DistanceLMContactConstraint<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<Vec3fTypes>;
-#endif
+template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
+
 
 
 

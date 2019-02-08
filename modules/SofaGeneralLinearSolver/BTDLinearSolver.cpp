@@ -37,33 +37,11 @@ namespace component
 namespace linearsolver
 {
 
-SOFA_DECL_CLASS(BTDLinearSolver)
+static int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
+    .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
+;
 
-int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-#ifndef SOFA_FLOAT
-.add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
-#endif
-#ifndef SOFA_DOUBLE
-.add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
-#endif
-//.add< BTDLinearSolver<BTDMatrix<3,double>,BlockVector<3,double> > >()
-//.add< BTDLinearSolver<BTDMatrix<3,float>,BlockVector<3,float> > >()
-//.add< BTDLinearSolver<BTDMatrix<2,double>,BlockVector<2,double> > >()
-//.add< BTDLinearSolver<BTDMatrix<2,float>,BlockVector<2,float> > >()
-//.add< BTDLinearSolver<BTDMatrix<1,double>,BlockVector<1,double> > >()
-//.add< BTDLinearSolver<BTDMatrix<1,float>,BlockVector<1,float> > >()
-//.add< BTDLinearSolver<NewMatMatrix,NewMatVector> >()
-//.add< BTDLinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
-//.add< BTDLinearSolver<NewMatBandMatrix,NewMatVector> >(true)
-//.add< BTDLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
-        ;
-
-#ifndef SOFA_FLOAT
 template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, float>, BlockVector<6, float> >;
-#endif
 
 } // namespace linearsolver
 

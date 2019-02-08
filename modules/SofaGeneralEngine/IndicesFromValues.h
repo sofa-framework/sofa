@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -62,16 +62,25 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     core::objectmodel::Data<VecValue> f_values; ///< input values
     core::objectmodel::Data<VecValue> f_global; ///< Global values, in which the input values are searched
     core::objectmodel::Data<VecIndex> f_indices; ///< Output indices of the given values, searched in global
     core::objectmodel::Data<VecIndex> f_otherIndices; ///< Output indices of the other values, (NOT the given ones) searched in global
     core::objectmodel::Data<bool> f_recursiveSearch; ///< if set to true, output are indices of the "global" data matching with one of the values
+
+    virtual std::string getTemplateName() const override
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const IndicesFromValues<T>* = NULL)
+    {
+        return sofa::defaulttype::DataTypeName<T>::name();
+    }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<std::string>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<int>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<unsigned int>;
@@ -79,24 +88,14 @@ extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_a
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
-#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<double>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Deriv>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<float>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2f>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3f>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Deriv>;
-#endif //SOFA_DOUBLE
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
+ 
 #endif
 
 } // namespace engine

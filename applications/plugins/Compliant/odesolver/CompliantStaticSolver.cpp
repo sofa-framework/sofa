@@ -354,7 +354,6 @@ public:
 };
 
 
-SOFA_DECL_CLASS(CompliantStaticSolver)
 int CompliantStaticSolverClass = core::RegisterObject("Static solver")
     .add< CompliantStaticSolver >();
 

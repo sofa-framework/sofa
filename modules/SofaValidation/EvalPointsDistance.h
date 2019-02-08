@@ -159,15 +159,10 @@ protected:
     sofa::defaulttype::BoundingBox box2;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3dTypes>;
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3fTypes>;
-extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3Types>;
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace misc

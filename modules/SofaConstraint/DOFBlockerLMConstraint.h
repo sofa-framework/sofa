@@ -165,15 +165,10 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class DOFBlockerLMConstraint<defaulttype::Rigid3dTypes>;
-extern template class DOFBlockerLMConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class DOFBlockerLMConstraint<defaulttype::Rigid3fTypes>;
-extern template class DOFBlockerLMConstraint<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)
+extern template class DOFBlockerLMConstraint<defaulttype::Rigid3Types>;
+extern template class DOFBlockerLMConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

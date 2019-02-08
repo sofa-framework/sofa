@@ -45,8 +45,6 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-SOFA_DECL_CLASS(OglModel)
-
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
         .add< OglModel >()
         ;
@@ -392,6 +390,19 @@ void OglModel::drawGroups(bool transparent)
     }
 }
 
+void glVertex3v(const float* d){ glVertex3fv(d); }
+void glVertex3v(const double* d){ glVertex3dv(d); }
+
+template<class T>
+GLuint glType(){ return GL_FLOAT; }
+
+template<>
+GLuint glType<double>(){ return GL_DOUBLE; }
+
+template<>
+GLuint glType<float>(){ return GL_FLOAT; }
+
+
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
@@ -411,21 +422,23 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
+    GLuint datatype = glType<DataTypes::Real>();
+
 #ifdef SOFA_HAVE_GLEW
     if(VBOGenDone && useVBO.getValue())
     {
         glBindBufferARB(GL_ARRAY_BUFFER, vbo);
 
-        glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
-        glNormalPointer(GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
+        glVertexPointer(3, datatype, 0, (char*)NULL + 0);
+        glNormalPointer(datatype, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
 
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
     }
     else
 #endif // SOFA_HAVE_GLEW
     {
-        glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
-        glNormalPointer (GL_FLOAT, 0, vnormals.getData());
+        glVertexPointer (3, datatype, 0, vertices.getData());
+        glNormalPointer (datatype, 0, vnormals.getData());
     }
 
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -641,9 +654,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glBegin(GL_LINES);
             for (unsigned int i = 0; i < vertices.size(); i++)
             {
-                glVertex3fv (vertices[i].ptr());
+                glVertex3v(vertices[i].ptr());
                 Coord p = vertices[i] + vnormals[i];
-                glVertex3fv (p.ptr());
+                glVertex3v(p.ptr());
             }
             glEnd();
 
@@ -730,7 +743,6 @@ void OglModel::initVisual()
 #ifdef NO_VBO
     canUseVBO = false;
 #else
-#if !defined(PS3)
     static bool vboAvailable = false; // check the vbo availability
 
     static bool init = false;
@@ -741,9 +753,6 @@ void OglModel::initVisual()
     }
 
     canUseVBO = vboAvailable;
-#elif PS3
-    canUseVBO = true;
-#endif
 
     if (useVBO.getValue() && !canUseVBO)
     {
@@ -752,7 +761,7 @@ void OglModel::initVisual()
 
 #endif
 
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
+#if defined(SOFA_HAVE_GLEW)
     if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
         msg_warning() << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." ;

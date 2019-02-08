@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_MESHROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -74,7 +72,7 @@ public:
 
     virtual void init() override;
     virtual void reinit() override;
-    virtual void update() override;
+    virtual void doUpdate() override;
     virtual void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.
@@ -172,17 +170,11 @@ public:
     Data<bool> d_doUpdate; ///< Update the computation (not only at the init)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6dTypes>; //Phuoc
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6fTypes>; //Phuoc
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6Types>; //Phuoc
+ 
 #endif
 
 } // namespace engine

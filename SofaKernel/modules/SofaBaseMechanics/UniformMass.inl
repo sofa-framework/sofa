@@ -35,9 +35,6 @@
 #include <iostream>
 #include <string.h>
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-#include <sofa/core/behavior/InertiaForce.h>
-#endif
 
 
 
@@ -254,7 +251,7 @@ bool UniformMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
-    if (m_dataTrackerTotal.isDirty())
+    if (m_dataTrackerTotal.hasChanged())
     {
         if(checkTotalMass())
         {
@@ -263,7 +260,7 @@ bool UniformMass<DataTypes, MassType>::update()
         }
         m_dataTrackerTotal.clean();
     }
-    else if(m_dataTrackerVertex.isDirty())
+    else if(m_dataTrackerVertex.hasChanged())
     {
         if(checkVertexMass())
         {
@@ -485,21 +482,11 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
 }
 
 template <class DataTypes, class MassType>
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* mparams, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
-#else
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v )
-#else
 void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
-#endif
-#endif
 {
-#ifndef SOFA_SUPPORT_MOVING_FRAMES
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if ( this->m_separateGravity.getValue() )
         return;
-#endif
 
     helper::WriteAccessor<DataVecDeriv> f = vf;
 
@@ -514,50 +501,17 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = getContext()->getPositionInWorld() / vframe;
-    aframe = getContext()->getPositionInWorld().backProjectVector ( aframe );
-#endif
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     // add weight and inertia force
     if (this->m_separateGravity.getValue()) for ( unsigned int i=0; i<indices.size(); i++ )
     {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-        f[indices[i]] += core::behavior::inertiaForce ( vframe,aframe,m,x[indices[i]],v[indices[i]] );
-#endif
     }
     else for ( unsigned int i=0; i<indices.size(); i++ )
     {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-        f[indices[i]] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[indices[i]],v[indices[i]] );
-#else
         f[indices[i]] += mg;
-#endif
     }
-
-
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    if ( compute_mapping_inertia.getValue() )
-    {
-        helper::ReadAccessor< Data<VecDeriv> > acc = *mparams->readDx(mstate);
-        // add inertia force due to acceleration from the motion of the mapping (coriolis type force)
-        if ( acc.size() != f.size() )
-            return;
-
-        for ( unsigned int i=0; i<f.size(); i++ )
-        {
-            Deriv coriolis = -acc[i]*m;
-            f[i] += coriolis;
-        }
-    }
-#endif
 }
 
 template <class DataTypes, class MassType>
@@ -705,7 +659,7 @@ void UniformMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Even
 {
     if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
-        if (m_dataTrackerVertex.isDirty() || m_dataTrackerTotal.isDirty())
+        if (m_dataTrackerVertex.hasChanged() || m_dataTrackerTotal.hasChanged())
         {
             update();
         }

@@ -99,28 +99,46 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     if (restMState.get() == NULL)
     {
         useRestMState = false;
-      
+        msg_info() << "no external rest shape used";
+
         if(!restMState.empty())
+        {
             msg_warning() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
+        }
     }
     else
     {
+        msg_info() << "external rest shape used";
         useRestMState = true;
     }
-
-    k = stiffness.getValue();
 
     recomputeIndices();
 
     BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    assert(state);
-    matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    if(!state)
+    {
+        msg_warning() << "MechanicalState of the current context returns null pointer";
+    }
+    else
+    {
+        assert(state);
+        matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    }
     lastUpdatedStep = -1.0;
 }
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::reinit()
 {
+    if (!checkOutOfBoundsIndices())
+    {
+        m_indices.clear();
+    }
+    else
+    {
+        msg_info() << "Indices successfully checked";
+    }
+
     if (stiffness.getValue().empty())
     {
         msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " ;
@@ -129,7 +147,16 @@ void RestShapeSpringsForceField<DataTypes>::reinit()
         stiffs.push_back(100.0);
         stiffness.setValue(stiffs);
     }
-    k = stiffness.getValue();
+    else
+    {
+        const VecReal &k = stiffness.getValue();
+        if ( k.size() != m_indices.size() )
+        {
+            msg_warning() << "Size of stiffness vector is not correct (" << k.size() << "), should be either 1 or " << m_indices.size() << msgendl
+                          << "First value of stiffness will be used";
+        }
+    }
+
 }
 
 template<class DataTypes>
@@ -139,46 +166,86 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     m_ext_indices.clear();
 
     for (unsigned int i = 0; i < points.getValue().size(); i++)
+    {
         m_indices.push_back(points.getValue()[i]);
+    }
 
     for (unsigned int i = 0; i < external_points.getValue().size(); i++)
-        m_ext_indices.push_back(external_points.getValue()[i]);
-
-    m_pivots = pivotPoints.getValue();
-
-    if (m_indices.size()==0)
     {
+        m_ext_indices.push_back(external_points.getValue()[i]);
+    }
+
+    if (m_indices.empty())
+    {
+        // no point are defined, default case: points = all points
         for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
         {
             m_indices.push_back(i);
         }
     }
 
-    if (m_ext_indices.size()==0)
+    if (m_ext_indices.empty())
     {
         if (useRestMState)
         {
-            for (unsigned int i = 0; i < (unsigned)restMState->getSize(); i++)
+            for (unsigned int i = 0; i < getExtPosition()->getValue().size(); i++)
             {
                 m_ext_indices.push_back(i);
             }
         }
         else
         {
-            for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
+            for (unsigned int i = 0; i < m_indices.size(); i++)
             {
-                m_ext_indices.push_back(i);
+                m_ext_indices.push_back(m_indices[i]);
             }
         }
     }
 
-    if (m_indices.size() > m_ext_indices.size())
+    if (!checkOutOfBoundsIndices())
     {
-        msg_error() << "The dimention of the source and the targeted points are different ";
+        msg_error() << "The dimension of the source and the targeted points are different ";
         m_indices.clear();
+    }
+    else
+    {
+        msg_info() << "Indices successfully checked";
     }
 }
 
+template<class DataTypes>
+bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
+{
+    if (!checkOutOfBoundsIndices(m_indices, this->mstate->getSize()))
+    {
+        msg_error() << "Out of Bounds m_indices detected. ForceField is not activated.";
+        return false;
+    }
+    if (!checkOutOfBoundsIndices(m_ext_indices, getExtPosition()->getValue().size()))
+    {
+        msg_error() << "Out of Bounds m_ext_indices detected. ForceField is not activated.";
+        return false;
+    }
+    if (m_indices.size() != m_ext_indices.size())
+    {
+        msg_error() << "Dimensions of the source and the targeted points are different. ForceField is not activated.";
+        return false;
+    }
+    return true;
+}
+
+template<class DataTypes>
+bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension)
+{
+    for (unsigned int i = 0; i < indices.size(); i++)
+    {
+        if (indices[i] >= dimension)
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
 template<class DataTypes>
 const typename RestShapeSpringsForceField<DataTypes>::DataVecCoord* RestShapeSpringsForceField<DataTypes>::getExtPosition() const
@@ -195,6 +262,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     WriteAccessor< DataVecDeriv > f1 = f;
     ReadAccessor< DataVecCoord > p1 = x;
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    const VecReal& k = stiffness.getValue();
 
     f1.resize(p1.size());
 
@@ -203,18 +271,15 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         recomputeIndices();
     }
 
-    //Springs_dir.resize(m_indices.size() );
     if ( k.size()!= m_indices.size() )
     {
+        // Stiffness is not defined on each point, first stiffness is used
         const Real k0 = k[0];
 
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
             const unsigned int index = m_indices[i];
-
-            unsigned int ext_index = m_indices[i];
-            if(useRestMState)
-                ext_index= m_ext_indices[i];
+            const unsigned int ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
             f1[index] -=  dx * k0 ;
@@ -222,12 +287,11 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     }
     else
     {
+        // Heterogeneous stiffness for each spring
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
             const unsigned int index = m_indices[i];
-            unsigned int ext_index = m_indices[i];
-            if(useRestMState)
-                ext_index= m_ext_indices[i];
+            unsigned int ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
             f1[index] -=  dx * k[i];
@@ -235,25 +299,22 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     }
 }
 
-
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    //  remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
-
     WriteAccessor< DataVecDeriv > df1 = df;
     ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const VecReal& k = stiffness.getValue();
 
-    if (k.size()!= m_indices.size() )
+    if (k.size() != m_indices.size())
     {
-        const Real k0 = k[0];
+        // Stiffness is not defined on each point, first stiffness is used
+        const Real k0 = k[0] * (Real)kFactor;
 
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
-            df1[m_indices[i]] -=  dx1[m_indices[i]] * k0 * kFactor;
+            df1[m_indices[i]] -=  dx1[m_indices[i]] * k0;
         }
     }
     else
@@ -314,28 +375,27 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    //      remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
+    const VecReal& k = stiffness.getValue();
     const int N = Coord::total_size;
 
     unsigned int curIndex = 0;
 
-    if (k.size()!= m_indices.size() )
+    if (k.size() != m_indices.size())
     {
-        const Real k0 = k[0];
+        const Real k0 = -k[0] * (Real)kFact;
+
         for (unsigned int index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
 
             for(int i = 0; i < N; i++)
             {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
             }
         }
     }
@@ -356,32 +416,30 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix, const vector<unsigned> & addSubIndex )
 {
-    //      remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
+    const VecReal& k = stiffness.getValue();
     const int N = Coord::total_size;
 
     unsigned int curIndex = 0;
 
-    if (k.size()!= m_indices.size() )
+    if (k.size() != m_indices.size())
     {
-        const Real k0 = k[0];
+        const Real k0 = -k[0] * (Real)kFact;
+
         for (unsigned int index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
 
-            bool contains=false;
-            for (unsigned s=0;s<addSubIndex.size() && !contains;s++) if (curIndex==addSubIndex[s]) contains=true;
-            if (!contains) continue;
+            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
+                continue;
 
             for(int i = 0; i < N; i++)
             {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
             }
         }
     }
@@ -391,9 +449,8 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
         {
             curIndex = m_indices[index];
 
-            bool contains=false;
-            for (unsigned s=0;s<addSubIndex.size() && !contains;s++) if (curIndex==addSubIndex[s]) contains=true;
-            if (!contains) continue;
+            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
+                continue;
 
             for(int i = 0; i < N; i++)
             {
@@ -402,7 +459,6 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
         }
     }
 }
-
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::updateForceMask()

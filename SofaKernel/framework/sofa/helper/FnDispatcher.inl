@@ -34,10 +34,18 @@ namespace sofa
 namespace helper
 {
 
-// template <class BaseClass, typename ResulT>
-// BasicDispatcher<BaseClass, ResulT>::~BasicDispatcher()
-// {
-// }
+template <class BaseClass, typename ResulT>
+void BasicDispatcher<BaseClass, ResulT>::add(const std::type_info& class1, const std::type_info& class2, F fun)
+{
+    callBackMap[KeyType(class1,class2)] = fun;
+}
+
+template <class BaseClass, typename ResulT>
+void BasicDispatcher<BaseClass, ResulT>::ignore(const std::type_info& class1, const std::type_info& class2)
+{
+    callBackMap[KeyType(class1,class2)] = ignoreFn;
+}
+
 
 template <class BaseClass, typename ResulT>
 ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)

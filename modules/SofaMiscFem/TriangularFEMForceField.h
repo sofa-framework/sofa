@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -44,12 +42,6 @@ namespace component
 
 namespace forcefield
 {
-
-
-//#define PLOT_CURVE //lose some FPS
-
-
-//using sofa::helper::vector;
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -107,10 +99,9 @@ protected:
 
 protected:
     /// ForceField API
-    //{
     TriangularFEMForceField();
 
-    virtual ~TriangularFEMForceField();
+    virtual ~TriangularFEMForceField() override;
 public:
     virtual void init() override;
     virtual void reinit() override;
@@ -119,7 +110,6 @@ public:
     virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
-    //}
 
     /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInformation
@@ -234,12 +224,6 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    //const VecElement *_indexedElements;
-    //Data< VecCoord > _initialPoints; ///< the intial positions of the points
-    //const VecCoord* _initialPoints; //previously stored the mechanical state initial points but use it directly now
-    //     int _method; ///< the computation method of the displacements
-
-
     /// Get/Set methods
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val)
@@ -257,17 +241,7 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
-    void setMethod(std::string methodName) {
-        if (methodName == "small")
-            this->setMethod(SMALL);
-        else
-        {
-            if (methodName != "large")
-                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
-            this->setMethod(LARGE);
-        }
-    }
-
+    void setMethod(const std::string& methodName);
 
 public:
 
@@ -312,8 +286,6 @@ protected :
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     ////////////// large displacements method
-    //sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
-    //sofa::helper::vector< Transformation > _rotations;
     void initLarge(int i, Index&a, Index&b, Index&c);
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
@@ -369,17 +341,12 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
-#endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 

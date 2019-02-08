@@ -12,6 +12,7 @@ set(HEADER_FILES
     DualQuat.inl
     Factory.h
     Factory.inl
+    TypeInfo.h
     FnDispatcher.h
     FnDispatcher.inl
     GenerateRigid.h
@@ -144,6 +145,7 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
+    StringUtils.cpp
     TagFactory.cpp
     UnitTest.cpp
     Utils.cpp
@@ -296,13 +298,6 @@ endif()
     list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
         include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
 endif()
-
-
-if(PS3)
-    list(APPEND HEADER_FILES gl/ps3gl_compat.h)
-    list(APPEND SOURCE_FILES gl/ps3gl_compat.cpp)
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)

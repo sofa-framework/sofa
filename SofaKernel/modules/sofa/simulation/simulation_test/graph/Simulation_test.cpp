@@ -22,7 +22,7 @@
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest ;
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -34,6 +34,8 @@ typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBaseMechanics/UniformMass.h>
+
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
 using namespace modeling;
@@ -166,7 +168,7 @@ struct Scene_test: public NumericTest<SReal>
     void objectDestruction_subNodeAndStep()
     {
         root = simulation::getSimulation()->createNewGraph("root");
-        root->addObject(core::objectmodel::New<simulation::DefaultAnimationLoop>());
+        root->addObject(core::objectmodel::New<sofa::simulation::DefaultAnimationLoop>());
 
         core::objectmodel::BaseNode* child  = root->createChild("child").get();
         child->addObject(core::objectmodel::New<MechanicalObject3>());
@@ -283,11 +285,6 @@ TEST_F( Scene_test,sceneDestruction_createnewgraph) {
     EXPECT_MSG_NOEMIT(Error) ;
     this->sceneDestruction_createnewgraph();
 }
-
-// Node destruction does not trigger sub-graph destruction. You need to unload the node before. The two following tests are thus irrelevant.
-//TEST_F( Simulation_test,sceneDestruction_reset) { this->sceneDestruction_reset(); }
-//TEST_F( Simulation_test,sceneDestruction_setNull) { this->sceneDestruction_setNull(); }
-
 
 }// namespace sofa
 

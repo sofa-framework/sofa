@@ -120,7 +120,6 @@ void DirectSAP::reinit()
     }
 }
 
-
 inline bool DirectSAP::added(core::CollisionModel *cm) const
 {
     return collisionModels.count(cm->getLast()) >= 1;
@@ -325,6 +324,12 @@ void DirectSAP::beginNarrowPhase()
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
 }
 
+inline void DSAPBox::show()const
+{
+    msg_info("DSAPBox") <<"MIN "<<cube.minVect()<< msgendl
+                        <<"MAX "<<cube.maxVect() ;
+}
+
 bool DSAPBox::overlaps(const DSAPBox &other,double alarmDist) const{
     return overlaps(other,0,alarmDist) && overlaps(other,0,alarmDist) && overlaps(other,0,alarmDist);
 }
@@ -341,9 +346,6 @@ double DSAPBox::squaredDistance(const DSAPBox & other)const{
 
 using namespace sofa::defaulttype;
 using namespace collision;
-
-SOFA_DECL_CLASS(DirectSap)
-
 
 int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
         .add< DirectSAP >()

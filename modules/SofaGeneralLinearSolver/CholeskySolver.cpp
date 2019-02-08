@@ -38,27 +38,13 @@ namespace linearsolver
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(CholeskySolver)
-
-int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
-#ifndef SOFA_FLOAT
+static int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
         .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CholeskySolver< SparseMatrix<float>, FullVector<float> > >(true)
-        .add< CholeskySolver< FullMatrix<float>, FullVector<float> > >()
-#endif
-        ;
+        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >();
 
-#ifndef SOFA_FLOAT
 template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
 template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<float>, FullVector<float> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<float>, FullVector<float> >;
-#endif
+
 
 } // namespace linearsolver
 

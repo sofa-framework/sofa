@@ -143,7 +143,5 @@ namespace sofa
 				.add< SofaHAPIForceFeedbackEffect >()
 				;
 
-		SOFA_DECL_CLASS(SofaHAPIForceFeedbackEffect)
-
 	} // namespace SofaHAPI
 }

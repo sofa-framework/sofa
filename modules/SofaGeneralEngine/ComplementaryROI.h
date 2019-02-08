@@ -59,7 +59,7 @@ public:
     ~ComplementaryROI();
 
     /// Update
-    virtual void update() override;
+    virtual void doUpdate() override;
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
@@ -92,13 +92,10 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ComplementaryROI<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ComplementaryROI<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API ComplementaryROI<defaulttype::Vec3Types>;
+ 
+
 #endif
 
 } // namespace engine

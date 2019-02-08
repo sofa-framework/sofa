@@ -27,7 +27,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(PointSetTopologyModifier)
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
         .add< PointSetTopologyModifier >();
 
@@ -242,7 +241,7 @@ void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
                     break;
                 }
             default :
-                serr << "ERROR in PointSetTopologyModifier : Unsupported ancestor primitive type in addPointsWarning" << sendl;
+                msg_error() << "Unsupported ancestor primitive type in addPointsWarning";
                 break;
             }
         }
@@ -266,9 +265,19 @@ void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
 void PointSetTopologyModifier::addPoints(const size_t nPoints,
                                          const bool addDOF)
 {
+    sofa::helper::AdvancedTimer::stepBegin("addPoints");
+
+    sofa::helper::AdvancedTimer::stepBegin("addPointsProcess");
     addPointsProcess(nPoints);
+
+    sofa::helper::AdvancedTimer::stepNext ("addPointsProcess", "addPointsWarning");
     addPointsWarning(nPoints, addDOF);
+
+    sofa::helper::AdvancedTimer::stepNext ("addPointsWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
+    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+
+    sofa::helper::AdvancedTimer::stepEnd("addPoints");
 }
 
 void PointSetTopologyModifier::addPoints(const size_t nPoints,
@@ -276,9 +285,19 @@ void PointSetTopologyModifier::addPoints(const size_t nPoints,
      const sofa::helper::vector< sofa::helper::vector< double> >& coefs,
      const bool addDOF)
 {
+    sofa::helper::AdvancedTimer::stepBegin("addPoints with ancestors");
+
+    sofa::helper::AdvancedTimer::stepBegin("addPointsProcess");
     addPointsProcess(nPoints);
+
+    sofa::helper::AdvancedTimer::stepNext ("addPointsProcess", "addPointsWarning");
     addPointsWarning(nPoints, ancestors, coefs, addDOF);
+
+    sofa::helper::AdvancedTimer::stepNext ("addPointsWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
+    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+
+    sofa::helper::AdvancedTimer::stepEnd("addPoints with ancestors");
 }
 
 void PointSetTopologyModifier::addPoints(const size_t nPoints,
@@ -317,6 +336,7 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <Po
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,
         const bool removeDOF)
 {
+    sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
     m_container->setPointTopologyToDirty();
 
     // sort points so that they are removed in a descending order
@@ -331,17 +351,20 @@ void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID>
         PointsRemoved *e2 = new PointsRemoved(indices);
         addStateChange(e2);
     }
+    sofa::helper::AdvancedTimer::stepEnd("removePointsWarning");
 }
 
 
 void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<PointID> & indices,
         const bool removeDOF)
 {
+    sofa::helper::AdvancedTimer::stepBegin("removePointsProcess");
     if(removeDOF)
     {
         propagateStateChanges();
     }
     m_container->removePoints(indices.size());
+    sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
 }
 
 
@@ -375,34 +398,13 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    //TODO: temporary code to test topology engine pipeline.
-#ifndef NDEBUG
-    sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
-#endif
     // Declare all engines to dirty:
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
-    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-    {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
-        topoEngine->setDirtyValue();
-    }
 
     this->propagateTopologicalEngineChanges();
-
-    // security to avoid loops
-    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-        (*it)->cleanDirty();
-
-#ifndef NDEBUG
-    sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
-#endif
     
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
 
@@ -415,10 +417,6 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
 
@@ -436,27 +434,23 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isPointTopologyDirty()) // triangle Data has not been touched
         return;
 
+    sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
     // get directly the list of engines created at init: case of removing.... for the moment
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
-#ifndef NDEBUG
-    dmsg_info() << "points is dirty" << msgendl
-                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
-#endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            std::cout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
-#endif
+            std::cout << "PointSetTopologyModifier:update " << topoEngine->name << std::endl;
             topoEngine->update();
         }
     }
 
     m_container->cleanPointTopologyFromDirty();
+    sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
 void PointSetTopologyModifier::propagateStateChanges()

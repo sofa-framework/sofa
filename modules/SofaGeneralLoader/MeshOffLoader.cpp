@@ -36,15 +36,13 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MeshOffLoader)
-
 int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file format.")
         .add< MeshOffLoader >()
         ;
 
 bool MeshOffLoader::load()
 {
-    sout << "Loading OFF file: " << m_filename << sendl;
+    msg_info() << "Loading OFF file: " << m_filename;
 
     bool fileRead = false;
 
@@ -55,14 +53,14 @@ bool MeshOffLoader::load()
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        serr << "Not a OFF file (header problem) '" << m_filename << "'." << sendl;
+        msg_error() << "Not a OFF file (header problem) '" << m_filename << "'.";
         return false;
     }
 

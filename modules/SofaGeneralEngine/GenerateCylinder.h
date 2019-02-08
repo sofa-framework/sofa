@@ -23,15 +23,13 @@
 #define SOFA_COMPONENT_ENGINE_GENERATECYLINDER_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -70,7 +68,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -103,13 +101,9 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATECYLINDER_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API GenerateCylinder<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API GenerateCylinder<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_ENGINE_GENERATECYLINDER_CPP)
+extern template class SOFA_GENERAL_ENGINE_API GenerateCylinder<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace engine

@@ -44,6 +44,7 @@
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/Mapping.inl>
 #include <fstream>
 
 namespace sofa
@@ -95,8 +96,6 @@ namespace cuda
 {
 
 
-SOFA_DECL_CLASS(CudaMouseInteractor)
-
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
         .add< component::collision::MouseInteractor<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -104,8 +103,6 @@ int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction 
 #endif
         ;
 
-
-SOFA_DECL_CLASS(CudaCollision)
 
 using namespace sofa::component::collision;
 

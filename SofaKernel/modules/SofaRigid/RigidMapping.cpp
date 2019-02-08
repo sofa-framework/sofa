@@ -32,76 +32,39 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(RigidMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-#ifndef SOFA_FLOAT
-        .add< RigidMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< RigidMapping< Rigid2dTypes, Vec2dTypes > >()
-        .add< RigidMapping< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< RigidMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< RigidMapping< Rigid2fTypes, Vec2fTypes > >()
-        .add< RigidMapping< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< RigidMapping< Rigid3Types, Vec3dTypes > >()
+        .add< RigidMapping< Rigid2Types, Vec2Types > >()
+        .add< RigidMapping< Rigid3Types, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< RigidMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< RigidMapping< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid2dTypes, Vec2dTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, ExtVec3fTypes >;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2fTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, ExtVec3fTypes >;
-#endif
-
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+template class SOFA_RIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid2Types, Vec2Types >;
+template class SOFA_RIGID_API RigidMapping< Rigid3Types, ExtVec3Types >;
 
 
 
 
 
-#ifndef SOFA_FLOAT
+
+
+
 template<>
-void RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
 {}
 template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK()
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
 {
     serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
     return NULL;
 }
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
-{}
-template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK()
-{
-    serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
-    return NULL;
-}
-#endif
+
 
 
 

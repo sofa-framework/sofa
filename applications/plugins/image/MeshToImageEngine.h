@@ -251,11 +251,8 @@ public:
 
 protected:
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         // to be backward-compatible, if less than 3 values, fill with the last one
         waVecReal vs( voxelSize ); unsigned vs_lastid=vs.size()-1;
         for( unsigned i=vs.size() ; i<3 ; ++i ) vs.push_back( vs[vs_lastid] );
@@ -704,7 +701,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
+#if  !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageB>;
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUC>;
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUS>;

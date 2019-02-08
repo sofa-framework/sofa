@@ -8,7 +8,6 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(HolonomicConstraintValue)
 int HolonomicConstraintValueClass = core::RegisterObject("Holonomic constraint").add< HolonomicConstraintValue >();
 
 

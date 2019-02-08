@@ -28,16 +28,14 @@
 
 // snprintf() has been provided since MSVC++ 14 (Visual Studio 2015).  For other
 // versions, it is simply #defined to _snprintf().
-#if (defined(_MSC_VER) && _MSC_VER < 1900) || defined(_XBOX)
+#if defined(_MSC_VER) && _MSC_VER < 1900
 #  define snprintf _snprintf
 #endif
 
-#if defined(WIN32) || defined(_XBOX) || defined(PS3)
+#if defined(WIN32)
 #include <string.h>
-#ifndef PS3
 #define strcasecmp stricmp
 #define atoll atoi
-#endif
 #else
 #include <strings.h>
 #endif

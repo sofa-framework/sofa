@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "BatchGUI.h"
 #include <sofa/simulation/Simulation.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
@@ -57,13 +58,14 @@ int BatchGUI::mainLoop()
         {
             msg_info("BatchGUI") << "Computing infinite iterations." << msgendl;
         }
-            sofa::helper::AdvancedTimer::begin("Animate");
-            sofa::simulation::getSimulation()->animate(groot.get());
-            msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
-            sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-            sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
-            sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
-            sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
+
+        sofa::helper::AdvancedTimer::begin("Animate");
+        sofa::simulation::getSimulation()->animate(groot.get());
+        msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
+        sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+        sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+        sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
+        sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
         signed int i = 1; //one simulatin step is animated above  
        
@@ -71,7 +73,7 @@ int BatchGUI::mainLoop()
         {
             if (i != nbIter)
             {
-                sofa::helper::AdvancedTimer::begin("Animate");
+                sofa::helper::ScopedAdvancedTimer("Animate");
                 sofa::simulation::getSimulation()->animate(groot.get());
             }
 

@@ -28,24 +28,23 @@
 namespace
 {
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3Types;
 
 template<>
-bool derivVectors<Rigid3dTypes>(const Rigid3dTypes::VecCoord& x0, const Rigid3dTypes::VecCoord& x1, Rigid3dTypes::VecDeriv& d, bool derivRotation)
+bool derivVectors<Rigid3Types>(const Rigid3Types::VecCoord& x0, const Rigid3Types::VecCoord& x1, Rigid3Types::VecDeriv& d, bool derivRotation)
 {
-    return derivRigid3Vectors<Rigid3dTypes>(x0, x1, d, derivRotation);
+    return derivRigid3Vectors<Rigid3Types>(x0, x1, d, derivRotation);
 }
 
 template <>
-double computeDot<Rigid3dTypes>(const Rigid3dTypes::Deriv& v0, const Rigid3dTypes::Deriv& v1)
+double computeDot<Rigid3Types>(const Rigid3Types::Deriv& v0, const Rigid3Types::Deriv& v1)
 {
     return dot(getVCenter(v0),getVCenter(v1)) + dot(getVOrientation(v0), getVOrientation(v1));
 }
 
-#endif
 
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
 using sofa::defaulttype::Rigid3fTypes;
 
 template<>
@@ -74,34 +73,14 @@ namespace component
 namespace controller
 {
 
-#ifndef SOFA_DOUBLE
 
-using sofa::defaulttype::Rigid3fTypes;
-
-template <>
-void LCPForceFeedback< Rigid3fTypes >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz)
-{
-    Rigid3fTypes::VecCoord state;
-    Rigid3fTypes::VecDeriv forces;
-    state.resize(1);
-    state[0].getCenter() = sofa::defaulttype::Vec3f((float)x,(float)y,(float)z);
-    computeForce(state,forces);
-    fx = getVCenter(forces[0]).x();
-    fy = getVCenter(forces[0]).y();
-    fz = getVCenter(forces[0]).z();
-}
-
-#endif // SOFA_DOUBLE
-
-#ifndef SOFA_FLOAT
-
-using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3Types;
 
 template <>
-void LCPForceFeedback< Rigid3dTypes >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz)
+void LCPForceFeedback< Rigid3Types >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz)
 {
-    Rigid3dTypes::VecCoord state;
-    Rigid3dTypes::VecDeriv forces;
+    Rigid3Types::VecCoord state;
+    Rigid3Types::VecDeriv forces;
     state.resize(1);
     state[0].getCenter() = sofa::defaulttype::Vec3d(x,y,z);
     computeForce(state,forces);
@@ -112,7 +91,7 @@ void LCPForceFeedback< Rigid3dTypes >::computeForce(double x, double y, double z
 
 
 template <>
-void LCPForceFeedback< Rigid3dTypes >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
+void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
         const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world )
 {
@@ -124,8 +103,8 @@ void LCPForceFeedback< Rigid3dTypes >::computeWrench(const sofa::defaulttype::So
     }
 
 
-    Rigid3dTypes::VecCoord state;
-    Rigid3dTypes::VecDeriv forces;
+    Rigid3Types::VecCoord state;
+    Rigid3Types::VecDeriv forces;
     state.resize(1);
     state[0].getCenter()	  = world_H_tool.getOrigin();
     state[0].getOrientation() = world_H_tool.getOrientation();
@@ -147,31 +126,18 @@ void LCPForceFeedback< Rigid3dTypes >::computeWrench(const sofa::defaulttype::So
     //W_tool_world.setForce(Force);
 }
 
-#endif // SOFA_FLOAT
+ 
 
 
 
 int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the device")
-#ifndef SOFA_FLOAT
-        .add< LCPForceFeedback<defaulttype::Vec1dTypes> >()
-        .add< LCPForceFeedback<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LCPForceFeedback<defaulttype::Vec1fTypes> >()
-        .add< LCPForceFeedback<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< LCPForceFeedback<defaulttype::Vec1Types> >()
+        .add< LCPForceFeedback<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1dTypes>;
-template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1fTypes>;
-template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3fTypes>;
-#endif
-
-SOFA_DECL_CLASS(LCPForceFeedback)
+template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
 
 
 } // namespace controller

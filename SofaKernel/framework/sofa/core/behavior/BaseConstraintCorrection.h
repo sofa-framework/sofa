@@ -23,7 +23,6 @@
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINTCORRECTION_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-
 #include <sofa/core/ConstraintParams.h>
 
 namespace sofa
@@ -51,24 +50,14 @@ class ConstraintSolver;
 /**
  *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
-class BaseConstraintCorrection : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseConstraintCorrection : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraintCorrection, objectmodel::BaseObject);
-protected:
-    BaseConstraintCorrection() {};
-    virtual ~BaseConstraintCorrection() {}
 
-private:
-    BaseConstraintCorrection(const BaseConstraintCorrection& n) ;
-    BaseConstraintCorrection& operator=(const BaseConstraintCorrection& n) ;
+    virtual bool isActive() { return this->getContext()->isActive(); }
 
-
-public:
-
-	virtual bool isActive() { return this->getContext()->isActive(); }
-
-	/// @name Compliance Matrix API
+    /// @name Compliance Matrix API
     /// @{
 
     virtual void addComplianceInConstraintSpace(const ConstraintParams *, defaulttype::BaseMatrix* W) = 0;
@@ -77,10 +66,7 @@ public:
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const = 0;
 
     /// For multigrid approach => constraints are merged
-    virtual void getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
-    {
-        sout << "getComplianceWithConstraintMerge is not implemented yet " << sendl;
-    }
+    virtual void getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/);
 
     /// @}
 
@@ -101,7 +87,6 @@ public:
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
     virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) = 0;
-
 
     /// Compute motion correction from the constraint resolution (LCP) calculated force
     ///
@@ -137,43 +122,36 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    virtual void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+    virtual void rebuildSystem(double /*massFactor*/, double /*forceFactor*/);
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/)
-    {
-        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
-    }
+    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/) ;
 
     /// @name Deprecated API
     /// @{
-
     virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
-
     virtual void resetContactForce() = 0;
-
     /// @}
-
 
     /// @name Unbuilt constraint system during resolution
     /// @{
-
-    virtual bool hasConstraintNumber(int /*index*/) {return true;}
-
-    virtual void resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/) {}
-
-    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/) {}
-
-    virtual void setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
-
-    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
-    {
-        sout << "warning : getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
-    }
-
+    virtual bool hasConstraintNumber(int /*index*/);
+    virtual void resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/);
+    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/);
+    virtual void setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
+    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
     /// @}
+
+protected:
+    BaseConstraintCorrection();
+    virtual ~BaseConstraintCorrection() override;
+
+private:
+    BaseConstraintCorrection(const BaseConstraintCorrection& n) ;
+    BaseConstraintCorrection& operator=(const BaseConstraintCorrection& n) ;
+
 };
 
 } // namespace behavior

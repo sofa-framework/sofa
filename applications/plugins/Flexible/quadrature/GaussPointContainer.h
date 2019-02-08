@@ -76,11 +76,8 @@ protected:
     {
     }
 
-    virtual void update()
+    virtual void doUpdate()
     {
-        this->updateAllInputsIfDirty();
-        cleanDirty();
-
         helper::ReadAccessor< Data< helper::vector<Real> > > invol(f_inputVolume);
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);

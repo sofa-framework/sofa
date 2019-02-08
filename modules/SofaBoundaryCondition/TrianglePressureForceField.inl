@@ -31,8 +31,6 @@
 #include <vector>
 #include <set>
 
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 
@@ -110,11 +108,9 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 
 		}
 	} else {
-        //sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
         typedef core::topology::BaseMeshTopology::Triangle Triangle;
 		const sofa::helper::vector<Triangle> &ta = _topology->getTriangles();
 		const  VecDeriv p = d_x.getValue();
-        //Real area;
 		MatSym3 cauchy=cauchyStress.getValue();
 		Deriv areaVector,force;
 
@@ -127,43 +123,16 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 				f[t[j]]+=force;
 			}
 		}
-/*
-		for (unsigned int i=0; i<my_map.size(); ++i)
-		{
-			const Triangle &t=ta[my_map[i]];
-			// In case of implicit integration compute the area vector and the area and store it in the data structure 
-			//	This will speed up the computation of the tangent stiffness matrix
-			if (mparams->implicit()) {
-				my_subset[i].force=cross(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]]);
-				area=(my_subset[i].force).norm();
-				my_subset[i].area=area;
-				my_subset[i].force=my_subset[i].force/(2*area); // normalize normal vector and store it as a force
-				force=pressure.getValue()*area/6.0f;
-			} else {
-				area=(Real)(sofa::component::topology::areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]]) * 0.5f);
-				force=pressure.getValue()*area/3.0f;
-			}
 
-			f[t[0]]+=force;
-			f[t[1]]+=force; 
-			f[t[2]]+=force;
-
-		}*/
-
-         //trianglePressureMap.endEdit();
 	}
     d_f.endEdit();
-//    updateTriangleInformation();
 }
 
 
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  /*d_df*/ , const DataVecDeriv&  /*d_dx*/ )
 {
-    //Warning fix : behaviorally equivalent without unused kfactor variable warning
 	mparams->kFactor();
-    //Real kfactor = mparams->kFactor();
-
 	return;
 }
 
@@ -192,6 +161,15 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
     trianglePressureMap.endEdit();
 }
 
+template<class DataTypes>
+bool TrianglePressureForceField<DataTypes>::isPointInPlane(Coord p)
+{
+    Real d=dot(p,normal.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+        return true;
+    else
+        return false;
+}
 
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
@@ -222,7 +200,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
     helper::vector<unsigned int> inputTriangles;
 
-    for (int n=0; n<_topology->getNbTriangles(); ++n)
+    for (size_t n=0; n<_topology->getNbTriangles(); ++n)
     {
         if ((vArray[_topology->getTriangle(n)[0]]) && (vArray[_topology->getTriangle(n)[1]])&& (vArray[_topology->getTriangle(n)[2]]) )
         {
@@ -292,6 +270,13 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
         vparams->drawTool()->setPolygonMode(0, false);
 
     vparams->drawTool()->restoreLastState();
+}
+
+template<class DataTypes>
+SReal TrianglePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
 }
 
 } // namespace forcefield

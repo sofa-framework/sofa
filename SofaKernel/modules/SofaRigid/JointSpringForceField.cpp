@@ -21,12 +21,10 @@
 ******************************************************************************/
 // Author: François Faure, INRIA-UJF, (C) 2006
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
+
 #include <SofaRigid/JointSpringForceField.inl>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
 
 
 namespace sofa
@@ -41,26 +39,15 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(JointSpringForceField)
-
 // Register in the Factory
 int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
-#ifndef SOFA_FLOAT
-        .add< JointSpringForceField<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< JointSpringForceField<Rigid3fTypes> >()
-#endif
+        .add< JointSpringForceField<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
-template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3fTypes>;
-template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
+template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
+
 
 
 } // namespace interactionforcefield

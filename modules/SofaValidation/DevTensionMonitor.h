@@ -103,13 +103,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_DEVTENSIONMONITOR_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_VALIDATION_API DevTensionMonitor<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_VALIDATION_API DevTensionMonitor<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_DEVTENSIONMONITOR_CPP)
+extern template class SOFA_VALIDATION_API DevTensionMonitor<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace misc

@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include "HeadlessRecorder.h"
 #include "VideoRecorderFFMpeg.h"
+#include <sofa/helper/AdvancedTimer.h>
+
 namespace sofa
 {
 
@@ -46,7 +48,6 @@ float HeadlessRecorder::skipTime = 0;
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
-SOFA_DECL_CLASS(HeadlessRecorder)
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable, GLXContext);
@@ -481,13 +482,16 @@ void HeadlessRecorder::paintGL()
 
 void HeadlessRecorder::step()
 {
+    sofa::helper::AdvancedTimer::begin("Animate");
 #ifdef SOFA_SMP
     mg->step();
 #else
     getSimulation()->animate(groot.get());
 #endif
+    sofa::helper::AdvancedTimer::end("Animate");
     getSimulation()->updateVisual(groot.get());
     redraw();
+
 }
 
 void HeadlessRecorder::resetView()

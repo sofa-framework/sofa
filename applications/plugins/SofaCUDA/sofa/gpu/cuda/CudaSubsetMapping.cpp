@@ -47,18 +47,8 @@ template class SubsetMapping< CudaVec3f1Types, CudaVec3fTypes >;
 template class SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
 template class SubsetMapping< CudaVec3f1Types, ExtVec3fTypes >;
 // template class SubsetMapping< CudaVec3f1Types, ExtVec3dTypes >;
-#ifndef SOFA_FLOAT
-#endif
-#ifndef SOFA_DOUBLE
-template class SubsetMapping< CudaVec3fTypes, Vec3fTypes >;
-template class SubsetMapping< CudaVec3f1Types, Vec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SubsetMapping< CudaVec3fTypes, Vec3dTypes >;
-template class SubsetMapping< CudaVec3f1Types, Vec3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 
@@ -74,8 +64,6 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaSubsetMapping)
-
 int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
@@ -85,18 +73,8 @@ int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computation
         .add< SubsetMapping< CudaVec3fTypes, ExtVec3fTypes > >()
 // .add< SubsetMapping< CudaVec3fTypes, ExtVec3dTypes > >()
 // .add< SubsetMapping< CudaVec3f1Types, ExtVec3dTypes > >()
-#ifndef SOFA_FLOAT
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SubsetMapping< CudaVec3fTypes, Vec3fTypes > >()
-        .add< SubsetMapping< CudaVec3f1Types, Vec3fTypes > >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< SubsetMapping< CudaVec3fTypes, Vec3dTypes > >()
-        .add< SubsetMapping< CudaVec3f1Types, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
 } // namespace cuda

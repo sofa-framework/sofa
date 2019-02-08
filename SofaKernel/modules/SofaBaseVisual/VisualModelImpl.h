@@ -46,40 +46,9 @@ namespace component
 namespace visualmodel
 {
 
-//class SOFA_BASE_VISUAL_API RigidState : public core::State< sofa::defaulttype::Rigid3fTypes >
-//{
-//public:
-//    VecCoord xforms;
-//    bool xformsModified;
+using sofa::core::objectmodel::Data ;
 
-//    RigidState()
-//        : xformsModified(false)
-//    {
-//    }
-
-//    virtual void resize(int vsize) { xformsModified = true; xforms.resize( vsize); }
-//    virtual int getSize() const { return 0; }
-
-//    const VecCoord* getX()  const { return &xforms; }
-//    const VecDeriv* getV()  const { return NULL; }
-
-//    VecCoord* getX()  { xformsModified = true; return &xforms;   }
-//    VecDeriv* getV()  { return NULL; }
-
-//    const VecCoord* getRigidX()  const { return getX(); }
-//    VecCoord* getRigidX()  { return getX(); }
-
-//    virtual       Data<VecCoord>* write(     core::VecCoordId /* v */) { return NULL; }
-//    virtual const Data<VecCoord>*  read(core::ConstVecCoordId /* v */) const { return NULL; }
-
-//    virtual       Data<VecDeriv>* write(     core::VecDerivId /* v */) { return NULL; }
-//    virtual const Data<VecDeriv>*  read(core::ConstVecDerivId /* v */) const { return NULL; }
-
-//    virtual       Data<MatrixDeriv>* write(     core::MatrixDerivId /* v */) { return NULL; }
-//    virtual const Data<MatrixDeriv>*  read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
-//};
-
-class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< sofa::defaulttype::ExtVec3fTypes >
+class SOFA_BASE_VISUAL_API ExtVec3State : public core::State< sofa::defaulttype::ExtVec3Types >
 {
 public:
     topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions; ///< Vertices coordinates
@@ -87,72 +56,18 @@ public:
     topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals; ///< Normals of the model
     bool modified; ///< True if input vertices modified since last rendering
 
-    ExtVec3fState()
-        : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-        , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
-        , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
-        , modified(false)
-    {
-        m_positions.setGroup("Vector");
-        m_restPositions.setGroup("Vector");
-        m_vnormals.setGroup("Vector");
-    }
+    ExtVec3State() ;
 
-    virtual void resize(size_t vsize)
-    {
-        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
-        if( positions.size() == vsize ) return;
-        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
-        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
-
-        positions.resize(vsize);
-        restPositions.resize(vsize); // todo allocate restpos only when it is necessary
-        normals.resize(vsize);
-
-        modified = true;
-    }
-
-    virtual size_t getSize() const { return m_positions.getValue().size(); }
+    virtual void resize(size_t vsize) ;
+    virtual size_t getSize() const ;
 
     //State API
-    virtual       Data<VecCoord>* write(     core::VecCoordId  v )
-    {
-        modified = true;
+    virtual       Data<VecCoord>* write(core::VecCoordId  v ) ;
+    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v )  const ;
+    virtual Data<VecDeriv>*	write(core::VecDerivId v ) ;
+    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const ;
 
-        if( v == core::VecCoordId::position() )
-            return &m_positions;
-        if( v == core::VecCoordId::restPosition() )
-            return &m_restPositions;
-
-        return NULL;
-    }
-    virtual const Data<VecCoord>*  read(core::ConstVecCoordId  v )  const
-    {
-        if( v == core::VecCoordId::position() )
-            return &m_positions;
-        if( v == core::VecCoordId::restPosition() )
-            return &m_restPositions;
-
-        return NULL;
-    }
-
-    virtual Data<VecDeriv>*	write(core::VecDerivId v )
-    {
-        if( v == core::VecDerivId::normal() )
-            return &m_vnormals;
-
-        return NULL;
-    }
-
-    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const
-    {
-        if( v == core::VecDerivId::normal() )
-            return &m_vnormals;
-
-        return NULL;
-    }
-
-    virtual       Data<MatrixDeriv>*	write(     core::MatrixDerivId /* v */) { return NULL; }
+    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return NULL; }
     virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
 };
 
@@ -166,30 +81,24 @@ public:
  *
  */
 
-class SOFA_BASE_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3fState //, public RigidState
+class SOFA_BASE_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3State //, public RigidState
 {
 public:
-    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3fState);
-//    SOFA_CLASS3(VisualModelImpl, core::visual::VisualModel, ExtVec3fState , RigidState);
+    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3State);
 
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
-    //typedef helper::vector<TexCoord> VecTexCoord;
     typedef sofa::defaulttype::ResizableExtVector<TexCoord> VecTexCoord;
     
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
-//protected:
-
-    typedef sofa::defaulttype::ExtVec3fTypes DataTypes;
+    typedef ExtVec3State::DataTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::VecCoord VecCoord;
     typedef DataTypes::Deriv Deriv;
     typedef DataTypes::VecDeriv VecDeriv;
-
-    //ResizableExtVector<Coord>* inputVertices;
 
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
@@ -214,7 +123,6 @@ public:
     Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles; ///< triangles of the model
     Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads; ///< quads of the model
   
-
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
@@ -425,7 +333,6 @@ public:
 
     void setVertices(sofa::defaulttype::ResizableExtVector<Coord> * x)
     {
-        //m_vertices2.setValue(*x);
         this->m_positions.setValue(*x);
     }
 
@@ -474,7 +381,7 @@ public:
 
     virtual void updateVisual() override;
 
-    // Handle topological changes
+    /// Handle topological changes
     virtual void handleTopologyChange() override;
 
     virtual void init() override;
@@ -488,12 +395,12 @@ public:
 
     virtual std::string getTemplateName() const override
     {
-        return ExtVec3fState::getTemplateName();
+        return ExtVec3State::getTemplateName();
     }
 
     static std::string templateName(const VisualModelImpl* p = NULL)
     {
-        return ExtVec3fState::templateName(p);
+        return ExtVec3State::templateName(p);
     }
 
     /// Utility method to compute tangent from vertices and texture coordinates.

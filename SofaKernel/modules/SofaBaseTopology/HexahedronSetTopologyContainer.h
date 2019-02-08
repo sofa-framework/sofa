@@ -136,9 +136,9 @@ public:
 
     /** \brief Get the index of a hexahedron from the indices of its vertices.
      *
-     * @return The index of the corresponding hexahedron if it exists, -1 otherwise.
+     * @return The index of the corresponding hexahedron if it exists, InvalidID otherwise.
      */
-    virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
+    virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
                    PointID v5, PointID v6, PointID v7, PointID v8) override;
 
 
@@ -428,8 +428,8 @@ protected:
 
     /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setHexahedronTopologyToDirty() {m_hexahedronTopologyDirty = true;}
-    void cleanHexahedronTopologyFromDirty() {m_hexahedronTopologyDirty = false;}
+    void setHexahedronTopologyToDirty();
+    void cleanHexahedronTopologyFromDirty();
     const bool& isHexahedronTopologyDirty() {return m_hexahedronTopologyDirty;}
 
 public:

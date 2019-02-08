@@ -112,9 +112,6 @@ public:
 
     void init() override;
 
-    // handle topology changes depending on the topology
-    //void handleTopologyChange(core::topology::Topology* t);
-
     virtual ~SubsetMapping();
 
     virtual void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn ) override;
@@ -145,31 +142,15 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
 
-#ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
-#endif
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3Types >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
-#endif
-#endif
+
+
 
 #endif
 

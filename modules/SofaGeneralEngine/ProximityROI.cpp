@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP
 #include <SofaGeneralEngine/ProximityROI.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -36,25 +36,14 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ProximityROI)
-
 int ProximityROIClass = core::RegisterObject("Find the N closest primitives from a given position")
-#ifndef SOFA_FLOAT
-        .add< ProximityROI<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ProximityROI<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ProximityROI<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API ProximityROI<Vec3dTypes>;
-//template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ProximityROI<Vec3fTypes>;
-//template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API ProximityROI<Vec3Types>;
+//template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3Types>;
+ 
 
 
 } // namespace constraint

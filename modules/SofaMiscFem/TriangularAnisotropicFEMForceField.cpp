@@ -36,24 +36,14 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TriangularAnisotropicFEMForceField)
-
 // Register in the Factory
 int TriangularAnisotropicFEMForceFieldClass = core::RegisterObject("Triangular finite element model using anisotropic material")
-#ifndef SOFA_FLOAT
-        .add< TriangularAnisotropicFEMForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangularAnisotropicFEMForceField<Vec3fTypes> >()
-#endif
+        .add< TriangularAnisotropicFEMForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<Vec3fTypes>;
-#endif
+template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

@@ -47,9 +47,9 @@ MeshLoader::MeshLoader() : BaseLoader()
     , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra of the mesh loaded"))
     , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Hexahedra of the mesh loaded"))
     , d_pentahedra(initData(&d_pentahedra, "pentahedra", "Pentahedra of the mesh loaded"))
-    , d_pyramids(initData(&d_pyramids, "pyramids", "Pyramids of the mesh loaded"))
     , d_highOrderTetrahedronPositions(initData(&d_highOrderTetrahedronPositions, "highOrderTetrahedronPositions", "High order tetrahedron points of the mesh loaded"))
     , d_highOrderHexahedronPositions(initData(&d_highOrderHexahedronPositions, "highOrderHexahedronPositions", "High order hexahedron points of the mesh loaded"))
+    , d_pyramids(initData(&d_pyramids, "pyramids", "Pyramids of the mesh loaded"))
     , d_normals(initData(&d_normals, "normals", "Normals of the mesh loaded"))
     , d_edgesGroups(initData(&d_edgesGroups, "edgesGroups", "Groups of Edges"))
     , d_trianglesGroups(initData(&d_trianglesGroups, "trianglesGroups", "Groups of Triangles"))
@@ -107,15 +107,13 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         d_scale.setValue(d_scale.getValue()*s);
     }
 
-
+    bool success = false;
     if (canLoad())
-    {
-        load(/*m_filename.getFullPath().c_str()*/);
-    }
-    else
-    {
-        sout << "Doing nothing" << sendl;
-    }
+        success = load(/*m_filename.getFullPath().c_str()*/);
+
+    // File not loaded, component is set to invalid
+    if (!success)
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 }
 
 void MeshLoader::init()
@@ -140,7 +138,7 @@ void MeshLoader::reinit()
     {
         if (d_scale != Vector3(1.0, 1.0, 1.0) || d_rotation != Vector3(0.0, 0.0, 0.0) || d_translation != Vector3(0.0, 0.0, 0.0))
         {
-            sout << "Parameters scale, rotation, translation ignored in favor of transformation matrix" << sendl;
+            msg_info() << "Parameters scale, rotation, translation ignored in favor of transformation matrix";
         }
     }
     else
@@ -240,7 +238,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " quads were missing around the hexahedra" << sendl;
+            msg_info() << nbnew << " quads were missing around the hexahedra";
         }
     }
     if (d_pentahedra.getValue().size() > 0 && d_createSubelements.getValue())
@@ -302,7 +300,7 @@ void MeshLoader::updateElements()
         }
         if (nbnewQuad > 0 || nbnewTri > 0 )
         {
-            sout << nbnewQuad << " quads, " << nbnewTri << " triangles were missing around the pentahedra" << sendl;
+            msg_info() << nbnewQuad << " quads, " << nbnewTri << " triangles were missing around the pentahedra";
         }
     }
     if (d_pyramids.getValue().size() > 0 && d_createSubelements.getValue())
@@ -364,7 +362,7 @@ void MeshLoader::updateElements()
         }
         if (nbnewTri > 0 || nbnewQuad > 0)
         {
-            sout << nbnewTri << " triangles and " << nbnewQuad << " quads were missing around the pyramids" << sendl;
+            msg_info() << nbnewTri << " triangles and " << nbnewQuad << " quads were missing around the pyramids";
         }
     }
     if (d_tetrahedra.getValue().size() > 0 && d_createSubelements.getValue())
@@ -407,7 +405,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " triangles were missing around the tetrahedra" << sendl;
+            msg_info() << nbnew << " triangles were missing around the tetrahedra";
         }
     }
     if (d_quads.getValue().size() > 0 && d_createSubelements.getValue())
@@ -435,7 +433,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " edges were missing around the quads" << sendl;
+            msg_info() << nbnew << " edges were missing around the quads";
         }
     }
     if (d_triangles.getValue().size() > 0 && d_createSubelements.getValue())
@@ -463,7 +461,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " edges were missing around the triangles" << sendl;
+            msg_info() << nbnew << " edges were missing around the triangles";
         }
     }
 }
@@ -668,7 +666,7 @@ void MeshLoader::applyTransformation(Matrix4 const& T)
 {
     if (!T.isTransform())
     {
-        serr << "applyTransformation: ignored matrix which is not a transformation T=" << T << sendl;
+        msg_info() << "applyTransformation: ignored matrix which is not a transformation T=" << T ;
         return;
     }
     sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;

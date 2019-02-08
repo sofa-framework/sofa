@@ -36,7 +36,7 @@
 #include "config.h"
 
 #include <sofa/helper/system/config.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -242,7 +242,6 @@ public:
 
     static std::size_t hash(const Key& x)
     {
-//		return x[0]^x[1]^x[2];
         const unsigned int p0 = 73856093; // large prime numbers
         const unsigned int p1 = 19349663;
         const unsigned int p2 = 83492791;
@@ -250,7 +249,7 @@ public:
     }
 
     class key_hash_fun
-#if defined(_MSC_VER) || defined(PS3)
+#if defined(_MSC_VER)
         : public HASH_NAMESPACE::hash_compare<Key>
     {
     public:
@@ -290,8 +289,6 @@ public:
 		typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
 #   endif
 #endif
-
-
 
     typedef typename Map::const_iterator const_iterator;
     typedef typename Map::iterator iterator;
@@ -364,12 +361,6 @@ public:
     void updateGrid(const VecCoord& x)
     {
         grid->update(x);
-        //grid->begin();
-        //for (unsigned int i=0;i<x.size();i++)
-        //{
-        //    grid->add(i, x[i]);
-        //}
-        //grid->end();
     }
 
     core::behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
@@ -394,15 +385,10 @@ protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
-#ifndef SOFA_FLOAT
-extern template class SpatialGridContainer< defaulttype::Vec3dTypes >;
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3dTypes > >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SpatialGridContainer< defaulttype::Vec3fTypes >;
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3fTypes > >;
-#endif
+#if  !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
+extern template class SpatialGridContainer< defaulttype::Vec3Types >;
+extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3Types > >;
+
 #endif
 
 } // namespace container

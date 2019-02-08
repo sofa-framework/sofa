@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
-project(Sofa)
+project(Sofa) # Cannot use VERSION with patch like "00"
+
+# Manually define VERSION
+set(Sofa_VERSION_MAJOR 19)
+set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_PATCH 99)
+set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
@@ -72,7 +78,7 @@ if(UNIX)
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
 
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
     endif()
 endif(UNIX)
@@ -80,13 +86,19 @@ endif(UNIX)
 include(CompilerOptions)
 
 ## Boost (1.54.0 or higher) is now mandatory.
-if(WIN32)
-    message("Boost autodetection on Windows was removed.\n"
-        "Please follow CMake documentation to find Boost on your system.\n"
-        "Hint: set BOOST_ROOT to your Boost location.")
-endif()
 set(BOOST_MIN_VERSION "1.54.0")
-find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
+find_package(Boost ${BOOST_MIN_VERSION} QUIET)
+if(NOT Boost_FOUND)
+    if(WIN32)
+        message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.\n"
+            "Note that Boost autodetection on Windows was removed.\n"
+            "Please follow CMake documentation to find Boost on your system.\n"
+            "Hint: set BOOST_ROOT to your Boost location."
+            )
+    else()
+        message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.")
+    endif()
+endif()
 
 ### Dependency pack for Windows
 if(MSVC)
@@ -287,8 +299,13 @@ install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applicat
 set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-set(SHARE_DIR "../share/sofa")
-set(EXAMPLES_DIR "../share/sofa/examples")
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    set(SHARE_DIR "share/sofa")
+    set(EXAMPLES_DIR "share/sofa/examples")
+else()
+    set(SHARE_DIR "../share/sofa")
+    set(EXAMPLES_DIR "../share/sofa/examples")
+endif()
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
@@ -299,18 +316,87 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
-#CPack install
-SET(CPACK_PACKAGE_VERSION_MAJOR "18")
-SET(CPACK_PACKAGE_VERSION_MINOR "06")
-SET(CPACK_PACKAGE_VERSION_PATCH "dev")
-SET(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+#######################
+# CPack configuration #
+#######################
+
+################
+# Package config
+include(CPackComponent)
+if(WIN32 AND ${CMAKE_VERSION} VERSION_LESS "3.13.0")
+    include(CPackNSIS)
+endif()
+include(CPackIFW)
+set(CPACK_PACKAGE_VERSION "${Sofa_VERSION}")
 set(CPACK_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
-set(CPACK_PACKAGE_FILE_NAME "SOFA_v${CPACK_PACKAGE_VERSION}")
 set(CPACK_PACKAGE_VENDOR "The SOFA Team")
-#set(CPACK_PACKAGE_CONTACT "contact@sofa-framework.org")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_CONTACT "contact@sofa-framework.org")
+set(CPACK_PACKAGE_DESCRIPTION "Real-time multi-physics simulation with an emphasis on medical simulation.")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Real-time multi-physics simulation with an emphasis on medical simulation.")
 set(CPACK_PACKAGE_EXECUTABLES "runSofa" "runSofa")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://www.sofa-framework.org")
+set(CPACK_PACKAGE_FILE_NAME "SOFA_v${CPACK_PACKAGE_VERSION}")
+if(WIN32)
+    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA\\\\v${CPACK_PACKAGE_VERSION}")
+    if(CMAKE_EXE_LINKER_FLAGS MATCHES ".*machine:x64")
+        set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_Win64")
+    else() # x86
+        set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_Win32")
+    endif()
+elseif(UNIX)
+    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons/SOFA.png")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION}")
+    if(APPLE)
+        set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_MacOS")
+    else()
+        set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_Linux")
+    endif()
+endif()
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/README.md")
+################
+
+##################
+# CPack components
+cpack_add_component_group(runtime
+    DISPLAY_NAME "Runtime"
+    DESCRIPTION "Components needed to run a simulation with ${CPACK_PACKAGE_NAME}"
+    EXPANDED
+    )
+cpack_add_component_group(development
+    DISPLAY_NAME "Development"
+    DESCRIPTION "Components needed to write code based on ${CPACK_PACKAGE_NAME}"
+    EXPANDED
+    )
+
+cpack_add_component(applications
+    DISPLAY_NAME "runSofa Application"
+    GROUP runtime
+    )
+cpack_add_component(headers
+    DISPLAY_NAME "C++ Headers"
+    GROUP development
+    )
+cpack_add_component(Eigen_headers
+    DISPLAY_NAME "Eigen Headers"
+    GROUP development
+    )
+cpack_add_component(GTest_headers
+    DISPLAY_NAME "GTest Headers"
+    GROUP development
+    )
+cpack_add_component(libraries
+    DISPLAY_NAME "Libraries"
+    GROUP development
+    )
+cpack_add_component(resources
+    DISPLAY_NAME "Resources"
+    GROUP runtime
+    )
 
 set(CPACK_COMPONENTS_ALL applications headers Eigen_headers GTest_headers libraries resources)
 
@@ -327,47 +413,102 @@ set(CPACK_COMPONENT_EIGEN_HEADERS_GROUP "Development")
 set(CPACK_COMPONENT_GTEST_HEADERS_GROUP "Development")
 set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
 set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
+##################
 
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/README.md")
+######################
+# IFW Generator config
+if(CPACK_BINARY_IFW)
+    set(CPACK_IFW_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
+    set(CPACK_IFW_PACKAGE_TITLE "${CPACK_PACKAGE_NAME}")
+    set(CPACK_IFW_PRODUCT_URL "${CPACK_PACKAGE_HOMEPAGE_URL}")
+    set(CPACK_IFW_PACKAGE_LOGO "${CPACK_PACKAGE_ICON}")
+    set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+    if(WIN32)
+         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.ico")
+    elseif(APPLE)
+         set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.icns")
+    endif()
 
-if(WIN32)
-    # There is a bug in NSI that does not handle full unix paths properly. Make
-    # sure there is at least one set of four (4) backlasshes.
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA_v${CPACK_PACKAGE_VERSION}")
-    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
+    cpack_ifw_configure_component_group(runtime
+        SORTING_PRIORITY 50
+        DEFAULT TRUE
+        EXPANDED
+        SCRIPT "${CMAKE_SOURCE_DIR}/scripts/qtifw/install.qs"
+        )
+    cpack_ifw_configure_component_group(development
+        SORTING_PRIORITY 10
+        DEFAULT TRUE
+        EXPANDED
+        )
+
+    cpack_ifw_configure_component(applications
+        DISPLAY_NAME "runSofa Application"
+        DEPENDS runtime
+        )
+    cpack_ifw_configure_component(headers
+        DISPLAY_NAME "C++ Headers"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(Eigen_headers
+        DISPLAY_NAME "Eigen Headers"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(GTest_headers
+        DISPLAY_NAME "GTest Headers"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(libraries
+        DISPLAY_NAME "Libraries"
+        DEPENDS development
+        )
+    cpack_ifw_configure_component(resources
+        DISPLAY_NAME "Resources"
+        DEPENDS runtime
+        )
+endif()
+######################
+
+#######################
+# NSIS Generator config
+if(CPACK_BINARY_NSIS)
+    # There is a bug in NSIS that does not handle full unix paths properly. Make
+    # sure there is at least one set of four (4) backslashes.
+    set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.ico")
     set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
-    set(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
-    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_DISPLAY_NAME ${CPACK_PACKAGE_NAME})
+    set(CPACK_NSIS_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+    set(CPACK_NSIS_HELP_LINK ${CPACK_PACKAGE_HOMEPAGE_URL})
+    set(CPACK_NSIS_URL_INFO_ABOUT ${CPACK_PACKAGE_HOMEPAGE_URL})
+    set(CPACK_NSIS_MODIFY_PATH ON)
     set(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
     set(CPACK_NSIS_INSTALL_ROOT "$PROFILE")
-elseif(APPLE)
-    #set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION}")
+    string(CONCAT EXTRA_INSTALL_COMMAND "ExecShell \\\"open\\\" \\\"https://www.sofa-framework.org/thank-you?sofa=" ${CPACK_PACKAGE_VERSION} "&os=windows\\\"")
+    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${EXTRA_INSTALL_COMMAND}")
+    set(CPACK_NSIS_MENU_LINKS
+        "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
+        "https://www.sofa-framework.org/api/" "SOFA Developper API"
+        "https://www.sofa-framework.org/community/forum/" "SOFA Forum")
+endif()
+#######################
 
-    #set(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_SOURCE_DIR}/back.png")
-else()
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION}")
-
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
     find_package(ICU COMPONENTS data i18n uc)
-    if(ICU_FOUND)
-        sofa_install_libraries(${ICU_LIBRARIES})
-    endif()
+    sofa_install_libraries(${ICU_LIBRARIES})
 endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
 #TODO: Redesign of a better architecture about bundling (runSofa ? libraries ? modeler ? other application ?)
 get_property(TEMP_CPACK_COMPONENTS_ALL GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL )
-if(TEMP_CPACK_COMPONENTS_ALL)
+if(APPLE AND TEMP_CPACK_COMPONENTS_ALL)
     set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
     set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
 endif()
 
-if(NOT ${CPACK_PACKAGE_VERSION_PATCH} STREQUAL "dev" AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/package.cmake")
+option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
+if(SOFA_BUILD_RELEASE_PACKAGE)
     message("Using package.cmake")
-    include( "package.cmake" )
+    include("package.cmake")
 endif()
 
-INCLUDE(CPack)
+include(CPack)

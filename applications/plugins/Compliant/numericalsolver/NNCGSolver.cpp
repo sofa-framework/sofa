@@ -8,7 +8,6 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(NNCGSolver)
 int NNCGSolverClass = core::RegisterObject("Nonsmooth Nonlinear Conjugate Gradient Solver").add< NNCGSolver >();
 
 

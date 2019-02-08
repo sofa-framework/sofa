@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -80,7 +78,7 @@ public:
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -172,35 +170,19 @@ public:
 
 };
 
-#ifndef SOFA_FLOAT
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<defaulttype::Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<defaulttype::Rigid3dTypes>::update();
-#endif
+template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 
-#ifndef SOFA_DOUBLE
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<defaulttype::Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<defaulttype::Rigid3fTypes>::update();
-#endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

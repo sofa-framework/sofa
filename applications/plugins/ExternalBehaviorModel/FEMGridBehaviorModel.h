@@ -124,17 +124,9 @@ public:
     Data<Real> _totalMass; ///< Total Mass (lumped and uniformly distributed on particles
     Data<unsigned> _subdivisions; ///< nb grid subdivisions
 
-
-
-
 protected:
-
     FEMGridBehaviorModel();
-
     virtual ~FEMGridBehaviorModel() {}
-
-
-
 
     /// @name internal sofa stuff that could be replaced by any library
     /// @{
@@ -144,33 +136,13 @@ protected:
     typename component::mass::UniformMass<DataTypes,Real>::SPtr m_internalMass;
     sofa::simulation::Node::SPtr m_internalNode;
 
-
-
     int mapExposedInternalIndices[8]; ///< identity mapping between exposed SOFA dofs and internal model dofs
-
-
-
     /// @}
-
-
-
-
-
 }; // class FEMGridBehaviorModel
 
-
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3dTypes>;
+#if !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
+extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3Types>;
 #endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3fTypes>;
-#endif
-#endif
-
-
 
 } // namespace externalBehaviorModel
 

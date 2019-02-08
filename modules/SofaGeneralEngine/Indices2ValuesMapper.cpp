@@ -37,23 +37,13 @@ namespace engine
 using namespace sofa;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(Indices2ValuesMapper)
-
 int Indices2ValuesMapperClass = core::RegisterObject("?")
-#ifndef SOFA_FLOAT
-        .add< Indices2ValuesMapper<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< Indices2ValuesMapper<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< Indices2ValuesMapper<Vec3Types> >(true)
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API Indices2ValuesMapper<Vec3Types>;
+ 
 
 
 } // namespace engine

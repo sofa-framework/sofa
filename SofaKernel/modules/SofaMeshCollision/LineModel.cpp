@@ -32,15 +32,9 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(Line)
-
 int LineModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
-#ifndef SOFA_FLOAT
-        .add< TLineModel<defaulttype::Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TLineModel<defaulttype::Vec3fTypes> >()
-#endif
+        .add< TLineModel<defaulttype::Vec3Types> >()
+
         .addAlias("Line")
         .addAlias("LineMeshModel")
         .addAlias("LineSetModel")
@@ -50,12 +44,8 @@ int LineModelClass = core::RegisterObject("collision model using a linear mesh, 
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3fTypes>;
-#endif
+template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3Types>;
+
 
 } // namespace collision
 

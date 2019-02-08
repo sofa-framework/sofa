@@ -109,7 +109,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
     size_t nb_quads = this->m_topology->getNbQuads();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    for(int i=0; i<nb_quads; ++i)
+    for(size_t i=0; i<nb_quads; ++i)
     {
         // ta.size()
         const Quad &t = this->m_topology->getQuad(i);  //ta[i];
@@ -355,8 +355,11 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     {
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
+        sofa::helper::types::RGBAColor color = _drawColor.getValue();
+        color[0] -= 0.2f;
+        color[1] -= 0.2f;
+        color[2] -= 0.2f;
+
         float scale = this->getIndicesScale();
 
         //for quads:
@@ -378,7 +381,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             positions.push_back(center);
 
         }
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
 
 
@@ -390,26 +393,37 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         if (!quadArray.empty()) // Draw Quad surfaces
         {
             const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
-
             { // drawing quads
                 std::vector<defaulttype::Vector3> pos;
                 pos.reserve(quadArray.size()*4u);
                 for (size_t i=0u; i< quadArray.size(); i++)
                 {
                     const Quad& q = quadArray[i];
+
+                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
+                    std::vector<defaulttype::Vector3> tmpPos;
+                    tmpPos.resize(4);
+
                     for (unsigned int j = 0; j<4; j++)
                     {
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
+                        tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[q[j]]));
+                        bary += tmpPos[j];
                     }
+                    bary /= 4;
+
+                    for (unsigned int j = 0; j<4; j++)
+                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
                 }
-                vparams->drawTool()->drawQuads(pos, color4);
+                vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
             }
 
             { // drawing edges
                 const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-                const sofa::defaulttype::Vec4f edge_color(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f,1.0f);
+                sofa::helper::types::RGBAColor edge_color = _drawColor.getValue();
+                edge_color[0] -= 0.2f;
+                edge_color[1] -= 0.2f;
+                edge_color[2] -= 0.2f;
+
                 std::vector<defaulttype::Vector3> pos;
                 pos.reserve(edgeArray.size()*2u);
 

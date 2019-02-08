@@ -5,12 +5,11 @@
   <VisualStyle displayFlags="showCollisionModels" />
   
   <CollisionPipeline verbose="0" />
-  <BruteForceDetection name="N2" />
+  <BruteForceDetection name="Detection" />
   <CollisionResponse response="default" />
-  <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.1"/>
-  <CollisionGroup />
+  <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.02"/>
   
-  <CarvingManager active="true" />
+  <CarvingManager active="true" carvingDistance="0.0"/>
 
   <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-9" threshold="1e-9"/>
@@ -22,7 +21,7 @@
     <DiagonalMass massDensity="0.01" />
 	<BoxROI name="ROI1" box="-1 -1 -1 1 1 0.01" drawBoxes="1" />
     <FixedConstraint indices="@ROI1.indices" />
-    <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="100" poissonRatio="0.3" method="large" />
+    <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="300" poissonRatio="0.3" method="large" />
     <Node name="Surface">
       <include href="Objects/TriangleSetTopology.xml" />
       <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
@@ -34,12 +33,11 @@
       </Node>
     </Node>
   </Node>
+
   
   <Node name="carvingElement">
 		<MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>
 		<UniformMass name="Mass" totalMass="1.0" />
 		<SphereModel radius="0.02" tags="CarvingTool"/>
   </Node>
-  
-     
 </Node>

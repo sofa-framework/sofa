@@ -20,68 +20,82 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
-
-#include <SofaGraphComponent/Gravity.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaOpenglVisual/OglModel.h>
-#include <SofaBaseVisual/VisualStyle.h>
-
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
-
+using sofa::core::VecId;
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::ExtVec3Types;
+using Coord3 = sofa::defaulttype::Vector3;
+using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
-
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/glut.h>
 
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+using CGLinearSolver = sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
+#include <SofaBaseMechanics/BarycentricMapping.h>
+using BarycentricMapping3_to_Ext3 = sofa::component::mapping::BarycentricMapping<Vec3Types, ExtVec3Types>;
+#include <SofaBaseMechanics/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types>;
+#include <SofaBaseMechanics/UniformMass.h>
+using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types, SReal>;
+#include <SofaBaseTopology/MeshTopology.h>
+using sofa::component::topology::MeshTopology;
+#include <SofaBaseVisual/VisualStyle.h>
+using sofa::component::visualmodel::VisualStyle;
+#include <SofaBoundaryCondition/FixedConstraint.h>
+using FixedConstraint3 = sofa::component::projectiveconstraintset::FixedConstraint<Vec3Types>;
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+using sofa::component::odesolver::EulerImplicitSolver;
+#include <SofaOpenglVisual/OglModel.h>
+using sofa::component::visualmodel::OglModel;
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/GNode.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 
+using sofa::core::objectmodel::Data;
+using sofa::core::objectmodel::New;
+using sofa::helper::ReadAccessor;
+using sofa::helper::WriteAccessor;
+using sofa::simulation::Node;
+
 #include <iostream>
 #include <fstream>
 
-using namespace sofa::simulation::tree;
-using namespace sofa;
-using sofa::simulation::Node;
-using sofa::component::odesolver::EulerImplicitSolver;
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-using sofa::component::topology::MeshTopology;
-using sofa::component::visualmodel::OglModel;
-using sofa::core::objectmodel::Data;
-using sofa::helper::ReadAccessor;
-using sofa::helper::WriteAccessor;
-using sofa::core::VecId;
-using sofa::core::objectmodel::New;
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
     sofa::simulation::tree::init();
-    sofa::helper::parse("This is a SOFA application.")
-    (argc,argv);
+    ArgumentParser argParser(argc, argv);
+    sofa::gui::GUIManager::RegisterParameters(&argParser);
+    argParser.parse();
+    sofa::gui::initMain();
+    sofa::gui::GUIManager::Init(argv[0]);
+
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
     sofa::component::initComponentGeneral();
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
-    sofa::gui::initMain();
-    sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node : gravity already exists in a GNode by default
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
     sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
-    groot->setGravity( Coord3(0,-10,0) );
+    groot->setGravity( sofa::defaulttype::Vector3(0,-10,0) );
 
     // One solver for all the graph
     EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<EulerImplicitSolver>();
@@ -134,6 +148,7 @@ int main(int argc, char** argv)
     fem->setMethod("polar");
     fem->setUpdateStiffnessMatrix(true);
     fem->setYoungModulus(6);
+    fem->setPoissonRatio(0.45);
 
     // Tetrahedron skin
     Node::SPtr skin = groot.get()->createChild("skin");
@@ -153,7 +168,7 @@ int main(int argc, char** argv)
     skin->addObject(mapping);
 
     // Display Flags
-    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+    VisualStyle::SPtr style = sofa::core::objectmodel::New<VisualStyle>();
     groot->addObject(style);
     sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
     flags.setShowNormals(false);

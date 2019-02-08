@@ -30,7 +30,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
@@ -339,7 +339,6 @@ public:
     }
 };
 
-SOFA_DECL_CLASS(FlowVRModule)
 int FlowVRModuleClass = sofa::core::RegisterObject("FlowVR main module")
         .add<FlowVRModule>()
         ;
@@ -666,7 +665,6 @@ public:
     }
 };
 
-SOFA_DECL_CLASS(FlowVRInputMesh)
 int FlowVRInputMeshClass = sofa::core::RegisterObject("Import a mesh from a FlowVR InputPort")
         .add< FlowVRInputMesh >()
         ;
@@ -919,7 +917,6 @@ public:
     }
 };
 
-SOFA_DECL_CLASS(FlowVRInputDistanceGrid)
 int FlowVRInputDistanceGridClass = sofa::core::RegisterObject("Import a distance field from a FlowVR InputPort")
         .add< FlowVRInputDistanceGrid<sofa::component::collision::RigidDistanceGridCollisionModel,sofa::component::collision::DistanceGrid> >()
 #ifdef SOFA_GPU_CUDA
@@ -1158,7 +1155,6 @@ public:
 
 };
 
-SOFA_DECL_CLASS(FlowVRRenderWriter)
 int FlowVRRenderWriterClass = sofa::core::RegisterObject("FlowVRRender scene manager")
         .add<FlowVRRenderWriter>()
         ;
@@ -1741,7 +1737,6 @@ public:
     }
 };
 
-SOFA_DECL_CLASS(FlowVRRenderMesh)
 int FlowVRRenderMeshClass = sofa::core::RegisterObject("FlowVRRender Visual Model")
         .add< FlowVRRenderMesh >()
         ;

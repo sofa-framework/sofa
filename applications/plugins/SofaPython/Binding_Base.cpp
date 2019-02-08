@@ -26,7 +26,7 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -555,7 +555,6 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
     return pyDict;
 }
 
-
 /// This function is named this way because someone give the getDataFields to the one
 /// that returns a dictionary of (name, value) which is not coherente with the c++
 /// name of the function.
@@ -583,6 +582,67 @@ static PyObject * Base_getListOfLinks(PyObject *self, PyObject * /*args*/) {
     for (unsigned int i = 0; i < links.size(); ++i) {
         PyList_SetItem(pyList, i, SP_BUILD_PYPTR(Link, BaseLink, links[i], false)) ;
     }
+
+    return pyList;
+}
+
+
+/// This function is called by the Python interpreter when calling (dir).
+/// It adds to the default behavior all the data fields and links of the object.
+static PyObject * Base___dir__(PyObject *self, PyObject * /*args*/) {
+    Base * component = get_base(self);
+
+    PyObject* listMethods = nullptr;
+    unsigned int listMethodsSize = 0;
+
+    /// Get the method lists
+    PyObject* pclass = PyObject_GetAttrString(self, "__class__");
+    if(pclass!=nullptr){
+        /// Returns a lists that contains the 'class' specific names (eg: method)
+        /// The list is a new reference which must be destroyed when not needed.
+        listMethods = PyObject_Dir(pclass);
+        if(listMethods==nullptr)
+        {
+            Py_XDECREF(pclass);
+            return nullptr;
+        }
+        listMethodsSize=PyList_Size(listMethods);
+    }
+
+    /// The the other names out of data & links
+    const sofa::helper::vector<BaseData*>& dataFields = component->getDataFields();
+    const sofa::helper::vector<BaseLink*>& links = component->getLinks() ;
+
+    /// Create a list big enough to store everyone.
+    unsigned int size = links.size() + dataFields.size() + listMethodsSize;
+    PyObject * pyList = PyList_New(size);
+
+    /// Fill this lists
+    unsigned int dstIndex=0;
+
+    /// From methods..
+    for (unsigned int i = 0; i < listMethodsSize; ++i, ++dstIndex) {
+          PyObject* tmp = PyList_GetItem(listMethods, i);
+
+          /// Increment the reference counter to getItem because according to the documentation
+          /// the PyList_SetItem will steal it.
+          Py_INCREF(tmp);
+          PyList_SetItem(pyList, dstIndex, tmp);
+    }
+
+    /// From links
+    for (unsigned int i = 0; i < links.size(); ++i, ++dstIndex) {
+        PyList_SetItem(pyList, dstIndex, PyString_FromString(links[i]->getName().c_str())) ;
+    }
+
+    /// From datas
+    for (unsigned int i = 0; i < dataFields.size(); ++i, ++dstIndex) {
+        PyList_SetItem(pyList, dstIndex, PyString_FromString(dataFields[i]->getName().c_str())) ;
+    }
+
+    /// We release temporary object.
+    Py_XDECREF(pclass);
+    Py_XDECREF(listMethods);
 
     return pyList;
 }
@@ -616,16 +676,19 @@ SP_CLASS_METHOD_DOC(Base,getLink, "Returns the link field if there is one associ
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
-
+SP_CLASS_METHOD(Base,__dir__)
 SP_CLASS_METHOD_DOC(Base,getDataFields, "Returns a list with the *content* of all the data fields converted in python"
                                         " type. \n")
 SP_CLASS_METHOD_DOC(Base,getListOfDataFields, "Returns the list of data fields.")
 SP_CLASS_METHOD_DOC(Base,getListOfLinks, "Returns the list of link fields.")
 SP_CLASS_METHOD(Base,downCast)
+
 SP_CLASS_METHODS_END;
 
 
 SP_CLASS_ATTRS_BEGIN(Base)
 SP_CLASS_ATTRS_END;
+
+
 
 SP_CLASS_TYPE_BASE_SPTR_ATTR_GETATTR(Base, Base)

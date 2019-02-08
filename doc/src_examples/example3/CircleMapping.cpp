@@ -87,6 +87,4 @@ void create(CircleMapping*& obj, XML::Node<Sofa::Core::BasicMapping>* arg)
 }
 }
 
-SOFA_DECL_CLASS(CircleMapping)
-
 Creator< XML::MappingNode::Factory, CircleMapping > CircleMappingClass("CircleMapping", true);

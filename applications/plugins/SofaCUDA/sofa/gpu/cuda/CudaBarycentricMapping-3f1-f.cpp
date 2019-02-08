@@ -44,11 +44,6 @@ using namespace sofa::gpu::cuda;
 
 
 
-#ifndef SOFA_DOUBLE
-template class BarycentricMapping< Vec3fTypes, CudaVec3f1Types>;
-template class BarycentricMapping< CudaVec3f1Types, Vec3fTypes>;
-#endif
-
 } // namespace mapping
 
 } // namespace component
@@ -64,13 +59,7 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaBarycentricMapping_3f1_f)
-
 int BarycentricMappingCudaClass_3f1_f = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< Vec3fTypes, CudaVec3f1Types> >()
-        .add< BarycentricMapping< CudaVec3f1Types, Vec3fTypes> >()
-#endif
         ;
 
 } // namespace cuda

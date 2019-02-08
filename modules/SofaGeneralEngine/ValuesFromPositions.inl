@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_INL
 #define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/ValuesFromPositions.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
@@ -280,12 +276,8 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::update()
+void ValuesFromPositions<DataTypes>::doUpdate()
 {
-    updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
-
-    cleanDirty();
-
     TempData data;
     data.dir = f_direction.getValue();
     data.inputValues = f_inputValues.getValue();

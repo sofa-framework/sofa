@@ -25,7 +25,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -41,7 +41,7 @@ class CubeModel;
 class Cube : public core::TCollisionElementIterator<CubeModel>
 {
 public:
-    Cube(CubeModel* model=NULL, int index=0);
+    Cube(CubeModel* model=nullptr, int index=0);
 
     explicit Cube(const core::CollisionElementIterator& i);
 
@@ -93,9 +93,6 @@ public:
     };
 
 protected:
-
-    //class CubeSortPredicate;
-
     sofa::helper::vector<CubeData> elems;
     sofa::helper::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
 

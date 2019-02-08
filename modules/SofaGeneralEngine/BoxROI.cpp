@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_BOXROI_CPP
 #include <SofaEngine/BoxROI.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -35,31 +35,17 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(BoxROI)
-
 int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
-#ifndef SOFA_FLOAT
-        .add< BoxROI<Vec3dTypes> >()
-        .add< BoxROI<Rigid3dTypes> >()
-        .add< BoxROI<Vec6dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< BoxROI<Vec3fTypes> >()
-        .add< BoxROI<Rigid3fTypes> >()
-        .add< BoxROI<Vec6fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< BoxROI<Vec3Types> >()
+        .add< BoxROI<Rigid3Types> >()
+        .add< BoxROI<Vec6Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API BoxROI<Vec3dTypes>;
-template class SOFA_ENGINE_API BoxROI<Rigid3dTypes>;
-template class SOFA_ENGINE_API BoxROI<Vec6dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API BoxROI<Vec3fTypes>;
-template class SOFA_ENGINE_API BoxROI<Rigid3fTypes>;
-template class SOFA_ENGINE_API BoxROI<Vec6fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_ENGINE_API BoxROI<Vec3Types>;
+template class SOFA_ENGINE_API BoxROI<Rigid3Types>;
+template class SOFA_ENGINE_API BoxROI<Vec6Types>;
+ 
 
 
 } // namespace constraint

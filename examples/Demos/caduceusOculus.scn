@@ -19,7 +19,7 @@
 		<EulerImplicitSolver name="cg_odesolver"  rayleighStiffness="0.03"  rayleighMass="1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="20"  tolerance="1e-12"  threshold="1e-18" />
 		<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="0 2 0"  scale3d="1 1 1" />
-		<UniformMass template="Vec3d" name="uniformMass1"  totalmass="1" />
+		<UniformMass template="Vec3d" name="uniformMass1"  totalMass="1" />
 		<HexahedronFEMForceField template="Vec3d" name="FEM"  printLog="0"  method="large"  poissonRatio="0.3"  youngModulus="30000"  updateStiffnessMatrix="0"  gatherPt=" "  gatherBsize=" " />
 		<UncoupledConstraintCorrection template="Vec3d" name="uncoupledConstraintCorrection1" />
 		<Node 	 name="Collis"  >

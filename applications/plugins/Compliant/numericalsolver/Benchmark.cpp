@@ -11,7 +11,6 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(Benchmark)
 int BenchmarkClass = core::RegisterObject("A benchmark for iterative solvers.").add< Benchmark >();
 
 Benchmark::Benchmark()

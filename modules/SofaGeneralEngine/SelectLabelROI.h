@@ -23,9 +23,7 @@
 #define SelectLabelROI_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -88,7 +86,7 @@ protected:
 
     virtual ~SelectLabelROI() {}
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up
@@ -108,8 +106,6 @@ protected:
                     break;
                 }
         }
-
-        cleanDirty();
     }
 
 };

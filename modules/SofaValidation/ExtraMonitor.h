@@ -97,17 +97,11 @@ protected:
     sofa::helper::vector< Real > initialPos;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_EXTRAMONITOR_CPP)
-#ifndef SOFA_FLOAT
-extern template class ExtraMonitor<defaulttype::Vec3dTypes>;
-extern template class ExtraMonitor<defaulttype::Vec6dTypes>;
-extern template class ExtraMonitor<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class ExtraMonitor<defaulttype::Vec3fTypes>;
-extern template class ExtraMonitor<defaulttype::Vec6fTypes>;
-extern template class ExtraMonitor<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_MISC_EXTRAMONITOR_CPP)
+extern template class ExtraMonitor<defaulttype::Vec3Types>;
+extern template class ExtraMonitor<defaulttype::Vec6Types>;
+extern template class ExtraMonitor<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace misc

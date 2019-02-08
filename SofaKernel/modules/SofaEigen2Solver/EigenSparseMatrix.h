@@ -355,7 +355,6 @@ protected:
 			
 			return;
 		}
-        OutDataTypes::deriv_total_size;
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
         for(size_t i = 0, n = data.size(); i < n; ++i) {
@@ -583,13 +582,8 @@ private:
 
 };
 
-#ifndef SOFA_FLOAT
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >::Name() { return "EigenSparseMatrix3d1d"; }
-#endif
+template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaulttype::Vec1Types >::Name() { return "EigenSparseMatrix3d1d"; }
 
-#ifndef SOFA_DOUBLE
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >::Name() { return "EigenSparseMatrix3f1f"; }
-#endif
 
 // max: much cleaner like this :)
 

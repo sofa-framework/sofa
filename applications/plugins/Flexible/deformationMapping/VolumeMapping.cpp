@@ -34,27 +34,16 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(VolumeMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int VolumeMappingClass = core::RegisterObject("Compute volume from positions and mesh topology")
-#ifndef SOFA_FLOAT
-        .add< VolumeMapping< Vec3dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< VolumeMapping< Vec3fTypes, Vec1fTypes > >()
-#endif
+        .add< VolumeMapping< Vec3Types, Vec1Types > >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API VolumeMapping< Vec3dTypes, Vec1dTypes >;
-#endif
+template class SOFA_Flexible_API VolumeMapping< Vec3Types, Vec1Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API VolumeMapping< Vec3fTypes, Vec1fTypes >;
-#endif
 
 
 

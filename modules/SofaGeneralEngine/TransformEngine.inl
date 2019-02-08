@@ -270,7 +270,7 @@ private:
 
 
 template <class DataTypes>
-void TransformEngine<DataTypes>::update()
+void TransformEngine<DataTypes>::doUpdate()
 {
     const defaulttype::Vector3 &s=scale.getValue();
     const defaulttype::Vector3 &r=rotation.getValue();
@@ -294,9 +294,6 @@ void TransformEngine<DataTypes>::update()
 
     //Get input
     const VecCoord& in = f_inputX.getValue();
-
-    cleanDirty();
-
     VecCoord& out = *(f_outputX.beginWriteOnly());
 
     //Set Output
@@ -313,7 +310,6 @@ void TransformEngine<DataTypes>::update()
         delete operations.back();
         operations.pop_back();
     }
-
     f_outputX.endEdit();
 }
 

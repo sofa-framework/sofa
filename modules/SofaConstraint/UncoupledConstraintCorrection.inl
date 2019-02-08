@@ -611,7 +611,6 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     {
 
         // compliance * force
-        //dx[i] = force[i] * (i<comp.size() ? comp[i] : comp0);
         dx[i] = UncoupledConstraintCorrection_computeDx(i, force[i], comp0, comp);
 
         const Deriv dxi = dx[i] * xFactor;
@@ -746,7 +745,6 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
                 constraint_force[dof] += colIt.val() * df[id];
 
-                //Deriv dx =  constraint_force[dof] * (dof < comp.size() ? comp[dof] : comp0);
                 Deriv dx = UncoupledConstraintCorrection_computeDx(dof, constraint_force[dof], comp0, comp);
 
                 constraint_disp[dof] = dx;
@@ -783,7 +781,6 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
             {
                 unsigned int dof = colIt.index();
                 Deriv n = colIt.val();
-                //w += (n * n) * (dof < comp.size() ? comp[dof] : comp0);
                 w += UncoupledConstraintCorrection_computeCompliance(dof, n, n, comp0, comp);
             }
             
@@ -822,7 +819,6 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
                     unsigned int dof = colIt.index();
                     const Deriv& n1 = colIt.val();
                     const Deriv& n2 = colIt2.val();
-                    //w += (n1 * n2) * (dof < comp.size() ? comp[dof] : comp0);
                     w += UncoupledConstraintCorrection_computeCompliance(dof, n1, n2, comp0, comp);
                     ++colIt;
                     ++colIt2;

@@ -49,42 +49,17 @@ public:
     void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     Data<bool> symplectic; ///< If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).
+    Data<bool> d_threadSafeVisitor;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
-    {
-        const SReal dt = getContext()->getDt();
-        double matrix[3][3] =
-        {
-            { 1, dt, ((symplectic.getValue())?dt*dt:0.0)},
-            { 0, 1, dt},
-            { 0, 0, 0}
-        };
-        if (inputDerivative >= 3 || outputDerivative >= 3)
-            return 0;
-        else
-            return matrix[outputDerivative][inputDerivative];
-    }
+    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    virtual double getSolutionIntegrationFactor(int outputDerivative) const override
-    {
-        const SReal dt = getContext()->getDt();
-        double vect[3] = {((symplectic.getValue()) ? dt * dt : 0.0), dt, 1};
-        if (outputDerivative >= 3)
-            return 0;
-        else
-            return vect[outputDerivative];
-    }
-    void init() override
-    {
-        OdeSolver::init();
-        reinit();
-    }
-
+    virtual double getSolutionIntegrationFactor(int outputDerivative) const override ;
+    void init() override ;
 };
 
 } // namespace odesolver

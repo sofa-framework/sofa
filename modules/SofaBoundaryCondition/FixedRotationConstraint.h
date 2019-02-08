@@ -59,7 +59,7 @@ public:
 
 protected:
     FixedRotationConstraint();
-    virtual ~FixedRotationConstraint();
+    virtual ~FixedRotationConstraint() override;
 public:
     void init() override;
 
@@ -78,13 +78,10 @@ protected :
     helper::vector<defaulttype::Quat> previousOrientation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class FixedRotationConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class FixedRotationConstraint<defaulttype::Rigid3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
+extern template class FixedRotationConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

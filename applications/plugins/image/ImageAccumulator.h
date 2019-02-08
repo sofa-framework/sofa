@@ -113,7 +113,7 @@ protected:
     ctime_t t0,t;
     int count;
 
-    virtual void update() override
+    virtual void doUpdate() override
     {
         if(SimuTime==this->getContext()->getTime()) return; // check if simutime has changed
         SimuTime=this->getContext()->getTime();
@@ -123,8 +123,6 @@ protected:
         raImage in(this->inputImage);
         if(in->isEmpty()) return;
         raTransform inT(this->inputTransform);
-
-        cleanDirty();
 
         waImage out(this->outputImage);
         waTransform outT(this->outputTransform);

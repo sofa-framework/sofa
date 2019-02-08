@@ -22,9 +22,7 @@
 #ifndef SOFA_SIMULATION_INSTRUMENTACTION_H
 #define SOFA_SIMULATION_INSTRUMENTACTION_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/defaulttype/Vec.h>
@@ -41,20 +39,13 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
 {
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
+    using Vector3 = sofa::defaulttype::Vector3;
 
-    TransformationVisitor(const sofa::core::ExecParams* params)
-        : Visitor(params)
-    {
-        translation = Vector3();
-        rotation = Vector3();
-        scale = Vector3(1.0,1.0,1.0);
-    }
+    TransformationVisitor(const sofa::core::ExecParams* params);
 
     void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vector3(dx,dy,dz);}
     void setRotation(SReal rx, SReal ry, SReal rz) {    rotation=Vector3(rx,ry,rz);	}
     void setScale(SReal sx, SReal sy, SReal sz) {scale=Vector3(sx,sy,sz);}
-
 
     void processVisualModel(simulation::Node* node, core::visual::VisualModel* v);
     void processMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* m);

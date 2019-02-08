@@ -24,14 +24,7 @@
 
 #include <SofaRigid/JointSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/system/config.h>
-#include <cassert>
-#include <iostream>
 #include <fstream>
-
-
 
 namespace sofa
 {
@@ -42,75 +35,76 @@ namespace component
 namespace interactionforcefield
 {
 
-static const double pi=3.14159265358979323846264338327950288;
+using sofa::defaulttype::Vec4f;
+using sofa::defaulttype::Vector3;
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2)
-    : Inherit(object1, object2)
-    , infile(NULL)
-    , outfile(NULL)
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    : Inherit1(object1, object2)
+    , m_lastTime((Real)0.0)
+    , m_infile(NULL)
+    , m_outfile(NULL)
     , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
     , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , lastTime((Real)0.0)
-    , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
-    , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , d_showLawfulTorsion(initData(&d_showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
+    , d_showExtraTorsion(initData(&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
+    , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField()
-    : infile(NULL)
-    , outfile(NULL)
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    : m_infile(NULL)
+    , m_outfile(NULL)
+    , m_lastTime((Real)0.0)
     , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
     , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , lastTime((Real)0.0)
-    , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
-    , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , d_showLawfulTorsion(initData(&d_showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
+    , d_showExtraTorsion(initData(&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
+    , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::~JointSpringForceField()
 {
-    if (outfile) 	  delete outfile;
-    if (infile) 	  delete infile;
+    if (m_outfile) 	  delete m_outfile;
+    if (m_infile) 	  delete m_infile;
 }
 
 
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::init()
 {
-    this->Inherit::init();
+    Inherit1::init();
 
     const std::string& outfilename = f_outfilename.getFullPath();
     if (!outfilename.empty())
     {
-        outfile = new std::ofstream(outfilename.c_str());
-        if( !outfile->is_open() )
+        m_outfile = new std::ofstream(outfilename.c_str());
+        if( !m_outfile->is_open() )
         {
             serr << "Error creating file "<<outfilename<<sendl;
-            delete outfile;
-            outfile = NULL;
+            delete m_outfile;
+            m_outfile = NULL;
         }
     }
 
     const std::string& infilename = f_infilename.getFullPath();
     if (!infilename.empty())
     {
-        infile = new std::ifstream(infilename.c_str());
-        if( !infile->is_open() )
+        m_infile = new std::ifstream(infilename.c_str());
+        if( !m_infile->is_open() )
         {
             serr << "Error opening file "<<infilename<<sendl;
-            delete infile;
-            infile = NULL;
+            delete m_infile;
+            m_infile = NULL;
         }
     }
 }
@@ -119,13 +113,12 @@ void JointSpringForceField<DataTypes>::init()
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::bwdInit()
 {
-    //   this->Inherit::bwdInit();
 
     const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 
     const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
-    for (unsigned int i=0; i<springs.getValue().size(); ++i)
+    helper::vector<Spring> &springsVector=*(d_springs.beginEdit());
+    for (unsigned int i=0; i<d_springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
         if (s.needToInitializeTrans)
@@ -137,14 +130,12 @@ void JointSpringForceField<DataTypes>::bwdInit()
             s.initRot = x2[s.m2].getOrientation()*x1[s.m1].getOrientation().inverse();
         }
     }
-    springs.endEdit();
+    d_springs.endEdit();
 }
 
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 {
-    Real pi2=(Real)2.*(Real)pi;
-
     for (unsigned int i=0; i<3; i++)
     {
         if (!spring.freeMovements[3+i]) // hard constraint
@@ -161,13 +152,13 @@ void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
             if(spring.torsion[i]>0)
             {
                 d1=spring.torsion[i]-spring.limitAngles[i*2+1];
-                d2=spring.limitAngles[i*2]+pi2-spring.torsion[i];
+                d2=spring.limitAngles[i*2]+2*M_PI-spring.torsion[i];
                 if(d1<d2) spring.lawfulTorsion[i]=spring.limitAngles[i*2+1];
                 else spring.lawfulTorsion[i]=spring.limitAngles[i*2];
             }
             else
             {
-                d1=spring.torsion[i]-spring.limitAngles[i*2+1]+pi2;
+                d1=spring.torsion[i]-spring.limitAngles[i*2+1]+2*M_PI;
                 d2=spring.limitAngles[i*2]-spring.torsion[i];
                 if(d1<d2) spring.lawfulTorsion[i]=spring.limitAngles[i*2+1];
                 else spring.lawfulTorsion[i]=spring.limitAngles[i*2];
@@ -181,10 +172,10 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
 {
 
     Deriv constantForce;
-    if(infile)
+    if(m_infile)
     {
-        if (infile->eof())	{ infile->clear(); infile->seekg(0); }
-        std::string line;  getline(*infile, line);
+        if (m_infile->eof())	{ m_infile->clear(); m_infile->seekg(0); }
+        std::string line;  getline(*m_infile, line);
         std::istringstream str(line);
         str >> constantForce;
     }
@@ -205,8 +196,12 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     Mp1p2.getOrientation().normalize();
 
     // get relative orientation in axis/angle format
-    Real phi; Mp1p2.getOrientation().quatToAxis(spring.torsion,phi);
-    Real pi2=(Real)2.*(Real)pi; while(phi<-pi) phi+=pi2; while(phi>pi) phi-=pi2; 		// remove modulo(2PI) from torsion
+    Real phi;
+    Mp1p2.getOrientation().quatToAxis(spring.torsion,phi);
+
+    while(phi<-M_PI) phi+=2*M_PI;
+    while(phi>M_PI) phi-=2*M_PI; 		// remove modulo(2PI) from torsion
+
     spring.torsion*=phi;
 
     //compute forces
@@ -255,7 +250,11 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
         // update lawfull torsion
         projectTorsion(spring);
         Vector extraTorsion=spring.torsion-spring.lawfulTorsion;
-        Real psi=extraTorsion.norm(); extraTorsion/=psi;		while(psi<-pi) psi+=pi2; while(psi>pi) psi-=pi2; 		extraTorsion*=psi;
+        Real psi=extraTorsion.norm();
+        extraTorsion/=psi;
+        while(psi<-M_PI) psi+=2*M_PI;
+        while(psi>M_PI) psi-=2*M_PI;
+        extraTorsion*=psi;
 
         for (unsigned int i=0; i<3; i++)
             if(spring.freeMovements[3+i] && spring.torsion[i]!=spring.lawfulTorsion[i]) // outside limits
@@ -275,33 +274,33 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     f2[b] -= force;
 
     // write output file
-    if (outfile)
+    if (m_outfile)
     {
-        if(f_reinit.getValue()) outfile->seekp(std::ios::beg);
+        if(f_reinit.getValue()) m_outfile->seekp(std::ios::beg);
 
         SReal time = this->getContext()->getTime();
-        if (time >= (lastTime + f_period.getValue()))
+        if (time >= (m_lastTime + f_period.getValue()))
         {
-            lastTime += f_period.getValue();
-            (*outfile) << "T= "<< time << "\n";
+            m_lastTime += f_period.getValue();
+            (*m_outfile) << "T= "<< time << "\n";
 
             const Coord xrel(spring.ref.inverseRotate(Mp1p2.getCenter()), Mp1p2.getOrientation());
-            (*outfile) << "  Xrel= " << xrel << "\n";
+            (*m_outfile) << "  Xrel= " << xrel << "\n";
 
-            (*outfile) << "  Vrel= " << Vp1p2 << "\n";
+            (*m_outfile) << "  Vrel= " << Vp1p2 << "\n";
 
             const Deriv frel(spring.KT.linearProduct(spring.ref.inverseRotate(Mp1p2.getCenter())) , fR0 );
-            (*outfile) << "  Frel= " << frel << "\n";
+            (*m_outfile) << "  Frel= " << frel << "\n";
 
             const Deriv damp(getVCenter(Vp1p2)*spring.kd , getVOrientation(Vp1p2)*spring.kd );
-            (*outfile) << "  Fdamp= " << damp << "\n";
+            (*m_outfile) << "  Fdamp= " << damp << "\n";
 
-            if(infile) (*outfile) << "  Fconstant= " << constantForce << "\n";
+            if(m_infile) (*m_outfile) << "  Fconstant= " << constantForce << "\n";
 
-            (*outfile) << "  F= " << force << "\n";
+            (*m_outfile) << "  F= " << force << "\n";
 
-            if(f_reinit.getValue()) (*outfile) << "\n\n\n\n\n";
-            outfile->flush();
+            if(f_reinit.getValue()) (*m_outfile) << "\n\n\n\n\n";
+            m_outfile->flush();
         }
     }
 
@@ -334,7 +333,7 @@ void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    helper::vector<Spring>& springs = *d_springs.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -343,7 +342,7 @@ void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     {
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
-    this->springs.endEdit();
+    d_springs.endEdit();
 
     data_f1.endEdit();
     data_f2.endEdit();
@@ -363,12 +362,12 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    helper::vector<Spring>& springs = *d_springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
     }
-    this->springs.endEdit();
+    d_springs.endEdit();
 
     data_df1.endEdit();
     data_df2.endEdit();
@@ -385,35 +384,35 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->setLightingEnabled(true);
 
     bool external = (this->mstate1!=this->mstate2);
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = d_springs.getValue();
 
-    sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
+    helper::vector<Vector3> vertices;
+    helper::vector<Vec4f> colors;
 
-    sofa::defaulttype::Vec4f yellow(1.0,1.0,0.0,1.0);
+    Vec4f yellow(1.0,1.0,0.0,1.0);
 
     for (unsigned int i=0; i<springs.size(); i++)
     {
-        sofa::defaulttype::Vec4f color;
+        Vec4f color;
 
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).getCenter().norm();
         if (external)
         {
             if (d<springs[i].initTrans.norm()*0.9999)
-                color = sofa::defaulttype::Vec4f(1,0,0,1);
+                color = Vec4f(1,0,0,1);
             else
-                color = sofa::defaulttype::Vec4f(0,1,0,1);
+                color = Vec4f(0,1,0,1);
         }
         else
         {
             if (d<springs[i].initTrans.norm()*0.9999)
-                color = sofa::defaulttype::Vec4f(1,0.5f,0,1);
+                color = Vec4f(1,0.5f,0,1);
             else
-                color = sofa::defaulttype::Vec4f(0,1,0.5f,1);
+                color = Vec4f(0,1,0.5f,1);
         }
 
-        sofa::defaulttype::Vector3 v0(p1[springs[i].m1].getCenter()[0], p1[springs[i].m1].getCenter()[1], p1[springs[i].m1].getCenter()[2]);
-        sofa::defaulttype::Vector3 v1(p2[springs[i].m2].getCenter()[0], p2[springs[i].m2].getCenter()[1], p2[springs[i].m2].getCenter()[2]);
+        Vector3 v0(p1[springs[i].m1].getCenter()[0], p1[springs[i].m1].getCenter()[1], p1[springs[i].m1].getCenter()[2]);
+        Vector3 v1(p2[springs[i].m2].getCenter()[0], p2[springs[i].m2].getCenter()[1], p2[springs[i].m2].getCenter()[2]);
 
         vertices.push_back(v0);
         colors.push_back(color);
@@ -423,41 +422,41 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         sofa::defaulttype::Quaternion q0 = p1[springs[i].m1].getOrientation();
         if(springs[i].freeMovements[3] == 1)
         {
-            sofa::defaulttype::Vector3 axis((Real)(1.0*showFactorSize.getValue()),0,0);
-            sofa::defaulttype::Vector3 vrot = v0 + q0.rotate(axis);
+            Vector3 axis((Real)(1.0*d_showFactorSize.getValue()),0,0);
+            Vector3 vrot = v0 + q0.rotate(axis);
 
-            vparams->drawTool()->drawCylinder(v0, vrot, showFactorSize.getValue()/15.0,yellow );
+            vparams->drawTool()->drawCylinder(v0, vrot, d_showFactorSize.getValue()/15.0,yellow );
         }
         if(springs[i].freeMovements[4] == 1)
         {
-            sofa::defaulttype::Vector3 axis(0,(Real)(1.0*showFactorSize.getValue()),0);
-            sofa::defaulttype::Vector3 vrot = v0 + q0.rotate(axis);
+            Vector3 axis(0,(Real)(1.0*d_showFactorSize.getValue()),0);
+            Vector3 vrot = v0 + q0.rotate(axis);
 
-            vparams->drawTool()->drawCylinder(v0, vrot, showFactorSize.getValue()/15.0,yellow );
+            vparams->drawTool()->drawCylinder(v0, vrot, d_showFactorSize.getValue()/15.0,yellow );
 
         }
         if(springs[i].freeMovements[5] == 1)
         {
-            sofa::defaulttype::Vector3 axis(0,0,(Real)(1.0*showFactorSize.getValue()));
-            sofa::defaulttype::Vector3 vrot = v0 + q0.rotate(axis);
+            Vector3 axis(0,0,(Real)(1.0*d_showFactorSize.getValue()));
+            Vector3 vrot = v0 + q0.rotate(axis);
 
-            vparams->drawTool()->drawCylinder(v0, vrot, showFactorSize.getValue()/15.0,yellow );
+            vparams->drawTool()->drawCylinder(v0, vrot, d_showFactorSize.getValue()/15.0,yellow );
         }
 
         //---debugging
-        if (showLawfulTorsion.getValue())
+        if (d_showLawfulTorsion.getValue())
         {
             Vector vtemp = p1[springs[i].m1].projectPoint(springs[i].lawfulTorsion);
-            v1 = sofa::defaulttype::Vector3(vtemp[0], vtemp[1], vtemp[2]);
+            v1 = Vector3(vtemp[0], vtemp[1], vtemp[2]);
 
-            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*showFactorSize.getValue()), yellow );
+            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*d_showFactorSize.getValue()), yellow );
         }
-        if (showExtraTorsion.getValue())
+        if (d_showExtraTorsion.getValue())
         {
             Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion);
-            v1 = sofa::defaulttype::Vector3(vtemp[0], vtemp[1], vtemp[2]);
+            v1 = Vector3(vtemp[0], vtemp[1], vtemp[2]);
 
-            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*showFactorSize.getValue()), yellow );
+            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*d_showFactorSize.getValue()), yellow );
         }
     }
     vparams->drawTool()->drawLines(vertices,1, colors);
@@ -468,8 +467,6 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  params, bool /* onlyVisible */)
 {
-//    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
     Real maxBBox[3] = { min_real,min_real,min_real };
@@ -478,14 +475,14 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = d_springs.getValue();
 
     for (unsigned int i = 0, iend = springs.size(); i<iend; ++i)
     {
         const Spring& s = springs[i];
 
-        sofa::defaulttype::Vector3 v0 = p1[s.m1].getCenter();
-        sofa::defaulttype::Vector3 v1 = p2[s.m2].getCenter();
+        Vector3 v0 = p1[s.m1].getCenter();
+        Vector3 v1 = p2[s.m2].getCenter();
 
         for (int c = 0; c<3; c++)
         {
@@ -501,7 +498,7 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::updateForceMask()
 {
-    const helper::vector<Spring>& springs= this->springs.getValue();
+    const helper::vector<Spring>& springs= d_springs.getValue();
 
     for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
     {
@@ -509,6 +506,38 @@ void JointSpringForceField<DataTypes>::updateForceMask()
         this->mstate1->forceMask.insertEntry(s.m1);
         this->mstate2->forceMask.insertEntry(s.m2);
     }
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::clear(int reserve)
+{
+    helper::vector<Spring>& springs = *d_springs.beginEdit();
+    springs.clear();
+    if (reserve) springs.reserve(reserve);
+    d_springs.endEdit();
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::addSpring(const Spring& s)
+{
+    d_springs.beginEdit()->push_back(s);
+    d_springs.endEdit();
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr,
+                                                 Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
+{
+    Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
+
+    const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+    s.initTrans = x2[m2].getCenter() - x1[m1].getCenter();
+    s.initRot = x2[m2].getOrientation()*x1[m1].getOrientation().inverse();
+
+    d_springs.beginEdit()->push_back(s);
+    d_springs.endEdit();
 }
 
 } // namespace interactionforcefield

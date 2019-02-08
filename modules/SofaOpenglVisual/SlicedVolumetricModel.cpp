@@ -49,8 +49,6 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(SlicedVolumetricModel)
-
 int SlicedVolumetricModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
         .add< SlicedVolumetricModel >()
         ;
@@ -90,7 +88,6 @@ void SlicedVolumetricModel::init()
     else
         getContext()->get(_mstate);
 
-// 	_topology->init();
     _mstate->init();
 
     VisualModel::init();
@@ -125,9 +122,6 @@ void SlicedVolumetricModel::init()
     const Coord& p7 = GETCOORD(_topology->getHexahedron(0)[6]);
     _radius = (p7-p0).norm() / 2;
 
-
-
-
     _textureCoordinates.resize( _mstate->getSize() );
     for( size_t i=0; i<_mstate->getSize(); ++i)
     {
@@ -161,23 +155,13 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 
         _first = false;
 
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
+#if defined(SOFA_HAVE_GLEW)
         glewInit();
 #endif
-
-//   	// set up our OpenGL state
-// 	glDisable(GL_DEPTH_TEST);
-// 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // our texture colors will replace the untextured colors
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-
-
-
-
         // request 1 texture name from OpenGL
-// 		glGenTextures(numInstance, &_texname);
         glGenTextures(1, &_texname);
-        // tell OpenGL we're going to be setting up the texture name it gave us
         glBindTexture(GL_TEXTURE_3D, _texname);
         // when this texture needs to be shrunk to fit on small polygons, use linear interpolation of the texels to determine the color
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -193,23 +177,15 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
         // it doesnt have a border, we're giving it to GL in RGB format as a series of unsigned bytes, and texels is where the texel data is.
         glTexImage3D(GL_TEXTURE_3D, 0, GL_ALPHA, _width, _height, _depth, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture_data);
 
-
-
         delete [] texture_data;
         texture_data = NULL;
         return;
     }
 
-
-// 	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-
     glDisable(GL_LIGHTING);
     glPolygonMode (GL_FRONT,GL_FILL );
 
-
     glEnable(GL_BLEND);
-// 	glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     float mat[16];
@@ -232,8 +208,6 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
     glEnd();
 
     glDisable(GL_TEXTURE_3D);
-
-
 }
 
 
@@ -266,8 +240,8 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
     lastPoint += _planeNormal * .1;
 
-    std::list<int>positiveCubes;
-    for(int i=0; i<_topology->getNbHexahedra(); ++i)
+    std::list<unsigned int>positiveCubes;
+    for(unsigned int i=0; i<_topology->getNbHexahedra(); ++i)
         positiveCubes.push_back( i );
 
     do
@@ -284,7 +258,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 		for(Octree::CellPtrList::iterator itcell=_octree->getLeafLists(animal::octree::GEOMETRY).begin();   itcell!=_octree->getLeafLists(animal::octree::GEOMETRY).end();itcell++)
 
         // seulement les nouveaux cubes potentiellement intersectable, ie proches ou devant le plan
-        for(std::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
+        for(std::list<unsigned int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
         {
             const BaseMeshTopology::Hexa& cell = _topology->getHexahedron( *itcell );
 
@@ -302,7 +276,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 }
                 else // pas du bon cote, on oublie le cube
                 {
-                    std::list<int>::iterator it = positiveCubes.erase( itcell );
+                    std::list<unsigned int>::iterator it = positiveCubes.erase( itcell );
                     itcell = it;
                     continue;
                 }

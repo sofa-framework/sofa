@@ -64,13 +64,11 @@ void IndexValueMapper<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void IndexValueMapper<DataTypes>::update()
+void IndexValueMapper<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data< helper::vector<Real> > > inputValues = f_inputValues;
     helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices;
     const Real& value = f_value.getValue();
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
 

@@ -108,7 +108,6 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         typename ImageContainerT::waTransform wtransform(container->transform);
 
         // read image
-#ifndef __PS3__
 #ifdef SOFA_HAVE_ZLIB
         //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
@@ -136,7 +135,6 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         }
         else
 #endif // SOFA_HAVE_ZLIB
-#endif // __PS3__
             if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                     || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
             {

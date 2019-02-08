@@ -28,163 +28,132 @@
 
 namespace sofa
 {
-	namespace core
-	{
+namespace core
+{
 
-		// forward declaration
-		class CollisionModel;
+// forward declaration
+class CollisionModel;
 
-		namespace collision
-		{
+namespace collision
+{
 
-			// forward declaration
-			class NarrowPhaseDetection;
-			
+// forward declaration
+class NarrowPhaseDetection;
+
+class SOFA_BASE_COLLISION_API ContactListener : public virtual core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(ContactListener, core::objectmodel::BaseObject);
+
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        core::CollisionModel* collModel1 = nullptr;
+        core::CollisionModel* collModel2 = nullptr;
+
+        std::string collModelPath1;
+        std::string collModelPath2;
+
+        if (arg->getAttribute("collisionModel1"))
+            collModelPath1 = arg->getAttribute("collisionModel1");
+        else
+            collModelPath1 = "";
+
+        context->findLinkDest(collModel1, collModelPath1, nullptr);
+
+        if (arg->getAttribute("collisionModel2"))
+            collModelPath2 = arg->getAttribute("collisionModel2");
+        else
+            collModelPath2 = "";
+
+        context->findLinkDest(collModel2, collModelPath2, nullptr);
+
+        if (collModel1 == nullptr && collModel2 == nullptr )
+        {
+            msg_error(context) << "Creation of " << className(obj) <<
+                                  " CollisonListener failed because no Collision Model links are found: \"" << collModelPath1
+                               << "\" and \"" << collModelPath2 << "\" " << context->sendl;
+            return false;
+        }
+
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    template<class T>
+    static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        CollisionModel* collModel1 = nullptr;
+        CollisionModel* collModel2 = nullptr;
+
+        std::string collModelPath1;
+        std::string collModelPath2;
+
+        if(arg)
+        {
+            collModelPath1 = arg->getAttribute(std::string("collisionModel1"), nullptr );
+            collModelPath2 = arg->getAttribute(std::string("collisionModel2"), nullptr );
+
+            // now 3 cases
+            if ( strcmp( collModelPath1.c_str(),"" ) != 0  )
+            {
+                context->findLinkDest(collModel1, collModelPath1, nullptr);
+
+                if ( strcmp( collModelPath2.c_str(),"" ) != 0 )
+                {
+                    context->findLinkDest(collModel2, collModelPath2, nullptr);
+                }
+            }
+            else
+            {
+                context->findLinkDest(collModel1, collModelPath2, nullptr);
+            }
+        }
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>( collModel1, collModel2 );
+
+        if (context)
+        {
+            context->addObject(obj);
+        }
+
+        if (arg)
+        {
+            obj->parse(arg);
+        }
+
+        return obj;
+    }
+
+protected:
+    ContactListener( CollisionModel* collModel1 = nullptr, CollisionModel* collModel2 = nullptr );
+
+    virtual ~ContactListener() override ;
+
+    // DetectionOutput iterators
+    typedef helper::vector<const helper::vector<DetectionOutput>* >::const_iterator ContactVectorsIterator;
+    typedef helper::vector<DetectionOutput>::const_iterator ContactsIterator;
+
+    virtual void beginContact(const helper::vector<const helper::vector<DetectionOutput>* >& ) {}
+    virtual void endContact(void*) {}
+
+    const CollisionModel* mCollisionModel1;
+    const CollisionModel* mCollisionModel2;
 
 
-			class SOFA_BASE_COLLISION_API ContactListener : public virtual core::objectmodel::BaseObject
-			{
-			public:
 
-				SOFA_CLASS(ContactListener, core::objectmodel::BaseObject);
+private:
 
-			protected:
+    helper::vector<const helper::vector<DetectionOutput>* > mContactsVector;
+    core::collision::NarrowPhaseDetection* mNarrowPhase;
 
-				ContactListener( CollisionModel* collModel1 = NULL, CollisionModel* collModel2 = NULL );
-
-				virtual ~ContactListener();
-
-				// DetectionOutput iterators
-				typedef helper::vector<const helper::vector<DetectionOutput>* >::const_iterator ContactVectorsIterator;
-				typedef helper::vector<DetectionOutput>::const_iterator ContactsIterator;
-
-				virtual void beginContact(const helper::vector<const helper::vector<DetectionOutput>* >& ) {}
-
-				virtual void endContact(void*) {}
+    virtual void init(void) override;
+    virtual void handleEvent( core::objectmodel::Event* event ) override;
 
 
-			protected:
+};
 
-				const CollisionModel* mCollisionModel1;
-				const CollisionModel* mCollisionModel2;
+} // namespace collision
 
-				//// are these SingleLinks necessary ? they are used only in canCreate(...) and create functions(...)
-				//SingleLink<ContactListener, CollisionModel, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mLinkCollisionModel1;
-
-				///// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
-				//SingleLink<ContactListener, CollisionModel, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mLinkCollisionModel2;
-
-
-			private:
-
-				helper::vector<const helper::vector<DetectionOutput>* > mContactsVector;
-
-				core::collision::NarrowPhaseDetection* mNarrowPhase;
-
-
-			public:				
-
-                virtual void init(void) override;
-
-				virtual void handleEvent( core::objectmodel::Event* event ) override;
-
-
-
-				template<class T>
-				static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-				{
-					core::CollisionModel* collModel1 = NULL;
-					core::CollisionModel* collModel2 = NULL;
-
-					std::string collModelPath1;
-					std::string collModelPath2;
-
-					if (arg->getAttribute("collisionModel1"))
-						collModelPath1 = arg->getAttribute("collisionModel1");
-					else
-						collModelPath1 = "";
-
-					context->findLinkDest(collModel1, collModelPath1, NULL);
-
-					if (arg->getAttribute("collisionModel2"))
-						collModelPath2 = arg->getAttribute("collisionModel2");
-					else
-						collModelPath2 = "";
-
-					context->findLinkDest(collModel2, collModelPath2, NULL);
-
-					if (collModel1 == NULL && collModel2 == NULL )
-					{
-						context->serr << "Creation of " << className(obj) << 
-							" CollisonListener failed because no Collision Model links are found: \"" << collModelPath1
-							<< "\" and \"" << collModelPath2 << "\" " << context->sendl;
-						return false;
-					}
-
-					return BaseObject::canCreate(obj, context, arg);
-				}
-
-
-
-				template<class T>
-				static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-				{	
-					CollisionModel* collModel1 = NULL;
-					CollisionModel* collModel2 = NULL;
-
-					std::string collModelPath1;
-					std::string collModelPath2;
-					
-					if(arg)
-					{
-						collModelPath1 = arg->getAttribute(std::string("collisionModel1"), NULL );
-						collModelPath2 = arg->getAttribute(std::string("collisionModel2"), NULL );
-
-						// now 3 cases
-						if ( strcmp( collModelPath1.c_str(),"" ) != 0  )
-						{
-							context->findLinkDest(collModel1, collModelPath1, NULL);
-							
-							if ( strcmp( collModelPath2.c_str(),"" ) != 0 )
-							{
-								context->findLinkDest(collModel2, collModelPath2, NULL);
-							}
-						}
-						else
-						{
-							context->findLinkDest(collModel1, collModelPath2, NULL);
-						}						
-
-						
-					}
-
-					typename T::SPtr obj = sofa::core::objectmodel::New<T>( collModel1, collModel2 );
-
-					//if ( obj )
-					//{
-					//	obj->mLinkCollisionModel1.setPath( collModelPath1 );
-					//	obj->mLinkCollisionModel2.setPath( collModelPath2 );
-					//}
-
-					if (context)
-					{
-						context->addObject(obj);
-					}
-
-					if (arg)
-					{
-						obj->parse(arg);
-					}
-
-					return obj;
-				}
-			
-
-			};
-
-		} // namespace collision
-
-	} // namespace core
+} // namespace core
 
 } // namespace sofa
 

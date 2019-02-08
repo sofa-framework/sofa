@@ -1,10 +1,5 @@
-cmake_minimum_required(VERSION 2.8.12)
-project(CImgPlugin)
-
-
-set(${PROJECT_NAME}_MAJOR_VERSION 0)
-set(${PROJECT_NAME}_MINOR_VERSION 1)
-set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION})
+cmake_minimum_required(VERSION 3.1)
+project(CImgPlugin VERSION 0.1)
 
 set(HEADER_FILES
     ImageCImg.h
@@ -31,7 +26,7 @@ find_package(TIFF QUIET)
 find_package(PNG QUIET)
 
 ### Configure Paths according to detected packages
-if(TIFF_FOUND)
+if(TIFF_FOUND AND NOT SOFA_BUILD_RELEASE_PACKAGE)
     message(STATUS "CImgPlugin: TIFF Image Format enabled")
     get_filename_component(TIFF_LIB_DIRS ${TIFF_LIBRARIES} PATH)
     list(APPEND CIMG_CFLAGS ${CIMG_TIFF_CCFLAGS} -DCIMGPLUGIN_HAVE_TIFF -Dcimg_use_tiff)

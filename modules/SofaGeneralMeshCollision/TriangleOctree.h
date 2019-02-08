@@ -23,12 +23,11 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
 #include "config.h"
 
-//#include <SofaMeshCollision/TriangleOctreeModel.h>
-
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 /*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/
 #define CUBE_SIZE 800
 #define bb_max(a,b) (((a)>(b))?(a):(b))

@@ -35,7 +35,7 @@ def oneParticleSample(node):
 	particule_node = node.createChild('particle_node')
 	particle = particule_node.createObject('MechanicalObject')
 	particle.resize(1)
-	mass = particule_node.createObject('UniformMass',totalmass=1)
+	mass = particule_node.createObject('UniformMass',totalMass=1)
 
 	return 0
 

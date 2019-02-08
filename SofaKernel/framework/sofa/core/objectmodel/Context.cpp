@@ -39,18 +39,7 @@ Context::Context()
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
 	, d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
 	, d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
-    , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
-    , finestLevel_(initData(&finestLevel_,0,"finestLevel","Finest level of details"))
-#endif
 {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
-    setGravity(objectmodel::BaseContext::getLocalGravity());
-    setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
-    setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
-#endif
 
 }
 
@@ -87,51 +76,6 @@ void Context::setChangeSleepingState(bool val)
 	d_canChangeSleepingState.setValue(val);
 }
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-/// Projection from the local coordinate system to the world coordinate system.
-const Context::Frame& Context::getPositionInWorld() const
-{
-    return localFrame_;
-}
-/// Projection from the local coordinate system to the world coordinate system.
-void Context::setPositionInWorld(const Frame& f)
-{
-    localFrame_ = f;
-}
-
-/// Spatial velocity (linear, angular) of the local frame with respect to the world
-const Context::SpatialVector& Context::getVelocityInWorld() const
-{
-    return spatialVelocityInWorld_;
-}
-/// Spatial velocity (linear, angular) of the local frame with respect to the world
-void Context::setVelocityInWorld(const SpatialVector& v)
-{
-    spatialVelocityInWorld_ = v;
-}
-
-/// Linear acceleration of the origin induced by the angular velocity of the ancestors
-const Context::Vec3& Context::getVelocityBasedLinearAccelerationInWorld() const
-{
-    return velocityBasedLinearAccelerationInWorld_;
-}
-/// Linear acceleration of the origin induced by the angular velocity of the ancestors
-void Context::setVelocityBasedLinearAccelerationInWorld(const Vec3& a )
-{
-    velocityBasedLinearAccelerationInWorld_ = a;
-}
-/// Gravity vector in local coordinates
-// const Context::Vec3& Context::getGravity() const
-// {
-// 	return gravity_;
-// }
-
-/// Gravity vector in local coordinates
-Context::Vec3 Context::getLocalGravity() const
-{
-    return getPositionInWorld().backProjectVector(worldGravity_.getValue());
-}
-#endif
 
 
 /// Simulation timestep
@@ -158,26 +102,6 @@ bool Context::getAnimate() const
 {
     return animate_.getValue();
 }
-
-
-#ifdef SOFA_DEV
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-// Multiresolution
-
-int Context::getCurrentLevel() const
-{
-    return currentLevel_.getValue();
-}
-int Context::getCoarsestLevel() const
-{
-    return coarsestLevel_.getValue();
-}
-int Context::getFinestLevel() const
-{
-    return finestLevel_.getValue();
-}
-#endif
-#endif // SOFA_DEV
 
 //===============================================================================
 
@@ -212,40 +136,7 @@ void Context::setAnimate(bool val)
     animate_.setValue(val);
 }
 
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-// Multiresolution
-
-bool Context::setCurrentLevel(int l)
-{
-    if( l > coarsestLevel_.getValue() )
-    {
-        currentLevel_.setValue(coarsestLevel_.getValue());
-        return false;
-    }
-    else if( l < 0 /*finestLevel_.getValue()*/ )
-    {
-// 		currentLevel_.setValue(finestLevel_.getValue());
-        currentLevel_.setValue( 0 );
-        return false;
-    }
-    currentLevel_.setValue(l);
-    if( l == coarsestLevel_.getValue() ) return false;
-    return true;
-}
-void Context::setCoarsestLevel(int l)
-{
-    coarsestLevel_.setValue( l );
-}
-void Context::setFinestLevel(int l)
-{
-    finestLevel_.setValue( l );
-}
-#endif
-
 //======================
-
-
 void Context::copyContext(const Context& c)
 {
     // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
@@ -263,19 +154,6 @@ void Context::copySimulationContext(const Context& c)
     setTime(c.getTime());
     setAnimate(c.getAnimate());
 
-
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    setPositionInWorld( c.getPositionInWorld());
-    spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
-    velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
-#endif
-
-#ifdef SOFA_SUPPORT_MULTIRESOLUTION
-    // for multiresolution
-// 	finestLevel_ = c.finestLevel_;
-// 	coarsestLevel_ = c.coarsestLevel_;
-// 	currentLevel_ = c.currentLevel_;
-#endif
 
 
 }

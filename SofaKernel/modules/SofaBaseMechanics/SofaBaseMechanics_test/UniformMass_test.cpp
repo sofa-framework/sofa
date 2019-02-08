@@ -37,6 +37,8 @@ using sofa::component::mass::UniformMass ;
 #include <SofaBaseMechanics/initBaseMechanics.h>
 using sofa::component::initBaseMechanics ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
@@ -50,6 +52,10 @@ using sofa::component::container::MechanicalObject ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
+#include <SofaTest/Sofa_test.h>
+using BaseTest = sofa::Sofa_test<SReal>;
+
+
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes
 {
@@ -58,7 +64,7 @@ struct TemplateTypes
 };
 
 template <typename TTemplateTypes>
-struct UniformMassTest :  public ::testing::Test
+struct UniformMassTest :  public BaseTest
 {
     typedef UniformMass<typename TTemplateTypes::DataTypes,
     typename TTemplateTypes::MassTypes> TheUniformMass ;
@@ -78,6 +84,8 @@ struct UniformMassTest :  public ::testing::Test
 
     virtual void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+
         todo = true ;
         initBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
@@ -410,14 +418,13 @@ struct UniformMassTest :  public ::testing::Test
 
 typedef Types<
 TemplateTypes<Vec3Types, Vec3Types::Real>
-/*#ifdef SOFA_WITH_DOUBLE
-,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
+/*,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
 ,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
 ,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
 ,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
 ,TemplateTypes<Rigid3dTypes, Rigid3dMass>
 ,TemplateTypes<Rigid2dTypes, Rigid2dMass>
-#endif
+
 #ifdef SOFA_WITH_FLOAT
 ,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
 ,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>

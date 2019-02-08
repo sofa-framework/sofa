@@ -32,25 +32,12 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MeshSubsetEngine)
-
 int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on selected vertices")
-#ifdef SOFA_FLOAT
-        .add< MeshSubsetEngine<defaulttype::Vec3fTypes> >(true) // default template
-#else
-        .add< MeshSubsetEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< MeshSubsetEngine<defaulttype::Vec3fTypes> >()
-#endif
-#endif
+        .add< MeshSubsetEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+ 
 
 
 } // namespace constraint

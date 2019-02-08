@@ -161,8 +161,8 @@ protected:
 
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setPointTopologyToDirty() {m_pointTopologyDirty = true;}
-    void cleanPointTopologyFromDirty() {m_pointTopologyDirty = false;}
+    void setPointTopologyToDirty();
+    void cleanPointTopologyFromDirty();
     const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
 
     /// \brief function to add a topologyEngine to the current list of engines.

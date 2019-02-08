@@ -58,8 +58,6 @@ namespace component
 namespace _stlexporter_
 {
 
-SOFA_DECL_CLASS(STLExporter)
-
 int STLExporterClass = core::RegisterObject("Save a topology in file")
         .add< STLExporter >();
 
@@ -318,6 +316,7 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
 
     outfile.close();
     msg_info() << "File '" << filename << "' written" ;
+    delete[] buffer;
     return true;
 }
 

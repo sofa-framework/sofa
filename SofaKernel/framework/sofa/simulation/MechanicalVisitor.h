@@ -21,9 +21,6 @@
 ******************************************************************************/
 #ifndef SOFA_SIMULATION_MECHANICALVISITOR_H
 #define SOFA_SIMULATION_MECHANICALVISITOR_H
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/VecId.h>
@@ -42,8 +39,6 @@
 //TO REMOVE ONCE THE CONVERGENCE IS DONE
 #include <sofa/core/behavior/BaseLMConstraint.h>
 
-//#include <sofa/defaulttype/BaseMatrix.h>
-//#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
 #include <iostream>
@@ -74,14 +69,6 @@ protected:
 
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
-
-    struct forceMaskActivator : public std::binary_function<core::behavior::BaseMechanicalState*, bool , void >
-    {
-        void operator()( core::behavior::BaseMechanicalState* m, bool activate ) const
-        {
-            m->forceMask.activate(activate);
-        }
-    };
 
 public:
 
@@ -114,12 +101,16 @@ public:
 
     static inline void ForceMaskActivate( const helper::vector<core::behavior::BaseMechanicalState*>& v )
     {
-        std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), true ) );
+        std::for_each( v.begin(), v.end(), [](core::behavior::BaseMechanicalState* m) {
+            m->forceMask.activate(true);
+        });
     }
 
     static inline void ForceMaskDeactivate( const helper::vector<core::behavior::BaseMechanicalState*>& v)
     {
-        std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), false ) );
+        std::for_each( v.begin(), v.end(), [](core::behavior::BaseMechanicalState* m) {
+            m->forceMask.activate(false);
+        });
     }
 
 
@@ -727,43 +718,7 @@ public:
     virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
 
     virtual const char* getClassName() const { return "MechanicalVOpVisitor";}
-    virtual std::string getInfos() const
-    {
-        std::string info="v=";
-        std::string aLabel;
-        std::string bLabel;
-        std::string fLabel;
-
-        std::ostringstream out;
-        out << "f["<<f<<"]";
-        fLabel+= out.str();
-
-        if (!a.isNull())
-        {
-            info+="a";
-            aLabel="a[" + a.getName() + "] ";
-            if (!b.isNull())
-            {
-                info += "+b*f";
-                bLabel += "b[" + b.getName() + "] ";
-            }
-        }
-        else
-        {
-            if (!b.isNull())
-            {
-                info += "b*f";
-                bLabel += "b[" + b.getName() + "] ";
-            }
-            else
-            {
-                info+="zero"; fLabel.clear();
-            }
-        }
-        info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
-        return info;
-    }
-    //virtual void processNodeBottomUp(simulation::Node* node);
+    virtual std::string getInfos() const ;
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -794,8 +749,6 @@ class SOFA_SIMULATION_CORE_API MechanicalVMultiOpVisitor : public BaseMechanical
 public:
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     bool mapped;
-    //     MechanicalVMultiOpVisitor()
-    //     {}
     MechanicalVMultiOpVisitor(const sofa::core::ExecParams* params, const VMultiOp& o)
         : BaseMechanicalVisitor(params), mapped(false), ops(o)
     {
@@ -809,60 +762,9 @@ public:
     virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
 
-    //virtual void processNodeBottomUp(simulation::Node* node);
-
     virtual const char* getClassName() const { return "MechanicalVMultiOpVisitor"; }
-    virtual std::string getInfos() const
-    {
-        std::ostringstream out;
-        for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
-        {
-            if (it != ops.begin())
-                out << " ;   ";
-            core::MultiVecId r = it->first;
-            out << r.getName();
-            const helper::vector< std::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
-            int nop = (int)operands.size();
-            if (nop==0)
-            {
-                out << " = 0";
-            }
-            else if (nop==1)
-            {
-                if (operands[0].first.getName() == r.getName())
-                    out << " *= " << operands[0].second;
-                else
-                {
-                    out << " = " << operands[0].first.getName();
-                    if (operands[0].second != 1.0)
-                        out << "*"<<operands[0].second;
-                }
-            }
-            else
-            {
-                int i;
-                if (operands[0].first.getName() == r.getName() && operands[0].second == 1.0)
-                {
-                    out << " +=";
-                    i = 1;
-                }
-                else
-                {
-                    out << " =";
-                    i = 0;
-                }
-                for (; i<nop; ++i)
-                {
-                    out << " " << operands[i].first.getName();
-                    if (operands[i].second != 1.0)
-                        out << "*"<<operands[i].second;
-                    if (i < nop-1)
-                        out << " +";
-                }
-            }
-        }
-        return out.str();
-    }
+    virtual std::string getInfos() const ;
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -966,12 +868,8 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVNormVisitor";}
-    virtual std::string getInfos() const
-    {
-        std::string name("v= norm(a) with a[");
-        name += a.getName() + "]";
-        return name;
-    }
+    virtual std::string getInfos() const ;
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -1028,7 +926,8 @@ public:
     virtual const char* getClassName() const { return "MechanicalPropagateDxVisitor"; }
     virtual std::string getInfos() const
     {
-        std::string name="["+dx.getName()+"]"; return name;
+        std::string name="["+dx.getName()+"]";
+        return name;
     }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1153,15 +1052,8 @@ public:
     virtual const char* getClassName() const { return "MechanicalAddMDxVisitor"; }
     virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-#else
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
-#endif
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1172,13 +1064,6 @@ public:
     void setReadWriteVectors()
     {
         addReadVector(res);
-
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-        if (!dx.isNull()) addReadWriteVector(dx);
-        else addReadVector(dx);
-#else
-        addReadVector(dx);
-#endif
     }
 #endif
 };
@@ -1441,19 +1326,9 @@ public:
     sofa::core::MultiVecDerivId v;
     bool ignoreMask;
 
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    // compute the acceleration created by the input velocity and the derivative of the mapping
-    MultiVecDerivId a;
-    MechanicalPropagateOnlyPositionAndVelocityVisitor(
-        const sofa::core::MechanicalParams* mparams, SReal time=0,
-        sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity(),
-        sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx() , bool m=true); //
-#else
     MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
-            bool m=true );
-#endif
-  
+            bool m=true );  
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
@@ -1462,7 +1337,7 @@ public:
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
-        return false; // !map->isMechanical();
+        return false;
     }
 
     /// Return a class name for this visitor
@@ -1501,18 +1376,9 @@ public:
     sofa::core::MultiVecDerivId v;
     bool ignoreMask;    
     
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    // compute the acceleration created by the input velocity and the derivative of the mapping
-    sofa::core::MultiVecDerivId a;
-    MechanicalPropagateOnlyVelocityVisitor(
-        const sofa::core::MechanicalParams* mparams, SReal time=0,
-        sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity(),
-        sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx() , bool m=true);
-#else
     MechanicalPropagateOnlyVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
-#endif
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
@@ -1551,18 +1417,9 @@ public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
 
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    // compute the acceleration created by the input velocity and the derivative of the mapping
-    sofa::core::MultiVecDerivId a;
-    MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
-            SReal time=0, sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position() ,
-            sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity() ,
-            sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx()); //
-#else
     MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,SReal time=0,
                                             sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(),
                                             sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity());
-#endif
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
@@ -1887,18 +1744,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalWriteLMConstraint"; }
-    virtual std::string getInfos() const
-    {
-        std::string name;
-        if      (order == core::ConstraintParams::ACC)
-            name= "["+sofa::core::VecId::dx().getName()+"]";
-        else if (order == core::ConstraintParams::VEL)
-            name= "["+sofa::core::VecId::velocity().getName()+"]";
-        else if (order == core::ConstraintParams::POS)
-            name= "["+sofa::core::VecId::position().getName()+"]";
-        return name;
-    }
-
+    virtual std::string getInfos() const ;
 
     virtual void clear() {datasC.clear(); offset=0;}
     virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
@@ -2100,7 +1946,7 @@ public:
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
-        return false; // !map->isMechanical();
+        return false;
     }
 
     /// Return a class name for this visitor
@@ -2143,7 +1989,7 @@ public:
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
-        return false; // !map->isMechanical();
+        return false;
     }
 
     /// Specify whether this action can be parallelized.
@@ -2181,7 +2027,7 @@ public:
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
-        return false; // !map->isMechanical();
+        return false;
     }
 
     /// Specify whether this action can be parallelized.
@@ -2423,9 +2269,7 @@ public:
 #endif
 };
 
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_SIMULATION_MECHANICALVISITOR_CPP)
+#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_CPP)
 extern template class MechanicalVAvailVisitor<sofa::core::V_COORD>;
 extern template class MechanicalVAvailVisitor<sofa::core::V_DERIV>;
 extern template class MechanicalVAllocVisitor<sofa::core::V_COORD>;

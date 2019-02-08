@@ -51,8 +51,6 @@ int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation lo
         .addAlias("MultiStepMasterSolver")
         ;
 
-SOFA_DECL_CLASS(MultiStepAnimationLoop);
-
 MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
     , collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
@@ -131,11 +129,12 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
+    if (!SOFA_NO_UPDATE_BBOX)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

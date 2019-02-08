@@ -247,6 +247,16 @@ Quater<Real> Quater<Real>::inverse() const
     return ret;
 }
 
+/// Returns true if norm of Quaternion is one, false otherwise.
+template<class Real>
+bool Quater<Real>::isNormalized()
+{
+    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
+    double epsilon = 1.0e-10;
+    return (std::abs(mag - 1.0) < epsilon);
+}
+
+
 /// Quater<Real>s always obey:  a^2 + b^2 + c^2 + d^2 = 1.0
 /// If they don't add up to 1.0, dividing by their magnitude will
 /// renormalize them.
@@ -254,12 +264,20 @@ template<class Real>
 void Quater<Real>::normalize()
 {
     Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
-    if( mag != 0)
+    double epsilon = 1.0e-10;
+    if (std::abs(mag - 1.0) > epsilon)
     {
-        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-        for (int i = 0; i < 4; i++)
+        if( mag != 0)
         {
-            _q[i] *= sqr;
+            Real sqr = static_cast<Real>(1.0 / sqrt(mag));
+            for (int i = 0; i < 4; i++)
+            {
+                _q[i] *= sqr;
+            }
+        }
+        else
+        {
+            _q[3] = 1;
         }
     }
 }
@@ -488,8 +506,8 @@ void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle) cons
 
     Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-    // to avoid numerical instabilities of acos for theta < 5°
-    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    // to avoid numerical instabilities of acos for theta < 5Â°
+    if(q[3]>0.999) // theta < 5Â° -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
         angle = (Real)(2.0 * asin(sin_half_theta));
@@ -523,8 +541,8 @@ defaulttype::Vec<3,Real> Quater<Real>::quatToRotationVector() const
 
     Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-    // to avoid numerical instabilities of acos for theta < 5°
-    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    // to avoid numerical instabilities of acos for theta < 5Â°
+    if(q[3]>0.999) // theta < 5Â° -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
         angle = (Real)(2.0 * asin(sin_half_theta));
@@ -547,21 +565,24 @@ defaulttype::Vec<3,Real> Quater<Real>::quatToRotationVector() const
 }
 
 
+/// Compute the Euler angles:
+/// Roll: rotation about the X-axis
+/// Pitch: rotation about the Y-axis
+/// Yaw: rotation about the Z-axis
 template<class Real>
 defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 {
-///    Compute the Euler angles:
-///    Roll: rotation about the X-axis
-///    Pitch: rotation about the Y-axis
-///    Yaw: rotation about the Z-axis
-
     Quater<Real> q = *this;
-        q.normalize();
-        defaulttype::Vec<3,Real> vEuler;
-        vEuler[0] = atan2(2*(q[3]*q[0] + q[1]*q[2]) , (1-2*(q[0]*q[0] + q[1]*q[1])));   //roll
-        vEuler[1] = asin(2*(q[3]*q[1] - q[2]*q[0]));                                    //pitch
-        vEuler[2] = atan2(2*(q[3]*q[2] + q[0]*q[1]) , (1-2*(q[1]*q[1] + q[2]*q[2])));   //yaw
-        return vEuler;
+    q.normalize();
+
+    // Cancel numerical drifting by clamping on [-1 ; 1]
+    Real y = std::max(Real(-1.0), std::min(Real(1.0), Real(2.)*(q[3]*q[1] - q[2]*q[0])));
+
+    defaulttype::Vec<3,Real> vEuler;
+    vEuler[0] = atan2(2*(q[3]*q[0] + q[1]*q[2]) , (1-2*(q[0]*q[0] + q[1]*q[1])));   //roll
+    vEuler[1] = asin(y); // pitch
+    vEuler[2] = atan2(2*(q[3]*q[2] + q[0]*q[1]) , (1-2*(q[1]*q[1] + q[2]*q[2])));   //yaw
+    return vEuler;
 }
 
 /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.

@@ -55,15 +55,6 @@ TLineModel<DataTypes>::TLineModel()
     enum_type = LINE_TYPE;
 }
 
-//LineMeshModel::LineMeshModel()
-//: meshRevision(-1), mesh(NULL)
-//{
-//}
-
-//LineSetModel::LineSetModel()
-//: mesh(NULL)
-//{
-//}
 
 template<class DataTypes>
 void TLineModel<DataTypes>::resize(int size)
@@ -77,7 +68,6 @@ void TLineModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-//    mpoints = getContext()->get<sofa::component::collision::PointModel>();
     this->getContext()->get(mpoints);
 
     if (mstate==NULL)
@@ -101,7 +91,7 @@ void TLineModel<DataTypes>::init()
     this->topology = bmt;
     resize( bmt->getNbEdges() );
 
-    for(int i = 0; i < bmt->getNbEdges(); i++)
+    for(core::topology::BaseMeshTopology::EdgeID i = 0; i < bmt->getNbEdges(); i++)
     {
         elems[i].p[0] = bmt->getEdge(i)[0];
         elems[i].p[1] = bmt->getEdge(i)[1];
@@ -151,16 +141,12 @@ void TLineModel<DataTypes>::init()
 template<class DataTypes>
 void TLineModel<DataTypes>::handleTopologyChange()
 {
-    //if (edges != &myedges)
-    //{
-    // We use the same edge array as the topology -> only resize and recompute flags
-
     core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (bmt)
     {
         resize(bmt->getNbEdges());
 
-        for(int i = 0; i < bmt->getNbEdges(); i++)
+        for(size_t i = 0; i < bmt->getNbEdges(); i++)
         {
             elems[i].p[0] = bmt->getEdge(i)[0];
             elems[i].p[1] = bmt->getEdge(i)[1];
@@ -168,10 +154,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
         needsUpdate = true;
     }
-
-    //	return;
-    //}
-
     if (bmt)
     {
         std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
@@ -185,7 +167,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
             {
             case core::topology::ENDING_EVENT :
             {
-                //	sout << "INFO_print : Col - ENDING_EVENT" << sendl;
                 needsUpdate = true;
                 break;
             }
@@ -193,7 +174,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
             case core::topology::EDGESADDED :
             {
-                //	sout << "INFO_print : Col - EDGESADDED" << sendl;
                 const core::topology::EdgesAdded *ta = static_cast< const core::topology::EdgesAdded * >( *itBegin );
 
                 for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
@@ -210,7 +190,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
             case core::topology::EDGESREMOVED :
             {
-                //sout << "INFO_print : Col - EDGESREMOVED" << sendl;
                 unsigned int last;
                 unsigned int ind_last;
 
@@ -226,8 +205,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
                 const sofa::helper::vector< unsigned int > &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
 
                 LineData tmp;
-                //topology::Edge tmp2;
-
                 for (unsigned int i = 0; i < tab.size(); ++i)
                 {
                     unsigned int ind_k = tab[i];
@@ -236,14 +213,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     elems[ind_k] = elems[last];
                     elems[last] = tmp;
 
-                    //sout << "INFO_print : Col - myedges.size() = " << myedges.size() << sendl;
-                    //sout << "INFO_print : Col - ind_k = " << ind_k << sendl;
-                    //sout << "INFO_print : Col - last = " << last << sendl;
-
-                    //tmp2 = myedges[ind_k];
-                    //myedges[ind_k] = myedges[last];
-                    //myedges[last] = tmp2;
-
                     ind_last = elems.size() - 1;
 
                     if(last != ind_last)
@@ -251,26 +220,18 @@ void TLineModel<DataTypes>::handleTopologyChange()
                         tmp = elems[last];
                         elems[last] = elems[ind_last];
                         elems[ind_last] = tmp;
-
-                        //tmp2 = myedges[last];
-                        //myedges[last] = myedges[ind_last];
-                        //myedges[ind_last] = tmp2;
                     }
-
-                    //myedges.resize( elems.size() - 1 );
                     resize( elems.size() - 1 );
 
                     --last;
                 }
 
                 needsUpdate=true;
-
                 break;
             }
 
             case core::topology::POINTSREMOVED :
             {
-                //sout << "INFO_print : Col - POINTSREMOVED" << sendl;
                 if (bmt)
                 {
                     unsigned int last = bmt->getNbPoints() - 1;
@@ -326,7 +287,6 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
             case core::topology::POINTSRENUMBERING:
             {
-                //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
                 if (bmt)
                 {
                     unsigned int i;
@@ -346,12 +306,12 @@ void TLineModel<DataTypes>::handleTopologyChange()
             default:
                 // Ignore events that are not Edge  related.
                 break;
-            }; // switch( changeType )
+            };
 
             resize( elems.size() ); // not necessary
 
             ++itBegin;
-        } // while( changeIt != last; )
+        }
     }
 }
 
@@ -439,16 +399,11 @@ void TLineModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template<class DataTypes>
 bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
-    //msg_info()<<"canCollideWithElement is called"<<std::endl;
-
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
     sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
     /*
         TODO : separate 2 case: the model is only composed of lines or is composed of triangles
-        bool NoTriangles = true;
-        if( this->getContext()->get<TriangleModel>  != NULL)
-            NoTriangles = false;
     */
     int p11 = elems[index].p[0];
     int p12 = elems[index].p[1];
@@ -461,8 +416,6 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     }
     const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
     const helper::vector <unsigned int>& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
-    //msg_info()<<"EdgesAroundVertex11 ok"<<std::endl;
-
 
     if (model2 == this)
     {
@@ -517,8 +470,6 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     }
     else if (model2 == mpoints)
     {
-        //msg_info()<<" point Model"<<std::endl;
-
         // if point belong to the segment, return false
         if (index2==p11 || index2==p12)
             return false;
@@ -544,10 +495,7 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
 
         // only removes collision with the two vertices of the segment
         // TODO: neighborhood search !
-        //return !(index2==p11 || index2==p12);
     }
-
-
     else
         return model2->canCollideWithElement(index2, this, index);
 }

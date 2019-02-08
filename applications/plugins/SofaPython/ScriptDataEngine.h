@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/Node.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include "ScriptFunction.h"
 
 namespace sofa
@@ -37,7 +37,8 @@ public:
     virtual void reinit() override ;
 
 
-    virtual void update() override ;
+    void call_update();
+    virtual void doUpdate() override ;
 
 
 protected:

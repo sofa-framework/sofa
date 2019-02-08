@@ -22,9 +22,7 @@
 #ifndef PLUGINS_PIM_COMPUTEMESHINTERSECTION_H
 #define PLUGINS_PIM_COMPUTEMESHINTERSECTION_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -101,13 +99,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
+extern template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace pim

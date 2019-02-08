@@ -69,9 +69,7 @@ void AddFramePerformer<DataTypes>::start()
 
 template <class DataTypes>
 void AddFramePerformer<DataTypes>::execute()
-{
-    std::cout << "Frame2" << std::endl;
-};
+{};
 
 template <class DataTypes>
 AddFramePerformer<DataTypes>::AddFramePerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i)

@@ -392,12 +392,7 @@ typedef Image<unsigned long> ImageUL;
 typedef Image<float> ImageF;
 typedef Image<double> ImageD;
 typedef Image<bool> ImageB;
-
-#ifdef SOFA_FLOAT
-typedef ImageF ImageR;
-#else
-typedef ImageD ImageR;
-#endif
+typedef Image<SReal> ImageR;
 
 template<> inline const char* ImageC::Name() { return "ImageC"; }
 template<> inline const char* ImageUC::Name() { return "ImageUC"; }
@@ -849,14 +844,11 @@ public:
             if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
 
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
-            //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
-            //            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
 
             ResizableExtVector<Coord> tposition; tposition.resize(verts.size());
             unsigned int ind;
             for(unsigned int i=0; i<tposition.size(); i++)
             {
-                /*                if(!extvertPosIdx->empty()) ind=(*extvertPosIdx)[i]; else */ind=i;
                 tposition[i]=transform->toImage(Coord((Real)verts[ind][0],(Real)verts[ind][1],(Real)verts[ind][2]));
             }
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);

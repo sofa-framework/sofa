@@ -47,8 +47,6 @@ namespace component
 namespace _meshexporter_
 {
 
-SOFA_DECL_CLASS(MeshExporter)
-
 int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
                                              "Supported format are: " msgendl
                                              "- vtkxml" msgendl
@@ -189,8 +187,11 @@ std::string MeshExporter::getMeshFilename(const char* ext)
             case 'E' : oss << nbce; break;
             case 'e' : oss << nbe; break;
             case '%' : oss << '%';
+                msg_error() << "Invalid special character %: " << c << " in filename.";
+                break;
             default:
-                msg_error() << "Invalid special character %" << c << " in filename.";
+                msg_error() << "Invalid character: " << c << " in filename.";
+                break;
             }
         }
     }
@@ -234,7 +235,7 @@ bool MeshExporter::writeMeshVTKXML()
     //write points
     outfile << "      <Points>\n";
     outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
-    for (int i=0 ; i<nbp; i++)
+    for (size_t i=0 ; i<nbp; i++)
     {
         outfile << "          " << pointsPos[i] << "\n";
     }
@@ -393,7 +394,7 @@ bool MeshExporter::writeMeshVTK()
     outfile << "POINTS " << nbp << " float\n";
 
     //Write Points
-    for (int i=0 ; i<nbp; i++)
+    for (size_t i=0 ; i<nbp; i++)
     {
         outfile << pointsPos[i] << "\n";
     }
@@ -506,7 +507,7 @@ bool MeshExporter::writeMeshGmsh()
     outfile << "$Nodes\n";
 
     outfile << nbp << "\n";
-    for (int i=0 ; i<nbp; i++)
+    for (size_t i=0 ; i<nbp; i++)
     {
         outfile << 1+i << ' ' << pointsPos[i] << "\n";
     }
@@ -616,7 +617,7 @@ bool MeshExporter::writeMeshNetgen()
 
     //Write Points
     outfile << nbp << "\n";
-    for (int i=0 ; i<nbp; i++)
+    for (size_t i=0 ; i<nbp; i++)
     {
         outfile << pointsPos[i] << "\n";
     }
@@ -712,7 +713,7 @@ bool MeshExporter::writeMeshTetgen()
     // <# of points> <dimension (must be 3)> <# of attributes> <# of boundary markers (0 or 1)>
     outfile << nbp << ' ' << 3 << ' ' << 0 << ' ' << 0 << "\n";
     // <point #> <x> <y> <z> [attributes] [boundary marker]
-    for (int i=0 ; i<nbp; i++)
+    for (size_t i=0 ; i<nbp; i++)
     {
         outfile << i+1 << ' ' << pointsPos[i] << "\n";
     }

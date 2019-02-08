@@ -251,7 +251,7 @@ void EvalPointsDistance<DataTypes>::doDraw(const core::visual::VisualParams* vpa
     for (int i=0; i<n; ++i)
     {
         sofa::defaulttype::Vector3 v0(x1[s1+i][0],x1[s1+i][1],x1[s1+i][2]);
-        sofa::defaulttype::Vector3 v1(x2[s1+i][0],x2[s1+i][1],x2[s1+i][2]);
+        sofa::defaulttype::Vector3 v1(x2[s2+i][0],x2[s2+i][1],x2[s2+i][2]);
         vertices.push_back(v0);
         vertices.push_back(v1);
     }

@@ -28,8 +28,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
-
-/// To emit extra debug message set this to true.
 #define EMIT_EXTRA_DEBUG_MESSAGE false
 
 namespace sofa
@@ -56,8 +54,6 @@ using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
 
-SOFA_DECL_CLASS(LocalMinDistance)
-
 int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (for constraint methods) if two primitives are close enough to consider they collide")
         .add< LocalMinDistance >()
         ;
@@ -74,11 +70,6 @@ LocalMinDistance::LocalMinDistance()
 void LocalMinDistance::init()
 {
     intersectors.add<CubeModel, CubeModel, LocalMinDistance>(this);
-
-    //intersectors.ignore<SphereModel, PointModel>();		// SphereModel are not supported yet
-    //intersectors.ignore<LineModel, SphereModel>();
-    //intersectors.ignore<TriangleModel, SphereModel>();
-
     intersectors.add<SphereModel, SphereModel, LocalMinDistance>(this); // sphere-sphere is always activated
     intersectors.add<SphereModel, PointModel, LocalMinDistance>(this); // sphere-point is always activated
 
@@ -175,27 +166,8 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
         }
         else
         {
-            /*
-            core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
-            if (e1_cfa != 0)
-            {
-                if (!e1_cfa->validate(e1, PQ))
-                    return false;
-            }
-
-            core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
-            if (e2_cfa != 0)
-            {
-                Vector3 QP = -PQ;
-                return e2_cfa->validate(e2, QP);
-            }
-            */
-
             return true;
         }
-
-        // end filter
-
     }
     else
         return false;
@@ -1387,7 +1359,6 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
         // compute the normal of the triangle situated on the right
         const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[1]): topology->getTriangle(trianglesAroundEdge[0]);
-        //const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(trianglesAroundEdge[0]);
         n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
         n1.normalize();
         nMean = n1;
@@ -1396,7 +1367,6 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
         // compute the normal of the triangle situated on the left
         const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[0]): topology->getTriangle(trianglesAroundEdge[1]);
-        //const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(trianglesAroundEdge[1]);
         n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
         n2.normalize();
         nMean += n2;
@@ -1444,8 +1414,6 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     {
         n1 = PQ;
         n1.normalize();
-        //
-        ///////// ??? /////////
         if (fabs(dot(AB,n1)) > angleCone.getValue() + 0.0001 )		// dot(AB,n1) should be equal to 0
         {
             // means that proximity was detected with a null determinant
@@ -1454,10 +1422,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
                 <<"bad case detected  -  abs(dot(AB,n1)) ="<<fabs(dot(AB,n1)) ;
             return false;
         }
-        //////////////////////
-
     }
-    //sout<<"trianglesAroundEdge.size()"<<trianglesAroundEdge.size()<<sendl;
     return true;
 }
 

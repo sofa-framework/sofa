@@ -22,10 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 
@@ -184,19 +180,8 @@ public:
     /// Set widget
     void setWidget(const char* val) { widget = val; }
 
-    /// True if the value has been modified
-    /// If this data is linked, the value of this data will be considered as modified
-    /// (even if the parent's value has not been modified)
-    bool isSet() const { return m_isSets[currentAspect()]; }
-
     /// True if the counter of modification gives valid information.
     virtual bool isCounterValid() const = 0;
-
-    /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset() { m_isSets[currentAspect()] = false; }
-
-    /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet() { m_isSets[currentAspect()] = true; }
 
     /// @name Flags
     /// @{
@@ -257,10 +242,6 @@ public:
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
     void setName(const std::string& name) { m_name=name; }
 
-    /// Return the number of changes since creation.
-    /// This can be used to efficiently detect changes.
-    int getCounter() const { return m_counters[currentAspect()]; }
-
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
     /// @{
@@ -268,17 +249,17 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet(const core::ExecParams* params) const { return m_isSets[currentAspect(params)]; }
+    bool isSet(const core::ExecParams* params=nullptr) const { return m_isSets[currentAspect(params)]; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset(const core::ExecParams* params) { m_isSets[currentAspect(params)] = false; }
+    void unset(const core::ExecParams* params=nullptr) { m_isSets[currentAspect(params)] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet(const core::ExecParams* params) { m_isSets[currentAspect(params)] = true; }
+    void forceSet(const core::ExecParams* params=nullptr) { m_isSets[currentAspect(params)] = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params) const { return m_counters[currentAspect(params)]; }
+    int getCounter(const core::ExecParams* params=nullptr) const { return m_counters[currentAspect(params)]; }
 
     /// @}
 

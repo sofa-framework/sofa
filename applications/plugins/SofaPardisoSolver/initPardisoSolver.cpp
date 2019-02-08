@@ -89,4 +89,3 @@ namespace component
 
 } // namespace sofa
 
-SOFA_LINK_CLASS(SparsePARDISOSolver)

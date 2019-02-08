@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_CPP
 #include <SofaGeneralEngine/ExtrudeSurface.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -36,23 +36,13 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ExtrudeSurface)
-
 int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
-#ifndef SOFA_FLOAT
-        .add< ExtrudeSurface<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ExtrudeSurface<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ExtrudeSurface<Vec3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API ExtrudeSurface<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API ExtrudeSurface<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API ExtrudeSurface<Vec3Types>;
+ 
 
 
 } // namespace constraint

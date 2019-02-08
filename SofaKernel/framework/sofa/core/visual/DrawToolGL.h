@@ -55,16 +55,16 @@ public:
     virtual void drawPoint(const Vector3 &p, const Vec4f &c);
     //normal on a point is useless
     virtual void drawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
-    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour);
-    virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour);
+    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& color);
+    virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& color);
 
-    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour);
-    virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& colour);
-    virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours);
-    virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f& colour);
+    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& color);
+    virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& color);
+    virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colors);
+    virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f& color);
 
-    virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& colour);
-    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& colour);
+    virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& color);
+    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& color);
 
     virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal);
@@ -76,48 +76,48 @@ public:
     virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3);
-    virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& colour);
+    virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& color);
     virtual void drawTriangles(const std::vector<Vector3> &points,
-            const std::vector< Vec4f > &colour);
-    virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec4f& colour);
+            const std::vector< Vec4f > &color);
+    virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec4f& color);
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector< Vec3i > &index,
             const std::vector<Vector3>  &normal,
-            const Vec4f& colour);
+            const Vec4f& color);
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
-            const std::vector< Vec4f > &colour);
+            const std::vector< Vec4f > &color);
 
     virtual void drawTriangleStrip(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
-            const Vec4f& colour);
+            const Vec4f& color);
 
     virtual void drawTriangleFan(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
-            const Vec4f& colour);
+            const Vec4f& color);
 
     virtual void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size);
-    virtual void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size, const Vec4f &colour);
+    virtual void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size, const Vec4f &color);
 
-    virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour);
-    virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& colour);
-    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour);
-    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& colour);
+    virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& color);
+    virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& color);
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& color);
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& color);
 
-    virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& colour, int subd=16);
+    virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& color, int subd=16);
 
-    virtual void drawCube    (const float& radius, const Vec4f& colour, const int& subd=16);
+    virtual void drawCube    (const float& radius, const Vec4f& color, const int& subd=16);
 
-    virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16);
+    virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16);
 
-    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16);
+    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16);
 
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16);
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& colour,  int subd=16);
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16);
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& color,  int subd=16);
 
-    virtual void drawCross(const Vector3&p, float length, const Vec4f& colour);
+    virtual void drawCross(const Vector3&p, float length, const Vec4f& color);
 
-    virtual void drawPlus    (const float& radius, const Vec4f& colour, const int& subd=16);
+    virtual void drawPlus    (const float& radius, const Vec4f& color, const int& subd=16);
 
     virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal);
@@ -129,18 +129,18 @@ public:
     virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4);
-    virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& colour) ;
-    virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<Vec4f>& colours);
+    virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& color) ;
+    virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<Vec4f>& colors);
 
 
-    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour);
-    virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour);
-    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale);
+    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &color);
+    virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& color);
+    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const Vec4f& color, const float scale);
 
     virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
-        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &colour);
-    virtual void drawHexahedra(const std::vector<Vector3> &points, const Vec4f& colour);
-    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale);
+        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &color);
+    virtual void drawHexahedra(const std::vector<Vector3> &points, const Vec4f& color);
+    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& color, const float scale);
 
     virtual void drawSphere( const Vector3 &p, float radius);
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
@@ -153,9 +153,9 @@ public:
 
     virtual void clear();
 
-    virtual void setMaterial(const Vec4f &colour);
+    virtual void setMaterial(const Vec4f &color);
 
-    virtual void resetMaterial(const Vec4f &colour);
+    virtual void resetMaterial(const Vec4f &color);
     virtual void resetMaterial();
 
     virtual void pushMatrix();
@@ -196,7 +196,7 @@ protected:
     virtual void internalDrawPoint(const Vector3 &p, const Vec4f &c);
     virtual void internalDrawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
 
-    virtual void internalDrawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour);
+    virtual void internalDrawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& color);
 
     virtual void internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal);
@@ -231,10 +231,6 @@ public:
     int getPolygonMode() {return mPolygonMode;}
     bool getWireFrameEnabled() {return mWireFrameEnabled;}
 };
-
-//#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_DRAWTOOLGL_CPP)
-//extern template class SOFA_CORE_API BasicShapesGL_Sphere < sofa::defaulttype::Vector3 >;
-//#endif // defined(SOFA_EXTERN_TEMPLATE)
 
 }//namespace visual
 

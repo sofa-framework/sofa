@@ -35,15 +35,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-template <class TDataTypes>
-OscillatorConstraint<TDataTypes>::OscillatorConstraint()
-    : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
-    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, mean, amplitude, pulsation, phase]"))
-{
-}
-
-
 template <class TDataTypes>
 OscillatorConstraint<TDataTypes>::OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(mstate)
@@ -68,15 +59,9 @@ template <class TDataTypes> template <class DataDeriv>
 void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     const helper::vector<Oscillator> &oscillators = constraints.getValue();
-    //Real t = (Real) this->getContext()->getTime();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
-        //const Deriv& a = constraints[i].second.amplitude;
-        //const Real& w = constraints[i].second.pulsation;
-        //const Real& p = constraints[i].second.phase;
-
-        //res[index] = a*(-w)*w*sin(w*t+p);
         res[index] = Deriv();
     }
 }
@@ -136,6 +121,18 @@ void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::Mechani
         projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
+}
+
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator()
+{
+}
+
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator(unsigned int i, const Coord& m, const Deriv& a,
+        const Real& w, const Real& p) :
+    index(i), mean(m), amplitude(a), pulsation(w), phase(p)
+{
 }
 
 } // namespace constraint

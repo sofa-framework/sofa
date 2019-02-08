@@ -26,7 +26,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 #include <vector>
@@ -187,19 +187,10 @@ private:
     helper::vector<std::set<int> > neighborhood;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3dTypes >;
-#endif
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
+extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+
+
 #endif
 
 } // namespace mapping

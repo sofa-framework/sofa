@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaGraphComponent/Gravity.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
@@ -48,8 +48,6 @@ void Gravity::apply()
 {
     getContext()->setGravity( f_gravity.getValue() );
 }
-
-SOFA_DECL_CLASS(Gravity)
 
 int GravityClass = core::RegisterObject("Gravity in world coordinates")
         .add< Gravity >()

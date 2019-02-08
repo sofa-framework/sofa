@@ -35,11 +35,7 @@
 #include <iostream>
 #include <map>
 
-#ifdef PS3
-typedef float GLdouble;
-#else
 typedef double GLdouble;
-#endif
 
 namespace sofa
 {
@@ -97,7 +93,6 @@ public:
             return SpatialVector( lineVec *a, freeVec * a);
         }
 
-        //template<class Real2>
         SpatialVector& operator *= ( Real a )
         {
             lineVec *=a;
@@ -297,15 +292,10 @@ public:
         /// Write an OpenGL matrix encoding the transformation of the coordinate system of the child wrt the coordinate system of the parent.
         void writeOpenGlMatrix( GLdouble *m ) const;
         /// Draw the axes of the child coordinate system in the parent coordinate system
-        // void glDraw() const;
         /// Print the origin of the child in the parent coordinate system and the quaternion defining the orientation of the child wrt the parent
         inline friend std::ostream& operator << (std::ostream& out, const Transform& t )
         {
-            // out<<"("<<t.getOrigin()<<")";
-            // out<<"("<<t.getOrientation()<<")";
-
             out << t.getOrigin() << " " << t.getOrientation();
-
             return out;
         }
 
@@ -426,13 +416,9 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_DEFAULTTYPE_SOLIDTYPES_CPP)
-#ifndef SOFA_FLOAT
+#if !defined(SOFA_DEFAULTTYPE_SOLIDTYPES_CPP)
 extern template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
-#endif
+
 #endif
 
 }// defaulttype

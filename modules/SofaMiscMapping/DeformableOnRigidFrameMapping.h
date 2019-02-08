@@ -25,12 +25,6 @@
 
 #include <sofa/core/Multi2Mapping.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/topology/Topology.h>
-#include <vector>
-
-
-
 namespace sofa
 {
 
@@ -40,7 +34,11 @@ namespace component
 namespace mapping
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/** \brief Maps a deformable mechanical state to another deformable mechanical state mapped onto a rigid frame.
+ *  Inputs: One Vec3 and One Rigid  mechanical objects
+ *  Output: One Vec3 mechanical object
+ */
+
 template<class InDataTypes, class OutDataTypes>
 class DeformableOnRigidFrameMappingInternalData
 {
@@ -128,79 +126,23 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     virtual void apply(
         const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
-    {
-        if(dataVecOutPos.empty() || dataVecInPos.empty())
-            return;
-
-        const InRootVecCoord* inroot = NULL;
-
-        //We need only one input In model and input Root model (if present)
-        OutVecCoord& out = *dataVecOutPos[0]->beginEdit();
-        const InVecCoord& in = dataVecInPos[0]->getValue();
-
-        if (!dataVecInRootPos.empty())
-            inroot = &dataVecInRootPos[0]->getValue();
-
-        apply(out, in, inroot);
-
-        dataVecOutPos[0]->endEdit();
-    }
+        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override;
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
     virtual void applyJ(
         const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
-    {
-        if(dataVecOutVel.empty() || dataVecInVel.empty())
-            return;
-
-        const InRootVecDeriv* inroot = NULL;
-
-        //We need only one input In model and input Root model (if present)
-        OutVecDeriv& out = *dataVecOutVel[0]->beginEdit();
-        const InVecDeriv& in = dataVecInVel[0]->getValue();
-
-        if (!dataVecInRootVel.empty())
-            inroot = &dataVecInRootVel[0]->getValue();
-
-        applyJ(out,in, inroot);
-
-        dataVecOutVel[0]->endEdit();
-    }
+        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override;
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
     virtual void applyJT(
         const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
         const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
-    {
-        if(dataVecOutForce.empty() || dataVecInForce.empty())
-            return;
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
 
-        InRootVecDeriv* outroot = NULL;
-
-        //We need only one input In model and input Root model (if present)
-        InVecDeriv& out = *dataVecOutForce[0]->beginEdit();
-        const OutVecDeriv& in = dataVecInForce[0]->getValue();
-
-        if (!dataVecOutRootForce.empty())
-            outroot = dataVecOutRootForce[0]->beginEdit();
-
-        applyJT(out,in, outroot);
-
-        dataVecOutForce[0]->endEdit();
-        if (outroot != NULL)
-            dataVecOutRootForce[0]->endEdit();
-    }
-
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override
-    {
-        //serr<<"Warning ! DeformableOnRigidFrameMapping::applyDJT not implemented"<<sendl;
-    }
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
 
     //ApplyJT Constraint
@@ -208,35 +150,14 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     virtual void applyJT(
         const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
         const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
-    {
-        if(dataMatOutConst.empty() || dataMatInConst.empty())
-            return;
-
-        InRootMatrixDeriv* outroot = NULL;
-
-        //We need only one input In model and input Root model (if present)
-        InMatrixDeriv& out = *dataMatOutConst[0]->beginEdit();
-        const OutMatrixDeriv& in = dataMatInConst[0]->getValue();
-
-        if (!dataMatOutRootConst.empty())
-            outroot = dataMatOutRootConst[0]->beginEdit();
-
-        applyJT(out,in, outroot);
-
-        dataMatOutConst[0]->endEdit();
-        if (outroot != NULL)
-            dataMatOutRootConst[0]->endEdit();
-    }
+        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override;
 
     /**
       * @brief
       MAP the mass: this function recompute the rigid mass (gravity center position and inertia) of the object
           based on its deformed shape
       */
-    void recomputeRigidMass() {}
-
-    //@}
+    void recomputeRigidMass();
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -258,13 +179,9 @@ protected:
     InRootCoord rootX;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
+extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
+
 #endif
 
 } // namespace mapping

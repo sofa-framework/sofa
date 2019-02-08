@@ -48,8 +48,6 @@ namespace component
 namespace misc
 {
 
-SOFA_DECL_CLASS(VTKExporter)
-
 int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
         .add< VTKExporter >();
 
@@ -427,7 +425,7 @@ void VTKExporter::writeVTKSimple()
     //write Points
     if (!pointsPos.empty())
     {
-        for (int i=0 ; i<nbp; i++)
+        for (size_t i=0 ; i<nbp; i++)
         {
             *outfile << pointsPos[i] << std::endl;
         }
@@ -441,7 +439,7 @@ void VTKExporter::writeVTKSimple()
     }
     else
     {
-        for (int i=0 ; i<nbp ; i++)
+        for (size_t i=0 ; i<nbp ; i++)
         {
             *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
         }
@@ -627,7 +625,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
     if (!pointsPos.empty())
     {
-        for (int i = 0 ; i < nbp; i++)
+        for (size_t i = 0 ; i < nbp; i++)
         {
             *outfile << "\t" << pointsPos[i] << std::endl;
         }
@@ -639,7 +637,7 @@ void VTKExporter::writeVTKXML()
     }
     else
     {
-        for (int i = 0; i < nbp; i++)
+        for (size_t i = 0; i < nbp; i++)
             *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
     }
     *outfile << "        </DataArray>" << std::endl;

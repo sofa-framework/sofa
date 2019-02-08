@@ -10,31 +10,16 @@ namespace component {
 
 namespace mass {
 
-SOFA_DECL_CLASS(RigidMass)
-
 using namespace defaulttype;
 
 
 // Register in the Factory
 int RigidMassClass = core::RegisterObject("Mass for rigid bodies")
-
-
-#ifndef SOFA_FLOAT
-.add< RigidMass< Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< RigidMass< Rigid3fTypes > >()
-#endif
+.add< RigidMass< Rigid3Types > >(true)
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API RigidMass<  Rigid3dTypes >;
-#endif
+template class SOFA_Compliant_API RigidMass<  Rigid3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API RigidMass< Rigid3fTypes >;
-
-#endif
 
 }
 }

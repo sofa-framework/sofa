@@ -188,17 +188,11 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
+#if  !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
+extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3Types>;
 extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;
 //extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3fTypes>;
-//extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3fTypes>;
-//extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3fTypes>;
-#endif
+
 #endif
 
 } // namespace forcefield

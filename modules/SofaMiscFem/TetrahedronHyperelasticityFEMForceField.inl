@@ -34,7 +34,7 @@
 #include <SofaMiscFem/Ogden.h>
 #include "TetrahedronHyperelasticityFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file
@@ -236,10 +236,9 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
             m_initialPoints=p;
     }
-    int i;
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<m_topology->getNbTetrahedra();++i)
+    for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
         m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                                                 m_topology->getTetrahedron(i),  (const vector< unsigned int > )0,
@@ -737,7 +736,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
 
 
     std::vector< Vector3 > points[4];
-    for(int i = 0 ; i<m_topology->getNbTetrahedra();++i)
+    for(Topology::TetrahedronID i = 0 ; i<m_topology->getNbTetrahedra();++i)
     {
         const Tetrahedron t=m_topology->getTetrahedron(i);
 

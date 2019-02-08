@@ -33,29 +33,43 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
 namespace simpleapi
 {
 
-using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseObjectDescription;
+
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
-void SOFA_SIMULATION_GRAPH_API importPlugin(const std::string& name) ;
+bool SOFA_SIMULATION_GRAPH_API importPlugin(const std::string& name) ;
 
 Simulation::SPtr SOFA_SIMULATION_GRAPH_API createSimulation(const std::string& type="DAG") ;
 
 Node::SPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation::SPtr, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-BaseObject::SPtr SOFA_SIMULATION_GRAPH_API createObject( Node::SPtr parent, const std::string& type,
+///@brief Create a sofa object in the provided node.
+///The parameter "params" is for passing specific data argument to the created object including the
+///object's type.
+BaseObject::SPtr SOFA_SIMULATION_GRAPH_API createObject(Node::SPtr node, BaseObjectDescription& params);
+
+///@brief create a sofa object in the provided node of the given type.
+///The parameter "params" is for passing specific data argument to the created object.
+BaseObject::SPtr SOFA_SIMULATION_GRAPH_API createObject( Node::SPtr node, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
+///@brief create a child to the provided nodeof given name.
+///The parameter "params" is for passing specific data argument to the created object.
 Node::SPtr SOFA_SIMULATION_GRAPH_API createChild( Node::SPtr& node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
+
+///@brief create a child to the provided node.
+///The parameter "params" is for passing specific data argument to the created object (including the node name).
+Node::SPtr SOFA_SIMULATION_GRAPH_API createChild(Node::SPtr node, BaseObjectDescription& desc);
 
 void SOFA_SIMULATION_GRAPH_API dumpScene(Node::SPtr root) ;
 
@@ -79,7 +93,7 @@ namespace BaseObject
     namespace data{
         static const std::string name {"name"} ;
     }
-};
+}
 
 namespace MechanicalObject
 {

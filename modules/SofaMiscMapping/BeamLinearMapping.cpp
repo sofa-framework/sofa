@@ -34,45 +34,23 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(BeamLinearMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-#ifndef SOFA_FLOAT
-        .add< BeamLinearMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< BeamLinearMapping< Rigid3Types, Vec3dTypes > >()
+        .add< BeamLinearMapping< Rigid3Types, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< BeamLinearMapping< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes >;
-#endif
+template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3Types, ExtVec3Types >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

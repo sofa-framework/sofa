@@ -23,7 +23,7 @@
 #define SOFA_HELPER_ADVANCEDTIMER_H
 #include <sofa/helper/helper.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/helper/system/thread/thread_specific_ptr.h>
 
 #include <iostream>
 #include <string>
@@ -141,9 +141,9 @@ public:
             {
                 idsList.push_back(std::string("0")); // ID 0 == "0" or empty string
             }
-
+            
         public:
-
+            
             /**
                @return the Id corresponding to the name of the id given in parameter
                If the name isn't found in the list, it is added to it and return the new id.
@@ -188,8 +188,12 @@ public:
             /// return the instance of the factory. Creates it if doesn't exist yet.
             static IdFactory& getInstance()
             {
-                static IdFactory instance;
-                return instance;
+                SOFA_THREAD_SPECIFIC_PTR(IdFactory, instance);
+                if (instance == nullptr)
+                {
+                    instance = new IdFactory;
+                }
+                return *instance;
             }
         };
 
@@ -439,7 +443,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
+#if  !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;

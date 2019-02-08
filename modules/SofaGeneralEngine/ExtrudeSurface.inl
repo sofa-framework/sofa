@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_INL
 #define SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/ExtrudeSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
@@ -71,10 +67,9 @@ void ExtrudeSurface<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ExtrudeSurface<DataTypes>::update()
+void ExtrudeSurface<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
-
 
     const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
@@ -83,8 +78,6 @@ void ExtrudeSurface<DataTypes>::update()
         return;
 
     const BaseMeshTopology::SeqTriangles* triangles = &f_triangles.getValue();
-
-    cleanDirty();
 
     VecCoord* extrusionVertices = f_extrusionVertices.beginWriteOnly();
     extrusionVertices->clear();

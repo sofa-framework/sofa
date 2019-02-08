@@ -52,11 +52,8 @@ inline void parseIndices(helper::vector<unsigned int>& pairs, const container1& 
 
 
 template <class DataTypes>
-void MeshSplittingEngine<DataTypes>::update()
+void MeshSplittingEngine<DataTypes>::doUpdate()
 {
-    updateAllInputsIfDirty();
-    cleanDirty();
-
     helper::ReadAccessor<Data< SeqPositions > > i_pos(this->inputPosition);
     const size_t& nb = nbInputs.getValue();
 

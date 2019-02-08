@@ -109,16 +109,11 @@ protected :
     VecReal k;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3dTypes>;
-//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3fTypes>;
-//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2fTypes>;
-#endif
+extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
+//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
+
 
 #endif
 

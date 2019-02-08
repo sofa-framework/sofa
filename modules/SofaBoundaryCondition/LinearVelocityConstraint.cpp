@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP
 #include <SofaBoundaryCondition/LinearVelocityConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/Node.h>
@@ -40,40 +40,21 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(LinearVelocityConstraint)
-
-
 int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to given particles")
-#ifndef SOFA_FLOAT
-        .add< LinearVelocityConstraint<Vec3dTypes> >()
-        .add< LinearVelocityConstraint<Vec2dTypes> >()
-        .add< LinearVelocityConstraint<Vec1dTypes> >()
-        .add< LinearVelocityConstraint<Vec6dTypes> >()
-        .add< LinearVelocityConstraint<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LinearVelocityConstraint<Vec3fTypes> >()
-        .add< LinearVelocityConstraint<Vec2fTypes> >()
-        .add< LinearVelocityConstraint<Vec1fTypes> >()
-        .add< LinearVelocityConstraint<Vec6fTypes> >()
-        .add< LinearVelocityConstraint<Rigid3fTypes> >()
-#endif
+        .add< LinearVelocityConstraint<Vec3Types> >()
+        .add< LinearVelocityConstraint<Vec2Types> >()
+        .add< LinearVelocityConstraint<Vec1Types> >()
+        .add< LinearVelocityConstraint<Vec6Types> >()
+        .add< LinearVelocityConstraint<Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec3Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec2Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec1Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Vec6Types>;
+template class SOFA_BOUNDARY_CONDITION_API LinearVelocityConstraint<Rigid3Types>;
+
 
 } // namespace projectiveconstraintset
 

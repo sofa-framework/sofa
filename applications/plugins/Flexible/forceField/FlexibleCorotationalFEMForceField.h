@@ -37,12 +37,12 @@ namespace forcefield
 /// @author Matthieu Nesme
 ///
 template<class DataTypes>
-class SOFA_Flexible_API FlexibleCorotationalFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
+class SOFA_Flexible_API FlexibleCorotationalFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3>
 {
 public:
 
 
-    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction));
+    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
 
     virtual std::string getTemplateName() const { return templateName(this); }
     static std::string templateName( const FlexibleCorotationalFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
@@ -127,9 +127,6 @@ public:
 
     virtual void reinit()
     {
-//        _lambda = _youngModulus.getValue()*_poissonRatio.getValue()/((1-2*_poissonRatio.getValue())*(1+_poissonRatio.getValue()));
-//        _mu2    = _youngModulus.getValue()/(1+_poissonRatio.getValue());
-
         switch( d_method.getValue().getSelectedId() )
         {
             case SMALL:
@@ -171,11 +168,6 @@ public:
         {
             _materialBlocks[i].init( params, _viscosity.getValue() );
         }
-
-        // reinit matrices
-        //if(this->assembleC.getValue()) updateC();
-        //if(this->assembleK.getValue()) updateK();
-        //if(this->assembleB.getValue()) updateB();
 
         ForceField::reinit();
         ShapeFunction::reinit();
@@ -268,12 +260,6 @@ public:
 
         _f.endEdit();
 
-        /*if(!BlockType::constantK)
-        {
-            if(this->assembleC.getValue()) updateC();
-            if(this->assembleK.getValue()) updateK();
-            if(this->assembleB.getValue()) updateB();
-        }*/
     }
 
 
@@ -356,30 +342,6 @@ public:
 
     }
 
-
-//    const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams */*mparams*/)
-//    {
-//        if( !isCompliance.getValue() ) return NULL; // if seen as a stiffness, then return no compliance matrix
-//        if(!this->assembleC.getValue()) updateC();
-//        return &C;
-//    }
-
-//    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*)
-//    {
-//        if( isCompliance.getValue() ) return NULL; // if seen as a compliance, then return no stiffness matrix
-//        if(!this->assembleK.getValue()) updateK();
-////        cerr<<"BaseMaterialForceField::getStiffnessMatrix, K = " << K << endl;
-//        return &K;
-//    }
-
-//    const defaulttype::BaseMatrix* getB(const core::MechanicalParams */*mparams*/)
-//    {
-//        if(!this->assembleB.getValue()) updateB();
-//        return &B;
-//    }
-
-
-
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
     {
         // TODO not implemented
@@ -393,18 +355,11 @@ public:
 
 
     typedef core::behavior::ForceField<DataTypes> ForceField;
-    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction> ShapeFunction;
+    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3> ShapeFunction;
     typedef engine::TopologyGaussPointSampler GaussPointSampler;
     typedef mapping::LinearMapping< DataTypes, defaulttype::F331Types > DeformationMapping;
-    //typedef mapping::CorotationalStrainMapping< defaulttype::F331Types, defaulttype::E331Types > StrainMapping;
-    //typedef HookeForceField< defaulttype::E331Types > MaterialForceField;
-
     typedef component::container::MechanicalObject < defaulttype::F331Types > DeformationDofs;
-    //typedef component::container::MechanicalObject < defaulttype::E331Types > StrainDofs;
 
-    //typedef defaulttype::LinearJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > DeformationJacobianBlock;
-    //typedef helper::vector< DeformationJacobianBlock >  DeformationJacobianBlocks;
-    //DeformationJacobianBlocks _deformationJacobianBlocks;
 
     typedef defaulttype::CorotationalStrainJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > StrainJacobianBlock;
     typedef helper::vector< StrainJacobianBlock >  StrainJacobianBlocks;
@@ -429,8 +384,6 @@ public:
     Data<Real> _youngModulus; ///< Young Modulus
     Data<Real> _poissonRatio; ///< Poisson Ratio
     Data<Real> _viscosity; ///< Viscosity (stress/strainRate)
-//    Real _lambda;  ///< Lamé first coef
-//    Real _mu2;     ///< Lamé second coef * 2
     //@}
 
 
@@ -449,9 +402,6 @@ protected:
 
     FlexibleCorotationalFEMForceField()
         : ForceField(), ShapeFunction()
-        //, assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
-        //, assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stiffness matrix" ) )
-        //, assembleB ( initData ( &assembleB,false, "assembleB","Assemble the Damping matrix" ) )
         , d_method( initData( &d_method, "method", "Decomposition method" ) )
         , d_order( initData( &d_order, 1u, "order", "Order of quadrature method" ) )
         , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
@@ -474,86 +424,11 @@ protected:
 
     virtual ~FlexibleCorotationalFEMForceField() {}
 
-
-    //Data<bool> assembleC;
-    //SparseMatrixEigen C;
-
-    /*  void updateC()
-      {
-          if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-          typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-
-          C.resizeBlocks(X.size(),X.size());
-          for(unsigned int i=0;i<material.size();i++)
-          {
-              //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-              // Put all the blocks of the row in an array, then send the array to the matrix
-              // Not very efficient: MatBlock creations could be avoided.
-              vector<MatBlock> blocks;
-              vector<unsigned> columns;
-              columns.push_back( i );
-              blocks.push_back( material[i].getC() );
-              C.appendBlockRow( i, columns, blocks );
-          }
-          C.endEdit();
-      }
-
-
-      void updateK()
-      {
-          if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-          typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-
-          K.resizeBlocks(X.size(),X.size());
-          for(unsigned int i=0;i<material.size();i++)
-          {
-              //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-              // Put all the blocks of the row in an array, then send the array to the matrix
-              // Not very efficient: MatBlock creations could be avoided.
-              vector<MatBlock> blocks;
-              vector<unsigned> columns;
-              columns.push_back( i );
-              blocks.push_back( material[i].getK() );
-              K.appendBlockRow( i, columns, blocks );
-          }
-          K.endEdit();
-      }
-
-
-      Data<bool> assembleB;
-      SparseMatrixEigen B;
-
-      void updateB()
-      {
-          if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-          typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-
-          B.resizeBlocks(X.size(),X.size());
-          for(unsigned int i=0;i<material.size();i++)
-          {
-              //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-              // Put all the blocks of the row in an array, then send the array to the matrix
-              // Not very efficient: MatBlock creations could be avoided.
-              vector<MatBlock> blocks;
-              vector<unsigned> columns;
-              columns.push_back( i );
-              blocks.push_back( material[i].getB() );
-              B.appendBlockRow( i, columns, blocks );
-          }
-          B.endEdit();
-      }*/
-
-
-
-
 }; // class FlexibleCorotationalFEMForceField
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_METAFEMFORCEFIELD_CPP)
+#if  !defined(FLEXIBLE_METAFEMFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API FlexibleCorotationalFEMForceField<defaulttype::Vec3Types>;
 #endif
 

@@ -140,7 +140,7 @@ public:
     ~BlocFullMatrix()
     {
         if (allocsize>0)
-            delete data;
+            delete[] data;
     }
 
     Bloc* ptr() { return data; }
@@ -516,7 +516,7 @@ public:
     ~BTDMatrix()
     {
         if (allocsize>0)
-            delete data;
+            delete[] data;
     }
 
     Bloc* ptr() { return data; }
@@ -868,13 +868,9 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
 extern template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, float>, BlockVector<6, float> >;
-#endif
+
 
 
 #endif

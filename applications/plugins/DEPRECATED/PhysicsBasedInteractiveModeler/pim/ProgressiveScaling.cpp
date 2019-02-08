@@ -23,7 +23,7 @@
 #include "ProgressiveScaling.inl"
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace plugins
@@ -32,27 +32,15 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ProgressiveScaling)
-
 int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
-#ifndef SOFA_FLOAT
-        .add< ProgressiveScaling<Vec3dTypes> >()
-//.add< ProgressiveScaling<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ProgressiveScaling<Vec3fTypes> >()
-//.add< ProgressiveScaling<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ProgressiveScaling<Vec3Types> >()
+//.add< ProgressiveScaling<Rigid3Types> >()
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3dTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3fTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3Types>;
+//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3Types>;
+ 
 
 } // namespace pim
 

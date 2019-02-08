@@ -16,23 +16,13 @@ namespace mapping
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(RigidScaleToAffineMultiMapping)
-
 int RigidScaleToAffineMultiMappingClass = core::RegisterObject("Convert a rigid in addition to a scale into an affine without shearing effect.")
-#ifndef SOFA_FLOAT
-.add< RigidScaleToAffineMultiMapping<Rigid3dTypes, Vec3dTypes, Affine3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< RigidScaleToAffineMultiMapping<Rigid3fTypes, Vec3fTypes, Affine3fTypes > >()
-#endif
+.add< RigidScaleToAffineMultiMapping<Rigid3Types, Vec3Types, Affine3dTypes> >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_RIGIDSCALE_API RigidScaleToAffineMultiMapping<Rigid3dTypes, Vec3dTypes, Affine3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_RIGIDSCALE_API RigidScaleToAffineMultiMapping<Rigid3fTypes, Vec3fTypes, Affine3fTypes>;
-#endif
+template class SOFA_RIGIDSCALE_API RigidScaleToAffineMultiMapping<Rigid3Types, Vec3Types, Affine3dTypes>;
+
 
 }//namespace forcefield
 }// namespace component

@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_MESHROI_INL
 #define SOFA_COMPONENT_ENGINE_MESHROI_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/MeshROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
@@ -592,7 +588,7 @@ void MeshROI<DataTypes>::compute()
 
 
 template <class DataTypes>
-void MeshROI<DataTypes>::update()
+void MeshROI<DataTypes>::doUpdate()
 {
     if(d_doUpdate.getValue())
         compute();

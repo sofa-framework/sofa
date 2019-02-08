@@ -38,9 +38,7 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(RecordedCamera)
-
-int RecordedCameraClass = core::RegisterObject("Camera moving along a predetermined path (currently only a rotation)")
+static int RecordedCameraClass = core::RegisterObject("A camera that is moving along a predetermined path.")
         .add< RecordedCamera >()
         ;
 

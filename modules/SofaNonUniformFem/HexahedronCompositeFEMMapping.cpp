@@ -35,8 +35,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(HexahedronCompositeFEMMapping)
-
 using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;
@@ -44,37 +42,17 @@ using namespace core::behavior;
 
 // Register in the Factory
 int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
-#ifndef SOFA_FLOAT
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3Types > > >()
         .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes > > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes > > >()
-#endif
+
 //
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3dTypes > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3fTypes > > >()
-#endif
-#endif
+
         ;
 
-#ifndef SOFA_FLOAT
-template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3Types > >;
 template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes > >;
-#endif
-#ifndef SOFA_DOUBLE
-template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > >;
-template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes > >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3dTypes > >;
-template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3fTypes > >;
-#endif
-#endif
+
+
 
 } // namespace mapping
 

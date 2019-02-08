@@ -33,8 +33,6 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SkinningMapping)
-
 using namespace defaulttype;
 using namespace core;
 
@@ -43,37 +41,17 @@ using namespace core;
 int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
 
 // Rigid Types
-#ifndef SOFA_FLOAT
-        .add< SkinningMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< SkinningMapping< Rigid3dTypes, ExtVec3fTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SkinningMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< SkinningMapping< Rigid3fTypes, ExtVec3fTypes > >()
-#endif
+        .add< SkinningMapping< Rigid3Types, Vec3dTypes > >()
+        .add< SkinningMapping< Rigid3Types, ExtVec3Types > >()
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< SkinningMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< SkinningMapping< Rigid3fTypes, Vec3dTypes > >()
-#endif
-#endif
+
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3dTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3fTypes, ExtVec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3Types, ExtVec3Types >;
+
+
 
 
 } // namespace mapping

@@ -98,20 +98,11 @@ protected:
     }
 
 
-    virtual void update()
+    virtual void doUpdate()
     {
-        this->updateAllInputsIfDirty();
-        cleanDirty();
-
         BaseShapeFunction* _shapeFunction=NULL;
         this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);
         if( !_shapeFunction ) { serr<<"Shape function not found"<< sendl; return;}
-
-        //        engine::BaseGaussPointSampler* sampler=NULL;
-        //        this->getContext()->get(sampler,core::objectmodel::BaseContext::SearchUp);
-        //        if( !sampler ) { serr<<"Gauss point sampler not found"<< sendl; }
-        //        helper::ReadAccessor<Data< VTransform > > inputTransforms(sampler->f_transforms);
-        //        helper::ReadAccessor< Data< helper::vector<volumeIntegralType> > > inputVolumes(sampler->f_volume);
 
         helper::ReadAccessor<Data< VTransform > > inputTransforms(this->d_inputTransforms);
         helper::ReadAccessor< Data< helper::vector<volumeIntegralType> > > inputVolumes(this->d_inputVolume);

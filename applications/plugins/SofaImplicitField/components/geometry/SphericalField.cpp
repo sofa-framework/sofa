@@ -110,8 +110,6 @@ void SphericalField::getValueAndGradient(Vec3d& Pos, double &value, Vec3d& /*gra
 }
 
 
-SOFA_DECL_CLASS(SphericalField)
-
 // Register in the Factory
 int SphericalFieldClass = core::RegisterObject("A spherical implicit field.")
         .add< SphericalField >()

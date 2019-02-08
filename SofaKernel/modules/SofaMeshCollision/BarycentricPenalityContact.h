@@ -29,6 +29,7 @@
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/helper/Factory.h>
 
+#include <SofaMeshCollision/RigidContactMapper.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
 #include <SofaBaseCollision/OBBModel.h>
@@ -61,11 +62,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-//#ifdef SOFA_TEST_FRICTION
-//	typedef forcefield::PenalityContactFrictionForceField<ResponseDataTypes> ResponseForceField;
-//#else
     typedef interactionforcefield::PenalityContactForceField<ResponseDataTypes> ResponseForceField;
-//#endif
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
@@ -83,7 +80,7 @@ protected:
     ContactIndexMap contactIndex;
 
     BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-    ~BarycentricPenalityContact();
+    virtual ~BarycentricPenalityContact();
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
@@ -101,6 +98,50 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 };
+
+#if !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_CPP)
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, SphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, PointModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, PointModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<PointModel, PointModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, PointModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, LineModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, SphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<LineModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, SphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, PointModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, LineModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, TriangleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, TriangleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, LineModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, CapsuleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, SphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<OBBModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<SphereModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidSphereModel, OBBModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<TriangleModel, OBBModel>;
+
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, TriangleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, LineModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, RigidCapsuleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, RigidCapsuleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, SphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<RigidCapsuleModel, OBBModel>;
+
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, CylinderModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, TriangleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, RigidCapsuleModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CapsuleModel, CylinderModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, SphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, RigidSphereModel>;
+extern template class SOFA_MESH_COLLISION_API BarycentricPenalityContact<CylinderModel, OBBModel>;
+#endif
 
 } // namespace collision
 

@@ -34,8 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaEllipsoidForceField)
-
 int EllipsoidForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::EllipsoidForceField<CudaVec3fTypes> >()
         .add< component::forcefield::EllipsoidForceField<CudaVec3f1Types> >()
