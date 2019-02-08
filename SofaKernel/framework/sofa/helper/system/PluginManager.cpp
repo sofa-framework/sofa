@@ -185,9 +185,9 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     return true;
 }
 
-bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
+bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
 {
-    std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase);
+    std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase, recursive);
 
     if (!pluginPath.empty())
     {
@@ -203,7 +203,7 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, const std::s
     }
 }
 
-bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
+bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
 {
     if (FileSystem::isFile(plugin))
     {
@@ -211,7 +211,7 @@ bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suf
     }
     else
     {
-        return loadPluginByName(plugin, suffix, ignoreCase, errlog);
+        return loadPluginByName(plugin, suffix, ignoreCase, recursive, errlog);
     }
 }
 
@@ -293,7 +293,7 @@ void PluginManager::init(const std::string& pluginPath)
 
 
 
-std::string PluginManager::findPlugin(const std::string& pluginName, const std::string& suffix, bool ignoreCase, int maxRecursiveDepth)
+std::string PluginManager::findPlugin(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, int maxRecursiveDepth)
 {
     std::string name(pluginName);
     name  += suffix;
@@ -309,6 +309,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     // Second try: case insensitive and recursive
     if (ignoreCase)
     {
+        if(!recursive) maxRecursiveDepth = 0;
         const std::string downcaseLibName = Utils::downcaseString(libName);
 
         for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
