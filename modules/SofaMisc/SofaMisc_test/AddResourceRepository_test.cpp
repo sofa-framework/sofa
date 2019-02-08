@@ -47,9 +47,9 @@ struct AddResourceRepository_test : public Sofa_test<>
         m_testRepoDir = std::string(MISC_TEST_RESOURCES_DIR) + std::string("/repo");
     }
 
-    void buildScene(const std::string& repoPath)
+    void buildScene(const std::string& repoType, const std::string& repoPath)
     {
-        std::string addRepoStr = "<AddResourceRepository path=\""+ repoPath + "\" />";
+        std::string addRepoStr = "<" + repoType + " path=\""+ repoPath + "\" />";
 
         std::string scene = START_STR + addRepoStr + END_STR;
         std::cout << scene << std::endl;
@@ -59,11 +59,10 @@ struct AddResourceRepository_test : public Sofa_test<>
 
         EXPECT_NE(m_root, nullptr);
     }
-
 };
 
 
-TEST_F(AddResourceRepository_test, RepoExists)
+TEST_F(AddResourceRepository_test, AddDataRepository_RepoExists)
 {
     std::string existFilename("somefilesomewhere.txt");
     std::string nopeFilename("somefilesomewherebutdoesnotexist.txt");
@@ -73,19 +72,18 @@ TEST_F(AddResourceRepository_test, RepoExists)
     EXPECT_FALSE(helper::system::DataRepository.findFile(existFilename));
     EXPECT_FALSE(helper::system::DataRepository.findFile(nopeFilename));
 
-    buildScene(m_testRepoDir);
+    buildScene("AddDataRepository", m_testRepoDir);
 
     EXPECT_FALSE(helper::system::DataRepository.findFile(nopeFilename));
 
     EXPECT_MSG_NOEMIT(Error);
     EXPECT_TRUE(helper::system::DataRepository.findFile(existFilename));
-
 }
 
-TEST_F(AddResourceRepository_test, RepoDoesNotExist)
+TEST_F(AddResourceRepository_test, AddDataRepository_RepoDoesNotExist)
 {
     EXPECT_MSG_EMIT(Error) ;
-    buildScene("/blabla/Repo_not_existing");
+    buildScene("AddDataRepository", "/blabla/Repo_not_existing");
 }
 
 
