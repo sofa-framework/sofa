@@ -327,8 +327,8 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                 }
                 else if ( !boost::filesystem::is_directory(iter->path()) )
                 {
-                    const std::string& path = iter->path().string();
-                    const std::string& filename = iter->path().filename().string();
+                    const std::string path = iter->path().string();
+                    const std::string filename = iter->path().filename().string();
                     const std::string downcaseFilename = Utils::downcaseString(filename);
 
                     if (downcaseFilename == downcaseLibName)
