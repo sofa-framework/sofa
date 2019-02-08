@@ -72,48 +72,6 @@ void  BlocFullMatrix<N, T>::Bloc::add(Index i, Index j, const T& v)
 }
 
 template<int N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
-{
-    defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
-}
-
-template<int N, typename T>
-defaulttype::Mat<BlocFullMatrix<N,T>::BSIZE,BlocFullMatrix<N,T>::BSIZE,T>  BlocFullMatrix<N, T>::Bloc::operator-() const
-{
-    return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-();
-}
-
-template<int N, typename T>
-defaulttype::Mat<BlocFullMatrix<N,T>::BSIZE,BlocFullMatrix<N,T>::BSIZE, T>  BlocFullMatrix<N, T>::Bloc::operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const
-{
-    return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
-}
-
-template<int N, typename T>
-defaulttype::Vec<BlocFullMatrix<N,T>::BSIZE, T>  BlocFullMatrix<N, T>::Bloc::operator*(const defaulttype::Vec<BSIZE,Real>& v)
-{
-    return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
-}
-
-template<int N, typename T>
-defaulttype::Mat<BlocFullMatrix<N,T>::BSIZE,BlocFullMatrix<N,T>::BSIZE, T>  BlocFullMatrix<N, T>::Bloc::operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m)
-{
-    return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
-}
-
-template<int N, typename T>
-defaulttype::Mat<BlocFullMatrix<N,T>::BSIZE,BlocFullMatrix<N,T>::BSIZE, T>  BlocFullMatrix<N, T>::Bloc::operator*(const Bloc& m)
-{
-    return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
-}
-
-template<int N, typename T>
-defaulttype::Mat<BlocFullMatrix<N,T>::BSIZE,BlocFullMatrix<N,T>::BSIZE, T>  BlocFullMatrix<N, T>::Bloc::operator*(const TransposedBloc& mt)
-{
-    return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
-}
-
-template<int N, typename T>
 typename BlocFullMatrix<N,T>::TransposedBloc  BlocFullMatrix<N, T>::Bloc::t() const
 {
     return TransposedBloc(*this);
@@ -324,38 +282,6 @@ void BlocFullMatrix<N, T>::clear()
         data[i].clear();
 }
 
-template<int N, typename T>
-template<class Real2>
-FullVector<Real2> BlocFullMatrix<N, T>::operator*(const FullVector<Real2>& v) const
-{
-    FullVector<Real2> res(rowSize());
-    for (Index bi=0; bi<nBRow; ++bi)
-    {
-        Index bj = 0;
-        for (Index i=0; i<BSIZE; ++i)
-        {
-            Real r = 0;
-            for (Index j=0; j<BSIZE; ++j)
-            {
-                r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
-            }
-            res[bi*BSIZE + i] = r;
-        }
-        for (++bj; bj<nBCol; ++bj)
-        {
-            for (Index i=0; i<BSIZE; ++i)
-            {
-                Real r = 0;
-                for (Index j=0; j<BSIZE; ++j)
-                {
-                    r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
-                }
-                res[bi*BSIZE + i] += r;
-            }
-        }
-    }
-    return res;
-}
 
 template<int N, typename T>
 BlockVector<N, T>::BlockVector()
@@ -600,30 +526,6 @@ void BTDMatrix<N, T>::clear()
         data[i].clear();
 }
 
-template<int N, typename T>
-template<class Real2>
-FullVector<Real2> BTDMatrix<N, T>::operator*(const FullVector<Real2>& v) const
-{
-    FullVector<Real2> res(rowSize());
-    for (Index bi=0; bi<nBRow; ++bi)
-    {
-        Index b0 = (bi > 0) ? 0 : 1;
-        Index b1 = ((bi < nBRow - 1) ? 3 : 2);
-        for (Index i=0; i<BSIZE; ++i)
-        {
-            Real r = 0;
-            for (Index bj = b0; bj < b1; ++bj)
-            {
-                for (Index j=0; j<BSIZE; ++j)
-                {
-                    r += data[bi*3+bj][i][j] * v[(bi + bj - 1)*BSIZE + j];
-                }
-            }
-            res[bi*BSIZE + i] = r;
-        }
-    }
-    return res;
-}
 
 
 

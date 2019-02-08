@@ -76,13 +76,34 @@ public:
         const T& element(Index i, Index j) const;
         void set(Index i, Index j, const T& v);
         void add(Index i, Index j, const T& v);
-        void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v);
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const;
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const;
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v);
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m);
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m);
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt);
+        void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
+        {
+            defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-();
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
+        }
+        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+        }
         TransposedBloc t() const;
         Bloc i() const;
     };
@@ -155,7 +176,36 @@ public:
     void clear();
 
     template<class Real2>
-    FullVector<Real2> operator*(const FullVector<Real2>& v) const;
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res(rowSize());
+        for (Index bi=0; bi<nBRow; ++bi)
+        {
+            Index bj = 0;
+            for (Index i=0; i<BSIZE; ++i)
+            {
+                Real r = 0;
+                for (Index j=0; j<BSIZE; ++j)
+                {
+                    r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                }
+                res[bi*BSIZE + i] = r;
+            }
+            for (++bj; bj<nBCol; ++bj)
+            {
+                for (Index i=0; i<BSIZE; ++i)
+                {
+                    Real r = 0;
+                    for (Index j=0; j<BSIZE; ++j)
+                    {
+                        r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                    }
+                    res[bi*BSIZE + i] += r;
+                }
+            }
+        }
+        return res;
+    }
 
 
     static const char* Name();
@@ -377,7 +427,28 @@ public:
     void clear();
 
     template<class Real2>
-    FullVector<Real2> operator*(const FullVector<Real2>& v) const;
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res(rowSize());
+        for (Index bi=0; bi<nBRow; ++bi)
+        {
+            Index b0 = (bi > 0) ? 0 : 1;
+            Index b1 = ((bi < nBRow - 1) ? 3 : 2);
+            for (Index i=0; i<BSIZE; ++i)
+            {
+                Real r = 0;
+                for (Index bj = b0; bj < b1; ++bj)
+                {
+                    for (Index j=0; j<BSIZE; ++j)
+                    {
+                        r += data[bi*3+bj][i][j] * v[(bi + bj - 1)*BSIZE + j];
+                    }
+                }
+                res[bi*BSIZE + i] = r;
+            }
+        }
+        return res;
+    }
 
     static const char* Name();
 };
