@@ -160,11 +160,7 @@ void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const 
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
 {
-//    static int i=0;
-//    if (i < 10) {
-//        serr << "addBToMatrix not implemented." << sendl;
-//        i++;
-//    }
+
 }
 
 template<class DataTypes>

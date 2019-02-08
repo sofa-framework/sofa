@@ -134,18 +134,19 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
         {
-            this->interactor->serr << "Problem with Mouse Mapper creation : " << this->interactor->sendl;
+            msg_warning(this->interactor) << "Problem with Mouse Mapper creation " ;
             return false;
         }
         std::string name = "contactMouse";
         mstateCollision = mapper->createMapping(name.c_str());
         mapper->resize(1);
 
-        const typename DataTypes::Coord pointPicked=(typename DataTypes::Coord)picked.point;
-        const int idx=picked.indexCollisionElement;
+        const unsigned int idx=picked.indexCollisionElement;
+        typename DataTypes::CPos pointPicked=(typename DataTypes::CPos)picked.point;
         typename DataTypes::Real r=0.0;
-
-        index = mapper->addPointB(pointPicked, idx, r
+        typename DataTypes::Coord dofPicked;
+        DataTypes::setCPos(dofPicked, pointPicked);
+        index = mapper->addPointB(dofPicked, idx, r
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
                 , picked.baryCoords
 #endif
@@ -174,7 +175,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {
-            this->interactor->serr << "incompatible MState during Mouse Interaction " << this->interactor->sendl;
+            msg_warning(this->interactor) << "incompatible MState during Mouse Interaction " ;
             return false;
         }
     }

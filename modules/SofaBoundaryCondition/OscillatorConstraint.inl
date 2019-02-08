@@ -35,15 +35,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-template <class TDataTypes>
-OscillatorConstraint<TDataTypes>::OscillatorConstraint()
-    : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
-    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, mean, amplitude, pulsation, phase]"))
-{
-}
-
-
 template <class TDataTypes>
 OscillatorConstraint<TDataTypes>::OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(mstate)
@@ -130,6 +121,18 @@ void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::Mechani
         projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
+}
+
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator()
+{
+}
+
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator(unsigned int i, const Coord& m, const Deriv& a,
+        const Real& w, const Real& p) :
+    index(i), mean(m), amplitude(a), pulsation(w), phase(p)
+{
 }
 
 } // namespace constraint

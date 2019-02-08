@@ -206,19 +206,8 @@ namespace meta {
 
   namespace impl {
 
-#ifdef SOFA_FLOAT
 #define __SOFA_FLOAT 1
-#else
-#define __SOFA_FLOAT 0
-#endif
-
-#ifdef SOFA_DOUBLE
 #define __SOFA_DOUBLE 1
-#else
-#define __SOFA_DOUBLE 0
-#endif
-
-
   
 	template<int SofaFloat = __SOFA_FLOAT, int SofaDouble = __SOFA_DOUBLE>
 	struct sofa_real_list;

@@ -94,9 +94,9 @@ public:
      *
      * @param v1 The first vertex
      * @param v@ The second vertex
-     * @return The index of the Edge if it exists, -1 otherwise.
+     * @return The index of the Edge if it exists, InvalidID otherwise.
     */
-    virtual int getEdgeIndex(PointID v1, PointID v2) override;
+    virtual EdgeID getEdgeIndex(PointID v1, PointID v2) override;
 
 
     /** \brief Get the indices of the edges around a vertex.
@@ -220,8 +220,8 @@ protected:
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setEdgeTopologyToDirty() {m_edgeTopologyDirty = true;}
-    void cleanEdgeTopologyFromDirty() {m_edgeTopologyDirty = false;}
+    void setEdgeTopologyToDirty();
+    void cleanEdgeTopologyFromDirty();
     const bool& isEdgeTopologyDirty() {return m_edgeTopologyDirty;}
 
 protected:

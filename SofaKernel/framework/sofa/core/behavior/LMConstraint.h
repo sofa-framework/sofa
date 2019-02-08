@@ -169,69 +169,37 @@ protected:
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_LMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Rigid2dTypes>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3Types,defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3Types,defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3Types,defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3Types,defaulttype::Rigid2Types>;
 
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2dTypes,defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2dTypes,defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2dTypes,defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2dTypes,defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2dTypes,defaulttype::Rigid2dTypes>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2Types,defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2Types,defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2Types,defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2Types,defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2Types,defaulttype::Rigid2Types>;
 
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1dTypes,defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1dTypes,defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1dTypes,defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1dTypes,defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1dTypes,defaulttype::Rigid2dTypes>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1Types,defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1Types,defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1Types,defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1Types,defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1Types,defaulttype::Rigid2Types>;
 
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3dTypes,defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3dTypes,defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3dTypes,defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3dTypes,defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3dTypes,defaulttype::Rigid2dTypes>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3Types,defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3Types,defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3Types,defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3Types,defaulttype::Rigid2Types>;
 
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Vec2dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Vec1dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Rigid3dTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Rigid2dTypes>;
-#endif
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2Types,defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2Types,defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2Types,defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2Types,defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2Types,defaulttype::Rigid2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Rigid2fTypes>;
 
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2fTypes,defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2fTypes,defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2fTypes,defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2fTypes,defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec2fTypes,defaulttype::Rigid2fTypes>;
-
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1fTypes,defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1fTypes,defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1fTypes,defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1fTypes,defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec1fTypes,defaulttype::Rigid2fTypes>;
-
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3fTypes,defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3fTypes,defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3fTypes,defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3fTypes,defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid3fTypes,defaulttype::Rigid2fTypes>;
-
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Vec3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Vec2fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Vec1fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Rigid3fTypes>;
-extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Rigid2fTypes>;
-#endif
 #endif
 
 } // namespace behavior

@@ -20,22 +20,12 @@ using namespace defaulttype;
 // Register in the Factory
 int RigidComMultiMappingClass = core::RegisterObject("Compute Center of Mass (CoM) for multi rigid dofs.")
 
-#ifndef SOFA_FLOAT
-.add< RigidComMultiMapping< Rigid3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< RigidComMultiMapping< Rigid3fTypes, Vec3fTypes > >()
-#endif
+.add< RigidComMultiMapping< Rigid3Types, Vec3Types > >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API RigidComMultiMapping<  Rigid3dTypes, Vec3dTypes >;
-#endif
+template class SOFA_Compliant_API RigidComMultiMapping<  Rigid3Types, Vec3Types >;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API RigidComMultiMapping< Rigid3fTypes, Vec3fTypes >;
-
-#endif
 
 
 

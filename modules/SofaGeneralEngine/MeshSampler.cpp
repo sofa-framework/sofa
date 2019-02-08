@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP
 #include <SofaGeneralEngine/MeshSampler.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -34,20 +34,12 @@ namespace engine
 {
 
 int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
-#ifndef SOFA_FLOAT
-        .add< MeshSampler<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< MeshSampler<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< MeshSampler<Vec3Types> >(true)
+ 
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API MeshSampler<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API MeshSampler<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API MeshSampler<Vec3Types>;
+ 
 
 
 

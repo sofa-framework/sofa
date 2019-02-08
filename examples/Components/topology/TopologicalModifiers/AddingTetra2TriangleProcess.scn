@@ -1,39 +1,41 @@
+<?xml version="1.0" ?>
 <!-- Automatic Tetrahedron adding example with Tetra2Triangle mapping: Element added are define in: ./AddingTetrahedraProcess.txt -->
-<Node name="root" dt="0.005" showBoundingTree="0" gravity="0 0 0">
-    <VisualStyle displayFlags="showBehaviorModels" />
-    <CollisionPipeline verbose="0" />
+<Node name="root" gravity="0 0 -9" dt="0.01">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionGroup />
     <Node name="TT">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" />
         <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
         <MechanicalObject src="@loader" name="Volume" />
         <TetrahedronSetTopologyContainer src="@loader" name="Tetra_topo" listening="1" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" />
-        <TopologicalChangeProcessor listening="1" filename="AddingTetrahedraProcess.txt" />
-        <UniformMass totalMass="1" />
-        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <FixedConstraint indices="0" />
-        <!--        	<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />-->
+        
+        <UniformMass totalMass="1.0" />
+
+        <FixedConstraint indices="0 1 2" />
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
+        
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" listening="1" />
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" listening="1" />
-            <!--<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
-		  			<TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>		    
-					<TrianglePressureForceField" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0"/> -->
+            <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
+            
             <TriangleSet />
-            <!--		  <Node name="Visu">
-		    <VisualModel name="Visual" color="blue" />
-		    <IdentityMapping input="@../../Volume" output="@Visual" />
-		  </Node>						-->
+            <Node name="Visu">
+                <VisualModel name="Visual" color="yellow" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
         </Node>
-    </Node>
+        
+        <TopologicalChangeProcessor listening="1" filename="AddingTetrahedraProcess.txt" />
+    </Node>    
 </Node>

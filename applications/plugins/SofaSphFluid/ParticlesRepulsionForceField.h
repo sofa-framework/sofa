@@ -105,27 +105,15 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec2dTypes;
-#endif
 
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Vec2fTypes;
-#endif
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3dTypes>;
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2dTypes>;
-#endif
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3Types>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2Types>;
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3fTypes>;
-extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2fTypes>;
-#endif
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 

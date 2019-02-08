@@ -26,6 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/core/State.inl>
 
 namespace sofa
@@ -37,20 +38,11 @@ using namespace sofa::defaulttype;
 namespace core
 {
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API State<F331dTypes>;
-template class SOFA_Flexible_API State<F321dTypes>;
-template class SOFA_Flexible_API State<F311dTypes>;
-template class SOFA_Flexible_API State<F332dTypes>;
-template class SOFA_Flexible_API State<F221dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API State<F331fTypes>;
-template class SOFA_Flexible_API State<F321fTypes>;
-template class SOFA_Flexible_API State<F311fTypes>;
-template class SOFA_Flexible_API State<F332fTypes>;
-template class SOFA_Flexible_API State<F221fTypes>;
-#endif
+template class SOFA_Flexible_API State<F331Types>;
+template class SOFA_Flexible_API State<F321Types>;
+template class SOFA_Flexible_API State<F311Types>;
+template class SOFA_Flexible_API State<F332Types>;
+template class SOFA_Flexible_API State<F221Types>;
 
 } // namespace core
 
@@ -61,91 +53,47 @@ namespace container
 {
 
 // ==========================================================================
-// Init Specializations (initialization from GaussPointSampler)
-/*
-template <>
-void MechanicalObject<F331Types>::init()
-{
-    engine::BaseGaussPointSampler* sampler=NULL;
-    this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
-    if(sampler)
-    {
-        unsigned int nbp=sampler->getNbSamples();
-        this->resize(nbp);
-
-        Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
-        VecCoord& x_wA = *x_wAData->beginWriteOnly();
-        for(unsigned int i=0;i<nbp;i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
-
-        VecCoord *x0_edit = x0.beginEdit();
-        x0.setValue(x.getValue());
-        if (restScale.getValue() != (Real)1) { Real s = (Real)restScale.getValue(); for (unsigned int i=0; i<x0_edit->size(); i++) (*x0_edit)[i] *= s;        }
-        x0.endEdit();
-
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
-        reinit();
-    }
-}
-
-template <>
-void MechanicalObject<F332Types>::init()
-{
-    engine::BaseGaussPointSampler* sampler=NULL;
-    this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
-    if(sampler)
-    {
-        unsigned int nbp=sampler->getNbSamples();
-        this->resize(nbp);
-
-        Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
-        VecCoord& x_wA = *x_wAData->beginWriteOnly();
-        for(unsigned int i=0;i<nbp;i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
-
-        VecCoord *x0_edit = x0.beginEdit();
-        x0.setValue(x.getValue());
-        if (restScale.getValue() != (Real)1) { Real s = (Real)restScale.getValue(); for (unsigned int i=0; i<x0_edit->size(); i++) (*x0_edit)[i] *= s;        }
-        x0.endEdit();
-
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
-        reinit();
-    }
-}
-*/
-
-// ==========================================================================
 // Instanciation
 
-int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
-        .add< MechanicalObject<F331dTypes> >()
-        .add< MechanicalObject<F321dTypes> >()
-        .add< MechanicalObject<F311dTypes> >()
-        .add< MechanicalObject<F332dTypes> >()
-        .add< MechanicalObject<F221dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<F331fTypes> >()
-        .add< MechanicalObject<F321fTypes> >()
-        .add< MechanicalObject<F311fTypes> >()
-        .add< MechanicalObject<F332fTypes> >()
-        .add< MechanicalObject<F221fTypes> >()
-#endif
+int DefGradientMechanicalObjectClass = core::RegisterObject ("Mechanical state vectors")
+        .add< MechanicalObject<F331Types> >()
+        .add< MechanicalObject<F332Types> >()
+        .add< MechanicalObject<F321Types> >()
+        .add< MechanicalObject<F311Types> >()
+        .add< MechanicalObject<F221Types> >()
 		;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API MechanicalObject<F331dTypes>;
-template class SOFA_Flexible_API MechanicalObject<F321dTypes>;
-template class SOFA_Flexible_API MechanicalObject<F311dTypes>;
-template class SOFA_Flexible_API MechanicalObject<F332dTypes>;
-template class SOFA_Flexible_API MechanicalObject<F221dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<F331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<F321fTypes>;
-template class SOFA_Flexible_API MechanicalObject<F311fTypes>;
-template class SOFA_Flexible_API MechanicalObject<F332fTypes>;
-template class SOFA_Flexible_API MechanicalObject<F221fTypes>;
-#endif
+template class SOFA_Flexible_API MechanicalObject<F331Types>;
+template class SOFA_Flexible_API MechanicalObject<F332Types>;
+template class SOFA_Flexible_API MechanicalObject<F321Types>;
+template class SOFA_Flexible_API MechanicalObject<F311Types>;
+template class SOFA_Flexible_API MechanicalObject<F221Types>;
+
+static RegisterTemplateAlias alias0("F331", F331Types::Name() );
+static RegisterTemplateAlias alias4("F332", F332Types::Name() );
+static RegisterTemplateAlias alias2("F321", F321Types::Name() );
+static RegisterTemplateAlias alias3("F311", F311Types::Name() );
+static RegisterTemplateAlias alias5("F221", F221Types::Name() );
+
+namespace f
+{
+static RegisterTemplateAlias alias0("F331f", F331Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias1("F332f", F332Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias2("F321f", F321Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias3("F311f", F311Types::Name(), isSRealDouble());
+static RegisterTemplateAlias alias5("F221f", F221Types::Name(), isSRealDouble());
+}
+
+namespace d
+{
+static RegisterTemplateAlias alias0("F331d", F331Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias1("F332d", F332Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias2("F321d", F321Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias3("F311d", F311Types::Name(), isSRealFloat());
+static RegisterTemplateAlias alias5("F221d", F221Types::Name(), isSRealFloat());
+}
+
+
 
 } // namespace container
 } // namespace component

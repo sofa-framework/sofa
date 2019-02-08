@@ -282,6 +282,19 @@ void FileRepository::print()
         std::cout << *it << std::endl;
 }
 
+const std::string FileRepository::getPathsJoined()
+{
+    std::ostringstream imploded;
+    char* delim = ":";
+#ifdef WIN32
+    delim = ";";
+#endif
+    std::copy(vpath.begin(), vpath.end(), std::ostream_iterator<std::string>(imploded, delim));
+    std::string implodedStr = imploded.str();
+    implodedStr = implodedStr.substr(0, implodedStr.size()-1); // remove trailing separator
+    return implodedStr;
+}
+
 /*static*/
 std::string FileRepository::relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32)
 {

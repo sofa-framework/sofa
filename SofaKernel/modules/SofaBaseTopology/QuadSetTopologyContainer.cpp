@@ -67,7 +67,7 @@ void QuadSetTopologyContainer::init()
 void QuadSetTopologyContainer::createQuadSetArray()
 {
 	if (CHECK_TOPOLOGY)
-		msg_error() << "This method must be implemented by a child topology.";
+        msg_error() << "createQuadSetArray method must be implemented by a child topology.";
 
 }
 
@@ -229,7 +229,8 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
         // adding edge i in the edge shell of both points
         for (size_t j=0; j<4; ++j)
         {
-            const int edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+            EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+            assert(edgeIndex != InvalidID);
             m_edgesInQuad[i][j]=edgeIndex;
         }
     }
@@ -260,7 +261,7 @@ const QuadSetTopologyContainer::Quad QuadSetTopologyContainer::getQuad (QuadID i
 }
 
 
-int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasQuadsAroundVertex())
         createQuadsAroundVertexArray();
@@ -291,15 +292,15 @@ int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, P
     result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
     out3.erase(result3,out3.end());
 
-	if (CHECK_TOPOLOGY)
-		if(out3.size() > 1)
-			msg_warning() << "More than one quad found";
-
+    if (CHECK_TOPOLOGY && out3.size() > 1)
+        msg_warning() << "More than one Quad found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
 
     if(out3.size()==1)
         return (int) (out3[0]);
-    else
-        return -1;
+    else {
+        msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
+        return InvalidID;
+    }
 }
 
 size_t QuadSetTopologyContainer::getNumberOfQuads() const
@@ -814,6 +815,39 @@ void QuadSetTopologyContainer::clear()
     clearQuads();
 
     EdgeSetTopologyContainer::clear();
+}
+
+void QuadSetTopologyContainer::setQuadTopologyToDirty()
+{
+    // set this container to dirty
+    m_quadTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Quad Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
+{
+    m_quadTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Quad Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
 }
 
 void QuadSetTopologyContainer::updateTopologyEngineGraph()

@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -88,24 +88,14 @@ extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_a
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
-#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<double>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Deriv>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<float>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2f>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3f>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Deriv>;
-#endif //SOFA_DOUBLE
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
+// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
+ 
 #endif
 
 } // namespace engine

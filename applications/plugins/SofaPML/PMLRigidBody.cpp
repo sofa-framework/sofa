@@ -38,7 +38,7 @@
 #include <PhysicalProperties/CellProperties.h>
 
 #include <sofa/core/objectmodel/SPtr.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseMechanics/UniformMass.h>

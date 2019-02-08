@@ -31,7 +31,7 @@
 #include <sofa/core/behavior/BaseController.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 

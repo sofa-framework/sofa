@@ -93,7 +93,6 @@ public:
             return SpatialVector( lineVec *a, freeVec * a);
         }
 
-        //template<class Real2>
         SpatialVector& operator *= ( Real a )
         {
             lineVec *=a;
@@ -418,12 +417,8 @@ public:
 };
 
 #if !defined(SOFA_DEFAULTTYPE_SOLIDTYPES_CPP)
-#ifndef SOFA_FLOAT
 extern template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
-#endif
+
 #endif
 
 }// defaulttype

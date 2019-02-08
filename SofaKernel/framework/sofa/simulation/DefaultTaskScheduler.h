@@ -23,8 +23,9 @@
 #define DefaultTaskScheduler_h__
 
 #include <sofa/config.h>
+#include <sofa/helper/system/config.h>
 
-#include "TaskScheduler.h"
+#include <sofa/simulation/TaskScheduler.h>
 
 #include <atomic>
 
@@ -39,7 +40,7 @@
 
 
 // workerthread
-#include "Locks.h"
+#include <sofa/simulation/Locks.h>
 
 
 namespace sofa  {
@@ -176,8 +177,7 @@ namespace sofa  {
             // queue task if there is space, and run it otherwise
             virtual bool addTask(Task* task) final;
             virtual void workUntilDone(Task::Status* status) final;
-            virtual void* allocateTask(size_t size) final;
-            virtual void releaseTask(Task*) final;
+            virtual Task::Allocator* getTaskAllocator() final;
 
         public:
 

@@ -222,7 +222,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 Vec3d sum;
                 bool found = false;
-                int k = 0;
+                size_t k = 0;
                 while ((!found) && (k < _completeTopology->getNbEdges()))
                 {
                     f = _completeTopology->getEdge(k);
@@ -338,7 +338,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
     helper::vector<unsigned int> inputEdges;
 
 
-    for (int n=0; n<_topology->getNbEdges(); ++n)
+    for (size_t n=0; n<_topology->getNbEdges(); ++n)
     {
         if ((vArray[_topology->getEdge(n)[0]]) && (vArray[_topology->getEdge(n)[1]]))
         {

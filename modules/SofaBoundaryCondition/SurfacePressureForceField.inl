@@ -39,8 +39,6 @@ namespace component
 namespace forcefield
 {
 
-
-
 template <class DataTypes>
 SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area")),
@@ -80,7 +78,7 @@ void SurfacePressureForceField<DataTypes>::init()
 
     if (m_pulseMode.getValue() && (m_pressureSpeed.getValue() == 0.0))
     {
-        serr<<"Default pressure speed value has been set in SurfacePressureForceField" << sendl;
+        msg_warning() << "Default pressure speed value has been set in SurfacePressureForceField" ;
         m_pressureSpeed.setValue((Real)fabs( m_pressure.getValue()));
     }
 
@@ -94,26 +92,25 @@ void SurfacePressureForceField<DataTypes>::verifyDerivative(VecDeriv& v_plus, Ve
         const VecDeriv& Din)
 {
 
-    std::cout<<" enters verifyDerivative"<<std::endl;
+    msg_info() <<" verifyDerivative : vplus.size()="<<v_plus.size()<<"  v.size()="<<v.size()
+               <<"  DVval.size()="<<DVval.size()<<" DVind.size()="<<DVind.size()<<"  Din.size()="<<Din.size();
 
-    std::cout<<" verifyDerivative : vplus.size()="<<v_plus.size()<<"  v.size()="<<v.size()<<"  DVval.size()="<<DVval.size()<<" DVind.size()="<<DVind.size()<<"  Din.size()="<<Din.size()<<std::endl;
-
-
+    std::stringstream s;
     for (unsigned int i=0; i<v.size(); i++)
     {
 
         Deriv DV;
         DV.clear();
-        std::cout<<" DVnum["<<i<<"] ="<<v_plus[i]-v[i];
+        s <<" DVnum["<<i<<"] ="<<v_plus[i]-v[i];
 
         for(unsigned int j=0; j<DVval[i].size(); j++)
         {
             DV+=DVval[i][j]*Din[ (DVind[i][j]) ];
         }
-        std::cout<<" DVana["<<i<<"] = "<<DV<<" DVval[i].size() = "<<DVval[i].size()<<std::endl;
-
+        s <<" DVana["<<i<<"] = "<<DV<<" DVval[i].size() = "<<DVval[i].size()<<msgendl;
     }
 
+    msg_info() << s.str();
 }
 
 
@@ -220,12 +217,9 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 				df[i] += (derivTriNormalValues[i][j] * dx[v])*kFactor;
 
 			}
-
 		} 
 		d_df.endEdit();
 	}
-
-
 }
 
 
@@ -244,11 +238,9 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 	if (m_useTangentStiffness.getValue()) {
 		for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
 		{
-
 			for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
 			{
 				unsigned int v = derivTriNormalIndices[i][j];
-
 				Mat33 Kiv = derivTriNormalValues[i][j];
 
 				for (unsigned int l=0; l<3; l++)
@@ -256,8 +248,6 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 					for (unsigned int c=0; c<3; c++)
 					{
 						mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv[l][c]);
-
-
 					}
 				}
 			}
@@ -525,10 +515,9 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     vparams->drawTool()->restoreLastState();
 }
 
-#ifndef SOFA_FLOAT
-
 template<>
-void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams , DataVecDeriv& d_df , const DataVecDeriv& d_dx)
+void SurfacePressureForceField<defaulttype::Rigid3Types>::addDForce(const core::MechanicalParams* mparams ,
+                                                                     DataVecDeriv& d_df , const DataVecDeriv& d_dx)
 {
 
 
@@ -555,7 +544,7 @@ void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addDForce(const core:
 }
 
 template <>
-SurfacePressureForceField<defaulttype::Rigid3dTypes>::Real SurfacePressureForceField<defaulttype::Rigid3dTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
+SurfacePressureForceField<defaulttype::Rigid3Types>::Real SurfacePressureForceField<defaulttype::Rigid3Types>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
 {
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Quad Quad;
@@ -585,9 +574,9 @@ SurfacePressureForceField<defaulttype::Rigid3dTypes>::Real SurfacePressureForceF
             triangleIdx = i;
         }
         Triangle t = m_topology->getTriangle(triangleIdx);
-        const defaulttype::Rigid3dTypes::CPos a = x[t[0]].getCenter();
-        const defaulttype::Rigid3dTypes::CPos b = x[t[1]].getCenter();
-        const defaulttype::Rigid3dTypes::CPos c = x[t[2]].getCenter();
+        const defaulttype::Rigid3Types::CPos a = x[t[0]].getCenter();
+        const defaulttype::Rigid3Types::CPos b = x[t[1]].getCenter();
+        const defaulttype::Rigid3Types::CPos c = x[t[2]].getCenter();
         volume += dot(cross(a,b),c);
     }
 
@@ -614,10 +603,10 @@ SurfacePressureForceField<defaulttype::Rigid3dTypes>::Real SurfacePressureForceF
             quadIdx = i;
         }
         Quad q = m_topology->getQuad(quadIdx);
-        const defaulttype::Rigid3dTypes::CPos a = x[q[0]].getCenter();
-        const defaulttype::Rigid3dTypes::CPos b = x[q[1]].getCenter();
-        const defaulttype::Rigid3dTypes::CPos c = x[q[2]].getCenter();
-        const defaulttype::Rigid3dTypes::CPos d = x[q[3]].getCenter();
+        const defaulttype::Rigid3Types::CPos a = x[q[0]].getCenter();
+        const defaulttype::Rigid3Types::CPos b = x[q[1]].getCenter();
+        const defaulttype::Rigid3Types::CPos c = x[q[2]].getCenter();
+        const defaulttype::Rigid3Types::CPos d = x[q[3]].getCenter();
         volume += dot(cross(a,b),c);
         volume += dot(cross(a,c),d);
     }
@@ -627,15 +616,15 @@ SurfacePressureForceField<defaulttype::Rigid3dTypes>::Real SurfacePressureForceF
 }
 
 template <>
-void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
+void SurfacePressureForceField<defaulttype::Rigid3Types>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
 {
 	Triangle t = m_topology->getTriangle(triId);
 
-	defaulttype::Rigid3dTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
-	defaulttype::Rigid3dTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
-	defaulttype::Rigid3dTypes::CPos bc = x[t[2]].getCenter() - x[t[1]].getCenter();
+    defaulttype::Rigid3Types::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
+    defaulttype::Rigid3Types::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
+    defaulttype::Rigid3Types::CPos bc = x[t[2]].getCenter() - x[t[1]].getCenter();
 
-	defaulttype::Rigid3dTypes::CPos p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+    defaulttype::Rigid3Types::CPos p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
 
 
 	if(computeDerivatives)
@@ -673,9 +662,9 @@ void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addTriangleSurfacePre
 
 
 
-	if (m_mainDirection.getValue().getVCenter() != defaulttype::Rigid3dTypes::CPos())
+    if (m_mainDirection.getValue().getVCenter() != defaulttype::Rigid3Types::CPos())
 	{
-		defaulttype::Rigid3dTypes::CPos n = ab.cross(ac);
+        defaulttype::Rigid3Types::CPos n = ab.cross(ac);
 		n.normalize();
 		Real scal = n * m_mainDirection.getValue().getVCenter();
 		p *= fabs(scal);
@@ -687,18 +676,18 @@ void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addTriangleSurfacePre
 }
 
 template <>
-void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
+void SurfacePressureForceField<defaulttype::Rigid3Types>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
 {
 	Quad q = m_topology->getQuad(quadId);
 
-	defaulttype::Rigid3dTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
-	defaulttype::Rigid3dTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
-	defaulttype::Rigid3dTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+    defaulttype::Rigid3Types::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
+    defaulttype::Rigid3Types::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
+    defaulttype::Rigid3Types::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
 
-	defaulttype::Rigid3dTypes::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
-	defaulttype::Rigid3dTypes::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
+    defaulttype::Rigid3Types::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+    defaulttype::Rigid3Types::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
 
-	defaulttype::Rigid3dTypes::CPos p = p1 + p2;
+    defaulttype::Rigid3Types::CPos p = p1 + p2;
 
 	f[q[0]].getVCenter() += p;
 	f[q[1]].getVCenter() += p1;
@@ -707,204 +696,12 @@ void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addQuadSurfacePressur
 }
 
 template<>
-void SurfacePressureForceField<defaulttype::Rigid3dTypes>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/,  VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
+void SurfacePressureForceField<defaulttype::Rigid3Types>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/,  VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
 {
 }
-
-#endif
-
-#ifndef SOFA_DOUBLE
-
-template<>
-void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams , DataVecDeriv& d_df , const DataVecDeriv& d_dx)
-{
-
-
-	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-	VecDeriv& df       = *(d_df.beginEdit());
-	const VecDeriv& dx =   d_dx.getValue()  ;
-
-
-	for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
-	{
-
-		for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
-		{
-			unsigned int v = derivTriNormalIndices[i][j];
-			df[i].getVCenter() += (derivTriNormalValues[i][j] * dx[v].getVCenter())*kFactor;
-
-		}
-
-	}
-
-	d_df.endEdit();
-
-
-}
-
-template <>
-SurfacePressureForceField<defaulttype::Rigid3fTypes>::Real SurfacePressureForceField<defaulttype::Rigid3fTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
-{
-	typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Quad Quad;
-
-	Real volume = 0;
-
-    unsigned int nTriangles = 0;
-    const VecIndex& triangleIndices = m_triangleIndices.getValue();
-    if (!triangleIndices.empty())
-    {
-        nTriangles = triangleIndices.size();
-    }
-    else
-    {
-        nTriangles = m_topology->getNbTriangles();
-    }
-
-    unsigned int triangleIdx = 0;
-    for (unsigned int i = 0; i < nTriangles; i++)
-    {
-        if (!triangleIndices.empty())
-        {
-            triangleIdx = triangleIndices[i];
-        }
-        else
-        {
-            triangleIdx = i;
-        }
-        Triangle t = m_topology->getTriangle(triangleIdx);
-        const defaulttype::Rigid3fTypes::CPos a = x[t[0]].getCenter();
-        const defaulttype::Rigid3fTypes::CPos b = x[t[1]].getCenter();
-        const defaulttype::Rigid3fTypes::CPos c = x[t[2]].getCenter();
-        volume += dot(cross(a,b),c);
-    }
-
-    unsigned int nQuads = 0;
-    const VecIndex& quadIndices = m_quadIndices.getValue();
-    if (!quadIndices.empty())
-    {
-        nQuads = quadIndices.size();
-    }
-    else
-    {
-        nQuads = m_topology->getNbQuads();
-    }
-
-    unsigned int quadIdx = 0;
-    for (unsigned int i = 0; i < nQuads; i++)
-    {
-        if (!quadIndices.empty())
-        {
-            quadIdx = quadIndices[i];
-        }
-        else
-        {
-            quadIdx = i;
-        }
-        Quad q = m_topology->getQuad(quadIdx);
-        const defaulttype::Rigid3fTypes::CPos a = x[q[0]].getCenter();
-        const defaulttype::Rigid3fTypes::CPos b = x[q[1]].getCenter();
-        const defaulttype::Rigid3fTypes::CPos c = x[q[2]].getCenter();
-        const defaulttype::Rigid3fTypes::CPos d = x[q[3]].getCenter();
-        volume += dot(cross(a,b),c);
-        volume += dot(cross(a,c),d);
-    }
-
-    // Divide by 6 when computing tetrahedron volume
-        return volume / 6.0;
-}
-
-template <>
-void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
-{
-	Triangle t = m_topology->getTriangle(triId);
-
-	defaulttype::Rigid3fTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
-	defaulttype::Rigid3fTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
-	defaulttype::Rigid3fTypes::CPos bc = x[t[2]].getCenter() - x[t[1]].getCenter();
-
-	defaulttype::Rigid3fTypes::CPos p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
-
-
-	if(computeDerivatives)
-	{
-		Mat33 DcrossDA;
-		DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
-		DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
-		DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
-
-		Mat33 DcrossDB;
-		DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
-		DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
-		DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
-
-
-		Mat33 DcrossDC;
-		DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
-		DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
-		DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
-
-		for (unsigned int j=0; j<3; j++)
-		{
-			derivTriNormalValues[t[j]].push_back( DcrossDA * (pressure / static_cast<Real>(6.0))  );
-			derivTriNormalValues[t[j]].push_back( DcrossDB * (pressure / static_cast<Real>(6.0))  );
-			derivTriNormalValues[t[j]].push_back( DcrossDC * (pressure / static_cast<Real>(6.0))  );
-
-			derivTriNormalIndices[t[j]].push_back( t[0] );
-			derivTriNormalIndices[t[j]].push_back( t[1] );
-			derivTriNormalIndices[t[j]].push_back( t[2] );
-		}
-
-
-
-	}
-
-
-
-	if (m_mainDirection.getValue().getVCenter() != defaulttype::Rigid3fTypes::CPos())
-	{
-		defaulttype::Rigid3fTypes::CPos n = ab.cross(ac);
-		n.normalize();
-		Real scal = n * m_mainDirection.getValue().getVCenter();
-		p *= fabs(scal);
-	}
-
-	f[t[0]].getVCenter() += p;
-	f[t[1]].getVCenter() += p;
-	f[t[2]].getVCenter() += p;
-}
-
-template <>
-void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
-{
-	Quad q = m_topology->getQuad(quadId);
-
-	defaulttype::Rigid3fTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
-	defaulttype::Rigid3fTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
-	defaulttype::Rigid3fTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
-
-	defaulttype::Rigid3fTypes::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
-	defaulttype::Rigid3fTypes::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
-
-	defaulttype::Rigid3fTypes::CPos p = p1 + p2;
-
-	f[q[0]].getVCenter() += p;
-	f[q[1]].getVCenter() += p1;
-	f[q[2]].getVCenter() += p;
-	f[q[3]].getVCenter() += p2;
-}
-
-template<>
-void SurfacePressureForceField<defaulttype::Rigid3fTypes>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/,  VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
-{
-}
-
-#endif
 
 } // namespace forcefield
-
 } // namespace component
-
 } // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL

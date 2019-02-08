@@ -352,8 +352,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
 
         for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, pos[i],vorindex[i]);
         if(This->useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg,voxelsize); else fastMarching<DistT,DistT>(trial,dist, regimg,voxelsize);
-        //dist.display();
-        //regimg.display();
         while(!converged)
         {
             converged=!(Lloyd<DistT>(pos,vorindex,regimg));
@@ -425,9 +423,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         }
 
         fact.fill(wi,pi,This->fillOrder(),voxelsize,This->volOrder());
-
-        //  std::cout<<"pt "<<*(fact.voronoiIndices.begin())-1<<" : "<<fact.center<<std::endl<<std::endl<<std::endl<<pi<<std::endl<<std::endl<<wi<<std::endl;
-        //test: fact.directSolve(wi,pi); std::cout<<"Jacobi err="<<fact.getError()<<std::endl;
 
         // write error into output image
         if(writeErrorImg)
@@ -682,14 +677,6 @@ protected:
             // set sample orientation to identity (could be image orientation)
             transforms[i].identity();
         }
-
-        // test
-        /*for(unsigned int i=0; i<nb; i++)
-        {
-            Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; }
-            Vec<spatial_dimensions,Real>  sumdw; for(unsigned int j=0; j<dw[i].size(); j++) sumdw+=dw[i][j];
-            if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
-        }*/
 
         if(evaluateShapeFunction.getValue())
         {

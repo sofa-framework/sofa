@@ -72,11 +72,11 @@ GenericConstraintSolver::GenericConstraintSolver()
     , currentIterations(initData(&currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
     , currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
     , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
-    , current_cp(&m_cpBuffer[0])
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
                                         "enable the storage of the constraintForces (default = False)."))
+    , current_cp(&m_cpBuffer[0])
     , last_cp(NULL)
 {
     addAlias(&maxIt, "maxIt");

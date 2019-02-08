@@ -145,7 +145,7 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class SOFA_GENERAL_SIMPLE_FEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
@@ -260,12 +260,8 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3Types>;
+
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
