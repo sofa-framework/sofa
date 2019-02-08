@@ -25,6 +25,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -75,7 +76,7 @@ void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription
         return;
     }
 
-    m_currentAddedPath = m_repository->cleanPath(tmpAddedPath, true);
+    m_currentAddedPath = FileSystem::cleanPath(tmpAddedPath);
     m_repository->addLastPath(m_currentAddedPath);
 
     if(this->f_printLog.getValue())

@@ -23,6 +23,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/config.h>
@@ -331,7 +332,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 
                     if (downcaseFilename == downcaseLibName)
                     {
-                        return sofa::helper::system::FileRepository::cleanPath(path, true);
+                        return FileSystem::cleanPath(path);
                     }
                 }
 
