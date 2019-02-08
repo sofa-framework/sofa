@@ -333,7 +333,7 @@ std::string FileSystem::removeExtraSlashes(const std::string& path)
 
     pos = str.find("/./");
     while(pos != std::string::npos) {
-        str.replace(pos, 2, "/");
+        str.replace(pos, 3, "/");
         pos = str.find("/./");
     }
 
@@ -351,7 +351,7 @@ std::string FileSystem::removeExtraBackSlashes(const std::string& path)
 
     pos = str.find("\\.\\");
     while(pos != std::string::npos) {
-        str.replace(pos, 2, "\\");
+        str.replace(pos, 3, "\\");
         pos = str.find("\\.\\");
     }
 
