@@ -26,48 +26,66 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::FileRepository;
 
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace misc
 {
 
-/** Add a new repository path at startup
-*/
-class AddResourceRepository: public sofa::core::objectmodel::BaseObject
+
+class SOFA_MISC_API AddResourceRepository: public sofa::core::objectmodel::BaseObject
 {
-
 public:
-    SOFA_CLASS(AddResourceRepository, sofa::core::objectmodel::BaseObject);
-
-    typedef sofa::core::objectmodel::BaseObject Inherit;
+    SOFA_ABSTRACT_CLASS(AddResourceRepository, sofa::core::objectmodel::BaseObject);
 
 protected:
-    /** Default constructor
-    */
     AddResourceRepository();
-    virtual ~AddResourceRepository();
+    virtual ~AddResourceRepository() override;
+
+    FileRepository* m_repository;
+
 public:
     //cannot be a DataFilename
     Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
     void cleanup() override;
+
 private:
     std::string m_currentAddedPath;
 
-
+    virtual FileRepository* getFileRepository() = 0;
 };
 
+
+/// Add a new path to DataRepository
+class AddDataRepository: public AddResourceRepository
+{
+public:
+    SOFA_CLASS(AddDataRepository, AddResourceRepository);
+
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
+};
+
+
+/// Add a new path to PluginRepository
+class AddPluginRepository: public AddResourceRepository
+{
+public:
+    SOFA_CLASS(AddPluginRepository, AddResourceRepository);
+
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
+};
+
+
 } // namespace misc
-
 } // namespace component
-
 } // namespace sofa
 
 #endif // SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H

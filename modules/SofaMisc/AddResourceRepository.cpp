@@ -29,22 +29,16 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace misc
 {
 
-int AddResourceRepositoryClass = core::RegisterObject("Add a repository to the pool of resources")
-.add< AddResourceRepository >();
-
 AddResourceRepository::AddResourceRepository()
-    : Inherit()
+    : Inherit1()
     , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
     , m_currentAddedPath()
 {
-
 }
 
 AddResourceRepository::~AddResourceRepository()
@@ -54,7 +48,10 @@ AddResourceRepository::~AddResourceRepository()
 
 void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit::parse(arg);
+    Inherit1::parse(arg);
+
+    m_repository = getFileRepository();
+
     std::string tmpAddedPath;
     tmpAddedPath = d_repositoryPath.getValue();
 
@@ -78,22 +75,27 @@ void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription
         return;
     }
 
-    m_currentAddedPath = tmpAddedPath;
-    sofa::helper::system::DataRepository.addLastPath(m_currentAddedPath);
+    m_currentAddedPath = m_repository->cleanPath(tmpAddedPath, true);
+    m_repository->addLastPath(m_currentAddedPath);
 
     if(this->f_printLog.getValue())
-        sofa::helper::system::DataRepository.print();
+        m_repository->print();
 }
 
 void AddResourceRepository::cleanup()
 {
-    Inherit::cleanup();
-    sofa::helper::system::DataRepository.removePath(m_currentAddedPath);
-
+    Inherit1::cleanup();
+    m_repository->removePath(m_currentAddedPath);
 }
 
+
+int AddDataRepositoryClass = core::RegisterObject("Add a path to DataRepository")
+    .add< AddDataRepository >();
+
+int AddPluginRepositoryClass = core::RegisterObject("Add a path to PluginRepository")
+    .add< AddPluginRepository >();
+
+
 } // namespace misc
-
 } // namespace component
-
 } // namespace sofa
