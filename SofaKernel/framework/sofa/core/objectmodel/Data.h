@@ -448,6 +448,7 @@ public:
     inline void endEdit(const core::ExecParams* params = nullptr)
     {
         m_values[DDGNode::currentAspect(params)].endEdit();
+        BaseData::notifyEndEdit(params);
     }
 
     /// @warning writeOnly (the Data is not updated before being set)

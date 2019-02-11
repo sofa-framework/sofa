@@ -107,6 +107,15 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
     }
 }
 
+void DDGNode::notifyEndEdit(const core::ExecParams* params)
+{
+    bool& dirtyOutputs = dirtyFlags[currentAspect(params)].dirtyOutputs;
+    if (dirtyOutputs)
+    {
+        for(DDGLinkIterator it=outputs.begin(params), itend=outputs.end(params); it != itend; ++it)
+            (*it)->notifyEndEdit(params);
+    }
+}
 
 void DDGNode::cleanDirtyOutputsOfInputs(const core::ExecParams* params)
 {
