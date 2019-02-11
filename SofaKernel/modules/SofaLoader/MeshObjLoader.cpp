@@ -454,7 +454,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // Then we can create the final arrays
         helper::vector<sofa::defaulttype::Vector3> vertices2;
-        //helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vertices2 = d_positions;
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vnormals = d_normals;
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2> > > vtexcoords = texCoords;
         helper::WriteAccessor<Data<helper::vector<int> > > vertPosIdx = d_vertPosIdx;
