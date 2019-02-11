@@ -401,7 +401,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (int err=GUIManager::createGUI(NULL))
+    if (int err=GUIManager::createGUI(nullptr))
         return err;
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
