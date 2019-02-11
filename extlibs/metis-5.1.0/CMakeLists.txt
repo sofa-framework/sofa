@@ -23,4 +23,4 @@ if(UNIX)
 endif()
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(Metis 5.1.0 metis "")
+sofa_generate_package(NAME Metis VERSION 5.1.0 TARGETS metis)

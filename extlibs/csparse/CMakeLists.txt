@@ -21,4 +21,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(CSparse 0.0 ${PROJECT_NAME} "")
+sofa_generate_package(NAME CSparse VERSION 0.0 TARGETS ${PROJECT_NAME})
