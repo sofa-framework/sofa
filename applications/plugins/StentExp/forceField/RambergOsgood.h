@@ -46,7 +46,7 @@ public:
     typedef defaulttype::Mat<3, 3, Real> Matrix3;
     typedef defaulttype::Mat<6, 6, Real> Matrix6;
 
-    RambergOsgood(Real E, Real yieldStress, unsigned int n=10, Real A=(Real)0.002)
+    RambergOsgood(Real E, Real yieldStress, unsigned int n=15, Real A=(Real)0.002)
     {
         _A = A;
         _n = n;
