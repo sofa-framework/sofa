@@ -70,14 +70,6 @@ protected:
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
 
-    struct forceMaskActivator : public std::binary_function<core::behavior::BaseMechanicalState*, bool , void >
-    {
-        void operator()( core::behavior::BaseMechanicalState* m, bool activate ) const
-        {
-            m->forceMask.activate(activate);
-        }
-    };
-
 public:
 
     BaseMechanicalVisitor(const core::ExecParams* params)
@@ -109,12 +101,16 @@ public:
 
     static inline void ForceMaskActivate( const helper::vector<core::behavior::BaseMechanicalState*>& v )
     {
-        std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), true ) );
+        std::for_each( v.begin(), v.end(), [](core::behavior::BaseMechanicalState* m) {
+            m->forceMask.activate(true);
+        });
     }
 
     static inline void ForceMaskDeactivate( const helper::vector<core::behavior::BaseMechanicalState*>& v)
     {
-        std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), false ) );
+        std::for_each( v.begin(), v.end(), [](core::behavior::BaseMechanicalState* m) {
+            m->forceMask.activate(false);
+        });
     }
 
 

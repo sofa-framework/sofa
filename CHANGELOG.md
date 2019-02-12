@@ -53,11 +53,11 @@ ____________________________________________________________
 - [SofaMiscMapping] ExternalInterpolationMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscMapping] ProjectionToLineMapping [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaMiscMapping] ProjectionToPlaneMapping
-- [SofaOpenglVisual] OglCylinderModel [#457](https://github.com/sofa-framework/sofa/pull/457)
-- [SofaOpenglVisual] OglGrid [#457](https://github.com/sofa-framework/sofa/pull/457)
-- [SofaOpenglVisual] OglRenderingSRGB [#457](https://github.com/sofa-framework/sofa/pull/457)
-- [SofaOpenglVisual] OglLineAxis [#457](https://github.com/sofa-framework/sofa/pull/457)
-- [SofaOpenglVisual] OglSceneFrame
+- ~~[SofaOpenglVisual] OglCylinderModel [#457](https://github.com/sofa-framework/sofa/pull/457)~~
+- ~~[SofaOpenglVisual] OglGrid [#457](https://github.com/sofa-framework/sofa/pull/457)~~
+- ~~[SofaOpenglVisual] OglRenderingSRGB [#457](https://github.com/sofa-framework/sofa/pull/457)~~
+- ~~[SofaOpenglVisual] OglLineAxis [#457](https://github.com/sofa-framework/sofa/pull/457)~~
+- ~~[SofaOpenglVisual] OglSceneFrame [#457](https://github.com/sofa-framework/sofa/pull/457)~~
 - [SofaUserInteraction] ArticulatedHierarchyBVHController [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaUserInteraction] ArticulatedHierarchyController [#457](https://github.com/sofa-framework/sofa/pull/457)
 - [SofaUserInteraction] DisabledContact [#457](https://github.com/sofa-framework/sofa/pull/457)

@@ -24,6 +24,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
+#include <unordered_map>
 
 namespace sofa
 {
@@ -39,6 +40,7 @@ namespace _barycentricmappertopologycontainer_
 
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3i;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3Types;
@@ -90,17 +92,65 @@ public:
 
 protected:
 
+    struct Key
+    {
+        Key(const int& xId, const int& yId, const int& zId)
+        {
+            this->xId=xId;
+            this->yId=yId;
+            this->zId=zId;
+        }
+
+        int xId,yId,zId; // cell indices
+    };
+
+    struct HashFunction
+    {
+        size_t operator()(const Key &key) const
+        {
+            // We use the large prime numbers proposed in paper:
+            // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
+            int h = (73856093*key.xId^19349663*key.yId^83492791*key.zId);
+            return size_t(h);
+        }
+    };
+
+    struct HashEqual
+    {
+        bool operator()(const Key &key1, const Key &key2) const
+        {
+            return ((key1.xId==key2.xId) && (key1.yId==key2.yId) && (key1.zId==key2.zId));
+        }
+    };
+
+    struct NearestParams
+    {
+        NearestParams()
+        {
+            distance = std::numeric_limits<double>::max();
+            elementId = std::numeric_limits<unsigned int>::max();
+        }
+
+        Vector3 baryCoords;
+        double distance;
+        unsigned int elementId;
+    };
+
     using Inherit1::m_fromTopology;
 
     topology::PointData< helper::vector<MappingDataType > > d_map;
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
 
+    helper::vector<Mat3x3d> m_bases;
+    helper::vector<Vector3> m_centers;
+
     // Spacial hashing utils
     Real m_gridCellSize;
     Real m_convFactor;
+    std::unordered_map<Key, helper::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
     unsigned int m_hashTableSize;
-    helper::vector<helper::vector<unsigned int>> m_hashTable;
+
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
 
@@ -113,20 +163,29 @@ protected:
     virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
-    void exhaustiveSearch ( defaulttype::Vec3d outPos,
-                            const typename In::VecCoord& in,
-                            const helper::vector<Mat3x3d>& bases,
-                            const helper::vector<Vector3>& centers);
+    /// Compute the distance between outPos and the element e. If this distance is smaller than the previously stored one,
+    /// update nearestParams.
+    /// \param e id of the element
+    /// \param outPos position of the point we want to compute the barycentric coordinates
+    /// \param inPos position of one point of the element
+    /// \param nearestParams output parameters (nearest element id, distance, and barycentric coordinates)
+    void checkDistanceFromElement(unsigned int e,
+                                  const Vector3& outPos,
+                                  const Vector3& inPos,
+                                  NearestParams& nearestParams);
+
+
+    /// Compute the datas needed to find the nearest element
+    /// \param in is the vector of points
+    void computeBasesAndCenters( const typename In::VecCoord& in );
 
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    unsigned int getHashIndexFromCoord(const Vector3& x);
-    unsigned int getHashIndexFromIndices(const int& x, const int& y, const int& z);
-    defaulttype::Vec3i getGridIndices(const Vector3& x);
-    void addToHashTable(const unsigned int& hId, const unsigned int& vertexId);
+    defaulttype::Vec3i getGridIndices(const Vector3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);
+
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
