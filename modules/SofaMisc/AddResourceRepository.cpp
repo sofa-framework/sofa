@@ -37,6 +37,7 @@ namespace misc
 
 AddResourceRepository::AddResourceRepository()
     : Inherit1()
+    , m_repository(nullptr)
     , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
     , m_currentAddedPath()
 {
@@ -91,7 +92,9 @@ void AddResourceRepository::cleanup()
 
 
 int AddDataRepositoryClass = core::RegisterObject("Add a path to DataRepository")
-    .add< AddDataRepository >();
+    .add< AddDataRepository >()
+    .addAlias("AddResourceRepository") // Backward compatibility
+    ;
 
 int AddPluginRepositoryClass = core::RegisterObject("Add a path to PluginRepository")
     .add< AddPluginRepository >();
