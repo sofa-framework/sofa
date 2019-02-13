@@ -37,6 +37,16 @@ namespace component
 namespace interactionforcefield
 {
 
+//This class is specialized with cudatypes
+template<class DataTypes>
+class JointSpringForceFieldInternalData
+{
+public:
+};
+  
+template<typename DataTypes>
+class JointSpring;
+
 template<typename DataTypes>
 class JointSpring;
 
@@ -74,6 +84,8 @@ protected:
     std::ifstream* m_infile;
     std::ofstream* m_outfile;
 
+    JointSpringForceFieldInternalData<DataTypes> data;
+    friend class JointSpringForceFieldInternalData<DataTypes>;
 
     /// Accumulate the spring force and compute and store its stiffness
     void addSpringForce(SReal& potentialEnergy,

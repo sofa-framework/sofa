@@ -127,34 +127,26 @@ void ConstraintProblem::clear(int dim, const double &tol)
 
 void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax)
 {
-    int i, j, k, l, nb;
-
-    double errF[6] = {0,0,0,0,0,0};
     double error=0.0;
-
-
 
     double t0 = (double)_timer->getTime() ;
     double timeScale = 1.0 / (double)CTime::getTicksPerSec();
 
-    for(i=0; i<numItMax; i++)
+    for(int i=0; i<numItMax; i++)
     {
         error=0.0;
-        for(j=0; j<_dim; ) // increment of j realized at the end of the loop
+        for(int j=0; j<_dim; ) // increment of j realized at the end of the loop
         {
-            nb = _constraintsResolutions[j]->getNbLines();
+            int nb = _constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-            for(l=0; l<nb; l++)
-            {
-                errF[l] = _force[j+l];
-                _d[j+l] = _dFree[j+l];
-            }
+            std::vector<double> errF(&_force[j], &_force[j+nb]);
+            std::copy_n(_dFree.begin() + j, nb, _d.begin() + j);
 
             //   (b) contribution of forces are added to d
-            for(k=0; k<_dim; k++)
-                for(l=0; l<nb; l++)
+            for(int k=0; k<_dim; k++)
+                for(int l=0; l<nb; l++)
                     _d[j+l] += _W[j+l][k] * _force[k];
 
 
@@ -167,7 +159,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
             if(nb > 1)
             {
                 double terr = 0.0;
-                for(l=0; l<nb; l++)
+                for(int l=0; l<nb; l++)
                 {
                     double terr2 = 0;
                     for (int m=0; m<nb; m++)
@@ -720,8 +712,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     if(!dim)
         return;
 
-    int i, j, k, l, nb;
-    double errF[6] = {0,0,0,0,0,0};
+    int iter, nb;
     double error=0.0;
 
     double tolerance = _tol.getValue();
@@ -735,7 +726,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     if(scaleTolerance.getValue() && !allVerified)
         tolerance *= dim;
 
-    for(i=0; i<dim; )
+    for(int i=0; i<dim; )
     {
         res[i]->init(i, w, force);
         i += res[i]->getNbLines();
@@ -750,14 +741,14 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         std::cout<<"shemeCorrection => LCP before step 1"<<std::endl;
         helper::afficheLCP(dfree, w, force,  dim);
         ///////// scheme correction : step 1 => modification of dfree
-        for(j=0; j<dim; j++)
+        for(int j=0; j<dim; j++)
         {
-            for(k=0; k<dim; k++)
+            for(int k=0; k<dim; k++)
                 dfree[j] -= w[j][k] * force[k];
         }
 
         ///////// scheme correction : step 2 => storage of force value
-        for(j=0; j<dim; j++)
+        for(int j=0; j<dim; j++)
             df[j] = -force[j];
     }
 
@@ -767,20 +758,19 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     sofa::helper::vector<double> tabErrors;
     tabErrors.resize(dim);
 
-    for(i=0; i<numItMax; i++)
+    for(iter=0; iter<numItMax; iter++)
     {
         bool constraintsAreVerified = true;
         if(sor != 1.0)
         {
-            for(j=0; j<dim; j++)
-                tempForces[j] = force[j];
+            std::copy_n(force, dim, tempForces.begin());
         }
 
         error=0.0;
 
-        for(j=0; j<dim; ) // increment of j realized at the end of the loop
+        for(int j=0; j<dim; ) // increment of j realized at the end of the loop
         {
-            //1. nbLines provide the dimension of the constraint  (max=6)
+            //1. nbLines provide the dimension of the constraint
             nb = res[j]->getNbLines();
 
             bool check = true;
@@ -793,14 +783,12 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
             {
                 //2. for each line we compute the actual value of d
                 //   (a)d is set to dfree
-                for(l=0; l<nb; l++)
-                {
-                    errF[l] = force[j+l];
-                    d[j+l] = dfree[j+l];
-                }
+                std::vector<double> errF(&force[j], &force[j+nb]);
+                std::copy_n(&dfree[j], nb, &d[j]);
+
                 //   (b) contribution of forces are added to d
-                for(k=0; k<dim; k++)
-                    for(l=0; l<nb; l++)
+                for(int k=0; k<dim; k++)
+                    for(int l=0; l<nb; l++)
                         d[j+l] += w[j+l][k] * force[k];
 
 
@@ -811,7 +799,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
                 double contraintError = 0.0;
                 if(nb > 1)
                 {
-                    for(l=0; l<nb; l++)
+                    for(int l=0; l<nb; l++)
                     {
                         double lineError = 0.0;
                         for (int m=0; m<nb; m++)
@@ -847,8 +835,8 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
             }
             else
             {
-                for (int b=0; b<nb; b++) force[j+b] = 0;
-                msg_info_when(i==0) << "constraint %d has a compliance equal to zero on the diagonal" ;
+                std::fill_n(&force[j], nb, 0);
+                msg_info_when(iter==0) << "constraint %d has a compliance equal to zero on the diagonal" ;
                 j += nb;
             }
         }
@@ -856,7 +844,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
         /// display a graph with the force of each constraint dimension at each iteration
         std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
-        for(j=0; j<dim; j++)
+        for(int j=0; j<dim; j++)
         {
             std::ostringstream oss;
             oss << "f" << j;
@@ -870,7 +858,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
         if(sor != 1.0)
         {
-            for(j=0; j<dim; j++)
+            for(int j=0; j<dim; j++)
                 force[j] = sor * force[j] + (1-sor) * tempForces[j];
         }
 
@@ -882,7 +870,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
                 break;
             }
         }
-        else if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
+        else if(error < tolerance && iter>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
@@ -897,13 +885,13 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         }
         else if (displayTime.getValue())
         {
-            sout << "Convergence after " << i+1 << " iterations." << sendl;
+            sout << "Convergence after " << iter+1 << " iterations." << sendl;
         }
     }
 
-    sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
+    sofa::helper::AdvancedTimer::valSet("GS iterations", iter+1);
 
-    for(i=0; i<dim; )
+    for(int i=0; i<dim; )
     {
         res[i]->store(i, force, convergence);
         int t = res[i]->getNbLines();
@@ -913,7 +901,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     if(schemeCorrection.getValue())
     {
         ///////// scheme correction : step 3 => the corrective motion is only based on the diff of the force value: compute this diff
-        for(j=0; j<dim; j++)
+        for(int j=0; j<dim; j++)
         {
             df[j] += force[j];
         }
@@ -926,7 +914,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     sofa::helper::vector<double>& graph_constraints = (*_graphConstraints.beginEdit())["Constraints"];
     graph_constraints.clear();
 
-    for(j=0; j<dim; )
+    for(int j=0; j<dim; )
     {
         nb = res[j]->getNbLines();
 

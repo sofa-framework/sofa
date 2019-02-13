@@ -153,6 +153,19 @@ find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
+find_package(SofaExporter)
+
+if(SofaExporter_FOUND)
+list(APPEND SOURCE_FILES
+   Binding_OBJExporter.cpp
+   Binding_STLExporter.cpp
+    )
+
+list(APPEND HEADER_FILES
+   Binding_OBJExporter.h
+   Binding_STLExporter.h
+    )
+endif()
 
 # TODO: Get rid of absolute paths in SofaPython
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
@@ -181,7 +194,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC "$<INSTALL_INTERFACE:include>"
     )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral SofaExporter ${PYTHON_LIBRARIES})
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
@@ -194,4 +207,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COM
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaPython ${SOFAPYTHON_VERSION} ${PROJECT_NAME} SofaPython)
+sofa_generate_package(NAME SofaPython VERSION ${SOFAPYTHON_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR SofaPython)
