@@ -1429,7 +1429,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ)
 {
     TriangleModel *tM = t.getCollisionModel();
-    bool bothSide_computation = tM->bothSide.getValue();
+    bool bothSide_computation = tM->d_bothSide.getValue();
 
     if (!filterIntersection.getValue()  || bothSide_computation)
         return true;
