@@ -250,7 +250,7 @@ void GeomagicDriver::bwdInit()
 }
 
 
-void GeomagicDriver::initDevice()
+void GeomagicDriver::initDevice(int cptInitPass)
 {
     m_initVisuDone = false;
     m_errorDevice = 0;
@@ -266,10 +266,10 @@ void GeomagicDriver::initDevice()
         {
             msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
             m_hHD = hdGetCurrentDevice();
-            if (m_hHD != UINT_MAX)
+            if (m_hHD != UINT_MAX && cptInitPass < 10) // Try clear and reinit device (10 times max)
             {
                 clearDevice();
-                return initDevice();
+                return initDevice(cptInitPass++);
             }
         }
 
