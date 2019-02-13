@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-XspLoader.has been deprecated and replaced with XspLoader.
+MassSpringLoader has been deprecated and replaced with XspLoader.
 You shouldn't include this file anymore.
 
 It is easy to update your code with the XspLoader.

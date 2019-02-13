@@ -62,7 +62,6 @@ set(HEADER_FILES
     io/MeshTopologyLoader.h
     io/SphereLoader.h
     io/TriangleLoader.h
-    io/XspLoader.h
     io/bvh/BVHChannels.h
     io/bvh/BVHJoint.h
     io/bvh/BVHLoader.h
