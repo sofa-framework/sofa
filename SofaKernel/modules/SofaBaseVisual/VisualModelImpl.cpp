@@ -887,14 +887,6 @@ void VisualModelImpl::init()
         }
     }
 
-    m_vertices2.beginEdit();
-    m_vnormals.beginEdit();
-    m_vtexcoords.beginEdit();
-    m_vtangents.beginEdit();
-    m_vbitangents.beginEdit();
-    m_triangles.beginEdit();
-    m_quads.beginEdit();
-
     applyScale(m_scale.getValue()[0], m_scale.getValue()[1], m_scale.getValue()[2]);
     applyRotation(m_rotation.getValue()[0], m_rotation.getValue()[1], m_rotation.getValue()[2]);
     applyTranslation(m_translation.getValue()[0], m_translation.getValue()[1], m_translation.getValue()[2]);
