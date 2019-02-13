@@ -57,7 +57,7 @@ namespace misc
  * Stop to write infos if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_EXPORTER_API WriteTopology: public core::objectmodel::BaseObject
+class SOFA_SOFAEXPORTER_API WriteTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
@@ -68,10 +68,6 @@ public:
     Data < double > f_interval; ///< time duration between outputs
     Data < helper::vector<double> > f_time; ///< set time to write outputs
     Data < double > f_period; ///< period between outputs
-    //    Data < helper::vector<unsigned int> > f_DOFsX;
-    //    Data < helper::vector<unsigned int> > f_DOFsV;
-    //    Data < double > f_stopAt;
-    //    Data < double > f_keperiod;
 
 protected:
     core::topology::BaseMeshTopology* m_topology;
@@ -81,21 +77,15 @@ protected:
 #endif
     unsigned int nextTime;
     double lastTime;
-    //    bool kineticEnergyThresholdReached;
-    //    double timeToTestEnergyIncrease;
-    //    double savedKineticEnergy;
-
-
     WriteTopology();
 
     virtual ~WriteTopology();
+
 public:
     virtual void init() override;
-
     virtual void reset() override;
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
-
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MeshTopology.
@@ -111,7 +101,7 @@ public:
 
 
 ///Create WriteTopology component in the graph each time needed
-class SOFA_EXPORTER_API WriteTopologyCreator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteTopologyCreator: public simulation::Visitor
 {
 public:
     WriteTopologyCreator(const core::ExecParams* params);
@@ -133,12 +123,11 @@ protected:
     int counterWriteTopology; //avoid to have two same files if two Topologies are present with the same name
 
     void addWriteTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode);
-
 };
 
 
 
-class SOFA_EXPORTER_API WriteTopologyActivator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
     WriteTopologyActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}

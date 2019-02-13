@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaExporter_test)
 
+find_package(SofaExporter REQUIRED)
+
 set(SOURCE_FILES ../../empty.cpp)
 
 list(APPEND SOURCE_FILES
@@ -12,7 +14,7 @@ list(APPEND SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaExporter)
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE "SOFAEXPORTER_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files/\""
     PRIVATE "SOFAEXPORTER_BUILD_DIR=\"${CMAKE_BINARY_DIR}/\""

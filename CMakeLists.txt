@@ -206,12 +206,15 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
-add_subdirectory(SofaGui)
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
 add_subdirectory(modules)
+
+# This is all the applications GUI stuff. As there is a dependency to this one
+# In scene creator and SofaPython...it is located here.
+add_subdirectory(SofaGui)
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
@@ -226,6 +229,7 @@ option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
     set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
 endif()
+
 
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 if(SOFA_BUILD_SCENECREATOR)
