@@ -22,9 +22,11 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
 
-#include "../config.h"
-#include "../initStentExp.h"
+#include <StentExp/config.h>
+#include <StentExp/initStentExp.h>
 #include "PlasticConstitutiveLaw.h"
+#include <StentExp/quadrature/Gaussian.h>
+#include <StentExp/quadrature/quadrature.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
@@ -34,9 +36,6 @@
 #include <Eigen/Sparse>
 #include <Eigen/Geometry>
 #include <string>
-
-#include "../quadrature/Gaussian.h"
-#include "../quadrature/quadrature.h"
 
 
 namespace sofa
@@ -454,13 +453,8 @@ protected:
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_StentExp_API MultiBeamForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_StentExp_API MultiBeamForceField<defaulttype::Rigid3fTypes>;
-#endif
+#if !defined(SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP)
+extern template class SOFA_StentExp_API MultiBeamForceField<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace forcefield

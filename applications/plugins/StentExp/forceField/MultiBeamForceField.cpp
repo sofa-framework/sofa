@@ -37,25 +37,12 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-
-SOFA_DECL_CLASS(MultiBeamForceField)
-
 // Register in the Factory
 int MultiBeamForceFieldClass = core::RegisterObject("Stent adaptated beam finite elements")
-#ifndef SOFA_FLOAT
-        .add< MultiBeamForceField<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MultiBeamForceField<Rigid3fTypes> >()
-#endif
+        .add< MultiBeamForceField<Rigid3Types> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_StentExp_API MultiBeamForceField<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_StentExp_API MultiBeamForceField<Rigid3fTypes>;
-#endif
+template class SOFA_StentExp_API MultiBeamForceField<Rigid3Types>;
 
 } // namespace forcefield
 
