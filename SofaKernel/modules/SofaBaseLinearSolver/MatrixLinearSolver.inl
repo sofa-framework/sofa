@@ -114,6 +114,12 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
 
     if (!this->frozen)
     {
+        simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
+        SReal dim = 0;
+        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
+        currentGroup->systemSize = dim;
+        currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
+
         simulation::common::MechanicalOperations mops(mparams, this->getContext());
         if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
         currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
