@@ -89,14 +89,17 @@ public:
     virtual void update() override {}
 
     const std::string& getName() const override {
+        assert(m_data.size() == 0);
         return m_data[0]->getName();
     }
 
     sofa::core::objectmodel::Base* getOwner() const override {
+        assert(m_data.size() == 0);
         return m_data[0]->getOwner();
     }
 
     sofa::core::objectmodel::BaseData* getData() const override {
+        assert(m_data.size() == 0);
         return m_data[0];
     }
 
