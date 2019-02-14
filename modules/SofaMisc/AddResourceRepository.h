@@ -37,14 +37,14 @@ namespace misc
 {
 
 
-class SOFA_MISC_API AddResourceRepository: public sofa::core::objectmodel::BaseObject
+class SOFA_MISC_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_ABSTRACT_CLASS(AddResourceRepository, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
 
 protected:
-    AddResourceRepository();
-    virtual ~AddResourceRepository() override;
+    BaseAddResourceRepository();
+    virtual ~BaseAddResourceRepository() override;
 
     FileRepository* m_repository;
 
@@ -63,10 +63,10 @@ private:
 
 
 /// Add a new path to DataRepository
-class AddDataRepository: public AddResourceRepository
+class AddDataRepository: public BaseAddResourceRepository
 {
 public:
-    SOFA_CLASS(AddDataRepository, AddResourceRepository);
+    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
 
 protected:
     FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
@@ -74,10 +74,10 @@ protected:
 
 
 /// Add a new path to PluginRepository
-class AddPluginRepository: public AddResourceRepository
+class AddPluginRepository: public BaseAddResourceRepository
 {
 public:
-    SOFA_CLASS(AddPluginRepository, AddResourceRepository);
+    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
 
 protected:
     FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }

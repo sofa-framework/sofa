@@ -35,7 +35,7 @@ namespace component
 namespace misc
 {
 
-AddResourceRepository::AddResourceRepository()
+BaseAddResourceRepository::BaseAddResourceRepository()
     : Inherit1()
     , m_repository(nullptr)
     , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
@@ -43,12 +43,12 @@ AddResourceRepository::AddResourceRepository()
 {
 }
 
-AddResourceRepository::~AddResourceRepository()
+BaseAddResourceRepository::~BaseAddResourceRepository()
 {
 
 }
 
-void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
 
@@ -84,7 +84,7 @@ void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription
         m_repository->print();
 }
 
-void AddResourceRepository::cleanup()
+void BaseAddResourceRepository::cleanup()
 {
     Inherit1::cleanup();
     m_repository->removePath(m_currentAddedPath);
