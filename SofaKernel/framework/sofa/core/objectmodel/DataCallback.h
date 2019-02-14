@@ -22,6 +22,7 @@ public:
     }
 
     DataCallback(std::initializer_list<BaseData*> listdata) {
+
         for(BaseData* data : listdata)
         {
             m_data.push_back(data);

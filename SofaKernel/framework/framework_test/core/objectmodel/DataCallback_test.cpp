@@ -55,9 +55,9 @@ struct DataCallback_test: public BaseTest
         void printData2()
         {
             msg_advice("DataCallback_test") << "TestObject : Value of objdata2 changed : "
-                                          << this->d_objdata1.getValue();
+                                          << this->d_objdata2.getValue();
             msg_error("DataCallback_test") << "TestObject : Value of objdata1 did not changed : "
-                                           << this->d_objdata2.getValue();
+                                           << this->d_objdata1.getValue();
         }
         void printDataAll()
         {
@@ -72,7 +72,7 @@ struct DataCallback_test: public BaseTest
             , d_objdata2(initData(&d_objdata2, 1, "objdata2", "objdata2"))
             , m_datacallback1(&d_objdata1)
             , m_datacallback2(&d_objdata2)
-            , m_datacallbackAll( {&d_objdata1, &d_objdata1} )
+            , m_datacallbackAll( {&d_objdata1, &d_objdata2} )
         {
         }
     };
@@ -129,7 +129,7 @@ TEST_F(DataCallback_test, testDataCallback_All)
     obj.d_objdata1.setValue(234);
     EXPECT_EQ( obj.d_objdata1.getValue(), 234 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
-    //EXPECT_MSG_EMIT(Fatal) ; // how to expect an other (fatal) message ?
+    EXPECT_MSG_EMIT(Fatal) ; // how to expect an other (fatal) message ?
     obj.d_objdata2.setValue(987);
     EXPECT_EQ( obj.d_objdata1.getValue(), 234 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 987 ) ;
