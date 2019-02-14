@@ -86,17 +86,17 @@ public:
         }
     }
 
-    virtual void update() {}
+    virtual void update() override {}
 
-    const std::string& getName() const {
+    const std::string& getName() const override {
         return m_data[0]->getName();
     }
 
-    sofa::core::objectmodel::Base* getOwner() const {
+    sofa::core::objectmodel::Base* getOwner() const override {
         return m_data[0]->getOwner();
     }
 
-    sofa::core::objectmodel::BaseData* getData() const {
+    sofa::core::objectmodel::BaseData* getData() const override {
         return m_data[0];
     }
 
