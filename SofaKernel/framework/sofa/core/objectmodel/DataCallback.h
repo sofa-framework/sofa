@@ -15,52 +15,19 @@ public:
     typedef sofa::core::objectmodel::BaseData BaseData;
 
     //Constructor with multiple data
-    DataCallback(BaseData & data) {
-        m_data.push_back(&data);
+    DataCallback(BaseData * data) {
+        m_data.push_back(data);
         m_updating = false;
-        addInput(&data);
+        addInput(data);
     }
 
-    DataCallback(BaseData & data1,BaseData & data2)
-    : DataCallback(data1) {
-        m_data.push_back(&data2);
-        addInput(&data2);
-    }
-
-    DataCallback(BaseData & data1,BaseData & data2,BaseData & data3)
-    : DataCallback(data1,data2) {
-        m_data.push_back(&data3);
-        addInput(&data3);
-    }
-
-    DataCallback(BaseData & data1,BaseData & data2,BaseData & data3,BaseData & data4)
-    : DataCallback(data1,data2,data3) {
-        m_data.push_back(&data4);
-        addInput(&data4);
-    }
-
-    DataCallback(BaseData & data1,BaseData & data2,BaseData & data3,BaseData & data4,BaseData & data5)
-    : DataCallback(data1,data2,data3,data4) {
-        m_data.push_back(&data5);
-        addInput(&data5);
-    }
-
-    DataCallback(BaseData & data1,BaseData & data2,BaseData & data3,BaseData & data4,BaseData & data5,BaseData & data6)
-    : DataCallback(data1,data2,data3,data4,data5) {
-        m_data.push_back(&data6);
-        addInput(&data6);
-    }
-
-    DataCallback(BaseData & data1,BaseData & data2,BaseData & data3,BaseData & data4,BaseData & data5,BaseData & data6,BaseData & data7)
-    : DataCallback(data1,data2,data3,data4,data5,data6) {
-        m_data.push_back(&data7);
-        addInput(&data7);
-    }
-
-    DataCallback(BaseData & data1,BaseData & data2,BaseData & data3,BaseData & data4,BaseData & data5,BaseData & data6,BaseData & data7,BaseData & data8)
-    : DataCallback(data1,data2,data3,data4,data5,data6,data7) {
-        m_data.push_back(&data8);
-        addInput(&data8);
+    DataCallback(std::initializer_list<BaseData*> listdata) {
+        for(BaseData* data : listdata)
+        {
+            m_data.push_back(data);
+            m_updating = false;
+            addInput(data);
+        }
     }
 
     template<class FwdObject,class FwdFunction>
