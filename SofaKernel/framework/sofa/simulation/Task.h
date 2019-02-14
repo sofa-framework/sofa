@@ -148,6 +148,18 @@ namespace sofa
 
 
 
+        class SOFA_SIMULATION_CORE_API ThreadLocalTask
+        {
+
+        public:
+
+            ThreadLocalTask() {}
+
+            virtual ~ThreadLocalTask() {}
+
+            virtual void operator()() const = 0;
+        };
+
 
 		// This task is called once by each thread used by the TasScheduler
 		// this is useful to initialize the thread specific variables
