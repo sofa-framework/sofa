@@ -77,6 +77,7 @@ namespace sofa
 
             virtual Task::Allocator* getTaskAllocator() = 0;
 
+            virtual void keepThreadsActive(bool active) {};
 
         protected:
 
