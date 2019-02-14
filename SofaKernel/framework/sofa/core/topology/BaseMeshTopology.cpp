@@ -356,28 +356,28 @@ void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
-    serr << "beginChange() not supported.";
+    //serr << "beginChange() not supported.";
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
 {
-    msg_error() << "endChange() not supported.";
+    //msg_error() << "endChange() not supported.";
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
 {
-    msg_error() << "beginStateChange() not supported.";
+    //msg_error() << "beginStateChange() not supported.";
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
 {
-    msg_error() << "endStateChange() not supported.";
+    //msg_error() << "endStateChange() not supported.";
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
