@@ -315,6 +315,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif()
 
 if(APPLE)
+    find_library(ICONV iconv)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${ICONV})
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()
