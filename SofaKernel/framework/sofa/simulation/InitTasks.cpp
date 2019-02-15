@@ -63,7 +63,7 @@ namespace sofa
             
             std::mutex  InitThreadSpecificMutex;
             
-            Task::Status status;
+            CpuTask::Status status;
             const int nbThread = scheduler->getThreadCount();
             
             for (int i = 0; i<nbThread; ++i)

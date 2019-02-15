@@ -92,7 +92,7 @@ namespace mapping
 
 
 			// create tasks
-            simulation::Task::Status status;
+            simulation::CpuTask::Status status;
             simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
@@ -186,7 +186,7 @@ namespace mapping
 
             out.resize(this->points.size());
 
-            simulation::Task::Status status;
+            simulation::CpuTask::Status status;
             simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
@@ -273,7 +273,7 @@ namespace mapping
 			helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
 
 
-            simulation::Task::Status status;
+            simulation::CpuTask::Status status;
             simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();

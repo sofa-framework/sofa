@@ -86,9 +86,9 @@ namespace sofa  {
 
             Task::Status* getCurrentStatus() const { return _currentStatus; }
 
-            const char* getName() { return _name.c_str(); }
+            const char* getName() const { return _name.c_str(); }
 
-            const size_t getIndex() { return _index; }
+            int getType() const { return _type; }
 
             const std::thread::id getId();
 
@@ -139,7 +139,7 @@ namespace sofa  {
 
             const std::string _name;
 
-            const size_t _index;
+            const int _type;
 
             simulation::SpinLock _taskMutex;
 
@@ -170,14 +170,17 @@ namespace sofa  {
         public:
 
             // interface
-            void init(const unsigned int nbThread = 0) final;
-            void stop(void) final;
-            unsigned int getThreadCount(void)  const final { return _threadCount; }
-            const char* getCurrentThreadName() final;
+
+            virtual void init(const unsigned int nbThread = 0) final;
+            virtual void stop(void) final;
+            virtual unsigned int getThreadCount(void)  const final { return _threadCount; }
+            virtual const char* getCurrentThreadName() override final;
+            virtual int GetCurrentThreadType() override final;
+            
             // queue task if there is space, and run it otherwise
-            bool addTask(Task* task) final;
-            void workUntilDone(Task::Status* status) final;
-            Task::Allocator* getTaskAllocator() final;
+            bool addTask(Task* task) override final;
+            void workUntilDone(Task::Status* status) override final;
+            Task::Allocator* getTaskAllocator() override final;
 
         public:
 

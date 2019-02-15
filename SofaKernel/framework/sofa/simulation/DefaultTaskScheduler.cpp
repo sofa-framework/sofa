@@ -185,6 +185,12 @@ namespace sofa
             return thread->getName();
         }
 
+        int DefaultTaskScheduler::GetCurrentThreadType()
+        {
+            WorkerThread* thread = WorkerThread::getCurrent();
+            return thread->getType();
+        }
+
         bool DefaultTaskScheduler::addTask(Task* task)
         {
             WorkerThread* thread = WorkerThread::getCurrent();
@@ -220,8 +226,8 @@ namespace sofa
 
 
         WorkerThread::WorkerThread(DefaultTaskScheduler* const& pScheduler, const int index, const std::string& name)
-            : _name(name + std::to_string(index))
-            , _index(index)
+            : _type(0)
+            , _name(name + std::to_string(index))
             , _tasks()
             , _taskScheduler(pScheduler)
 		{

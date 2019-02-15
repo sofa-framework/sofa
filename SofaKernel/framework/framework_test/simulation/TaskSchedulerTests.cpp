@@ -13,7 +13,7 @@ namespace sofa
         simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
 
-        simulation::Task::Status status;
+        simulation::CpuTask::Status status;
 		int64_t result = 0;
 
 		FibonacciTask task(N, &result, &status);
@@ -31,7 +31,7 @@ namespace sofa
         simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
 
-        simulation::Task::Status status;
+        simulation::CpuTask::Status status;
 		int64_t result = 0;
 
 		IntSumTask task(1, N, &result, &status);

@@ -37,19 +37,106 @@ namespace sofa
         class SOFA_SIMULATION_CORE_API Task
         {
         public:
-
+            
             // Task Status class definition
             class Status
             {
             public:
+                
+                virtual bool isBusy() const = 0;
+                virtual int setBusy(bool busy) = 0;
+            };
+            
+            class Allocator
+            {
+            public:
+                virtual void* allocate(std::size_t sz) = 0;
+                
+                virtual void free(void* ptr, std::size_t sz) = 0;
+            };
+            
+            
+            Task(const Task::Status* status = nullptr, int scheduledThread = 0);
+            
+            virtual ~Task();
+            
+            enum MemoryAlloc
+            {
+                Stack     = 1 << 0,
+                Dynamic   = 1 << 1,
+                Static    = 1 << 2,
+            };
+            
+            
+            // Task interface: override these two functions
+            virtual MemoryAlloc run() = 0;
+            
+            
+            static void* operator new (std::size_t sz)
+            {
+                return _allocator->allocate(sz);
+            }
+            
+            // when c++14 is available delete the void  operator delete  (void* ptr)
+            // and define the void operator delete  (void* ptr, std::size_t sz)
+            static void  operator delete  (void* ptr)
+            {
+                _allocator->free(ptr, 0);
+            }
+            
+            // only available in c++14.
+            static void operator delete  (void* ptr, std::size_t sz)
+            {
+                _allocator->free(ptr, sz);
+            }
+            
+            // no array new and delete operators
+            static void* operator new[](std::size_t sz) = delete;
+            
+            // visual studio 2015 complains about the = delete but it doens't explain where this operator is call
+            // no problem with other sompilers included visual studio 2017
+            //static void operator delete[](void* ptr) = delete;
+            
+            inline Task::Status* getStatus(void) const  { return const_cast<Task::Status*>(_status); }
+            
+            int getScheduledThread() const { return _scheduledThread; }
+            
+            static Task::Allocator* getAllocator() { return _allocator; }
+            
+            static void setAllocator(Task::Allocator* allocator) { _allocator = allocator; }
+            
+        protected:
+            
+            const Task::Status*    _status;
+            
+            int _scheduledThread;
+            
+        public:
+            int _id;
+            
+        private:
+            
+            static Task::Allocator * _allocator;
+        };
+        
+        
+
+        class SOFA_SIMULATION_CORE_API CpuTask : public Task
+        {
+        public:
+
+            // Task Status class definition
+            class Status : public Task::Status
+            {
+            public:
                 Status() : _busy(0) {}
 
-                bool isBusy() const
+                virtual bool isBusy() const override final
                 {
                     return (_busy.load(std::memory_order_relaxed) > 0);
                 }
 
-                int setBusy(bool busy)
+                virtual int setBusy(bool busy) override final
                 {
                     if (busy)
                     {
@@ -66,109 +153,40 @@ namespace sofa
             };
 
 
-            class Allocator
-            {
-            public:
-                virtual void* allocate(std::size_t sz) = 0;
 
-                virtual void free(void* ptr, std::size_t sz) = 0;
-            };
+            CpuTask(const CpuTask::Status* status = nullptr, int scheduledThread = 0);
 
+            virtual ~CpuTask();
 
-            Task(const Task::Status* status = nullptr);
-
-            virtual ~Task();
-
-        public:
-
-            enum MemoryAlloc
-            {
-                Stack     = 1 << 0,
-                Dynamic   = 1 << 1,
-                Static    = 1 << 2,
-            };
-
-
-            virtual MemoryAlloc run() = 0;
-
-
-
-            static void* operator new (std::size_t sz)
-            {
-                return _allocator->allocate(sz);
-            }
-            
-            // when c++14 is available delete the void  operator delete  (void* ptr)
-            // and define the void operator delete  (void* ptr, std::size_t sz)
-            static void  operator delete  (void* ptr)
-            {
-                _allocator->free(ptr, 0);
-            }
-
-            // only available in c++14. 
-            static void operator delete  (void* ptr, std::size_t sz)
-            {
-                _allocator->free(ptr, sz);
-            }
-
-            // no array new and delete operators
-            static void* operator new[](std::size_t sz) = delete;
-
-            // visual studio 2015 complains about the = delete but it doens't explain where this operator is call
-            // no problem with other sompilers included visual studio 2017
-            //static void operator delete[](void* ptr) = delete;
-
-
-        public:
-            inline Task::Status* getStatus(void) const
-            {
-                return const_cast<Task::Status*>(_status);
-            }
-
-
-            static Task::Allocator* getAllocator() { return _allocator; }
-
-            static void setAllocator(Task::Allocator* allocator) { _allocator = allocator; }
-
-        protected:
-
-            const Task::Status*	_status;
-
-        public:
-            int _id;
-
-        private:
-
-            static Task::Allocator * _allocator;
         };
 
 
 
 
-		// This task is called once by each thread used by the TasScheduler
-		// this is useful to initialize the thread specific variables
-		class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public Task
-		{
-
-		public:
-
-            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const Task::Status* status);
-
-			~ThreadSpecificTask() override;
-
-            MemoryAlloc run() final;
-
-
-        private:
-
-            virtual bool runThreadSpecific() { return true; }
-
-            virtual bool runCriticalThreadSpecific() { return true; }
-
-
-			std::atomic<int>* _atomicCounter;
-			std::mutex*	 _threadSpecificMutex;
-		};
+//        // This task is called once by each thread used by the TasScheduler
+//        // this is useful to initialize the thread specific variables
+//        class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public Task
+//        {
+//
+//        public:
+//
+//            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const Task::Status* status);
+//
+//            ~ThreadSpecificTask() override;
+//
+//            MemoryAlloc run() final;
+//
+//
+//        private:
+//
+//            virtual bool runThreadSpecific() { return true; }
+//
+//            virtual bool runCriticalThreadSpecific() { return true; }
+//
+//
+//            std::atomic<int>* _atomicCounter;
+//            std::mutex*     _threadSpecificMutex;
+//        };
 
 
 	} // namespace simulation

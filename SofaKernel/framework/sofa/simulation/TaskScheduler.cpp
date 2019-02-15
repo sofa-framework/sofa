@@ -79,28 +79,28 @@ namespace sofa
 
         // called once by each thread used
         // by the TaskScheduler
-        bool runThreadSpecificTask(const Task* task)
-        {
-            SOFA_UNUSED(task);
-            std::atomic<int> atomicCounter;
-            TaskScheduler* scheduler = TaskScheduler::getInstance();
-            atomicCounter = scheduler->getThreadCount();
-
-            std::mutex  InitThreadSpecificMutex;
-
-            Task::Status status;
-
-            const int nbThread = scheduler->getThreadCount();
-
-            for (int i = 0; i<nbThread; ++i)
-            {
-                scheduler->addTask(new ThreadSpecificTask(&atomicCounter, &InitThreadSpecificMutex, &status));
-            }
-
-            scheduler->workUntilDone(&status);
-
-            return true;
-        }
+//        bool runThreadSpecificTask(const Task* task)
+//        {
+//            SOFA_UNUSED(task);
+//            std::atomic<int> atomicCounter;
+//            TaskScheduler* scheduler = TaskScheduler::getInstance();
+//            atomicCounter = scheduler->getThreadCount();
+//
+//            std::mutex  InitThreadSpecificMutex;
+//
+//            CpuTask::Status status;
+//
+//            const int nbThread = scheduler->getThreadCount();
+//
+//            for (int i = 0; i<nbThread; ++i)
+//            {
+//                scheduler->addTask(new ThreadSpecificTask(&atomicCounter, &InitThreadSpecificMutex, &status));
+//            }
+//
+//            scheduler->workUntilDone(&status);
+//
+//            return true;
+//        }
 
 	} // namespace simulation
 
