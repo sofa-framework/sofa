@@ -16,8 +16,9 @@ namespace sofa
         Task::Allocator* Task::_allocator = nullptr;
 
 
-		Task::Task(const Task::Status* status)
-			: _status(status)
+		Task::Task(const Task::Status* status, Thread scheduledThread)
+			: _scheduledThread(scheduledThread)
+            , _status(status)
             , _id(0)
 		{            
 		}

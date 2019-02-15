@@ -47,7 +47,8 @@ namespace sofa
         class SOFA_SIMULATION_CORE_API TaskScheduler
         {
 
-        public:
+        public:           
+
 
             virtual ~TaskScheduler();
 
@@ -69,6 +70,8 @@ namespace sofa
             virtual unsigned int getThreadCount(void) const = 0;
 
             virtual const char* getCurrentThreadName() = 0;
+
+            virtual Thread GetCurrentThreadType() = 0;
 
             // queue task if there is space, and run it otherwise
             virtual bool addTask(Task* task) = 0;

@@ -27,15 +27,29 @@
 #include <atomic>
 #include <mutex>
 
-#include <boost/pool/singleton_pool.hpp>
-
 
 namespace sofa
 {
 	namespace simulation
     {
 
+        enum SOFA_SIMULATION_CORE_API Thread
+        {
+            // anynot indexed thread
+            Main    =   -1,
+            Worker  =   -2,
 
+            // reserved threads
+            Cuda = 0,
+            Haptic = 1,
+            HapticHB = 2,
+            Stats = 3,
+
+            // number of dedicated
+            Size = Stats + 1,
+
+           
+        };
 
 
         class SOFA_SIMULATION_CORE_API Task
@@ -79,7 +93,7 @@ namespace sofa
             };
 
 
-            Task(const Task::Status* status = nullptr);
+            Task(const Task::Status* status = nullptr, Thread scheduledThread = Thread::Worker);
 
             virtual ~Task();
 
@@ -93,8 +107,8 @@ namespace sofa
             };
 
 
+            // Task interface: override these two functions
             virtual MemoryAlloc run() = 0;
-
 
 
             static void* operator new (std::size_t sz)
@@ -124,11 +138,9 @@ namespace sofa
 
 
         public:
-            inline Task::Status* getStatus(void) const
-            {
-                return const_cast<Task::Status*>(_status);
-            }
+            inline Task::Status* getStatus(void) const  { return const_cast<Task::Status*>(_status); }
 
+            Thread getScheduledThread() const { return _scheduledThread; }
 
             static Task::Allocator* getAllocator() { return _allocator; }
 
@@ -137,6 +149,8 @@ namespace sofa
         protected:
 
             const Task::Status*	_status;
+
+            Thread _scheduledThread;
 
         public:
             int _id;
