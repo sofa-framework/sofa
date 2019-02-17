@@ -268,7 +268,7 @@ protected:
                 if(tetraGeoAlgo)  // retrieve gauss points from geometry algorithm
                 {
                     typedef topology::NumericalIntegrationDescriptor<Real,4> IntegrationDescriptor;
-                    IntegrationDescriptor::QuadraturePointArray qpa=tetraGeoAlgo->getTetrahedronNumericalIntegrationDescriptor().getQuadratureMethod( (IntegrationDescriptor::QuadratureMethod)3,this->f_order.getValue());
+                    IntegrationDescriptor::QuadraturePointArray qpa=tetraGeoAlgo->getTetrahedronNumericalIntegrationDescriptor().getQuadratureMethod("Tetrahedron Gauss",this->f_order.getValue());
                     for ( unsigned int i = 0; i < tetrahedra.size(); i++ ) if(isInIndices(indices,i))
                     {
                         const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
