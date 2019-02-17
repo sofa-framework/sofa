@@ -59,7 +59,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints
     typedef typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePoint QuadraturePoint;
     typedef typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::BarycentricCoordinatesType BarycentricCoordinatesType;
     // Gauss method
-    typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadratureMethod m=NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::GAUSS_SIMPLEX_METHOD;
+	typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real, 3>::QuadratureMethod m = "Triangle Gauss";
     typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePointArray qpa;
     BarycentricCoordinatesType v;
     /// integration with linear accuracy.
