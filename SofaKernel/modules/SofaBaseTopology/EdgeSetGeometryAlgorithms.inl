@@ -64,7 +64,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     // Gauss Legendre method : low  number of integration points for a given order
     // for order > 5 no closed form expression exists and therefore use values from http://www.holoborodko.com/pavel/numerical-methods/numerical-integration/#gauss_quadrature_abscissas_table
 
-    typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadratureMethod m=NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::GAUSS_LEGENDRE_METHOD;
+    typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadratureMethod m="Edge Gauss Legendre";
     typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadraturePointArray qpa;
     BarycentricCoordinatesType v;
     Real div2 = 0.5;
