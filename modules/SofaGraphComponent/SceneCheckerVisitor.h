@@ -40,7 +40,7 @@ namespace _scenechecking_
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
+    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance()) ;
     virtual ~SceneCheckerVisitor() ;
 
     void validate(Node* node) ;
