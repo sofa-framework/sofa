@@ -194,4 +194,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COM
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaPython ${SOFAPYTHON_VERSION} ${PROJECT_NAME} SofaPython)
+sofa_generate_package(NAME SofaPython VERSION ${SOFAPYTHON_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR SofaPython)

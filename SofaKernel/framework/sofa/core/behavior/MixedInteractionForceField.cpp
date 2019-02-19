@@ -36,7 +36,6 @@ namespace behavior
 using namespace sofa::defaulttype;
 template class SOFA_CORE_API MixedInteractionForceField<Vec1Types, Vec3Types>;
 template class SOFA_CORE_API MixedInteractionForceField<Vec1Types, Rigid3Types>;
-
 template class SOFA_CORE_API MixedInteractionForceField<Vec3Types, Vec3Types>;
 template class SOFA_CORE_API MixedInteractionForceField<Vec2Types, Vec2Types>;
 template class SOFA_CORE_API MixedInteractionForceField<Vec1Types, Vec1Types>;
@@ -45,8 +44,8 @@ template class SOFA_CORE_API MixedInteractionForceField<Rigid2Types, Rigid2Types
 template class SOFA_CORE_API MixedInteractionForceField<Vec3Types, Rigid3Types> ;
 template class SOFA_CORE_API MixedInteractionForceField<Vec2Types, Rigid2Types> ;
 template class SOFA_CORE_API MixedInteractionForceField<Rigid3Types, Vec3Types> ;
+template class SOFA_CORE_API MixedInteractionForceField<Rigid3Types, Vec1Types> ;
 template class SOFA_CORE_API MixedInteractionForceField<Rigid2Types, Vec2Types> ;
-
 
 
 
