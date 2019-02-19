@@ -50,32 +50,45 @@ public:
     WriteOnlyAccessor<decltype(m_data->d_positions)> m_positions;
     WriteOnlyAccessor<decltype(m_data->d_edges)> m_edges;
 
-    MeshXspLoadDataHook(MeshXspLoader* data) :
-        m_data(data),
-        m_positions(m_data->d_positions),
-        m_edges(m_data->d_edges)
-    {}
-
-    virtual ~MeshXspLoadDataHook(){}
+    MeshXspLoadDataHook(MeshXspLoader* data);
+    ~MeshXspLoadDataHook() override;
 
     void setNumMasses(size_t n) override { m_positions.reserve(n); }
     void setNumSprings(size_t n) override { m_edges.reserve(n); }
 
-    void addMass(SReal px, SReal py, SReal pz, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    void finalizeLoading(bool isOk) override
+    {
+        if(!isOk){
+            m_positions.clear();
+            m_edges.clear();
+        }
+    }
+
+    void addMass(SReal px, SReal py, SReal pz, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) override
     {
         m_positions.push_back(Vec3(px,py,pz));
     }
 
-    void addSpring(int index1, int index2, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) override
+    void addSpring(size_t index1, size_t index2, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) override
     {
         m_edges.push_back(Topology::Edge(index1, index2));
     }
 
-    void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) override
+    void addVectorSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) override
     {
         addSpring(m1, m2, ks, kd, initpos);
     }
 };
+
+MeshXspLoadDataHook::MeshXspLoadDataHook(MeshXspLoader* data) :
+    m_data(data),
+    m_positions(m_data->d_positions),
+    m_edges(m_data->d_edges)
+{}
+
+MeshXspLoadDataHook::~MeshXspLoadDataHook() {}
+
+
 
 MeshXspLoader::MeshXspLoader() : MeshLoader() {}
 
