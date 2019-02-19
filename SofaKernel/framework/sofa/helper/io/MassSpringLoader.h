@@ -24,3 +24,11 @@ MassSpringLoader has been deprecated and replaced with XspLoader.
 You shouldn't include this file anymore.
 
 It is easy to update your code with the XspLoader.
+
+First replace:
+#include <sofa/helper/io/MassSpringLoader.h>
+with
+#include <sofa/helper/io/XspLoader.h>
+
+Then following the new API of XspLoader.
+There is example of uses in the unittest file named: XspLoader_test.cpp
