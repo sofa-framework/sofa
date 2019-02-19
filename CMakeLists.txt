@@ -317,7 +317,7 @@ if(SOFA_INSTALL_RESOURCES_FILES)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
-install(DIRECTORY plugins/ DESTINATION plugins COMPONENT resources)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
 
 
 #######################
