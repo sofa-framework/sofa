@@ -127,7 +127,8 @@ public:
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
     void updateButtonStates(bool emitEvent);
-    void initDevice();
+    void initDevice(int cptInitPass = 0);
+    void clearDevice();
     ForceFeedback::SPtr m_forceFeedback;
 
     /// variable pour affichage graphique
