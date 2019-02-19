@@ -78,7 +78,7 @@ class SpringForceField<DataTypes>::Loader : public helper::io::XspLoaderDataHook
 public:
     SpringForceField<DataTypes>* dest;
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos) override
+    void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
