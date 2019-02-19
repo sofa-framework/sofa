@@ -19,23 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/* OBJExporter.h
- *
- *  Created on: 9 sept. 2009
- *
- *  Contributors:
- *    - froy
- *    - damien.marchal@univ-lille1.fr
- *
- ************************************************************************************/
+#include <string>
+#include <SofaExporter/config.h>
 
-#ifndef OBJEXPORTER_H_
-#define OBJEXPORTER_H_
-#include "config.h"
-
-#include <sofa/simulation/BaseSimulationExporter.h>
-
-#include <fstream>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
 namespace sofa
 {
@@ -43,36 +31,52 @@ namespace sofa
 namespace component
 {
 
-namespace _objexporter_
+extern "C" {
+SOFA_SOFAEXPORTER_API void initExternalModule();
+SOFA_SOFAEXPORTER_API const char* getModuleName();
+SOFA_SOFAEXPORTER_API const char* getModuleVersion();
+SOFA_SOFAEXPORTER_API const char* getModuleLicense();
+SOFA_SOFAEXPORTER_API const char* getModuleDescription();
+SOFA_SOFAEXPORTER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-using sofa::simulation::BaseSimulationExporter ;
-using sofa::core::objectmodel::Event ;
-using sofa::core::objectmodel::Base ;
-
-class SOFA_EXPORTER_API OBJExporter : public BaseSimulationExporter
+const char* getModuleName()
 {
-public:
-    SOFA_CLASS(OBJExporter, BaseSimulationExporter);
-
-    virtual bool write() override ;
-    bool writeOBJ();
-
-    virtual void handleEvent(Event *event) override ;
-
-protected:
-    virtual ~OBJExporter();
-};
-
+    return "SofaExporter";
 }
 
-using _objexporter_::OBJExporter ;
-
-/// This is for compatibility with old code base in which OBJExporter where in sofa::component::misc.
-namespace misc  { using _objexporter_::OBJExporter ; }
-
+const char* getModuleVersion()
+{
+    return "1.0";
 }
 
+const char* getModuleLicense()
+{
+    return "LGPL";
 }
 
-#endif /* OBJEXPORTER_H_ */
+const char* getModuleDescription()
+{
+    return "This plugin contains some exporter to save simulation scenes to various formats. "
+            "Supported format are: Sofa internal state format, VTK, STL, Mesh, Blender.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace component
+
+} // namespace sofa

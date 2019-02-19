@@ -84,7 +84,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 {
-    const helper::vector<topology::Triangle>& tri = *triangles;
+    const helper::vector<topology::Triangle>& tri = *m_triangles;
     if(octreeRoot)
     {
         delete octreeRoot;
@@ -95,16 +95,16 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     updateFromTopology();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-    int size2=mstate->getSize();
+    int size2=m_mstate->getSize();
     pNorms.resize(size2);
     for(int i=0; i<size2; i++)
     {
         pNorms[i]=defaulttype::Vector3(0,0,0);
     }
     defaulttype::Vector3 minElem, maxElem;
-    maxElem[0]=minElem[0]=mstate->read(core::ConstVecCoordId::position())->getValue()[0][0];
-    maxElem[1]=minElem[1]=mstate->read(core::ConstVecCoordId::position())->getValue()[0][1];
-    maxElem[2]=minElem[2]=mstate->read(core::ConstVecCoordId::position())->getValue()[0][2];
+    maxElem[0]=minElem[0]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][0];
+    maxElem[1]=minElem[1]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][1];
+    maxElem[2]=minElem[2]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][2];
 
     cubeModel->resize(1);  // size = number of triangles
     for (int i=1; i<size; i++)

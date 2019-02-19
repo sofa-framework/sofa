@@ -227,7 +227,14 @@ void DocBrowser::goToPrev()
 void DocBrowser::goTo(const QUrl& u)
 {
     BrowserHistoryEntry entry = m_browserhistory->current() ;
-    std::string path = FileSystem::cleanPath(entry.m_rootdir + "/" + u.path().toStdString()) ;
+
+    if(!u.isLocalFile())
+    {
+        QDesktopServices::openUrl(u) ;
+        return;
+    }
+
+    std::string path=FileSystem::cleanPath(u.toLocalFile().toStdString());
     std::string extension=FileSystem::getExtension(path);
 
     if(path.empty())
