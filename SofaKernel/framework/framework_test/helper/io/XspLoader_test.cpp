@@ -47,28 +47,28 @@ protected:
         std::vector<std::tuple<int,int>> m_springs;
         bool m_hasGravity {false};
         bool m_hasViscosity {false};
-        virtual ~XspData(){}
-        virtual void setNumMasses(size_t n) { m_numMasses = n; }
-        virtual void setNumSprings(size_t n) { m_numSprings = n; }
-        virtual void addMass(SReal px, SReal py, SReal pz, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
+        ~XspData() override {}
+        void setNumMasses(size_t n) override  { m_numMasses = n; }
+        void setNumSprings(size_t n) override  { m_numSprings = n; }
+        void addMass(SReal px, SReal py, SReal pz, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) override
         {
             m_masses.push_back(Vec3(px,py,pz));
         }
-        virtual void addSpring(int m1, int m2, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/)
+        void addSpring(size_t m1, size_t m2, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) override
         {
             m_springs.push_back(std::tuple<int,int>(m1,m2));
         }
-        virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal restx, SReal resty, SReal restz)
+        void addVectorSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos, SReal restx, SReal resty, SReal restz) override
         {
             addSpring(m1, m2, ks, kd, initpos);
             m_xtra.push_back(Vec3(restx, resty, restz));
         }
-        virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/)
+        void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) override
         {
             EXPECT_FALSE(m_hasGravity) << "Duplicated call to setGravity";
             m_hasGravity = true;
         }
-        virtual void setViscosity(SReal /*visc*/)
+        void setViscosity(SReal /*visc*/) override
         {
             EXPECT_FALSE(m_hasViscosity) << "Duplicated call to setViscosity";
             m_hasViscosity = true;
@@ -90,10 +90,10 @@ protected:
         auto filePath = sofa::helper::system::DataRepository.getFile(filename);
         XspLoader::Load(filePath, data);
 
-        EXPECT_EQ(data.m_numMasses, data.m_masses.size()) << "Number of 'masses' mismatch";
-        EXPECT_EQ(data.m_numSprings, data.m_springs.size()) << "Number of 'springs' mismatch";
-        EXPECT_EQ(data.m_numMasses, size_t(6)) << "Wrong number of 'masses'";
-        EXPECT_EQ(data.m_numSprings, size_t(5)) << "Wrong number of 'springs'";
+        ASSERT_EQ(data.m_numMasses, data.m_masses.size()) << "Number of 'masses' mismatch";
+        ASSERT_EQ(data.m_numSprings, data.m_springs.size()) << "Number of 'springs' mismatch";
+        ASSERT_EQ(data.m_numMasses, size_t(6)) << "Wrong number of 'masses'";
+        ASSERT_EQ(data.m_numSprings, size_t(5)) << "Wrong number of 'springs'";
         for(unsigned int i=0;i<5;i++)
         {
             ASSERT_EQ(std::get<0>(data.m_springs[i]), i+0);

@@ -25,6 +25,7 @@
 #include <cstddef>                  /// For size_t
 #include <string>                   /// For std::string
 #include <sofa/helper/helper.h>     /// For SOFA_HELPER_API
+#include <sofa/helper/system/config.h> /// For SOFA_UNUSED
 
 namespace sofa {
 namespace core {
@@ -51,13 +52,20 @@ namespace io
 class SOFA_HELPER_API XspLoaderDataHook
 {
 public:
+    virtual ~XspLoaderDataHook();
+
+    /// Called by the loader so the data container can implement post-loading checking.
+    /// If the isOk parameter is set to false this means that the loading code detected a
+    /// problem and that the loaded informations are invalid and should be removed from
+    /// the container.
+    virtual void finalizeLoading(bool isOk) { SOFA_UNUSED(isOk); }
     virtual void setNumMasses(size_t /*n*/) {}
     virtual void setNumSprings(size_t /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
     virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
     virtual void setViscosity(SReal /*visc*/) {}
+    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
+    virtual void addSpring(size_t /*m1*/, size_t /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
+    virtual void addVectorSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
 };
 
 class SOFA_HELPER_API XspLoader
@@ -65,6 +73,12 @@ class SOFA_HELPER_API XspLoader
 public:
     static bool Load(const std::string& filename,
                      XspLoaderDataHook& data);
+
+private:
+    static bool ReadXspContent(std::ifstream &file,
+                               bool hasVectorSpring,
+                               XspLoaderDataHook& data);
+
 };
 
 } // namespace io
