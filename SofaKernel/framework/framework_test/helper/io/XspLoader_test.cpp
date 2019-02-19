@@ -47,9 +47,17 @@ protected:
         std::vector<std::tuple<int,int>> m_springs;
         bool m_hasGravity {false};
         bool m_hasViscosity {false};
+        bool m_isFinalized {false};
+        bool m_finalizedValue {false};
+
         ~XspData() override {}
         void setNumMasses(size_t n) override  { m_numMasses = n; }
         void setNumSprings(size_t n) override  { m_numSprings = n; }
+        void finalizeLoading(bool isOk) override
+        {
+            m_isFinalized = true;
+            m_finalizedValue = isOk;
+        }
         void addMass(SReal px, SReal py, SReal pz, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) override
         {
             m_masses.push_back(Vec3(px,py,pz));
@@ -116,6 +124,9 @@ protected:
                 va+=1.0;
             }
         }
+
+        ASSERT_TRUE(data.m_isFinalized) << "The finalizedLoading() method has not been called.";
+        ASSERT_TRUE(data.m_finalizedValue) << "The finalizedLoading() method has been called but without the expected value.";
     }
 };
 
