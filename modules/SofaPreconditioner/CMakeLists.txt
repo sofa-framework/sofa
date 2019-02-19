@@ -51,4 +51,4 @@ else()
     message(STATUS "-- newmat was not found.")
 endif()
 
-sofa_generate_package(NAME SofaPreconditioner VERSION ${PROJECT_VERSION} TARGETS SofaPreconditioner)
+sofa_generate_package(NAME SofaPreconditioner VERSION ${PROJECT_VERSION} TARGETS SofaPreconditioner INCLUDE_INSTALL_DIR ${PROJECT_NAME} INCLUDE_SOURCE_DIR "src/SofaPreconditioner")
