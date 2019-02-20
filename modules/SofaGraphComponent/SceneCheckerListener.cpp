@@ -19,31 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaGraphComponent/initGraphComponent.h>
-
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
+#include "SceneCheckerListener.h"
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
 
-void initGraphComponent()
+SceneCheckerListener::SceneCheckerListener()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
+    m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
 }
 
-} // namespace component
+SceneCheckerListener* SceneCheckerListener::getInstance()
+{
+    static SceneCheckerListener sceneLoaderListener;
+    return &sceneLoaderListener;
+}
 
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+{
+    m_sceneChecker.validate(node.get());
+}
+
+
+} // namespace _scenechecking_
+} // namespace simulation
 } // namespace sofa

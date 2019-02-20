@@ -19,31 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaGraphComponent/initGraphComponent.h>
+#ifndef SOFA_SIMULATION_SCENECHECKERLISTENER_H
+#define SOFA_SIMULATION_SCENECHECKERLISTENER_H
+
+#include "config.h"
 
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
+#include <sofa/simulation/Visitor.h>
+
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+#include <SofaGraphComponent/SceneCheckUsingAlias.h>
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
+
+#include "SceneCheck.h"
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
-
-void initGraphComponent()
+/// to be able to react when a scene is loaded
+class SOFA_GRAPH_COMPONENT_API SceneCheckerListener : public SceneLoader::Listener
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+public:
+    static SceneCheckerListener* getInstance();
+    virtual ~SceneCheckerListener() {}
 
-    sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
+    virtual void rightAfterLoadingScene(sofa::simulation::Node::SPtr node) override;
+
+private:
+    SceneCheckerListener();
+    SceneCheckerVisitor m_sceneChecker;
+};
+
+} // namespace _scenechecking_
+
+namespace scenechecking
+{
+using _scenechecking_::SceneCheckerListener;
 }
 
-} // namespace component
-
+} // namespace simulation
 } // namespace sofa
+
+#endif
