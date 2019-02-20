@@ -165,13 +165,13 @@ bool EdgePressureForceField<DataTypes>::isPointInPlane(Coord p)
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
+    if (!mstate.get())
+        msg_error() << " No mechanical Object linked.";
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
-    {
-        msg_error() << " No mechanical Object linked.";
         return;
-    }
 
     const helper::vector<Real>& intensities = p_intensity.getValue();
 
