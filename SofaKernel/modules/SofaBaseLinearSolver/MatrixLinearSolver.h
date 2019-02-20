@@ -465,11 +465,8 @@ extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatter
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJt(defaulttype::BaseMatrix*, defaulttype::BaseMatrix*, double);
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const JMatrixType*, double);
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const  JMatrixType*, double);
-
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeComplianceMatrix(const core::ConstraintParams*, defaulttype::BaseMatrix*, double);
 extern template SOFA_BASE_LINEAR_SOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>::addComplianceMatrix(const core::ConstraintParams* cparams, defaulttype::BaseMatrix* , double);
-extern template SOFA_BASE_LINEAR_SOLVER_API void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createGroups(const core::MechanicalParams* mparams);
-
 extern template SOFA_BASE_LINEAR_SOLVER_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getMatrixInvertData(defaulttype::BaseMatrix * m);
 extern template SOFA_BASE_LINEAR_SOLVER_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createInvertData();
 
