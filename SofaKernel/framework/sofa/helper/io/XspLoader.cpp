@@ -165,14 +165,20 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
         }
         else if (cmd == "step")
         {
+            /// We ignore the line
+            std::getline(file, cmd);
         }
         else if (cmd == "frce")
         {
+            /// We ignore the line
+            std::getline(file, cmd);
         }
-        else if (cmd[0] == '#')	// it's a comment
-        {
+        else if (cmd.at(0) == '#')	// it's a comment
+        {            
+            /// We ignore the line
+            std::getline(file, cmd);
         }
-        else		// it's an unknown keyword
+        else /// it's an unknown keyword
         {
             msg_error("XspLoader") << "Unknown MassSpring keyword '" << cmd << "'.";
             return false;
@@ -221,8 +227,10 @@ bool XspLoader::Load(const std::string& filename,
     else if (isEqual(version, 4.0f))
         isOk = ReadXspContent(file, true, data);
     else
-        msg_error("XspLoader") << "File '" << fullFilePath << "' is containig Xsp version '"
-                               <<version<<"' content which is not supported yet.";
+        msg_error("XspLoader") <<"Xsp version '"<<version<<"' is not supported yet.";
+
+    if(!isOk)
+        msg_error("XspLoader") << "Unable to read '" << fullFilePath << "'.";
 
     data.finalizeLoading(isOk);
 
