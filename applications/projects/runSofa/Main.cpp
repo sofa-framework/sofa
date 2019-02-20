@@ -151,15 +151,16 @@ void addGUIParameters(ArgumentParser* argumentParser)
 int main(int argc, char** argv)
 {
     // Add resources dir to GuiDataRepository
-    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
-    const std::string sofaIniFilePath = etcDir + "/runSofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    const std::string runSofaIniFilePath = Utils::getSofaPathTo("/etc/runSofa.ini");
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(runSofaIniFilePath);
     if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
     {
-        std::string iniFileValue = iniFileValues["RESOURCES_DIR"];
-        if (!FileSystem::isAbsolute(iniFileValue))
-            iniFileValue = etcDir + "/" + iniFileValue;
-        sofa::gui::GuiDataRepository.addFirstPath(iniFileValue);
+        std::string dir = iniFileValues["RESOURCES_DIR"];
+        dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
+        if(FileSystem::isDirectory(dir))
+        {
+            sofa::gui::GuiDataRepository.addFirstPath(dir);
+        }
     }
 
     sofa::helper::BackTrace::autodump();
@@ -344,10 +345,9 @@ int main(int argc, char** argv)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     // Output FileRepositories
-    msg_info("runSofa") << "PluginRepository paths:";
-    PluginRepository.print();
-    msg_info("runSofa") << "DataRepository paths:";
-    DataRepository.print();
+    msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
+    msg_info("runSofa") << "DataRepository paths = " << DataRepository.getPathsJoined();
+    msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
@@ -359,18 +359,17 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    const std::string& pluginDir = Utils::getPluginDirectory();
-    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
-        if (PluginRepository.findFile(configPluginPath))
+        if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
-        else if (PluginRepository.findFile(defaultConfigPluginPath))
+        else if (PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
@@ -402,7 +401,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (int err=GUIManager::createGUI(NULL))
+    if (int err=GUIManager::createGUI(nullptr))
         return err;
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph

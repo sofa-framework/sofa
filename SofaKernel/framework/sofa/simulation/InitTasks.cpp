@@ -1,4 +1,4 @@
-#include "InitTasks.h"
+#include <sofa/simulation/InitTasks.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>

@@ -44,6 +44,7 @@
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/Mapping.inl>
 #include <fstream>
 
 namespace sofa

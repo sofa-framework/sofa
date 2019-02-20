@@ -19,15 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_MAskCanceller_H
-#define SOFA_COMPONENT_FORCEFIELD_MAskCanceller_H
-
-#include "config.h"
-
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <vector>
-
+#define SOFA_JOINTSPRING_CPP
+#include <sofa/defaulttype/RigidTypes.h>
+#include <SofaRigid/JointSpring.inl>
 
 namespace sofa
 {
@@ -35,45 +29,16 @@ namespace sofa
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
+using namespace sofa::defaulttype;
 
-/// hack to add every dofs to the force mask of the associated mstate
-/// i.e. turn off the force mask for this branch
-/// @author Matthieu Nesme
-class ForceMaskOff: public sofa::core::behavior::BaseForceField
-{
-public:
-    SOFA_CLASS(ForceMaskOff, BaseForceField);
+template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
 
-    virtual void init() override
-    {
-        BaseForceField::init();
-        mstate = getContext()->getMechanicalState();
-    }
-
-    virtual void updateForceMask() override
-    {
-        mstate->forceMask.assign( mstate->getSize(), true );
-    }
-
-
-    // other virtual functions do nothing
-    virtual void addForce(const core::MechanicalParams*, core::MultiVecDerivId ) override {}
-    virtual void addDForce(const core::MechanicalParams*, core::MultiVecDerivId ) override {}
-    virtual SReal getPotentialEnergy( const core::MechanicalParams* = core::MechanicalParams::defaultInstance() ) const override { return 0; }
-    virtual void addKToMatrix(const core::MechanicalParams*, const core::behavior::MultiMatrixAccessor* ) override {}
-
-protected:
-
-    core::behavior::BaseMechanicalState *mstate;
-};
-
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_MAskCanceller_H

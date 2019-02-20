@@ -24,4 +24,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${TINYXML_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(../../SofaFramework/SofaMacros.cmake)
-sofa_create_package(TinyXML ${TINYXML_VERSION} ${PROJECT_NAME} "")
+sofa_generate_package(NAME TinyXML VERSION ${TINYXML_VERSION} TARGETS ${PROJECT_NAME})
