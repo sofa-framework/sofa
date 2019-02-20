@@ -84,8 +84,11 @@ void SceneCheckUsingAlias::doPrintSummary()
         for(std::string &unique_alias : unique_aliases)
         {
             unsigned int count = std::count(i.second.begin(), i.second.end(), unique_alias);
-            usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"" << msgendl;
+            usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"";
+            if(unique_alias != unique_aliases.back()) usingAliasesWarning << msgendl;
         }
+
+        if(i.first != m_componentsCreatedUsingAlias.rbegin()->first) usingAliasesWarning << msgendl;
     }
     msg_warning(this->getName()) << usingAliasesWarning.str();
 
