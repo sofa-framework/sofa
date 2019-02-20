@@ -35,9 +35,6 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/ViewerFactory.h>
 
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
-
 #include <set>
 #include <string>
 
@@ -213,7 +210,6 @@ protected:
 
     bool m_enableInteraction {false};
 
-    SceneCheckerVisitor m_sceneChecker;
 private:
     //currently unused: scale is experimental
     float object_Scale[2];

@@ -116,14 +116,6 @@ using sofa::helper::system::FileMonitor;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -473,11 +465,6 @@ RealGUI::RealGUI ( const char* viewername)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 
     m_filelistener = new RealGUIFileListener(this);
-
-    m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
 }
 
 //------------------------------------
@@ -758,7 +745,6 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
-    SceneCheckerVisitor checker(ExecParams::defaultInstance());
     std::vector<std::string> expandedNodes;
 
     if(reload)
@@ -983,7 +969,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
             getQtViewer()->getQWidget()->update();
         }
 
-        m_sceneChecker.validate(root.get());
         resetScene();
     }
 }
