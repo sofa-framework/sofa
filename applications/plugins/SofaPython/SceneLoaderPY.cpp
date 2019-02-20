@@ -83,7 +83,7 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPY::doLoad(const char *filename)
 {
     sofa::simulation::Node::SPtr root;
     loadSceneWithArguments(filename, helper::ArgumentParser::extra_args(), &root);
@@ -111,7 +111,6 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
     // We go the the current file's directory so that all relative path are correct
     SetDirectory chdir ( filename );
 
-    notifyLoadingScene();
     PythonEnvironment::setArguments(SetDirectory::GetFileName(filename), arguments);
     if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename)))
     {
