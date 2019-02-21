@@ -350,8 +350,8 @@ protected:
 
     void updateYieldStress(int beamIndex, double yieldStressIncrement);
 
-    bool goInPlasticDeformation(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
-    bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
+    bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
+    bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
                                   const double yieldStress, const bool verbose = FALSE);
 
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
@@ -362,6 +362,7 @@ protected:
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
 
+    double equivalentStress(const VoigtTensor2 &stressTensor);
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);

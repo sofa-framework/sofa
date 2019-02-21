@@ -594,24 +594,14 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
             for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
             {
                 Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
-
-                //strain = Be*eigenDepl; //DEBUG
-                //if (gaussPointIt == 0)
-                //{
-                //    std::cout << " Elastic strain (point de Gauss " << gaussPointIt << ") : " << std::endl; //DEBUG
-                //    std::cout.precision(17);
-                //    for (int i = 0; i < 6; i++)
-                //        std::cout << "    " << strain[i] << std::scientific << " " << std::endl;
-                //    std::cout << std::endl; //DEBUG
-                //}
-
                 newStress = C*Be*eigenDepl;
-
                 yieldStress = beamsData.getValue()[i]._yS;
-                //std::cout << "Von Mises stress pour le point de Gauss " << gaussPointIt << " : " << std::endl; //DEBUG
-                res = goInPlasticDeformation(newStress, yieldStress);
+
+                res = goToPlastic(newStress, yieldStress);
                 if (res)
+                {
                     isPlasticPoint[gaussPointIt] = PLASTIC;
+                }
                 _isDeformingPlastically = _isDeformingPlastically || res;
 
                 newStressVector[gaussPointIt] = newStress;
@@ -2003,7 +1993,7 @@ void MultiBeamForceField<DataTypes>::updateYieldStress(int beamIndex, double yie
 
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor,
+bool MultiBeamForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTensor,
                                                             const double yieldStress,
                                                             const bool verbose /*=FALSE*/)
 {
@@ -2020,23 +2010,51 @@ bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &
 
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2 &stressTensor,
-                                                              const VoigtTensor2 &stressIncrement,
-                                                              const double yieldStress,
-                                                              const bool verbose /*=FALSE*/)
+bool MultiBeamForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressTensor,
+                                                     const VoigtTensor2 &stressIncrement,
+                                                     const double yieldStress,
+                                                     const bool verbose /*=FALSE*/)
 {
-    double threshold = -1e2; //TO DO: use proper threshold
+    double threshold = -0.f; //TO DO: use proper threshold
 
-    Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, yieldStress);
-    double cp = gradient.transpose()*stressIncrement;
+    // Computing the normal to the yield surface using the deviatoric stress
+    double meanStress = (1.0 / 3)*(stressTensor[0] + stressTensor[1] + stressTensor[2]);
+    VoigtTensor2 deviatoricStress = stressTensor;
+    deviatoricStress[0] -= meanStress;
+    deviatoricStress[1] -= meanStress;
+    deviatoricStress[2] -= meanStress;
+    double sigmaEq = equivalentStress(stressTensor);
+    VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1 / sigmaEq)*deviatoricStress;
+
+    // Computing the dot product with the incremental elastic predictor
+    double cp = voigtDotProduct(yieldNormal.transpose(), stressIncrement);
     if (verbose)
     {
         std::cout.precision(17);
         std::cout << cp << std::scientific << " "; //DEBUG
     }
-    return !(cp < threshold); //if true, the stress point still represents a plastic state
+    return (cp < threshold); //if true, the stress point goes into post-plastic phase
 }
 
+
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::equivalentStress (const VoigtTensor2 &stressTensor)
+{
+    double res = 0.0;
+    double sigmaX = stressTensor[0];
+    double sigmaY = stressTensor[1];
+    double sigmaZ = stressTensor[2];
+    double sigmaYZ = stressTensor[3];
+    double sigmaZX = stressTensor[4];
+    double sigmaXY = stressTensor[5];
+
+    double aux1 = 0.5*((sigmaX - sigmaY)*(sigmaX - sigmaY) + (sigmaY - sigmaZ)*(sigmaY - sigmaZ) + (sigmaZ - sigmaX)*(sigmaZ - sigmaX));
+    double aux2 = 3.0*(sigmaYZ*sigmaYZ + sigmaZX*sigmaZX + sigmaXY*sigmaXY);
+
+    res = helper::rsqrt(aux1 + aux2);
+    return res;
+}
 
 
 template< class DataTypes>
@@ -2354,14 +2372,18 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     const double yieldStress = beamsData.getValue()[index]._yS;
 
     //First we compute the elastic predictor
-    VoigtTensor2 elasticPredictor = C*strainIncrement;
-    VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
+    VoigtTensor2 elasticIncrement = C*strainIncrement;
+    VoigtTensor2 currentStressPoint = initialStress + elasticIncrement;
+
+
+    /***************** Determination of the mechanical state *****************/
 
     if (isPlasticPoint == ELASTIC)
     {
         //If the point is still in elastic state, we have to check if the
         //deformation becomes plastic
-        bool isNewPlastic = goInPlasticDeformation(initialStress + elasticPredictor, yieldStress);
+
+        bool isNewPlastic = goToPlastic(initialStress + elasticIncrement, yieldStress);
 
         if (!isNewPlastic)
         {
@@ -2394,7 +2416,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         //If the point is still in elastic state, we have to check if the
         //deformation becomes plastic
-        bool isNewPlastic = goInPlasticDeformation(currentStressPoint, yieldStress);
+        bool isNewPlastic = goToPlastic(currentStressPoint, yieldStress);
 
         if (!isNewPlastic)
         {
@@ -2410,9 +2432,10 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
     else
     {
-        bool staysPlastic = stayInPlasticDeformation(initialStress, elasticPredictor, yieldStress);
+        bool isPostPlastic;
+        isPostPlastic = goToPostPlastic(initialStress, elasticIncrement, yieldStress);
 
-        if (!staysPlastic)
+        if (isPostPlastic)
         {
             //The newly computed stresses don't correspond anymore to plastic
             //deformation. We must re-compute them in an elastic way, while
@@ -2463,9 +2486,9 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         /*****************************/
 
         ////First we compute the elastic predictor
-        //VoigtTensor2 elasticPredictor = C*strainIncrement;
+        //VoigtTensor2 elasticIncrement = C*strainIncrement;
 
-        //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
+        //VoigtTensor2 currentStressPoint = initialStress + elasticIncrement; //point B in Krabbenhoft's
 
         //VoigtTensor2 grad, plasticStressIncrement;
         //double denum, dLambda;
@@ -2559,7 +2582,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
                 J.block<6, 1>(0, 6) = C*gradient;
                 J.block<1, 6>(6, 0) = gradient.transpose();
 
-                b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
+                b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticIncrement + C*totalIncrement(6, 0)*gradient;
                 b(6, 0) = yieldCondition;
 
                 //std::cout << "J pour le point " << gaussPointIt << " iteration " << count << " : " << std::endl << J << " " << std::endl << std::endl; //DEBUG
@@ -2588,7 +2611,8 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         //TO DO: check if the increments should be stored independently rather than summed
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-        plasticStrainHistory[gaussPointIt] += plasticMultiplier*gradient;
+        VoigtTensor2 plasticStrainIncrement = plasticMultiplier*gradient;
+        plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
         beamsData.endEdit();
 
         // Updating the new stress point
