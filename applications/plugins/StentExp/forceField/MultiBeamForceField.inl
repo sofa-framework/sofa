@@ -587,7 +587,6 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
             helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
             VoigtTensor2 newStress;
-            VoigtTensor2 strain; //DEBUG
             double yieldStress;
             bool res;
 
@@ -2217,6 +2216,21 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessianFD(co
     VoigtTensor4 res = VoigtTensor4::Zero();
     return res;
 }
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2)
+{
+    // This method provides a correct implementation of the dot product for 2nd-order tensors represented
+    // with Voigt notation. As the tensors are symmetric, then can be represented with only 6 elements,
+    // but all non-diagonal elements have to be taken into account for a dot product.
+
+    double res = 0.0;
+    res += t1[0]*t2[0] + t1[1]*t2[1] + t1[2]*t2[2];      //diagonal elements
+    res += 2*(t1[3]*t2[3] + t1[4]*t2[4] + t1[5]*t2[5]);  //non-diagonal elements
+    return res;
+}
+
+
 //*****************************************************************************************//
 
 
@@ -2495,7 +2509,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         double yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
         VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
 
-        newIncrement(6, 0) = yieldCondition / (gradient.transpose()*C*gradient);
+        newIncrement(6, 0) = yieldCondition / voigtDotProduct(gradient.transpose(), C*gradient);
         newIncrement.block<6, 1>(0, 0) = -newIncrement(6, 0)*C*gradient;
 
         Eigen::Matrix<double, 7, 1> totalIncrement = newIncrement;
@@ -2808,7 +2822,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
             Cgrad = C*VMgradient;
             gradTC = VMgradient.transpose()*C;
             //Assuming associative flow rule and isotropic hardening
-            Cep = C - (Cgrad*gradTC) / (H + gradTC*VMgradient);
+            Cep = C - (Cgrad*gradTC) / (H + voigtDotProduct(gradTC,VMgradient));
         }
 
         tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;

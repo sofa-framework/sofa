@@ -368,6 +368,9 @@ protected:
     VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double yieldStress);
 
+    // Special implementation for second-order tensor dot product, with the Voigt notation.
+    double voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2);
+
     //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
     void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
     void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact);
