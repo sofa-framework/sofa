@@ -887,14 +887,6 @@ void VisualModelImpl::init()
         }
     }
 
-    m_vertices2.beginEdit();
-    m_vnormals.beginEdit();
-    m_vtexcoords.beginEdit();
-    m_vtangents.beginEdit();
-    m_vbitangents.beginEdit();
-    m_triangles.beginEdit();
-    m_quads.beginEdit();
-
     applyScale(m_scale.getValue()[0], m_scale.getValue()[1], m_scale.getValue()[2]);
     applyRotation(m_rotation.getValue()[0], m_rotation.getValue()[1], m_rotation.getValue()[2]);
     applyTranslation(m_translation.getValue()[0], m_translation.getValue()[1], m_translation.getValue()[2]);
@@ -1148,6 +1140,45 @@ void VisualModelImpl::computeBBox(const core::ExecParams* params, bool)
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
+
+void VisualModelImpl::computeUVSphereProjection()
+{
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    this->computeBBox(vparams);
+
+    Vector3 center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
+    
+    // Map mesh vertices to sphere
+    // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1
+    const VecCoord& coords = getVertices();
+    int nbrV = coords.size();
+    VecCoord m_sphereV;
+    m_sphereV.resize(nbrV);
+
+    VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
+    vtexcoords.resize(nbrV);
+
+    for (int i = 0; i < nbrV; ++i)
+    {
+        Coord Vcentered = coords[i] - center;
+        float r = sqrtf(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
+        float theta = acos(Vcentered[2] / r);
+        float phi = atan2(Vcentered[1], Vcentered[0]);
+
+        r = 1.0;
+        m_sphereV[i][0] = r * sin(theta)*cos(phi) + center[0];
+        m_sphereV[i][1] = r * sin(theta)*sin(phi) + center[1];
+        m_sphereV[i][2] = r * cos(theta) + center[2];
+
+        Coord pos = m_sphereV[i] - center;
+        pos.normalize();
+        vtexcoords[i][0] = 0.5 + atan2(pos[1], pos[0]) / (2 * R_PI);
+        vtexcoords[i][1] = 0.5 - asin(pos[2]) / R_PI;
+    }
+
+    m_vtexcoords.endEdit();
+}
+
 void VisualModelImpl::flipFaces()
 {
     ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
@@ -1245,6 +1276,10 @@ void VisualModelImpl::updateVisual()
         if (m_updateTangents.getValue())
             computeTangents();
         modified = false;
+
+        if (m_vtexcoords.getValue().size() == 0)
+            computeUVSphereProjection();
+
     }
 
     m_positions.updateIfDirty();

@@ -376,6 +376,7 @@ public:
     virtual void computeNormals();
     virtual void computeTangents();
     virtual void computeBBox(const core::ExecParams* params, bool=false) override;
+    virtual void computeUVSphereProjection();
 
     virtual void updateBuffers() {}
 
