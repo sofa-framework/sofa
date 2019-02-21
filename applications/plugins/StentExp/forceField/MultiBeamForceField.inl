@@ -2061,20 +2061,8 @@ template< class DataTypes>
 double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
                                                      const double yieldStress)
 {
-    double res = 0.0;
-    double sigmaX = stressTensor[0];
-    double sigmaY = stressTensor[1];
-    double sigmaZ = stressTensor[2];
-    double sigmaYZ = stressTensor[3];
-    double sigmaZX = stressTensor[4];
-    double sigmaXY = stressTensor[5];
-
-    double aux1 = 0.5*( (sigmaX - sigmaY)*(sigmaX - sigmaY) + (sigmaY - sigmaZ)*(sigmaY - sigmaZ) + (sigmaZ - sigmaX)*(sigmaZ - sigmaX) );
-    double aux2 = 3.0*(sigmaYZ*sigmaYZ + sigmaZX*sigmaZX + sigmaXY*sigmaXY);
-
-    res = helper::rsqrt(aux1 + aux2) - yieldStress;
-
-    return res;
+    double eqStress = equivalentStress(stressTensor);
+    return eqStress - yieldStress;
 }
 
 
