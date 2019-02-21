@@ -28,8 +28,6 @@ using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
-using namespace core::objectmodel;
-
 
 /**  Test suite for data callbacks
   */
