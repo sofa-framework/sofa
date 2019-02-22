@@ -74,7 +74,7 @@ void CollisionVisitor::processCollisionPipeline(simulation::Node*
     t0=begin(node, obj);
 #endif
     obj->computeCollisionDetection();
-    m_primitivesTest += obj->getNarrowPhaseDetection()->getPrimitiveTestCount();
+    m_primitiveTestCount += obj->getNarrowPhaseDetection()->getPrimitiveTestCount();
 #ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
