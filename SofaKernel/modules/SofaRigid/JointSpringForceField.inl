@@ -90,7 +90,7 @@ void JointSpringForceField<DataTypes>::init()
         m_outfile = new std::ofstream(outfilename.c_str());
         if( !m_outfile->is_open() )
         {
-            serr << "Error creating file "<<outfilename<<sendl;
+            msg_error() << " creating file "<<outfilename;
             delete m_outfile;
             m_outfile = NULL;
         }
@@ -102,7 +102,7 @@ void JointSpringForceField<DataTypes>::init()
         m_infile = new std::ifstream(infilename.c_str());
         if( !m_infile->is_open() )
         {
-            serr << "Error opening file "<<infilename<<sendl;
+            msg_error() << "Error opening file "<<infilename;
             delete m_infile;
             m_infile = NULL;
         }

@@ -372,7 +372,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
                 if (edgeInf[ind_j].m1 == (int) last)
                 {
                     edgeInf[ind_j].m1=(int) tab[i];
-                    //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
+                    //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;;
                 }
                 else
                 {
@@ -464,7 +464,7 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*double _ks, doub
 {
     // Create specific handler for EdgeData
     edgeHandler = new TriangularBSEdgeHandler(this, &edgeInfo);
-    //serr<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings"<<sendl;
+    //msg_error()<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings";
 }
 
 template<class DataTypes>
@@ -477,14 +477,14 @@ TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::init()
 {
-    //serr << "initializing TriangularBendingSprings" << sendl;
+    //msg_error() << "initializing TriangularBendingSprings" ;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        serr << "ERROR(TriangularBendingSprings): object must have a Triangular Set Topology."<<sendl;
+        msg_error() << " object must have a Triangular Set Topology.";
         return;
     }
     edgeInfo.createTopologicalEngine(_topology,edgeHandler);
@@ -529,7 +529,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
 template <class DataTypes>
 SReal TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
-    serr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error()<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 
@@ -549,7 +549,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
-    /*        serr<<"TriangularBendingSprings<DataTypes>::addForce()"<<sendl;*/
+    /*        msg_error()<<"TriangularBendingSprings<DataTypes>::addForce()";*/
 
 #if 0
     const VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -583,19 +583,19 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
                 }
             }
 
-            if (e2.is_activated != einfo->is_activated) serr << "ERROR: EdgeInfo["<<i<<"].is_activated = "<<einfo->is_activated<<" while it should be "<<e2.is_activated<<""<<sendl;
+            if (e2.is_activated != einfo->is_activated) msg_error() << " EdgeInfo["<<i<<"].is_activated = "<<einfo->is_activated<<" while it should be "<<e2.is_activated<<"";
             else if (e2.is_activated)
             {
                 if (!((e2.m1 == einfo->m1 && e2.m2 == einfo->m2) || (e2.m1 == einfo->m2 && e2.m2 == einfo->m1)))
-                    serr << "ERROR: EdgeInfo["<<i<<"] points = "<<einfo->m1<<"-"<<einfo->m2<<" while it should be "<<e2.m1<<"-"<<e2.m2<<""<<sendl;
+                    msg_;() << "EdgeInfo["<<i<<"] points = "<<einfo->m1<<"-"<<einfo->m2<<" while it should be "<<e2.m1<<"-"<<e2.m2<<"";
                 if (e2.restlength != einfo->restlength)
-                    serr << "ERROR: EdgeInfo["<<i<<"] length = "<<einfo->restlength<<" while it should be "<<e2.restlength<<""<<sendl;
+                    msg_error() << " EdgeInfo["<<i<<"] length = "<<einfo->restlength<<" while it should be "<<e2.restlength<<"";
             }
         }
 
 #endif
 
-        /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
+        /*            msg_error()<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2;*/
 
         if(einfo->is_activated)
         {
@@ -611,9 +611,9 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
                 u *= inverseLength;
                 Real elongation = (Real)(d - einfo->restlength);
                 m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      serr<<"TriangularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<sendl;
+                /*      msg_error()<<"TriangularBendingSprings<DataTypes>::addSpringForce, p = "<<p;
 
-                		serr<<"TriangularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
+                        msg_error()<<"TriangularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy;*/
                 Deriv relativeVelocity = v[b]-v[a];
                 Real elongationVelocity = dot(u,relativeVelocity);
                 Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
@@ -652,7 +652,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     d_f.endEdit();
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
-    /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
+    /*            msg_error()<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2;*/
     //    this->addSpringForce(m_potentialEnergy,f,x,v, i, springs[i]);
     //}
 }
@@ -669,15 +669,15 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
-    //serr<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
-    //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
+    //msg_error()<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1;
+    //msg_error()<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
     for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
-        /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
+        /*            msg_error()<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2;*/
 
         if(einfo->is_activated)
         {
@@ -689,7 +689,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
             const Deriv dforce = einfo->DfDx*d; //this->dfdx[i]*d;
             df[a]+= dforce * kFactor;
             df[b]-= dforce * kFactor;
-            //serr<<"TriangularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
+            //msg_error()<<"TriangularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce;
 
             //if(updateMatrix){
             //}

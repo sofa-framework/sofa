@@ -68,7 +68,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 template<class DataTypes>
 void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/, const DataVecDeriv& /*dx*/ , SReal /*factor*/ )
 {
-    serr << "ERROR("<<getClassName()<< "): addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , SReal  ) not implemented." << sendl;
+    msg_error()<< getClassName()<< ": addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , SReal  ) not implemented.";
 }
 
 
@@ -79,13 +79,13 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId 
     {
             accFromF(mparams, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
     }
-    else serr <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam" << sendl;
+    else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
 }
 
 template<class DataTypes>
 void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    serr << "ERROR("<<getClassName()<<"): accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented." << sendl;
+    msg_error()<<getClassName()<<": accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented.";
 }
 
 
@@ -125,7 +125,7 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 template<class DataTypes>
 SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, const DataVecDeriv& /*v*/) const
 {
-    serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*, const DataVecDeriv& ) not implemented." << sendl;
+    msg_error() <<getClassName()<<": getKineticEnergy(const MechanicalParams*, const DataVecDeriv& ) not implemented.";
     return 0.0;
 }
 
@@ -141,7 +141,7 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 template<class DataTypes>
 SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
 {
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented." << sendl;
+    msg_error() << getClassName()<<": getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented.";
     return 0.0;
 }
 
@@ -157,7 +157,7 @@ defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mpara
 template<class DataTypes>
 defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
 {
-    serr << "ERROR("<<getClassName()<<"): getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented." << sendl;
+    msg_error() << getClassName()<<": getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented.";
     return defaulttype::Vector6();
 }
 
@@ -176,7 +176,7 @@ void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SRea
 {
     static int i=0;
     if (i < 10) {
-        serr << "ERROR("<<getClassName()<<"): addMToMatrix not implemented." << sendl;
+        msg_error() <<getClassName()<<": addMToMatrix not implemented.";
         i++;
     }
 }
@@ -209,7 +209,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* /* mparams */, DataV
 {
     static int i=0;
     if (i < 10) {
-        serr << "ERROR("<<getClassName()<<"): addGravityToV not implemented." << sendl;
+        msg_error() <<getClassName()<<": addGravityToV not implemented.";
         i++;
     }
 }
@@ -242,7 +242,7 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 template <class DataTypes>
 SReal Mass<DataTypes>::getElementMass(unsigned int ) const
 {
-    serr << "ERROR("<<getClassName()<<"): getElementMass with Scalar not implemented" << sendl;
+    msg_error() <<getClassName()<<": getElementMass with Scalar not implemented";
     return 0.0;
 }
 
@@ -253,7 +253,7 @@ void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) 
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    serr << "ERROR("<<getClassName()<<"): getElementMass with Matrix not implemented" << sendl;
+     msg_error()<<getClassName()<<": getElementMass with Matrix not implemented";
 }
 
 } // namespace behavior
