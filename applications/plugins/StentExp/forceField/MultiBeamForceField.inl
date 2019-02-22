@@ -2456,13 +2456,49 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
          * elastic strain is null).
         */
 
-        // Updating the stress point
-        newStressPoint = initialStress; // delta_sigma = 0
+        /**** Naive implementation ****/
+
+        //// Updating the stress point
+        //newStressPoint = initialStress; // delta_sigma = 0
+
+        //// Updating the plastic strain
+        //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+        //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+        //plasticStrainHistory[gaussPointIt] += strainIncrement;
+        //beamsData.endEdit();
+
+        /**** Litterature implementation ****/
+        // Ref: Theoritecal foundation for large scale computations for nonlinear material behaviour, Hugues (et al) 1984
+
+        //Computation of the deviatoric stress tensor
+        VoigtTensor2 elasticPredictor = currentStressPoint;
+        double meanStress = (1.0 / 3)*(elasticPredictor[0] + elasticPredictor[1] + elasticPredictor[2]);
+        VoigtTensor2 elasticDeviatoricStress = elasticPredictor;
+        elasticDeviatoricStress[0] -= meanStress;
+        elasticDeviatoricStress[1] -= meanStress;
+        elasticDeviatoricStress[2] -= meanStress;
+
+        double sigmaEq = equivalentStress(elasticPredictor);
+        double sqrtA = helper::rsqrt(2.0 / 3) * sigmaEq;
+        double R = helper::rsqrt(2.0 / 3) * yieldStress;
+
+        // Computing the new stress
+        VoigtTensor2 voigtIdentityTensor = VoigtTensor2::Zero();
+        voigtIdentityTensor[0] = 1;
+        voigtIdentityTensor[1] = 1;
+        voigtIdentityTensor[2] = 1;
+
+        newStressPoint = (R / sqrtA)*elasticDeviatoricStress + meanStress*voigtIdentityTensor;
 
         // Updating the plastic strain
+
+        VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1 / sigmaEq)*elasticDeviatoricStress;
+        double lambda = voigtDotProduct(yieldNormal, elasticPredictor) / voigtDotProduct(yieldNormal, C*yieldNormal);
+
+        VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-        plasticStrainHistory[gaussPointIt] += strainIncrement;
+        plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
         beamsData.endEdit();
     }
 
