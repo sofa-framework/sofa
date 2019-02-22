@@ -147,7 +147,7 @@ public:
     /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
     ///                   Not used if the plugin string passed as a parameter is a full path
     /// @param errlog An optional stream for error logging.
-    bool loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, std::ostream* errlog = nullptr);
+    bool loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
     
     /// Loads a plugin library in process memory. 
     /// @param path The full path of the plugin to load
@@ -160,7 +160,7 @@ public:
     /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
     ///                   Not used if the plugin string passed as a parameter is a full path
     /// @param errlog An optional stream for error logging.
-    bool loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, std::ostream* errlog= nullptr);
+    bool loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog= nullptr);
     
     /// Unloads a plugin from process memory.
     bool unloadPlugin(const std::string& path, std::ostream* errlog= nullptr);
@@ -168,7 +168,7 @@ public:
     void init();
     void init(const std::string& pluginPath);
 
-    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
+    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, int maxRecursiveDepth = 6);
     bool pluginIsLoaded(const std::string& plugin);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
