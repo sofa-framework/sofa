@@ -33,17 +33,62 @@ namespace helper
 namespace io
 {
 
+/// @brief Inherit this class to load data from sphere description.
+///
+/// To connect client-code data structure with the XspLoader you need to
+/// Inherit from this class and override the virtual methods to you fill your
+/// structures from the SphereLoader events.
+/// @see SphereLoader for an example of use.
 class SOFA_HELPER_API SphereLoaderDataHook
 {
 public:
     virtual ~SphereLoaderDataHook(){}
-    virtual void setNumSpheres(int n) {}
-    virtual void addSphere(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*r*/) {}
+
+    /// @brief Called by the XspLoader when the loading is done.
+    ///
+    /// This method is called by the XspLoader when the loading is done.
+    /// Overriding this method allows client-code to implement post-loading checking.
+    /// @param isOk is set to false this means that the loading code detected a
+    /// problem and that the loaded informations are invalid and should be removed from
+    /// the container.
+    virtual void finalizeLoading(const bool isOk){ SOFA_UNUSED(isOk); }
+
+    /// @brief Called by the XspLoader to specify before loading the number of spheres.
+    /// @param n number of sphere.
+    virtual void setNumSpheres(const int n) { SOFA_UNUSED(n); }
+
+    /// @brief Called by the Loader to specify the number of Spheres before actual loading.
+    /// @param px, py, pz 3D position of the center.
+    /// @param r the radius of the sphere.
+    virtual void addSphere(const SReal /*px*/, const SReal /*py*/, const SReal /*pz*/, const SReal /*r*/) {}
 };
 
 class SOFA_HELPER_API SphereLoader
 {
 public:
+    /// @brief Call this method to load a Sphere files.
+    /// @param filename the name of the file in the RessourceRepository to read data from.
+    /// @param data pass a object of this type (or inherit one) to load the file in caller's data
+    ///        structures
+    /// @return wheter the loading succeded.
+    /// @example
+    /// class MySphereData : public SphereLoaderDataHook
+    /// {
+    ///    std::vector<double> mx;
+    /// public:
+    ///     void addSpere(SReal px, SReal py, SReal pz, SReal r) override
+    ///     {
+    ///         mx.push_back(px);
+    ///     }
+    ///     void finalizeLoading(bool isOk) override
+    ///     {
+    ///         if(!isOk)
+    ///             mx.clear();
+    ///     }
+    /// };
+    ///
+    /// MySphereData loadedData;
+    /// SphereLoader::Load("myfile.sphere", loadedData);
     static bool Load(const std::string& filename, SphereLoaderDataHook& data);
 };
 
