@@ -163,6 +163,9 @@ int main(int argc, char** argv)
         }
     }
 
+    // Force add plugins dir to PluginRepository (even if not existing)
+    PluginRepository.addFirstPath( Utils::getSofaPathPrefix()+"/plugins" );
+
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
