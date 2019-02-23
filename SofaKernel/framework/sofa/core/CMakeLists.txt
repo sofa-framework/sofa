@@ -213,6 +213,7 @@ set(SOURCE_FILES
     objectmodel/Context.cpp
     objectmodel/DDGNode.cpp
     objectmodel/Data.cpp
+    objectmodel/DataCallback.cpp
     objectmodel/DataFileName.cpp
     objectmodel/DetachNodeEvent.cpp
     objectmodel/Event.cpp

@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/DataCallback.h>
+using sofa::core::objectmodel::DataCallback;
+
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/helper/testing/BaseTest.h>
@@ -82,7 +84,24 @@ struct DataCallback_test: public BaseTest
 
 };
 
-TEST_F(DataCallback_test, testDataCallback_1)
+
+TEST_F(DataCallback_test, testDataCallbackWithBind_1)
+{
+    TestObject obj;
+    obj.m_datacallback1.addCallback(std::bind(&TestObject::printData1, &obj));
+
+    EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
+    EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
+
+    //callback is expected to print an info and a warning message
+    EXPECT_MSG_EMIT(Info) ;
+    EXPECT_MSG_EMIT(Warning) ;
+    obj.d_objdata1.setValue(123);
+    EXPECT_EQ( obj.d_objdata1.getValue(), 123 ) ;
+    EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
+}
+
+TEST_F(DataCallback_test, testDataCallbackWithOldSyntax_1)
 {
     TestObject obj;
     obj.m_datacallback1.addCallback(&TestObject::printData1);
@@ -98,10 +117,26 @@ TEST_F(DataCallback_test, testDataCallback_1)
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
 }
 
+TEST_F(DataCallback_test, testDataCallback_1)
+{
+    TestObject obj;
+    obj.m_datacallback1.addCallback([&obj](){obj.printData1();});
+
+    EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
+    EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
+
+    //callback is expected to print an info and a warning message
+    EXPECT_MSG_EMIT(Info) ;
+    EXPECT_MSG_EMIT(Warning) ;
+    obj.d_objdata1.setValue(123);
+    EXPECT_EQ( obj.d_objdata1.getValue(), 123 ) ;
+    EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
+}
+
 TEST_F(DataCallback_test, testDataCallback_2)
 {
     TestObject obj;
-    obj.m_datacallback2.addCallback(&TestObject::printData2);
+    obj.m_datacallback2.addCallback([&obj](){obj.printData2();});
 
     EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
@@ -117,7 +152,7 @@ TEST_F(DataCallback_test, testDataCallback_2)
 TEST_F(DataCallback_test, testDataCallback_All)
 {
     TestObject obj;
-    obj.m_datacallbackAll.addCallback(&TestObject::printDataAll);
+    obj.m_datacallbackAll.addCallback([&obj](){obj.printDataAll();});
 
     EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;

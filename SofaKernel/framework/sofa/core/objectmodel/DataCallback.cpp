@@ -19,12 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
-#define SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
-
-#include <functional>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/DataCallback.h>
 
 namespace sofa
 {
@@ -35,36 +30,61 @@ namespace core
 namespace objectmodel
 {
 
-/// DataCallback
-class DataCallback : public sofa::core::objectmodel::DDGNode
+DataCallback::DataCallback(BaseData* data)
 {
-public:
-
-    typedef sofa::core::objectmodel::BaseData BaseData;
-
-    DataCallback(BaseData* data);
-    DataCallback(std::initializer_list<BaseData*> datas);
-
-    void addCallback(std::function<void(void)>);
-
-    void notifyEndEdit(const core::ExecParams* params) override;
-    void update() override {}
-
-    const std::string& getName() const override ;
-    sofa::core::objectmodel::Base* getOwner() const override ;
-    sofa::core::objectmodel::BaseData* getData() const override ;
-
-private:
-    bool m_updating;
-    std::vector<std::function<void(void)>> m_callbacks;
-    std::vector<sofa::core::objectmodel::BaseData*> m_datas;
-};
-
+    m_updating = false;
+    m_datas.push_back(data);
+    addInput(data);
 }
 
+DataCallback::DataCallback(std::initializer_list<BaseData*> datas)
+{
+    m_updating = false;
+    for(BaseData* data : datas)
+    {
+        m_datas.push_back(data);
+        addInput(data);
+    }
 }
 
+void DataCallback::addCallback(std::function<void(void)> f)
+{
+    m_callbacks.push_back(f);
 }
 
-#endif /// SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
+void DataCallback::notifyEndEdit(const core::ExecParams* params)
+{
+    if (! m_updating)
+    {
+        m_updating = true;
+        for (auto& callback : m_callbacks)
+            callback();
+        sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
+        m_updating = false;
+    }
+}
+
+const std::string& DataCallback::getName() const
+{
+    static std::string s="";
+    return s;
+}
+
+sofa::core::objectmodel::Base* DataCallback::getOwner() const
+{
+    return nullptr;
+}
+
+sofa::core::objectmodel::BaseData* DataCallback::getData() const
+{
+    assert(m_datas.size() == 0);
+    return m_datas[0];
+}
+
+} /// namespace objectmodel
+
+} /// namespace core
+
+} /// namespace sofa
+
 
