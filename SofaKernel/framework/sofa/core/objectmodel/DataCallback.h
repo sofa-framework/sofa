@@ -35,30 +35,69 @@ namespace core
 namespace objectmodel
 {
 
-/// DataCallback
-class DataCallback : public sofa::core::objectmodel::DDGNode
+/// Private namespace declaration, this allows to
+/// have in this namespace as much as alias we want and not having
+/// them leacking into the public ones.
+namespace _datacallback_
+{
+
+/// Import the long names into the private namespace so we
+/// can write directly Base, BaseData and DDGNode
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::DDGNode;
+
+/// Associate to a set of data a set of callback
+///
+/// The callbacks are called when one of the input is changed.
+///
+/// Example of use:
+///   Data<int> a;
+///   Data<int> b;
+///   DataCallback cb({a,b});
+///   cb.addCallback([&a,&b](DataCallback*){
+///                     std::cout << "sum is:" << a.getValue()+b.getValue() << std::endl;
+///                   });
+///   a.setValue(5);       /// should print: "sum is 5"
+///   b.setValue(6);       /// should print: "sum is 11"
+class DataCallback : public DDGNode
 {
 public:
-
-    typedef sofa::core::objectmodel::BaseData BaseData;
-
+    /// Create a DataCallback object associated with a single Data.
     DataCallback(BaseData* data);
+
+    /// Create a DataCallback object associated with multiple Data.
     DataCallback(std::initializer_list<BaseData*> datas);
 
+    /// Register a new callback function to this DataCallback
     void addCallback(std::function<void(void)>);
 
-    void notifyEndEdit(const core::ExecParams* params) override;
-    void update() override {}
+    /// Register a new callback method using the "old way"
+    template<class FwdObject, class FwdMethod>
+    [[deprecated("This is there just for backward compatibility")]]
+    void addCallback(FwdObject* o, FwdMethod m)
+    {
+        addCallback(std::bind(m, o));
+    }
 
+    /// The trick is here, this function is called as soon as the input data changes
+    /// and can then trigger the callback
+    void notifyEndEdit(const core::ExecParams* params) override ;
+
+    void update() override;
     const std::string& getName() const override ;
-    sofa::core::objectmodel::Base* getOwner() const override ;
-    sofa::core::objectmodel::BaseData* getData() const override ;
+    Base* getOwner() const override ;
+    BaseData* getData() const override ;
 
 private:
-    bool m_updating;
-    std::vector<std::function<void(void)>> m_callbacks;
-    std::vector<sofa::core::objectmodel::BaseData*> m_datas;
+    bool m_updating {false};
+    std::vector<std::function<void()>> m_callbacks;
 };
+
+} /// namespace _datacallback_
+
+/// Import DataCallback from its private namespace into the public one.
+using _datacallback_::DataCallback;
 
 }
 

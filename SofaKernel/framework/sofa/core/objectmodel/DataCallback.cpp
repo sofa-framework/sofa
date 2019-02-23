@@ -32,17 +32,13 @@ namespace objectmodel
 
 DataCallback::DataCallback(BaseData* data)
 {
-    m_updating = false;
-    m_datas.push_back(data);
     addInput(data);
 }
 
 DataCallback::DataCallback(std::initializer_list<BaseData*> datas)
 {
-    m_updating = false;
     for(BaseData* data : datas)
     {
-        m_datas.push_back(data);
         addInput(data);
     }
 }
@@ -54,11 +50,12 @@ void DataCallback::addCallback(std::function<void(void)> f)
 
 void DataCallback::notifyEndEdit(const core::ExecParams* params)
 {
-    if (! m_updating)
+    if (!m_updating)
     {
         m_updating = true;
         for (auto& callback : m_callbacks)
             callback();
+
         sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
         m_updating = false;
     }
@@ -77,8 +74,12 @@ sofa::core::objectmodel::Base* DataCallback::getOwner() const
 
 sofa::core::objectmodel::BaseData* DataCallback::getData() const
 {
-    assert(m_datas.size() == 0);
-    return m_datas[0];
+    return nullptr;
+}
+
+void DataCallback::update()
+{
+
 }
 
 } /// namespace objectmodel

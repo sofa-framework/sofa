@@ -76,12 +76,6 @@ struct DataCallback_test: public BaseTest
         {
         }
     };
-
-    void SetUp()
-    {
-
-    }
-
 };
 
 
@@ -104,7 +98,7 @@ TEST_F(DataCallback_test, testDataCallbackWithBind_1)
 TEST_F(DataCallback_test, testDataCallbackWithOldSyntax_1)
 {
     TestObject obj;
-    obj.m_datacallback1.addCallback(&TestObject::printData1);
+    obj.m_datacallback1.addCallback(&obj, &TestObject::printData1);
 
     EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
@@ -125,7 +119,7 @@ TEST_F(DataCallback_test, testDataCallback_1)
     EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
 
-    //callback is expected to print an info and a warning message
+    /// callback is expected to print an info and a warning message
     EXPECT_MSG_EMIT(Info) ;
     EXPECT_MSG_EMIT(Warning) ;
     obj.d_objdata1.setValue(123);
@@ -148,6 +142,44 @@ TEST_F(DataCallback_test, testDataCallback_2)
     EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 456 ) ;
 }
+
+TEST_F(DataCallback_test, testDataCallbackExample_1)
+{
+    Data<int> a;
+    Data<int> b;
+    DataCallback cb({&a,&b});
+    std::vector<int> results;
+
+    cb.addCallback([&a,&b, &results](){
+        msg_info("Example1") << a.getValue() << "+" << b.getValue() << "=" << a.getValue() + b.getValue();
+        results.push_back(a.getValue() + b.getValue());
+    });
+    cb.addCallback([&a,&b, &results](){
+        msg_info("Example1") << a.getValue() << "*" << b.getValue() << "=" << a.getValue() * b.getValue();
+        results.push_back(a.getValue() * b.getValue());
+    });
+
+    a.setValue(5);
+    b.setValue(6);
+
+/*
+    a.setValue(5);
+    EXPECT_EQ(results.size(), 2);
+    EXPECT_EQ(results[0], 5);
+    EXPECT_EQ(results[1], 0);
+
+    b.setValue(6);
+    EXPECT_EQ(results.size(), 4);
+    EXPECT_EQ(results[0], 11);
+    EXPECT_EQ(results[1], 30);
+
+    b.setValue(7);
+    EXPECT_EQ(results.size(), 6);
+    EXPECT_EQ(results[0], 12);
+    EXPECT_EQ(results[1], 35);
+    */
+}
+
 
 TEST_F(DataCallback_test, testDataCallback_All)
 {
