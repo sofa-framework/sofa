@@ -31,14 +31,13 @@ using sofa::helper::testing::BaseTest ;
 namespace sofa {
 
 
-/**  Test suite for data callbacks
-  */
+///  Test suite for data callbacks
 struct DataCallback_test: public BaseTest
 {
     class TestObject : public sofa::core::objectmodel::BaseObject
     {
     public:
-        //data attached to an object
+        /// data attached to an object
         Data<int> d_objdata1;
         Data<int> d_objdata2;
         DataCallback m_datacallback1;
@@ -143,6 +142,8 @@ TEST_F(DataCallback_test, testDataCallback_2)
     EXPECT_EQ( obj.d_objdata2.getValue(), 456 ) ;
 }
 
+/// In this test we show how we can use the Data &DataCallback without
+/// any BaseObject.
 TEST_F(DataCallback_test, testDataCallbackExample_1)
 {
     Data<int> a;
@@ -160,24 +161,19 @@ TEST_F(DataCallback_test, testDataCallbackExample_1)
     });
 
     a.setValue(5);
-    b.setValue(6);
-
-/*
-    a.setValue(5);
     EXPECT_EQ(results.size(), 2);
     EXPECT_EQ(results[0], 5);
     EXPECT_EQ(results[1], 0);
 
     b.setValue(6);
     EXPECT_EQ(results.size(), 4);
-    EXPECT_EQ(results[0], 11);
-    EXPECT_EQ(results[1], 30);
+    EXPECT_EQ(results[2], 11);
+    EXPECT_EQ(results[3], 30);
 
     b.setValue(7);
     EXPECT_EQ(results.size(), 6);
-    EXPECT_EQ(results[0], 12);
-    EXPECT_EQ(results[1], 35);
-    */
+    EXPECT_EQ(results[4], 12);
+    EXPECT_EQ(results[5], 35);
 }
 
 
