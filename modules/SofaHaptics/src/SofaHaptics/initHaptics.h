@@ -19,9 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAHAPTICS_CONFIG_H
-#define SOFAHAPTICS_CONFIG_H
+#ifndef SOFA_COMPONENT_HAPTICS_INIT_H
+#define SOFA_COMPONENT_HAPTICS_INIT_H
+#include "config.h"
 
-#include <SofaGeneral/config.h>
+namespace sofa
+{
+
+namespace component
+{
+
+} // namespace component
+
+} // namespace sofa
 
 #endif
+
