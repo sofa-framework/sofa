@@ -191,6 +191,9 @@ void Node::addChild(core::objectmodel::BaseNode::SPtr node)
 /// Remove a child
 void Node::removeChild(core::objectmodel::BaseNode::SPtr node)
 {
+    // If node has no parent
+    if (node->getFirstParent() == nullptr)
+        return;
     notifyBeginRemoveChild(this, dynamic_cast<Node*>(node.get()));
     doRemoveChild(node);
     notifyEndRemoveChild(this, dynamic_cast<Node*>(node.get()));
@@ -224,9 +227,7 @@ bool Node::removeObject(BaseObject::SPtr obj)
 void Node::moveObject(BaseObject::SPtr obj)
 {
     Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
-    notifyBeginMoveObject(this, obj, prev_parent);
     doMoveObject(obj, prev_parent);
-    notifyEndMoveObject(this, obj, prev_parent);
 }
 
 
@@ -287,21 +288,6 @@ void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObjec
         listener->removeObjectEnd(parent.get(), obj.get());
 }
 
-void Node::notifyBeginMoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj, Node* prev)
-{
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
-        listener->moveObjectBegin(prev, parent.get(), obj.get());
-}
-
-void Node::notifyEndMoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj, Node* prev)
-{
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
-        listener->moveObjectEnd(prev, parent.get(), obj.get());
-}
-
-
 void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
@@ -328,20 +314,6 @@ void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::obj
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
         listener->removeSlaveEnd(master, slave);
-}
-
-void Node::notifyBeginMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
-        listener->moveSlaveBegin(previousMaster, master, slave);
-}
-
-void Node::notifyEndMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
-        listener->moveSlaveEnd(previousMaster, master, slave);
 }
 
 void Node::notifySleepChanged(Node* node)

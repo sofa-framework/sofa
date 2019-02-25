@@ -70,15 +70,15 @@ public:
     /*****************************************************************************************************************/
     QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
 
-    virtual void beginAddChild(Node* parent, Node* child) override;
-    virtual void beginRemoveChild(Node* parent, Node* child) override;
-    virtual void beginMoveChild(Node* previous, Node* parent, Node* child) override;
-    virtual void beginAddObject(Node* parent, core::objectmodel::BaseObject* object) override;
-    virtual void beginRemoveObject(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
-    virtual void beginMoveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) override;
-    virtual void beginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    virtual void beginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    virtual void beginMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    virtual void doAddChildBegin(Node* parent, Node* child) override;
+    virtual void doRemoveChildBegin(Node* parent, Node* child) override;
+//    virtual void doMoveChildBegin(Node* previous, Node* parent, Node* child) override;
+    virtual void doAddObjectBegin(Node* parent, core::objectmodel::BaseObject* object) override;
+    virtual void doRemoveObjectBegin(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
+//    virtual void doMoveObjectBegin(Node* previous, Node* parent, core::objectmodel::BaseObject* object) override;
+    virtual void doAddSlaveBegin(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    virtual void doRemoveSlaveBegin(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+//    virtual void doMoveSlaveBegin(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
 
     virtual void sleepChanged(Node* node) override;
     virtual void addDatas(core::objectmodel::BaseObject* parent);
