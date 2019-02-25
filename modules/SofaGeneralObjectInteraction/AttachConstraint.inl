@@ -258,7 +258,7 @@ void AttachConstraint<DataTypes>::init()
 {
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
 
-    dynamicConstraintFactor = !d_constraintFactor.isSet();
+    m_dynamicConstraintFactor = !d_constraintFactor.isSet();
     reinit();
 }
 
@@ -273,7 +273,7 @@ void AttachConstraint<DataTypes>::reinit()
     }
 
     // Set to the correct length if dynamic, else check coherency.
-    if(d_constraintFactor.isSet())
+    if(!m_dynamicConstraintFactor)
     {
         helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
         if(constraintFactor.size() != f_indices2.getValue().size())

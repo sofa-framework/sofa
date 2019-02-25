@@ -87,7 +87,7 @@ public:
     helper::vector<defaulttype::Quat> restRotations;
 
 protected:
-    bool dynamicConstraintFactor;
+    bool m_dynamicConstraintFactor;
     AttachConstraint();
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     virtual ~AttachConstraint();
@@ -121,11 +121,12 @@ protected :
     using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse;
 
     inline Real getConstraintFactor(int index) {
-        return d_constraintFactor.isSet() ? d_constraintFactor.getValue()[index] : 1;
+        return m_dynamicConstraintFactor ? 1 : d_constraintFactor.getValue()[index];
     }
 
-    void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned index)
+    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
     {
+        SOFA_UNUSED(freeRotations);
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (f_minDistance.getValue() != -1 &&
             (x2 - x1).norm() > f_minDistance.getValue())
@@ -141,8 +142,9 @@ protected :
         x2 -= corr;
     }
 
-    void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned index)
+    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
     {
+        SOFA_UNUSED(freeRotations);
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
 
@@ -152,8 +154,9 @@ protected :
         x2 -= corr;
     }
 
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned index)
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
     {
+        SOFA_UNUSED(freeRotations);
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
 
@@ -163,11 +166,9 @@ protected :
         }
         else
         {
-            Deriv in1 = dx1;
-            Deriv in2 = dx2;
-            Real constraintFactor = getConstraintFactor(index);
-            dx1 += in2*(d_responseFactor.getValue()*constraintFactor);
-            dx2 += in1*(d_responseFactor.getValue()*constraintFactor);
+            Deriv corr = (dx2-dx1)*0.5*d_responseFactor.getValue()*getConstraintFactor(index);
+            dx1 += corr;
+            dx2 -= corr;
         }
     }
 
