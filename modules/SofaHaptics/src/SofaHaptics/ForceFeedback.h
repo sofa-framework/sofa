@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,11 +37,8 @@ namespace component
 namespace controller
 {
 
-
-/**
-* Device driver force field
-*/
-class SOFA_HAPTICS_API ForceFeedback : public core::behavior::BaseController
+/// Base class implementing forcefeedback as a force field
+class SOFA_SOFAHAPTICS_API ForceFeedback : public core::behavior::BaseController
 {
 
 public:
@@ -49,20 +46,23 @@ public:
     Data<bool> f_activate; ///< boolean to activate or deactivate the forcefeedback
     Data<int> indice; ///< Tool indice in the OmniDriver
 
-
     simulation::Node *context;
+
+    void init() override;
+
+    virtual void computeForce(SReal x, SReal y, SReal z,
+                              SReal u, SReal v, SReal w,
+                              SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
+
+    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
+                               const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
+                               sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
+
+    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
+    virtual bool isEnabled();
+
 protected:
-    ForceFeedback():
-        f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-        , indice(initData(&indice, 0, "indice", "Tool indice in the OmniDriver"))
-    {
-    }
-public:
-    virtual void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
-    virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
-    virtual bool isEnabled() { return this->getContext()->isActive(); }
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) {};
+    ForceFeedback();
 };
 
 } // namespace controller

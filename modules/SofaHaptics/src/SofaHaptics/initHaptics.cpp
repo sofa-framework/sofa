@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,48 @@ namespace component
 {
 
 
+extern "C" {
+SOFA_SOFAHAPTICS_API void initExternalModule();
+SOFA_SOFAHAPTICS_API const char* getModuleName();
+SOFA_SOFAHAPTICS_API const char* getModuleVersion();
+SOFA_SOFAHAPTICS_API const char* getModuleLicense();
+SOFA_SOFAHAPTICS_API const char* getModuleDescription();
+SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaHaptics";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This module contains the base infrastructure for haptics rendering in Sofa.";
+}
+
+const char* getModuleComponentList()
+{
+    return "NullForceFeedback LCPForceFeedback";
+}
 
 } // namespace component
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,9 +25,7 @@
 
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
 #include <sofa/helper/system/thread/CTime.h>
-
 
 namespace sofa
 {
@@ -66,12 +64,10 @@ public:
 
     void draw( const core::visual::VisualParams* ) override
     {
-        // draw the haptic_freq in the openGL window
         dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
     Data< double > forceCoef; ///< multiply haptic force by this coef.
-    //Data< double > momentCoef;
 
     Data< double > solverTimeout; ///< max time to spend solving constraints.
 
@@ -81,14 +77,17 @@ public:
     // Enable/disable constraint haptic influence from all frames
     Data< bool > d_localHapticConstraintAllFrames; ///< Flag to enable/disable constraint haptic influence from all frames
 
-    virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override;
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
-    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) override;
+    void computeForce(SReal x, SReal y, SReal z,
+                      SReal u, SReal v, SReal w,
+                      SReal q, SReal& fx, SReal& fy, SReal& fz) override;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
+                       const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world,
+                       sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
+    void computeForce(const  VecCoord& state,  VecDeriv& forces) override;
 
-    //void computeForce(double pitch0, double yaw0, double roll0, double z0, double pitch1, double yaw1, double roll1, double z1, double& fpitch0, double& fyaw0, double& froll0, double& fz0, double& fpitch1, double& fyaw1, double& froll1, double& fz1);
 protected:
     LCPForceFeedback();
-    virtual ~LCPForceFeedback()
+    ~LCPForceFeedback() override
     {
         delete(_timer);
     }
@@ -123,21 +122,19 @@ public:
     }
 
 protected:
-    //component::constraintset::LCP* lcp, *next_lcp;
     core::behavior::MechanicalState<DataTypes> *mState; ///< The device try to follow this mechanical state.
     VecCoord mVal[3];
     MatrixDeriv mConstraints[3];
     std::vector<int> mId_buf[3];
     component::constraintset::ConstraintProblem* mCP[3];
-    /* 	std::vector<int> *id_buf; */
-    /* 	typename DataType::VecCoord *val; */
+
     unsigned char mNextBufferId; // Next buffer id to be use
     unsigned char mCurBufferId; // Current buffer id in use
     bool mIsCuBufferInUse; // Is current buffer currently in use right now
 
-    //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The device try to follow this mechanical state.
     sofa::component::constraintset::ConstraintSolverImpl* constraintSolver;
-    // timer: verifies the time rates of the haptic loop
+
+    /// timer: verifies the time rates of the haptic loop
     helper::system::thread::CTime *_timer;
     helper::system::thread::ctime_t time_buf;
     int timer_iterations;
@@ -145,11 +142,9 @@ protected:
     unsigned int num_constraints;
 };
 
-
 #if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
-extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
-
+extern template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+extern template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace controller

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,15 +37,15 @@ namespace
 template <typename DataTypes>
 bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool /*derivRotation*/)
 {
-    unsigned int sz0 = x0.size();
-    unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
+    size_t sz0 = x0.size();
+    size_t szmin = std::min(sz0,x1.size());
 
     d.resize(sz0);
-    for(unsigned int i=0; i<szmin; ++i)
+    for(size_t i=0; i<szmin; ++i)
     {
         d[i]=x1[i]-x0[i];
     }
-    for(unsigned int i=szmin; i<sz0; ++i) // not sure in what case this is applicable...
+    for(size_t i=szmin; i<sz0; ++i) // not sure in what case this is applicable...
     {
         d[i]=-x0[i];
     }
@@ -56,11 +56,11 @@ bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTyp
 template <typename DataTypes>
 bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool derivRotation=false)
 {
-    unsigned int sz0 = x0.size();
-    unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
+    size_t sz0 = x0.size();
+    size_t szmin = std::min(sz0,x1.size());
 
     d.resize(sz0);
-    for(unsigned int i=0; i<szmin; ++i)
+    for(size_t i=0; i<szmin; ++i)
     {
         getVCenter(d[i]) = x1[i].getCenter() - x0[i].getCenter();
         if (derivRotation)
@@ -73,7 +73,7 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
             getVOrientation(d[i]) *= 0; 
     }
 
-    for(unsigned int i=szmin; i<sz0; ++i) // not sure in what case this is applicable.. 
+    for(size_t i=szmin; i<sz0; ++i) // not sure in what case this is applicable..
     {
         getVCenter(d[i]) = - x0[i].getCenter();
 
@@ -86,7 +86,6 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
                                                                                 // correction of the toEulerVector  function). If the
                                                                                 // purpose was to obtain the Eulerian vector and not the
                                                                                 // rotation vector please use the following line instead
-//            getVOrientation(d[i]) = -x0[i].rotate( q.toEulerVector() );
         }
         else
             getVOrientation(d[i]) *= 0;
@@ -133,21 +132,21 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
     , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
     , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
     , d_localHapticConstraintAllFrames(initData(&d_localHapticConstraintAllFrames, false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
-    , mState(NULL)
+    , mState(nullptr)
     , mNextBufferId(0)
     , mCurBufferId(0)
     , mIsCuBufferInUse(false)
-    , constraintSolver(NULL)
-    , _timer(NULL)
+    , constraintSolver(nullptr)
+    , _timer(nullptr)
     , time_buf(0)
     , timer_iterations(0)
     , haptic_freq(0.0)
     , num_constraints(0)
 {
     this->f_listening.setValue(true);
-    mCP[0] = NULL;
-    mCP[1] = NULL;
-    mCP[2] = NULL;
+    mCP[0] = nullptr;
+    mCP[1] = nullptr;
+    mCP[2] = nullptr;
     _timer = new helper::system::thread::CTime();
     time_buf = _timer->getTime();
     timer_iterations = 0;
@@ -182,7 +181,7 @@ void LCPForceFeedback<DataTypes>::init()
     }
 }
 
-std::mutex s_mtx;
+static std::mutex s_mtx;
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
@@ -415,10 +414,10 @@ void LCPForceFeedback<DataTypes>::computeWrench(const sofa::defaulttype::SolidTy
 
 
 template <>
-void SOFA_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz);
+void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz);
 
 template <>
-void SOFA_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
+void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
         const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world );
 

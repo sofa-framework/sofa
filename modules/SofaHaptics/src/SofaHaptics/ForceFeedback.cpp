@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
-#define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
-#include <SofaHaptics/MechanicalStateForceFeedback.h>
-#include <SofaHaptics/config.h>
+#include <SofaHaptics/ForceFeedback.h>
+
 namespace sofa
 {
 
@@ -32,30 +30,28 @@ namespace component
 namespace controller
 {
 
-/// @brief Null force feedback for haptic feedback device
-template<class TDataTypes>
-class SOFA_SOFAHAPTICS_API NullForceFeedbackT : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+ForceFeedback::ForceFeedback():
+    f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , indice(initData(&indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+}
 
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
-    void init() override {this->ForceFeedback::init();}
+void ForceFeedback::init()
+{
+    context = dynamic_cast<simulation::Node *>(this->getContext());
+}
 
-    virtual void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
-    {
-        fx = fy = fz = 0.0;
-    }
-    virtual void computeForce(const  VecCoord &,  VecDeriv &) override {}
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();}
-};
+void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
+{
+    SOFA_UNUSED(referencePosition);
+}
+
+bool ForceFeedback::isEnabled() {
+    return this->getContext()->isActive();
+}
 
 } // namespace controller
 
 } // namespace component
 
 } // namespace sofa
-
-#endif

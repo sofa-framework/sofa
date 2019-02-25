@@ -16,6 +16,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/SofaHaptics/initHaptics.cpp
+    src/SofaHaptics/ForceFeedback.cpp
     src/SofaHaptics/LCPForceFeedback.cpp
     src/SofaHaptics/NullForceFeedback.cpp
     src/SofaHaptics/NullForceFeedbackT.cpp

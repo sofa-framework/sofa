@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,10 +21,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
-#include "config.h"
 
+#include <SofaHaptics/config.h>
 #include <SofaHaptics/ForceFeedback.h>
-
 
 
 namespace sofa
@@ -37,27 +36,26 @@ namespace controller
 {
 
 template<class TDataTypes>
-class SOFA_HAPTICS_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_SOFAHAPTICS_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
-
     SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),sofa::component::controller::ForceFeedback);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
-    simulation::Node *context;
-protected:
-    MechanicalStateForceFeedback(void) {};
 public:
-    virtual void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
-    virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
 
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {};
+    void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());}
+    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
+    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {}
+
+protected:
+    MechanicalStateForceFeedback(void) {}
 };
 
 } // namespace controller
