@@ -87,7 +87,6 @@ public:
     helper::vector<defaulttype::Quat> restRotations;
 
 protected:
-    bool m_dynamicConstraintFactor;
     AttachConstraint();
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     virtual ~AttachConstraint();
@@ -121,10 +120,10 @@ protected :
     using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse;
 
     inline Real getConstraintFactor(int index) {
-        return m_dynamicConstraintFactor ? 1 : d_constraintFactor.getValue()[index];
+        return d_constraintFactor.getValue().size() ? d_constraintFactor.getValue()[index] : 1;
     }
 
-    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
+    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
     {
         SOFA_UNUSED(freeRotations);
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -136,25 +135,25 @@ protected :
         }
         constraintReleased[index] = false;
 
-        Deriv corr = (x2-x1)*(0.5*d_positionFactor.getValue()*getConstraintFactor(index));
+        Deriv corr = (x2-x1)*(0.5*positionFactor*getConstraintFactor(index));
 
         x1 += corr;
         x2 -= corr;
     }
 
-    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
+    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
     {
         SOFA_UNUSED(freeRotations);
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
 
-        Deriv corr = (x2-x1)*(0.5*d_velocityFactor.getValue()*getConstraintFactor(index));
+        Deriv corr = (x2-x1)*(0.5*velocityFactor*getConstraintFactor(index));
 
         x1 += corr;
         x2 -= corr;
     }
 
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
     {
         SOFA_UNUSED(freeRotations);
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -166,7 +165,7 @@ protected :
         }
         else
         {
-            Deriv corr = (dx2-dx1)*0.5*d_responseFactor.getValue()*getConstraintFactor(index);
+            Deriv corr = (dx2-dx1)*0.5*responseFactor*getConstraintFactor(index);
             dx1 += corr;
             dx2 -= corr;
         }

@@ -43,8 +43,9 @@ namespace projectiveconstraintset
 using sofa::simulation::Node ;
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
 {
+    SOFA_UNUSED(positionFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
         (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
@@ -78,8 +79,9 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
 {
+    SOFA_UNUSED(positionFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
         (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
@@ -96,8 +98,9 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
 {
+    SOFA_UNUSED(velocityFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -109,8 +112,9 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
 {
+    SOFA_UNUSED(velocityFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -120,8 +124,9 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectVelocity(Deriv& x
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
 {
+    SOFA_UNUSED(responseFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -149,8 +154,9 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectResponse(Deriv& d
 
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
+inline void AttachConstraint<defaulttype::Rigid2Types>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
 {
+    SOFA_UNUSED(responseFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
@@ -258,7 +264,6 @@ void AttachConstraint<DataTypes>::init()
 {
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
 
-    m_dynamicConstraintFactor = !d_constraintFactor.isSet();
     reinit();
 }
 
@@ -273,9 +278,9 @@ void AttachConstraint<DataTypes>::reinit()
     }
 
     // Set to the correct length if dynamic, else check coherency.
-    if(!m_dynamicConstraintFactor)
+    if(d_constraintFactor.getValue().size())
     {
-        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
+        helper::ReadAccessor<Data<helper::vector<Real>>> constraintFactor = d_constraintFactor;
         if(constraintFactor.size() != f_indices2.getValue().size())
         {
             msg_error() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
@@ -290,7 +295,6 @@ void AttachConstraint<DataTypes>::reinit()
                 }
             }
         }
-        d_constraintFactor.endEdit();
     }
     constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
@@ -369,6 +373,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         }
         activeFlags[i] = active;
     }
+    helper::ReadAccessor<Data<Real>> positionFactor = d_positionFactor;
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         Coord p = res1[indices1[i]];
@@ -376,7 +381,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         {
             msg_info() << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]";
 
-            projectPosition(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
+            projectPosition(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i, positionFactor);
         }
         else if (clamp)
         {
@@ -384,7 +389,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
 
             msg_info() << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos";
 
-            projectPosition(p, res2[indices2[i]], freeRotations, i);
+            projectPosition(p, res2[indices2[i]], freeRotations, i, positionFactor);
         }
     }
 
@@ -405,7 +410,7 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     const bool clamp = f_clamp.getValue();
 
     reinitIfChanged();
-
+    helper::ReadAccessor<Data<Real>> velocityFactor = d_velocityFactor;
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
@@ -417,14 +422,14 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
         {
             msg_info() << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]" ;
 
-            projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
+            projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i, velocityFactor);
         }
         else if (clamp)
         {
             msg_info() << "AttachConstraint: v2["<<indices2[i]<<"] = 0" ;
 
             Deriv v = Deriv();
-            projectVelocity(v, res2[indices2[i]], freeRotations, i);
+            projectVelocity(v, res2[indices2[i]], freeRotations, i, velocityFactor);
         }
     }
 
@@ -446,7 +451,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     const bool clamp = f_clamp.getValue();
 
     reinitIfChanged();
-
+    helper::ReadAccessor<Data<Real>> responseFactor = d_responseFactor;
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
@@ -462,7 +467,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
                 msg_info() << " r2["<<indices2[i]<<"] = 0";
             }
 
-            projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i);
+            projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i, responseFactor);
 
             msg_info() << " final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"";
         }
@@ -471,7 +476,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
             msg_info() << " r2["<<indices2[i]<<"] = 0";
 
             Deriv v = Deriv();
-            projectResponse(v, res2[indices2[i]], freeRotations, false, i);
+            projectResponse(v, res2[indices2[i]], freeRotations, false, i, responseFactor);
 
             msg_info() << " final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"";
         }
