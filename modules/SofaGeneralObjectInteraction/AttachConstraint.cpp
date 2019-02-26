@@ -23,8 +23,6 @@
 #include <SofaGeneralObjectInteraction/AttachConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/Node.h>
-
 namespace sofa
 {
 

@@ -24,12 +24,10 @@
 
 #include <SofaGeneralObjectInteraction/AttachConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
-#include <type_traits>
+
 
 namespace sofa
 {
@@ -245,10 +243,10 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
     , f_lastPos( initData(&f_lastPos,"lastPos", "position at which the attach constraint should become inactive") )
     , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
     , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
-    , f_minDistance( initData(&f_minDistance, (Real)-1,"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
-    , d_positionFactor(initData(&d_positionFactor, (Real)1.0, "positionFactor", "IN: Factor applied to projection of position"))
-    , d_velocityFactor(initData(&d_velocityFactor, (Real)1.0, "velocityFactor", "IN: Factor applied to projection of velocity"))
-    , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
+    , f_minDistance( initData(&f_minDistance, static_cast<Real>(-1),"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
+    , d_positionFactor(initData(&d_positionFactor, static_cast<Real>(1.0), "positionFactor", "IN: Factor applied to projection of position"))
+    , d_velocityFactor(initData(&d_velocityFactor, static_cast<Real>(1.0), "velocityFactor", "IN: Factor applied to projection of velocity"))
+    , d_responseFactor(initData(&d_responseFactor, static_cast<Real>(1.0), "responseFactor", "IN: Factor applied to projection of force/acceleration"))
     , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
 {
 
@@ -262,6 +260,7 @@ AttachConstraint<DataTypes>::~AttachConstraint()
 template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
+    this->m_componentstate = sofa::core::objectmodel::ComponentState::Undefined;
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
 
     reinit();
@@ -275,6 +274,8 @@ void AttachConstraint<DataTypes>::reinit()
     {
         msg_error() << "Size mismatch between indices1 and indices2 ("
                     << f_indices1.getValue().size() << " != " << f_indices2.getValue().size() << ").";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
     }
 
     // Set to the correct length if dynamic, else check coherency.
@@ -284,6 +285,8 @@ void AttachConstraint<DataTypes>::reinit()
         if(constraintFactor.size() != f_indices2.getValue().size())
         {
             msg_error() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
+            this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+            return;
         }
         else
         {
@@ -305,6 +308,7 @@ void AttachConstraint<DataTypes>::reinit()
 
     if (f_restRotations.getValue())
         calcRestRotations();
+    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
 }
 
 template<class DataTypes>
@@ -326,14 +330,16 @@ void AttachConstraint<sofa::defaulttype::Rigid3Types>::calcRestRotations();
 
 
 template<class DataTypes>
-void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/)
+void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(cId);
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/, DataVecCoord& res1_d, DataVecCoord& res2_d)
+void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * mparams, DataVecCoord& res1_d, DataVecCoord& res2_d)
 {
-
+    SOFA_UNUSED(mparams);
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
     const bool freeRotations = f_freeRotations.getValue();
@@ -398,8 +404,9 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams * /*mparams*/, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
+void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams * mparams, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
 {
+    SOFA_UNUSED(mparams);
     VecDeriv &res1 = *res1_d.beginEdit();
     VecDeriv &res2 = *res2_d.beginEdit();
 
@@ -438,8 +445,9 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams * /*mparams*/, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
+void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams * mparams, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
 {
+    SOFA_UNUSED(mparams);
     VecDeriv &res1 = *res1_d.beginEdit();
     VecDeriv &res2 = *res2_d.beginEdit();
 
@@ -489,8 +497,9 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
 
 // Matrix Integration interface
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    SOFA_UNUSED(mparams);
     if (f_twoWay.getValue())
         return;
 
@@ -540,8 +549,9 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * /*mparams*/, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    SOFA_UNUSED(mparams);
     if (f_twoWay.getValue())
         return;
 
@@ -579,6 +589,63 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
         }
     }
 }
+
+template<class DataTypes>
+const typename DataTypes::Real AttachConstraint<DataTypes>::getConstraintFactor(const int index) {
+    return d_constraintFactor.getValue().size() ? d_constraintFactor.getValue()[index] : 1;
+}
+
+template<class DataTypes>
+void AttachConstraint<DataTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
+{
+    SOFA_UNUSED(freeRotations);
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (f_minDistance.getValue() != -1 &&
+        (x2 - x1).norm() > f_minDistance.getValue())
+    {
+        constraintReleased[index] = true;
+        return;
+    }
+    constraintReleased[index] = false;
+
+    Deriv corr = (x2-x1)*(0.5*positionFactor*getConstraintFactor(index));
+
+    x1 += corr;
+    x2 -= corr;
+}
+
+template<class DataTypes>
+void AttachConstraint<DataTypes>::projectVelocity(Deriv &x1, Deriv &x2, bool freeRotations, unsigned index, Real velocityFactor)
+{
+    SOFA_UNUSED(freeRotations);
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
+    Deriv corr = (x2-x1)*(0.5*velocityFactor*getConstraintFactor(index));
+
+    x1 += corr;
+    x2 -= corr;
+}
+
+template<class DataTypes>
+void AttachConstraint<DataTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
+{
+    SOFA_UNUSED(freeRotations);
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
+    if (!twoway)
+    {
+        dx2 = Deriv();
+    }
+    else
+    {
+        Deriv corr = (dx2-dx1)*0.5*responseFactor*getConstraintFactor(index);
+        dx1 += corr;
+        dx2 -= corr;
+    }
+}
+
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)

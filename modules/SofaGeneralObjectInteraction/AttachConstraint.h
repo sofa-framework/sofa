@@ -24,17 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <set>
-#include <sofa/core/DataEngine.h>
 
 namespace sofa
 {
@@ -93,7 +83,7 @@ protected:
 public:
     void init() override;
     void reinit() override;
-    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId) override;
     void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
     void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
     void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2) override;
@@ -114,63 +104,10 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
-
-    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition;
-    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity;
-    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse;
-
-    inline Real getConstraintFactor(int index) {
-        return d_constraintFactor.getValue().size() ? d_constraintFactor.getValue()[index] : 1;
-    }
-
-    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor)
-    {
-        SOFA_UNUSED(freeRotations);
-        // do nothing if distance between x2 & x1 is bigger than f_minDistance
-        if (f_minDistance.getValue() != -1 &&
-            (x2 - x1).norm() > f_minDistance.getValue())
-        {
-            constraintReleased[index] = true;
-            return;
-        }
-        constraintReleased[index] = false;
-
-        Deriv corr = (x2-x1)*(0.5*positionFactor*getConstraintFactor(index));
-
-        x1 += corr;
-        x2 -= corr;
-    }
-
-    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor)
-    {
-        SOFA_UNUSED(freeRotations);
-        // do nothing if distance between x2 & x1 is bigger than f_minDistance
-        if (constraintReleased[index]) return;
-
-        Deriv corr = (x2-x1)*(0.5*velocityFactor*getConstraintFactor(index));
-
-        x1 += corr;
-        x2 -= corr;
-    }
-
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor)
-    {
-        SOFA_UNUSED(freeRotations);
-        // do nothing if distance between x2 & x1 is bigger than f_minDistance
-        if (constraintReleased[index]) return;
-
-        if (!twoway)
-        {
-            dx2 = Deriv();
-        }
-        else
-        {
-            Deriv corr = (dx2-dx1)*0.5*responseFactor*getConstraintFactor(index);
-            dx1 += corr;
-            dx2 -= corr;
-        }
-    }
-
+    const Real getConstraintFactor(const int index);
+    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor);
+    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor);
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor);
     static unsigned int DerivConstrainedSize(bool freeRotations);
 
     void calcRestRotations();
