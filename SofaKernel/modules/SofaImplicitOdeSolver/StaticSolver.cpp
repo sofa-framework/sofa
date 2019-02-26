@@ -20,8 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
-
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
