@@ -388,10 +388,8 @@ protected:
     Data<Real> _yieldStress;
     Data<Real> _zSection;
     Data<Real> _ySection;
-    Data< VecIndex > _list_segment;
     Data< bool> _useSymmetricAssembly;
     Data<bool> _isTimoshenko;
-    bool _partial_list_segment;
 
     bool _updateStiffnessMatrix;
     bool _assembling;

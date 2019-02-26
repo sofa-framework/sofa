@@ -69,10 +69,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
-    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , _isTimoshenko(initData(&_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
-    , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
     , edgeHandler(NULL)
@@ -101,10 +99,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
-    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , _isTimoshenko(initData(&_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
-    , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
     , edgeHandler(NULL)
@@ -185,26 +181,6 @@ void MultiBeamForceField<DataTypes>::init()
             return;
         }
         _indexedElements = &_topology->getEdges();
-        if (_list_segment.getValue().size() == 0)
-        {
-            sout<<"Forcefield named "<<this->getName()<<" applies to the whole topo"<<sendl;
-            _partial_list_segment = false;
-        }
-        else
-        {
-            sout<<"Forcefield named "<<this->getName()<<" applies to a subset of edges"<<sendl;
-            _partial_list_segment = true;
-
-            for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            {
-                unsigned int i = _list_segment.getValue()[j];
-                if (i>=_indexedElements->size())
-                {
-                    serr<<"WARNING defined listSegment is not compatible with topology"<<sendl;
-                    _partial_list_segment = false;
-                }
-            }
-        }
     }
 
     beamsData.createTopologicalEngine(_topology,edgeHandler);
@@ -338,36 +314,19 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
     //// First compute each node rotation
     typename VecElement::const_iterator it;
 
-    if (_partial_list_segment)
+    unsigned int i;
+
+    for (it = _indexedElements->begin(), i = 0; it != _indexedElements->end(); ++it, ++i)
     {
 
-        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-        {
-            unsigned int i = _list_segment.getValue()[j];
-            Element edge= (*_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
+        Index a = (*it)[0];
+        Index b = (*it)[1];
 
-            if (!_isDeformingPlastically)
-                accumulateForceLarge(f, p, i, a, b);
-            else
-                accumulateNonLinearForce(f, p, i, a, b);
-         }
-    }
-    else
-    {
-        unsigned int i;
-        for(it=_indexedElements->begin(),i=0; it!=_indexedElements->end(); ++it,++i)
-        {
+        if (!_isDeformingPlastically)
+            accumulateForceLarge(f, p, i, a, b);
+        else
+            accumulateNonLinearForce(f, p, i, a, b);
 
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            
-            if (!_isDeformingPlastically)
-                accumulateForceLarge(f, p, i, a, b);
-            else
-                accumulateNonLinearForce(f, p, i, a, b);
-        }
     }
 
     // Save the current positions as a record for the next time step.
@@ -388,32 +347,17 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 
     df.resize(dx.size());
 
-    if (_partial_list_segment)
+    typename VecElement::const_iterator it;
+    unsigned int i = 0;
+    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
-        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-        {
-            unsigned int i = _list_segment.getValue()[j];
-            Element edge= (*_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
+        Index a = (*it)[0];
+        Index b = (*it)[1];
 
+        if (!_isDeformingPlastically)
             applyStiffnessLarge(df, dx, i, a, b, kFactor);
-        }
-    }
-    else
-    {
-        typename VecElement::const_iterator it;
-        unsigned int i = 0;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-
-            if (!_isDeformingPlastically)
-                applyStiffnessLarge(df, dx, i, a, b, kFactor);
-            else
-                applyNonLinearStiffness(df, dx, i, a, b, kFactor);
-        }
+        else
+            applyNonLinearStiffness(df, dx, i, a, b, kFactor);
     }
 
     datadF.endEdit();
@@ -755,193 +699,121 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
         unsigned int i=0;
         unsigned int &offset = r.offset;
 
-        if (_partial_list_segment)
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
 
-            for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+            defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
+            q.normalize();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            StiffnessMatrix K;
+            bool exploitSymmetry = _useSymmetricAssembly.getValue();
+
+            if (_virtualDisplacementMethod.getValue())
             {
+                StiffnessMatrix K0;
+                if (_isDeformingPlastically)
+                    K0 = beamsData.getValue()[i]._Kt_loc;
+                else
+                    K0 = beamsData.getValue()[i]._Ke_loc;
 
-                i = _list_segment.getValue()[j];
-                Element edge= (*_indexedElements)[i];
-                Index a = edge[0];
-                Index b = edge[1];
-
-                //Displacement local_depl;
-                //defaulttype::Vec3d u;
-                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
-                q.normalize();
-                Transformation R,Rt;
-                q.toMatrix(R);
-                Rt.transpose(R);
-                StiffnessMatrix K;
-
-                if (_virtualDisplacementMethod.getValue())
-                {
-                    StiffnessMatrix K0;
-                    if (_isDeformingPlastically)
-                        K0 = beamsData.getValue()[i]._Kt_loc;
-                    else
-                        K0 = beamsData.getValue()[i]._Ke_loc;
-
-                    for (int x1 = 0; x1<12; x1 += 3)
-                        for (int y1 = 0; y1<12; y1 += 3)
+                if (exploitSymmetry) {
+                    for (int x1 = 0; x1<12; x1 += 3) {
+                        for (int y1 = x1; y1<12; y1 += 3)
                         {
                             defaulttype::Mat<3, 3, Real> m;
                             K0.getsub(x1, y1, m);
                             m = R*m*Rt;
-                            K.setsub(x1, y1, m);
-                        }
-                    int index[12];
-                    for (int x1 = 0; x1<6; x1++)
-                        index[x1] = offset + a * 6 + x1;
-                    for (int x1 = 0; x1<6; x1++)
-                        index[6 + x1] = offset + b * 6 + x1;
-                    for (int x1 = 0; x1<12; ++x1)
-                        for (int y1 = 0; y1<12; ++y1)
-                            mat->add(index[x1], index[y1], -K(x1, y1)*k);
-                }
-                else
-                {
-                    const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
-                    for (int x1 = 0; x1<12; x1 += 3)
-                        for (int y1 = 0; y1<12; y1 += 3)
-                        {
-                            defaulttype::Mat<3, 3, Real> m;
-                            K0.getsub(x1, y1, m);
-                            m = R*m*Rt;
-                            K.setsub(x1, y1, m);
-                        }
-                    int index[12];
-                    for (int x1 = 0; x1<6; x1++)
-                        index[x1] = offset + a * 6 + x1;
-                    for (int x1 = 0; x1<6; x1++)
-                        index[6 + x1] = offset + b * 6 + x1;
-                    for (int x1 = 0; x1<12; ++x1)
-                        for (int y1 = 0; y1<12; ++y1)
-                            mat->add(index[x1], index[y1], -K(x1, y1)*k);
-                }
-                //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
 
-            } //end for _list_segment
-        }
-        else // end if (_partial_list_segment)
-        {
-            typename VecElement::const_iterator it;
-            for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-            {
-                Index a = (*it)[0];
-                Index b = (*it)[1];
-
-                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
-                q.normalize();
-                Transformation R,Rt;
-                q.toMatrix(R);
-                Rt.transpose(R);
-                StiffnessMatrix K;
-                bool exploitSymmetry = _useSymmetricAssembly.getValue();
-               
-                if (_virtualDisplacementMethod.getValue())
-                {
-                    StiffnessMatrix K0;
-                    if (_isDeformingPlastically)
-                        K0 = beamsData.getValue()[i]._Kt_loc;
-                    else
-                        K0 = beamsData.getValue()[i]._Ke_loc;
-
-                   if (exploitSymmetry) {
-                       for (int x1 = 0; x1<12; x1 += 3) {
-                           for (int y1 = x1; y1<12; y1 += 3)
-                           {
-                               defaulttype::Mat<3, 3, Real> m;
-                               K0.getsub(x1, y1, m);
-                               m = R*m*Rt;
-
-                               for (int i = 0; i<3; i++)
-                                   for (int j = 0; j<3; j++) 
-                                   {
-                                       K.elems[i + x1][j + y1] += m[i][j];
-                                       K.elems[j + y1][i + x1] += m[i][j];
-                                   }
-                               if (x1 == y1)
-                                   for (int i = 0; i<3; i++)
-                                       for (int j = 0; j<3; j++)
-                                           K.elems[i + x1][j + y1] *= double(0.5);
-                           }
-                       }
-                   } // end if (exploitSymmetry)
-                   else 
-                   {
-                       for (int x1 = 0; x1<12; x1 += 3) {
-                           for (int y1 = 0; y1<12; y1 += 3)
-                           {
-                               defaulttype::Mat<3, 3, Real> m;
-                               K0.getsub(x1, y1, m);
-                               m = R*m*Rt;
-                               K.setsub(x1, y1, m);
-                           }
-                       }
-                   }
-
-                   int index[12];
-                   for (int x1 = 0; x1<6; x1++)
-                       index[x1] = offset + a * 6 + x1;
-                   for (int x1 = 0; x1<6; x1++)
-                       index[6 + x1] = offset + b * 6 + x1;
-                   for (int x1 = 0; x1<12; ++x1)
-                       for (int y1 = 0; y1<12; ++y1)
-                           mat->add(index[x1], index[y1], -K(x1, y1)*k);
-
-                } // end if (_virtualDisplacementMethod)
-                else
-                {
-                    const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
-                    if (exploitSymmetry) {
-                        for (int x1 = 0; x1<12; x1 += 3) {
-                            for (int y1 = x1; y1<12; y1 += 3)
-                            {
-                                defaulttype::Mat<3, 3, Real> m;
-                                K0.getsub(x1, y1, m);
-                                m = R*m*Rt;
-
+                            for (int i = 0; i<3; i++)
+                                for (int j = 0; j<3; j++) 
+                                {
+                                    K.elems[i + x1][j + y1] += m[i][j];
+                                    K.elems[j + y1][i + x1] += m[i][j];
+                                }
+                            if (x1 == y1)
                                 for (int i = 0; i<3; i++)
                                     for (int j = 0; j<3; j++)
-                                    {
-                                        K.elems[i + x1][j + y1] += m[i][j];
-                                        K.elems[j + y1][i + x1] += m[i][j];
-                                    }
-                                if (x1 == y1)
-                                    for (int i = 0; i<3; i++)
-                                        for (int j = 0; j<3; j++)
-                                            K.elems[i + x1][j + y1] *= double(0.5);
-                            }
-                        }
-                    } // end if (exploitSymmetry)
-                    else
-                    {
-                        for (int x1 = 0; x1<12; x1 += 3) {
-                            for (int y1 = 0; y1<12; y1 += 3)
-                            {
-                                defaulttype::Mat<3, 3, Real> m;
-                                K0.getsub(x1, y1, m);
-                                m = R*m*Rt;
-                                K.setsub(x1, y1, m);
-                            }
+                                        K.elems[i + x1][j + y1] *= double(0.5);
                         }
                     }
-
-                    int index[12];
-                    for (int x1 = 0; x1<6; x1++)
-                        index[x1] = offset + a * 6 + x1;
-                    for (int x1 = 0; x1<6; x1++)
-                        index[6 + x1] = offset + b * 6 + x1;
-                    for (int x1 = 0; x1<12; ++x1)
-                        for (int y1 = 0; y1<12; ++y1)
-                            mat->add(index[x1], index[y1], -K(x1, y1)*k);
+                } // end if (exploitSymmetry)
+                else 
+                {
+                    for (int x1 = 0; x1<12; x1 += 3) {
+                        for (int y1 = 0; y1<12; y1 += 3)
+                        {
+                            defaulttype::Mat<3, 3, Real> m;
+                            K0.getsub(x1, y1, m);
+                            m = R*m*Rt;
+                            K.setsub(x1, y1, m);
+                        }
+                    }
                 }
-                //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
 
-            } // end for _indexedElements
-        } // end else !_partial_list_segment
+                int index[12];
+                for (int x1 = 0; x1<6; x1++)
+                    index[x1] = offset + a * 6 + x1;
+                for (int x1 = 0; x1<6; x1++)
+                    index[6 + x1] = offset + b * 6 + x1;
+                for (int x1 = 0; x1<12; ++x1)
+                    for (int y1 = 0; y1<12; ++y1)
+                        mat->add(index[x1], index[y1], -K(x1, y1)*k);
+
+            } // end if (_virtualDisplacementMethod)
+            else
+            {
+                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
+                if (exploitSymmetry) {
+                    for (int x1 = 0; x1<12; x1 += 3) {
+                        for (int y1 = x1; y1<12; y1 += 3)
+                        {
+                            defaulttype::Mat<3, 3, Real> m;
+                            K0.getsub(x1, y1, m);
+                            m = R*m*Rt;
+
+                            for (int i = 0; i<3; i++)
+                                for (int j = 0; j<3; j++)
+                                {
+                                    K.elems[i + x1][j + y1] += m[i][j];
+                                    K.elems[j + y1][i + x1] += m[i][j];
+                                }
+                            if (x1 == y1)
+                                for (int i = 0; i<3; i++)
+                                    for (int j = 0; j<3; j++)
+                                        K.elems[i + x1][j + y1] *= double(0.5);
+                        }
+                    }
+                } // end if (exploitSymmetry)
+                else
+                {
+                    for (int x1 = 0; x1<12; x1 += 3) {
+                        for (int y1 = 0; y1<12; y1 += 3)
+                        {
+                            defaulttype::Mat<3, 3, Real> m;
+                            K0.getsub(x1, y1, m);
+                            m = R*m*Rt;
+                            K.setsub(x1, y1, m);
+                        }
+                    }
+                }
+
+                int index[12];
+                for (int x1 = 0; x1<6; x1++)
+                    index[x1] = offset + a * 6 + x1;
+                for (int x1 = 0; x1<6; x1++)
+                    index[6 + x1] = offset + b * 6 + x1;
+                for (int x1 = 0; x1<12; ++x1)
+                    for (int y1 = 0; y1<12; ++y1)
+                        mat->add(index[x1], index[y1], -K(x1, y1)*k);
+            }
+            //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
+
+        } // end for _indexedElements
     } // end if(r)
 }
 
@@ -958,16 +830,8 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     std::vector<defaulttype::Vector3> gaussPoints[1];
     std::vector<defaulttype::Vec<4, float>> colours[1];
 
-    if (_partial_list_segment)
-    {
-        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            drawElement(_list_segment.getValue()[j], gaussPoints, centrelinePoints, colours, x);
-    }
-    else
-    {
-        for (unsigned int i=0; i<_indexedElements->size(); ++i)
-            drawElement(i, gaussPoints, centrelinePoints, colours, x);
-    }
+    for (unsigned int i=0; i<_indexedElements->size(); ++i)
+        drawElement(i, gaussPoints, centrelinePoints, colours, x);
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
