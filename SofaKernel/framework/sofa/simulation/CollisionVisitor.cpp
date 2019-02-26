@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 
 namespace sofa
 {
@@ -73,6 +74,7 @@ void CollisionVisitor::processCollisionPipeline(simulation::Node*
     t0=begin(node, obj);
 #endif
     obj->computeCollisionDetection();
+    m_primitiveTestCount += obj->getNarrowPhaseDetection()->getPrimitiveTestCount();
 #ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
