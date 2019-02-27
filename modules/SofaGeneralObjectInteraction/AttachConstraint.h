@@ -79,17 +79,24 @@ public:
 protected:
     AttachConstraint();
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
-    virtual ~AttachConstraint();
+    ~AttachConstraint() override;
+
 public:
+
+    /// Inherited from Base
     void init() override;
     void reinit() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    /// Inherited from Constraint
     void projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId) override;
     void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
     void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
     void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2) override;
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams *mparams,
+                         const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
@@ -101,16 +108,15 @@ public:
         return core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::templateName(ptr);
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-
 protected :
     const Real getConstraintFactor(const int index);
     void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor);
     void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor);
     void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor);
-    static unsigned int DerivConstrainedSize(bool freeRotations);
 
     void calcRestRotations();
+    static unsigned int DerivConstrainedSize(bool freeRotations);
+
 };
 
 
@@ -120,7 +126,6 @@ extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defau
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec1Types>;
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid3Types>;
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace projectiveconstraintset

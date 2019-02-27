@@ -45,8 +45,8 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x
 {
     SOFA_UNUSED(positionFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (f_minDistance.getValue() != -1 &&
-        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
+    if (f_minDistance.getValue() != -1.0 &&
+            (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
     {
         constraintReleased[index] = true;
         return;
@@ -66,7 +66,6 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectPosition(Coord& x
                 Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
                 sofa::defaulttype::Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
                 Real angle = acos(restRotations[index][3])*2;
-                //restRotations[index].toAngleAxis(angle,axis);
                 x2.getOrientation() = x1.getOrientation()*sofa::defaulttype::Quat(axis,angle*fact);
             }
         }
@@ -82,7 +81,7 @@ inline void AttachConstraint<defaulttype::Rigid2Types>::projectPosition(Coord& x
     SOFA_UNUSED(positionFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
-        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
+            (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
     {
         constraintReleased[index] = true;
         return;
@@ -100,12 +99,12 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::projectVelocity(Deriv& x
 {
     SOFA_UNUSED(velocityFactor);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
-    if (constraintReleased[index]) return;
+    if (constraintReleased[index])
+        return;
 
     getVCenter( x2) = getVCenter(x1);
     if (!freeRotations)
         getVOrientation(x2) = getVOrientation(x1);
-    //x2 = Deriv();
 }
 
 
@@ -195,35 +194,6 @@ inline unsigned int AttachConstraint<DataTypes>::DerivConstrainedSize(bool freeR
     }
 }
 
-#if 0
-// Define TestNewPointFunction
-template< class DataTypes>
-bool AttachConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
-{
-    AttachConstraint<DataTypes> *fc= (AttachConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void AttachConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
-{
-    AttachConstraint<DataTypes> *fc= (AttachConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        fc->removeConstraint((unsigned int) pointIndex);
-    }
-    return;
-}
-#endif
-
 // Could be simplified with default values for mm1 and mm2, but that way we are assured that either both or neither of mm1/mm2 are set.
 template <class DataTypes>
 AttachConstraint<DataTypes>::AttachConstraint()
@@ -260,9 +230,7 @@ AttachConstraint<DataTypes>::~AttachConstraint()
 template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
-    this->m_componentstate = sofa::core::objectmodel::ComponentState::Undefined;
     this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
-
     reinit();
 }
 
@@ -272,10 +240,8 @@ void AttachConstraint<DataTypes>::reinit()
     // Check coherency of size between indices vectors 1 and 2
     if(f_indices1.getValue().size() != f_indices2.getValue().size())
     {
-        msg_error() << "Size mismatch between indices1 and indices2 ("
-                    << f_indices1.getValue().size() << " != " << f_indices2.getValue().size() << ").";
-        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
-        return;
+        msg_warning() << "Size mismatch between indices1 and indices2 ("
+                      << f_indices1.getValue().size() << " != " << f_indices2.getValue().size() << ").";
     }
 
     // Set to the correct length if dynamic, else check coherency.
@@ -284,9 +250,7 @@ void AttachConstraint<DataTypes>::reinit()
         helper::ReadAccessor<Data<helper::vector<Real>>> constraintFactor = d_constraintFactor;
         if(constraintFactor.size() != f_indices2.getValue().size())
         {
-            msg_error() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
-            this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
-            return;
+            msg_warning() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
         }
         else
         {
@@ -299,6 +263,7 @@ void AttachConstraint<DataTypes>::reinit()
             }
         }
     }
+
     constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
     std::fill(activeFlags.begin(), activeFlags.end(), true);
@@ -326,8 +291,6 @@ void AttachConstraint<DataTypes>::calcRestRotations()
 
 template <>
 void AttachConstraint<sofa::defaulttype::Rigid3Types>::calcRestRotations();
-
-
 
 template<class DataTypes>
 void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId)
@@ -601,7 +564,7 @@ void AttachConstraint<DataTypes>::projectPosition(Coord& x1, Coord& x2, bool fre
     SOFA_UNUSED(freeRotations);
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (f_minDistance.getValue() != -1 &&
-        (x2 - x1).norm() > f_minDistance.getValue())
+            (x2 - x1).norm() > f_minDistance.getValue())
     {
         constraintReleased[index] = true;
         return;
