@@ -35,7 +35,7 @@
 #include <map>
 //#include <deque>
 #include <string> 
-
+#include <functional>
 
 namespace sofa
 {

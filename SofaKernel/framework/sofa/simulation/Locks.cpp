@@ -19,11 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MultiThreadingLocks_h__
-#define MultiThreadingLocks_h__
+#include <sofa/simulation/Locks.h>
 
-#include <thread>
-#include <atomic>
 
 namespace sofa
 {
@@ -32,59 +29,40 @@ namespace sofa
 	{
 
 
-        class SpinLock
+
+        SpinLock::SpinLock()
+        : _flag(ATOMIC_FLAG_INIT)
         {
-            enum
-            {
-                CACHE_LINE = 64
-            };
             
-        public:
+        }
             
-            SpinLock();
-            
-            ~SpinLock();
-            
-            bool try_lock();
-            
-            void lock();
-            
-            void unlock();
-            
-        private:
-            
-            std::atomic_flag _flag;
-            
-            char _pad [CACHE_LINE - sizeof(std::atomic_flag)];
-        };
-        
-        
-        
-        class ScopedLock
+
+        SpinLock::~SpinLock()
         {
-        public:
-            
-            explicit ScopedLock( SpinLock & lock ): _spinlock( lock )
+            unlock();
+        }
+        
+        bool SpinLock::try_lock()
+        {
+            return !_flag.test_and_set( std::memory_order_acquire );
+        }
+        
+        void SpinLock::lock()
+        {
+            while( _flag.test_and_set(std::memory_order_acquire) )
             {
-                _spinlock.lock();
+                // cpu busy wait
+                //std::this_thread::yield();
             }
-            
-            ~ScopedLock()
-            {
-                _spinlock.unlock();
-            }
-            
-            ScopedLock( ScopedLock const & ) = delete;
-            ScopedLock & operator=( ScopedLock const & ) = delete;
-            
-        private:
-            
-            SpinLock& _spinlock;
-        };
+        }
+        
+        void SpinLock::unlock()
+        {
+            _flag.clear( std::memory_order_release );
+        }
+        
+
 
 	} // namespace simulation
 
 } // namespace sofa
-
-
-#endif // MultiThreadingLocks_h__

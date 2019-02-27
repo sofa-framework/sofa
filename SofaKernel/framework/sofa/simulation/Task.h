@@ -43,7 +43,8 @@ namespace sofa
             Cuda = 0,
             Haptic = 1,
             HapticHB = 2,
-            Stats = 3,
+            Video = 3,
+            Stats = 4,
 
             // number of dedicated
             Size = Stats + 1,
@@ -93,7 +94,7 @@ namespace sofa
             };
 
 
-            Task(const Task::Status* status = nullptr, Thread scheduledThread = Thread::Worker);
+            Task(const Task::Status* status = nullptr, Thread scheduledThread = Worker);
 
             virtual ~Task();
 
