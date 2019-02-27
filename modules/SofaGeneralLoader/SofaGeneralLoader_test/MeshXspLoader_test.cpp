@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,71 +25,49 @@ using sofa::helper::testing::BaseSimulationTest;
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::simulation::Node;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3;
-
-class ReadState_test : public BaseSimulationTest
+class MeshXspLoader_test : public BaseSimulationTest
 {
 public:
     /// Run seven steps of simulation then check results
     bool testDefaultBehavior()
     {
-        double dt = 0.01;
         sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
-        /// no need of gravity, the file .data is just read
-        root->setGravity(Vec3(0.0,0.0,0.0));
-        root->setDt(dt);
-
-        Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
-
-        auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject",
-                                                  {{"size", "1"}});
-
-        sofa::simpleapi::createObject(childNode, "ReadState",
-                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"particleGravityX.data"}});
-
+        auto loader = sofa::simpleapi::createObject(root, "MeshXspLoader",
+                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"test.xs3"}});
         simulation->init(root.get());
-        for(int i=0; i<7; i++)
-        {
-            simulation->animate(root.get(), dt);
-        }
 
-        EXPECT_EQ(meca->findData("position")->getValueString(),
-                  std::string("0 0 -0.017658"));
         return true;
     }
 
     /// Run seven steps of simulation then check results
-    bool testLoadFailure()
+    bool testInvalidFile()
     {
         sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
-        auto meca = sofa::simpleapi::createObject(root, "MechanicalObject",
-                                                  {{"size", "1"}});
-
         {
             EXPECT_MSG_EMIT(Error);
-            sofa::simpleapi::createObject(root, "ReadState",
-                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"invalidFile.txt"}});
+            sofa::simpleapi::createObject(root, "MeshXspLoader",
+                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"invalidFile.xs3"}});
+            simulation->init(root.get());
         }
 
         return true;
     }
 };
 
-/// Test : read positions of a particle falling under gravity
-TEST_F(ReadState_test , test_defaultBehavior)
+// Test : read positions of a particle falling under gravity
+TEST_F(MeshXspLoader_test , test_defaultBehavior)
 {
     ASSERT_TRUE( this->testDefaultBehavior() );
 }
 
-/// Test : when happens when unable to load the file ?
-TEST_F(ReadState_test , test_loadFailure)
+// Test : read positions of a particle falling under gravity
+TEST_F(MeshXspLoader_test , test_invalidFile)
 {
-    ASSERT_TRUE( this->testLoadFailure() );
+    ASSERT_TRUE( this->testInvalidFile() );
 }

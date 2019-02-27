@@ -22,6 +22,7 @@ set(SOURCE_FILES
     helper/vector_test.cpp
     helper/gl/GLSLShader_test.cpp
     helper/io/MeshOBJ_test.cpp
+    helper/io/XspLoader_test.cpp
     helper/system/FileMonitor_test.cpp
     helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp

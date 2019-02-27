@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/decompose.h>
@@ -56,8 +56,9 @@ namespace mapping
 
 
 template <class TIn, class TOut>
-class RigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader,
-        public helper::io::SphereLoader
+class RigidMapping<TIn, TOut>::Loader :
+        public helper::io::XspLoaderDataHook,
+        public helper::io::SphereLoaderDataHook
 {
 public:
 
@@ -94,13 +95,13 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
             && !strcmp(filename + strlen(filename) - 4, ".xs3"))
     {
         Loader loader(this);
-        loader.helper::io::MassSpringLoader::load(filename);
+        helper::io::XspLoader::Load(filename, loader);
     }
     else if (strlen(filename) > 4
              && !strcmp(filename + strlen(filename) - 4, ".sph"))
     {
         Loader loader(this);
-        loader.helper::io::SphereLoader::load(filename);
+        helper::io::SphereLoader::Load(filename, loader);
     }
     else if (strlen(filename) > 0)
     {

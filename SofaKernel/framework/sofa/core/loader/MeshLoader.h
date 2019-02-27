@@ -44,7 +44,9 @@ namespace core
 namespace loader
 {
 
+//todo(dmarchal 05/02/2019): This mix of types is bad.
 using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3;
 using topology::Topology;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
@@ -133,7 +135,7 @@ public:
     /// @}
 
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Vertices of the mesh loaded
+    Data< helper::vector< Vec3 > > d_positions; ///< Vertices of the mesh loaded
 
     //Tab of 1D elements
     Data< helper::vector< Polyline > > d_polylines; ///< Polylines of the mesh loaded
