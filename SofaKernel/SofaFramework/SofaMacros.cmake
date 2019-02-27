@@ -522,9 +522,38 @@ macro(sofa_write_package_config_files package_name version)
 endmacro()
 
 
+
+# - Create a target for SOFA plugin or module
+# - write the package Config, Version & Target files
+# - Deploy the headers, resources, scenes & examples
+# - Replaces the now deprecated sofa_create_package macro
+#
+# sofa_generate_package(NAME VERSION TARGETS INCLUDE_ROOT_DIR)
+#  NAME               - (input) the name of the generated package (usually ${PROJECT_NAME}).
+#  VERSION            - (input) the package version (usually ${${PROJECT_NAME}_VERSION}).
+#  TARGETS            - (input) list of targets to install. For standard plugins & modules, ${PROJECT_NAME}
+#  INCLUDE_ROOT_DIR   - (input) [OPTIONAL] include directory (for Multi-dir install of header files).
+#
+# Example:
+# project(ExamplePlugin VERSION 1.0)
+# find_package(SofaFramework)
+# set(SOURCES_FILES  initExamplePlugin.cpp myComponent.cpp )
+# set(HEADER_FILES   initExamplePlugin.h myComponent.h )
+# add_library( ${PROJECT_NAME} SHARED ${SOURCE_FILES})
+# target_link_libraries(${PROJECT_NAME} SofaCore)
+# sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${${PROJECT_NAME}_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR ${PROJECT_NAME} )
+#
+function(sofa_generate_package)
+    set(oneValueArgs NAME VERSION INCLUDE_ROOT_DIR)
+    set(multiValueArgs TARGETS)
+    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    sofa_install_targets("${_NAME}" "${_TARGETS}" "${_INCLUDE_ROOT_DIR}")
+    sofa_write_package_config_files("${_NAME}" "${_VERSION}")
+endfunction()
+
 macro(sofa_create_package package_name version the_targets include_subdir)
-    sofa_install_targets("${package_name}" "${the_targets}" "${include_subdir}")
-    sofa_write_package_config_files("${package_name}" "${version}")
+    message(WARNING "Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
+    sofa_generate_package(NAME "${package_name}" VERSION "${version}" TARGETS "${the_targets}" INCLUDE_ROOT_DIR "${include_subdir}")
 endmacro()
 
 
@@ -537,15 +566,23 @@ macro(sofa_install_libraries)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
             get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
 
+            # In "${LIBREAL_NAME}." the dot is a real dot, not a regex symbol
+            # CMAKE_*_LIBRARY_SUFFIX also start with a dot
+            # So regex is:
+            # <library_path> <slash> <library_name> <dot> <dll/so/dylib/...>
+            # or:
+            # <library_path> <slash> <library_name> <dot> <anything> <dot> <dll/so/dylib/...>
             file(GLOB_RECURSE SHARED_LIBS
-                "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libtiff.dll
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng16.dll
+                "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng.16.dylib
             )
             file(GLOB_RECURSE STATIC_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_STATIC_LIBRARY_SUFFIX}*"
             )
 
             if(WIN32)

@@ -179,7 +179,6 @@ if(Qt5Core_FOUND)
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
-    message("QT_LIBRARIES_DIR = ${QT_LIBRARIES_DIR}")
     # Get Qt plugins dir
     list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
     if(TARGET ${QT_PLUGIN_ANY})
@@ -192,7 +191,6 @@ if(Qt5Core_FOUND)
             set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
         endif()
     endif()
-    message("QT_PLUGINS_DIR = ${QT_PLUGINS_DIR}")
     # Install Qt plugins
     install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
     # Install Qt XCB libraries
@@ -233,7 +231,11 @@ sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
-set(RESOURCES_DIR "../share/sofa/gui/qt")
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    set(RESOURCES_DIR "share/sofa/gui/qt")
+else()
+    set(RESOURCES_DIR "../share/sofa/gui/qt")
+endif()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 

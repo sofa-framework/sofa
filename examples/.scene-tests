@@ -38,4 +38,5 @@ ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
 # uses the SofaCUDA plugin.
 ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"
 
-
+# EdgeSetController was removed in v18.12 (deprecated since v17.12)
+ignore "Components/controller/MechanicalStateController.scn"

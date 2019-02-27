@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP
+#ifndef SOFA_JOINTSPRING_INL
+#define SOFA_JOINTSPRING_INL
 
-#include "ProjectionToLineMapping.inl"
-#include <sofa/core/ObjectFactory.h>
+#include <SofaRigid/JointSpring.h>
 
 namespace sofa
 {
@@ -30,41 +30,35 @@ namespace sofa
 namespace component
 {
 
-namespace mapping
+namespace interactionforcefield
 {
 
-using namespace defaulttype;
+template<class DataTypes>
+JointSpring<DataTypes>::JointSpring(int m1 , int m2,
+                                    Real softKst, Real hardKst , Real softKsr , Real hardKsr , Real blocKsr,
+                                    Real axmin , Real axmax , Real aymin , Real aymax , Real azmin , Real azmax,
+                                    Real kd):
+                                      m1(m1), m2(m2), kd(kd)
+                                    , torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
+                                    , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
+                                    , needToInitializeTrans(true), needToInitializeRot(true)
+{
+    limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
+    freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
+    for (unsigned int i=0; i<3; i++)
+    {
+        if(limitAngles[2*i]==limitAngles[2*i+1])
+            freeMovements[3+i] = false;
+    }
+    initTrans = Vector(0,0,0);
+    initRot = defaulttype::Quat(0,0,0,1);
+}
 
-// Register in the Factory
-int ProjectionToTargetLineMappingClass = core::RegisterObject("Compute distance between a moving point and fixed line")
-        .add< ProjectionToTargetLineMapping< Vec3Types, Vec3Types > >()
-        .add< ProjectionToTargetLineMapping< Rigid3Types, Vec3Types > >()
-
-        ;
-
-template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Vec3Types, Vec3Types >;
-template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Rigid3Types, Vec3Types >;
-
-
-
-///////////////////
-
-using namespace defaulttype;
-
-// Register in the Factory
-int ProjectionToLineMultiMappingClass = core::RegisterObject("Compute distance between a moving point and a moving line")
-        .add< ProjectionToLineMultiMapping< Vec3Types, Vec3Types > >()
-
-        ;
-
-template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< Vec3Types, Vec3Types >;
-
-
-
-
-} // namespace mapping
+} // namespace interactionforcefield
 
 } // namespace component
 
 } // namespace sofa
+
+#endif  /* SOFA_JOINTSPRING_INL */
 
