@@ -59,6 +59,10 @@ void DataCallback::notifyEndEdit(const core::ExecParams* params)
         sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
         m_updating = false;
     }
+    else
+    {
+        msg_warning("DataCallback") << "A DataCallback seems to have a circular dependency, please fix it to remove this warning.";
+    }
 }
 
 const std::string& DataCallback::getName() const
