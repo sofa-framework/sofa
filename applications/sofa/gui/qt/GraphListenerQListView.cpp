@@ -337,7 +337,6 @@ QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 /*****************************************************************************************************************/
 void GraphListenerQListView::onAddChildBegin(Node* parent, Node* child)
 {
-
     if (frozen) return;
     if (items.count(child))
     {
@@ -407,12 +406,22 @@ void GraphListenerQListView::onAddChildBegin(Node* parent, Node* child)
         item->setExpanded(true);
         items[child] = item;
     }
+    for (Node::SPtr node : child->child)
+        onAddChildBegin(child, node.get());
+    for (BaseObject::SPtr obj : child->object)
+        onAddObjectBegin(child, obj.get());
 }
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::onRemoveChildBegin(Node* parent, Node* child)
 {
     SOFA_UNUSED(parent);
+
+    for (Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
+        onRemoveObjectBegin(child, it->get());
+    for (Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
+        onRemoveChildBegin(child, it->get());
+
     if (items.count(child))
     {
         delete items[child];
@@ -468,6 +477,8 @@ void GraphListenerQListView::onAddObjectBegin(Node* parent, core::objectmodel::B
 
         items[object] = item;
     }
+    for (BaseObject::SPtr slave : object->getSlaves())
+        onAddSlaveBegin(object, slave.get());
 }
 
 
@@ -475,6 +486,10 @@ void GraphListenerQListView::onAddObjectBegin(Node* parent, core::objectmodel::B
 void GraphListenerQListView::onRemoveObjectBegin(Node* parent, core::objectmodel::BaseObject* object)
 {
     SOFA_UNUSED(parent);
+
+    for (BaseObject::SPtr slave : object->getSlaves())
+        onRemoveSlaveBegin(object, slave.get());
+
     if (items.count(object))
     {
         delete items[object];
@@ -527,12 +542,20 @@ void GraphListenerQListView::onAddSlaveBegin(core::objectmodel::BaseObject* mast
 
         items[slave] = item;
     }
+
+    const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        onAddSlaveBegin(slave, slaves[i].get());
 }
 
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::onRemoveSlaveBegin(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
+    const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        onRemoveSlaveBegin(slave, slaves[i].get());
+
     SOFA_UNUSED(master);
     if (items.count(slave))
     {
@@ -566,7 +589,7 @@ void GraphListenerQListView::unfreeze(Node* groot)
 {
     if (!items.count(groot)) return;
     frozen = false;
-    addChildBegin(nullptr, groot);
+    onAddChildBegin(nullptr, groot);
 }
 
 /*****************************************************************************************************************/
