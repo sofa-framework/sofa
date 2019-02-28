@@ -39,41 +39,8 @@ class SOFA_SIMULATION_CORE_API MutationListener
   public:
     virtual ~MutationListener();
 
-    virtual void addChildBegin(Node *parent, Node *child) final;
-
-    virtual void removeChildBegin(Node *parent, Node *child) final;
-
-    virtual void addObjectBegin(Node *parent,
-                                core::objectmodel::BaseObject *object) final;
-
-    virtual void removeObjectBegin(Node *parent,
-                                   core::objectmodel::BaseObject *object) final;
-
-    virtual void addSlaveBegin(core::objectmodel::BaseObject *master,
-                               core::objectmodel::BaseObject *slave) final;
-
-    virtual void removeSlaveBegin(core::objectmodel::BaseObject *master,
-                                  core::objectmodel::BaseObject *slave) final;
-
     virtual void sleepChanged(Node *node);
 
-    virtual void addChildEnd(Node *parent, Node *child) final;
-
-    virtual void removeChildEnd(Node *parent, Node *child) final;
-
-    virtual void addObjectEnd(Node *parent,
-                              core::objectmodel::BaseObject *object) final;
-
-    virtual void removeObjectEnd(Node *parent,
-                                 core::objectmodel::BaseObject *object) final;
-
-    virtual void addSlaveEnd(core::objectmodel::BaseObject *master,
-                             core::objectmodel::BaseObject *slave) final;
-
-    virtual void removeSlaveEnd(core::objectmodel::BaseObject *master,
-                                core::objectmodel::BaseObject *slave) final;
-
-  protected:
     virtual void onAddChildBegin(Node *parent, Node *child);
 
     virtual void onRemoveChildBegin(Node *parent, Node *child);
