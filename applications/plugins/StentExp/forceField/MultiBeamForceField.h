@@ -120,6 +120,7 @@ protected:
 
         helper::fixed_array<MechanicalState, 27> _isPlasticPoint;
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
+        bool _isPlasticBeam; ///< true if at least one Gauss point has PLASTIC mechanical state
 
         ///< For drawing
         int _nbCentrelineSeg = 10;
@@ -313,9 +314,6 @@ protected:
 
     //Position at the last time step, to handle increments for the plasticity resolution
     VecCoord _lastPos;
-
-    bool _isDeformingPlastically;
-
 
     /************** Plasticity elements ***********************/
 

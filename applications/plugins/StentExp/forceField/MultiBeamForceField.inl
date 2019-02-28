@@ -322,11 +322,12 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
         Index a = (*it)[0];
         Index b = (*it)[1];
 
-        if (!_isDeformingPlastically)
+        const bool isPlasticBeam = beamsData.getValue()[i]._isPlasticBeam;
+
+        if (!isPlasticBeam)
             accumulateForceLarge(f, p, i, a, b);
         else
             accumulateNonLinearForce(f, p, i, a, b);
-
     }
 
     // Save the current positions as a record for the next time step.
@@ -354,7 +355,9 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
         Index a = (*it)[0];
         Index b = (*it)[1];
 
-        if (!_isDeformingPlastically)
+        const bool isPlasticBeam = beamsData.getValue()[i]._isPlasticBeam;
+
+        if (!isPlasticBeam)
             applyStiffnessLarge(df, dx, i, a, b, kFactor);
         else
             applyNonLinearStiffness(df, dx, i, a, b, kFactor);
@@ -529,6 +532,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
             Eigen::Matrix<double, 6, 12> Be;
             helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
             helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+            bool& isPlasticBeam = bd[i]._isPlasticBeam;
 
             VoigtTensor2 newStress;
             double yieldStress;
@@ -546,7 +550,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
                 {
                     isPlasticPoint[gaussPointIt] = PLASTIC;
                 }
-                _isDeformingPlastically = _isDeformingPlastically || res;
+                isPlasticBeam = isPlasticBeam || res;
 
                 newStressVector[gaussPointIt] = newStress;
             }
@@ -554,7 +558,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
             //std::cout << std::endl; //DEBUG
             //***************************************************//
 
-            if (_isDeformingPlastically)
+            if (isPlasticBeam)
             {
                 // The computation of these new stresses should be plastic
                 accumulateNonLinearForce(f, x, i, a, b);
@@ -705,6 +709,8 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
             Index a = (*it)[0];
             Index b = (*it)[1];
 
+            const bool isPlasticBeam = beamsData.getValue()[i]._isPlasticBeam;
+
             defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
             q.normalize();
             Transformation R,Rt;
@@ -716,7 +722,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
             if (_virtualDisplacementMethod.getValue())
             {
                 StiffnessMatrix K0;
-                if (_isDeformingPlastically)
+                if (isPlasticBeam)
                     K0 = beamsData.getValue()[i]._Kt_loc;
                 else
                     K0 = beamsData.getValue()[i]._Ke_loc;
@@ -730,7 +736,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                             m = R*m*Rt;
 
                             for (int i = 0; i<3; i++)
-                                for (int j = 0; j<3; j++) 
+                                for (int j = 0; j<3; j++)
                                 {
                                     K.elems[i + x1][j + y1] += m[i][j];
                                     K.elems[j + y1][i + x1] += m[i][j];
@@ -742,7 +748,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                         }
                     }
                 } // end if (exploitSymmetry)
-                else 
+                else
                 {
                     for (int x1 = 0; x1<12; x1 += 3) {
                         for (int y1 = 0; y1<12; y1 += 3)
@@ -1384,6 +1390,7 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
 
     //Initialises the plastic indicators
     _isPlasticPoint.assign(ELASTIC);
+    _isPlasticBeam = true;
 
     //**********************************//
 }
@@ -1691,8 +1698,10 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Ke_loc = bd[i]._Ke_loc;
+    StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
 
     Ke_loc.clear();
+    Kt_loc.clear();
 
     // Reduced integration
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
@@ -1720,7 +1729,11 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
 
     for (int i = 0; i < 12; i++)
         for (int j = 0; j < 12; j++)
+        {
             Ke_loc[i][j] = stiffness(i, j);
+            //Initialising the tangent stiffness matrix with Ke
+            Kt_loc[i][j] = stiffness(i, j);
+        }
 
     //DEBUG
     //std::cout << "Ke pour l'element " << i << " : " << std::endl << stiffness << " " << std::endl << std::endl;
@@ -2566,8 +2579,8 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
-
-    bool inPlasticDeformation = true;
+    bool &isPlasticBeam = bd[i]._isPlasticBeam;
+    bool inElasticDeformation = true;
     int gaussPointIt = 0;
 
     // Computation of the new stress point, through material point iterations as in Krabbenhoft lecture notes
@@ -2576,7 +2589,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     LambdaType computePlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
-        MechanicalState &isPlastic = isPlasticPoint[gaussPointIt];
+        MechanicalState &mechanicalState = isPlasticPoint[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
@@ -2584,7 +2597,9 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
         //Stress
         initialStressPoint = _prevStresses[i][gaussPointIt];
         computeStressIncrement(i, gaussPointIt, initialStressPoint, newStressPoint,
-                               strainIncrement, lambdaIncrement, isPlastic, currentDisp);
+                               strainIncrement, lambdaIncrement, mechanicalState, currentDisp);
+
+        inElasticDeformation = inElasticDeformation && (mechanicalState != PLASTIC);
 
         _prevStresses[i][gaussPointIt] = newStressPoint;
 
@@ -2596,6 +2611,9 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePlastic);
 
+    // Updates the beam mechanical state information
+    isPlasticBeam = !inElasticDeformation; // inElasticDeformation is true only if all Gauss points are not PLASTIC
+
     beamsData.endEdit();
 
     //Passes the contribution to the global system
@@ -2606,7 +2624,8 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     //Update the tangent stiffness matrix with the new computed stresses
     //This matrix will then be used in addDForce and addKToMatrix methods
-    updateTangentStiffness(i, a, b);
+    if (isPlasticBeam)
+        updateTangentStiffness(i, a, b);
 
     //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //DEBUG
 
@@ -2664,8 +2683,12 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
 
     //std::cout << "deplacement vitesse pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //DEBUG
 
+    // If applyNonLinearStiffness is called, then the beam element is plastic
+    // (i.e. at least one Gauss point is in PLASTIC state). Thus the tangent
+    // stiffness matrix has to be used
     defaulttype::Vec<12, Real> local_dforce;
     local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
+
 
     //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_dforce << " " << std::endl << std::endl; //DEBUG
 
