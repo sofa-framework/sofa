@@ -56,12 +56,12 @@ struct PluginManager_test: public BaseTest
 {
     std::string pluginDir;
 
-    void SetUp()
+    void SetUp() override
     {
         pluginDir = sofa::helper::system::PluginRepository.getFirstPath();
     }
 
-    void TearDown()
+    void TearDown() override
     {
         PluginManager&pm = PluginManager::getInstance();
         //empty loaded plugin(s)

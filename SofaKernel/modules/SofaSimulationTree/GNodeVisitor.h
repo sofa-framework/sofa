@@ -44,7 +44,7 @@ class SOFA_SIMULATION_TREE_API GNodeVisitor : public Visitor
 public:
     GNodeVisitor(const sofa::core::ExecParams* params);
 
-    ~GNodeVisitor();
+    ~GNodeVisitor() override;
 
     using Visitor::processNodeTopDown;
     using Visitor::processNodeBottomUp;
@@ -64,7 +64,7 @@ public:
     virtual void processNodeBottomUp(GNode* node, LocalStorage*) { processNodeBottomUp(node); }
 
     /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
-    virtual Result processNodeTopDown(simulation::Node* node)
+    Result processNodeTopDown(simulation::Node* node) override
     {
         GNode* g = dynamic_cast<GNode*>(node);
         if (!g)
@@ -79,7 +79,7 @@ public:
     }
 
     /// Callback method called after child node have been processed and before going back to the parent node.
-    virtual void processNodeBottomUp(simulation::Node* node)
+    void processNodeBottomUp(simulation::Node* node) override
     {
         GNode* g = dynamic_cast<GNode*>(node);
         if (!g)
@@ -92,7 +92,7 @@ public:
         }
     }
 
-    virtual const char* getClassName() const { return "GNodeVisitor"; }
+    const char* getClassName() const override { return "GNodeVisitor"; }
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
     template < class Visit, class Container, class Object >
     void for_each(Visit* visitor, GNode* ctx, const Container& list, void (Visit::*fn)(GNode*, Object*))

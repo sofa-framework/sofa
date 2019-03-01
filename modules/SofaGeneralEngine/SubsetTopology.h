@@ -68,7 +68,7 @@ protected:
 
     SubsetTopology();
 
-    ~SubsetTopology() {}
+    ~SubsetTopology() override {}
 public:
     void init() override;
 

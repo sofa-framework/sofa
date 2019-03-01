@@ -76,20 +76,20 @@ struct DAG_test : public BaseTest
             bottomup.clear();
         }
 
-        Result processNodeTopDown(simulation::Node* node)
+        Result processNodeTopDown(simulation::Node* node) override
         {
             visited += node->getName();
             topdown += node->getName();
             return RESULT_CONTINUE;
         }
 
-        void processNodeBottomUp(simulation::Node* node)
+        void processNodeBottomUp(simulation::Node* node) override
         {
             visited += node->getName();
             bottomup += node->getName();
         }
 
-        bool treeTraversal(TreeTraversalRepetition& r) { r=repeat; return tree; }
+        bool treeTraversal(TreeTraversalRepetition& r) override { r=repeat; return tree; }
 
     };
 

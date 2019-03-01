@@ -87,7 +87,7 @@ protected:
     FrictionContact() {}
 
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-    virtual ~FrictionContact();
+    ~FrictionContact() override;
 public:
     void cleanup() override;
 

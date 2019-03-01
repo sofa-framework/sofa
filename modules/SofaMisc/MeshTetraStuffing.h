@@ -65,13 +65,13 @@ public:
 protected:
     MeshTetraStuffing();
 
-    virtual ~MeshTetraStuffing();
+    ~MeshTetraStuffing() override;
 
 public:
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     Data< helper::fixed_array<Point,2> > vbbox; ///< BBox to restrict the volume to
     Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension

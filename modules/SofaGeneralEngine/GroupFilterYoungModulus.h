@@ -54,7 +54,7 @@ public:
 protected:
 
     GroupFilterYoungModulus();
-    ~GroupFilterYoungModulus() {}
+    ~GroupFilterYoungModulus() override {}
 public:
     void init() override;
     void reinit() override;

@@ -49,8 +49,8 @@ class SOFA_HELPER_API FileMessageHandler : public MessageHandler
 public:
     FileMessageHandler(const char* filename,MessageFormatter* formatter = 0);
 
-    virtual ~FileMessageHandler();
-    virtual void process(Message& m) ;
+    ~FileMessageHandler() override;
+    void process(Message& m) override ;
 
     bool isValid(); // is output file ok ?
 

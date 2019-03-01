@@ -44,15 +44,15 @@ protected:
     SceneLoader();
 
     ///Destructor
-    virtual ~SceneLoader() { }
+    ~SceneLoader() override { }
 
 public:
-    virtual bool canLoad() override;
+    bool canLoad() override;
 
     //virtual void init();
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
 
 protected:

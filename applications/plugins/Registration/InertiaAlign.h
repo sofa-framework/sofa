@@ -45,7 +45,7 @@ public:
     SOFA_CLASS(InertiaAlign,core::objectmodel::BaseObject);
 
     InertiaAlign();
-    ~InertiaAlign();
+    ~InertiaAlign() override;
     typedef defaulttype::Mat<3,3> Mat3x3;
 
     /**
@@ -64,7 +64,7 @@ public:
     helper::vector<sofa::defaulttype::Vec<3,SReal> > positionDistSource;
 
     /// Initialization method called at graph modification, during bottom-up traversal.
-    virtual void init();
+    void init() override;
 
 protected:
 

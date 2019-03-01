@@ -40,9 +40,9 @@ namespace sofa
 
             InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
-            virtual ~InitPerThreadDataTask();
+            ~InitPerThreadDataTask() override;
 
-            virtual MemoryAlloc run() override;
+            MemoryAlloc run() override;
 
         private:
 

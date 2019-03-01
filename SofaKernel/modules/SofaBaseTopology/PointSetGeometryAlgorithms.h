@@ -63,11 +63,11 @@ protected:
     PointSetGeometryAlgorithms();
 
 
-    virtual ~PointSetGeometryAlgorithms() override {}
+    ~PointSetGeometryAlgorithms() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

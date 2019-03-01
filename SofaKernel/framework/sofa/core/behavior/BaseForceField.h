@@ -57,7 +57,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
-    virtual ~BaseForceField() {}
+    ~BaseForceField() override {}
 	
 private:
 	BaseForceField(const BaseForceField& n) ;
@@ -234,8 +234,8 @@ public:
 
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 } // namespace behavior

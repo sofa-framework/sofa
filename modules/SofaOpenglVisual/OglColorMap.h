@@ -56,7 +56,7 @@ public:
     
 protected:
     OglColorMap();
-    virtual ~OglColorMap();
+    ~OglColorMap() override;
 
 public:
     Data<unsigned int> f_paletteSize; ///< How many colors to use

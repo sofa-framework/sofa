@@ -58,11 +58,11 @@ public:
     {
     }
 
-    virtual ~ManifoldTriangleSetTopologyModifier() {}
+    ~ManifoldTriangleSetTopologyModifier() override {}
 
-    virtual void init();
+    void init() override;
 
-    virtual void reinit();
+    void reinit() override;
 
     virtual void Debug(); // TO BE REMOVED WHEN CLASS IS SURE.
 

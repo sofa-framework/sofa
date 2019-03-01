@@ -38,7 +38,7 @@ protected:
             *elem = i;
         }
     }
-    virtual ~ResizableExtVectorTest()
+    ~ResizableExtVectorTest() override
     {
     }
     ResizableExtVector<int> v;

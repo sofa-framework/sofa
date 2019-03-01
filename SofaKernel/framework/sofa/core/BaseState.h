@@ -46,7 +46,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseState)
 protected:
     BaseState() {}
-    virtual ~BaseState() {}
+    ~BaseState() override {}
 	
 private:
 	BaseState(const BaseState& n) ;
@@ -67,8 +67,8 @@ public:
     /// @}
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

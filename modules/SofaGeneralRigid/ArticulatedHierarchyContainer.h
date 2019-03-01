@@ -58,7 +58,7 @@ public:
 protected:
     ArticulatedHierarchyContainer();
 
-    ~ArticulatedHierarchyContainer() {}
+    ~ArticulatedHierarchyContainer() override {}
 public:
 
 
@@ -114,7 +114,7 @@ public:
     */
 protected:
     ArticulationCenter();
-    ~ArticulationCenter() {}
+    ~ArticulationCenter() override {}
 public:
     /**
     *	All DOF's can be identified, in an univocal way, by an index
@@ -225,7 +225,7 @@ public:
     */
 protected:
     Articulation();
-    ~Articulation() {}
+    ~Articulation() override {}
 public:
     /**
     *	this variable defines the motion axis

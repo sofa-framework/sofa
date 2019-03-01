@@ -67,7 +67,7 @@ public:
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
 
-    virtual void init() override;
+    void init() override;
 
     /// building from a mesh file
     virtual void buildAsFinest();
@@ -301,20 +301,20 @@ protected:
 public :
 
 
-    virtual const SeqHexahedra& getHexahedra() override
+    const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
 
-    virtual int getNbPoints() const override
+    int getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
     /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.
-    virtual size_t getNbHexahedra() override { return this->getHexahedra().size();}
+    size_t getNbHexahedra() override { return this->getHexahedra().size();}
 };
 
 } // namespace topology

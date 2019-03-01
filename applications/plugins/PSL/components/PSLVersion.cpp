@@ -61,7 +61,7 @@ public:
 
 protected:
     PSLVersion() ;
-    virtual ~PSLVersion() ;
+    ~PSLVersion() override ;
 
 private:
 };

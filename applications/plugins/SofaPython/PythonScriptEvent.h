@@ -54,14 +54,14 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~PythonScriptEvent();
+    ~PythonScriptEvent() override;
 
     /**
      * @brief Get the event name
      */
     PyObject* getUserData(void) const {return m_userData;}
 
-    virtual const char* getClassName() const { return "PythonScriptEvent"; }
+    const char* getClassName() const override { return "PythonScriptEvent"; }
 private:
 
     PyObject* m_userData;

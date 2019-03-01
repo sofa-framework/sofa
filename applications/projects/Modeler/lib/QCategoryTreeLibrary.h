@@ -51,10 +51,10 @@ public:
     typedef QGridLayout CategoryLayout;
 public:
     QCategoryTreeLibrary(QWidget *parent, const std::string &categoryName, unsigned int numCom);
-    ~QCategoryTreeLibrary();
+    ~QCategoryTreeLibrary() override;
 
     ComponentLibrary *addComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles);
-    void endConstruction();
+    void endConstruction() override;
 
     void setDisplayed(bool b);
 

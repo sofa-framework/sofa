@@ -102,18 +102,18 @@ protected:
 
     OglModel();
 
-    ~OglModel();
+    ~OglModel() override;
 public:
 
     bool loadTexture(const std::string& filename) override;
     bool loadTextures() override;
 
     void initTextures();
-    virtual void initVisual() override;
+    void initVisual() override;
 
-    virtual void init() override { VisualModelImpl::init(); }
+    void init() override { VisualModelImpl::init(); }
 
-    virtual void updateBuffers() override;
+    void updateBuffers() override;
 
     bool hasTransparent() override;
     bool hasTexture();

@@ -143,7 +143,7 @@ public:
 protected:
     RigidDistanceGridCollisionModel();
 
-    ~RigidDistanceGridCollisionModel();
+    ~RigidDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
@@ -457,7 +457,7 @@ public:
 protected:
     FFDDistanceGridCollisionModel();
 
-    ~FFDDistanceGridCollisionModel();
+    ~FFDDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }

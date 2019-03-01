@@ -136,7 +136,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(Intersection)
 protected:
     Intersection() {}
-    virtual ~Intersection();
+    ~Intersection() override;
 	
 private:
 	Intersection(const Intersection& n) ;

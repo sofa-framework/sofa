@@ -391,11 +391,11 @@ public:
         wimage->clear();
     }
 
-    virtual ~ImageContainer() {clear();}
+    ~ImageContainer() override {clear();}
 
     bool transformIsSet;
 
-    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
+    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
     {
         Inherited::parse(arg);
 
@@ -411,7 +411,7 @@ public:
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
 
-    virtual void init() override
+    void init() override
     {
         ImageContainerSpecialization<ImageTypes>::init( this );
 
@@ -530,7 +530,7 @@ protected:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
+    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
         if( onlyVisible && !drawBB.getValue()) return;
 

@@ -35,8 +35,8 @@ class SOFA_SIMULATION_CORE_API DeleteVisitor : public Visitor
 public:
     DeleteVisitor(const core::ExecParams* params) : Visitor(params) {}
 
-    virtual void processNodeBottomUp(Node* node);
-    virtual const char* getClassName() const { return "DeleteVisitor"; }
+    void processNodeBottomUp(Node* node) override;
+    const char* getClassName() const override { return "DeleteVisitor"; }
 };
 
 } // namespace simulation

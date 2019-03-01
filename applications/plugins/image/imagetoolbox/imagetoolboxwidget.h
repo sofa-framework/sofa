@@ -177,7 +177,7 @@ public:
        // if(options) container_layout->add(options);
     }
     
-        void handleSliderPolicies()
+        void handleSliderPolicies() override
         {
             central->handleSliderPolicies();
         }

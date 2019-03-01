@@ -47,9 +47,9 @@ public:
 
 protected:
     PauseAnimation ();
-    virtual ~PauseAnimation ();
+    ~PauseAnimation () override;
 public:
-    virtual void init() override;
+    void init() override;
 
     virtual bool isPaused() = 0;
 

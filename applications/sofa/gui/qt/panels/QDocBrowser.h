@@ -53,10 +53,10 @@ Q_OBJECT
 
 public:
     DocBrowser(RealGUI* g) ;
-    ~DocBrowser() ;
+    ~DocBrowser() override ;
 
     void loadHtml(const std::string& filename) ;
-    virtual void showEvent(QShowEvent*) override ;
+    void showEvent(QShowEvent*) override ;
 
 public slots:
     void goToPrev() ;

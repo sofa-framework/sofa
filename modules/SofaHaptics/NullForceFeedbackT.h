@@ -48,12 +48,12 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
     void init() override {this->ForceFeedback::init();};
 
-    virtual void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
+    void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
     {
         fx = fy = fz = 0.0;
     };
-    virtual void computeForce(const  VecCoord &,  VecDeriv &) override {};
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();};
+    void computeForce(const  VecCoord &,  VecDeriv &) override {};
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();};
 
 
 };

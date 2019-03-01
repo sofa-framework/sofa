@@ -71,7 +71,7 @@ public:
         inputImage.setReadOnly(true);
     }
 
-    ~TestImageEngine() {}
+    ~TestImageEngine() override {}
 
     void init() override
     {

@@ -80,7 +80,7 @@ protected:
 
     TransformPosition();
 
-    ~TransformPosition() {}
+    ~TransformPosition() override {}
 
     void getTransfoFromTxt();//read a transformation in a txt or xfm file
     void getTransfoFromTrm();//read a transformation in a trm file

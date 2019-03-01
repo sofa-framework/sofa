@@ -70,12 +70,12 @@ public:
     /**
      * @brief Default destructor.
      */
-    virtual ~TriangleInfo() {}
+    ~TriangleInfo() override {}
 
     /**
      * @brief Returns the validity of a detected contact according to this TriangleInfo.
      */
-    virtual bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/);
+    bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -96,7 +96,7 @@ public:
      * @brief Computes the region of interest cone of the Triangle primitive.
      */
     //virtual void buildFilter(const Triangle & /*t*/);
-    virtual void buildFilter(unsigned int /*t*/);
+    void buildFilter(unsigned int /*t*/) override;
 
 protected:
 
@@ -116,7 +116,7 @@ public:
 
 protected:
     TriangleLocalMinDistanceFilter();
-    virtual ~TriangleLocalMinDistanceFilter();
+    ~TriangleLocalMinDistanceFilter() override;
 
 public:
 

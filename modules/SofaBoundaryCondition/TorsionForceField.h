@@ -96,12 +96,12 @@ public:
 	TorsionForceField();
 	virtual ~TorsionForceField();
 
-	virtual void bwdInit() override;
-	virtual void addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v) override;
-	virtual void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx) override;
-	virtual void addKToMatrix(defaulttype::BaseMatrix *matrix, double kFact, unsigned int &offset) override;
+	void bwdInit() override;
+	void addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v) override;
+	void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx) override;
+	void addKToMatrix(defaulttype::BaseMatrix *matrix, double kFact, unsigned int &offset) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
 public :
 	Data<VecId> m_indices;		///< indices of the selected nodes.

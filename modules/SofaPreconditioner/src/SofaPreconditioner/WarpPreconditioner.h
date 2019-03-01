@@ -74,13 +74,13 @@ public:
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
 
-    virtual void invert(Matrix& M) override;
+    void invert(Matrix& M) override;
 
-    virtual void solve(Matrix& M, Vector& solution, Vector& rh) override;
+    void solve(Matrix& M, Vector& solution, Vector& rh) override;
 
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
     unsigned getSystemDimention(const sofa::core::MechanicalParams* mparams);
 

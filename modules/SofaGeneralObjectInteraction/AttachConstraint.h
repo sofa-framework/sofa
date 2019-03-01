@@ -112,7 +112,7 @@ public:
         return core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::templateName(ptr);
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
 

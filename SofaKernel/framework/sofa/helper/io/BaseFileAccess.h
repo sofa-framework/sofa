@@ -52,7 +52,7 @@ template<class T>
 class FileAccessCreator : public BaseFileAccessCreator
 {
 public:
-    virtual T* create() const
+    T* create() const override
     {
         return new T();
     }

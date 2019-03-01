@@ -95,9 +95,9 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual ~ImageAccumulator() {}
+    ~ImageAccumulator() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&inputImage);
         addInput(&inputTransform);
@@ -106,14 +106,14 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
     double SimuTime;
     ctime_t t0,t;
     int count;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         if(SimuTime==this->getContext()->getTime()) return; // check if simutime has changed
         SimuTime=this->getContext()->getTime();

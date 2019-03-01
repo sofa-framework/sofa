@@ -55,11 +55,11 @@ public:
 
     AnimateEndEvent( SReal dt );
 
-    ~AnimateEndEvent();
+    ~AnimateEndEvent() override;
 
     SReal getDt() const { return dt; }
 
-    virtual const char* getClassName() const { return "AnimateEndEvent"; }
+    const char* getClassName() const override { return "AnimateEndEvent"; }
 protected:
     SReal dt;
 };

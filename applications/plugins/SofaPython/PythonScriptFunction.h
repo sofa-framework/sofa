@@ -43,7 +43,7 @@ class SOFA_SOFAPYTHON_API PythonScriptFunctionParameter : public ScriptFunctionP
 public:
     PythonScriptFunctionParameter();
     explicit PythonScriptFunctionParameter(PyObject* data, bool own);
-    virtual ~PythonScriptFunctionParameter();
+    ~PythonScriptFunctionParameter() override;
 
     PyObject* data() const					{return m_pyData;}
     void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
@@ -59,7 +59,7 @@ class SOFA_SOFAPYTHON_API PythonScriptFunctionResult : public ScriptFunctionResu
 public:
     PythonScriptFunctionResult();
     explicit PythonScriptFunctionResult(PyObject* data, bool own);
-    virtual ~PythonScriptFunctionResult();
+    ~PythonScriptFunctionResult() override;
 
     PyObject* data() const					{return m_pyData;}
     void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
@@ -74,13 +74,13 @@ class SOFA_SOFAPYTHON_API PythonScriptFunction : public ScriptFunction
 {
 public:
     explicit PythonScriptFunction(PyObject* pyCallableObject=nullptr, bool own=false);
-    virtual ~PythonScriptFunction();
+    ~PythonScriptFunction() override;
 
     PyObject* callableObject() const					{return m_pyCallableObject;}
     void setCallableObject(PyObject* callableObject, bool own);
 
 private:
-    virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
+    void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const override;
 
 private:
     bool		m_own {false} ;

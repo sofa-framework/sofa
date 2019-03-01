@@ -128,9 +128,9 @@ public:
         interpolation.setValue(interpOptions);
     }
 
-    virtual ~ImageDeformation() {}
+    ~ImageDeformation() override {}
 
-    virtual void init()
+    void init() override
     {
         addInput(&inputImage);
         addInput(&inputTransform);
@@ -144,11 +144,11 @@ public:
         if( !deformationMapping ) serr<<"No deformation mapping found"<<sendl;
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         if(!deformationMapping) return;
 
@@ -365,7 +365,7 @@ protected:
         return dot(d-a,cross(b-a,c-a))/6.;
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

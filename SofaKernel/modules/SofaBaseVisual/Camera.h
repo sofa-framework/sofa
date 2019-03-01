@@ -41,10 +41,10 @@ public:
 
 protected:
     Camera();
-    virtual ~Camera();
+    ~Camera() override;
 
 public:
-    virtual void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
+    void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
 
 private:
 

@@ -94,15 +94,15 @@ protected:
 
 public:
 
-    virtual void init() override;
-    virtual void reinit() override
+    void init() override;
+    void reinit() override
     {
         serr<<"WARNING : composite mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
         if(_drawSize.getValue()==-1)
             _drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     Data<bool> _finestToCoarse; ///< Does the homogenization is done directly from the finest level to the coarse one?
@@ -129,7 +129,7 @@ public:
 
     // surcharge NonUniformHexahedronFEMForceFieldAndMass::computeMechanicalMatricesByCondensation
 //         virtual void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
-    virtual void computeMechanicalMatricesByCondensation( ) override;
+    void computeMechanicalMatricesByCondensation( ) override;
 
 
 

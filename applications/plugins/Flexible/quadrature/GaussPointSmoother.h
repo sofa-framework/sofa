@@ -69,7 +69,7 @@ public:
     Data<VecVRef > d_index;      ///< computed child to parent relationship using local shape function. index[i][j] is the index of the j-th parent influencing child i.
     Data<VecVReal > d_w;      ///< Influence weights
 
-    virtual void init()
+    void init() override
     {
         Inherited::init();
         addInput(&f_position);
@@ -80,7 +80,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 
 protected:
@@ -93,12 +93,12 @@ protected:
 
     }
 
-    virtual ~GaussPointSmoother()
+    ~GaussPointSmoother() override
     {
     }
 
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         BaseShapeFunction* _shapeFunction=NULL;
         this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);

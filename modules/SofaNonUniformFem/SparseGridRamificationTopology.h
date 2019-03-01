@@ -41,18 +41,18 @@ public:
     SOFA_CLASS(SparseGridRamificationTopology,SparseGridTopology);
 protected:
     SparseGridRamificationTopology(bool _isVirtual=false);
-    virtual ~SparseGridRamificationTopology();
+    ~SparseGridRamificationTopology() override;
 public:
-    virtual void init() override;
+    void init() override;
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
+    int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
 // 				virtual int findCube(const Vector3 &pos);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
+    int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
 // 				virtual int findNearestCube(const Vector3& pos);
 
 
@@ -65,9 +65,9 @@ public:
 
 
     /// surcharge of functions defined in SparseGridTopology
-    virtual void buildAsFinest() override;
-    virtual void buildFromFiner() override;
-    virtual void buildVirtualFinerLevels() override;
+    void buildAsFinest() override;
+    void buildFromFiner() override;
+    void buildVirtualFinerLevels() override;
 
     /// find the connexion graph between the finest hexahedra
     void findConnexionsAtFinestLevel();

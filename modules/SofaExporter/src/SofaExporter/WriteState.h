@@ -88,15 +88,15 @@ protected:
 
     WriteState();
 
-    virtual ~WriteState();
+    ~WriteState() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
-    virtual void reset() override;
+    void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -117,7 +117,7 @@ class SOFA_SOFAEXPORTER_API WriteStateCreator: public simulation::Visitor
 public:
     WriteStateCreator(const core::ExecParams* params);
     WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n; }
     void setRecordX(bool b) {recordX=b;}
@@ -125,7 +125,7 @@ public:
     void setRecordF(bool b) {recordF=b;}
     void setCreateInMapping(bool b) { createInMapping=b; }
     void setCounter(int c) { counterWriteState = c; }
-    virtual const char* getClassName() const { return "WriteStateCreator"; }
+    const char* getClassName() const override { return "WriteStateCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -142,11 +142,11 @@ class SOFA_SOFAEXPORTER_API WriteStateActivator: public simulation::Visitor
 {
 public:
     WriteStateActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getState() const { return state; }
     void setState(bool active) { state=active; }
-    virtual const char* getClassName() const { return "WriteStateActivator"; }
+    const char* getClassName() const override { return "WriteStateActivator"; }
 protected:
     void changeStateWriter(sofa::component::misc::WriteState *ws);
 

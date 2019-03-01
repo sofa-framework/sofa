@@ -59,7 +59,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override
     {
         if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
         {
@@ -71,7 +71,7 @@ public:
     }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -102,7 +102,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override
     {
         ctime_t t0 = begin(node, c);
 
@@ -115,18 +115,18 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const
+    const char* getClassName() const override
     {
         return "MechanicalSetConstraint";
     }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -158,7 +158,7 @@ public:
 #endif
     }
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
     {
         ctime_t t0 = begin(node, map);
         map->applyJT(cparams, res, res);
@@ -167,14 +167,14 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
+    const char* getClassName() const override { return "MechanicalAccumulateConstraint2"; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -230,11 +230,11 @@ public:
     SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 protected:
     ConstraintAnimationLoop(simulation::Node* gnode = NULL);
-    virtual ~ConstraintAnimationLoop();
+    ~ConstraintAnimationLoop() override;
 public:
 
-    virtual void step(const core::ExecParams* params, SReal dt) override;
-    virtual void init() override;
+    void step(const core::ExecParams* params, SReal dt) override;
+    void init() override;
 
     Data<bool> displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
     Data<double> _tol; ///< Tolerance of the Gauss-Seidel

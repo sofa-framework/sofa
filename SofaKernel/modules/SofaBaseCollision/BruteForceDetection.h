@@ -46,26 +46,26 @@ public:
     core::collision::ElementIntersector* intersector;
 
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
     {
         return intersector->canIntersect(elem2, elem1);
     }
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     /// If the given contacts vector is NULL, then this method should allocate it.
-    virtual int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector*& contacts)
+    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector*& contacts) override
     {
         return intersector->beginIntersect(model2, model1, contacts);
     }
 
     /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
-    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts)
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts) override
     {
         return intersector->intersect(elem2, elem1, contacts);
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    virtual int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector* contacts)
+    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector* contacts) override
     {
         return intersector->endIntersect(model2, model1, contacts);
     }
@@ -97,7 +97,7 @@ private:
 protected:
     BruteForceDetection();
 
-    ~BruteForceDetection();
+    ~BruteForceDetection() override;
 
     virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
@@ -109,7 +109,7 @@ public:
     void addCollisionModel (core::CollisionModel *cm) override;
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
 
-    virtual void beginBroadPhase() override
+    void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
@@ -117,7 +117,7 @@ public:
 
     void draw(const core::visual::VisualParams* /* vparams */) override { }
 
-    inline virtual bool needsDeepBoundingTree()const override {return true;}
+    inline bool needsDeepBoundingTree()const override {return true;}
 };
 
 } // namespace collision

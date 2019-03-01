@@ -36,9 +36,9 @@ class SOFA_SIMULATION_CORE_API ReleaseAspectVisitor : public Visitor
 {
 public:
     ReleaseAspectVisitor(const core::ExecParams* params, int aspect);
-    ~ReleaseAspectVisitor();
+    ~ReleaseAspectVisitor() override;
 
-    Result processNodeTopDown(Node* node);
+    Result processNodeTopDown(Node* node) override;
 
 protected:
     void processObject(sofa::core::objectmodel::BaseObject* obj);

@@ -25,8 +25,8 @@ struct SOFA_Compliant_API CoulombConstraint : CoulombConstraintBase {
     CoulombConstraint( SReal mu = 1.0 );
 
     // WARNING index is not used (see Constraint.h)
-    virtual void project( SReal* out, unsigned n, unsigned /*index*/,
-                          bool correctionPass=false ) const;
+    void project( SReal* out, unsigned n, unsigned /*index*/,
+                          bool correctionPass=false ) const override;
 
 
     bool horizontalProjection; ///< should the projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.

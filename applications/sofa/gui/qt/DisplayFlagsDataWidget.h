@@ -78,7 +78,7 @@ protected:
     void setTreeWidgetNodeCheckable(QTreeWidgetItem* w, const char* name);
     void setTreeWidgetCheckable(QTreeWidgetItem* w, const char* name);
 
-    virtual void mouseReleaseEvent ( QMouseEvent * e );
+    void mouseReleaseEvent ( QMouseEvent * e ) override;
 
     void findChildren(QTreeWidgetItem *, std::vector<QTreeWidgetItem* > &children);
 

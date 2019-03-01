@@ -54,7 +54,7 @@ public:
 protected:
 
     Indices2ValuesMapper();
-    ~Indices2ValuesMapper() {}
+    ~Indices2ValuesMapper() override {}
 public:
     void init() override;
     void reinit() override;

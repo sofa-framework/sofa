@@ -81,7 +81,7 @@ protected:
     /// Constructor
     MultiMapping();
     /// Destructor
-    virtual ~MultiMapping() {}
+    ~MultiMapping() override {}
 public:
 
     void addInputModel(BaseState* model, const std::string& path = "" );
@@ -108,7 +108,7 @@ public:
     ///
     /// If the Mapping can be represented as a matrix \f$ J \f$, this method computes
     /// \f$ out = J in \f$
-    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
+    void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
@@ -120,7 +120,7 @@ public:
     /// Apply the mapping to derived (velocity, displacement) vectors.
     /// \f$ out = J in \f$
     /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+    void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -132,7 +132,7 @@ public:
     /// Apply the reverse mapping to force vectors.
     /// \f$ out += J^t in \f$
     /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
+    void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -141,7 +141,7 @@ public:
     virtual void applyJT(const MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
+    void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
     {
         helper::vector<InDataMatrixDeriv*> matOutConst;
         getMatInDeriv(inConst, matOutConst);
@@ -157,7 +157,7 @@ public:
     }
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) override
+    void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) override
     {
         helper::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
@@ -177,7 +177,7 @@ public:
     }
 
 
-    virtual void init() override;
+    void init() override;
 
     ///<TO REMOVE>
     /// Apply the mapping to position and velocity vectors.
@@ -189,7 +189,7 @@ public:
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    virtual void disable() override;
+    void disable() override;
 
 
 
@@ -276,7 +276,7 @@ protected:
     ///
     /// That way, we can optimize Jacobian sparsity.
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
     /// keep pointers on the masks
     helper::vector<helper::StateMask*> maskFrom, maskTo;

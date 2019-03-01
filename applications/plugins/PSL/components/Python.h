@@ -61,7 +61,7 @@ public:
 
 protected:
     Python() ;
-    virtual ~Python() ;
+    ~Python() override ;
 
 private:
 };

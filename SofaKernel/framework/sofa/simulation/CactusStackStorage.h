@@ -64,10 +64,10 @@ public:
         return down;
     }
 
-    void push(void* data);
-    void* pop();
-    void* top() const;
-    bool empty() const;
+    void push(void* data) override;
+    void* pop() override;
+    void* top() const override;
+    bool empty() const override;
     virtual const char* getClassName() const { return "CactusStackStorage"; }
 };
 

@@ -34,7 +34,7 @@ template<typename DataType>
 class DataCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData>
 {
 public:
-    virtual sofa::core::objectmodel::BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
+    sofa::core::objectmodel::BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
     virtual const std::type_info& type() override { return typeid(sofa::core::objectmodel::BaseData);}
 };
 

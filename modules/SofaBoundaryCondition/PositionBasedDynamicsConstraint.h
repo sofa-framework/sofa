@@ -91,8 +91,8 @@ public:
     virtual ~PositionBasedDynamicsConstraint();
 
     // -- Constraint interface
-    virtual void init() override;
-    virtual void reset() override;
+    void init() override;
+    void reset() override;
 
     void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) override {}
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
@@ -100,7 +100,7 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     // Handle topological changes
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
 protected :
 

@@ -78,9 +78,9 @@ public:
     {
     }
 
-    virtual ~ImageTransformEngine() {}
+    ~ImageTransformEngine() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&translation);
         addInput(&rotation);
@@ -91,11 +91,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
 		raTransform inT(this->inputTransform);
         waTransform outT(this->outputTransform);

@@ -44,7 +44,7 @@ public:
 
 protected:
     BaseAddResourceRepository();
-    virtual ~BaseAddResourceRepository() override;
+    ~BaseAddResourceRepository() override;
 
     FileRepository* m_repository;
 

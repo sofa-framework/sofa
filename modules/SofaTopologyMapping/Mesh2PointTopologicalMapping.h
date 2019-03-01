@@ -68,16 +68,16 @@ protected:
      *
          * Does nothing.
          */
-    virtual ~Mesh2PointTopologicalMapping() {}
+    ~Mesh2PointTopologicalMapping() override {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init() override;
+    void init() override;
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    virtual void updateTopologicalMappingTopDown() override;
+    void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getGlobIndex(unsigned int ind) override
+    unsigned int getGlobIndex(unsigned int ind) override
     {
         if(ind<pointSource.size())
         {
@@ -89,7 +89,7 @@ public:
         }
     }
 
-    virtual unsigned int getFromIndex(unsigned int ind) override
+    unsigned int getFromIndex(unsigned int ind) override
     {
         return ind;
     }

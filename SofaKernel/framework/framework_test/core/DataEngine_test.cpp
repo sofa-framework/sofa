@@ -48,7 +48,7 @@ public:
         , output(initData(&output,(int)UNDEFINED,"output","output"))
     {}
 
-    ~TestEngine() {}
+    ~TestEngine() override {}
 
     void init() override
     {
@@ -80,7 +80,7 @@ struct DataEngine_test: public BaseTest
 {
     TestEngine engine;
 
-    void SetUp()
+    void SetUp() override
     {
         engine.init();
     }

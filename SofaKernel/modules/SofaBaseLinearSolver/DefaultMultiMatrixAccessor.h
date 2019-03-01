@@ -61,7 +61,7 @@ class SOFA_BASE_LINEAR_SOLVER_API DefaultMultiMatrixAccessor : public sofa::core
 {
 public:
     DefaultMultiMatrixAccessor();
-    virtual ~DefaultMultiMatrixAccessor();
+    ~DefaultMultiMatrixAccessor() override;
 
     virtual void clear();
 
@@ -70,29 +70,29 @@ public:
 
     // When a real MS is visited by the visitor, it must be registed in a local data here (realStateOffsets)
     // the global size of the system must be ajusted.
-    virtual void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
+    void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate) override;
 
     // When a mapping is visited by the visitor, satisfying that is a mechanical mapping
     // and having implemented getJ, this mapping must be registed in a local data here (mappingList)
-    virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
+    void addMechanicalMapping(sofa::core::BaseMapping* mapping) override;
 
     //do nothing for instance
-    virtual void addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
+    void addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate) override;
 
     //Read all Real Mechanical State
     virtual void setupMatrices();
 
     //give the sum of size of all Real Mechanical State in ordre to set the global matrix dimension
-    virtual int getGlobalDimension() const;
+    int getGlobalDimension() const override;
 
     //give position in global matrix of the blog related to a given Mechanical State
-    virtual int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const;
+    int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
 
     //give the Matrix Reference (Matrix and Offset) related to a given Mechanical State
-    virtual MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
+    MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
 
     //give the Matrix Reference (Matrix and Offset) related to a interactionForceField (between 2 Mechanical State)
-    virtual InteractionMatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
+    InteractionMatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const override;
 
     //Compute the global system matrix
     //If there are no mapping, do nothing

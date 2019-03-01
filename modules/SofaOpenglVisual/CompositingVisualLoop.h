@@ -72,13 +72,13 @@ private:
 protected:
     CompositingVisualLoop(simulation::Node* gnode = NULL);
 
-    virtual ~CompositingVisualLoop();
+    ~CompositingVisualLoop() override;
 
 public:
 
-    virtual void init() override;
-    virtual void initVisual() override;
-    virtual void drawStep(sofa::core::visual::VisualParams* vparams) override;
+    void init() override;
+    void initVisual() override;
+    void drawStep(sofa::core::visual::VisualParams* vparams) override;
 };
 
 } // namespace visualmodel

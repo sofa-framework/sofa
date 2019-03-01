@@ -55,7 +55,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~ARTrackEvent() {}
+    ~ARTrackEvent() override {}
 
     const Vector3 getPosition() const;
     const Quat getOrientation() const;

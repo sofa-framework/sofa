@@ -50,7 +50,7 @@ protected:
 public:
     typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
 
-    virtual void init() override;
+    void init() override;
 
     bool getUseSurfaceNormals();
 

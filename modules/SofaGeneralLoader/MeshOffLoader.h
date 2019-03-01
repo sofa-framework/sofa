@@ -39,7 +39,7 @@ class SOFA_GENERAL_LOADER_API MeshOffLoader : public sofa::core::loader::MeshLoa
 public:
     SOFA_CLASS(MeshOffLoader,sofa::core::loader::MeshLoader);
 
-    virtual bool load() override;
+    bool load() override;
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )

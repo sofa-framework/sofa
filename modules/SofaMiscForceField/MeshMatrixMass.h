@@ -167,9 +167,9 @@ public:
 
     virtual void clear();
 
-    virtual void reinit() override;
-    virtual void init() override;
-    virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
+    void reinit() override;
+    void init() override;
+    void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
     bool update();
 
     TopologyType getMassTopologyType() const
@@ -228,31 +228,31 @@ public:
 
 
     // -- Mass interface
-    virtual void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
+    void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    virtual void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
+    void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
 
-    virtual void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
+    SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    virtual defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
 
-    virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    virtual bool isDiagonal() override { return false; }
+    bool isDiagonal() override { return false; }
 
 
 
     /// Add Mass contribution to global Matrix assembling
-    virtual void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual SReal getElementMass(unsigned int index) const override;
-    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(unsigned int index) const override;
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return d_lumping.getValue(); }

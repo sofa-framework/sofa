@@ -66,7 +66,7 @@ protected:
     DataEngine();
 
     /// Destructor. Do nothing
-    virtual ~DataEngine();
+    ~DataEngine() override;
 
 private:
 	DataEngine(const DataEngine& n) ;
@@ -83,7 +83,7 @@ protected:
 public:
     /// Updates your inputs and calls cleanDirty() for you.
     /// User implementation moved to doUpdate()
-    virtual void update() final;
+    void update() final;
 
     /// Add a new input to this engine
     /// Automatically adds the input fields to the datatracker

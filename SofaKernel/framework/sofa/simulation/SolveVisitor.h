@@ -57,15 +57,15 @@ public:
         x(X),v(V){}
 
     virtual void processSolver(simulation::Node* node, core::behavior::OdeSolver* b);
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "behavior update position"; }
-    virtual const char* getClassName() const { return "SolveVisitor"; }
+    const char* getCategoryName() const override { return "behavior update position"; }
+    const char* getClassName() const override { return "SolveVisitor"; }
 
     void setDt(SReal _dt) {dt = _dt;}
     SReal getDt() {return dt;}

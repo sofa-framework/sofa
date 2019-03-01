@@ -55,13 +55,13 @@ class SOFA_SOFAEXPORTER_API OBJExporter : public BaseSimulationExporter
 public:
     SOFA_CLASS(OBJExporter, BaseSimulationExporter);
 
-    virtual bool write() override ;
+    bool write() override ;
     bool writeOBJ();
 
-    virtual void handleEvent(Event *event) override ;
+    void handleEvent(Event *event) override ;
 
 protected:
-    virtual ~OBJExporter();
+    ~OBJExporter() override;
 };
 
 }

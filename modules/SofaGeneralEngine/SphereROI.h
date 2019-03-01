@@ -72,7 +72,7 @@ protected:
 
     SphereROI();
 
-    ~SphereROI() {}
+    ~SphereROI() override {}
 public:
     void init() override;
 

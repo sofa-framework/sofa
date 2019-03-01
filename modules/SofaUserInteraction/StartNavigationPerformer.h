@@ -46,11 +46,11 @@ namespace collision
         StartNavigationPerformer(BaseMouseInteractor *i)
             : InteractionPerformer(i) {};
 
-        ~StartNavigationPerformer(){};
+        ~StartNavigationPerformer() override{};
 
         // Save the current camera's position and orientation in the appropriated Data of Recorded Camera for navigation. 
-        void start();
-        void execute(){};
+        void start() override;
+        void execute() override{};
 
     };
 

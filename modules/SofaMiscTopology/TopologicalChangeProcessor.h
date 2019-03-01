@@ -86,7 +86,7 @@ public:
 protected:
     TopologicalChangeProcessor();
 
-    virtual ~TopologicalChangeProcessor();
+    ~TopologicalChangeProcessor() override;
 
     core::topology::BaseMeshTopology* m_topology;
 
@@ -105,13 +105,13 @@ protected:
     std::vector<unsigned int>    errorTrianglesIndices;
 
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     virtual void readDataFile();
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void setTime(double time);
 

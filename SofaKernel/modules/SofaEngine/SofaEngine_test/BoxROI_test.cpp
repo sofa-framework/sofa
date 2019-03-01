@@ -68,7 +68,7 @@ struct BoxROITest :  public ::testing::Test
     Node::SPtr m_node ;
     typename TheBoxROI::SPtr m_boxroi;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         initBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
@@ -79,7 +79,7 @@ struct BoxROITest :  public ::testing::Test
         m_node->addObject(m_boxroi) ;
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (m_root != NULL){
             m_simu->unload(m_root);

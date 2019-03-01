@@ -60,11 +60,11 @@ protected:
 
     MultilevelHexahedronSetTopologyContainer(const helper::vector< Hexahedron > &hexahedra);
 
-    virtual ~MultilevelHexahedronSetTopologyContainer();
+    ~MultilevelHexahedronSetTopologyContainer() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void clear() override;
+    void clear() override;
 
     void getHexaNeighbors(const unsigned int hexaId,
             helper::vector<unsigned int> &neighbors);

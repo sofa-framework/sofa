@@ -22,7 +22,7 @@ class SOFA_Compliant_API OffsettedConstraintValue : public ConstraintValue {
     OffsettedConstraintValue( mstate_type* mstate = 0 );
 
 	// value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;
 
     /// the offset value to add
     Data<SReal> d_offset;

@@ -45,12 +45,12 @@ public:
     typedef BaseCamera::Quat Quat;
 protected:
     RecordedCamera();
-    virtual ~RecordedCamera() {}
+    ~RecordedCamera() override {}
 public:
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
-    virtual void handleEvent(sofa::core::objectmodel::Event *) override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
+    void handleEvent(sofa::core::objectmodel::Event *) override;
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};

@@ -63,11 +63,11 @@ public:
     GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
       , sceneTime(0.0), currentError(0.0), currentIterations(0)
       , change_sequence(false) {}
-    ~GenericConstraintProblem() { freeConstraintResolutions(); }
+    ~GenericConstraintProblem() override { freeConstraintResolutions(); }
 
-    void clear(int nbConstraints);
+    void clear(int nbConstraints) override;
     void freeConstraintResolutions();
-    void solveTimed(double tol, int maxIt, double timeout);
+    void solveTimed(double tol, int maxIt, double timeout) override;
 
     void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
     void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
@@ -86,7 +86,7 @@ public:
     SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
 protected:
     GenericConstraintSolver();
-    virtual ~GenericConstraintSolver();
+    ~GenericConstraintSolver() override;
 public:
     void init() override;
 
@@ -100,7 +100,7 @@ public:
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = 0) override;
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
+    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
     Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
@@ -124,8 +124,8 @@ public:
     Data<helper::vector< double >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
-    virtual sofa::core::MultiVecDerivId getLambda() const override;
-    virtual sofa::core::MultiVecDerivId getDx() const override;
+    sofa::core::MultiVecDerivId getLambda() const override;
+    sofa::core::MultiVecDerivId getDx() const override;
 
 protected:
 
@@ -158,15 +158,15 @@ class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simu
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const;
+    const char* getClassName() const override;
 
-    virtual bool isThreadSafe() const;
+    bool isThreadSafe() const override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors() { }

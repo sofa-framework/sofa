@@ -72,7 +72,7 @@ class GraphModeler : public QTreeWidget
     Q_OBJECT
 public:
     GraphModeler( QWidget* parent=0, const char* name=0, Qt::WindowFlags f = 0 );
-    ~GraphModeler();
+    ~GraphModeler() override;
 
     /// Set the Sofa Resources: intern library to get the creators of the elements
     void setSofaLibrary( SofaLibrary *l) { sofaLibrary = l;}
@@ -96,7 +96,7 @@ public:
     std::string getFilename() {return filenameXML;}
 
     /// Keyboard Management
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
 
     //void mouseReleaseEvent(QMouseEvent* event);
 
@@ -150,9 +150,9 @@ public:
     bool isRedoEnabled() {return historyManager->isRedoEnabled();}
 
     /// Drag & Drop Management
-    void dragEnterEvent( QDragEnterEvent* event);
-    void dragMoveEvent( QDragMoveEvent* event);
-    void dropEvent(QDropEvent* event);
+    void dragEnterEvent( QDragEnterEvent* event) override;
+    void dragMoveEvent( QDragMoveEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
 
     /// collapse all the nodes below the current one
     void collapseNode(QTreeWidgetItem* item);

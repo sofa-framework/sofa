@@ -67,7 +67,7 @@ public:
 
     ShapeMatching();
 
-    virtual ~ShapeMatching() {}
+    ~ShapeMatching() override {}
 
     void init() override;
 

@@ -54,10 +54,10 @@ public:
 
     AnimateBeginEvent( SReal dt );
 
-    ~AnimateBeginEvent();
+    ~AnimateBeginEvent() override;
 
     SReal getDt() const { return dt; }
-    virtual const char* getClassName() const { return "AnimateBeginEvent"; }
+    const char* getClassName() const override { return "AnimateBeginEvent"; }
 protected:
     SReal dt;
 };

@@ -54,12 +54,12 @@ class SOFA_SIMULATION_CORE_API PropagateEventVisitor : public sofa::simulation::
 public:
     PropagateEventVisitor(const core::ExecParams* params, sofa::core::objectmodel::Event* e);
 
-    ~PropagateEventVisitor();
+    ~PropagateEventVisitor() override;
 
-    Visitor::Result processNodeTopDown(simulation::Node* node);
+    Visitor::Result processNodeTopDown(simulation::Node* node) override;
     void processObject(simulation::Node*, core::objectmodel::BaseObject* obj);
 
-    virtual const char* getClassName() const { return "PropagateEventVisitor"; }
+    const char* getClassName() const override { return "PropagateEventVisitor"; }
     virtual std::string getInfos() const { return std::string(m_event->getClassName());  }
 protected:
     sofa::core::objectmodel::Event* m_event;

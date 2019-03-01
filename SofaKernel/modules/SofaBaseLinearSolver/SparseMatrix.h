@@ -111,7 +111,7 @@ public:
             return it->second;
     }
 
-    void resize(Index nbRow, Index nbCol)
+    void resize(Index nbRow, Index nbCol) override
     {
         if(SPARSEMATRIX_VERBOSE){
             if (nbRow != rowSize() || nbCol != colSize())
@@ -122,17 +122,17 @@ public:
         nCol = nbCol;
     }
 
-    Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return nRow;
     }
 
-    Index colSize(void) const
+    Index colSize(void) const override
     {
         return nCol;
     }
 
-    SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
         if(SPARSEMATRIX_CHECK){
             if (i >= rowSize() || j >= colSize())
@@ -150,7 +150,7 @@ public:
         return (SReal)ite->second;
     }
 
-    void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
 
         if(SPARSEMATRIX_VERBOSE){
@@ -167,7 +167,7 @@ public:
         data[i][j] = (Real)v;
     }
 
-    void add(Index i, Index j, double v)
+    void add(Index i, Index j, double v) override
     {
         if(SPARSEMATRIX_VERBOSE){
             msg_info() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += " << v ;
@@ -183,7 +183,7 @@ public:
         data[i][j] += (Real)v;
     }
 
-    void clear(Index i, Index j)
+    void clear(Index i, Index j) override
     {
         if(SPARSEMATRIX_VERBOSE){
             msg_info() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0" ;
@@ -207,7 +207,7 @@ public:
             data.erase(it);
     }
 
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
         if(SPARSEMATRIX_VERBOSE){
             msg_info() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0" ;
@@ -227,7 +227,7 @@ public:
         data.erase(it);
     }
 
-    void clearCol(Index j)
+    void clearCol(Index j) override
     {
         if(SPARSEMATRIX_VERBOSE){
             msg_info() << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0" ;
@@ -248,7 +248,7 @@ public:
         }
     }
 
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
         if(SPARSEMATRIX_VERBOSE){
             msg_info() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0" ;
@@ -265,7 +265,7 @@ public:
         clearCol(i);
     }
 
-    void clear() { data.clear(); }
+    void clear() override { data.clear(); }
 
     template<class Real2>
     void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const

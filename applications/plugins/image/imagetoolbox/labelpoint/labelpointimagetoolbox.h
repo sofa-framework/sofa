@@ -39,7 +39,7 @@ public:
     
     }
     
-    virtual void init() override
+    void init() override
     {
         addOutput(&d_ip);
         addOutput(&d_p);
@@ -48,7 +48,7 @@ public:
         
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
+    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::LabelPointImageToolBoxAction(this,parent);
     }

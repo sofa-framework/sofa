@@ -93,7 +93,7 @@ protected:
 
 public:
     OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);
-    virtual ~OscillatorConstraint() override ;
+    ~OscillatorConstraint() override ;
 
     OscillatorConstraint<TDataTypes>* addConstraint(unsigned index,
                                                     const Coord& mean, const Deriv& amplitude,

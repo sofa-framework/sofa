@@ -65,17 +65,17 @@ public:
 protected:
     LMConstraintSolver();
 public:
-    virtual void init() override;
-    virtual void reinit() override {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
+    void init() override;
+    void reinit() override {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
 
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
+    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    virtual bool prepareStates(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    virtual bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    virtual bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    virtual bool applyCorrection(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool prepareStates(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool applyCorrection(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 
-    virtual void handleEvent( core::objectmodel::Event *e) override;
+    void handleEvent( core::objectmodel::Event *e) override;
 
 
 

@@ -29,16 +29,16 @@ class FakeGUI : public sofa::gui::BaseGUI
 {
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~FakeGUI() {}
+    ~FakeGUI() override {}
 
 public:
     /// @name methods each GUI must implement
     /// @{
-    virtual int mainLoop() {return 0;}
-    virtual void redraw() {}
-    virtual int closeGUI() {return 0;}
+    int mainLoop() override {return 0;}
+    void redraw() override {}
+    int closeGUI() override {return 0;}
     virtual void setScene(sofa::simulation::Node::SPtr /*groot*/, const char* /*filename*/=NULL, bool /*temporaryFile*/=false) {}
-    virtual sofa::simulation::Node* currentSimulation() {return 0;}
+    sofa::simulation::Node* currentSimulation() override {return 0;}
     /// @}
 
     /// @name methods to communicate with the GUI

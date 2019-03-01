@@ -92,7 +92,7 @@ public:
     /**
      * @brief Default destructor.
      */
-    virtual ~MouseEvent();
+    ~MouseEvent() override;
 
     /**
      * @name Accessors
@@ -104,7 +104,7 @@ public:
     State getState(void) const {return m_state;};
     //}@
 
-    virtual const char* getClassName() const { return "MouseEvent"; }
+    const char* getClassName() const override { return "MouseEvent"; }
 private:
 
     State m_state; ///< Mouse State on the event propagation.

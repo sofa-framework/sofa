@@ -95,9 +95,9 @@ public:
         operation.setValue(operationOptions);
     }
 
-    virtual ~ImageOperation() {}
+    ~ImageOperation() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&inputImage1);
         addInput(&inputImage2);
@@ -105,11 +105,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         raImage in1(this->inputImage1);
         raImage in2(this->inputImage2);

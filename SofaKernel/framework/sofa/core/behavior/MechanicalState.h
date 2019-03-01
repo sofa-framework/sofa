@@ -77,10 +77,10 @@ public:
     /// Sparse matrix containing derivative values (constraints)
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 protected:
-    virtual ~MechanicalState() {}
+    ~MechanicalState() override {}
 public:
-    virtual size_t getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
-    virtual size_t getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
+    size_t getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
+    size_t getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
@@ -104,7 +104,7 @@ public:
         return name;
     }
 
-	virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const override {
+	void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const override {
 		const size_t size = this->getSize();
 		
 		switch(src.type) {
@@ -140,7 +140,7 @@ public:
 		(void) n;
 	}
 
-	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) override {
+	void copyFromBuffer(VecId dst, const SReal* src, unsigned n) override {
 		const size_t size = this->getSize();
 		
 		switch(dst.type) {
@@ -176,7 +176,7 @@ public:
 		(void) n;
 	}
 
-    virtual void addFromBuffer(VecId dst, const SReal* src, unsigned n) override {
+    void addFromBuffer(VecId dst, const SReal* src, unsigned n) override {
         const size_t size = this->getSize();
 
         switch(dst.type) {

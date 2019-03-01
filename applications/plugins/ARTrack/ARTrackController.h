@@ -53,28 +53,28 @@ public:
     /**
      * @brief Default Destructor.
      */
-    virtual ~ARTrackVirtualTimeController () {}
+    ~ARTrackVirtualTimeController () override {}
 
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @brief SceneGraph callback re-initialization method.
      */
-    void reinit();
+    void reinit() override;
 
-    virtual void reset() {init();}
+    void reset() override {init();}
 
     /**
      * @brief Mouse event callback.
      */
 
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 
-    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+    void onMouseEvent(core::objectmodel::MouseEvent *mev) override;
 
     void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
 
@@ -117,15 +117,15 @@ public:
     /**
      * @brief Default Destructor.
      */
-    virtual ~ARTrackController() {};
+    ~ARTrackController() override {};
 
-    void init();
+    void init() override;
 
     void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
 
-    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+    void onMouseEvent(core::objectmodel::MouseEvent *mev) override;
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 
     static std::string templateName(const ARTrackController<DataTypes>* = NULL)
     {

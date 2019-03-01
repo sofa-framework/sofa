@@ -86,13 +86,13 @@ public:
 protected:
     ArticulatedSystemMapping();
 
-    virtual ~ArticulatedSystemMapping() override
+    ~ArticulatedSystemMapping() override
     {
     }
 public:
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reset() override;
+    void init() override;
+    void bwdInit() override;
+    void reset() override;
 
     using Inherit::apply;
     using Inherit::applyJ;
@@ -100,7 +100,7 @@ public:
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
-    virtual void apply(
+    void apply(
         const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const InDataVecCoord*>& dataVecInPos ,
         const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
@@ -124,7 +124,7 @@ public:
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
-    virtual void applyJ(
+    void applyJ(
         const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const InDataVecDeriv*>& dataVecInVel,
         const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
@@ -148,7 +148,7 @@ public:
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
-    virtual void applyJT(
+    void applyJT(
         const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
         const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
@@ -172,7 +172,7 @@ public:
             dataVecOutRootForce[0]->endEdit();
     }
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override
+    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override
     {
 //                     serr<<"Warning ! ArticulatedSystemMapping::applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)  not implemented !"<< sendl;
     }
@@ -181,7 +181,7 @@ public:
 
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
-    virtual void applyJT(
+    void applyJT(
         const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
         const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
         const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override

@@ -76,9 +76,9 @@ protected:
 
     virtual ~TriangleSetTopologyAlgorithms() {}
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     /** \brief  Moves and fixes the two closest points of two triangles to their median point
      */

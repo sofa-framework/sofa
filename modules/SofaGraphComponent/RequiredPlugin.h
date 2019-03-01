@@ -57,11 +57,11 @@ public:
 
 protected:
     RequiredPlugin();
-    virtual ~RequiredPlugin() {}
+    ~RequiredPlugin() override {}
 
 public:
 
-    virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
     void loadPlugin();
 

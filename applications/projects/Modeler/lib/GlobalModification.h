@@ -52,7 +52,7 @@ class GlobalModification : public QWidget
 public:
     typedef helper::vector< sofa::core::objectmodel::Base* > InternalStorage;
     GlobalModification(const InternalStorage &c, GraphHistoryManager* historyManager);
-    ~GlobalModification();
+    ~GlobalModification() override;
 public slots:
     void applyGlobalModification();
     void useAliases(bool);

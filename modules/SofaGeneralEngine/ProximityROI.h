@@ -63,7 +63,7 @@ protected:
 
     ProximityROI();
 
-    ~ProximityROI() {}
+    ~ProximityROI() override {}
 public:
     void init() override;
 

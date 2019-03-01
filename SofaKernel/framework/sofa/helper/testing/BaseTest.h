@@ -48,7 +48,7 @@ public:
 
     /// Initialize Sofa and the random number generator
     BaseTest() ;
-    virtual ~BaseTest();
+    ~BaseTest() override;
 
     virtual void onSetUp() {}
     virtual void onTearDown() {}
@@ -57,8 +57,8 @@ public:
     static int seed;
 
 private:
-    virtual void SetUp() override ;
-    virtual void TearDown() override ;
+    void SetUp() override ;
+    void TearDown() override ;
 };
 
 } /// namespace testing

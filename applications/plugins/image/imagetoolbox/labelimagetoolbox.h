@@ -87,20 +87,20 @@ public:
 
     LabelImageToolBox();
 
-    virtual void init() override
+    void init() override
     {
         //addInput(&image);
         //addOutput(&triangles);
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
     }
 
@@ -108,7 +108,7 @@ protected:
     {
     }
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 

@@ -50,7 +50,7 @@ public:
 
     NormEngine();
 
-    virtual ~NormEngine() {}
+    ~NormEngine() override {}
 
     void init() override;
 

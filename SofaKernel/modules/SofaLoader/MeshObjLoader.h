@@ -44,10 +44,10 @@ public:
     SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
 protected:
     MeshObjLoader();
-    virtual ~MeshObjLoader();
+    ~MeshObjLoader() override;
 
 public:
-    virtual bool load() override;
+    bool load() override;
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )

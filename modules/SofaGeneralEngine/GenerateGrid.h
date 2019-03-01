@@ -67,7 +67,7 @@ public:
 
     GenerateGrid();
 
-    ~GenerateGrid() {}
+    ~GenerateGrid() override {}
 
     void init() override;
 

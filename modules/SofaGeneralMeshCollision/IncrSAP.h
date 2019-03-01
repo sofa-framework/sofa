@@ -252,7 +252,7 @@ private:
 protected:
     IncrSAP();
 
-    virtual ~IncrSAP();
+    ~IncrSAP() override;
 
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
@@ -265,16 +265,16 @@ public:
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
-    virtual void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
+    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
-    virtual void beginNarrowPhase() override;
+    void beginNarrowPhase() override;
 
 
     /* for debugging */
-    virtual void draw(const core::visual::VisualParams*) override {}
+    void draw(const core::visual::VisualParams*) override {}
 
-    inline virtual bool needsDeepBoundingTree()const override {return false;}
+    inline bool needsDeepBoundingTree()const override {return false;}
 
     void showEndPoints()const;
 

@@ -59,7 +59,7 @@ protected:
 
     MeshBarycentricMapperEngine();
 
-    ~MeshBarycentricMapperEngine() {}
+    ~MeshBarycentricMapperEngine() override {}
 public:
     void init() override;
 

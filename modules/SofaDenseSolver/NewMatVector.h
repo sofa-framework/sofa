@@ -49,27 +49,27 @@ public:
     {
     }
 
-    virtual ~NewMatVector()
+    ~NewMatVector() override
     {
     }
 
-    virtual void resize(Index dim)
+    void resize(Index dim) override
     {
         ReSize(dim);
         (*this) = 0.0;
     }
 
-    virtual SReal element(Index i) const
+    SReal element(Index i) const override
     {
         return NEWMAT::ColumnVector::element(i);
     }
 
-    void set(Index i, SReal v)
+    void set(Index i, SReal v) override
     {
         NEWMAT::ColumnVector::element(i) = v;
     }
 
-    void add(Index i, SReal v)
+    void add(Index i, SReal v) override
     {
         NEWMAT::ColumnVector::element(i) += v;
     }
@@ -84,7 +84,7 @@ public:
         return NEWMAT::ColumnVector::element(i);
     }
 
-    Index size() const
+    Index size() const override
     {
         return Nrows();
     }
@@ -107,7 +107,7 @@ public:
     }
 
     /// v = 0
-    void clear()
+    void clear() override
     {
         (*this) = 0.0;
     }

@@ -54,20 +54,20 @@ public:
     typedef typename Inherit1::Real Real;
     typedef typename In::VecCoord VecCoord;
 
-    virtual int addPointInTetra(const int index, const SReal* baryCoords) override ;
+    int addPointInTetra(const int index, const SReal* baryCoords) override ;
 
 protected:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
                                             topology::PointSetTopologyContainer* toTopology);
-    virtual ~BarycentricMapperTetrahedronSetTopology() override {}
+    ~BarycentricMapperTetrahedronSetTopology() override {}
 
     virtual helper::vector<Tetrahedron> getElements() override;
     virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
     helper::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
-    virtual void computeDistance(double& d, const Vector3& v) override;
-    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
+    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
+    void computeDistance(double& d, const Vector3& v) override;
+    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
 
     topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};

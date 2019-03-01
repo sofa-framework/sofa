@@ -123,7 +123,7 @@ public:
         f_method.setValue(methodOptions);
     }
 
-    virtual void init()
+    void init() override
     {
         addInput(&f_method);
         addInput(&f_order);
@@ -140,7 +140,7 @@ public:
 
 protected:
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
         if (!vparams->displayFlags().getShowVisualModels()) return;
 

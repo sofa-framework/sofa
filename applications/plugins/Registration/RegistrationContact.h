@@ -78,19 +78,19 @@ namespace sofa
 	ContactIndexMap contactIndex;
 	public:
 	RegistrationContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-	~RegistrationContact();
+	~RegistrationContact() override;
 	
-	void cleanup();
+	void cleanup() override;
 	
-	std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+	std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 	
-	void setDetectionOutputs(OutputVector* outputs);
+	void setDetectionOutputs(OutputVector* outputs) override;
 	
-	void createResponse(core::objectmodel::BaseContext* group);
+	void createResponse(core::objectmodel::BaseContext* group) override;
 	
-	void removeResponse();
+	void removeResponse() override;
 	
-	void draw(const core::visual::VisualParams* vparams);		
+	void draw(const core::visual::VisualParams* vparams) override;		
 	};
 
     } // namespace collision

@@ -154,9 +154,9 @@ namespace sofa
 
             ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const Task::Status* status);
 
-			virtual ~ThreadSpecificTask();
+			~ThreadSpecificTask() override;
 
-            virtual MemoryAlloc run() final;
+            MemoryAlloc run() final;
 
 
         private:

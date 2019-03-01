@@ -66,7 +66,7 @@ protected:
         vl_input.resize(d_nbInput.getValue());
     }
 
-    ~MergeVisualModels() {}
+    ~MergeVisualModels() override {}
 
     void update()
     {

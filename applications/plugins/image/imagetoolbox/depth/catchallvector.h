@@ -53,7 +53,7 @@ public:
 
     }
 
-    ~CatchAllVector() {}
+    ~CatchAllVector() override {}
 
     void init() override
     {
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
     }
 

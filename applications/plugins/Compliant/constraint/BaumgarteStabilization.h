@@ -25,7 +25,7 @@ class SOFA_Compliant_API BaumgarteStabilization : public ConstraintValue {
     BaumgarteStabilization( mstate_type* mstate = 0 );
 
 	// value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;
 
     Data< SReal > d_alpha; ///< The constraint violation coefficient
 };

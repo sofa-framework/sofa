@@ -47,9 +47,9 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    virtual void doInit(Node* node) override;
-    virtual void doCheckOn(Node* node) override;
-    virtual void doPrintSummary() override;
+    void doInit(Node* node) override;
+    void doCheckOn(Node* node) override;
+    void doPrintSummary() override;
 
 private:    
     std::map<std::string, bool > m_loadedPlugins;

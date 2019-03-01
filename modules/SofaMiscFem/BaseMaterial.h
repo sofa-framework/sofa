@@ -43,9 +43,9 @@ public:
     SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
 
     BaseMaterial() {}
-    virtual ~BaseMaterial() {}
+    ~BaseMaterial() override {}
 
-    virtual void init() override
+    void init() override
     {
         this->core::objectmodel::BaseObject::init();
     }

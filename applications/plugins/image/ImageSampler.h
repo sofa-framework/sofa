@@ -550,7 +550,7 @@ public:
         ImageSamplerSpecialization<ImageTypes>::init( this );
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -564,13 +564,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         raParam params(this->param);
 
@@ -634,7 +634,7 @@ protected:
     }
 
 #ifndef SOFA_NO_OPENGL
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;

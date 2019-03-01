@@ -95,15 +95,15 @@ protected:
 public:
     /// BaseObject initialization method.
     void bwdInit() override ;
-    virtual void parse(core::objectmodel::BaseObjectDescription *arg) override ;
-    virtual void reinit() override ;
+    void parse(core::objectmodel::BaseObjectDescription *arg) override ;
+    void reinit() override ;
 
     /// Add the forces.
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(x);
@@ -113,18 +113,18 @@ public:
     }
 
     /// Brings ForceField contribution to the global system stiffness matrix.
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    virtual void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex ) override;
+    void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex ) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     const DataVecCoord* getExtPosition() const;
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 protected :
 

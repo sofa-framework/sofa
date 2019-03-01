@@ -52,7 +52,7 @@ protected:
     BaseMapping();
 
     /// Destructor
-    virtual ~BaseMapping();
+    ~BaseMapping() override;
 	
 private:
     BaseMapping(const BaseMapping& n);
@@ -186,8 +186,8 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

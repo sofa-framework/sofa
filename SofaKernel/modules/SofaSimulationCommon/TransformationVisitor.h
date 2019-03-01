@@ -49,15 +49,15 @@ public:
 
     void processVisualModel(simulation::Node* node, core::visual::VisualModel* v);
     void processMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* m);
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "instrument"; }
-    virtual const char* getClassName() const { return "TransformationVisitor"; }
+    const char* getCategoryName() const override { return "instrument"; }
+    const char* getClassName() const override { return "TransformationVisitor"; }
 
 protected:
     Vector3 translation;

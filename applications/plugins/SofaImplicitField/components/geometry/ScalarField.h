@@ -115,7 +115,7 @@ public:
 
 protected:
     ScalarField( ) { }
-    virtual ~ScalarField() { }
+    ~ScalarField() override { }
 
 private:
     ScalarField(const ScalarField& n) ;

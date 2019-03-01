@@ -55,7 +55,7 @@ protected:
 
     NormalsFromPoints();
 
-    virtual ~NormalsFromPoints() {}
+    ~NormalsFromPoints() override {}
 public:
     void init() override;
 

@@ -44,12 +44,12 @@ public:
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "collision"; }
-    virtual const char* getClassName() const { return "CollisionVisitor"; }
+    const char* getCategoryName() const override { return "collision"; }
+    const char* getClassName() const override { return "CollisionVisitor"; }
 
     const size_t getPrimitiveTestCount() const {return m_primitiveTestCount;}
 private:
@@ -62,8 +62,8 @@ class SOFA_SIMULATION_CORE_API CollisionResetVisitor : public CollisionVisitor
 
 public:
     CollisionResetVisitor(const core::ExecParams* params) :CollisionVisitor(params) {}
-    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
-    virtual const char* getClassName() const { return "CollisionResetVisitor"; }
+    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
+    const char* getClassName() const override { return "CollisionResetVisitor"; }
 };
 
 /// Compute collision detection
@@ -71,8 +71,8 @@ class SOFA_SIMULATION_CORE_API CollisionDetectionVisitor : public CollisionVisit
 {
 public:
     CollisionDetectionVisitor(const core::ExecParams* params) :CollisionVisitor(params) {}
-    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
-    virtual const char* getClassName() const { return "CollisionDetectionVisitor"; }
+    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
+    const char* getClassName() const override { return "CollisionDetectionVisitor"; }
 };
 
 /// Compute collision response
@@ -80,8 +80,8 @@ class SOFA_SIMULATION_CORE_API CollisionResponseVisitor : public CollisionVisito
 {
 public:
     CollisionResponseVisitor(const core::ExecParams* params) :CollisionVisitor(params) {}
-    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
-    virtual const char* getClassName() const { return "CollisionResponseVisitor"; }
+    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
+    const char* getClassName() const override { return "CollisionResponseVisitor"; }
 };
 
 

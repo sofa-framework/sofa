@@ -49,9 +49,9 @@ public:
 
     void resetScene();
 
-    int mainLoop();
-    void redraw();
-    int closeGUI();
+    int mainLoop() override;
+    void redraw() override;
+    int closeGUI() override;
 
     static void setNumIterations(const std::string& nbIterInp) 
     {
@@ -71,7 +71,7 @@ public:
         }
         
     }
-    sofa::simulation::Node* currentSimulation();
+    sofa::simulation::Node* currentSimulation() override;
 
     /// @}
 
@@ -87,7 +87,7 @@ public:
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~BatchGUI();
+    ~BatchGUI() override;
 
     void startDumpVisitor();
     void stopDumpVisitor();

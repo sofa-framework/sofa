@@ -124,10 +124,10 @@ public:
         Interpolation.setValue(InterpolationOptions);
     }
 
-    virtual ~MergeImages()
+    ~MergeImages() override
     { }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&nbImages);
         inputImages.resize(nbImages.getValue());
@@ -139,7 +139,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         inputImages.resize(nbImages.getValue());
         inputTransforms.resize(nbImages.getValue());
@@ -172,7 +172,7 @@ protected:
         Coord u;
     };
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         unsigned int nb = nbImages.getValue();
         inputImages.resize(nb);

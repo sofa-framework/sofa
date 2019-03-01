@@ -50,7 +50,7 @@ public :
     /**
      * Constructor call for each test
      */
-    void SetUp(){}
+    void SetUp() override{}
 
     /**
      * Helper function to check mesh loading.

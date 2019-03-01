@@ -236,9 +236,9 @@ public:
 
     void clear();
 
-    virtual void reinit() override;
-    virtual void init() override;
-    virtual void handleEvent(sofa::core::objectmodel::Event* ) override;
+    void reinit() override;
+    void init() override;
+    void handleEvent(sofa::core::objectmodel::Event* ) override;
 
     bool update();
 

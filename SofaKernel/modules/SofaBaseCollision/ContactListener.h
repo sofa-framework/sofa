@@ -126,7 +126,7 @@ public:
 protected:
     ContactListener( CollisionModel* collModel1 = nullptr, CollisionModel* collModel2 = nullptr );
 
-    virtual ~ContactListener() override ;
+    ~ContactListener() override ;
 
     // DetectionOutput iterators
     typedef helper::vector<const helper::vector<DetectionOutput>* >::const_iterator ContactVectorsIterator;
@@ -145,8 +145,8 @@ private:
     helper::vector<const helper::vector<DetectionOutput>* > mContactsVector;
     core::collision::NarrowPhaseDetection* mNarrowPhase;
 
-    virtual void init(void) override;
-    virtual void handleEvent( core::objectmodel::Event* event ) override;
+    void init(void) override;
+    void handleEvent( core::objectmodel::Event* event ) override;
 
 
 };

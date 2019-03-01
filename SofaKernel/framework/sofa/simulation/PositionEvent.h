@@ -42,9 +42,9 @@ public:
 
     PositionEvent();
 
-    ~PositionEvent();
+    ~PositionEvent() override;
 
-    virtual const char* getClassName() const { return "PositionEvent"; }
+    const char* getClassName() const override { return "PositionEvent"; }
 
 };
 

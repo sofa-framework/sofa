@@ -65,9 +65,9 @@ public:
 protected:
     MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
-    virtual ~MixedInteractionForceField();
+    ~MixedInteractionForceField() override;
 public:
-    virtual void init() override;
+    void init() override;
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes1>* getMState1() { return mstate1.get(); }
@@ -89,7 +89,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -104,7 +104,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
     /// method implemented by the component.
-    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
 
 
     /// Get the potential energy associated to this ForceField.
@@ -115,7 +115,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -204,7 +204,7 @@ public:
     ///
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 protected:
     SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;

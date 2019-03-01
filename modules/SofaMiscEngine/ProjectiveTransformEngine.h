@@ -60,7 +60,7 @@ public:
 protected:
     ProjectiveTransformEngine();
 
-    ~ProjectiveTransformEngine() {}
+    ~ProjectiveTransformEngine() override {}
 public:
     void init() override;
 

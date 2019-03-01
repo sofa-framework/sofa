@@ -152,12 +152,12 @@ public:
     }
     
     
-    virtual ~ImageToolBox()
+    ~ImageToolBox() override
     {
         //for(unsigned int i=0;i<3;i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
     }
     
-    virtual void init() override
+    void init() override
     {
         
         // getvisuals
@@ -215,7 +215,7 @@ public:
     }
     
     
-    virtual void reinit() override
+    void reinit() override
     {
         /*waHisto whisto(this->histo);
         waPlane wplane(this->plane);
@@ -226,7 +226,7 @@ public:
         wplane->setClamp(whisto->getClamp());*/
     }
     
-    virtual void handleEvent( sofa::core::objectmodel::Event* /*event*/) override
+    void handleEvent( sofa::core::objectmodel::Event* /*event*/) override
     {
         /*typename ImagePlaneType::pCoord pc(0,0,0);
 
@@ -274,7 +274,7 @@ public:
         }*/
     }
     
-    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {}
     
     

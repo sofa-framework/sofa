@@ -59,10 +59,10 @@ class SOFA_CORE_API PerComponentLoggingMessageHandler : public MessageHandler
 {
 public:
     PerComponentLoggingMessageHandler() ;
-    virtual ~PerComponentLoggingMessageHandler() {}
+    ~PerComponentLoggingMessageHandler() override {}
 
     /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
+    void process(Message& m) override ;
 } ;
 
 ///

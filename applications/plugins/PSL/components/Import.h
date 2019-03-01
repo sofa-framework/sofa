@@ -61,7 +61,7 @@ public:
 
 protected:
     Import() ;
-    virtual ~Import() ;
+    ~Import() override ;
 
 private:
 };

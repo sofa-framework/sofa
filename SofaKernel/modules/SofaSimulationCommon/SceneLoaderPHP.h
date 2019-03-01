@@ -34,7 +34,7 @@ class SOFA_SIMULATION_COMMON_API SceneLoaderPHP : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension);
+    bool canLoadFileExtension(const char *extension) override;
 
     /// load the file
     virtual sofa::simulation::Node::SPtr load(const char *filename);
@@ -43,7 +43,7 @@ public:
     virtual std::string getFileTypeDesc();
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list);
+    void getExtensionList(ExtensionList* list) override;
 };
 
 } // namespace simulation

@@ -45,7 +45,7 @@ public:
     void setVerbose(int v) { verbose = v; }
     int getVerbose() const { return verbose; }
 
-    bool treeTraversal( TreeTraversalRepetition& repeat )
+    bool treeTraversal( TreeTraversalRepetition& repeat ) override
     {
         if( visitingOrder )
             return Visitor::treeTraversal( repeat ); // run the visitor with a regular traversal
@@ -63,9 +63,9 @@ public:
     template<class Seq>
     void processObjects(Seq& list, const char* name);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
-    virtual const char* getClassName() const { return "PrintVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
+    const char* getClassName() const override { return "PrintVisitor"; }
 };
 
 } // namespace simulation

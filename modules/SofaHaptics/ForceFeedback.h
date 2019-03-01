@@ -58,7 +58,7 @@ protected:
     {
     }
 public:
-    virtual void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
+    void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
     virtual bool isEnabled() { return this->getContext()->isActive(); }

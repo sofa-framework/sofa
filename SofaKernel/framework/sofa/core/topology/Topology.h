@@ -130,7 +130,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 protected:
     Topology():BaseObject() {}
-    virtual ~Topology()
+    ~Topology() override
     {}
 public:
     // Access to embedded position information (in case the topology is a regular grid for instance)
@@ -144,8 +144,8 @@ public:
     virtual SReal getPZ(int /*i*/) const { return 0.0; }
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 template<class TopologyElement>

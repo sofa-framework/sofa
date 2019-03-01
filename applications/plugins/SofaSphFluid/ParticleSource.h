@@ -177,7 +177,7 @@ public:
 
 
 
-    virtual void init() override
+    void init() override
     {
         this->core::behavior::ProjectiveConstraintSet<TDataTypes>::init();
         if (!this->mstate) return;
@@ -218,7 +218,7 @@ public:
         */
     }
 
-    virtual void reset() override
+    void reset() override
     {
         this->mstate->resize(1);
         lasttime = f_start.getValue()-f_delay.getValue();
@@ -396,7 +396,7 @@ public:
         projectResponseT(dx);
     }
 
-    virtual void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dxData) override ///< project dx to constrained space
+    void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dxData) override ///< project dx to constrained space
     {
         VecDeriv& dx = *dxData.beginEdit(mparams);
         projectResponseT(dx);
@@ -410,7 +410,7 @@ public:
     }
 */
 
-    virtual void projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  vData ) override ///< project dx to constrained space (dx models a velocity) override
+    void projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  vData ) override ///< project dx to constrained space (dx models a velocity) override
     {
         if (!this->mstate) return;
         if (lastparticles.getValue().empty()) return;
@@ -432,7 +432,7 @@ public:
         vData.endEdit(mparams);
     }
 
-    virtual void projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData) override ///< project x to constrained space (x models a position) override
+    void projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData) override ///< project x to constrained space (x models a position) override
     {
         if (!this->mstate) return;
         if (lastparticles.getValue().empty()) return;
@@ -455,7 +455,7 @@ public:
         xData.endEdit(mparams);
     }
 
-    virtual void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
+    void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
 
     }
@@ -465,7 +465,7 @@ public:
 
     }
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override
+    void handleEvent(sofa::core::objectmodel::Event* event) override
     {
         if(simulation::AnimateBeginEvent::checkEventType(event) )
         {

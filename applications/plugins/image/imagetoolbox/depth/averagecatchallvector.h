@@ -56,7 +56,7 @@ public:
 
     }
 
-    ~AverageCatchAllVector() {}
+    ~AverageCatchAllVector() override {}
 
     void init() override
     {
@@ -85,7 +85,7 @@ public:
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
     }
 

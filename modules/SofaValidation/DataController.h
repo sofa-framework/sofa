@@ -47,7 +47,7 @@ public:
 
 protected:
     DataController();
-    ~DataController() {}
+    ~DataController() override {}
 
     sofa::core::objectmodel::Data<std::string> data; ///< Controlled data
 };

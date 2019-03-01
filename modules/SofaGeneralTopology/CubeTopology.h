@@ -55,8 +55,8 @@ public:
     void setNy(int n) { ny.setValue(n); setSize(); }
     void setNz(int n) { nz.setValue(n); setSize(); }
 
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
 
     enum Plane { PLANE_UNKNOWN=0,
             PLANE_X0,

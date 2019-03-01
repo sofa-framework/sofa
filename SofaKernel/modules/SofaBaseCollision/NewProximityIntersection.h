@@ -46,7 +46,7 @@ public:
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
-    virtual void init() override;
+    void init() override;
 
     static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
 

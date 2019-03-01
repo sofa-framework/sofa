@@ -109,7 +109,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&background);
@@ -121,7 +121,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
@@ -228,7 +228,7 @@ protected:
     }
 
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         raImage in(this->image);
         raImage inb(this->background);
@@ -408,7 +408,7 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
 

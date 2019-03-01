@@ -44,7 +44,7 @@ public:
     Data< helper::vector<SReal> > radius; ///< Radius of each sphere
     Data< defaulttype::Vector3 > d_scale; ///< Scale applied to sphere positions
     Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
-    virtual bool load() override;
+    bool load() override;
 };
 
 } //loader

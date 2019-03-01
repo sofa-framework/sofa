@@ -40,9 +40,9 @@ public:
     ParallelVisitorScheduler(bool propagate=false);
 
     /// Specify whether this scheduler is multi-threaded.
-    virtual bool isMultiThreaded() const { return true; }
+    bool isMultiThreaded() const override { return true; }
 
-    virtual void executeVisitor(Node* node, Visitor* action);
+    void executeVisitor(Node* node, Visitor* action) override;
 
 protected:
     bool propagate;

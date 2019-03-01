@@ -55,7 +55,7 @@ public:
 protected:
 
     JoinPoints();
-    ~JoinPoints() {}
+    ~JoinPoints() override {}
 public:
     void init() override;
     void reinit() override;

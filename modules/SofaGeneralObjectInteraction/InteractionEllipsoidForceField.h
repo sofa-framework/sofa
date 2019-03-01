@@ -146,13 +146,13 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2) override;
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2) override;
 
     virtual void addForce2(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& p1, const DataVecCoord2& p2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
 
-    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2) override;
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2) override;
 
-    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
 
     void init() override;
     void reinit() override;

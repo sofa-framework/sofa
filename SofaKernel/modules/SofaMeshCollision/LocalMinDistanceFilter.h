@@ -133,7 +133,7 @@ protected:
     /**
      * @brief Default destructor.
      */
-    virtual ~LocalMinDistanceFilter();
+    ~LocalMinDistanceFilter() override;
 public:
     void reinit() override { init(); bwdInit();}
     void reset() override {reinit();}

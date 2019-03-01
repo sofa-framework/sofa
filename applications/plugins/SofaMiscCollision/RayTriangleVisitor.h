@@ -58,10 +58,10 @@ public:
     RayTriangleVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
     virtual void processTriangleModel(simulation::Node* node, component::collision::TriangleModel* obj);
     virtual void processOglModel(simulation::Node* node, component::visualmodel::OglModel* obj);
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual bool isThreadSafe() const { return true; }
-    virtual const char* getCategoryName() const { return "animate"; }
-    virtual const char* getClassName() const { return "RayTriangleVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    bool isThreadSafe() const override { return true; }
+    const char* getCategoryName() const override { return "animate"; }
+    const char* getClassName() const override { return "RayTriangleVisitor"; }
 
 private:
     /// Ray-triangle intersection report.

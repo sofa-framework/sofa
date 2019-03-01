@@ -60,7 +60,7 @@ protected:
 
     RandomPointDistributionInSurface();
 
-    ~RandomPointDistributionInSurface() {}
+    ~RandomPointDistributionInSurface() override {}
 public:
     void init() override;
 

@@ -74,12 +74,12 @@ public:
     /**
      * @brief Default destructor.
      */
-    virtual ~LineInfo() {}
+    ~LineInfo() override {}
 
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    virtual bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ);
+    bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ) override;
 
     /**
      * @brief Output stream.
@@ -101,7 +101,7 @@ public:
     /**
      * @brief Computes the region of interest cone of the Line primitive.
      */
-    virtual void buildFilter(unsigned int /*e*/);
+    void buildFilter(unsigned int /*e*/) override;
 
 protected:
 
@@ -126,7 +126,7 @@ public:
 
 protected:
     LineLocalMinDistanceFilter();
-    virtual ~LineLocalMinDistanceFilter();
+    ~LineLocalMinDistanceFilter() override;
 
 public:
 

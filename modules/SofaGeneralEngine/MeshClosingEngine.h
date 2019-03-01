@@ -95,10 +95,10 @@ protected:
     {
     }
 
-    virtual ~MeshClosingEngine() {}
+    ~MeshClosingEngine() override {}
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputTriangles);
@@ -112,7 +112,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { update();  }
+    void reinit()    override { update();  }
     void doUpdate() override;
 };
 

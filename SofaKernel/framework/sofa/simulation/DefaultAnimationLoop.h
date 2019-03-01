@@ -57,16 +57,16 @@ public:
 protected:
     DefaultAnimationLoop(simulation::Node* gnode = NULL);
 
-    virtual ~DefaultAnimationLoop();
+    ~DefaultAnimationLoop() override;
 public:
     /// Set the simulation node this animation loop is controlling
     virtual void setNode( simulation::Node* );
 
     /// Set the simulation node to the local context if not specified previously
-    virtual void init() override;
+    void init() override;
 
     /// perform one animation step
-    virtual void step(const sofa::core::ExecParams* params, SReal dt) override;
+    void step(const sofa::core::ExecParams* params, SReal dt) override;
 
 
     /// Construction method called by ObjectFactory.

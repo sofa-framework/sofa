@@ -60,7 +60,7 @@ public:
     
     }
     
-    virtual void init() override
+    void init() override
     {/*
         d_ip.setGroup("PixelClicked");
         d_p.setGroup("PixelClicked");
@@ -71,7 +71,7 @@ public:
         addOutput(&d_vecPixCoord);*/
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
+    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::DistanceZoneImageToolBoxAction(this,parent);
     }
@@ -121,7 +121,7 @@ public:
     
     }
     
-    virtual void init() override
+    void init() override
     {
         Inherited::init();
         addInput(&d_image);
@@ -135,7 +135,7 @@ public:
     }
 
 
-    virtual void generate() override
+    void generate() override
     {
         raImage im_in(this->d_image);
         waImage im_out(this->d_imageOut);

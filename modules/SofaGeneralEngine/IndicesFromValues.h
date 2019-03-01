@@ -56,7 +56,7 @@ protected:
 
     IndicesFromValues();
 
-    virtual ~IndicesFromValues();
+    ~IndicesFromValues() override;
 public:
     void init() override;
 

@@ -51,7 +51,7 @@ public:
 public slots:
     void fileOpen();
     void buttonUpdate(bool optionSet);
-    void accept();
+    void accept() override;
 
 signals:
     void loadObject(std::string, double, double, double, double, double, double,double);

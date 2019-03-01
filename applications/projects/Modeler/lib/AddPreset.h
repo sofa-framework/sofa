@@ -55,7 +55,7 @@ public:
 
 public slots:
     void fileOpen();
-    void accept();
+    void accept() override;
 
 signals:
     void loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string);

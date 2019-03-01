@@ -96,7 +96,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override
     {
         ctime_t t0 = begin(node, c);
         c->getConstraintViolation(cparams, m_v);
@@ -105,14 +105,14 @@ public:
     }
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetConstraintViolationVisitor";}
+    const char* getClassName() const override { return "MechanicalGetConstraintViolationVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()

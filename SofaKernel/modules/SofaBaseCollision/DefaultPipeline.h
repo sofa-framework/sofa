@@ -53,11 +53,11 @@ public:
 protected:
     // -- Pipeline interface
     /// Remove collision response from last step
-    virtual void doCollisionReset() override;
+    void doCollisionReset() override;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) override;
+    void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) override;
     /// Add collision response in the simulation graph
-    virtual void doCollisionResponse() override;
+    void doCollisionResponse() override;
 
     virtual void checkDataValues() ;
 };

@@ -49,7 +49,7 @@ public :
 
 
 public :
-	virtual bool load() override;
+	bool load() override;
 
 	template <class T>
 	static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
@@ -61,7 +61,7 @@ protected :
 	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
 
 	GIDMeshLoader();
-	virtual ~GIDMeshLoader();
+	~GIDMeshLoader() override;
 
 	bool readGID(std::ifstream& file);
 

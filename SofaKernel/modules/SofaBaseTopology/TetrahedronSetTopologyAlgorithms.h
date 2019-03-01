@@ -69,7 +69,7 @@ protected:
 
     virtual ~TetrahedronSetTopologyAlgorithms() {}
 public:
-    virtual void init() override;
+    void init() override;
 
     void removeTetra(sofa::helper::vector<TetraID>& ind_ta);
 

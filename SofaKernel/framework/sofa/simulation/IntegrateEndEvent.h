@@ -40,7 +40,7 @@ public:
 
     SOFA_EVENT_H( IntegrateEndEvent )
 
-    virtual const char* getClassName() const { return "IntegrateEndEvent"; }
+    const char* getClassName() const override { return "IntegrateEndEvent"; }
 };
 
 } // namespace simulation

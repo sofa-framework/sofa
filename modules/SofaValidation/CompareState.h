@@ -69,7 +69,7 @@ public:
     /// Return the total errors (position and velocity)
     double getErrorByDof() {return dofError_X + dofError_V;}
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
     /// total error for positions
@@ -90,12 +90,12 @@ class SOFA_VALIDATION_API CompareStateCreator: public simulation::Visitor
 public:
     CompareStateCreator(const core::ExecParams* params);
     CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i=true, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n; }
     void setCounter(int c) { counterCompareState = c; }
     void setCreateInMapping(bool b) { createInMapping=b; }
-    virtual const char* getClassName() const { return "CompareStateCreator"; }
+    const char* getClassName() const override { return "CompareStateCreator"; }
 
 protected:
 
@@ -112,12 +112,12 @@ class SOFA_VALIDATION_API CompareStateResult: public simulation::Visitor
 public:
     CompareStateResult(const core::ExecParams* params) : Visitor(params)
     { error=errorByDof=0; numCompareState=0;}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     double getTotalError() { return error; }
     double getErrorByDof() { return errorByDof; }
     unsigned int getNumCompareState() { return numCompareState; }
-    virtual const char* getClassName() const { return "CompareStateResult"; }
+    const char* getClassName() const override { return "CompareStateResult"; }
 protected:
     double error;
     double errorByDof;

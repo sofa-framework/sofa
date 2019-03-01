@@ -76,12 +76,12 @@ public:
 
     void processCollisionModel(simulation::Node* node, core::CollisionModel* /*o*/);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "collision"; }
-    virtual const char* getClassName() const { return "ColourPickingVisitor"; }
+    const char* getCategoryName() const override { return "collision"; }
+    const char* getClassName() const override { return "ColourPickingVisitor"; }
 
 private:
 

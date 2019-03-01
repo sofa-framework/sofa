@@ -44,7 +44,7 @@ public:
         m_dataengine = psc ;
     }
 
-    virtual ~MyyFileEventListener(){}
+    ~MyyFileEventListener() override{}
 
     virtual void fileHasChanged(const std::string& filepath){
         PythonEnvironment::gil lock {__func__} ;

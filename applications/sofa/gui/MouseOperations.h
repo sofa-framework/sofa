@@ -103,7 +103,7 @@ class SOFA_SOFAGUI_API AttachOperation : public Operation
 public:
     AttachOperation(sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::component::configurationsetting::AttachBodyButtonSetting>()) : Operation(s), setting(s)
     {}
-    virtual ~AttachOperation() {}
+    ~AttachOperation() override {}
 
     void setStiffness(double s) {setting->stiffness.setValue(s);}
     double getStiffness() const { return setting->stiffness.getValue();}
@@ -115,9 +115,9 @@ public:
     static std::string getDescription() {return "Attach an object to the Mouse";}
 
 protected:
-    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::AttachBodyButtonSetting>(s); }
+    void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) override { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::AttachBodyButtonSetting>(s); }
     virtual std::string defaultPerformerType();
-    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
 };
@@ -137,7 +137,7 @@ public:
     FixOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::FixPickedParticleButtonSetting>())
     {}
 
-    virtual ~FixOperation() {};
+    ~FixOperation() override {};
 
     void setStiffness(double s) {setting->stiffness.setValue(s); }
     virtual double getStiffness() const { return setting->stiffness.getValue();}
@@ -145,7 +145,7 @@ public:
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
     virtual std::string defaultPerformerType();
-    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     sofa::component::configurationsetting::FixPickedParticleButtonSetting::SPtr setting;
 };
@@ -156,7 +156,7 @@ public:
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
 protected:
     virtual std::string defaultPerformerType();
-    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 };
 
 class SOFA_SOFAGUI_API AddRecordedCameraOperation : public Operation
@@ -167,7 +167,7 @@ public:
 	static std::string getDescription() {return "Save camera's view points for navigation ";}
 protected:
 	virtual std::string defaultPerformerType();
-	virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+	void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 	sofa::component::configurationsetting::AddRecordedCameraButtonSetting::SPtr setting;
 };
 
@@ -179,7 +179,7 @@ public:
 	static std::string getDescription() {return "Start navigation if camera's view points have been saved";}
 protected:
 	virtual std::string defaultPerformerType();
-	virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+	void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 	sofa::component::configurationsetting::StartNavigationButtonSetting::SPtr setting;
 };
 
@@ -187,11 +187,11 @@ class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
     InciseOperation():startPerformer(NULL), cpt (0) {};
-    virtual ~InciseOperation();
-    virtual void start() ;
-    virtual void execution() ;
-    virtual void end() ;
-    virtual void endOperation() ;
+    ~InciseOperation() override;
+    void start() override ;
+    void execution() override ;
+    void end() override ;
+    void endOperation() override ;
 
     void setIncisionMethod (int m) {method = m;}
     void setSnapingBorderValue (int m) {snapingBorderValue = m;}
@@ -222,11 +222,11 @@ class SOFA_SOFAGUI_API TopologyOperation : public Operation
 public:
     TopologyOperation():scale (0.0), volumicMesh (0), firstClick(1) {};
 
-    virtual ~TopologyOperation() {};
-    virtual void start();
-    virtual void execution();
-    virtual void end();
-    virtual void endOperation();
+    ~TopologyOperation() override {};
+    void start() override;
+    void execution() override;
+    void end() override;
+    void endOperation() override;
 
     void setTopologicalOperation(int m) {topologicalOperation = m;}
     void setScale (double s) {scale = s;}
@@ -250,7 +250,7 @@ class SOFA_SOFAGUI_API AddSutureOperation : public Operation
 {
 public:
     AddSutureOperation():stiffness(10.0), damping(1.0) {}
-    virtual ~AddSutureOperation() {}
+    ~AddSutureOperation() override {}
 
     void setStiffness(double f) { stiffness = f;}
     virtual double getStiffness() const {return stiffness;}
@@ -260,7 +260,7 @@ public:
     static std::string getDescription() {return "Add a spring to suture two points.";}
 protected:
     virtual std::string defaultPerformerType();
-    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     double stiffness;
     double damping;

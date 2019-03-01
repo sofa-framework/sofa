@@ -59,13 +59,13 @@ protected:
 
     ExtrudeEdgesAndGenerateQuads();
 
-    virtual ~ExtrudeEdgesAndGenerateQuads() {}
+    ~ExtrudeEdgesAndGenerateQuads() override {}
 public:
 
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void doUpdate() override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {

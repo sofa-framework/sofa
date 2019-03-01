@@ -56,7 +56,7 @@ protected:
     }
 
     /// Destructor
-    virtual ~ContactManager() { }
+    ~ContactManager() override { }
 public:
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
@@ -90,7 +90,7 @@ protected:
 
     std::map<Instance,ContactVector> storedContacts;
 
-    virtual void changeInstance(Instance inst) override
+    void changeInstance(Instance inst) override
     {
         storedIntersectionMethod[instance] = intersectionMethod;
         intersectionMethod = storedIntersectionMethod[inst];

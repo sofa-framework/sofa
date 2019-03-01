@@ -35,9 +35,9 @@ public:
 
     UpdateBoundingBoxVisitor(const sofa::core::ExecParams* params);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
-    void processNodeBottomUp(simulation::Node* node);
+    void processNodeBottomUp(simulation::Node* node) override;
 
 };
 

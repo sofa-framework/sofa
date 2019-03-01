@@ -67,13 +67,13 @@ protected:
 
     MeshROI();
 
-    virtual ~MeshROI() {}
+    ~MeshROI() override {}
 public:
 
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void doUpdate() override;
-    virtual void draw(const core::visual::VisualParams*) override;
+    void init() override;
+    void reinit() override;
+    void doUpdate() override;
+    void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

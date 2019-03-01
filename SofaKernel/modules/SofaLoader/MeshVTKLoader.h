@@ -61,7 +61,7 @@ public:
     core::objectmodel::BaseData* tetrasData;
     core::objectmodel::BaseData* hexasData;
 
-    virtual bool load() override;
+    bool load() override;
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context,

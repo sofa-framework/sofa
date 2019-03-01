@@ -104,12 +104,12 @@ class QLinkSimpleEdit : public LinkWidget
     } QSimpleEdit;
 public :
     QLinkSimpleEdit(QWidget*, const char* name, core::objectmodel::BaseLink*);
-    virtual unsigned int numColumnWidget() {return 3;}
-    virtual unsigned int sizeWidget() {return 1;}
-    virtual bool createWidgets();
+    unsigned int numColumnWidget() override {return 3;}
+    unsigned int sizeWidget() override {return 1;}
+    bool createWidgets() override;
 protected:
-    virtual void readFromLink();
-    virtual void writeToLink();
+    void readFromLink() override;
+    void writeToLink() override;
     QSimpleEdit innerWidget_;
 };
 

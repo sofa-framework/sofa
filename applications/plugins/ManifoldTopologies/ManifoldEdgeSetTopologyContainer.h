@@ -56,17 +56,17 @@ public:
 
     ManifoldEdgeSetTopologyContainer();
 
-    virtual ~ManifoldEdgeSetTopologyContainer() {}
+    ~ManifoldEdgeSetTopologyContainer() override {}
 
-    virtual void init();
+    void init() override;
 
-    virtual void clear();
+    void clear() override;
 
     /** \brief Checks if the topology is coherent
     *
     * Check if the shell arrays are coherent
     */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
@@ -80,7 +80,7 @@ protected:
     * EdgeShell[i] contains the indices of all edges having the ith DOF as
     * one of their ends.
     */
-    virtual void createEdgesAroundVertexArray();
+    void createEdgesAroundVertexArray() override;
 
 private:
     // Describe each connected component, which can be seen as an oriented line

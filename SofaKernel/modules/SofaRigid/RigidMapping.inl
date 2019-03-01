@@ -70,14 +70,14 @@ public:
         points(dest->points)
     {
     }
-    virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
-                         SReal, SReal, bool, bool)
+    void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
+                         SReal, SReal, bool, bool) override
     {
         Coord c;
         Out::set(c, px, py, pz);
         points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
-    virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
+    void addSphere(SReal px, SReal py, SReal pz, SReal) override
     {
         Coord c;
         Out::set(c, px, py, pz);

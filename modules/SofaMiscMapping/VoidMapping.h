@@ -66,7 +66,7 @@ public:
     }
 
     /// Disable the mapping to get the original coordinates of the mapped model.
-    virtual void disable() override
+    void disable() override
     {
     }
 
@@ -84,25 +84,25 @@ public:
         return vec;
     }
 
-    virtual void apply (const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */) override
+    void apply (const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */) override
     {
     }
 
-    virtual void applyJ(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */) override
+    void applyJ(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */) override
     {
     }
 
-    virtual void applyJT(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */) override
+    void applyJT(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */) override
     {
     }
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
+    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
-    virtual void applyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */) override
+    void applyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */) override
     {
     }
 
-    virtual void computeAccFromMapping(const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */) override
+    void computeAccFromMapping(const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */) override
     {
     }
 
@@ -117,11 +117,11 @@ protected:
         this->f_mapMasses.setValue(false);
     }
 
-    virtual ~VoidMapping()
+    ~VoidMapping() override
     {
     }
 
-    virtual void updateForceMask() override { fromModel->forceMask.assign(fromModel->getSize(),true); }
+    void updateForceMask() override { fromModel->forceMask.assign(fromModel->getSize(),true); }
 };
 
 } // namespace mapping

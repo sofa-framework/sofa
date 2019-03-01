@@ -62,7 +62,7 @@ private:
 protected:
     THMPGSpatialHashing();
 
-    virtual ~THMPGSpatialHashing(){}
+    ~THMPGSpatialHashing() override{}
 
     virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
@@ -82,7 +82,7 @@ protected:
     std::vector<core::CollisionModel*> _collisionModels;
     boost::unordered::unordered_map<sofa::core::CollisionModel*,THMPGHashTable> _hash_tables;
 public:
-    inline virtual void beginBroadPhase()
+    inline void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         _timeStamp += this->getContext()->getDt();
@@ -90,25 +90,25 @@ public:
     }
 
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
+    void addCollisionModel (core::CollisionModel *cm) override;
 
-    virtual void endBroadPhase();
+    void endBroadPhase() override;
 
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& );
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override;
 
-    virtual void beginNarrowPhase();
+    void beginNarrowPhase() override;
 
 
     /* for debugging */
-    inline void draw(const core::visual::VisualParams*){}
+    inline void draw(const core::visual::VisualParams*) override{}
 
-    inline virtual bool needsDeepBoundingTree()const{return false;}
+    inline bool needsDeepBoundingTree()const override{return false;}
 };
 
 } // namespace collision

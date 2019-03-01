@@ -67,7 +67,7 @@ protected:
 
     ValuesFromPositions();
 
-    ~ValuesFromPositions() {}
+    ~ValuesFromPositions() override {}
 public:
     void init() override;
 

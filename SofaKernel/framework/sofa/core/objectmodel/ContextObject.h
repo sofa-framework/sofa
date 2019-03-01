@@ -47,15 +47,15 @@ protected:
         : BaseObject()
     {}
 
-    virtual ~ContextObject()
+    ~ContextObject() override
     {}
 public:
     /// modify the Context
     virtual void apply()=0;
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

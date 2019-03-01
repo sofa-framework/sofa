@@ -197,7 +197,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -207,13 +207,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         ImageCoordValuesFromPositionsSpecialization<ImageTypes>::update( *this );
     }

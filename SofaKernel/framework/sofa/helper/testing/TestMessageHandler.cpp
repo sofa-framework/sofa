@@ -67,7 +67,7 @@ public:
 
     GtestMessageFrameFailure(Message::Type type,
                              const char* filename, int lineno) ;
-    virtual void process(Message& message) ;
+    void process(Message& message) override ;
 };
 
 class GtestMessageFrameFailureWhenMissing  : public GtestMessageFrame
@@ -78,8 +78,8 @@ public:
     GtestMessageFrameFailureWhenMissing(Message::Type type,
                                         const char* filename,  int lineno) ;
 
-    virtual void process(Message& message) ;
-    virtual void finalize() ;
+    void process(Message& message) override ;
+    void finalize() override ;
 };
 
 class GtestMessageFrameIgnore  : public GtestMessageFrame
@@ -96,10 +96,10 @@ class SOFA_HELPER_API GtestMessageHandler : public MessageHandler
 
 public:
     GtestMessageHandler(Message::Class mclass) ;
-    virtual ~ GtestMessageHandler();
+    ~ GtestMessageHandler() override;
 
     /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
+    void process(Message& m) override ;
     void pushFrame(Message::Type type, GtestMessageFrame* frame)  ;
     void popFrame(Message::Type type) ;
 };

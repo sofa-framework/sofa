@@ -71,22 +71,22 @@ protected:
     GLint passHeight;
 public:
     VisualManagerPass();
-    virtual ~VisualManagerPass();
+    ~VisualManagerPass() override;
 
 
-    virtual void init() override;
-    virtual void initVisual() override;
+    void init() override;
+    void initVisual() override;
 
-    virtual void preDrawScene(core::visual::VisualParams* vp) override;
-    virtual bool drawScene(core::visual::VisualParams* vp) override;
-    virtual void postDrawScene(core::visual::VisualParams* vp) override;
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
+    void postDrawScene(core::visual::VisualParams* vp) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void fwdDraw(core::visual::VisualParams*) override;
-    virtual void bwdDraw(core::visual::VisualParams*) override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
+    void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
 
     virtual bool isPrerendered() {return prerendered;}
 

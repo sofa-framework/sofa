@@ -108,12 +108,12 @@ protected:
     TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate );
 
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams* vparams,int index) override;
 

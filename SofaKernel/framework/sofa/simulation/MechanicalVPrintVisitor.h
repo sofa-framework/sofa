@@ -44,9 +44,9 @@ class SOFA_SIMULATION_CORE_API MechanicalVPrintVisitor : public Visitor
 public:
     MechanicalVPrintVisitor(const core::ExecParams* params,
                             sofa::core::ConstMultiVecId v, std::ostream& =std::cerr );
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
-    virtual const char* getClassName() const { return "MechanicalVPrintVisitor"; }
+    const char* getClassName() const override { return "MechanicalVPrintVisitor"; }
 protected:
     sofa::core::ConstMultiVecId v_;
     std::ostream& out_;
@@ -64,8 +64,8 @@ protected:
 public:
     MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params,
                                            sofa::core::ConstMultiVecId vid, unsigned time, std::ostream& =std::cerr );
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual const char* getClassName() const { return "MechanicalVPrintWithElapsedTimeVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "MechanicalVPrintWithElapsedTimeVisitor"; }
 };
 
 
@@ -75,9 +75,9 @@ class SOFA_SIMULATION_CORE_API DofPrintVisitor : public Visitor
 public:
     DofPrintVisitor(const core::ExecParams* params,
                     sofa::core::ConstMultiVecId v, const std::string& dofname, std::ostream& =std::cerr );
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
-    virtual const char* getClassName() const { return "DofPrintVisitor"; }
+    const char* getClassName() const override { return "DofPrintVisitor"; }
 protected:
     sofa::core::ConstMultiVecId v_;
     std::ostream& out_;

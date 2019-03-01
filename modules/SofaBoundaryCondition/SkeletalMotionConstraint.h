@@ -91,7 +91,7 @@ public:
 
     void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     template<class MyCoord>
     void localToGlobal(typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);

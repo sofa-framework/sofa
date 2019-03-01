@@ -81,7 +81,7 @@ public:
         m_controller = psc ;
     }
 
-    virtual ~MyFileEventListener(){}
+    ~MyFileEventListener() override{}
 
     virtual void fileHasChanged(const std::string& filepath){
         PythonEnvironment::gil lock {__func__} ;

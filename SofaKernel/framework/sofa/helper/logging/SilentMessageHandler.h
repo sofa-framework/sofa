@@ -44,7 +44,7 @@ class Message;
 class SOFA_HELPER_API SilentMessageHandler : public MessageHandler
 {
 public:
-    virtual void process(Message& /*m*/);
+    void process(Message& /*m*/) override;
 };
 
 

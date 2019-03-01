@@ -65,7 +65,7 @@ public:
     sofa::core::objectmodel::Data<real> f_tstop; ///< stopping time for fluid source
 protected:
     Fluid3D();
-    virtual ~Fluid3D();
+    ~Fluid3D() override;
 public:
     int getNx() const { return f_nx.getValue(); }
     void setNx(int v) { f_nx.setValue(v);       }
@@ -76,20 +76,20 @@ public:
     int getNz() const { return f_nz.getValue(); }
     void setNz(int v) { f_nz.setValue(v);       }
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void reset() override;
+    void reset() override;
 
-    virtual void updatePosition(SReal dt) override;
+    void updatePosition(SReal dt) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 
 
     virtual void updateVisual();
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
+    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
 
 protected:
     // marching cube

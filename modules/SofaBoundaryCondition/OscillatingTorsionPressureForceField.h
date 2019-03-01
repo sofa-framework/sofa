@@ -96,11 +96,11 @@ public:
     Data<Real> dmax;     ///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
 
-    virtual void init() override;
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
+    void init() override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -117,7 +117,7 @@ public:
 
 protected :
     OscillatingTorsionPressureForceField();
-    virtual ~OscillatingTorsionPressureForceField() override;
+    ~OscillatingTorsionPressureForceField() override;
 
     void selectTrianglesAlongPlane();
     void selectTrianglesFromString();

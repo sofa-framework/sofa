@@ -48,22 +48,22 @@ class SOFA_PSL_API SceneLoaderPSL : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension) override ;
+    bool canLoadFileExtension(const char *extension) override ;
 
     /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension) override ;
+    bool canWriteFileExtension(const char *extension) override ;
 
     /// load the file
     virtual Node::SPtr load(const char *filename) override ;
 
     /// write the file
-    virtual void write(Node* node, const char *filename) override ;
+    void write(Node* node, const char *filename) override ;
 
     /// get the file type description
     virtual std::string getFileTypeDesc() override ;
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list) override;
+    void getExtensionList(ExtensionList* list) override;
 };
 
 

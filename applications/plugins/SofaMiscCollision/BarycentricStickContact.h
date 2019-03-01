@@ -74,7 +74,7 @@ protected:
     ContactIndexMap contactIndex;
 
     BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-    ~BarycentricStickContact();
+    ~BarycentricStickContact() override;
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
@@ -92,10 +92,10 @@ public:
     void removeResponse() override;
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
-    virtual bool keepAlive() override { return f_keepAlive.getValue(); }
+    bool keepAlive() override { return f_keepAlive.getValue(); }
 
     /// Control the keepAlive flag of the contact.
-    virtual void setKeepAlive(bool val) override { f_keepAlive.setValue(val); }
+    void setKeepAlive(bool val) override { f_keepAlive.setValue(val); }
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

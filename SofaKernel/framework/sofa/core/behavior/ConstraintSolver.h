@@ -52,7 +52,7 @@ public:
 protected:
     ConstraintSolver();
 
-    virtual ~ConstraintSolver();
+    ~ConstraintSolver() override;
 
 private:
     ConstraintSolver(const ConstraintSolver& n) ;
@@ -126,8 +126,8 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 } // namespace behavior

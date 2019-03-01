@@ -86,7 +86,7 @@ public:
     void init();
 
 
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
     void usingScene(const std::string &filename);
     std::list< std::string > getCategories() const;
 public  slots:

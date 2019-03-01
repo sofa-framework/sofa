@@ -66,7 +66,7 @@ public:
     {
     }
 
-    ~DiagonalMatrix() {}
+    ~DiagonalMatrix() override {}
 
     Real* ptr() { return data.ptr(); }
     const Real* ptr() const { return data.ptr(); }
@@ -81,58 +81,58 @@ public:
         return data+i;
     }
 
-    void resize(Index nbRow, Index /*nbCol*/)
+    void resize(Index nbRow, Index /*nbCol*/) override
     {
         data.resize(nbRow);
     }
 
-    Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return data.size();
     }
 
-    Index colSize(void) const
+    Index colSize(void) const override
     {
         return data.size();
     }
 
-    SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
         if (i!=j) return (Real)0;
         return data[i];
     }
 
-    void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
         if (i==j) data[i] = (Real)v;
     }
 
-    void add(Index i, Index j, double v)
+    void add(Index i, Index j, double v) override
     {
         if (i==j) data[i] += (Real)v;
     }
 
-    void clear(Index i, Index j)
+    void clear(Index i, Index j) override
     {
         if (i==j) data[i] = (Real)0;
     }
 
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
         data[i] = (Real)0;
     }
 
-    void clearCol(Index j)
+    void clearCol(Index j) override
     {
         data[j] = (Real)0;
     }
 
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
         data[i] = (Real)0;
     }
 
-    void clear()
+    void clear() override
     {
         data.clear();
     }
@@ -352,21 +352,21 @@ public:
     {
     }
 
-    ~BlockDiagonalMatrix() {}
+    ~BlockDiagonalMatrix() override {}
 
-    void resize(Index nbRow, Index )
+    void resize(Index nbRow, Index ) override
     {
         cSize = nbRow;
         data.resize((cSize+LC-1) / LC);
         //for (Index i=0;i<data.size();i++) data[i].ReSize(LC,LC);
     }
 
-    Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return cSize;
     }
 
-    Index colSize(void) const
+    Index colSize(void) const override
     {
         return cSize;
     }
@@ -408,14 +408,14 @@ public:
             return wbloc(i);
     }
 
-    SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i != j) return 0;
         else return traits::v(data[i], bi, bj);
     }
 
-    void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i == j) traits::v(data[i], bi, bj) = (Real)v;
@@ -432,7 +432,7 @@ public:
             setB(i, b);
     }
 
-    void add(Index i, Index j, double v)
+    void add(Index i, Index j, double v) override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i == j) traits::v(data[i], bi, bj) += (Real)v;
@@ -449,27 +449,27 @@ public:
             addB(i, b);
     }
 
-    void clear(Index i, Index j)
+    void clear(Index i, Index j) override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i == j) traits::v(data[i], bi, bj) = (Real)0;
     }
 
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
         Index bi=0; traits::split_row_index(i, bi);
         for (Index bj=0; bj<LC; ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
     }
 
-    void clearCol(Index j)
+    void clearCol(Index j) override
     {
         Index bj=0; traits::split_col_index(j, bj);
         for (Index bi=0; bi<LC; ++bi)
             traits::v(data[j], bi, bj) = (Real)0;
     }
 
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
         Index bi=0; traits::split_row_index(i, bi);
         for (Index bj=0; bj<LC; ++bj)
@@ -478,7 +478,7 @@ public:
             traits::v(data[i], bj, bi) = (Real)0;
     }
 
-    void clear()
+    void clear() override
     {
         for (Index b=0; b<(Index)data.size(); b++)
             traits::clear(data[b]);

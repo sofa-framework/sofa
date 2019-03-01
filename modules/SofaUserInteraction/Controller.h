@@ -85,7 +85,7 @@ protected:
     /**
     * @brief Destructor.
     */
-    virtual ~Controller();
+    ~Controller() override;
 public:
     /**
     * @brief Mouse event callback.
@@ -139,7 +139,7 @@ protected:
 
 public:
 
-    virtual void handleEvent(core::objectmodel::Event *) override;
+    void handleEvent(core::objectmodel::Event *) override;
 };
 
 } // namespace controller

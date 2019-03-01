@@ -59,7 +59,7 @@ public:
 
 protected:
     FixedRotationConstraint();
-    virtual ~FixedRotationConstraint() override;
+    ~FixedRotationConstraint() override;
 public:
     void init() override;
 
@@ -68,7 +68,7 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :

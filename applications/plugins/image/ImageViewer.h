@@ -178,14 +178,14 @@ public:
     }
     
     
-    virtual ~ImageViewer()
+    ~ImageViewer() override
     {
 #ifndef SOFA_NO_OPENGL
         for(unsigned int i=0;i<3;i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
 #endif //SOFA_NO_OPENGL
     }
     
-    virtual void init() override
+    void init() override
     {
         
         // getvisuals
@@ -218,7 +218,7 @@ public:
     }
     
     
-    virtual void reinit() override
+    void reinit() override
     {
         waHisto whisto(this->histo);
         waPlane wplane(this->plane);
@@ -230,7 +230,7 @@ public:
 
     }
     
-    virtual void handleEvent( sofa::core::objectmodel::Event* event) override
+    void handleEvent( sofa::core::objectmodel::Event* event) override
     {
         typename ImagePlaneType::pCoord pc(0,0,0);
 
@@ -322,7 +322,7 @@ public:
         }
     }
     
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
@@ -423,7 +423,7 @@ public:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ ) override
+    void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ ) override
     {
         //        if( onlyVisible) return;
         defaulttype::Vec<8,defaulttype::Vector3> c;

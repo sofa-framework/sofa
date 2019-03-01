@@ -62,21 +62,21 @@ public:
     enum { NOut = Inherit1::NOut };
 
 public:
-    virtual ~BarycentricMapperRegularGridTopology() override;
-    virtual void clear(int reserve=0) override;
-    virtual void resize( core::State<Out>* toModel ) override;
+    ~BarycentricMapperRegularGridTopology() override;
+    void clear(int reserve=0) override;
+    void resize( core::State<Out>* toModel ) override;
     virtual bool isEmpty() {return this->m_map.size() == 0;}
     virtual void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
     RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->m_fromTopology);}
-    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-    virtual void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-    virtual const BaseMatrix* getJ(int outSize, int inSize) override;
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    const BaseMatrix* getJ(int outSize, int inSize) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b );
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b );

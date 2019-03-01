@@ -43,7 +43,7 @@ namespace sofa
     {
     public:
         BaseSofa_test();
-        virtual ~BaseSofa_test() ;
+        ~BaseSofa_test() override ;
         void clearSceneGraph() ;
     } ;
 

@@ -45,14 +45,14 @@ public:
     SOFA_CLASS(GenerateRigidMass,core::DataEngine);
 
     GenerateRigidMass();
-    ~GenerateRigidMass();
+    ~GenerateRigidMass() override;
 
     /// Initialization method called at graph modification, during bottom-up traversal.
-    virtual void init() override;
+    void init() override;
     /// Update method called when variables used in precomputation are modified.
-    virtual void reinit() override;
+    void reinit() override;
     /// Update the output values
-    virtual void doUpdate() override;
+    void doUpdate() override;
 
 protected:
 

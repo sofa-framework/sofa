@@ -45,7 +45,7 @@ public:
     virtual bool load() = 0;
     virtual bool canLoad() ;
 
-    virtual void parse(objectmodel::BaseObjectDescription *arg) override ;
+    void parse(objectmodel::BaseObjectDescription *arg) override ;
 
     void setFilename(std::string f)  ;
     const std::string &getFilename() ;
@@ -54,7 +54,7 @@ public:
 
 protected:
     BaseLoader() ;
-    virtual ~BaseLoader() ;
+    ~BaseLoader() override ;
 
     static void skipToEOL(FILE* f) ;
     static bool readLine(char* buf, int size, FILE* f) ;

@@ -56,7 +56,7 @@ protected:
 
     PointsFromIndices();
 
-    ~PointsFromIndices() {}
+    ~PointsFromIndices() override {}
 public:
     void init() override;
 

@@ -56,10 +56,10 @@ namespace simulation
 {
 public:
     GetAssembledSizeVisitor( const sofa::core::ExecParams* params=core::MechanicalParams::defaultInstance() );
-    virtual ~GetAssembledSizeVisitor();
+    ~GetAssembledSizeVisitor() override;
 
-    virtual Result processNodeTopDown( simulation::Node*  );
-    virtual const char* getClassName() const { return "GetAssembledSizeVisitor"; }
+    Result processNodeTopDown( simulation::Node*  ) override;
+    const char* getClassName() const override { return "GetAssembledSizeVisitor"; }
 
     unsigned positionSize() const { return xsize; }
     unsigned velocitySize() const { return vsize; }

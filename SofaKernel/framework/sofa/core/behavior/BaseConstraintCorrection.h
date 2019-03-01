@@ -146,7 +146,7 @@ public:
 
 protected:
     BaseConstraintCorrection();
-    virtual ~BaseConstraintCorrection() override;
+    ~BaseConstraintCorrection() override;
 
 private:
     BaseConstraintCorrection(const BaseConstraintCorrection& n) ;

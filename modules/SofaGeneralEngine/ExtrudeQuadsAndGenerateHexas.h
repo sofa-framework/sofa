@@ -59,7 +59,7 @@ protected:
 
     ExtrudeQuadsAndGenerateHexas();
 
-    ~ExtrudeQuadsAndGenerateHexas() {}
+    ~ExtrudeQuadsAndGenerateHexas() override {}
 public:
     void init() override;
 

@@ -88,11 +88,11 @@ public:
 
     MultithreadGUI();
 
-    int mainLoop();
-    void redraw();
-    int closeGUI();
+    int mainLoop() override;
+    void redraw() override;
+    int closeGUI() override;
 
-    sofa::simulation::Node* currentSimulation()
+    sofa::simulation::Node* currentSimulation() override
     {
         return getScene();
     }
@@ -109,7 +109,7 @@ public:
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~MultithreadGUI();
+    ~MultithreadGUI() override;
 
 public:
 

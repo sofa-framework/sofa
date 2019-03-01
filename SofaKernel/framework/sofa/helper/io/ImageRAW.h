@@ -40,7 +40,7 @@ class SOFA_HELPER_API ImageRAW : public Image
 {
 public:
     ImageRAW ();
-    virtual ~ImageRAW() {}
+    ~ImageRAW() override {}
 
     void initHeader(unsigned hsize);
 

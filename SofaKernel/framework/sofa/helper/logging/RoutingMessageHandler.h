@@ -60,7 +60,7 @@ class SOFA_HELPER_API RoutingMessageHandler : public MessageHandler
 {
 public:
     RoutingMessageHandler() ;
-    virtual ~RoutingMessageHandler() {}
+    ~RoutingMessageHandler() override {}
 
     /// All the message of the given class will be routed to this handler
     void setAFilter(FilterFunction,
@@ -70,7 +70,7 @@ public:
     void removeAllFilters() ;
 
     /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
+    void process(Message& m) override ;
 
 private:
     std::vector<std::pair<FilterFunction, MessageHandler*> > m_filters;

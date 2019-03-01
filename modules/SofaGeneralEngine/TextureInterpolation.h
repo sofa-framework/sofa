@@ -62,7 +62,7 @@ protected:
 
     TextureInterpolation();
 
-    ~TextureInterpolation() {}
+    ~TextureInterpolation() override {}
 public:
     void init() override;
 

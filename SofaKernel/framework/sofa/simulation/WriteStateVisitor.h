@@ -48,10 +48,10 @@ class SOFA_SIMULATION_CORE_API WriteStateVisitor: public Visitor
 {
 public:
     WriteStateVisitor( const sofa::core::ExecParams* params, std::ostream& out );
-    virtual ~WriteStateVisitor();
+    ~WriteStateVisitor() override;
 
-    virtual Result processNodeTopDown( simulation::Node*  );
-    virtual const char* getClassName() const { return "WriteStateVisitor"; }
+    Result processNodeTopDown( simulation::Node*  ) override;
+    const char* getClassName() const override { return "WriteStateVisitor"; }
 
 protected:
     std::ostream& m_out;

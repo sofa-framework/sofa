@@ -50,7 +50,7 @@ public:
 
     SumEngine();
 
-    virtual ~SumEngine() {}
+    ~SumEngine() override {}
 
     void init() override;
 

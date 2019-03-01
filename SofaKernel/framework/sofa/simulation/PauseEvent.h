@@ -42,9 +42,9 @@ public:
 
     PauseEvent();
 
-    ~PauseEvent();
+    ~PauseEvent() override;
 
-    virtual const char* getClassName() const { return "PauseEvent"; }
+    const char* getClassName() const override { return "PauseEvent"; }
 
 };
 

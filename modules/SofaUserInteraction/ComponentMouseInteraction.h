@@ -89,9 +89,9 @@ class TComponentMouseInteraction : public ComponentMouseInteraction
 public:
 
 
-    void createInteractionComponents(sofa::simulation::Node* parent, sofa::simulation::Node* current);
+    void createInteractionComponents(sofa::simulation::Node* parent, sofa::simulation::Node* current) override;
 
-    bool  isCompatible( core::objectmodel::BaseContext *context) const;
+    bool  isCompatible( core::objectmodel::BaseContext *context) const override;
 protected :
     MouseMapping mouseMapping;
 };

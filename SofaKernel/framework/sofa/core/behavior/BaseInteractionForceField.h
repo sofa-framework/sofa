@@ -57,7 +57,7 @@ public:
     /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
     virtual BaseMechanicalState* getMechModel2() = 0;
 
-    virtual void addKToMatrix(const MechanicalParams* /* mparams */, const sofa::core::behavior::MultiMatrixAccessor* /* matrix */ ) override
+    void addKToMatrix(const MechanicalParams* /* mparams */, const sofa::core::behavior::MultiMatrixAccessor* /* matrix */ ) override
     {
         serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
     }
@@ -74,8 +74,8 @@ public:
     }
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

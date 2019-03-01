@@ -59,7 +59,7 @@ public:
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
     virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
 
-    virtual Result processNodeTopDown(simulation::Node* node)
+    Result processNodeTopDown(simulation::Node* node) override
     {
         for_each(this, node, node->object, &VisualVisitor::processObject);
         for_each(this, node, node->visualModel, &VisualVisitor::processVisualModel);
@@ -68,11 +68,11 @@ public:
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "visual"; }
-    virtual const char* getClassName() const { return "VisualVisitor"; }
+    const char* getCategoryName() const override { return "visual"; }
+    const char* getClassName() const override { return "VisualVisitor"; }
 
     /// visual visitor must be executed as a tree, such as forward and backward orders are coherent
-    virtual bool treeTraversal(TreeTraversalRepetition& repeat) { repeat=NO_REPETITION; return true; }
+    bool treeTraversal(TreeTraversalRepetition& repeat) override { repeat=NO_REPETITION; return true; }
 
 protected:
     core::visual::VisualParams* vparams;
@@ -86,13 +86,13 @@ public:
         : VisualVisitor(params)
     {
     }
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
     virtual void fwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
-    virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
-    virtual void processObject(simulation::Node* node, core::objectmodel::BaseObject* o);
+    void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) override;
+    void processObject(simulation::Node* node, core::objectmodel::BaseObject* o) override;
     virtual void bwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
-    virtual const char* getClassName() const { return "VisualDrawVisitor"; }
+    const char* getClassName() const override { return "VisualDrawVisitor"; }
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void printInfo(const core::objectmodel::BaseContext*,bool )  {return;}
 #endif
@@ -104,9 +104,9 @@ public:
     VisualUpdateVisitor(const core::ExecParams* params) : Visitor(params) {}
 
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm);
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
-    virtual const char* getClassName() const { return "VisualUpdateVisitor"; }
+    const char* getClassName() const override { return "VisualUpdateVisitor"; }
 };
 
 class SOFA_SIMULATION_CORE_API VisualInitVisitor : public Visitor
@@ -115,8 +115,8 @@ public:
     VisualInitVisitor(const core::ExecParams* params):Visitor(params) {}
 
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm);
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual const char* getClassName() const { return "VisualInitVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "VisualInitVisitor"; }
 };
 
 
@@ -132,7 +132,7 @@ public:
     virtual void processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm);
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm);
 
-    virtual Result processNodeTopDown(simulation::Node* node)
+    Result processNodeTopDown(simulation::Node* node) override
     {
         for_each(this, node, node->behaviorModel,  &VisualComputeBBoxVisitor::processBehaviorModel);
         for_each(this, node, node->mechanicalState, &VisualComputeBBoxVisitor::processMechanicalState);
@@ -140,7 +140,7 @@ public:
 
         return RESULT_CONTINUE;
     }
-    virtual const char* getClassName() const { return "VisualComputeBBoxVisitor"; }
+    const char* getClassName() const override { return "VisualComputeBBoxVisitor"; }
 };
 
 
@@ -150,11 +150,11 @@ public:
     VisualClearVisitor(core::visual::VisualParams* params) : VisualVisitor(params)
     {}
 
-    virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
+    void processVisualModel(simulation::Node*, core::visual::VisualModel* vm) override
     {
         vm->clearVisual();
     }
-    virtual const char* getClassName() const { return "VisualClearVisitor"; }
+    const char* getClassName() const override { return "VisualClearVisitor"; }
 };
 
 

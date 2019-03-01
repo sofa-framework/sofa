@@ -69,20 +69,20 @@ public:
     {
     }
 
-    virtual ~IntensityProfileCreator() {}
+    ~IntensityProfileCreator() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&values);
         addOutput(&image);
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         helper::ReadAccessor<Data< helper::vector<T> > > val(this->values);
 

@@ -318,47 +318,47 @@ public:
 
     static VirtualTypeInfo* get() { static VirtualTypeInfo<DataType> t; return &t; }
 
-    virtual const AbstractTypeInfo* BaseType() const  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
-    virtual const AbstractTypeInfo* ValueType() const { return VirtualTypeInfo<typename Info::ValueType>::get(); }
+    const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
+    const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
 
     virtual std::string name() const { return DataTypeName<DataType>::name(); }
 
-    virtual bool ValidInfo() const       { return Info::ValidInfo; }
-    virtual bool FixedSize() const       { return Info::FixedSize; }
-    virtual bool ZeroConstructor() const { return Info::ZeroConstructor; }
-    virtual bool SimpleCopy() const      { return Info::SimpleCopy; }
-    virtual bool SimpleLayout() const    { return Info::SimpleLayout; }
-    virtual bool Integer() const         { return Info::Integer; }
-    virtual bool Scalar() const          { return Info::Scalar; }
-    virtual bool Text() const            { return Info::Text; }
-    virtual bool CopyOnWrite() const     { return Info::CopyOnWrite; }
-    virtual bool Container() const       { return Info::Container; }
+    bool ValidInfo() const override       { return Info::ValidInfo; }
+    bool FixedSize() const override       { return Info::FixedSize; }
+    bool ZeroConstructor() const override { return Info::ZeroConstructor; }
+    bool SimpleCopy() const override      { return Info::SimpleCopy; }
+    bool SimpleLayout() const override    { return Info::SimpleLayout; }
+    bool Integer() const override         { return Info::Integer; }
+    bool Scalar() const override          { return Info::Scalar; }
+    bool Text() const override            { return Info::Text; }
+    bool CopyOnWrite() const override     { return Info::CopyOnWrite; }
+    bool Container() const override       { return Info::Container; }
 
-    virtual size_t size() const
+    size_t size() const override
     {
         return Info::size();
     }
-    size_t byteSize() const
+    size_t byteSize() const override
     {
         return Info::byteSize();
     }
-    virtual size_t size(const void* data) const
+    size_t size(const void* data) const override
     {
         return Info::size(*(const DataType*)data);
     }
-    virtual bool setSize(void* data, size_t size) const
+    bool setSize(void* data, size_t size) const override
     {
         return Info::setSize(*(DataType*)data, size);
     }
 
-    virtual long long getIntegerValue(const void* data, size_t index) const
+    long long getIntegerValue(const void* data, size_t index) const override
     {
         long long v = 0;
         Info::getValue(*(const DataType*)data, index, v);
         return v;
     }
 
-    virtual double    getScalarValue (const void* data, size_t index) const
+    double    getScalarValue (const void* data, size_t index) const override
     {
         double v = 0;
         Info::getValue(*(const DataType*)data, index, v);
@@ -372,12 +372,12 @@ public:
         return v;
     }
 
-    virtual void setIntegerValue(void* data, size_t index, long long value) const
+    void setIntegerValue(void* data, size_t index, long long value) const override
     {
         Info::setValue(*(DataType*)data, index, value);
     }
 
-    virtual void setScalarValue (void* data, size_t index, double value) const
+    void setScalarValue (void* data, size_t index, double value) const override
     {
         Info::setValue(*(DataType*)data, index, value);
     }
@@ -386,11 +386,11 @@ public:
     {
         Info::setValueString(*(DataType*)data, index, value);
     }
-    virtual const void* getValuePtr(const void* data) const
+    const void* getValuePtr(const void* data) const override
     {
         return Info::getValuePtr(*(const DataType*)data);
     }
-    virtual void* getValuePtr(void* data) const
+    void* getValuePtr(void* data) const override
     {
         return Info::getValuePtr(*(DataType*)data);
     }

@@ -36,9 +36,9 @@ class SOFA_SIMULATION_CORE_API CopyAspectVisitor : public Visitor
 {
 public:
     CopyAspectVisitor(const core::ExecParams* params, int destAspect, int srcAspect);
-    ~CopyAspectVisitor();
+    ~CopyAspectVisitor() override;
 
-    Result processNodeTopDown(Node* node);
+    Result processNodeTopDown(Node* node) override;
 
 protected:
     void processObject(sofa::core::objectmodel::BaseObject* obj);

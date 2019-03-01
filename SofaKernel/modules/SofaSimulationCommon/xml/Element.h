@@ -43,14 +43,14 @@ private:
 public:
     Element(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
-    virtual ~Element();
+    ~Element() override;
 
     Object* getTypedObject();
 
     virtual void setObject(typename Object::SPtr newObject);
 
     /// Get the associated object
-    virtual core::objectmodel::Base* getObject();
+    core::objectmodel::Base* getObject() override;
 
     typedef helper::Factory< std::string, Object, Element<Object>*, typename Object::SPtr > Factory;
 };

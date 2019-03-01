@@ -51,7 +51,7 @@ public:
     SOFA_CLASS(OglOITShader, sofa::component::visualmodel::OglShader);
 protected:
     OglOITShader();
-    virtual ~OglOITShader();
+    ~OglOITShader() override;
 
 public:
     helper::gl::GLSLShader* accumulationShader();

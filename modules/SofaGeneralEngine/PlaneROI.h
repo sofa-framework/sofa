@@ -69,7 +69,7 @@ protected:
 
     PlaneROI();
 
-    ~PlaneROI() {}
+    ~PlaneROI() override {}
 public:
     void init() override;
 

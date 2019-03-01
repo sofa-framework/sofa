@@ -46,11 +46,11 @@ public:
     /// Constructor
     KeyreleasedEvent( char );
     /// Destructor
-    ~KeyreleasedEvent();
+    ~KeyreleasedEvent() override;
     /// Return the key released
     char getKey() const;
 
-    virtual const char* getClassName() const { return "KeyreleasedEvent"; }
+    const char* getClassName() const override { return "KeyreleasedEvent"; }
 protected:
     /// Store the key
     char m_char;

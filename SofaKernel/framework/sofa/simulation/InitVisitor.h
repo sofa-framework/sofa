@@ -46,16 +46,16 @@ public:
     InitVisitor(const core::ExecParams* params):Visitor(params),rootNode(NULL) {}
 
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "init"; }
-    virtual const char* getClassName() const { return "InitVisitor"; }
+    const char* getCategoryName() const override { return "init"; }
+    const char* getClassName() const override { return "InitVisitor"; }
 
 protected:
     Node *rootNode;

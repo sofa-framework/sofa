@@ -60,7 +60,7 @@ protected:
         , toModel(initLink("output", "Output topology to map"))
     {}
 
-    virtual ~TopologicalMapping() { }
+    ~TopologicalMapping() override { }
 public:
     /// Specify the input and output models.
     virtual void setTopologies(In* from, Out* to)

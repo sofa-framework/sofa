@@ -46,8 +46,8 @@ public:
 
     SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
-    virtual bool canLoad() override { return true; }
-    virtual bool load() override; ///< create the string
+    bool canLoad() override { return true; }
+    bool load() override; ///< create the string
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg ) { return BaseLoader::canCreate (obj, context, arg); }

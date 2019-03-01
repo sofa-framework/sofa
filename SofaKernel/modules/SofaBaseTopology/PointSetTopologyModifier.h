@@ -54,9 +54,9 @@ protected:
         , d_propagateToDOF(initData(&d_propagateToDOF, true, "propagateToDOF", " propagate changes to MEchanical object DOFs if true"))
     {}
 
-    virtual ~PointSetTopologyModifier() override {}
+    ~PointSetTopologyModifier() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
     /** \brief Swap points i1 and i2.
     *
@@ -177,7 +177,7 @@ public:
     * @sa beginChange()
     * @sa endChange()
     */
-    virtual void propagateTopologicalChanges() override;  // DEPRECATED
+    void propagateTopologicalChanges() override;  // DEPRECATED
 
     /// TODO: doc ??
     void propagateTopologicalChangesWithoutReset();
@@ -205,7 +205,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
+    void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
     { }
 
     /** \brief Generic method for points renumbering

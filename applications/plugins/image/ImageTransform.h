@@ -82,7 +82,7 @@ public:
         _update.setValue(fluidOptions);
     }
 
-    ~ImageTransform() {}
+    ~ImageTransform() override {}
 
     void init() override
     {
@@ -112,7 +112,7 @@ protected:
 
     ImageContainer* container;
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         if (!container) return;
 
@@ -127,7 +127,7 @@ protected:
 
 public:
 
-    virtual void draw(const core::visual::VisualParams*) override
+    void draw(const core::visual::VisualParams*) override
     {
         if (_update.getValue().getSelectedId()==EVERY_DRAW)
             update();

@@ -112,12 +112,12 @@ public:
     void setStiffness(Real stiff);
     void setDamping(Real damp);
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     virtual void updateStiffness( const VecCoord& x );
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &) override;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

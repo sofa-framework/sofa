@@ -131,7 +131,7 @@ public:
 
 protected:
     BarycentricMapper() {}
-    virtual ~BarycentricMapper() override {}
+    ~BarycentricMapper() override {}
 
 private:
     BarycentricMapper(const BarycentricMapper& n) ;

@@ -63,13 +63,13 @@ using helper::vector;
 class LegacyVTKReader : public BaseVTKReader
 {
 public:
-    bool readFile(const char* filename);
+    bool readFile(const char* filename) override;
 };
 
 class XMLVTKReader : public BaseVTKReader
 {
 public:
-    bool readFile(const char* filename);
+    bool readFile(const char* filename) override;
 protected:
     bool loadUnstructuredGrid(TiXmlHandle datasetFormatHandle);
     bool loadPolydata(TiXmlHandle datasetFormatHandle);

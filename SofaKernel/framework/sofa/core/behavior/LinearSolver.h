@@ -58,8 +58,8 @@ public:
         return false;
     }
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 }; // class BaseLinearSolver
 
@@ -78,7 +78,7 @@ public:
 protected:
     LinearSolver();
 
-    virtual ~LinearSolver();
+    ~LinearSolver() override;
 public:
     /// Reset the current linear system.
     virtual void resetSystem() = 0;

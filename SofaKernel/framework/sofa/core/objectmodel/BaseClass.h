@@ -383,16 +383,16 @@ protected:
         for (int i=0; i<TClassParents<Parents>::nb(); ++i)
             parents[i] = TClassParents<Parents>::get(i);
     }
-    virtual ~TClass() {}
+    ~TClass() override {}
 
-    virtual void* dynamicCast(Base* obj) const
+    void* dynamicCast(Base* obj) const override
     {
         T* ptr = NULL;
         T::dynamicCast(ptr, obj);
         return ptr;
     }
 
-    virtual bool isInstance(Base* obj) const
+    bool isInstance(Base* obj) const override
     {
         return dynamicCast(obj) != NULL;
     }

@@ -58,7 +58,7 @@ public:
 
 
 
-    virtual void process(Message &m);
+    void process(Message &m) override;
 
 };
 

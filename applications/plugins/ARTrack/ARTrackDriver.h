@@ -57,11 +57,11 @@ public:
 	SOFA_CLASS(ARTrackDriver, core::behavior::BaseController);
 
     ARTrackDriver();
-    virtual ~ARTrackDriver() {}
+    ~ARTrackDriver() override {}
 
-    virtual void init();
+    void init() override;
 
-    virtual void reinit();
+    void reinit() override;
 
 
     Data<double> aRTrackScale; ///< ARTrack scale
@@ -111,7 +111,7 @@ private:
     static void* computeTracking (void *sarg);
 #endif
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 };
 
 } // namespace controller

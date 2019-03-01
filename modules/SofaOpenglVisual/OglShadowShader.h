@@ -51,7 +51,7 @@ public:
     SOFA_CLASS(OglShadowShader, sofa::component::visualmodel::OglShader);
 protected:
     OglShadowShader();
-    virtual ~OglShadowShader();
+    ~OglShadowShader() override;
 public:
     void init() override;
 

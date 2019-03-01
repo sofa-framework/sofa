@@ -32,7 +32,7 @@ public:
 
     Dummy(const std::string& name): m_destroyed(nullptr) {this->setName(name);}
     Dummy(bool *destroyed): m_destroyed(destroyed) {}
-    ~Dummy() { if(m_destroyed) *m_destroyed = true; }
+    ~Dummy() override { if(m_destroyed) *m_destroyed = true; }
 };
 
 template<class Node>

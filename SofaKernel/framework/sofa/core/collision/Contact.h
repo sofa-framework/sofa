@@ -59,7 +59,7 @@ public:
 protected:
     Contact() {}
     ///Destructor
-    virtual ~Contact() { }
+    ~Contact() override { }
 	
 private:
     Contact(const Contact& n);

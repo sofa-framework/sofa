@@ -50,11 +50,11 @@ public:
     typedef QComboBox   ComponentTemplates;
 public:
     QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category,const std::string &componentName, const std::string &categoryName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles);
-    ~QComponentTreeLibrary();
+    ~QComponentTreeLibrary() override;
 
-    void endConstruction();
+    void endConstruction() override;
 
-    void setDisplayed(bool b);
+    void setDisplayed(bool b) override;
 
     QWidget *getQWidget() { return this;};
 protected:

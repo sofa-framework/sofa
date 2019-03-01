@@ -261,9 +261,9 @@ public:
     /**
      * @brief default destructor.
      */
-    virtual ~JoystickEvent();
+    ~JoystickEvent() override;
 
-    virtual const char* getClassName() const { return "JoystickEvent"; }
+    const char* getClassName() const override { return "JoystickEvent"; }
 protected:
 
     std::vector< AxisEvent* > axisEvents; ///< State of the Analogic Pad

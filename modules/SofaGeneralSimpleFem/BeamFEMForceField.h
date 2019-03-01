@@ -197,16 +197,16 @@ protected:
 
 public:
 
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
     virtual void reinitBeam(unsigned int i);
-    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
-    virtual void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix ) override;
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord&  x) const override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    void addDForce(const MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
+    void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix ) override;
+    SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord&  x) const override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void setUpdateStiffnessMatrix(bool val);
     void setComputeGlobalMatrix(bool val);

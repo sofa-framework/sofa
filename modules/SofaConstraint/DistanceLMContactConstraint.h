@@ -111,7 +111,7 @@ public:
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     std::string getTemplateName() const override
     {

@@ -52,7 +52,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~GUIEvent();
+    ~GUIEvent() override;
 
     /**
      * @brief Get the emitter control ID
@@ -70,7 +70,7 @@ public:
     const std::string getValue(void) const {return m_value;}
 
 
-    virtual const char* getClassName() const { return "GUIEvent"; }
+    const char* getClassName() const override { return "GUIEvent"; }
 private:
 
     std::string     m_controlID;

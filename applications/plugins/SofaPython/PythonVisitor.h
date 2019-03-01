@@ -39,8 +39,8 @@ class PythonVisitor : public Visitor
 public:
     PythonVisitor(const core::ExecParams* params, PyObject *pyVisitor);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
 
     /// It seems no possible to pass a reference variable to a python function, so repeat cannot be modified in python
     /// The python function must returns a code:
@@ -48,7 +48,7 @@ public:
     ///  0 -> tree / NO_REPETITION
     ///  1 -> tree / REPEAT_ONCE
     ///  2 -> tree / REPEAT_ALL
-    virtual bool treeTraversal(TreeTraversalRepetition& repeat);
+    bool treeTraversal(TreeTraversalRepetition& repeat) override;
 
 protected:
     PyObject *m_PyVisitor;

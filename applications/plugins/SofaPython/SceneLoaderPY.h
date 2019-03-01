@@ -45,9 +45,9 @@ class SOFA_SOFAPYTHON_API SceneLoaderPY : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension);
+    bool canLoadFileExtension(const char *extension) override;
     /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension);
+    bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
     virtual Node::SPtr load(const char *filename);
@@ -57,13 +57,13 @@ public:
     bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file
-    virtual void write(Node* node, const char *filename);
+    void write(Node* node, const char *filename) override;
 
     /// get the file type description
     virtual std::string getFileTypeDesc();
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list);
+    void getExtensionList(ExtensionList* list) override;
 
     /// add a header that will be injected before the loading of the scene
     static void setHeader(const std::string& header);
@@ -92,10 +92,10 @@ public:
 
     template<class T> void processObject( T obj, const std::string& nodeVariable );
 
-    virtual Result processNodeTopDown(Node* node) override ;
-    virtual void processNodeBottomUp(Node* node) override ;
+    Result processNodeTopDown(Node* node) override ;
+    void processNodeBottomUp(Node* node) override ;
 
-    virtual const char* getClassName() const override { return "PythonExporterVisitor"; }
+    const char* getClassName() const override { return "PythonExporterVisitor"; }
 };
 
 

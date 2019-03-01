@@ -51,12 +51,12 @@ public:
 
     void processBaseObject(core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
-    virtual const char* getClassName() const { return "XMLPrintVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
+    const char* getClassName() const override { return "XMLPrintVisitor"; }
     int getLevel() const {return level;}
     void setLevel(int l) {level=l;}
-	virtual bool treeTraversal(TreeTraversalRepetition& repeat);
+	bool treeTraversal(TreeTraversalRepetition& repeat) override;
 };
 
 } // namespace simulation

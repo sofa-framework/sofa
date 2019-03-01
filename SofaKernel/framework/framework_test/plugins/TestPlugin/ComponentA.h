@@ -39,7 +39,7 @@ public:
 
 protected:
     ComponentA();
-    ~ComponentA();
+    ~ComponentA() override;
 };
 
 } // namespace test

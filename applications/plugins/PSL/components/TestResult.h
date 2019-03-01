@@ -42,8 +42,8 @@ public:
     SOFA_CLASS(TestResult, BaseObject) ;
 
     TestResult() ;
-    virtual ~TestResult();
-    virtual void init() override ;
+    ~TestResult() override;
+    void init() override ;
 
 public:
     Data<std::string> m_result ;

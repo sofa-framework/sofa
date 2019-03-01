@@ -90,14 +90,14 @@ protected:
     /** Default constructor
     */
     EvalPointsDistance();
-    virtual ~EvalPointsDistance();
+    ~EvalPointsDistance() override;
 public:
     /// Init the computation of the distances
-    virtual void init() override;
+    void init() override;
     /// Update
-    virtual void reinit() override;
+    void reinit() override;
     /// Reset the computation of the distances
-    virtual void reset() override { reinit(); }
+    void reset() override { reinit(); }
 
     /** Distance computation */
 
@@ -107,8 +107,8 @@ public:
     virtual SReal doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0);
 
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void draw(const core::visual::VisualParams* vparams) override;
     virtual void doDraw(const core::visual::VisualParams* vparams, const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState (First model)

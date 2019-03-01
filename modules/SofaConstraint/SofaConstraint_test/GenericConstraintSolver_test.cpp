@@ -32,7 +32,7 @@ namespace
 */
 struct GenericConstraintSolver_test : BaseSimulationTest
 {
-    void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaAllCommonComponents");
         sofa::simpleapi::importPlugin("SofaMiscCollision");

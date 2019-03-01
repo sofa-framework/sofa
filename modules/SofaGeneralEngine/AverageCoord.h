@@ -57,7 +57,7 @@ protected:
 
     AverageCoord();
 
-    virtual ~AverageCoord() {}
+    ~AverageCoord() override {}
 public:
     void init() override;
 

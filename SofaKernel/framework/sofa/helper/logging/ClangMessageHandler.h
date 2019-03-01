@@ -41,7 +41,7 @@ namespace logging
 class SOFA_HELPER_API ClangMessageHandler : public MessageHandler
 {
 public:
-    virtual void process(Message &m) ;
+    void process(Message &m) override ;
 };
 
 } // logging

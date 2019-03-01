@@ -140,10 +140,10 @@ public:
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
 
     // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     /// Draw the constrained points (= border mesh points)
-     virtual void draw(const core::visual::VisualParams* vparams) override;
+     void draw(const core::visual::VisualParams* vparams) override;
 
      class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {

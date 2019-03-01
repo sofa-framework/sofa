@@ -64,14 +64,14 @@ public:
     bool labelObjectClass;
 
     ExportDotVisitor(const sofa::core::ExecParams* params, std::ostream* out);
-    ~ExportDotVisitor();
+    ~ExportDotVisitor() override;
 
     void processObject(GNode* node, core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(GNode* node);
-    virtual void processNodeBottomUp(GNode* node);
+    Result processNodeTopDown(GNode* node) override;
+    void processNodeBottomUp(GNode* node) override;
 
-    virtual const char* getClassName() const { return "ExportDotVisitor"; }
+    const char* getClassName() const override { return "ExportDotVisitor"; }
 
 protected:
 

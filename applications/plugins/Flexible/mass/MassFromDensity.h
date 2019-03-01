@@ -154,9 +154,9 @@ public:
         transform.setReadOnly(true);
     }
 
-    virtual ~MassFromDensity() {}
+    ~MassFromDensity() override {}
 
-    virtual void init()
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -168,11 +168,11 @@ public:
         this->getContext()->get( dofs, core::objectmodel::BaseContext::Local);
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         if(!deformationMapping) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no mapping found"<<sendl; return; }
         if(!dofs) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no MechanicalObject<Vec3> found"<<sendl; return; }
@@ -236,7 +236,7 @@ protected:
         deformationMapping->init();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

@@ -54,10 +54,10 @@ public:
 protected:
     LMDNewProximityIntersection();
 public:
-    virtual void init() override;
+    void init() override;
 
     /// Returns true if algorithm uses proximity
-    virtual bool useProximity() const override { return true; }
+    bool useProximity() const override { return true; }
 
     bool testIntersection(Cube& ,Cube&);
     bool testIntersection(Point&, Point&);

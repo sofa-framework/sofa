@@ -62,9 +62,9 @@ public:
 protected:
     Mass(MechanicalState<DataTypes> *mm = NULL);
 
-    virtual ~Mass();
+    ~Mass() override;
 public:
-    virtual void init() override;
+    void init() override;
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return this->mstate.get(); }
@@ -76,7 +76,7 @@ public:
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// addMDx(const MechanicalParams*, DataVecDeriv&, const DataVecDeriv&, SReal) method implemented by the component.
-    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) override;
+    void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) override;
 
     virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
@@ -84,13 +84,13 @@ public:
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
-    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) override;
+    void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) override;
 
     virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
 
     /// Mass forces (gravity) often have null derivative
-    virtual void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
+    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -102,21 +102,21 @@ public:
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override;
+    void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override;
 
     ///                         $ e = 1/2  v^t M v $
     ///
     /// This method retrieves the velocity vector and call the internal
     /// getKineticEnergy(const MechanicalParams*, const DataVecDeriv&) method implemented by the component.
-    virtual SReal getKineticEnergy( const MechanicalParams* mparams) const override;
+    SReal getKineticEnergy( const MechanicalParams* mparams) const override;
     virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
 
     ///                         $ e = M g x $
     ///
     /// This method retrieves the positions vector and call the internal
     /// getPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams) const override;
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
+    SReal getPotentialEnergy( const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
 
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
@@ -124,7 +124,7 @@ public:
     ///
     /// This method retrieves the positions and velocity vectors and call the internal
     /// getMomentum(const MechanicalParams*, const VecCoord&, const VecDeriv&) method implemented by the component.
-    virtual defaulttype::Vector6 getMomentum( const MechanicalParams* mparams ) const override;
+    defaulttype::Vector6 getMomentum( const MechanicalParams* mparams ) const override;
     virtual defaulttype::Vector6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
 
 
@@ -134,10 +134,10 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
+    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
+    void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
 
-    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to m M + b B + k K
@@ -146,35 +146,35 @@ public:
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// addMBKToMatrix only on the subMatrixIndex
-    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex) override;
+    void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex) override;
 
     /// @}
 
     /// initialization to export kinetic and potential energy to gnuplot files format
-    virtual void initGnuplot(const std::string path) override;
+    void initGnuplot(const std::string path) override;
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time) override;
+    void exportGnuplot(const MechanicalParams* mparams, SReal time) override;
 
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId /*vid*/) override;
+    void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId /*vid*/) override;
     virtual void addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */);
 
 
     /// recover the mass of an element
-    virtual SReal getElementMass(unsigned int) const override;
-    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(unsigned int) const override;
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
 
 public:
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
+    bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
+    bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
 
 };
 

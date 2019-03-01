@@ -42,7 +42,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(VisualManager)
 protected:
     /// Destructor
-    virtual ~VisualManager() { }
+    ~VisualManager() override { }
 public:
     /**
      *  \brief Called before rendering the scene
@@ -62,8 +62,8 @@ public:
     virtual bool drawScene(VisualParams* /*vparams*/) { return false; }
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 } // namespace visual

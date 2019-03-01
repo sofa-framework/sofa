@@ -36,9 +36,9 @@ class SOFA_SIMULATION_CORE_API CleanupVisitor : public Visitor
 public:
     CleanupVisitor(const core::ExecParams* params ) :Visitor(params) {}
 
-    virtual Result processNodeTopDown(Node* node);
-    virtual void processNodeBottomUp(Node* node);
-    virtual const char* getClassName() const { return "CleanupVisitor"; }
+    Result processNodeTopDown(Node* node) override;
+    void processNodeBottomUp(Node* node) override;
+    const char* getClassName() const override { return "CleanupVisitor"; }
 };
 
 

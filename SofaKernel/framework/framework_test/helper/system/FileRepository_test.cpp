@@ -32,7 +32,7 @@ struct FileRepository_test: public ::testing::Test
 {
     FileRepository fileRepository;
 
-    void SetUp()
+    void SetUp() override
     {
         fileRepository.addFirstPath( FRAMEWORK_TEST_RESOURCES_DIR );
     }

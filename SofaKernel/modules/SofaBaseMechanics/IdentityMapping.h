@@ -98,14 +98,14 @@ protected:
     {
     }
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
     /// This is the case for mapping keeping a one-to-one correspondance between
     /// input and output DOFs (mostly identity or data-conversion mappings).
-    virtual bool sameTopology() const override { return true; }
+    bool sameTopology() const override { return true; }
 
     void init() override;
 
@@ -119,7 +119,7 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
 
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
 
 protected:

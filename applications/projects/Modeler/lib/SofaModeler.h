@@ -76,7 +76,7 @@ class SofaModeler: public QMainWindow
     Q_OBJECT;
 public:
     SofaModeler();
-    ~SofaModeler() {};
+    ~SofaModeler() override {};
 
     /// Create a new empty Tab
     void createTab();
@@ -91,7 +91,7 @@ public:
     void changeTabName(GraphModeler *graph, const QString &name, const QString &suffix=QString());
     void setDebugBinary(bool b) {debug=b;};
 
-	void resizeEvent(QResizeEvent * event);
+	void resizeEvent(QResizeEvent * event) override;
 
 signals:
     void loadPresetGraph(std::string);
@@ -179,12 +179,12 @@ public slots:
     void loadPreset(QAction *act);
 
     /// When the user enter the Modeler, grabbing something: determine the acceptance or not
-    void dragEnterEvent( QDragEnterEvent* event);
+    void dragEnterEvent( QDragEnterEvent* event) override;
     /// When the user move the mouse around, with something grabbed
-    void dragMoveEvent( QDragMoveEvent* event);
+    void dragMoveEvent( QDragMoveEvent* event) override;
 
     /// Action to perform when the user drop something in the Modeler
-    void dropEvent(QDropEvent* event);
+    void dropEvent(QDropEvent* event) override;
 
     /// Open a recently Opened files from the menu Recently Opened Files...
     void fileRecentlyOpened(QAction *act);
@@ -195,7 +195,7 @@ public slots:
     void changeSofaBinary();
     void GUIChanged();
     //When the window is closed: we close all the Sofa launched, and remove temporary files
-    void closeEvent ( QCloseEvent * e );
+    void closeEvent ( QCloseEvent * e ) override;
 
     ///display the plugin manager window, to add/remove some external dynamic libraries
     void showPluginManager();

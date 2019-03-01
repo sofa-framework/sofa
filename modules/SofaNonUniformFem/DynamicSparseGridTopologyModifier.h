@@ -45,9 +45,9 @@ protected:
         : HexahedronSetTopologyModifier()
     { }
 
-    virtual ~DynamicSparseGridTopologyModifier() {}
+    ~DynamicSparseGridTopologyModifier() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
     /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexahedra for the moment !
     *
@@ -55,7 +55,7 @@ public:
     *
     * \sa addHexahedraWarning
     */
-    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra ) override;
+    void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra ) override;
 
     /** \brief Actually Add some hexahedra to this topology.
     *
@@ -73,7 +73,7 @@ public:
     * \sa removeHexahedraWarning
     * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    virtual void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false) override;
+    void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false) override;
 
     /** \brief Renumber the attributes of this class
     *

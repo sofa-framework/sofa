@@ -47,7 +47,7 @@ public:
 
     DetachNodeEvent( BaseNode* n );
 
-    ~DetachNodeEvent();
+    ~DetachNodeEvent() override;
 
     BaseNode* getNode() const;
 
@@ -55,7 +55,7 @@ public:
 
     bool contains(BaseObject* o) const;
 
-    virtual const char* getClassName() const { return "DetachNodeEvent"; }
+    const char* getClassName() const override { return "DetachNodeEvent"; }
 protected:
     BaseNode* node;
 };

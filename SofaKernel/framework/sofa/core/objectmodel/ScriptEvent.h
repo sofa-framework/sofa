@@ -53,7 +53,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~ScriptEvent();
+    ~ScriptEvent() override;
 
     /**
      * @brief Get the sender name
@@ -65,7 +65,7 @@ public:
      */
     const std::string getEventName(void) const {return m_eventName;}
 
-    virtual const char* getClassName() const { return "ScriptEvent"; }
+    const char* getClassName() const override { return "ScriptEvent"; }
 private:
 
     sofa::simulation::Node::SPtr m_sender;

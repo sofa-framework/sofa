@@ -51,7 +51,7 @@ class InformationOnPickCallBack: public CallBackPicker
 public:
     InformationOnPickCallBack();
     InformationOnPickCallBack(RealGUI *g);
-    void execute(const sofa::component::collision::BodyPicked &body);
+    void execute(const sofa::component::collision::BodyPicked &body) override;
 protected:
     RealGUI *gui;
 };
@@ -62,7 +62,7 @@ class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
 public:
     ColourPickingRenderCallBack();
     ColourPickingRenderCallBack(viewer::SofaViewer* viewer);
-    void render(ColourPickingVisitor::ColourCode code);
+    void render(ColourPickingVisitor::ColourCode code) override;
 protected:
     viewer::SofaViewer* _viewer;
 

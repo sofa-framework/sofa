@@ -55,9 +55,9 @@ public:
         : EdgeSetTopologyModifier()
     {}
 
-    virtual ~ManifoldEdgeSetTopologyModifier() {}
+    ~ManifoldEdgeSetTopologyModifier() override {}
 
-    virtual void init();
+    void init() override;
 
     /** \brief Add an edge.
     */

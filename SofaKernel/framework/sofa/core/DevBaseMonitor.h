@@ -44,7 +44,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(DevBaseMonitor)
 
     /// Destructor
-    virtual ~DevBaseMonitor() {}
+    ~DevBaseMonitor() override {}
     /// Compute metrics
     virtual void eval() = 0;
 };

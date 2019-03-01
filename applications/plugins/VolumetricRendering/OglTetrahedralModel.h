@@ -82,14 +82,14 @@ private:
 
 protected:
     OglTetrahedralModel();
-    virtual ~OglTetrahedralModel();
+    ~OglTetrahedralModel() override;
 public:
-    void init();
-    void initVisual();
-    void drawTransparent(const core::visual::VisualParams* vparams);
-    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
+    void init() override;
+    void initVisual() override;
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
-    virtual void updateVisual();
+    void updateVisual() override;
     virtual void computeMesh();
 
     virtual std::string getTemplateName() const

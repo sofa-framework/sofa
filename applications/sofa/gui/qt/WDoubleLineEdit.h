@@ -52,11 +52,11 @@ protected:
     QPoint            m_prevMousePosition ;
 
     void              checkValue();
-    virtual void      keyPressEvent(QKeyEvent *);
+    void      keyPressEvent(QKeyEvent *) override;
 
-    virtual void      mouseMoveEvent(QMouseEvent *) ;
-    virtual void      mousePressEvent(QMouseEvent *) ;
-    virtual void      mouseReleaseEvent(QMouseEvent *) ;
+    void      mouseMoveEvent(QMouseEvent *) override ;
+    void      mousePressEvent(QMouseEvent *) override ;
+    void      mouseReleaseEvent(QMouseEvent *) override ;
 
 public:
 

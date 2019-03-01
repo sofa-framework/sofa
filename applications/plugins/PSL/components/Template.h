@@ -62,13 +62,13 @@ public:
     SOFA_CLASS(Template, BaseObject);
 
     Template() ;
-    virtual ~Template() ;
+    ~Template() override ;
 
     PyObject* m_rawTemplate { nullptr };
     Data<std::string> m_template  ; ///< Current template source
 
     void addDataToTrack(BaseData*) ;
-    virtual void handleEvent(Event *event) override ;
+    void handleEvent(Event *event) override ;
 private:
     DataTracker m_dataTracker ;
     vector<BaseData*> m_trackedDatas ;

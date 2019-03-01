@@ -67,32 +67,32 @@ public:
     typedef typename Inherit1::ForceMask ForceMask;
 
 public:
-    virtual void clear(int reserve=0) override;
-    virtual void resize( core::State<Out>* toModel ) override;
-    virtual int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
-    virtual int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
-    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
-    virtual int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
-    virtual int addPointInQuad(const int quadIndex, const SReal* baryCoords) override;
-    virtual int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) override;
-    virtual int addPointInTetra(const int tetraIndex, const SReal* baryCoords) override;
-    virtual int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    void clear(int reserve=0) override;
+    void resize( core::State<Out>* toModel ) override;
+    int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
+    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
+    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
+    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
+    int addPointInQuad(const int quadIndex, const SReal* baryCoords) override;
+    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) override;
+    int addPointInTetra(const int tetraIndex, const SReal* baryCoords) override;
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-    virtual void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-    virtual const BaseMatrix* getJ(int outSize, int inSize) override;
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    const BaseMatrix* getJ(int outSize, int inSize) override;
 
     sofa::helper::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
 
     friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b );
     friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b );
 
-    virtual ~BarycentricMapperMeshTopology() override ;
+    ~BarycentricMapperMeshTopology() override ;
 
 protected:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,

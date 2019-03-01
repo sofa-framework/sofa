@@ -40,7 +40,7 @@ public:
 
     SOFA_EVENT_H( CollisionBeginEvent )
 
-    virtual const char* getClassName() const { return "CollisionBeginEvent"; }
+    const char* getClassName() const override { return "CollisionBeginEvent"; }
 };
 
 } // namespace simulation

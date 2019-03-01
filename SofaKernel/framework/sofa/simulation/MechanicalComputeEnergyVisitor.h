@@ -55,23 +55,23 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeEnergyVisitor : public sofa::sim
 public:
     MechanicalComputeEnergyVisitor(const core::MechanicalParams* mparams);
 
-    ~MechanicalComputeEnergyVisitor();
+    ~MechanicalComputeEnergyVisitor() override;
 
     SReal getKineticEnergy();
 
     SReal getPotentialEnergy();
 
     /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
+    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Process the BaseForceField
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f);
+    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalComputeEnergyVisitor"; }
+    const char* getClassName() const override { return "MechanicalComputeEnergyVisitor"; }
 
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false )
+    void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false ) override
     {
         m_kineticEnergy = m_potentialEnergy = 0;
         sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );

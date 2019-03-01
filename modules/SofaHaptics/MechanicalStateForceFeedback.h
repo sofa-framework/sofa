@@ -52,12 +52,12 @@ public:
 protected:
     MechanicalStateForceFeedback(void) {};
 public:
-    virtual void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
-    virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
+    void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
+    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
 
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {};
+    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {};
 };
 
 } // namespace controller

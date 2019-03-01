@@ -85,7 +85,7 @@ namespace sofa
 
                 BlenderExporter();
 
-                virtual ~BlenderExporter(){}
+                ~BlenderExporter() override{}
 
             public:
 

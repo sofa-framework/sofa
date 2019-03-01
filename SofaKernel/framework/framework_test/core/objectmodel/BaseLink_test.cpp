@@ -47,7 +47,7 @@ public:
     BaseObject::SPtr m_src ;
 
     /// Create a link to an object.
-    void SetUp()
+    void SetUp() override
     {
         m_dst = sofa::core::objectmodel::New<BaseObject>() ;
         m_src = sofa::core::objectmodel::New<BaseObject>() ;

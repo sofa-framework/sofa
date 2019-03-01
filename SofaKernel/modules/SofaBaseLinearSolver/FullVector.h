@@ -104,7 +104,7 @@ public:
     {
     }
 
-    virtual ~FullVector()
+    ~FullVector() override
     {
         if (allocsize>0)
             delete[] data;
@@ -147,13 +147,13 @@ public:
         cursize = dim;
     }
 
-    void resize(Index dim)
+    void resize(Index dim) override
     {
         fastResize(dim);
         clear();
     }
 
-    void clear()
+    void clear() override
     {
         if (cursize > 0)
             std::fill( this->begin(), this->end(), T() );
@@ -169,7 +169,7 @@ public:
     }
 
     // for compatibility with baseVector
-    void clear(Index dim)
+    void clear(Index dim) override
     {
         resize(dim);
     }
@@ -186,25 +186,25 @@ public:
         return data[i];
     }
 
-    SReal element(Index i) const
+    SReal element(Index i) const override
     {
         checkIndex(i);
         return (SReal) data[i];
     }
 
-    void set(Index i, SReal v)
+    void set(Index i, SReal v) override
     {
         checkIndex(i);
         data[i] = (Real)v;
     }
 
-    void add(Index i, SReal v)
+    void add(Index i, SReal v) override
     {
         checkIndex(i);
         data[i] +=  (Real)v;
     }
 
-    Index size() const
+    Index size() const override
     {
         return cursize;
     }

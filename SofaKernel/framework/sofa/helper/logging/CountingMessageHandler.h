@@ -61,13 +61,13 @@ class SOFA_HELPER_API CountingMessageHandler : public MessageHandler
 {
 public:
     CountingMessageHandler() ;
-    virtual ~CountingMessageHandler(){}
+    ~CountingMessageHandler() override{}
 
     void reset() ;
     int getMessageCountFor(const Message::Type& type) const ;
 
     /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
+    void process(Message& m) override ;
 private:
     std::vector<int> m_countMatching ;
 } ;

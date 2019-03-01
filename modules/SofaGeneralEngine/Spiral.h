@@ -57,7 +57,7 @@ protected:
 
     Spiral();
 
-    ~Spiral() {}
+    ~Spiral() override {}
 public:
     void init() override;
 

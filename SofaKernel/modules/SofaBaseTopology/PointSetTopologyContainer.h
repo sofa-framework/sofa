@@ -54,15 +54,15 @@ public:
 protected:
     PointSetTopologyContainer(int nPoints = 0);
 
-    virtual ~PointSetTopologyContainer() {}
+    ~PointSetTopologyContainer() override {}
 public:
 
-    virtual void init() override;
+    void init() override;
 
     /// Procedural creation methods
     /// @{
-    virtual void clear() override;
-    virtual void addPoint(double px, double py, double pz) override;
+    void clear() override;
+    void addPoint(double px, double py, double pz) override;
     /// @}
 
 
@@ -86,19 +86,19 @@ public:
 
 
     /** \brief check if vertices in this topology have positions. */
-    virtual bool hasPos() const override;
+    bool hasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    virtual SReal getPX(int i) const override;
+    SReal getPX(int i) const override;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    virtual SReal getPY(int i) const override;
+    SReal getPY(int i) const override;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    virtual SReal getPZ(int i) const override;
+    SReal getPZ(int i) const override;
 
    	/** \brief Returns the type of the topology */
-   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
+   	sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
     
     /// @}
 
@@ -153,7 +153,7 @@ public:
 
 protected:
     /// \brief Function creating the data graph linked to d_point
-    virtual void updateTopologyEngineGraph() override;
+    void updateTopologyEngineGraph() override;
 
     /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyEngine *>& my_enginesList);

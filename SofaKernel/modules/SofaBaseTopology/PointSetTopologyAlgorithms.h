@@ -56,9 +56,9 @@ protected:
         : TopologyAlgorithms()
     {}
 
-    virtual ~PointSetTopologyAlgorithms() {}
+    ~PointSetTopologyAlgorithms() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)

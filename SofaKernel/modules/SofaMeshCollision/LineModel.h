@@ -131,19 +131,19 @@ public:
     typedef TLine<DataTypes> Element;
     friend class TLine<DataTypes>;
 
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
     bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
@@ -181,7 +181,7 @@ public:
         return DataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
 
 protected:

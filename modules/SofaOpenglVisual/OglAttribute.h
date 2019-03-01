@@ -46,15 +46,15 @@ public:
     SOFA_CLASS2(SOFA_TEMPLATE3(OglAttribute, size, type, TDataTypes), core::visual::VisualModel, OglShaderElement);
 protected:
     OglAttribute();
-    virtual ~OglAttribute();
+    ~OglAttribute() override;
 public:
     typedef TDataTypes DataType;
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void initVisual() override;
+    void initVisual() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     /// if attributes are not static, update the buffer
     void updateVisual() override;
@@ -65,24 +65,24 @@ public:
     void setValue( const sofa::defaulttype::ResizableExtVector<TDataTypes>& value);
     void enable();
     void disable();
-    virtual void bwdDraw(core::visual::VisualParams* ) override;
-    virtual void fwdDraw(core::visual::VisualParams* ) override;
+    void bwdDraw(core::visual::VisualParams* ) override;
+    void fwdDraw(core::visual::VisualParams* ) override;
 
     void setUsage(unsigned int usage) { _usage = usage; }
 
     // handle topological changes
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_ATTRIBUTE; }
+    ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_ATTRIBUTE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const override { return &value; }
+    const core::objectmodel::BaseData* getSEValue() const override { return &value; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() override { return &value; }
+    core::objectmodel::BaseData* getSEValue() override { return &value; }
     // For attributes : return the number of values per vertex
-    virtual int getSESizePerVertex() override { return size; }
+    int getSESizePerVertex() override { return size; }
     // Returns the total size of the values
-    virtual int getSETotalSize() override;
+    int getSETotalSize() override;
 
 protected:
     // attribute buffer object identity

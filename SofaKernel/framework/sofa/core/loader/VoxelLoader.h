@@ -45,7 +45,7 @@ public:
     typedef helper::fixed_array<unsigned int,8> Hexahedron;
 protected:
     VoxelLoader();
-    virtual ~VoxelLoader();
+    ~VoxelLoader() override;
 public:
 
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Coordinates of the nodes loaded

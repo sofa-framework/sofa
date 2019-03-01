@@ -66,19 +66,19 @@ public:
         , initialNbTriangles(0)
         , initialNbPoints(0) {};
 
-    ~InciseAlongPathPerformer();
+    ~InciseAlongPathPerformer() override;
 
-    void start();
+    void start() override;
 
-    void execute();
+    void execute() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     BodyPicked& getFirstIncisionBodyPicked() {return firstIncisionBody;}
 
     BodyPicked& getLastBodyPicked() {return firstBody;}
 
-    void setPerformerFreeze();
+    void setPerformerFreeze() override;
 
 protected:
     /// Incision will be perfomed between firstIncisionBody (first point clicked) and firstBody (last point clicked in memory)

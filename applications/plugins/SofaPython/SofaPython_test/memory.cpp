@@ -18,7 +18,7 @@ public:
     SOFA_CLASS(PythonTestAllocationCounter, core::objectmodel::BaseObject);
 protected:
     PythonTestAllocationCounter() { s_nbAlloc++; }
-    ~PythonTestAllocationCounter() { s_nbAlloc--; }
+    ~PythonTestAllocationCounter() override { s_nbAlloc--; }
 };
 
 int PythonTestAllocationCounterClass = core::RegisterObject("A test component counting allocations")

@@ -263,11 +263,11 @@ public:
         ImageExporterSpecialization<ImageTypes>::init( *this );
     }
 
-    virtual ~ImageExporter() {}
+    ~ImageExporter() override {}
 
-    virtual	void cleanup() override { if (exportAtEnd.getValue()) write();	}
+    	void cleanup() override { if (exportAtEnd.getValue()) write();	}
 
-    virtual void bwdInit() override { if (exportAtBegin.getValue())	write(); }
+    void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 

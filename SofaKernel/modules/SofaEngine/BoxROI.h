@@ -94,8 +94,8 @@ public:
     void doUpdate() override;
     void draw(const VisualParams*) override;
 
-    virtual void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
-    virtual void handleEvent(Event *event) override;
+    void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
+    void handleEvent(Event *event) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -196,7 +196,7 @@ protected:
     vector<OrientedBox> m_orientedBoxes;
 
     BoxROI();
-    ~BoxROI() {}
+    ~BoxROI() override {}
 
     void computeOrientedBoxes();
 

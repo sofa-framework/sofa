@@ -78,9 +78,9 @@ public:
         outputImage.setReadOnly(true);
     }
 
-    virtual ~ImageDataDisplay() {}
+    ~ImageDataDisplay() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&VoxelData);
         addInput(&inputImage);
@@ -88,11 +88,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         const helper::SVector<helper::SVector<To> >& dat = this->VoxelData.getValue();
         raImagei in(this->inputImage);

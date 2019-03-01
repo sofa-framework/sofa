@@ -76,7 +76,7 @@ public:
 
     ClusteringEngine();
 
-    virtual ~ClusteringEngine() {}
+    ~ClusteringEngine() override {}
 
     void init() override;
     void doUpdate() override;

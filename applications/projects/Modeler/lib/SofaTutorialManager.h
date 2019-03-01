@@ -51,7 +51,7 @@ public:
     SofaTutorialManager(QWidget* parent = 0, const char *name = "");
     GraphModeler *getGraph() {return graph;}
 
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
 
 public slots:
     void openCategory(const std::string &);

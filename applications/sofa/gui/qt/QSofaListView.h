@@ -83,7 +83,7 @@ public:
             QWidget* parent=0,
             const char* name=0,
             Qt::WindowFlags f = 0 );
-    ~QSofaListView();
+    ~QSofaListView() override;
 
     GraphListenerQListView* getListener() const { return  graphListener_; }
 
@@ -95,7 +95,7 @@ public:
     void Unfreeze();
     SofaListViewAttribute getAttribute() const { return attribute_; }
 
-    void contextMenuEvent(QContextMenuEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
     void expandPathFrom(const std::vector<std::string>& pathes);
     void getExpandedNodes(std::vector<std::string>&);

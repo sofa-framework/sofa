@@ -120,7 +120,7 @@ public:
 
 protected:
     RuleBasedContactManager();
-    ~RuleBasedContactManager();
+    ~RuleBasedContactManager() override;
 
     std::map<std::string,Data<std::string>* > variablesData;
 

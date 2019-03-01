@@ -40,19 +40,19 @@ class RotationMatrix : public defaulttype::BaseMatrix
 public:
     typedef TReal Real;
 
-    virtual Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return (Index)data.size()/3;
     }
 
     /// Number of columns
-    virtual Index colSize(void) const
+    Index colSize(void) const override
     {
         return (Index)data.size()/3;
     }
 
     /// Read the value of the element at row i, column j (using 0-based indices)
-    virtual SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
         Index bd = j-(i/3)*3;
         if ((bd<0) || (bd>2)) return 0.0 ;
@@ -61,14 +61,14 @@ public:
     }
 
     /// Resize the matrix and reset all values to 0
-    virtual void resize(Index nbRow, Index nbCol)
+    void resize(Index nbRow, Index nbCol) override
     {
         if (nbRow!=nbCol) return;
         data.resize(nbRow*3);
     }
 
     /// Reset all values to 0
-    virtual void clear()
+    void clear() override
     {
         data.clear();
     }
@@ -84,7 +84,7 @@ public:
     }
 
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
         Index bd = (i/3)*3;
         if ((j<bd) || (j>bd+2)) return;
@@ -92,7 +92,7 @@ public:
     }
 
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(Index i, Index j, double v)
+    void add(Index i, Index j, double v) override
     {
         Index bd = (i/3)*3;
         if ((j<bd) || (j>bd+2)) return;
@@ -105,7 +105,7 @@ public:
         return data;
     }
 
-    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+    void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const override
     {
         //Solve lv = R * lvR
         std::size_t k = 0;
@@ -120,7 +120,7 @@ public:
         }
     }
 
-    virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+    void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const override
     {
         std::size_t k = 0;
         Index l = 0;
@@ -135,7 +135,7 @@ public:
     }
 
     /// multiply the transpose current matrix by m matrix and strore the result in m
-    virtual void opMulTM(defaulttype::BaseMatrix * bresult,defaulttype::BaseMatrix * bm) const
+    void opMulTM(defaulttype::BaseMatrix * bresult,defaulttype::BaseMatrix * bm) const override
     {
         if (RotationMatrix<Real> * m = dynamic_cast<RotationMatrix<Real> * >(bm))
         {

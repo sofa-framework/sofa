@@ -66,7 +66,7 @@ protected:
 
 
     /// Destructor
-    virtual ~CollisionGroupManager() { }
+    ~CollisionGroupManager() override { }
 public:
     /// Create the integration groups
     virtual void createGroups(objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts) = 0;
@@ -81,7 +81,7 @@ protected:
 
     std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
 
-    virtual void changeInstance(Instance inst) override
+    void changeInstance(Instance inst) override
     {
         storedGroups[instance].swap(groups);
         groups.swap(storedGroups[inst]);

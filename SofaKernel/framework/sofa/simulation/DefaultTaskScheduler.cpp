@@ -19,12 +19,12 @@ namespace sofa
         {
         public:
 
-            virtual void* allocate(std::size_t sz) override final
+            void* allocate(std::size_t sz) final
             {
                 return ::operator new(sz);
             }
 
-            virtual void free(void* ptr, std::size_t sz) override final
+            void free(void* ptr, std::size_t sz) final
             {
                 ::operator delete(ptr);
             }

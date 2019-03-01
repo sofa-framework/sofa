@@ -61,12 +61,12 @@ public:
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
     
     /// Sofa API init method of the component
-    virtual void init() override;
+    void init() override;
     /// Sofa API reset method of the component
-    virtual void reset() override;
+    void reset() override;
 
     /// Method to handle various event like keyboard or omni.
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     /// Impl method that will compute the intersection and check if some element have to be removed.
     virtual void doCarve();
@@ -77,7 +77,7 @@ protected:
     CarvingManager();
 
     /// Default destructor
-    virtual ~CarvingManager();
+    ~CarvingManager() override;
 
 
 public:

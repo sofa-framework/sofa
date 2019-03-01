@@ -75,10 +75,10 @@ protected:
     {
     }
 
-    virtual ~MeshBoundaryROI() {}
+    ~MeshBoundaryROI() override {}
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&d_triangles);
         addInput(&d_quads);
@@ -88,7 +88,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { update();  }
+    void reinit()    override { update();  }
     void doUpdate() override
     {
         helper::ReadAccessor<Data< SeqTriangles > > triangles(this->d_triangles);

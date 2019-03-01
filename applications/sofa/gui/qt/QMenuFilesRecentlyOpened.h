@@ -38,7 +38,7 @@ class SOFA_SOFAGUIQT_API QMenuFilesRecentlyOpened: public FilesRecentlyOpenedMan
 {
 public:
     QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(0) {};
-    virtual ~QMenuFilesRecentlyOpened() {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;};
+    ~QMenuFilesRecentlyOpened() override {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;};
     void openFile(const std::string &file);
 
     QMenu *createWidget(QWidget *parent, const std::string& =std::string("Recently Opened Files ..."));

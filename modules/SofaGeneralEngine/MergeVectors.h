@@ -54,7 +54,7 @@ public:
 protected:
     MergeVectors();
 
-    virtual ~MergeVectors();
+    ~MergeVectors() override;
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;

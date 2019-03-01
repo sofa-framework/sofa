@@ -50,7 +50,7 @@ protected:
 
     VisitorScheduler() {}
 
-    virtual ~VisitorScheduler() {}
+    ~VisitorScheduler() override {}
 
     /// Execute the given action recursively
     void doExecuteVisitor(simulation::Node* node, Visitor* act);

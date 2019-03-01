@@ -60,14 +60,14 @@ public:
     Data<bool>         d_isEnabled; ///< Enable or disable the component. (default=true)
 
     /// Don't override this function anymore. But you can do you init in the doInit.
-    virtual void init() override final;
+    void init() final;
 
     /// Don't override this function anymore. But you can do your reinit in the doReInit.
-    virtual void reinit() override final ;
+    void reinit() final ;
 
-    virtual void cleanup() override ;
-    virtual void bwdInit() override ;
-    virtual void handleEvent(Event *event) override ;
+    void cleanup() override ;
+    void bwdInit() override ;
+    void handleEvent(Event *event) override ;
 
     virtual void doInit() {}
     virtual void doReInit() {}
@@ -76,7 +76,7 @@ public:
 
 protected:
     BaseSimulationExporter() ;
-    virtual ~BaseSimulationExporter() { }
+    ~BaseSimulationExporter() override { }
 
     const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering) ;
     void updateFromDataField() ;

@@ -46,15 +46,15 @@ public:
     {
     }
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "context"; }
-    virtual const char* getClassName() const { return "UpdateContextVisitor"; }
+    const char* getCategoryName() const override { return "context"; }
+    const char* getClassName() const override { return "UpdateContextVisitor"; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 protected:
     Node* startingNode;
 };
@@ -67,8 +67,8 @@ public:
     {
     }
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual const char* getClassName() const { return "UpdateSimulationContextVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "UpdateSimulationContextVisitor"; }
 };
 
 class SOFA_SIMULATION_CORE_API UpdateVisualContextVisitor : public UpdateContextVisitor
@@ -76,8 +76,8 @@ class SOFA_SIMULATION_CORE_API UpdateVisualContextVisitor : public UpdateContext
 public:
     UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual const char* getClassName() const { return "UpdateVisualContextVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "UpdateVisualContextVisitor"; }
 protected:
 };
 

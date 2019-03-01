@@ -73,7 +73,7 @@ public:
 
 protected:
     OglLabel();
-    virtual ~OglLabel() {}
+    ~OglLabel() override {}
 
     unsigned int                 m_stepCounter;
 

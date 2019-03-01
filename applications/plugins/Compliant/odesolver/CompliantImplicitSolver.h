@@ -155,21 +155,21 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
     typedef linearsolver::AssembledSystem system_type;
 				
-    virtual void init();
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    void init() override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     // OdeSolver API
-    virtual void solve(const core::ExecParams* params,
+    void solve(const core::ExecParams* params,
                        SReal dt,
                        core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId);
+                       core::MultiVecDerivId velId) override;
 
 
 	CompliantImplicitSolver();
-    virtual ~CompliantImplicitSolver();
+    ~CompliantImplicitSolver() override;
 
-    virtual void reset();
-    virtual void cleanup();
+    void reset() override;
+    void cleanup() override;
 
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
     Data<helper::OptionsGroup> stabilization;

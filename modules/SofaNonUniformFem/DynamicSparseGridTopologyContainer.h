@@ -57,7 +57,7 @@ public:
     Data< defaulttype::Vector3 > voxelSize; ///< Size of the Voxels
 protected:
     DynamicSparseGridTopologyContainer();
-    virtual ~DynamicSparseGridTopologyContainer() {}
+    ~DynamicSparseGridTopologyContainer() override {}
 public:
     void init() override;
 

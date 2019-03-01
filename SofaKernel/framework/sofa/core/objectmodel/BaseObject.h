@@ -75,7 +75,7 @@ public:
 protected:
     BaseObject();
 
-    virtual ~BaseObject();
+    ~BaseObject() override;
 
 public:
 
@@ -101,7 +101,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( BaseObjectDescription* arg ) override;
+    void parse ( BaseObjectDescription* arg ) override;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
     virtual void init();
@@ -154,9 +154,9 @@ public:
 
     virtual void removeSlave(BaseObject::SPtr s);
 
-    virtual void copyAspect(int destAspect, int srcAspect) override;
+    void copyAspect(int destAspect, int srcAspect) override;
 
-    virtual void releaseAspect(int aspect) override;
+    void releaseAspect(int aspect) override;
 
     /// @}
 

@@ -89,7 +89,7 @@ public:
     typename MechanicalObject<DataTypes>::SPtr mstate;
     typename DiagonalMass<DataTypes, MassType>::SPtr mass;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
 
@@ -98,7 +98,7 @@ public:
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (root!=NULL)
             simulation::getSimulation()->unload(root);

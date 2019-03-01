@@ -78,11 +78,11 @@ public:
 
     SimpleGUI();
 
-    int mainLoop();
-    void redraw();
-    int closeGUI();
+    int mainLoop() override;
+    void redraw() override;
+    int closeGUI() override;
 
-    sofa::simulation::Node* currentSimulation()
+    sofa::simulation::Node* currentSimulation() override
     {
         return getScene();
     }
@@ -93,12 +93,12 @@ public:
     /// @{
 
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
-    void setViewerResolution(int width , int height);
+    void setViewerResolution(int width , int height) override;
     /// @}
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~SimpleGUI();
+    ~SimpleGUI() override;
 
 public:
 

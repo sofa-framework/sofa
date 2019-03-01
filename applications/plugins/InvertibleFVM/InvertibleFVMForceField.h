@@ -142,19 +142,19 @@ public:
     void setPoissonRatio(Real val) ;
     void setYoungModulus(Real val) ;
 
-    virtual void reset() override ;
-    virtual void init() override ;
-    virtual void reinit()override ;
+    void reset() override ;
+    void init() override ;
+    void reinit()override ;
 
-    virtual void addForce(const core::MechanicalParams* mparams,
+    void addForce(const core::MechanicalParams* mparams,
                           DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override ;
 
-    virtual void addDForce(const core::MechanicalParams* mparams,
+    void addDForce(const core::MechanicalParams* mparams,
                            DataVecDeriv& , const DataVecDeriv& ) override ;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override ;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override ;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams,
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams,
                                      const DataVecCoord&  x) const override ;
 
     void draw(const core::visual::VisualParams* vparams);

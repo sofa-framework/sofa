@@ -62,7 +62,7 @@ public:
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const SelectLabelROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&d_labels);
         addInput(&d_selectLabels);
@@ -70,7 +70,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         update();
     }
@@ -84,9 +84,9 @@ protected:
     {
     }
 
-    virtual ~SelectLabelROI() {}
+    ~SelectLabelROI() override {}
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up

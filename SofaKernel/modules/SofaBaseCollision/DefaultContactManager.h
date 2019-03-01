@@ -81,7 +81,7 @@ public :
      * Contacts can be attached to a deleted node and their deletion is a problem for the pipeline.
      * @param c is the list of deleted contacts.
      */
-    virtual void removeContacts(const ContactVector &/*c*/) override;
+    void removeContacts(const ContactVector &/*c*/) override;
 
     void setDefaultResponseType(const std::string &responseT);
 
@@ -92,7 +92,7 @@ protected:
     core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
 
     DefaultContactManager();
-    virtual ~DefaultContactManager() override;
+    ~DefaultContactManager() override;
 
     void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2,
                         core::collision::Contact::SPtr contact);
@@ -100,7 +100,7 @@ protected:
     ContactMap contactMap;
     std::map<Instance,ContactMap> storedContactMap;
 
-    virtual void changeInstance(Instance inst) override ;
+    void changeInstance(Instance inst) override ;
 
     static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);
 

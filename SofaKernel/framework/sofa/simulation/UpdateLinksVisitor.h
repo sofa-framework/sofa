@@ -40,12 +40,12 @@ public:
 
     void processObject(core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
-    virtual const char* getClassName() const { return "UpdateLinksVisitor"; }
+    bool isThreadSafe() const override { return true; }
+    const char* getClassName() const override { return "UpdateLinksVisitor"; }
 };
 
 } // namespace simulation

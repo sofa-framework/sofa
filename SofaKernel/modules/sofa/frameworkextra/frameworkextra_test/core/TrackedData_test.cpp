@@ -67,7 +67,7 @@ public:
         m_dataTracker.trackData(input);
     }
 
-    ~TestObject() {}
+    ~TestObject() override {}
 
 
     // my own function to update Data
@@ -105,7 +105,7 @@ struct DataTracker_test: public ::testing::Test
 {
     TestObject testObject;
 
-    void SetUp()
+    void SetUp() override
     {
         testObject.init();
     }
@@ -173,7 +173,7 @@ public:
         m_dataTracker.setDirtyValue();
     }
 
-    ~TestObject2() {}
+    ~TestObject2() override {}
 
     static unsigned s_updateCounter;
 
@@ -223,7 +223,7 @@ struct DataTrackerEngine_test: public BaseTest
 {
 
     static unsigned updateCounter;
-    void SetUp()
+    void SetUp() override
     {
         updateCounter = 0;
     }

@@ -59,16 +59,16 @@ public:
     virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* obj);
     virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
     //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "animate"; }
-    virtual const char* getClassName() const { return "AnimateVisitor"; }
+    const char* getCategoryName() const override { return "animate"; }
+    const char* getClassName() const override { return "AnimateVisitor"; }
 };
 
 } // namespace simulation

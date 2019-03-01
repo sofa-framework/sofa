@@ -41,7 +41,7 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
 		
 	}
 
-    void init()
+    void init() override
     {
         if( !mstate )
         {

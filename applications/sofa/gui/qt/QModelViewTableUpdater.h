@@ -58,8 +58,8 @@ class QTableModelUpdater : public QStandardItemModel
 public:
     QTableModelUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * /*name*/ = 0 );
 
-    virtual Qt::ItemFlags flags(const QModelIndex&) const override ;
-    virtual QVariant data(const QModelIndex &index, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex&) const override ;
+    QVariant data(const QModelIndex &index, int role) const override;
 
     void setReadOnly(const bool isReadOnly) ;
 

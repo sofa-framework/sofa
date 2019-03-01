@@ -1324,7 +1324,7 @@ class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::XspLoaderDa
 public:
     DiagonalMass<DataTypes, MassType>* dest;
     Loader(DiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) override
     {
         dest->addMass(MassType((Real)mass));
     }

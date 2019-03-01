@@ -51,7 +51,7 @@ public:
 
     DifferenceEngine();
 
-    virtual ~DifferenceEngine() {}
+    ~DifferenceEngine() override {}
 
     void init() override;
 

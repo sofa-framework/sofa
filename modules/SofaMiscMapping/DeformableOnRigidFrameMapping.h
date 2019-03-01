@@ -115,7 +115,7 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     ///
     /// This is the case for mapping keeping a one-to-one correspondance between
     /// input and output DOFs (mostly identity or data-conversion mappings).
-    virtual bool sameTopology() const override { return true; }
+    bool sameTopology() const override { return true; }
 
     using Inherit::apply;
     using Inherit::applyJ;
@@ -123,31 +123,31 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
-    virtual void apply(
+    void apply(
         const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const InDataVecCoord*>& dataVecInPos ,
         const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override;
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
-    virtual void applyJ(
+    void applyJ(
         const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const InDataVecDeriv*>& dataVecInVel,
         const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override;
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
-    virtual void applyJT(
+    void applyJT(
         const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
         const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
 
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
-    virtual void applyJT(
+    void applyJT(
         const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
         const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
         const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override;

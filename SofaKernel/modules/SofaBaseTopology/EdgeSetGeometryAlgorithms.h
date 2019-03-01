@@ -84,13 +84,13 @@ protected:
         , _drawColor(initData(&_drawColor, RGBAColor(0.4f,1.0f,0.3f, 1.0f), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
-    virtual ~EdgeSetGeometryAlgorithms() override {}
+    ~EdgeSetGeometryAlgorithms() override {}
 
     void defineEdgeCubaturePoints();
 public:
     //virtual void reinit();
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// computes the length of edge no i and returns it
     Real computeEdgeLength(const EdgeID i) const;
@@ -158,7 +158,7 @@ public:
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem
+    void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
 
     /** return a pointer to the container of cubature points */

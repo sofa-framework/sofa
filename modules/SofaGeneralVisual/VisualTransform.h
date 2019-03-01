@@ -46,7 +46,7 @@ public:
 
 protected:
     VisualTransform();
-    virtual ~VisualTransform();
+    ~VisualTransform() override;
 public:
     void fwdDraw(sofa::core::visual::VisualParams* vparams) override;
     void bwdDraw(sofa::core::visual::VisualParams* vparams) override;

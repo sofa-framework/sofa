@@ -58,7 +58,7 @@ protected:
 
     ExtrudeSurface();
 
-    ~ExtrudeSurface() {}
+    ~ExtrudeSurface() override {}
 public:
     void init() override;
 

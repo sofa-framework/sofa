@@ -55,7 +55,7 @@ protected:
 
     HausdorffDistance();
 
-    virtual ~HausdorffDistance() {}
+    ~HausdorffDistance() override {}
 
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);

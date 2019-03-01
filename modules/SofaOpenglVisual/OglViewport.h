@@ -66,7 +66,7 @@ public:
 
 protected:
     OglViewport();
-    virtual ~OglViewport();
+    ~OglViewport() override;
 public:
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;

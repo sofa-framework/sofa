@@ -45,13 +45,13 @@ public:
 
     MultiTagAnimationLoop(simulation::Node* gnode);
 
-    virtual void init() override;
+    void init() override;
 
     virtual void clear();
 
-    virtual ~MultiTagAnimationLoop();
+    ~MultiTagAnimationLoop() override;
 
-    virtual void step (const sofa::core::ExecParams* params, SReal dt) override;
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
 
     /// Construction method called by ObjectFactory.
     template<class T>

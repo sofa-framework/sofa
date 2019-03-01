@@ -94,7 +94,7 @@ public:
     helper::vector<std::string> cellsDataName;
 protected:
     VTKExporter();
-    virtual ~VTKExporter();
+    ~VTKExporter() override;
 public:
     void init() override;
     void cleanup() override;

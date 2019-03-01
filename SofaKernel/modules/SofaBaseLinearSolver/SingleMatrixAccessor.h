@@ -43,19 +43,19 @@ public:
     typedef defaulttype::BaseMatrix BaseMatrix;
 
     SingleMatrixAccessor( BaseMatrix* m=0 ) { setMatrix(m); }
-    virtual ~SingleMatrixAccessor();
+    ~SingleMatrixAccessor() override;
 
     void setMatrix( BaseMatrix* m );
     BaseMatrix* getMatrix() { return matrix; }
     const BaseMatrix* getMatrix() const { return matrix; }
 
 
-    virtual int getGlobalDimension() const { return matrix->rowSize(); }
-    virtual int getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
-    virtual MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const;
+    int getGlobalDimension() const override { return matrix->rowSize(); }
+    int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
+    MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override;
 
 
-    virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const;
+    InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const override;
 
 protected:
     BaseMatrix* matrix;   ///< The single matrix

@@ -54,15 +54,15 @@ public:
     SOFA_CLASS(PointSplatModel,core::visual::VisualModel);
 protected:
     PointSplatModel();
-    virtual ~PointSplatModel();
+    ~PointSplatModel() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 private:
     Data<float>		radius; ///< Radius of the spheres.

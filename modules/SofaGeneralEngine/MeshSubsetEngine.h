@@ -92,10 +92,10 @@ protected:
     {
     }
 
-    virtual ~MeshSubsetEngine() {}
+    ~MeshSubsetEngine() override {}
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -109,7 +109,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { update();  }
+    void reinit()    override { update();  }
     void doUpdate() override;
 };
 

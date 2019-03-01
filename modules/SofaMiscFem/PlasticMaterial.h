@@ -72,7 +72,7 @@ public:
     SReal computeVonMisesStrain(Vector3 &strain);
     void computeStressOnSection(Vector3& Stress, Vector3 Strain, int section);	// computes the stress on a given section of the piecewise function
 
-    virtual void computeStress (unsigned int /*iElement*/) override {}
+    void computeStress (unsigned int /*iElement*/) override {}
 
 };
 

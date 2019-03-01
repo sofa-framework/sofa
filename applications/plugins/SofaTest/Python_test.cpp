@@ -199,7 +199,7 @@ struct Listener : core::objectmodel::BaseObject {
         f_listening = true;
     }
 
-    virtual void handleEvent(core::objectmodel::Event * event) {
+    void handleEvent(core::objectmodel::Event * event) override {
         if (core::objectmodel::PythonScriptEvent::checkEventType(event)
                 || core::objectmodel::ScriptEvent::checkEventType(event) )
         {

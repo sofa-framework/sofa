@@ -77,8 +77,8 @@ protected:
     bool equilibriumReached;
 
 public:
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
 
     void resetSystem() override;
 

@@ -66,15 +66,15 @@ protected:
 
     ReadTopology();
 
-    virtual ~ReadTopology();
+    ~ReadTopology() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reset() override;
+    void reset() override;
 
     void setTime(double time);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadTopology();
     void processReadTopology(double time);
@@ -113,12 +113,12 @@ class SOFA_GENERAL_LOADER_API ReadTopologyCreator: public simulation::Visitor
 public:
     ReadTopologyCreator(const core::ExecParams* params);
     ReadTopologyCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i=true, int c=0 );
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadTopology = c;}
     void setCreateInMapping(bool b) {createInMapping=b;}
-    virtual const char* getClassName() const { return "ReadTopologyCreator"; }
+    const char* getClassName() const override { return "ReadTopologyCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -135,11 +135,11 @@ class SOFA_GENERAL_LOADER_API ReadTopologyActivator: public simulation::Visitor
 public:
     ReadTopologyActivator(const core::ExecParams* params, bool active)
         :Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getTopology() const {return state;}
     void setTopology(bool active) {state=active;}
-    virtual const char* getClassName() const { return "ReadTopologyActivator"; }
+    const char* getClassName() const override { return "ReadTopologyActivator"; }
 protected:
     void changeTopologyReader(sofa::component::misc::ReadTopology *rt);
 
@@ -152,11 +152,11 @@ public:
     ReadTopologyModifier(const core::ExecParams* params, double _time)
         :Visitor(params), time(_time) {}
 
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     double getTime() const { return time; }
     void setTime(double _time) { time=_time; }
-    virtual const char* getClassName() const { return "ReadTopologyModifier"; }
+    const char* getClassName() const override { return "ReadTopologyModifier"; }
 protected:
     void changeTimeReader(sofa::component::misc::ReadTopology *rt) { rt->processReadTopology(time); }
 

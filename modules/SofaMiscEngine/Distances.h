@@ -90,7 +90,7 @@ protected:
 
     Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
 
-    virtual ~Distances() {}
+    ~Distances() override {}
 
 public:
     Data<unsigned int> showMapIndex; ///< Frame DOF index on which display values.

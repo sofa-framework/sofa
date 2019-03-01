@@ -49,7 +49,7 @@ public :
 protected:
     SparseGridMultipleTopology( bool _isVirtual=false );
 public:
-    virtual void init() override
+    void init() override
     {
         if(_computeRamifications.getValue())
             SparseGridRamificationTopology::init(  );
@@ -57,18 +57,18 @@ public:
             SparseGridTopology::init(  );
     }
 
-    virtual void buildAsFinest() override;
-    virtual void buildFromFiner() override
+    void buildAsFinest() override;
+    void buildFromFiner() override
     {
         if(_computeRamifications.getValue())
             SparseGridRamificationTopology::buildFromFiner(  );
         else
             SparseGridTopology::buildFromFiner(  );
     }
-    virtual void buildVirtualFinerLevels() override;
+    void buildVirtualFinerLevels() override;
 
 
-    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override
+    int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override
     {
         if(_computeRamifications.getValue())
             return SparseGridRamificationTopology::findCube( pos,fx,fy,fz  );
@@ -76,7 +76,7 @@ public:
             return SparseGridTopology::findCube( pos,fx,fy,fz );
     }
 
-    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override
+    int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override
     {
         if(_computeRamifications.getValue())
             return SparseGridRamificationTopology::findNearestCube( pos,fx,fy,fz );

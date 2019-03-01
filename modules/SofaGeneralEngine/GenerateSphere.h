@@ -70,7 +70,7 @@ public:
 
     GenerateSphere();
 
-    ~GenerateSphere() {}
+    ~GenerateSphere() override {}
 
     void init() override;
 

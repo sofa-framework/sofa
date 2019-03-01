@@ -56,13 +56,13 @@ protected:
 
     SmoothMeshEngine();
 
-    virtual ~SmoothMeshEngine() {}
+    ~SmoothMeshEngine() override {}
 public:
     void init() override;
     void reinit() override;
     void doUpdate() override;
 	void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     Data<VecCoord> input_position; ///< Input position
     Data<helper::vector <unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions

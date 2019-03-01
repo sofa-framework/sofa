@@ -99,7 +99,7 @@ public:
 
     BaseMechanicalState* _state;
 
-    virtual void init()
+    void init() override
     {
         if(!f_position.isSet())   // node positions are not given, so we retrieve them from the local mechanical state
         {
@@ -186,7 +186,7 @@ protected:
     {
     }
 
-    virtual ~BaseShapeFunction() {}
+    ~BaseShapeFunction() override {}
 
 };
 

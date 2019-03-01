@@ -42,15 +42,15 @@ class SOFA_SIMULATION_CORE_API BehaviorUpdatePositionVisitor : public Visitor
 public:
     BehaviorUpdatePositionVisitor(const core::ExecParams* params, SReal _dt): Visitor(params),dt(_dt) {}
     void processBehaviorModel(simulation::Node* node, core::BehaviorModel* b);
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    bool isThreadSafe() const override { return true; }
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "behavior update position"; }
-    virtual const char* getClassName() const { return "BehaviorUpdatePositionVisitor"; }
+    const char* getCategoryName() const override { return "behavior update position"; }
+    const char* getClassName() const override { return "BehaviorUpdatePositionVisitor"; }
 
     void setDt(SReal _dt) {dt = _dt;}
     SReal getDt() {return dt;}

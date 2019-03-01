@@ -221,21 +221,21 @@ public:
     {
     }
 
-    virtual ~PersistentContactBarycentricMapping()
+    ~PersistentContactBarycentricMapping() override
     {
     }
 
-    virtual void init();
+    void init() override;
 
-    void beginAddContactPoint();
+    void beginAddContactPoint() override;
 
     int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
-    int keepContactPointFromInputMapping(const int);
+    int keepContactPointFromInputMapping(const int) override;
 
-    void applyPositionAndFreePosition();
+    void applyPositionAndFreePosition() override;
 
-    void handleEvent(sofa::core::objectmodel::Event*);
+    void handleEvent(sofa::core::objectmodel::Event*) override;
 
 protected:
     bool m_init;

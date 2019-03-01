@@ -46,11 +46,11 @@ public:
     /// Constructor
     KeypressedEvent( char );
     /// Destructor
-    ~KeypressedEvent();
+    ~KeypressedEvent() override;
     /// Return the key pressed
     char getKey() const;
 
-    virtual const char* getClassName() const { return "KeypressedEvent"; }
+    const char* getClassName() const override { return "KeypressedEvent"; }
 protected:
     /// Store the key
     char m_char;

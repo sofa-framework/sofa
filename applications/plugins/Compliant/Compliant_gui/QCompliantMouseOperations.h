@@ -66,7 +66,7 @@ class SOFA_Compliant_gui_API QCompliantAttachOperation : public QMouseOperation,
     Q_OBJECT
 public:
     QCompliantAttachOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *complianceWidget;

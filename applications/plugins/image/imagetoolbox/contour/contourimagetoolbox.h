@@ -50,7 +50,7 @@ public:
     
     }
     
-    virtual void init() override
+    void init() override
     {
         d_ip.setGroup("PixelClicked");
         d_p.setGroup("PixelClicked");
@@ -61,7 +61,7 @@ public:
         addOutput(&d_vecPixCoord);
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
+    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::ContourImageToolBoxAction(this,parent);
     }
@@ -113,7 +113,7 @@ public:
     
     }
     
-    virtual void init() override
+    void init() override
     {
         Inherited::init();
         addInput(&d_image);
@@ -128,7 +128,7 @@ public:
     }
     
     
-    virtual void segmentation() override
+    void segmentation() override
     {
 
         raImage im_in(this->d_image);
@@ -213,7 +213,7 @@ public:
 
     }
 
-    virtual void getImageSize(unsigned int& x,unsigned int& y,unsigned int &z) override
+    void getImageSize(unsigned int& x,unsigned int& y,unsigned int &z) override
     {
         raImage im(this->d_image);
 

@@ -78,7 +78,7 @@ public:
 
 protected:
     LightManager();
-    virtual ~LightManager();
+    ~LightManager() override;
 
 public:
     void init() override;

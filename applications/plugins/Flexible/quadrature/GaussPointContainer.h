@@ -53,7 +53,7 @@ public:
     Data< unsigned int > f_volumeDim; ///< dimension of quadrature weight vectors
     Data< helper::vector<Real> > f_inputVolume; ///< weighted volumes (=quadrature weights)
 
-    virtual void init()
+    void init() override
     {
         Inherited::init();
         addInput(&f_position);
@@ -62,7 +62,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
     GaussPointContainer()    :   Inherited()
@@ -72,11 +72,11 @@ protected:
 
     }
 
-    virtual ~GaussPointContainer()
+    ~GaussPointContainer() override
     {
     }
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         helper::ReadAccessor< Data< helper::vector<Real> > > invol(f_inputVolume);
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;

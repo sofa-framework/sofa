@@ -57,7 +57,7 @@ public:
     {
     }
 
-    void resize(Index nbRow, Index nbCol)
+    void resize(Index nbRow, Index nbCol) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
@@ -66,17 +66,17 @@ public:
         (*this) = 0.0;
     }
 
-    Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return M::Nrows();
     }
 
-    Index colSize(void) const
+    Index colSize(void) const override
     {
         return M::Ncols();
     }
 
-    SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -88,7 +88,7 @@ public:
         return M::element(i,j);
     }
 
-    void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -103,7 +103,7 @@ public:
         M::element(i,j) = v;
     }
 
-    void add(Index i, Index j, double v)
+    void add(Index i, Index j, double v) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -118,7 +118,7 @@ public:
         M::element(i,j) += v;
     }
 
-    void clear(Index i, Index j)
+    void clear(Index i, Index j) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -133,7 +133,7 @@ public:
         M::element(i,j) = 0.0;
     }
 
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
@@ -148,7 +148,7 @@ public:
         M::Row(1+i) = 0.0;
     }
 
-    void clearCol(Index j)
+    void clearCol(Index j) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
@@ -163,7 +163,7 @@ public:
         M::Column(1+j) = 0.0;
     }
 
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
@@ -252,7 +252,7 @@ public:
     template<class T>
     void operator=(const T& m) { M::operator=(m); }
 
-    void clear() { (*this) = 0.0; }
+    void clear() override { (*this) = 0.0; }
 
     friend std::ostream& operator << (std::ostream& out, const TNewMatMatrix& v )
     {

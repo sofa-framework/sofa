@@ -102,20 +102,20 @@ public:
     Data< Real > m_volumeAfterTC;  ///< OUT: Volume after a topology change
     Data< Real > m_surfaceAreaAfterTC;  ///< OUT: Surface area after a topology change
 
-    virtual void init() override;
-    virtual void storeResetState() override;
-    virtual void reset() override;
-    virtual void handleEvent(core::objectmodel::Event *event) override;
+    void init() override;
+    void storeResetState() override;
+    void reset() override;
+    void handleEvent(core::objectmodel::Event *event) override;
 
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
 

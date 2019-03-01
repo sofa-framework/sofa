@@ -170,11 +170,11 @@ public:
         this->addAlias(vf_roiValue[0], "roiValue");
     }
 
-    virtual ~MeshToImageEngine()
+    ~MeshToImageEngine() override
     {
     }
 
-    virtual void init() override
+    void init() override
     {
         // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
@@ -208,7 +208,7 @@ public:
         im.fill((T)0);
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         vf_positions.resize(f_nbMeshes.getValue());
         vf_edges.resize(f_nbMeshes.getValue());
@@ -251,7 +251,7 @@ public:
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         // to be backward-compatible, if less than 3 values, fill with the last one
         waVecReal vs( voxelSize ); unsigned vs_lastid=vs.size()-1;
@@ -538,7 +538,7 @@ protected:
 
 
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 

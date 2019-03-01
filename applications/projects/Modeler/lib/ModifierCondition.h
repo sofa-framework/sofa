@@ -55,8 +55,8 @@ class QNamingModifierCondition: public QWidget, public ModifierCondition
 public:
     QNamingModifierCondition(QWidget *parent=0);
 
-    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
-    bool isActive() const {return activated->isChecked();}
+    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const override;
+    bool isActive() const override {return activated->isChecked();}
     std::string getValue() const {return entryName->text().toStdString();}
 protected:
     QCheckBox *activated;
@@ -72,9 +72,9 @@ class QValueModifierCondition: public QWidget, public ModifierCondition
 public:
     QValueModifierCondition(QWidget *parent=0);
 
-    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
+    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const override;
 
-    bool isActive() const {return activated->isChecked();}
+    bool isActive() const override {return activated->isChecked();}
     std::string getValue() const {return value->text().toStdString();}
 protected:
     QCheckBox *activated;

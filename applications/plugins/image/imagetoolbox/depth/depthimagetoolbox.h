@@ -93,7 +93,7 @@ public:
     {
     }
     
-    virtual void init() override
+    void init() override
     {
         addInput(&d_transform);
         addInput(&d_filename);
@@ -123,7 +123,7 @@ public:
 
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
+    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::DepthImageToolBoxAction(this,parent);
     }

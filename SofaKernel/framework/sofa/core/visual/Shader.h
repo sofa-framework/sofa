@@ -47,7 +47,7 @@ public:
 protected:
     Shader() {}
     /// Destructor
-    virtual ~Shader() { }
+    ~Shader() override { }
 	
 private:
     Shader(const Shader& n);
@@ -62,8 +62,8 @@ public:
     ///or manually (value true : useful when another component wants to use it for itself only)
     virtual bool isActive() = 0;
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 /**
@@ -77,7 +77,7 @@ public:
 protected:
     ShaderElement() {}
     /// Destructor
-    virtual ~ShaderElement() { }
+    ~ShaderElement() override { }
 	
 private:
     ShaderElement(const ShaderElement& n);

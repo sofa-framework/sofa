@@ -50,9 +50,9 @@ namespace sofa
         public:
             StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
             
-            virtual ~StepTask();
+            ~StepTask() override;
             
-            virtual MemoryAlloc run() final;
+            MemoryAlloc run() final;
             
             
         private:

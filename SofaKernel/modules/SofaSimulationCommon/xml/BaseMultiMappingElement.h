@@ -39,7 +39,7 @@ class SOFA_SIMULATION_COMMON_API BaseMultiMappingElement : public ObjectElement
 {
 public:
     BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
-    bool initNode();
+    bool initNode() override;
 
 protected:
     virtual void updateSceneGraph(

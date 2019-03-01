@@ -57,7 +57,7 @@ protected:
     sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
     sofa::core::visual::DrawToolGL drawTool;
 public:
-    void load()
+    void load() override
     {
         // Replace generic visual models with OglModel
         sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
@@ -65,7 +65,7 @@ public:
         vparams->drawTool() = &drawTool;
         vparams->setSupported(sofa::core::visual::API_OpenGL);
     }
-    void unload()
+    void unload() override
     {
         sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
         vparams->drawTool() = NULL;

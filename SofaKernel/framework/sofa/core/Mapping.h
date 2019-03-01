@@ -82,14 +82,14 @@ protected:
     /// init() is called).
     Mapping(State< In >* from=NULL, State< Out >* to=NULL);
     /// Destructor
-    virtual ~Mapping();
+    ~Mapping() override;
 public:
     /// Specify the input and output models.
     virtual void setModels(State< In > * from, State< Out >* to);
     /// If the type is compatible set the input model and return true, otherwise do nothing and return false.
-    virtual bool setFrom( BaseState* from ) override;
+    bool setFrom( BaseState* from ) override;
     /// If the type is compatible set the output model and return true, otherwise do nothing and return false.
-    virtual bool setTo( BaseState* to ) override;
+    bool setTo( BaseState* to ) override;
 
     /// Set the path to the objects mapped in the scene graph
     void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
@@ -110,7 +110,7 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
+    void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
 
     /// This method must be reimplemented by all mappings.
     virtual void apply( const MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in)= 0;
@@ -119,7 +119,7 @@ public:
     /// Apply the mapping to derived (velocity, displacement) vectors.
     /// $ out = J in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+    void applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
 
     /// This method must be reimplemented by all mappings.
     virtual void applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) = 0;
@@ -128,7 +128,7 @@ public:
     /// Apply the reverse mapping to force vectors.
     /// $ out += J^t in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
+    void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
 
     /// This method must be reimplemented by all mappings.
     virtual void applyJT( const MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) = 0;
@@ -144,10 +144,10 @@ public:
     /// The displacement is accessed in the parent state using mparams->readDx() .
     /// This method generally corresponds to a symmetric stiffness matrix, but with rotations (which are not a commutative group) it is not the case.
     /// Since some solvers (including the Conjugate Gradient) require symmetric matrices, a flag is set in the MechanicalParams to say if symmetric matrices are required. If so, non-symmetric geometric stiffness should not be applied.
-    virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) override;
+    void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) override;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
+    void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
 
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* /* mparams */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
@@ -160,7 +160,7 @@ public:
     /// Let \f$ v_c = J v_p \f$ be the velocity of the child given the velocity of the parent, then the acceleration is \f$ a_c = J a_p + dJ v_p \f$.
     /// The second term is null in linear mappings, otherwise it encodes the acceleration due to the change of mapping at constant parent velocity.
     /// For instance, in a rigid mapping with angular velocity\f$ w \f$,  the second term is $ w^(w^rel_pos) $
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
+    void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
 
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(const MechanicalParams* /* mparams */, OutDataVecDeriv& /* accOut */, const InDataVecDeriv& /* vIn */, const InDataVecDeriv& /* accIn */)
@@ -168,7 +168,7 @@ public:
     }
 
     /// Propagate positions and velocities to the output
-    virtual void init() override;
+    void init() override;
 
     ///<TO REMOVE>  FF:why would we remove this, is there any alternative function ?
     // Useful ?
@@ -181,12 +181,12 @@ public:
     //Create a matrix for mapped mechanical objects
     //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
     //If the two mechanical objects is different, create a new interaction matrix
-    virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix) override;
+    sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix) override;
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    virtual void disable() override;
+    void disable() override;
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -298,7 +298,7 @@ protected:
     ///
     /// That way, we can optimize Jacobian sparsity.
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 };
 

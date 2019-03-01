@@ -149,13 +149,13 @@ protected:
     TOBBModel();
     TOBBModel(core::behavior::MechanicalState<TDataTypes>* mstate );
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
@@ -259,7 +259,7 @@ public:
     Data<VecCoord> & writeExtents();
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;

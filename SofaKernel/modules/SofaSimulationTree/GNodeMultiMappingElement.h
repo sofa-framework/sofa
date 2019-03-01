@@ -40,7 +40,7 @@ public:
             const std::string& type,
             BaseElement* parent =NULL);
 
-    const char* getClass() const;
+    const char* getClass() const override;
 
 protected:
     void updateSceneGraph(

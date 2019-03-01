@@ -41,10 +41,10 @@ class SOFA_CORE_API IdleEvent : public Event
 {
 public:
     IdleEvent();
-    virtual ~IdleEvent();
+    ~IdleEvent() override;
     SOFA_EVENT_H( IdleEvent )
 
-    virtual const char* getClassName() const;
+    const char* getClassName() const override;
 protected:
 };
 

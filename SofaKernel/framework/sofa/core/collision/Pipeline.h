@@ -77,7 +77,7 @@ public:
 protected:
     Pipeline();
 
-    virtual ~Pipeline();
+    ~Pipeline() override;
 	
 private:
 	Pipeline(const Pipeline& n) ;
@@ -86,7 +86,7 @@ private:
 	
 	
 public:
-    virtual void reset() override = 0;
+    void reset() override = 0;
 
     /// Remove collision response from last step
     virtual void computeCollisionReset()=0;
@@ -122,8 +122,8 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 } // namespace collision

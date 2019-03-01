@@ -46,7 +46,7 @@ public:
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
     AssemblyVisitor(const core::MechanicalParams* mparams);
-    virtual ~AssemblyVisitor();
+    ~AssemblyVisitor() override;
 
 //protected:
 //    MultiVecDerivId _velId;
@@ -62,8 +62,8 @@ public:
 	simulation::Node* start_node;
 
 	// collect data chunks during visitor execution
-	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
-	virtual void processNodeBottomUp(simulation::Node* node);
+	Visitor::Result processNodeTopDown(simulation::Node* node) override;
+	void processNodeBottomUp(simulation::Node* node) override;
 	
 	// reset state
 	void clear();

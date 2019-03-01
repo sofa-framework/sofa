@@ -268,27 +268,27 @@ class DefaultMeshTopologyLoader : public helper::io::MeshTopologyLoader
 public:
     BaseMeshTopology* dest;
     DefaultMeshTopologyLoader(BaseMeshTopology* dest) : dest(dest) {}
-    virtual void addPoint(SReal px, SReal py, SReal pz)
+    void addPoint(SReal px, SReal py, SReal pz) override
     {
         dest->addPoint(px,py,pz);
     }
-    virtual void addLine(int p1, int p2)
+    void addLine(int p1, int p2) override
     {
         dest->addEdge(p1,p2);
     }
-    virtual void addTriangle(int p1, int p2, int p3)
+    void addTriangle(int p1, int p2, int p3) override
     {
         dest->addTriangle(p1,p2,p3);
     }
-    virtual void addQuad(int p1, int p2, int p3, int p4)
+    void addQuad(int p1, int p2, int p3, int p4) override
     {
         dest->addQuad(p1,p2,p3,p4);
     }
-    virtual void addTetra(int p1, int p2, int p3, int p4)
+    void addTetra(int p1, int p2, int p3, int p4) override
     {
         dest->addTetra(p1,p2,p3,p4);
     }
-    virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+    void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8) override
     {
         dest->addHexa(p1,p2,p3,p4,p5,p6,p7,p8);
     }

@@ -216,7 +216,7 @@ public:
 
     // reset lambda where there is no compliant FF
     // these reseted lambdas were previously propagated, but were not computed from the last solve
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+    Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
         // a compliant FF must be alone, so if there is one, it is the first one of the list.
         const core::behavior::BaseForceField* ff = NULL;
@@ -235,19 +235,19 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
         return fwdMechanicalState( node, mm );
     }
 
     // pop-up lamdas without modifying f
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         map->applyJT( this->mparams, lambdas, lambdas );
     }
 
     // for all dofs, f += lambda / dt
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         const core::VecDerivId& lambdasid = lambdas.getId(mm);
         if( !lambdasid.isNull() ) // previously allocated
@@ -258,7 +258,7 @@ public:
         }
     }
 
-    virtual void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+    void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
         bwdMechanicalState( node, mm );
     }
@@ -266,7 +266,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalAddComplianceForce";}
+    const char* getClassName() const override {return "MechanicalAddComplianceForce";}
     virtual std::string getInfos() const
     {
         std::string name=std::string("[")+res.getName()+","+lambdas.getName()+std::string("]");
@@ -274,7 +274,7 @@ public:
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -317,7 +317,7 @@ public:
     }
 
 
-    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state) override
     {
         // lambdas should only be present at compliance location
 
@@ -330,7 +330,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state) override
     {
         // compliance cannot be present at independent dof level
         if( propagate )
@@ -338,13 +338,13 @@ public:
         return RESULT_CONTINUE;
     }
 
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         if( propagate )
             map->applyJT(mparams, force, force);
     }
 
-    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         if( propagate )
             c->projectResponse( mparams, force );
@@ -369,7 +369,7 @@ public:
     {
     }
 
-    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state) override
     {
         if( node->forceField.empty() || !node->forceField[0]->isCompliance.getValue() )
         {
@@ -381,7 +381,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state) override
     {
         // compliance cannot be present at independent dof level
         const core::VecDerivId& id = lambda.getId(state);
@@ -390,12 +390,12 @@ public:
         return RESULT_CONTINUE;
     }
 
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         map->applyJT(mparams, lambda, lambda);
     }
 
-    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         c->projectResponse( mparams, lambda );
     }

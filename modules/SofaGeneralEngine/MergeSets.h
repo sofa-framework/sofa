@@ -52,7 +52,7 @@ public:
 protected:
     MergeSets();
 
-    virtual ~MergeSets();
+    ~MergeSets() override;
 public:
     void init() override;
 

@@ -127,7 +127,7 @@ public:
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
@@ -138,7 +138,7 @@ public:
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
 
     /// Draw the constrained points (= border mesh points)
-     virtual void draw(const core::visual::VisualParams* vparams) override;
+     void draw(const core::visual::VisualParams* vparams) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {

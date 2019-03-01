@@ -45,7 +45,7 @@ public:
     /// @{
     typedef TClass<TData<T>,BaseData> MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
+    const BaseClass* getClass() const override
     { return GetClass(); }
 
     static std::string templateName(const TData<T>* = NULL)
@@ -65,7 +65,7 @@ public:
     {
     }
 
-    virtual ~TData()
+    ~TData() override
     {}
 
     inline void printValue(std::ostream& out) const;
@@ -73,7 +73,7 @@ public:
     inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
 
     /// Get info about the value type of the associated variable
-    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
         return sofa::defaulttype::VirtualTypeInfo<T>::get();
     }
@@ -85,19 +85,19 @@ public:
     virtual void virtualEndEdit() = 0;
 
     /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
-    virtual const void* getValueVoidPtr() const
+    const void* getValueVoidPtr() const override
     {
         return &(virtualGetValue());
     }
 
     /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    virtual void* beginEditVoidPtr()
+    void* beginEditVoidPtr() override
     {
         return virtualBeginEdit();
     }
 
     /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    virtual void endEditVoidPtr()
+    void endEditVoidPtr() override
     {
         virtualEndEdit();
     }
@@ -127,7 +127,7 @@ public:
         }
     }
 
-    virtual bool isCounterValid() const {return true;}
+    bool isCounterValid() const override {return true;}
 
     bool copyValue(const TData<T>* parent)
     {
@@ -135,7 +135,7 @@ public:
         return true;
     }
 
-    virtual bool copyValue(const BaseData* parent)
+    bool copyValue(const BaseData* parent) override
     {
         const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
         if (p)
@@ -147,7 +147,7 @@ public:
     }
 
 
-    virtual bool validParent(BaseData* parent)
+    bool validParent(BaseData* parent) override
     {
         if (dynamic_cast<TData<T>*>(parent))
             return true;
@@ -162,13 +162,13 @@ protected:
         return BaseLink::InitLink<TData<T> >(this, name, help);
     }
 
-    void doSetParent(BaseData* parent)
+    void doSetParent(BaseData* parent) override
     {
         parentData.set(dynamic_cast<TData<T>*>(parent));
         BaseData::doSetParent(parent);
     }
 
-    bool updateFromParentValue(const BaseData* parent)
+    bool updateFromParentValue(const BaseData* parent) override
     {
         if (parent == parentData.get())
         {

@@ -116,7 +116,7 @@ protected:
     std::vector<sofa::helper::gl::GLSLShader*> shaderVector;
 
     OglShader();
-    virtual ~OglShader();
+    ~OglShader() override;
 public:
     void initVisual() override;
     void init() override;
@@ -180,8 +180,8 @@ public:
     void  setGeometryVerticesOut(const unsigned int index, GLint v);
 
 
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 
@@ -204,8 +204,8 @@ protected:
     std::set<OglShader*> shaders;
 public:
     OglShaderElement();
-    virtual ~OglShaderElement() {}
-    virtual void init();
+    ~OglShaderElement() override {}
+    void init() override;
     const std::string getId() const {return id.getValue();}
     void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();}
     void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}

@@ -144,20 +144,20 @@ public:
         filter.setValue(filterOptions);
     }
 
-    virtual ~TransferFunction() {}
+    ~TransferFunction() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&inputImage);
         addOutput(&outputImage);
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         TransferFunctionSpecialization<InImageTypes,OutImageTypes>::update( *this );
     }

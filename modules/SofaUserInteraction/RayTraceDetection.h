@@ -67,13 +67,13 @@ public:
     }
     void selfCollision (TriangleOctreeModel * cm1);
     void addCollisionModel (core::CollisionModel * cm) override;
-    virtual void addCollisionPair (const std::pair < core::CollisionModel *,
+    void addCollisionPair (const std::pair < core::CollisionModel *,
             core::CollisionModel * >&cmPair) override;
 
     void findPairsVolume (CubeModel * cm1,
             CubeModel * cm2);
 
-    virtual void beginBroadPhase() override
+    void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();

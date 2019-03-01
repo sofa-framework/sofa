@@ -101,13 +101,13 @@ protected:
     /// ForceField API
     TriangularFEMForceField();
 
-    virtual ~TriangularFEMForceField() override;
+    ~TriangularFEMForceField() override;
 public:
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+    void init() override;
+    void reinit() override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

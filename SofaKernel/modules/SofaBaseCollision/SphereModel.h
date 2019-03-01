@@ -107,15 +107,15 @@ protected:
 
     TSphereModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*,int index) override;
 
@@ -180,7 +180,7 @@ public:
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;

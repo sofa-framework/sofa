@@ -40,7 +40,7 @@ class DataFileName_test: public BaseTest
 {
     DataFileName d_filename;
 public:
-    void SetUp()
+    void SetUp() override
     {
         DataRepository.addFirstPath( FRAMEWORK_TEST_RESOURCES_DIR );
     }

@@ -42,7 +42,7 @@ public:
     typedef typename Elem2::Model Model2;
     MemberElementIntersector(T* ptr) : impl(ptr) {}
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
@@ -51,7 +51,7 @@ public:
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     /// If the given contacts vector is NULL, then this method should allocate it.
-    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts)
+    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts) override
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);
@@ -63,7 +63,7 @@ public:
     }
 
     /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts)
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts) override
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
@@ -76,7 +76,7 @@ public:
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts)
+    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts) override
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);

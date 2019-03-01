@@ -58,7 +58,7 @@ public:
 	
 protected:
     BaseInteractionConstraint() {}
-    virtual ~BaseInteractionConstraint()override {}
+    ~BaseInteractionConstraint()override {}
 	
 private:
 	BaseInteractionConstraint(const BaseInteractionConstraint& n) ;

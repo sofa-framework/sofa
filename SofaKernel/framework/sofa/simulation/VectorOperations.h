@@ -47,31 +47,31 @@ public:
     VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
 
     /// Allocate a temporary vector
-    void v_alloc(sofa::core::MultiVecCoordId& v);
-    void v_alloc(sofa::core::MultiVecDerivId& v);
+    void v_alloc(sofa::core::MultiVecCoordId& v) override;
+    void v_alloc(sofa::core::MultiVecDerivId& v) override;
     /// Free a previously allocated temporary vector
-    void v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false);
-    void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false);
+    void v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) override;
+    void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) override;
 
-    void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false);
-    void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false);
+    void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) override;
+    void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) override;
 
-    void v_clear(core::MultiVecId v); ///< v=0
-    void v_eq(core::MultiVecId v, core::ConstMultiVecId a); ///< v=a
-    void v_eq(core::MultiVecId v, core::ConstMultiVecId a, SReal f); ///< v=f*a
-    void v_peq(core::MultiVecId v, core::ConstMultiVecId a, SReal f=1.0); ///< v+=f*a
+    void v_clear(core::MultiVecId v) override; ///< v=0
+    void v_eq(core::MultiVecId v, core::ConstMultiVecId a) override; ///< v=a
+    void v_eq(core::MultiVecId v, core::ConstMultiVecId a, SReal f) override; ///< v=f*a
+    void v_peq(core::MultiVecId v, core::ConstMultiVecId a, SReal f=1.0) override; ///< v+=f*a
 
-    void v_teq(core::MultiVecId v, SReal f) ; ///< v*=f
-    void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId  b, SReal f=1.0) ; ///< v=a+b*f
-    void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o);
-    void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId  b); ///< a dot b ( get result using finish )
-    void v_norm(core::ConstMultiVecId a, unsigned l); ///< Compute the norm of a vector ( get result using finish ). The type of norm is set by parameter l. Use 0 for the infinite norm. Note that the 2-norm is more efficiently computed using the square root of the dot product.
-    void v_threshold(core::MultiVecId a, SReal threshold); ///< nullify the values below the given threshold
+    void v_teq(core::MultiVecId v, SReal f) override ; ///< v*=f
+    void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId  b, SReal f=1.0) override ; ///< v=a+b*f
+    void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o) override;
+    void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId  b) override; ///< a dot b ( get result using finish )
+    void v_norm(core::ConstMultiVecId a, unsigned l) override; ///< Compute the norm of a vector ( get result using finish ). The type of norm is set by parameter l. Use 0 for the infinite norm. Note that the 2-norm is more efficiently computed using the square root of the dot product.
+    void v_threshold(core::MultiVecId a, SReal threshold) override; ///< nullify the values below the given threshold
 
-    SReal finish();
+    SReal finish() override;
     void print(sofa::core::ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" );
 
-    virtual size_t v_size(core::MultiVecId v);
+    size_t v_size(core::MultiVecId v) override;
 
 protected:
     VisitorExecuteFunc executeVisitor;

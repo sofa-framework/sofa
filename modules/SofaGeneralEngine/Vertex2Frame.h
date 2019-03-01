@@ -56,7 +56,7 @@ protected:
 
     Vertex2Frame();
 
-    ~Vertex2Frame() {}
+    ~Vertex2Frame() override {}
 public:
     void init() override;
 

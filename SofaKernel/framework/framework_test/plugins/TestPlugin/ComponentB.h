@@ -41,7 +41,7 @@ public:
 
 protected:
     ComponentB();
-    ~ComponentB();
+    ~ComponentB() override;
 
 };
 

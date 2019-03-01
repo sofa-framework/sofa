@@ -67,10 +67,10 @@ public:
 
     MeshSampler();
 
-    virtual ~MeshSampler() {}
+    ~MeshSampler() override {}
 
-    virtual void reinit()    override { update();  }
-    virtual void init() override;
+    void reinit()    override { update();  }
+    void init() override;
     void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;

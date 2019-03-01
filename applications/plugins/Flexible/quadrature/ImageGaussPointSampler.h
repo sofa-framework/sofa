@@ -511,7 +511,7 @@ public:
     virtual std::string getTemplateName() const    { return templateName(this); }
     static std::string templateName(const ImageGaussPointSampler<ImageTypes_, MaskTypes_>* = NULL) { return ImageTypes_::Name()+std::string(",")+MaskTypes_::Name(); }
 
-    virtual void init()
+    void init() override
     {
         Inherit::init();
 
@@ -529,9 +529,9 @@ public:
         this->getContext()->get( deformationMapping, core::objectmodel::BaseContext::Local);
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
-    virtual void bwdInit() {  updateMapping(); }
+    void bwdInit() override {  updateMapping(); }
 
 protected:
     ImageGaussPointSampler()    :   Inherit()
@@ -553,7 +553,7 @@ protected:
     {
     }
 
-    virtual ~ImageGaussPointSampler()
+    ~ImageGaussPointSampler() override
     {
         // what is that?
         f_index.setReadOnly(true);
@@ -579,7 +579,7 @@ protected:
     static const int spatial_dimensions=3;
     mapping::BasePointMapper<spatial_dimensions,Real>* deformationMapping; ///< link to local deformation mapping for weights update
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         ImageGaussPointSamplerSpec::init(this);
         ImageGaussPointSamplerSpec::Cluster_SimilarIndices(this);

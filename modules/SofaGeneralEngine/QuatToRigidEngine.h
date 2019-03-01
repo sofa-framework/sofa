@@ -56,7 +56,7 @@ public:
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
 protected:
     QuatToRigidEngine();
-    virtual ~QuatToRigidEngine();
+    ~QuatToRigidEngine() override;
 public:
     void doUpdate() override;
     void init() override;

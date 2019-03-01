@@ -49,12 +49,12 @@ public:
     SOFA_CLASS(MakeDataAliasComponent, core::objectmodel::BaseObject);
 
     MakeDataAliasComponent() ;
-    virtual ~MakeDataAliasComponent(){}
+    ~MakeDataAliasComponent() override{}
 
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string>   d_componentname       ; ///< The component class for which to create an alias.
     Data<std::string>   d_dataname            ; ///< The data field for which to create an alias.

@@ -43,7 +43,7 @@ public:
     SOFA_ABSTRACT_CLASS(BroadPhaseDetection, Detection);
 protected:
     /// Destructor
-    virtual ~BroadPhaseDetection() { }
+    ~BroadPhaseDetection() override { }
 public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginBroadPhase()
@@ -77,7 +77,7 @@ protected:
     sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
     std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
 
-    virtual void changeInstanceBP(Instance inst) override
+    void changeInstanceBP(Instance inst) override
     {
         storedCmPairs[instance].swap(cmPairs);
         cmPairs.swap(storedCmPairs[inst]);

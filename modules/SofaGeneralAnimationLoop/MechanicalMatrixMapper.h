@@ -60,7 +60,7 @@ public:
 
     }
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
     {
         ctime_t t0 = begin(node, map);
         map->applyJT(cparams, res, res);
@@ -69,14 +69,14 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateJacobian"; }
+    const char* getClassName() const override { return "MechanicalAccumulateJacobian"; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -176,11 +176,11 @@ protected:
 public:
 
     ////////////////////////// Inherited from BaseObject //////////////////////
-    virtual void init() override;
+    void init() override;
     ///////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from ForceField //////////////////////
-    virtual void addForce(const MechanicalParams* mparams,
+    void addForce(const MechanicalParams* mparams,
                           DataVecDeriv1& f1,
                           DataVecDeriv2& f2,
                           const DataVecCoord1& x1,
@@ -188,16 +188,16 @@ public:
                           const DataVecDeriv1& v1,
                           const DataVecDeriv2& v2) override;
 
-    virtual void addDForce(const MechanicalParams* mparams,
+    void addDForce(const MechanicalParams* mparams,
                            DataVecDeriv1& df1,
                            DataVecDeriv2& df2,
                            const DataVecDeriv1& dx1,
                            const DataVecDeriv2& dx2) override;
 
-    virtual void addKToMatrix(const MechanicalParams* mparams,
+    void addKToMatrix(const MechanicalParams* mparams,
                               const MultiMatrixAccessor* matrix ) override;
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams,
+    double getPotentialEnergy(const MechanicalParams* mparams,
                                       const DataVecCoord1& x1, const DataVecCoord2& x2) const override;
     ///////////////////////////////////////////////////////////////////////////
 

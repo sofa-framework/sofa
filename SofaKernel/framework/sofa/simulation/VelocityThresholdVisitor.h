@@ -34,7 +34,7 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API VelocityThresholdVisitor : public Visitor
 {
 public:
-    virtual Visitor::Result processNodeTopDown(simulation::Node* node);
+    Visitor::Result processNodeTopDown(simulation::Node* node) override;
 
     VelocityThresholdVisitor(const core::ExecParams* params, core::MultiVecId v, SReal threshold);
 
@@ -42,11 +42,11 @@ public:
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const
+    const char* getCategoryName() const override
     {
         return "threshold";
     }
-    virtual const char* getClassName() const { return "VelocityThresholdVisitor"; }
+    const char* getClassName() const override { return "VelocityThresholdVisitor"; }
 
 protected:
     core::MultiVecId vid; ///< Id of the vector to process

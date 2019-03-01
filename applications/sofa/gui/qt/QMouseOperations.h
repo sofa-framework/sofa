@@ -63,7 +63,7 @@ class QAttachOperation : public QMouseOperation, public AttachOperation
     Q_OBJECT
 public:
     QAttachOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *stiffnessWidget;
@@ -76,7 +76,7 @@ class QAddRecordedCameraOperation : public QMouseOperation, public AddRecordedCa
     Q_OBJECT
 public:
     QAddRecordedCameraOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 };
 
 class QStartNavigationOperation : public QMouseOperation, public StartNavigationOperation  
@@ -84,7 +84,7 @@ class QStartNavigationOperation : public QMouseOperation, public StartNavigation
     Q_OBJECT
 public:
     QStartNavigationOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 };
 
 class QFixOperation : public QMouseOperation, public FixOperation
@@ -92,7 +92,7 @@ class QFixOperation : public QMouseOperation, public FixOperation
     Q_OBJECT
 public:
     QFixOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *stiffnessWidget;
@@ -106,14 +106,14 @@ class QInciseOperation : public QWidget, public InciseOperation
     Q_OBJECT
 public:
     QInciseOperation();
-    int getIncisionMethod() const;
-    int getSnapingBorderValue() const;
-    int getSnapingValue() const;
+    int getIncisionMethod() const override;
+    int getSnapingBorderValue() const override;
+    int getSnapingValue() const override;
 
-    bool getCompleteIncision () {return finishIncision;}
-    bool getKeepPoint () {return keepPoint;}
+    bool getCompleteIncision () override {return finishIncision;}
+    bool getKeepPoint () override {return keepPoint;}
 
-    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    void configure(PickHandler *picker, MOUSE_BUTTON b) override
     {
         InciseOperation::configure(picker, b);
     }
@@ -151,13 +151,13 @@ class QTopologyOperation : public QWidget, public TopologyOperation
     Q_OBJECT
 public:
     QTopologyOperation();
-    double getScale() const;
-    int getTopologicalOperation() const;
-    bool getVolumicMesh() const;
+    double getScale() const override;
+    int getTopologicalOperation() const override;
+    bool getVolumicMesh() const override;
 
 
 
-    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    void configure(PickHandler *picker, MOUSE_BUTTON b) override
     {
         TopologyOperation::configure(picker, b);
     }
@@ -182,10 +182,10 @@ class QAddSutureOperation : public QWidget, public AddSutureOperation
     Q_OBJECT
 public:
     QAddSutureOperation();
-    double getStiffness() const;
-    double getDamping() const;
+    double getStiffness() const override;
+    double getDamping() const override;
 
-    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    void configure(PickHandler *picker, MOUSE_BUTTON b) override
     {
         AddSutureOperation::configure(picker, b);
     }

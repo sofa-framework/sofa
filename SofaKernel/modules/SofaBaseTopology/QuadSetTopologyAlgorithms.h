@@ -55,7 +55,7 @@ protected:
 
     virtual ~QuadSetTopologyAlgorithms() {}
 public:
-    virtual void init() override;
+    void init() override;
 
 private:
     QuadSetTopologyContainer*					m_container;

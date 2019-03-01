@@ -139,7 +139,7 @@ public:
         QWidget(parent /*,name */), baseLink(l), dirty(false), counter(-1)
     {
     }
-    virtual ~LinkWidget() {}
+    ~LinkWidget() override {}
 
     inline virtual void setLink( MyLink* d)
     {

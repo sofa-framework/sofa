@@ -127,13 +127,13 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    virtual double getVelocityIntegrationFactor() const override { return 1.0; }
+    double getVelocityIntegrationFactor() const override { return 1.0; }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the position
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    virtual double getPositionIntegrationFactor() const override ;
+    double getPositionIntegrationFactor() const override ;
 
     virtual double getPositionIntegrationFactor(double dt ) const { return dt; }
 

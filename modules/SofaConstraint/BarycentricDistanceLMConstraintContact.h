@@ -87,7 +87,7 @@ protected:
     ContactIndexMap contactIndex;
 
     BarycentricDistanceLMConstraintContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-    ~BarycentricDistanceLMConstraintContact();
+    ~BarycentricDistanceLMConstraintContact() override;
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 

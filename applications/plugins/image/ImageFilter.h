@@ -161,9 +161,9 @@ public:
         filter.setValue(filterOptions);
     }
 
-    virtual ~ImageFilter() {}
+    ~ImageFilter() override {}
 
-    virtual void init() override
+    void init() override
 	{
         addInput(&inputImage);
         addInput(&inputTransform);
@@ -172,11 +172,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         bool updateImage = m_dataTracker.hasChanged(this->inputImage);	// change of input image -> update output image
         bool updateTransform = m_dataTracker.hasChanged(this->inputTransform);	// change of input transform -> update output transform

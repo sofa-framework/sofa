@@ -65,11 +65,11 @@ protected:
      *
          * Does nothing.
          */
-    virtual ~SimpleTesselatedHexaTopologicalMapping() {}
+    ~SimpleTesselatedHexaTopologicalMapping() override {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init() override;
+    void init() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -77,7 +77,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown() override {};
+    void updateTopologicalMappingTopDown() override {};
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *

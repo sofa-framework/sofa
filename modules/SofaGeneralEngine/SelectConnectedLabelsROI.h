@@ -74,9 +74,9 @@ public:
         d_labels.resize(d_nbLabels.getValue());
     }
 
-    virtual ~SelectConnectedLabelsROI() {}
+    ~SelectConnectedLabelsROI() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&d_nbLabels);
         d_labels.resize(d_nbLabels.getValue());
@@ -85,7 +85,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         d_labels.resize(d_nbLabels.getValue());
         update();
@@ -109,7 +109,7 @@ public:
 protected:
 
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
         indices.clear();

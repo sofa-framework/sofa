@@ -52,7 +52,7 @@ public:
 
 protected:
     InteractiveCamera();
-    virtual ~InteractiveCamera();
+    ~InteractiveCamera() override;
 public:
 private:
     int currentMode;

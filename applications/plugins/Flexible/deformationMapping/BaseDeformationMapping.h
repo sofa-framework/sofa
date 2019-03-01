@@ -262,9 +262,9 @@ public:
     //@}
 
     ///@brief Get parent state size
-    virtual size_t getFromSize() const { return this->fromModel->getSize(); }
+    size_t getFromSize() const override { return this->fromModel->getSize(); }
     ///@brief Get child state size
-    virtual size_t getToSize()  const { return this->toModel->getSize(); }
+    size_t getToSize()  const override { return this->toModel->getSize(); }
     ///@brief Get child to parent indices as a const reference
     virtual const VecVRef& getChildToParentIndex() { return  f_index.getValue(); }
     ///@brief Get parent indices of the i-th child
@@ -326,7 +326,7 @@ public:
 
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
-    virtual ~BaseDeformationMappingT() { }
+    ~BaseDeformationMappingT() override { }
 
 public:
 

@@ -71,18 +71,18 @@ public:
     Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
     Data< helper::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
 
-    virtual void doInit() override ;
-    virtual void doReInit() override ;
-    virtual void handleEvent(Event *) override ;
+    void doInit() override ;
+    void doReInit() override ;
+    void handleEvent(Event *) override ;
 
-    virtual bool write() override ;
+    bool write() override ;
 
     bool writeSTL(bool autonumbering=true);
     bool writeSTLBinary(bool autonumbering=true);
 
 protected:
     STLExporter();
-    virtual ~STLExporter();
+    ~STLExporter() override;
 
 private:
     BaseMeshTopology*    m_inputtopology {nullptr};

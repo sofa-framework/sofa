@@ -80,12 +80,12 @@ public:
 
 public:
     NearestPointROI();
-    virtual ~NearestPointROI();
+    ~NearestPointROI() override;
 
     void init() override;
     void reinit() override;
 
-    virtual void doUpdate() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {

@@ -43,10 +43,10 @@ public:
     Data<SReal> contactDistance; ///< Distance below which a contact is created
 protected:
     BaseProximityIntersection();
-    virtual ~BaseProximityIntersection() { }
+    ~BaseProximityIntersection() override { }
 public:
     /// Returns true if algorithm uses proximity
-    virtual bool useProximity() const override { return true; }
+    bool useProximity() const override { return true; }
 
     /// Returns the alarm distance (must returns 0 if useProximity() is false)
     SReal getAlarmDistance() const override { return alarmDistance.getValue(); }

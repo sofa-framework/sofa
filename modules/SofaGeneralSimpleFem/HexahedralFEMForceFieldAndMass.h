@@ -71,41 +71,41 @@ public:
 protected:
     HexahedralFEMForceFieldAndMass();
 public:
-    virtual void init( ) override;
-    virtual void reinit( ) override;
+    void init( ) override;
+    void reinit( ) override;
 
     // -- Mass interface
-    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
+     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     using HexahedralFEMForceFieldT::addKToMatrix;
     using MassT::addKToMatrix;
     ///// WARNING this method only add diagonal elements in the given matrix !
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    virtual void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual  void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
+     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-    virtual  void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    virtual SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const override ///< vMv/2 using dof->getV() override
+    SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const override ///< vMv/2 using dof->getV() override
     {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
-    virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     SReal getElementMass(unsigned int index) const override;
 

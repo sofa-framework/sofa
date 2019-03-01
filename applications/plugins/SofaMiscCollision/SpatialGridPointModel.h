@@ -50,11 +50,11 @@ public:
 protected:
     SpatialGridPointModel();
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
     Grid* getGrid() { return grid->getGrid(); }
 protected:

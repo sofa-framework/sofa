@@ -43,13 +43,13 @@ public:
 
     ExportOBJVisitor(const core::ExecParams* params, std::ostream* out);
     ExportOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
-    ~ExportOBJVisitor();
+    ~ExportOBJVisitor() override;
 
     virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
 
-    virtual Result processNodeTopDown(Node* node);
-    virtual void processNodeBottomUp(Node* node);
-    virtual const char* getClassName() const { return "ExportOBJVisitor"; }
+    Result processNodeTopDown(Node* node) override;
+    void processNodeBottomUp(Node* node) override;
+    const char* getClassName() const override { return "ExportOBJVisitor"; }
 
 protected:
     int ID;

@@ -43,9 +43,9 @@ public:
 protected:
     MultiStepAnimationLoop(simulation::Node* gnode);
 
-    virtual ~MultiStepAnimationLoop();
+    ~MultiStepAnimationLoop() override;
 public:
-    virtual void step (const sofa::core::ExecParams* params, SReal dt) override;
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
 
     /// Construction method called by ObjectFactory.
     template<class T>

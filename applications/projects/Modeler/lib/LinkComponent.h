@@ -52,7 +52,7 @@ class LinkComponent : public QWidget
 public:
     typedef helper::vector< sofa::core::loader::BaseLoader* > Loaders;
     LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem*>& items, QTreeWidgetItem* sel);
-    ~LinkComponent();
+    ~LinkComponent() override;
 
     // get the number of loader in the tree branch
     unsigned int loaderNumber() const;

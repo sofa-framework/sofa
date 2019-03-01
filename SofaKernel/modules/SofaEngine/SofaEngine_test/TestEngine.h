@@ -48,7 +48,7 @@ protected:
 
     TestEngine();
 
-    virtual ~TestEngine() {}
+    ~TestEngine() override {}
 public:
     SOFA_CLASS(TestEngine,core::DataEngine);
     void init() override;

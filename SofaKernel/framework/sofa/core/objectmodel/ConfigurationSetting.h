@@ -46,12 +46,12 @@ public:
 protected:
     ConfigurationSetting(); ///< Default constructor.
 
-    virtual ~ConfigurationSetting();
+    ~ConfigurationSetting() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
-    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

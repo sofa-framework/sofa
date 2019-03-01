@@ -65,7 +65,7 @@ protected:
 
     PairBoxROI();
 
-    ~PairBoxROI() {}
+    ~PairBoxROI() override {}
 public:
     void init() override;
 

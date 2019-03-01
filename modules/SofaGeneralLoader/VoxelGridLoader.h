@@ -46,16 +46,16 @@ public:
     typedef helper::fixed_array<unsigned int,8> Hexahedron;
 protected:
     VoxelGridLoader();
-    virtual ~VoxelGridLoader();
+    ~VoxelGridLoader() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     virtual void clear();
 
-    virtual bool load() override;
-    virtual bool canLoad() override;
+    bool load() override;
+    bool canLoad() override;
 
     void setVoxelSize ( const defaulttype::Vector3 vSize );
     defaulttype::Vector3 getVoxelSize () const override;

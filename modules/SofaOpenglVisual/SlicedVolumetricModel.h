@@ -56,15 +56,15 @@ public:
     SOFA_CLASS(SlicedVolumetricModel, core::visual::VisualModel);
 protected:
     SlicedVolumetricModel();
-    virtual ~SlicedVolumetricModel();
+    ~SlicedVolumetricModel() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 protected:
 //    void setColor(float r, float g, float b);

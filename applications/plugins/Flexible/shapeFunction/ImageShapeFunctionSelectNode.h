@@ -79,7 +79,7 @@ public:
 
     {}
 
-    virtual void init() {
+    void init() override {
         addInput(&d_weights);
         addInput(&d_indices);
         addInput(&d_nodeIndex);
@@ -87,11 +87,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         unsigned int nodeIndex = d_nodeIndex.getValue();
         sout << "Update image for node " << nodeIndex << sendl;

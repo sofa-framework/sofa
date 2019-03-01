@@ -66,7 +66,7 @@ public:
     };
 
     GraphHistoryManager(GraphModeler *);
-    ~GraphHistoryManager();
+    ~GraphHistoryManager() override;
 
     bool isUndoEnabled() const {return !historyOperation.empty();}
     bool isRedoEnabled() const {return !historyUndoOperation.empty();}

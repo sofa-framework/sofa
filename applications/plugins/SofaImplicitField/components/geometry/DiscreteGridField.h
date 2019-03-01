@@ -56,13 +56,13 @@ public:
 
 public:
     DiscreteGridField();
-    ~DiscreteGridField();
+    ~DiscreteGridField() override;
 
-    virtual void init() override;
+    void init() override;
 
     virtual double getValue( Vec3d &transformedPos );
-    virtual double getValue( Vec3d &transformedPos, int &domain ) override;
-    virtual int getDomain( Vec3d &pos, int ref_domain ) override { (void)pos; return ref_domain; }
+    double getValue( Vec3d &transformedPos, int &domain ) override;
+    int getDomain( Vec3d &pos, int ref_domain ) override { (void)pos; return ref_domain; }
 
     void setFilename(const std::string& filename) ;
     bool loadGridFromMHD( const char *filename ) ;

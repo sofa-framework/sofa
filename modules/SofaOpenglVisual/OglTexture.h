@@ -81,9 +81,9 @@ public:
     static GLint MAX_NUMBER_OF_TEXTURE_UNIT;
 protected:
     OglTexture();
-    virtual ~OglTexture();
+    ~OglTexture() override;
 public:
-    virtual void init() override;
+    void init() override;
     void initVisual() override;
     void reinit() override;
     void fwdDraw(core::visual::VisualParams*) override;
@@ -99,11 +99,11 @@ public:
     static void setActiveTexture(unsigned short unit);
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
+    ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const override { return &textureFilename; }
+    const core::objectmodel::BaseData* getSEValue() const override { return &textureFilename; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() override { return &textureFilename; }
+    core::objectmodel::BaseData* getSEValue() override { return &textureFilename; }
 };
 
 class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture
@@ -116,9 +116,9 @@ private:
 
 public:
     OglTexture2D();
-    virtual ~OglTexture2D();
+    ~OglTexture2D() override;
 
-    virtual void init() override;
+    void init() override;
 };
 
 }

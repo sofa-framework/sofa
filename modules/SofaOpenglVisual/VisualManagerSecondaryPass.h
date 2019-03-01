@@ -60,7 +60,7 @@ protected:
     SingleLink<VisualManagerSecondaryPass, OglShader, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_shader;
 
     VisualManagerSecondaryPass();
-    virtual ~VisualManagerSecondaryPass();
+    ~VisualManagerSecondaryPass() override;
 
     virtual void traceFullScreenQuad();
 

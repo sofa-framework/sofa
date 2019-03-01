@@ -79,7 +79,7 @@ public:
 
     Data< helper::vector<Real> > f_fineVolumes; ///< input cell volumes (typically computed from a fine model)
 
-    virtual void init()
+    void init() override
     {
         Inherited::init();
 
@@ -97,7 +97,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
     TopologyGaussPointSampler()    :   Inherited()
@@ -112,7 +112,7 @@ protected:
     {
     }
 
-    virtual ~TopologyGaussPointSampler()
+    ~TopologyGaussPointSampler() override
     {
 
     }
@@ -123,7 +123,7 @@ protected:
         if(indices.find(index)!=indices.end()) return true; else return false;
     }
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         if( !parentTopology ) return;
 

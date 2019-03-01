@@ -136,7 +136,7 @@ public:
 
     DataWidget(QWidget* parent,const char* name, MyData* d);
 
-    virtual ~DataWidget();
+    ~DataWidget() override;
 
     virtual void setData( MyData* d);
 

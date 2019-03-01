@@ -76,7 +76,7 @@ protected:
     /**
      * @brief Default Destructor.
      */
-    virtual ~MechanicalStateController() {};
+    ~MechanicalStateController() override {};
 public:
     /**
      * @brief SceneGraph callback initialization method.

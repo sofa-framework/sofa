@@ -147,7 +147,7 @@ public:
         d_cubesDamping.setValue(val);
     }
 
-    virtual void init() override;
+    void init() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

@@ -55,7 +55,7 @@ public:
 protected:
     MapIndices();
 
-    virtual ~MapIndices();
+    ~MapIndices() override;
 public:
     void init() override;
 

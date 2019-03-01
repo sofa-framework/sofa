@@ -40,7 +40,7 @@ namespace sofa {
 struct AdvancedTimerTest: public BaseSimulationTest
 {
 protected:
-	virtual void onSetUp()
+	void onSetUp() override
 	{
 		using namespace sofa::helper;
 

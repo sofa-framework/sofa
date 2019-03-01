@@ -62,7 +62,7 @@ public:
 
     GenerateCylinder();
 
-    ~GenerateCylinder() {}
+    ~GenerateCylinder() override {}
 
     void init() override;
 

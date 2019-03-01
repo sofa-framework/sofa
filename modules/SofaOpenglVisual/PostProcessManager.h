@@ -66,7 +66,7 @@ public:
     sofa::core::objectmodel::DataFileName fragFilename;
 protected:
     PostProcessManager();
-    virtual ~PostProcessManager();
+    ~PostProcessManager() override;
 public:
     void init() override;
     void reinit() override { };

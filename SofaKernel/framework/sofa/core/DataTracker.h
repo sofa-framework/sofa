@@ -167,7 +167,7 @@ namespace core
 
         /// Update this value
         /// @warning the update callback must have been set with "setUpdateCallback"
-        virtual void update() { m_updateCallback( this ); }
+        void update() override { m_updateCallback( this ); }
 
         /// This method is needed by DDGNode
         const std::string& getName() const
@@ -176,9 +176,9 @@ namespace core
             return emptyName;
         }
         /// This method is needed by DDGNode
-        objectmodel::Base* getOwner() const { return nullptr; }
+        objectmodel::Base* getOwner() const override { return nullptr; }
         /// This method is needed by DDGNode
-        objectmodel::BaseData* getData() const { return nullptr; }
+        objectmodel::BaseData* getData() const override { return nullptr; }
 
     protected:
 
@@ -205,7 +205,7 @@ namespace core
 
         /// The trick is here, this function is called as soon as the input data changes
         /// and can then trigger the callback
-        virtual void setDirtyValue(const core::ExecParams* params = 0)
+        void setDirtyValue(const core::ExecParams* params = 0) override
         {
             m_functor( this );
 
@@ -216,7 +216,7 @@ namespace core
 
 
         /// This method is needed by DDGNode
-        virtual void update(){}
+        void update() override{}
         /// This method is needed by DDGNode
         const std::string& getName() const
         {
@@ -224,9 +224,9 @@ namespace core
             return emptyName;
         }
         /// This method is needed by DDGNode
-        virtual objectmodel::Base* getOwner() const { return nullptr; }
+        objectmodel::Base* getOwner() const override { return nullptr; }
         /// This method is needed by DDGNode
-        virtual objectmodel::BaseData* getData() const { return nullptr; }
+        objectmodel::BaseData* getData() const override { return nullptr; }
 
     private:
 

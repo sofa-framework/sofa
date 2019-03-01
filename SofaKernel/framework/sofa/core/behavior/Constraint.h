@@ -63,12 +63,12 @@ public:
 protected:
     Constraint(MechanicalState<DataTypes> *mm = NULL);
 
-    virtual ~Constraint();
+    ~Constraint() override;
 public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
-    virtual void init() override;
+    void init() override;
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate; }
@@ -79,7 +79,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) override;
+    void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) override;
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -97,7 +97,7 @@ public:
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
+    void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
 
     /// Construct the Jacobian Matrix
     ///
@@ -110,7 +110,7 @@ public:
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) = 0;
 
 
-    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -140,7 +140,7 @@ protected:
     ///
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 private:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);

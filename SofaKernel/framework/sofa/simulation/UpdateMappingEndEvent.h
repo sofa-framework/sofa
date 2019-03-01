@@ -54,10 +54,10 @@ public:
 
     UpdateMappingEndEvent( SReal dt );
 
-    ~UpdateMappingEndEvent();
+    ~UpdateMappingEndEvent() override;
 
     SReal getDt() const { return dt; }
-    virtual const char* getClassName() const { return "UpdateMappingEndEvent"; }
+    const char* getClassName() const override { return "UpdateMappingEndEvent"; }
 protected:
     SReal dt;
 };

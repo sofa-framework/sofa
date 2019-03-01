@@ -54,7 +54,7 @@ protected:
 
     MergePoints();
 
-    ~MergePoints() {}
+    ~MergePoints() override {}
 public:
     void init() override;
 

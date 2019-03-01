@@ -41,7 +41,7 @@ struct DataLink_test: public BaseTest
     Data<int> data2;
 
     /// Create a link between the two datas
-    void SetUp()
+    void SetUp() override
     {
         // Link
         data2.setParent(&data1);
@@ -81,7 +81,7 @@ struct vectorData_test: public ::testing::Test
         : vDataInt(NULL,"","")
     { }
 
-    void SetUp()
+    void SetUp() override
     {}
 
     void test_resize()
@@ -129,7 +129,7 @@ struct DataFileNameVector_test: public ::testing::Test
         : dataFileNameVector()
     { }
 
-    void SetUp()
+    void SetUp() override
     {}
 
 };

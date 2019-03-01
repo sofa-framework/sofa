@@ -68,12 +68,12 @@ protected:
 
     virtual ~MappedObject();
 public:
-    virtual void init() override;
+    void init() override;
 
     Data<VecCoord> f_X; ///< position vector
     Data<VecDeriv> f_V; ///< velocity vector
 
-    virtual void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+    void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
 
     VecCoord* getX()  { return f_X.beginEdit(); }
     VecDeriv* getV()  { return f_V.beginEdit(); }

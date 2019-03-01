@@ -47,7 +47,7 @@ public:
 
 protected:
     DataMonitor();
-    ~DataMonitor() {}
+    ~DataMonitor() override {}
 
     sofa::core::objectmodel::Data<std::string> data; ///< Monitored data
 };

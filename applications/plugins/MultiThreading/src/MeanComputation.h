@@ -65,7 +65,7 @@ namespace sofa
 
                 MeanComputation();
 
-                ~MeanComputation() {}
+                ~MeanComputation() override {}
 
                 void compute();
 
@@ -74,7 +74,7 @@ namespace sofa
 
                 void reinit() override;
 
-                virtual void handleEvent(core::objectmodel::Event* event) override;
+                void handleEvent(core::objectmodel::Event* event) override;
 
                 virtual std::string getTemplateName() const override
                 {
