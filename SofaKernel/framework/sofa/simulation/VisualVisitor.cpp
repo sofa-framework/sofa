@@ -55,7 +55,7 @@ void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 
 void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
 {
-    if (vparams->pass() == core::visual::VisualParams::Std || vparams->pass() == core::visual::VisualParams::Shadow)
+    if (vparams->pass() == core::visual::VisualParams::Transparent || vparams->pass() == core::visual::VisualParams::Shadow)
     {
         msg_info_when(DO_DEBUG_DRAW, o) << " entering VisualVisitor::draw()" ;
 

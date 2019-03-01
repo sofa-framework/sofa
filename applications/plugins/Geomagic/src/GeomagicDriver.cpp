@@ -201,6 +201,7 @@ GeomagicDriver::GeomagicDriver()
     , m_simulationStarted(false)
     , m_errorDevice(0)
     , m_isInContact(false)
+    , m_hHD(UINT_MAX)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -208,27 +209,32 @@ GeomagicDriver::GeomagicDriver()
 
 GeomagicDriver::~GeomagicDriver()
 {
-    hdMakeCurrentDevice(m_hHD);
-    
-    if (!m_hStateHandles.empty()) {
-        hdStopScheduler();
-    }
-
-
-    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
-            i != m_hStateHandles.end(); ++i)
-    {
-            hdUnschedule(*i);
-    }
-    m_hStateHandles.clear();
-
-    hdDisableDevice(m_hHD);
+    clearDevice();
 }
 
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void GeomagicDriver::init()
 {
     
+}
+
+void GeomagicDriver::clearDevice()
+{
+    hdMakeCurrentDevice(m_hHD);
+
+    if (!m_hStateHandles.empty()) {
+        hdStopScheduler();
+    }
+
+
+    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
+        i != m_hStateHandles.end(); ++i)
+    {
+        hdUnschedule(*i);
+    }
+    m_hStateHandles.clear();
+
+    hdDisableDevice(m_hHD);
 }
 
 void GeomagicDriver::bwdInit()
@@ -244,7 +250,7 @@ void GeomagicDriver::bwdInit()
 }
 
 
-void GeomagicDriver::initDevice()
+void GeomagicDriver::initDevice(int cptInitPass)
 {
     m_initVisuDone = false;
     m_errorDevice = 0;
@@ -254,10 +260,22 @@ void GeomagicDriver::initDevice()
     m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        msg_error() << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
-        d_omniVisu.setValue(false);
+    {        
         m_errorDevice = error.errorCode;
+        if (m_errorDevice == 769) // double initialisation, will try to close and reinit device
+        {
+            msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
+            m_hHD = hdGetCurrentDevice();
+            if (m_hHD != UINT_MAX && cptInitPass < 10) // Try clear and reinit device (10 times max)
+            {
+                clearDevice();
+                return initDevice(cptInitPass++);
+            }
+        }
+
+        msg_error() << "Failed to initialize the device ID: " << m_hHD << " | Name: '" << d_deviceName.getValue().c_str() << "' | Error code returned: " << m_errorDevice;
+        d_omniVisu.setValue(false);
+
         //init the positionDevice data to avoid any crash in the scene
         m_posDeviceVisu.clear();
         m_posDeviceVisu.resize(1);

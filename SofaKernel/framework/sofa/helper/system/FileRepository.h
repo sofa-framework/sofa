@@ -65,7 +65,8 @@ public:
     void addFirstPath(const std::string& path);
 
     /// Replaces every occurrences of "//" by "/"
-    std::string cleanPath( const std::string& path );
+    /// @deprecated Use FileSystem::cleanPath instead.
+    static std::string cleanPath(const std::string& path);
 
     /// Adds a path to the back of the set of paths.
     void addLastPath(const std::string& path);

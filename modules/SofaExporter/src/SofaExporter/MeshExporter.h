@@ -61,7 +61,7 @@ using sofa::core::objectmodel::Event ;
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::simulation::BaseSimulationExporter ;
 
-class SOFA_EXPORTER_API MeshExporter : public BaseSimulationExporter
+class SOFA_SOFAEXPORTER_API MeshExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(MeshExporter, BaseSimulationExporter);

@@ -144,7 +144,7 @@ void SubsetMapping<TIn, TOut>::init()
         {
             if ((unsigned)indices[i] >= inSize)
             {
-                serr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")"<<sendl;
+                msg_error() << "incorrect index "<<indices[i]<<" (input size "<<inSize<<")";
                 indices.erase(indices.begin()+i);
                 --i;
             }

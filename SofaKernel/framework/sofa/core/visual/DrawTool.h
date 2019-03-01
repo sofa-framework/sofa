@@ -207,6 +207,11 @@ public:
     /// draw 2D text at position (x,y) from top-left corner
     virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text ) = 0;
 
+    /// Allow a variable depth offset for polygon drawing
+    virtual void enablePolygonOffset(float factor, float units) = 0;
+    /// Remove variable depth offset for polygon drawing
+    virtual void disablePolygonOffset() = 0;
+
     // @name Color Buffer method
     virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL) = 0;
     /// @}

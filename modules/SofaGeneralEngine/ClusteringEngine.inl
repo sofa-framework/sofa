@@ -308,11 +308,11 @@ bool ClusteringEngine<DataTypes>::load()
     if(!fname.compare(loadedFilename)) return true;
 
     if (!fname.size()) return false;
-    if (!helper::system::DataRepository.findFile(fname))  { serr << "ClusteringEngine: cannot find "<<fname<<sendl;  return false;	}
+    if (!helper::system::DataRepository.findFile(fname))  { msg_error() << "ClusteringEngine: cannot find "<<fname;  return false;	}
     fname=helper::system::DataRepository.getFile(fname);
 
     ifstream fileStream (fname.c_str(), std::ifstream::in);
-    if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
+    if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
     WriteOnlyAccessor< Data< VVI > > clust = this->d_cluster;
     clust.clear();
@@ -343,7 +343,7 @@ bool ClusteringEngine<DataTypes>::save()
     if (!fname.size()) return false;
 
     ofstream fileStream (fname.c_str(), ofstream::out);
-    if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
+    if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
     ReadAccessor< Data< VVI > > clust = this->d_cluster;
 
@@ -361,7 +361,7 @@ bool ClusteringEngine<DataTypes>::save()
         fileStream << std::endl;
     }
 
-    sout << "ClusteringEngine: saved clusters in "<<fname<<sendl;
+    sout << "ClusteringEngine: saved clusters in "<<fname;
 
     return true;
 }

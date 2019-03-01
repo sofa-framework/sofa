@@ -19,128 +19,77 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest;
 
-#include <fstream>
-#include <iterator>
-#include <algorithm>
+#include <SofaSimulationGraph/SimpleApi.h>
+using sofa::simulation::Node;
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/defaulttype/Vec.h>
+using sofa::defaulttype::Vec3;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaGeneralLoader/ReadState.h>
-
-namespace sofa {
-
-    using namespace component;
-    using namespace defaulttype;
-    using sofa::core::objectmodel::New;
-
-
-    template <typename _DataTypes>
-    struct ReadState_test : public Sofa_test<typename _DataTypes::Real>
+class ReadState_test : public BaseSimulationTest
+{
+public:
+    /// Run seven steps of simulation then check results
+    bool testDefaultBehavior()
     {
-        typedef _DataTypes DataTypes;
-        typedef typename DataTypes::CPos CPos;
-        typedef typename DataTypes::Real Real;
-        typedef typename DataTypes::Coord Coord;
-        typedef typename DataTypes::VecCoord VecCoord;
-        typedef typename DataTypes::VecDeriv VecDeriv;
-        typedef container::MechanicalObject<DataTypes> MechanicalObject;
+        double dt = 0.01;
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+        auto simulation = sofa::simpleapi::createSimulation();
+        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
-        /// Root of the scene graph
-        simulation::Node::SPtr root=NULL;
-        /// Simulation
-        simulation::Simulation* simulation=NULL;
-        /// MechanicalObject
-        typename MechanicalObject::SPtr mecaObj=NULL;
-        /// Time step
-        double timeStep=0.01;
-        /// Expected result
-        double final_expected_value=0.0;
+        /// no need of gravity, the file .data is just read
+        root->setGravity(Vec3(0.0,0.0,0.0));
+        root->setDt(dt);
 
-        /// Create the context for the scene
-        void SetUp()
+        Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
+
+        auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject",
+                                                  {{"size", "1"}});
+
+        sofa::simpleapi::createObject(childNode, "ReadState",
+                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"particleGravityX.data"}});
+
+        simulation->init(root.get());
+        for(int i=0; i<7; i++)
         {
-            // Init simulation
-            sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-            root = simulation::getSimulation()->createNewGraph("root");
+            simulation->animate(root.get(), dt);
         }
 
-        // Create the scene and the components: export velocity, VariationalSymplecticSolver is exact is velocity
-        void createScene()
-        {
-            timeStep = 0.01;
-            root->setGravity(Coord(0.0,0.0,0.0)); // no need of gravity, the file .data is just read
-            root->setDt(timeStep);
-
-            simulation::Node::SPtr childNode = root->createChild("Particle");
-
-            mecaObj = New<MechanicalObject>();
-            mecaObj->resize(1);
-            childNode->addObject(mecaObj);
-
-            sofa::component::misc::ReadState::SPtr readState =New<sofa::component::misc::ReadState>();
-            readState->d_filename.setValue(std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"particleGravityX.data");
-            childNode->addObject(readState);
-
-            EXPECT_TRUE(childNode);
-        }
-
-        // Initialization of the scene
-        void initScene()
-        {
-            sofa::simulation::getSimulation()->init(this->root.get());
-        }
-
-        // Run five steps of simulation
-        void runScene()
-        {
-            for(int i=0; i<7; i++)
-            {
-                sofa::simulation::getSimulation()->animate(root.get(),timeStep);
-            }
-        }
-
-
-
-        /// Function where you can implement the test you want to do
-        bool simulation_result_test()
-        {
-            double result;
-            result = mecaObj->x.getValue()[0][2];
-            final_expected_value = -0.017658;
-
-            EXPECT_TRUE( fabs(final_expected_value-result)<std::numeric_limits<double>::epsilon() );
-            return true;
-        }
-
-
-        /// Unload the scene
-        void TearDown()
-        {
-            if (root!=NULL)
-                sofa::simulation::getSimulation()->unload(root);
-        }
-
-    };
-
-    // Define the list of DataTypes to instantiate
-    typedef testing::Types< Vec3Types > DataTypes;
-
-    // Test suite for all the instantiations
-    TYPED_TEST_CASE(ReadState_test, DataTypes);
-
-    // Test : read positions of a particle falling under gravity
-    TYPED_TEST( ReadState_test , test_read_position)
-    {
-        this->SetUp();
-        this->createScene();
-        this->initScene();
-        this->runScene();
-
-        ASSERT_TRUE( this->simulation_result_test() );
-        this->TearDown();
+        EXPECT_EQ(meca->findData("position")->getValueString(),
+                  std::string("0 0 -0.017658"));
+        return true;
     }
+
+    /// Run seven steps of simulation then check results
+    bool testLoadFailure()
+    {
+        sofa::simpleapi::importPlugin("SofaAllCommonComponents") ;
+        auto simulation = sofa::simpleapi::createSimulation();
+        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+
+        auto meca = sofa::simpleapi::createObject(root, "MechanicalObject",
+                                                  {{"size", "1"}});
+
+        {
+            EXPECT_MSG_EMIT(Error);
+            sofa::simpleapi::createObject(root, "ReadState",
+                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"invalidFile.txt"}});
+        }
+
+        return true;
+    }
+};
+
+/// Test : read positions of a particle falling under gravity
+TEST_F(ReadState_test , test_defaultBehavior)
+{
+    ASSERT_TRUE( this->testDefaultBehavior() );
+}
+
+/// Test : when happens when unable to load the file ?
+TEST_F(ReadState_test , test_loadFailure)
+{
+    ASSERT_TRUE( this->testLoadFailure() );
 }

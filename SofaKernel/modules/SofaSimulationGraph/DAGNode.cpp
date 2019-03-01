@@ -131,7 +131,6 @@ void DAGNode::doRemoveChild(BaseNode::SPtr node)
     dagnode->l_parents.remove(this);
 }
 
-
 /// Move a node from another node
 void DAGNode::doMoveChild(BaseNode::SPtr node)
 {

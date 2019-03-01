@@ -1268,7 +1268,15 @@ void DrawToolGL::disableBlending()
 {
     glDisable(GL_BLEND);
 }
-
+void DrawToolGL::enablePolygonOffset( float factor, float units)
+{
+    glEnable(GL_POLYGON_OFFSET_LINE);
+    glPolygonOffset(factor, units);
+}
+void DrawToolGL::disablePolygonOffset()
+{
+    glDisable(GL_POLYGON_OFFSET_LINE);
+}
 void DrawToolGL::enableLighting()
 {
     glEnable(GL_LIGHTING);

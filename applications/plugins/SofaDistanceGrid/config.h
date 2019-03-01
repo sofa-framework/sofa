@@ -22,7 +22,7 @@
 #ifndef SOFA_SOFADISTANCEGRID_CONFIG_H
 #define SOFA_SOFADISTANCEGRID_CONFIG_H
 
-#include <SofaGui/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_HAVE_SOFADISTANCEGRID
 #  define SOFA_TARGET SofaDistanceGrid

@@ -55,6 +55,7 @@ public:
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
     /// NB: can also be used for projects <projectDirectory>/*/python
     static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);
+    static void addPythonModulePathsForPluginsByName(const std::string& pluginName);
 
     /// add module to python context, Init() must have been called before
     static void addModule(const std::string& name, PyMethodDef* methodDef);

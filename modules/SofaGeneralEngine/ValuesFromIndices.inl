@@ -81,7 +81,7 @@ void ValuesFromIndices<T>::doUpdate()
         if ((unsigned)indices[i] < in.size())
             out.push_back(in[indices[i]]);
         else
-            serr << "Invalid input index " << i <<": " << indices[i] << " >= " << in.size() << sendl;
+            msg_error() << "Invalid input index " << i <<": " << indices[i] << " >= " << in.size();
     }
 }
 

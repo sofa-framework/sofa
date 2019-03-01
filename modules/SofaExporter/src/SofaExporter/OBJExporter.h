@@ -19,9 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAEXPORTER_CONFIG_H
-#define SOFAEXPORTER_CONFIG_H
+/* OBJExporter.h
+ *
+ *  Created on: 9 sept. 2009
+ *
+ *  Contributors:
+ *    - froy
+ *    - damien.marchal@univ-lille1.fr
+ *
+ ************************************************************************************/
 
-#include <SofaGeneral/config.h>
+#ifndef OBJEXPORTER_H_
+#define OBJEXPORTER_H_
+#include "config.h"
 
-#endif
+#include <sofa/simulation/BaseSimulationExporter.h>
+
+#include <fstream>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace _objexporter_
+{
+
+using sofa::simulation::BaseSimulationExporter ;
+using sofa::core::objectmodel::Event ;
+using sofa::core::objectmodel::Base ;
+
+class SOFA_SOFAEXPORTER_API OBJExporter : public BaseSimulationExporter
+{
+public:
+    SOFA_CLASS(OBJExporter, BaseSimulationExporter);
+
+    virtual bool write() override ;
+    bool writeOBJ();
+
+    virtual void handleEvent(Event *event) override ;
+
+protected:
+    virtual ~OBJExporter();
+};
+
+}
+
+using _objexporter_::OBJExporter ;
+
+/// This is for compatibility with old code base in which OBJExporter where in sofa::component::misc.
+namespace misc  { using _objexporter_::OBJExporter ; }
+
+}
+
+}
+
+#endif /* OBJEXPORTER_H_ */
