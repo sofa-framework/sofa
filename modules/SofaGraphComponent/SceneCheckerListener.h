@@ -29,16 +29,7 @@
 
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::scenechecking::SceneCheckerVisitor;
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
-#include "SceneCheck.h"
 
 namespace sofa
 {

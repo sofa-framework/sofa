@@ -22,10 +22,6 @@
 #include <sofa/helper/system/config.h>
 #include <SofaGraphComponent/initGraphComponent.h>
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
-
 namespace sofa
 {
 
@@ -40,8 +36,6 @@ void initGraphComponent()
     {
         first = false;
     }
-
-    sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
 }
 
 } // namespace component
