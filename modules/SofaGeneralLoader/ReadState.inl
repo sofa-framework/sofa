@@ -45,10 +45,10 @@ ReadState::ReadState()
     , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
-    , mmodel(NULL)
+    , mmodel(nullptr)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextTime(0)
     , lastTime(0)
@@ -84,7 +84,7 @@ void ReadState::reset()
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 
@@ -172,7 +172,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
                 size_t l = strlen(buf);
                 if (buf[l-1] == '\n')

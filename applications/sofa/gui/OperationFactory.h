@@ -87,7 +87,7 @@ public:
             if (op) op->id=name;
             return op;
         }
-        else return NULL;
+        else return nullptr;
     }
 
 };

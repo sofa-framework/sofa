@@ -39,7 +39,7 @@ static PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
     if (!obj)
     {
         SP_PYERR_SETSTRING_INVALIDTYPE("LinearSpring<SReal>");
-        return NULL;
+        return nullptr;
     }
     return PyInt_FromLong(obj->m1);
 }
@@ -64,7 +64,7 @@ static PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
     if (!obj)
     {
         SP_PYERR_SETSTRING_INVALIDTYPE("LinearSpring<SReal>");
-        return NULL;
+        return nullptr;
     }
     return PyInt_FromLong(obj->m2);
 }
@@ -89,7 +89,7 @@ static PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
     if (!obj)
     {
         SP_PYERR_SETSTRING_INVALIDTYPE("LinearSpring<SReal>");
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->ks);
 }
@@ -114,7 +114,7 @@ static PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
     if (!obj)
     {
         SP_PYERR_SETSTRING_INVALIDTYPE("LinearSpring<SReal>");
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->kd);
 }
@@ -138,7 +138,7 @@ static PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
     if (!obj)
     {
         SP_PYERR_SETSTRING_INVALIDTYPE("LinearSpring<SReal>");
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->initpos);
 }
@@ -165,7 +165,7 @@ PyObject * LinearSpring_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject 
     int Index1,Index2;
     double Ks,Kd,L;
     if (!PyArg_ParseTuple(args, "iiddd",&Index1,&Index2,&Ks,&Kd,&L))
-        return 0;
+        return nullptr;
     LinearSpringR *obj = new LinearSpringR(Index1,Index2,Ks,Kd,L);
     return SP_BUILD_PYPTR(LinearSpring,LinearSpringR,obj,true); // "true", because I manage the deletion myself (below)
 }

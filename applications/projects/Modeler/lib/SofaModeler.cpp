@@ -185,7 +185,7 @@ void SofaModeler::createToolbar()
 }
 
 SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix() + "/config/Modeler.ini")
-    ,runSofaGUI(NULL)
+    ,runSofaGUI(nullptr)
 {
     setWindowTitle(QString("Sofa Modeler"));
     setAcceptDrops(true);
@@ -456,7 +456,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Configure the Tutorials
-    tuto=0;
+    tuto=nullptr;
     displayHelpModeler();
 }
 
@@ -848,7 +848,7 @@ void SofaModeler::loadPreset(QAction* act)
 
 void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const QString &suffix)
 {
-    QWidget *tabGraph=0;
+    QWidget *tabGraph=nullptr;
     QString fullPath(graph->getFilename().c_str());
     if (fullPath.isEmpty())
     {

@@ -45,7 +45,7 @@ public:
     SOFA_CLASS(GNode, simulation::Node);
 
 protected:
-    GNode( const std::string& name="", GNode* parent=NULL  );
+    GNode( const std::string& name="", GNode* parent=nullptr  );
 
     ~GNode() override;
 
@@ -90,7 +90,7 @@ public:
     /// Test if the given context is a parent of this context.
     bool hasParent(const BaseContext* context) const
     {
-        if (context == NULL) return parent() == NULL;
+        if (context == nullptr) return parent() == nullptr;
         else return parent()->getContext() == context;
     }
 

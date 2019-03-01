@@ -45,7 +45,7 @@ void BaseAnimationLoop::storeResetState()
 {
     const objectmodel::BaseContext * c = this->getContext();
 
-    if (c != 0)
+    if (c != nullptr)
         m_resetTime = c->getTime();
 }
 

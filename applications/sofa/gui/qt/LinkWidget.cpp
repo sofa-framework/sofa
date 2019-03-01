@@ -42,7 +42,7 @@ namespace qt
 
 LinkWidget *LinkWidget::CreateLinkWidget(const LinkWidget::CreatorArgument &/*dwarg*/)
 {
-    return NULL; // TODO
+    return nullptr; // TODO
 }
 
 /*QDisplayLinkInfoWidget definitions */

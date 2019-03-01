@@ -48,8 +48,8 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         const ModifyObjectFlags& flags):QGroupBox(),
     data_(data),
     flags_(flags),
-    datainfowidget_(NULL),
-    datawidget_(NULL),
+    datainfowidget_(nullptr),
+    datawidget_(nullptr),
     numWidgets_(0)
 
 {
@@ -60,7 +60,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     setAutoFillBackground(true);
 
-    if(data_ == NULL)
+    if(data_ == nullptr)
         return;
 
     const char* help_text = data_->getHelp();
@@ -83,7 +83,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     dwarg.parent = this;
     dwarg.readOnly = (data_->isReadOnly() && flags.READONLY_FLAG);
 
-    if( dynamic_cast<core::objectmodel::DataFileName*>(data_) != NULL )
+    if( dynamic_cast<core::objectmodel::DataFileName*>(data_) != nullptr )
     {
         // a bit of a hack for DataFileName widgets.
         // A custom widget is used by default if we run this code from the Modeler
@@ -97,7 +97,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     datawidget_= DataWidget::CreateDataWidget(dwarg);
 
-    if (datawidget_ == 0)
+    if (datawidget_ == nullptr)
     {
         datawidget_ = new QDataSimpleEdit(this,dwarg.data->getName().c_str(), dwarg.data);
         datawidget_->createWidgets();

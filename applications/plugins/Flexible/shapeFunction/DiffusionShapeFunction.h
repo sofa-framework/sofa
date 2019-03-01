@@ -302,7 +302,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
 
 
     template<class DiffusionShapeFunction>
-    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
@@ -326,7 +326,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
@@ -350,7 +350,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=nullptr)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );

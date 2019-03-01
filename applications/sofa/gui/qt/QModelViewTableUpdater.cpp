@@ -80,7 +80,7 @@ void QTableModelUpdater::resizeTableV( int number )
 {
     QSpinBox *spinBox = (QSpinBox *) sender();
     QString header;
-    if( spinBox == NULL)
+    if( spinBox == nullptr)
     {
         return;
     }
@@ -104,7 +104,7 @@ void QTableModelUpdater::resizeTableH( int number )
 {
     QSpinBox *spinBox = (QSpinBox *) sender();
     QString header;
-    if( spinBox == NULL)
+    if( spinBox == nullptr)
     {
         return;
     }

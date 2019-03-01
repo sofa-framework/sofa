@@ -286,7 +286,7 @@ namespace sofa
                 while ( _taskScheduler->_mainTaskStatus != nullptr)
 				{
 				
-					doWork(0);
+					doWork(nullptr);
 
 				
 					if (_taskScheduler->isClosing() )

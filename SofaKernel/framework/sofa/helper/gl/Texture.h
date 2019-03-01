@@ -47,7 +47,7 @@ private:
 public:
 
     Texture()
-        :image(NULL),id(0),repeat(true), linearInterpolation(true), generateMipmaps(true),
+        :image(nullptr),id(0),repeat(true), linearInterpolation(true), generateMipmaps(true),
          srgbColorspace(false), minLod(-1000), maxLod(1000)
     {
     }

@@ -18,7 +18,7 @@ class SOFA_Compliant_API ConstraintValue : public BaseConstraintValue {
 
     SOFA_CLASS(ConstraintValue, BaseConstraintValue);
 
-    ConstraintValue( mstate_type* mstate = 0 );
+    ConstraintValue( mstate_type* mstate = nullptr );
 
 	// value for stabilization
     void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;

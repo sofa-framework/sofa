@@ -88,7 +88,7 @@ public:
         const defaulttype::BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
-            mapped() : J(NULL) {}
+            mapped() : J(nullptr) {}
             const defaulttype::BaseMatrix* J; ///< mapping jacobian
 		};
 
@@ -275,7 +275,7 @@ struct AssemblyVisitor::process_helper {
 
 
         // full jacobian for multimapping's geometric stiffness
-        rmat* geometricStiffnessJc = NULL;
+        rmat* geometricStiffnessJc = nullptr;
         unsigned localOffsetParentInMapped = 0; // only used for multimappings
         if( boost::out_degree(v,g)>1 && notempty(c->Ktilde) )
         {

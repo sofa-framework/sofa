@@ -51,7 +51,7 @@ public:
 protected:
     /// Constructor
     ContactManager()
-        : intersectionMethod(NULL)
+        : intersectionMethod(nullptr)
     {
     }
 

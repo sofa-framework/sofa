@@ -45,7 +45,7 @@ class CaptureOptionsWidget : public QWidget
     Q_OBJECT
 public:
 
-    CaptureOptionsWidget( QWidget * parent = 0);
+    CaptureOptionsWidget( QWidget * parent = nullptr);
 
     QSpinBox* framerateSpinBox;
     QCheckBox* realtimeCheckBox;
@@ -67,7 +67,7 @@ public:
     };
 
 
-    MovieOptionsWidget( QWidget * parent = 0);
+    MovieOptionsWidget( QWidget * parent = nullptr);
 
     QComboBox* codecComboBox;
     QSpinBox* bitrateSpinBox;

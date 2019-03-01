@@ -19,7 +19,7 @@ class SOFA_Compliant_API HolonomicConstraintValue : public Stabilization {
 
     SOFA_CLASS(HolonomicConstraintValue, Stabilization);
 
-    HolonomicConstraintValue( mstate_type* mstate = 0 );
+    HolonomicConstraintValue( mstate_type* mstate = nullptr );
 	
 	// value for dynamics
     void dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;

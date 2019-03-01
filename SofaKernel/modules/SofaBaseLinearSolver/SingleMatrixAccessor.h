@@ -42,7 +42,7 @@ class SOFA_BASE_LINEAR_SOLVER_API SingleMatrixAccessor : public core::behavior::
 public:
     typedef defaulttype::BaseMatrix BaseMatrix;
 
-    SingleMatrixAccessor( BaseMatrix* m=0 ) { setMatrix(m); }
+    SingleMatrixAccessor( BaseMatrix* m=nullptr ) { setMatrix(m); }
     ~SingleMatrixAccessor() override;
 
     void setMatrix( BaseMatrix* m );

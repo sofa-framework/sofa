@@ -392,15 +392,15 @@ public:
         const char* idStr;
         const IdObj obj;
         const char* objStr;
-        StepVar(IdStep id) : id(id), idStr(NULL), objStr(NULL)
+        StepVar(IdStep id) : id(id), idStr(nullptr), objStr(nullptr)
         {
             stepBegin(id);
         }
-        StepVar(const char* idStr) : idStr(idStr), objStr(NULL)
+        StepVar(const char* idStr) : idStr(idStr), objStr(nullptr)
         {
             stepBegin(idStr);
         }
-        StepVar(IdStep id, IdObj obj) : id(id), idStr(NULL), obj(obj), objStr(NULL)
+        StepVar(IdStep id, IdObj obj) : id(id), idStr(nullptr), obj(obj), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
@@ -439,7 +439,7 @@ public:
 
 
     typedef void (*SyncCallBack)(void* userData);
-    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
+    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = nullptr);
 
 };
 

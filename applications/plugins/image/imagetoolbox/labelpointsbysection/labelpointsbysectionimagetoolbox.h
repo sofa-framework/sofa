@@ -62,7 +62,7 @@ public:
         
     }
     
-    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
+    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
         sofa::gui::qt::LabelPointsBySectionImageToolBoxAction * t = new sofa::gui::qt::LabelPointsBySectionImageToolBoxAction(this,parent);
 

@@ -102,7 +102,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
 
     /// @}
     static int InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
@@ -251,7 +251,7 @@ protected:
     void calcProjection();
 
 public:
-    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=nullptr, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
         return groot.get();

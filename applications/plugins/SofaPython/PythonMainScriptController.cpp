@@ -60,7 +60,7 @@ int PythonMainScriptControllerClass = RegisterObject("A Sofa controller scripted
 
 PythonMainScriptController::PythonMainScriptController()
     : ScriptController()
-    , m_filename(NULL)
+    , m_filename(nullptr)
 {
     assert(false); // sould never be called
 }

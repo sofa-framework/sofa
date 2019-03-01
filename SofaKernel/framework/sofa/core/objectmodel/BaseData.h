@@ -76,7 +76,7 @@ public:
     class BaseInitData
     {
     public:
-        BaseInitData() : data(NULL), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(NULL), name(""), ownerClass(""), group(""), widget("") {}
+        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
         BaseData* data;
         const char* helpMsg;
         DataFlags dataFlags;

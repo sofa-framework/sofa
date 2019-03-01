@@ -18,7 +18,7 @@ class SOFA_Compliant_API Restitution : public ConstraintValue
 
     SOFA_CLASS(Restitution, ConstraintValue);
 
-    Restitution( mstate_type* mstate = 0 );
+    Restitution( mstate_type* mstate = nullptr );
 
     // value for stabilization
     void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;

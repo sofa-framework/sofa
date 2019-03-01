@@ -142,7 +142,7 @@ struct MainLoopTask
 };
 #endif /* SOFA_SMP */
 
-SimpleGUI* SimpleGUI::instance = NULL;
+SimpleGUI* SimpleGUI::instance = nullptr;
 
 int SimpleGUI::mainLoop()
 {
@@ -329,7 +329,7 @@ SimpleGUI::SimpleGUI()
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
     _waitForRender = false;
-    texLogo = NULL;
+    texLogo = nullptr;
 
     _arrow = gluNewQuadric();
     gluQuadricDrawStyle(_arrow, GLU_FILL);
@@ -389,7 +389,7 @@ SimpleGUI::SimpleGUI()
 // ---------------------------------------------------------
 SimpleGUI::~SimpleGUI()
 {
-    if (instance == this) instance = NULL;
+    if (instance == this) instance = nullptr;
 }
 
 // -----------------------------------------------------------------
@@ -1550,7 +1550,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonPress:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
@@ -1579,7 +1579,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonRelease:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)

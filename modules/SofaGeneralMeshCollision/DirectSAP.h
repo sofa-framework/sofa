@@ -55,7 +55,7 @@ class EndPoint;
   */
 class SOFA_GENERAL_MESH_COLLISION_API DSAPBox{
 public:
-    DSAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
+    DSAPBox(Cube c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
 
     void update(int axis,double alarmDist);
 

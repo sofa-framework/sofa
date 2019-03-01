@@ -78,7 +78,7 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
-    bool activated(core::CollisionModel *cm = 0) const;
+    bool activated(core::CollisionModel *cm = nullptr) const;
 };
 
 class LineActiver
@@ -86,7 +86,7 @@ class LineActiver
 public:
     LineActiver() {}
     virtual ~LineActiver() {}
-    virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
+    virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
 	static LineActiver* getDefaultActiver() { static LineActiver defaultActiver; return &defaultActiver; }
 };
 

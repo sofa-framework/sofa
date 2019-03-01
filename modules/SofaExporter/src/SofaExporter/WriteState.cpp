@@ -90,7 +90,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if ( createInMapping || mapping == NULL)
+    if ( createInMapping || mapping == nullptr)
     {
         sofa::component::misc::WriteState::SPtr ws;
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
@@ -121,7 +121,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
 simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
     sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >(this->subsetsToManage);
-    if (ws != NULL) { changeStateWriter(ws);}
+    if (ws != nullptr) { changeStateWriter(ws);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 

@@ -77,7 +77,7 @@ OglOITShader::~OglOITShader()
 helper::gl::GLSLShader* OglOITShader::accumulationShader()
 {
     if(shaderVector.size() < 1)
-        return 0;
+        return nullptr;
 
     return shaderVector[0];
 }

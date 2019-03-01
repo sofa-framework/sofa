@@ -964,7 +964,7 @@ bool XMLVTKReader::readFile(const char* filename)
 
     TiXmlHandle hVTKDoc(&vtkDoc);
     TiXmlElement* pElem;
-    TiXmlHandle hVTKDocRoot(0);
+    TiXmlHandle hVTKDocRoot(nullptr);
 
     //block VTKFile
     pElem = hVTKDoc.FirstChildElement().ToElement();

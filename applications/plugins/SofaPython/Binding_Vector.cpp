@@ -37,7 +37,7 @@ SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->x());
 }
@@ -62,7 +62,7 @@ SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->y());
 }
@@ -87,7 +87,7 @@ SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->z());
 }
@@ -114,7 +114,7 @@ PyObject * Vector3_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*k
     Vector3 *obj = new Vector3();
     double x,y,z;
     if (!PyArg_ParseTuple(args, "ddd",&x,&y,&z))
-        return 0;
+        return nullptr;
     obj->x()=x;
     obj->y()=y;
     obj->z()=z;

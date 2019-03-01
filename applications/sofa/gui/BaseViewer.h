@@ -86,7 +86,7 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = NULL, bool /*keepParams*/= false);
+    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = nullptr, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
     /// true when the viewer keep the hand on the render

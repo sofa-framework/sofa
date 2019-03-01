@@ -100,10 +100,10 @@ public:
     virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 
     /// Print all object in the graph in XML format
-    virtual void exportXML(Node* root, const char* fileName=NULL);
+    virtual void exportXML(Node* root, const char* fileName=nullptr);
 
     /// Print all objects in the graph in the given file (format is given by the filename extension)
-    virtual void exportGraph(Node* root, const char* filename=NULL);
+    virtual void exportGraph(Node* root, const char* filename=nullptr);
 
     /// Dump the current state in the given stream
     virtual void dumpState( Node* root, std::ofstream& out );

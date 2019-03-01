@@ -102,10 +102,10 @@ public:
 protected:
     TopologyGaussPointSampler()    :   Inherited()
       , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
-      , parentTopology( 0 )
+      , parentTopology( nullptr )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
       , f_indices(initData(&f_indices,"indices","list of cells where sampling is performed (all by default)"))
-      , tetraGeoAlgo( 0 )
+      , tetraGeoAlgo( nullptr )
       , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
       , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
       , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))

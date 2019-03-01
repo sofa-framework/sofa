@@ -37,7 +37,7 @@ namespace xml
 class SOFA_SIMULATION_COMMON_API ObjectElement : public Element<core::objectmodel::BaseObject>
 {
 public:
-    ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+    ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
 
     virtual ~ObjectElement();
 

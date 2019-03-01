@@ -107,12 +107,12 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
 protected:
-    static void CreateApplication(int _argc=0, char** _argv=0l);
+    static void CreateApplication(int _argc=0, char** _argv=nullptr);
     static void InitApplication( RealGUI* _gui);
 //-----------------STATIC METHODS------------------------}
 
@@ -233,8 +233,8 @@ public:
 
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
-    virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
-    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setScene(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
+    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
 
     virtual void unloadScene(bool _withViewer = true);
 
@@ -376,7 +376,7 @@ public slots:
     virtual void fileSave();
     virtual void fileExit();
     virtual void fileSaveAs() {
-        fileSaveAs((Node *)NULL);
+        fileSaveAs((Node *)nullptr);
     }
     virtual void helpAbout() { /* TODO */ }
     virtual void editRecordDirectory();

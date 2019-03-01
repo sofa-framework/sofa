@@ -129,7 +129,7 @@ protected:
     *
     */
     TopologyModifier()
-        : m_topologyContainer(NULL)
+        : m_topologyContainer(nullptr)
     { }
 
 

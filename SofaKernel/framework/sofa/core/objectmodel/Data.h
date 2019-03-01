@@ -60,7 +60,7 @@ public:
     {
     }
 
-    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
     }
@@ -396,7 +396,7 @@ public:
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
-    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
         , shared(NULL)
@@ -408,7 +408,7 @@ public:
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
      */
-    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
         , shared(NULL)
@@ -425,7 +425,7 @@ public:
     /// @name Simple edition and retrieval API
     /// @{
 
-    inline T* beginEdit(const core::ExecParams* params = 0)
+    inline T* beginEdit(const core::ExecParams* params = nullptr)
     {
         size_t aspect = DDGNode::currentAspect(params);
         this->updateIfDirty(params);
@@ -436,7 +436,7 @@ public:
     }
 
     /// BeginEdit method if it is only to write the value
-    inline T* beginWriteOnly(const core::ExecParams* params = 0)
+    inline T* beginWriteOnly(const core::ExecParams* params = nullptr)
     {
         size_t aspect = DDGNode::currentAspect(params);
         ++this->m_counters[aspect];
@@ -445,7 +445,7 @@ public:
         return m_values[aspect].beginEdit();
     }
 
-    inline void endEdit(const core::ExecParams* params = 0)
+    inline void endEdit(const core::ExecParams* params = nullptr)
     {
         m_values[DDGNode::currentAspect(params)].endEdit();
     }
@@ -464,7 +464,7 @@ public:
         endEdit(params);
     }
 
-    inline const T& getValue(const core::ExecParams* params = 0) const
+    inline const T& getValue(const core::ExecParams* params = nullptr) const
     {
         this->updateIfDirty(params);
         return m_values[DDGNode::currentAspect(params)].getValue();
@@ -645,7 +645,7 @@ protected:
     const core::ExecParams* dparams;
 
     /// @internal used by WriteOnlyAccessor
-    WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=NULL ) : Inherit(*c), data(d), dparams(params) {}
+    WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=nullptr ) : Inherit(*c), data(d), dparams(params) {}
 
 public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(NULL) {}

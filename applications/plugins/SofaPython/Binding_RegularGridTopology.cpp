@@ -40,7 +40,7 @@ static PyObject * RegularGridTopology_setPos(PyObject *self, PyObject * args)
     double xmin,xmax,ymin,ymax,zmin,zmax;
     if (!PyArg_ParseTuple(args, "dddddd",&xmin,&xmax,&ymin,&ymax,&zmin,&zmax))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setPos(xmin,xmax,ymin,ymax,zmin,zmax);
     Py_RETURN_NONE;

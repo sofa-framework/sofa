@@ -73,7 +73,7 @@ public:
     /// Apply projective constraints to the given velocity vector
     void projectVelocity(core::MultiVecDerivId v, SReal time = 0.0);
     /// Apply projective constraints to the given vector
-    void projectResponse(core::MultiVecDerivId dx, double **W=NULL);
+    void projectResponse(core::MultiVecDerivId dx, double **W=nullptr);
     /// Apply projective constraints to the given position and velocity vectors
     void projectPositionAndVelocity(core::MultiVecCoordId x, core::MultiVecDerivId v, double time = 0.0);
     void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor = 1.0); ///< res += factor M.dx
@@ -126,10 +126,10 @@ public:
     /// @{
 
     // BaseMatrix & BaseVector Computations
-    void getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* matrix = NULL);
+    void getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* matrix = nullptr);
     void getMatrixDimension(sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
-        getMatrixDimension(NULL, NULL, matrix);
+        getMatrixDimension(nullptr, nullptr, matrix);
     }
 
     void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact);

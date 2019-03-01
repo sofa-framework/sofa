@@ -42,7 +42,7 @@ class SOFA_SIMULATION_CORE_API UpdateContextVisitor : public Visitor
 {
 public:
     UpdateContextVisitor(const core::ExecParams* params)
-        : Visitor(params), startingNode(NULL)
+        : Visitor(params), startingNode(nullptr)
     {
     }
 

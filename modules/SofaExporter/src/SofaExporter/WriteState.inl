@@ -52,10 +52,10 @@ WriteState::WriteState()
     , d_DOFsV( initData(&d_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
-    , mmodel(NULL)
+    , mmodel(nullptr)
     , outfile(NULL)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextIteration(0)
     , lastTime(0)

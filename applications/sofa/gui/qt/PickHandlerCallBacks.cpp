@@ -36,7 +36,7 @@ namespace qt
 {
 
 InformationOnPickCallBack::InformationOnPickCallBack()
-    :gui(NULL)
+    :gui(nullptr)
 {
 }
 
@@ -48,7 +48,7 @@ InformationOnPickCallBack::InformationOnPickCallBack(RealGUI *g)
 void InformationOnPickCallBack::execute(const sofa::component::collision::BodyPicked &body)
 {
     if(!gui) return;
-    core::objectmodel::BaseObject *objectPicked=NULL;
+    core::objectmodel::BaseObject *objectPicked=nullptr;
     if (body.body)
     {
         QTreeWidgetItem* item=gui->simulationGraph->getListener()->items[body.body];
@@ -88,7 +88,7 @@ void InformationOnPickCallBack::execute(const sofa::component::collision::BodyPi
 }
 
 ColourPickingRenderCallBack::ColourPickingRenderCallBack()
-    :_viewer(NULL)
+    :_viewer(nullptr)
 {
 }
 

@@ -213,7 +213,7 @@ public:
     virtual void disablePolygonOffset() = 0;
 
     // @name Color Buffer method
-    virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL) = 0;
+    virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = nullptr) = 0;
     /// @}
 
     virtual void clear() {}

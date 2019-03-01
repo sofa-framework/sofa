@@ -98,7 +98,7 @@ public:
     /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
      * @returns the number of newly created points, or -1 if the incision failed.
      */
-    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = NULL);
+    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
 
 
     /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.

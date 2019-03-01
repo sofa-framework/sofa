@@ -75,7 +75,7 @@ TEST(MessageHandlerComponent, simpleInit)
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=NULL) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
 
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
@@ -96,7 +96,7 @@ TEST(MessageHandlerComponent, missingHandler)
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
     EXPECT_FALSE(component->isValid()) ;
@@ -116,7 +116,7 @@ TEST(MessageHandlerComponent, invalidHandler)
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
     EXPECT_FALSE(component->isValid()) ;
@@ -136,7 +136,7 @@ TEST(MessageHandlerComponent, clangHandler)
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
     EXPECT_TRUE(component->isValid()) ;

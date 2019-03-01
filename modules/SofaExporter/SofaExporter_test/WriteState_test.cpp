@@ -58,7 +58,7 @@ namespace sofa {
         /// Root of the scene graph
         simulation::Node::SPtr root=NULL;
         /// Simulation
-        simulation::Simulation* simulation=NULL;
+        simulation::Simulation* simulation=nullptr;
         /// MechanicalObject
         typename MechanicalObject::SPtr mecaObj=NULL;
         /// Time step

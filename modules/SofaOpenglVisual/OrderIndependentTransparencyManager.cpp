@@ -355,7 +355,7 @@ void OrderIndependentTransparencyManager::FrameBufferObject::init(int w, int h)
     glTexParameterf(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_RECTANGLE, accumulationTexture, 0);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 
@@ -367,7 +367,7 @@ void OrderIndependentTransparencyManager::FrameBufferObject::init(int w, int h)
     glTexParameterf(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R16F, width, height, 0, GL_RED, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R16F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_TEXTURE_RECTANGLE, revealageTexture, 0);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 
@@ -424,7 +424,7 @@ void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visu
         hasTexture = oglModel->hasTexture();
     }
 
-    GLSLShader* oitShader = 0;
+    GLSLShader* oitShader = nullptr;
 
     sofa::core::visual::Shader* nodeShader = NULL;
     if(hasShader) // has custom oit shader

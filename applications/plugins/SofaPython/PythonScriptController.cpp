@@ -123,8 +123,8 @@ PythonScriptController::PythonScriptController()
     , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
-    , m_ScriptControllerClass(0)
-    , m_ScriptControllerInstance(0)
+    , m_ScriptControllerClass(nullptr)
+    , m_ScriptControllerInstance(nullptr)
 {
     m_filelistener = new MyFileEventListener(this) ;
 }

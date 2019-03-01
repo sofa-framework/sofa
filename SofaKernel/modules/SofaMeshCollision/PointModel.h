@@ -68,7 +68,7 @@ public:
 
     bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
 
-    bool activated(core::CollisionModel *cm = 0) const;
+    bool activated(core::CollisionModel *cm = nullptr) const;
 };
 
 class PointActiver
@@ -76,7 +76,7 @@ class PointActiver
 public:
     PointActiver() {}
     virtual ~PointActiver() {}
-    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
+    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = nullptr) {return true;}
 	static PointActiver* getDefaultActiver() { static PointActiver defaultActiver; return &defaultActiver; }
 };
 

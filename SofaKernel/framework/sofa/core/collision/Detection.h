@@ -52,7 +52,7 @@ protected:
 
 
     Detection()
-        : intersectionMethod(NULL)
+        : intersectionMethod(nullptr)
     {
     }
 public:

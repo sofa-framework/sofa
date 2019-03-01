@@ -79,7 +79,7 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if (createInMapping || mapping== NULL)
+    if (createInMapping || mapping== nullptr)
     {
         sofa::component::misc::ReadTopology::SPtr rt;
         context->get(rt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
@@ -105,7 +105,7 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
 simulation::Visitor::Result ReadTopologyActivator::processNodeTopDown( simulation::Node* gnode)
 {
     sofa::component::misc::ReadTopology *rt = gnode->get< sofa::component::misc::ReadTopology >(this->subsetsToManage);
-    if (rt != NULL) { changeTopologyReader(rt);}
+    if (rt != nullptr) { changeTopologyReader(rt);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
@@ -123,7 +123,7 @@ simulation::Visitor::Result ReadTopologyModifier::processNodeTopDown( simulation
     using namespace sofa::defaulttype;
 
     sofa::component::misc::ReadTopology* rt = gnode->get< sofa::component::misc::ReadTopology>(this->subsetsToManage);
-    if (rt != NULL) {changeTimeReader(rt);}
+    if (rt != nullptr) {changeTimeReader(rt);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }

@@ -48,7 +48,7 @@ class SOFA_HELPER_API ConsoleMessageHandler : public MessageHandler
 public:
     /// Create a new ConsoleMessageHandler. By default the handler is using the
     /// DefaultStyleMessageFormatter object to format the message.
-    ConsoleMessageHandler(MessageFormatter* formatter = 0);
+    ConsoleMessageHandler(MessageFormatter* formatter = nullptr);
     void process(Message &m) override ;
     void setMessageFormatter( MessageFormatter* formatter );
 

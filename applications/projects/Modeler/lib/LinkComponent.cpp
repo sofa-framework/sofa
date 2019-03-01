@@ -47,7 +47,7 @@ namespace qt
 
 
 LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem*>& items, QTreeWidgetItem* sel) :
-    listView(NULL),
+    listView(nullptr),
     mainGraph(mg),
     items2components(),
     selectedComponent(sel),
@@ -75,9 +75,9 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem
     //listView->addColumn("");
 
 //    QString text;
-    QTreeWidgetItem *item = NULL;
-    QTreeWidgetItem *childItem = NULL;
-    QTreeWidgetItem *parentItem = NULL;
+    QTreeWidgetItem *item = nullptr;
+    QTreeWidgetItem *childItem = nullptr;
+    QTreeWidgetItem *parentItem = nullptr;
     for(std::vector<QTreeWidgetItem*>::const_reverse_iterator it = items.rbegin(); it != items.rend();)
     {
         QTreeWidgetItem const * const & cur = *it++;

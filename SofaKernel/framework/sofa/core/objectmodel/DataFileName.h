@@ -43,12 +43,12 @@ class SOFA_CORE_API DataFileName : public sofa::core::objectmodel::Data<std::str
 public:
     typedef sofa::core::objectmodel::Data<std::string> Inherit;
 
-    DataFileName( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileName( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(helpMsg, isDisplayed, isReadOnly)
     {
     }
 
-    DataFileName( const std::string& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileName( const std::string& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly)
     {
         updatePath();
@@ -75,7 +75,7 @@ public:
     {
     }
 
-    void endEdit(const core::ExecParams* params = 0)
+    void endEdit(const core::ExecParams* params = nullptr)
     {
         updatePath();
         Inherit::endEdit(params);
@@ -137,12 +137,12 @@ class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< s
 public:
     typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
 
-    DataFileNameVector( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(helpMsg, isDisplayed, isReadOnly)
     {
     }
 
-    DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly)
     {
         updatePath();
@@ -169,7 +169,7 @@ public:
     {
     }
 
-    void endEdit(const core::ExecParams* params = 0)
+    void endEdit(const core::ExecParams* params = nullptr)
     {
         updatePath();
         Inherit::endEdit(params);

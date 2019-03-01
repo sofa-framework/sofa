@@ -723,7 +723,7 @@ void IncrSAP::updateMovingBoxes(){
         return;
 
     EndPointID * cur_end_point_min,*cur_end_point_max;
-    cur_end_point_min = cur_end_point_max = 0x0;
+    cur_end_point_min = cur_end_point_max = nullptr;
 
     EndPointList::iterator it_min,next_it_min,prev_it_min,base_it_min,it_max,next_it_max,prev_it_max,base_it_max;
     bool min_updated,max_updated,min_moving,max_moving;

@@ -19,7 +19,7 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 
     SOFA_CLASS(Stabilization, BaseConstraintValue);
 
-    Stabilization( mstate_type* mstate = 0 );
+    Stabilization( mstate_type* mstate = nullptr );
 
     /// flagging which constraint blocks must be stabilized (if empty, all constraints are stabilized)
     typedef helper::vector<bool> mask_type;

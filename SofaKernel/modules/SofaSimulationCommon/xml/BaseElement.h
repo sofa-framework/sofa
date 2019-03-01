@@ -63,7 +63,7 @@ private:
 protected:
     std::map< std::string, std::string > replaceAttribute;
 public:
-    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
+    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=nullptr);
 
     ~BaseElement() override;
 

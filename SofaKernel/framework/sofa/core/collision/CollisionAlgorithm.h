@@ -49,7 +49,7 @@ protected:
 
 
     CollisionAlgorithm()
-        : instance(NULL)
+        : instance(nullptr)
     {
     }
 public:

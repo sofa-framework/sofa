@@ -164,9 +164,9 @@ public:
     /// @name Serialization Helper API
     /// @{
 
-    static bool ParseString(const std::string& text, std::string* path, std::string* data = NULL, Base* start = NULL);
+    static bool ParseString(const std::string& text, std::string* path, std::string* data = nullptr, Base* start = nullptr);
 
-    bool parseString(const std::string& text, std::string* path, std::string* data = NULL) const
+    bool parseString(const std::string& text, std::string* path, std::string* data = nullptr) const
     {
         return ParseString(text, path, data, this->getOwnerBase());
     }

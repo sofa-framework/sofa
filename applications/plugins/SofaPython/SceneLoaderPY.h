@@ -53,7 +53,7 @@ public:
     virtual Node::SPtr load(const char *filename);
 
     // max: added out parameter to get the root *before* createScene is called
-    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = 0);
+    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
     bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file
@@ -74,7 +74,7 @@ private:
 };
 
 /// Export the scene graph in Python format
-void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=NULL );
+void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=nullptr );
 
 /// Visitor that exports all nodes/components in python
 class SOFA_SOFAPYTHON_API PythonExporterVisitor : public Visitor

@@ -128,7 +128,7 @@ AddPreset::AddPreset(QWidget* parent):
 
 void AddPreset::setElementPresent(bool *elementPresent)
 {
-    if (elementPresent != NULL)
+    if (elementPresent != nullptr)
     {
         if (!elementPresent[0])
         {
@@ -183,9 +183,9 @@ void AddPreset::clear()
     scaleY->setText("1.0");
     scaleZ->setText("1.0");
 
-    openFilePath0->setText(NULL);
-    openFilePath1->setText(NULL);
-    openFilePath2->setText(NULL);
+    openFilePath0->setText(nullptr);
+    openFilePath1->setText(nullptr);
+    openFilePath2->setText(nullptr);
 }
 
 // When the Ok Button is clicked, this method is called: we just have

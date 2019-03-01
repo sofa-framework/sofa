@@ -79,7 +79,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 
-MultithreadGUI* MultithreadGUI::instance = NULL;
+MultithreadGUI* MultithreadGUI::instance = nullptr;
 
 // ---------------------------------------------------------
 // --- Multithread related stuff
@@ -344,7 +344,7 @@ void MultithreadGUI::glut_idle()
 // --- Constructor
 // ---------------------------------------------------------
 MultithreadGUI::MultithreadGUI()
-    : renderMsgBuffer(NULL)
+    : renderMsgBuffer(nullptr)
 {
     instance = this;
 
@@ -367,7 +367,7 @@ MultithreadGUI::MultithreadGUI()
     _materialMode = 0;
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
-    texLogo = NULL;
+    texLogo = nullptr;
 
     _arrow = gluNewQuadric();
     gluQuadricDrawStyle(_arrow, GLU_FILL);
@@ -435,7 +435,7 @@ MultithreadGUI::~MultithreadGUI()
         delete renderMsgBuffer;
     }
 #endif
-    if (instance == this) instance = NULL;
+    if (instance == this) instance = nullptr;
 }
 
 void MultithreadGUI::initTextures()
@@ -1652,7 +1652,7 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonPress:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
@@ -1677,7 +1677,7 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         case MouseButtonRelease:
         {
             //<CAMERA API>
-            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+            sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
             if (button == GLUT_LEFT_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)

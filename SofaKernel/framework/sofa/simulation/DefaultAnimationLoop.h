@@ -55,7 +55,7 @@ public:
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
     SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
 protected:
-    DefaultAnimationLoop(simulation::Node* gnode = NULL);
+    DefaultAnimationLoop(simulation::Node* gnode = nullptr);
 
     ~DefaultAnimationLoop() override;
 public:

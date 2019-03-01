@@ -206,7 +206,7 @@ void LineLocalMinDistanceFilter::init()
 {
     this->bmt = getContext()->getMeshTopology();
 
-    if (bmt != 0)
+    if (bmt != nullptr)
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());

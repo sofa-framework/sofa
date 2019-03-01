@@ -33,7 +33,7 @@ void FakeGUI::Create()
 {
     // sofa FakeGUI
     sofa::gui::GUIManager::RegisterGUI("fake", CreateFakeGUI, NULL);
-    sofa::gui::GUIManager::Init(0,"fake");
+    sofa::gui::GUIManager::Init(nullptr,"fake");
     sofa::gui::GUIManager::createGUI(NULL,NULL);
 }
 

@@ -41,7 +41,7 @@ class Element : public BaseElement
 private:
     typename Object::SPtr object;
 public:
-    Element(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
+    Element(const std::string& name, const std::string& type, BaseElement* newParent=nullptr);
 
     ~Element() override;
 

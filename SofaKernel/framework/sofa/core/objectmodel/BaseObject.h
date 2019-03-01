@@ -438,11 +438,11 @@ public:
     virtual void computeBBox(const core::ExecParams* /* params */, bool /*onlyVisible*/=false) {}
 
     /// Sets a source Object and parses it to collect dependent Data
-    void setSrc(const std::string &v, std::vector< std::string > *attributeList=0);
+    void setSrc(const std::string &v, std::vector< std::string > *attributeList=nullptr);
 
     /// Sets a source Object and parses it to collect dependent Data
     /// Use it before scene graph insertion
-    void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=0);
+    void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=nullptr);
 
     void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 

@@ -58,7 +58,7 @@ public:
 
 
 protected:
-    DAGNode( const std::string& name="", DAGNode* parent=NULL  );
+    DAGNode( const std::string& name="", DAGNode* parent=nullptr  );
 
     ~DAGNode() override;
 

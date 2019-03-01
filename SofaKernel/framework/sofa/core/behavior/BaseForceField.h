@@ -197,7 +197,7 @@ public:
 
     /// Return a pointer to the compliance matrix C
     /// $ C = K^{-1} $
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
 
     /// \brief Accumulate the contribution of the C compliant matrix multiplied
     /// by the given Lagrange multipliers lambda vector with the given cFactor coefficient.

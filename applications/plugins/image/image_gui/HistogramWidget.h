@@ -187,7 +187,7 @@ class HistogramGraphScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    HistogramGraphScene(QImage* im,QObject *parent=0) : QGraphicsScene(parent)	,image(im)	{ this->setSceneRect(0,0,image->width(),image->height()); }
+    HistogramGraphScene(QImage* im,QObject *parent=nullptr) : QGraphicsScene(parent)	,image(im)	{ this->setSceneRect(0,0,image->width(),image->height()); }
 
 private:
     QImage *image;

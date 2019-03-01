@@ -39,7 +39,7 @@ static PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
     int nx,ny,nz;
     if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setSize(nx,ny,nz);
     Py_RETURN_NONE;
@@ -58,7 +58,7 @@ static PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setNx(nb);
     Py_RETURN_NONE;
@@ -76,7 +76,7 @@ static PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setNy(nb);
     Py_RETURN_NONE;
@@ -94,7 +94,7 @@ static PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setNz(nb);
     Py_RETURN_NONE;

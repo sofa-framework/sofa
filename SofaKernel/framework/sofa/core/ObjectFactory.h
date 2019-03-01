@@ -134,7 +134,7 @@ public:
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
     bool addAlias(std::string name, std::string target, bool force=false,
-          ClassEntry::SPtr* previous = NULL);
+          ClassEntry::SPtr* previous = nullptr);
 
     /// Reset an alias to a previous state
     ///
@@ -156,7 +156,7 @@ public:
 
     /// \copydoc addAlias
     static bool AddAlias(std::string name, std::string result, bool force=false,
-                         ClassEntry::SPtr* previous = NULL)
+                         ClassEntry::SPtr* previous = nullptr)
     {
         return getInstance()->addAlias(name, result, force, previous);
     }

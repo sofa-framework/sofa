@@ -49,7 +49,7 @@ public:
         {
             if (func) return func();
         }
-        InitExternalModule():func(0) {}
+        InitExternalModule():func(nullptr) {}
     } InitExternalModule;
 
     typedef struct GetModuleName
@@ -60,9 +60,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleName():func(0) {}
+        GetModuleName():func(nullptr) {}
     } GetModuleName;
 
     typedef struct GetModuleDescription
@@ -73,9 +73,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleDescription():func(0) {}
+        GetModuleDescription():func(nullptr) {}
     } GetModuleDescription;
 
     typedef struct GetModuleLicense
@@ -86,10 +86,10 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
 
-        GetModuleLicense():func(0) {}
+        GetModuleLicense():func(nullptr) {}
     } GetModuleLicense;
 
     typedef struct GetModuleComponentList
@@ -100,9 +100,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleComponentList():func(0) {}
+        GetModuleComponentList():func(nullptr) {}
     } GetModuleComponentList;
 
     typedef struct GetModuleVersion
@@ -113,9 +113,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleVersion():func(0) {}
+        GetModuleVersion():func(nullptr) {}
     } GetModuleVersion;
 
     InitExternalModule     initExternalModule;

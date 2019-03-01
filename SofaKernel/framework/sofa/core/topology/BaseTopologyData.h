@@ -78,14 +78,14 @@ public:
 
 
     /** \copydoc Data(const char*, bool, bool) */
-    BaseTopologyData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    BaseTopologyData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
 
     }
 
     /** \copydoc Data(const T&, const char*, bool, bool) */
-    BaseTopologyData( const T& /*value*/, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    BaseTopologyData( const T& /*value*/, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
     }

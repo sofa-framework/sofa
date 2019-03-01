@@ -16,7 +16,7 @@ SP_CLASS_ATTR_GET(BoundingBox, minBBox)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     PyObject* shape = PyList_New(3);
@@ -33,7 +33,7 @@ SP_CLASS_ATTR_GET(BoundingBox, maxBBox)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     PyObject* shape = PyList_New(3);

@@ -194,7 +194,7 @@ public:
         InternalBlockAccessor()
             : row(-1), col(-1)
         {
-            ptr = NULL;
+            ptr = nullptr;
             data = 0;
         }
 
@@ -208,7 +208,7 @@ public:
         InternalBlockAccessor(Index row, Index col, Index internalData)
             : row(row), col(col)
         {
-            ptr = NULL;
+            ptr = nullptr;
             data = internalData;
         }
     };
@@ -226,7 +226,7 @@ public:
         InternalColBlockIterator()
             : row(-1)
         {
-            ptr = NULL;
+            ptr = nullptr;
             data = 0;
         }
 
@@ -240,7 +240,7 @@ public:
         InternalColBlockIterator(Index row, Index internalData)
             : row(row)
         {
-            ptr = NULL;
+            ptr = nullptr;
             data = internalData;
         }
     };
@@ -256,7 +256,7 @@ public:
 
         InternalRowBlockIterator()
         {
-            ptr = NULL;
+            ptr = nullptr;
             data[0] = 0;
             data[1] = 0;
         }
@@ -270,7 +270,7 @@ public:
 
         InternalRowBlockIterator(Index internalData0, Index internalData1)
         {
-            ptr = NULL;
+            ptr = nullptr;
             data[0] = internalData0;
             data[1] = internalData1;
         }
@@ -294,7 +294,7 @@ public:
         InternalBlockAccessor internal;
 
         BlockAccessor()
-            : matrix(NULL)
+            : matrix(nullptr)
         {
         }
 
@@ -476,7 +476,7 @@ public:
         InternalBlockAccessor internal;
 
         BlockConstAccessor()
-            : matrix(NULL)
+            : matrix(nullptr)
         {
         }
 
@@ -688,7 +688,7 @@ protected:
         bAccessorAdd(b, buffer);
     }
 
-    BlockAccessor createBlockAccessor(Index row, Index col, void* internalPtr = NULL)
+    BlockAccessor createBlockAccessor(Index row, Index col, void* internalPtr = nullptr)
     {
         return BlockAccessor(this, row, col, internalPtr);
     }
@@ -698,7 +698,7 @@ protected:
         return BlockAccessor(this, row, col, internalData);
     }
 
-    BlockConstAccessor createBlockConstAccessor(Index row, Index col, void* internalPtr = NULL) const
+    BlockConstAccessor createBlockConstAccessor(Index row, Index col, void* internalPtr = nullptr) const
     {
         return BlockConstAccessor(this, row, col, internalPtr);
     }
@@ -779,7 +779,7 @@ public:
     public:
 
         ColBlockConstIterator()
-            : matrix(NULL)
+            : matrix(nullptr)
         {
         }
 
@@ -868,7 +868,7 @@ protected:
         setMatrix(b);
         getInternal(b)->row = it->row;
         getInternal(b)->col = it->data;
-        getInternal(b)->ptr = NULL;
+        getInternal(b)->ptr = nullptr;
     }
     virtual void itIncColBlock(InternalColBlockIterator* it) const
     {
@@ -944,7 +944,7 @@ public:
     public:
 
         RowBlockConstIterator()
-            : matrix(NULL)
+            : matrix(nullptr)
         {
         }
 

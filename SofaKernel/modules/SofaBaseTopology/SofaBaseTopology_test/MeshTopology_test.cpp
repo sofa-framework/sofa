@@ -93,12 +93,12 @@ bool MeshTopology_test::testHexahedronTopology()
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
     
-    if (topoCon == NULL || topo == NULL)
+    if (topoCon == nullptr || topo == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
 
-        if (scene2 != NULL)
+        if (scene2 != nullptr)
             delete scene2;
 
         return false;
@@ -189,9 +189,9 @@ bool MeshTopology_test::testHexahedronTopology()
             EXPECT_EQ(e1[j], e2[j]);
     }
 
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
-    if (scene2 != NULL)
+    if (scene2 != nullptr)
         delete scene2;
 
     return true;
@@ -207,12 +207,12 @@ bool MeshTopology_test::testTetrahedronTopology()
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
-    if (topoCon == NULL || topo == NULL)
+    if (topoCon == nullptr || topo == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
 
-        if (scene2 != NULL)
+        if (scene2 != nullptr)
             delete scene2;
 
         return false;
@@ -303,9 +303,9 @@ bool MeshTopology_test::testTetrahedronTopology()
             EXPECT_EQ(e1[j], e2[j]);
     }
 
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
-    if (scene2 != NULL)
+    if (scene2 != nullptr)
         delete scene2;
 
     return true;
@@ -321,12 +321,12 @@ bool MeshTopology_test::testQuadTopology()
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
-    if (topoCon == NULL || topo == NULL)
+    if (topoCon == nullptr || topo == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
 
-        if (scene2 != NULL)
+        if (scene2 != nullptr)
             delete scene2;
 
         return false;
@@ -399,9 +399,9 @@ bool MeshTopology_test::testQuadTopology()
             EXPECT_EQ(e1[j], e2[j]);
     }
 
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
-    if (scene2 != NULL)
+    if (scene2 != nullptr)
         delete scene2;
 
     return true;
@@ -417,12 +417,12 @@ bool MeshTopology_test::testTriangleTopology()
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
-    if (topoCon == NULL || topo == NULL)
+    if (topoCon == nullptr || topo == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
 
-        if (scene2 != NULL)
+        if (scene2 != nullptr)
             delete scene2;
 
         return false;
@@ -495,9 +495,9 @@ bool MeshTopology_test::testTriangleTopology()
             EXPECT_EQ(TaE1[j], TaE2[j]);
     }
 
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
-    if (scene2 != NULL)
+    if (scene2 != nullptr)
         delete scene2;
 
     return true;
@@ -513,12 +513,12 @@ bool MeshTopology_test::testEdgeTopology()
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
-    if (topoCon == NULL || topo == NULL)
+    if (topoCon == nullptr || topo == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
 
-        if (scene2 != NULL)
+        if (scene2 != nullptr)
             delete scene2;
 
         return false;
@@ -560,9 +560,9 @@ bool MeshTopology_test::testEdgeTopology()
             EXPECT_EQ(edgeAV1[j], edgeAV2[j]);
     }
 
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
-    if (scene2 != NULL)
+    if (scene2 != nullptr)
         delete scene2;
     
     return true;

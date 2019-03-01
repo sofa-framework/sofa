@@ -142,7 +142,7 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     connect ( timerStep, SIGNAL( timeout() ), this, SLOT(slot_stepforward() ));
 
     this->setMaximumHeight(timeRecord->height());
-    root = NULL;
+    root = nullptr;
 
 }
 

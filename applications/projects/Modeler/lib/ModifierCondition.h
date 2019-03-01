@@ -53,7 +53,7 @@ class QNamingModifierCondition: public QWidget, public ModifierCondition
 {
     Q_OBJECT
 public:
-    QNamingModifierCondition(QWidget *parent=0);
+    QNamingModifierCondition(QWidget *parent=nullptr);
 
     bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const override;
     bool isActive() const override {return activated->isChecked();}
@@ -70,7 +70,7 @@ class QValueModifierCondition: public QWidget, public ModifierCondition
 {
     Q_OBJECT
 public:
-    QValueModifierCondition(QWidget *parent=0);
+    QValueModifierCondition(QWidget *parent=nullptr);
 
     bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const override;
 

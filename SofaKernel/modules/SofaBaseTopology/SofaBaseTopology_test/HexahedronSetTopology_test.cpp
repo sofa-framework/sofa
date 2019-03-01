@@ -77,9 +77,9 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -139,7 +139,7 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
         EXPECT_EQ(elem2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -151,9 +151,9 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -249,9 +249,9 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -344,9 +344,9 @@ bool HexahedronSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -391,16 +391,16 @@ bool HexahedronSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyObjectType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

@@ -73,7 +73,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         container->f_listening.setValue(true);  // to update camera during animate
     }
 
-    static void parse( ImageContainerT* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
+    static void parse( ImageContainerT* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = nullptr )
     {
         if( container->image.isSet() ) return; // image is set from data link
 

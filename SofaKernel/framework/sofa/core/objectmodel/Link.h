@@ -343,37 +343,37 @@ public:
     {
     }
 
-    size_t size(const core::ExecParams* params = 0) const
+    size_t size(const core::ExecParams* params = nullptr) const
     {
         return (size_t)m_value[core::ExecParams::currentAspect(params)].size();
     }
 
-    bool empty(const core::ExecParams* params = 0) const
+    bool empty(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].empty();
     }
 
-    const Container& getValue(const core::ExecParams* params = 0) const
+    const Container& getValue(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)];
     }
 
-    const_iterator begin(const core::ExecParams* params = 0) const
+    const_iterator begin(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].cbegin();
     }
 
-    const_iterator end(const core::ExecParams* params = 0) const
+    const_iterator end(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].cend();
     }
 
-    const_reverse_iterator rbegin(const core::ExecParams* params = 0) const
+    const_reverse_iterator rbegin(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].crbegin();
     }
 
-    const_reverse_iterator rend(const core::ExecParams* params = 0) const
+    const_reverse_iterator rend(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].crend();
     }
@@ -747,7 +747,7 @@ public:
         return ok;
     }
 
-    DestType* get(unsigned int index, const core::ExecParams* params = 0) const
+    DestType* get(unsigned int index, const core::ExecParams* params = nullptr) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
         if (index < this->m_value[aspect].size())
@@ -830,7 +830,7 @@ public:
         return Inherit::getPath(0);
     }
 
-    DestType* get(const core::ExecParams* params = 0) const
+    DestType* get(const core::ExecParams* params = nullptr) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
         return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect].get()));

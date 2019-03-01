@@ -265,7 +265,7 @@ static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
         {
             SP_MESSAGE_ERROR( "the VectorLinearSpringData contains only "<<nbRows<<" element" )
                     PyErr_BadArgument();
-            return NULL;
+            return nullptr;
         }
 
         const LinearSpring<SReal>& value = data->getValue()[index];

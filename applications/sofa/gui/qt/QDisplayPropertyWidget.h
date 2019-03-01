@@ -74,7 +74,7 @@ class SOFA_SOFAGUIQT_API QDisplayTreeItemWidget : public QWidget
 
 public:
     // constructor / destructor
-    QDisplayTreeItemWidget(QWidget* parent=0, QTreeWidgetItem* item=0);
+    QDisplayTreeItemWidget(QWidget* parent=nullptr, QTreeWidgetItem* item=nullptr);
     ~QDisplayTreeItemWidget() override;
 
 protected slots:
@@ -95,7 +95,7 @@ class SOFA_SOFAGUIQT_API QDisplayPropertyWidget : public QTreeWidget
 
 public:
     // constructor / destructor
-    QDisplayPropertyWidget(const ModifyObjectFlags& modifyFlags, QWidget* parent=0);
+    QDisplayPropertyWidget(const ModifyObjectFlags& modifyFlags, QWidget* parent=nullptr);
     ~QDisplayPropertyWidget() override;
 
     // add a component in the tree in order to show / change its data and compare them with other component data

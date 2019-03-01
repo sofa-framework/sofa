@@ -55,7 +55,7 @@ public:
     /// Close the GUI
     virtual int closeGUI()=0;
     /// Register the scene in our GUI
-    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false)=0;
+    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false)=0;
     /// Get the rootNode of the sofa scene
     virtual sofa::simulation::Node* currentSimulation() = 0;
     /// @}
@@ -81,7 +81,7 @@ public:
     virtual void setBackgroundColor(const defaulttype::RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 
-    virtual BaseViewer* getViewer() {return NULL;}
+    virtual BaseViewer* getViewer() {return nullptr;}
     virtual void registerViewer(BaseViewer* /*viewer*/) {}
     virtual bool saveScreenshot(const std::string& filename, int compression_level =-1);
 

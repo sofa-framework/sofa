@@ -20,7 +20,7 @@ class SOFA_Compliant_API VelocityConstraintValue : public BaseConstraintValue {
 
     SOFA_CLASS(VelocityConstraintValue, BaseConstraintValue);
 
-    VelocityConstraintValue( mstate_type* mstate = 0 );
+    VelocityConstraintValue( mstate_type* mstate = nullptr );
 
 	// value for stabilization
     void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;

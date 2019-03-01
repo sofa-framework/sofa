@@ -71,14 +71,14 @@ static PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
     PyObject* pyFrom;
     if (!PyArg_ParseTuple(args, "O",&pyFrom))
     {
-        return NULL;
+        return nullptr;
     }
 
     BaseState* from = sofa::py::unwrap<BaseState>( pyFrom );
     if (!from)
     {
         PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;
-        return NULL;
+        return nullptr;
     }
 
     mapping->setFrom( from );
@@ -92,14 +92,14 @@ static PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 
     PyObject* pyTo;
     if (!PyArg_ParseTuple(args, "O",&pyTo)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseState* to = sofa::py::unwrap<BaseState>( pyTo );
     if (!to)
     {
         PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;
-        return NULL;
+        return nullptr;
     }
 
     mapping->setTo( to );

@@ -103,8 +103,8 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
             << "Element Intersector " << gettypename(t1) << "-" << gettypename(t2) << " NOT FOUND within :" << tmp.str() ;
 
 
-    insert(t1, t2, 0);
-    return 0;
+    insert(t1, t2, nullptr);
+    return nullptr;
 }
 
 void IntersectorMap::add_impl(const objectmodel::ClassInfo& c1,

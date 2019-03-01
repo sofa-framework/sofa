@@ -232,7 +232,7 @@ class QPushButtonUpdater: public QPushButton
     Q_OBJECT
 public:
 
-    QPushButtonUpdater( const QString & text, QWidget * parent = 0 ): QPushButton(text,parent) {};
+    QPushButtonUpdater( const QString & text, QWidget * parent = nullptr ): QPushButton(text,parent) {};
 
 public Q_SLOTS:
     void setDisplayed(bool b);

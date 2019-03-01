@@ -59,7 +59,7 @@ public:
 
     MechanicalGetMatrixDimensionVisitor(
         const core::ExecParams* params, unsigned int * const _nbRow, unsigned int * const _nbCol,
-        sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
+        sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
 
@@ -101,7 +101,7 @@ public:
     int offset;
 
     MechanicalGetConstraintJacobianVisitor(
-        const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr)
         : BaseMechanicalVisitor(cparams) , cparams(cparams), J(_J), matrix(_matrix), offset(0)
     {}
 
@@ -142,7 +142,7 @@ public:
         sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::dx()),
         sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),
         sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()),
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr)
         :BaseMechanicalVisitor(cparams)
         ,cparams(cparams)
         ,positionFactor(pf)
@@ -214,7 +214,7 @@ public:
 
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override
     {
-        if (matrix != NULL)
+        if (matrix != nullptr)
         {
             assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
             ff->addMBKToMatrix(this->mparams, matrix);
@@ -227,7 +227,7 @@ public:
 
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
-        if (matrix != NULL)
+        if (matrix != nullptr)
         {
             c->applyConstraint(this->mparams, matrix);
         }
@@ -266,7 +266,7 @@ public:
 
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override
     {
-        if (matrix != NULL)
+        if (matrix != nullptr)
         {
             assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
             ff->addSubMBKToMatrix(this->mparams, matrix, subMatrixIndex);
@@ -279,7 +279,7 @@ public:
 
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
-        if (matrix != NULL)
+        if (matrix != nullptr)
         {
             c->applyConstraint(this->mparams, matrix);
         }
@@ -303,7 +303,7 @@ public:
     MechanicalMultiVectorToBaseVectorVisitor(
         const core::ExecParams* params,
         sofa::core::ConstMultiVecId _src, defaulttype::BaseVector * _vect,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
     }
@@ -311,7 +311,7 @@ public:
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         if (matrix) offset = matrix->getGlobalOffset(mm);
-        if (vect != NULL && offset >= 0)
+        if (vect != nullptr && offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
             mm->copyToBaseVector(vect, src.getId(mm), o);
@@ -336,7 +336,7 @@ public:
 
     MechanicalMultiVectorPeqBaseVectorVisitor(
         const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, defaulttype::BaseVector * _src,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
     }
@@ -344,7 +344,7 @@ public:
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         if (matrix) offset = matrix->getGlobalOffset(mm);
-        if (src!= NULL && offset >= 0)
+        if (src!= nullptr && offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
             mm->addFromBaseVectorSameSize(dest.getId(mm), src, o);
@@ -371,7 +371,7 @@ public:
     MechanicalMultiVectorFromBaseVectorVisitor(
         const core::ExecParams* params, sofa::core::MultiVecId _dest,
         defaulttype::BaseVector * _src,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
     }
@@ -379,7 +379,7 @@ public:
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         if (matrix) offset = matrix->getGlobalOffset(mm);
-        if (src!= NULL && offset >= 0)
+        if (src!= nullptr && offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
             mm->copyFromBaseVector(dest.getId(mm), src, o);

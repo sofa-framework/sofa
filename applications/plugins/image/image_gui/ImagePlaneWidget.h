@@ -68,7 +68,7 @@ class ImagePlaneGraphScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    ImagePlaneGraphScene(QImage* im,QObject *parent=0) : QGraphicsScene(parent)	, drawrectangle(false),image(im) 	{ this->setSceneRect(0,0,image->width(),image->height()); }
+    ImagePlaneGraphScene(QImage* im,QObject *parent=nullptr) : QGraphicsScene(parent)	, drawrectangle(false),image(im) 	{ this->setSceneRect(0,0,image->width(),image->height()); }
     QPointF P1;
     QPointF P2;
     bool drawrectangle;
@@ -144,7 +144,7 @@ signals:
     void onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);  // when the mouse is on image -> update info
 
 public:
-    ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(NULL)   {	 this->setMouseTracking(true); }
+    ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(nullptr)   {	 this->setMouseTracking(true); }
 
     virtual void fromOption(const unsigned int i)=0;					// slice index change -> redraw
     virtual void fromGraph(const QPointF &pt,const bool clicked)=0;		// mouse move -> get image info

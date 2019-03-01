@@ -178,19 +178,19 @@ public:
     }
 
     /// Get the linear system matrix, or NULL if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return NULL; }
+    virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
 
     /// Get the MultiMatrix view of the linear system, or NULL if this solved does not build it
-    virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return NULL; }
+    virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return nullptr; }
 
     /// Get the linear system right-hand term vector, or NULL if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemRHBaseVector() { return NULL; }
+    virtual defaulttype::BaseVector* getSystemRHBaseVector() { return nullptr; }
 
     /// Get the linear system left-hand term vector, or NULL if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemLHBaseVector() { return NULL; }
+    virtual defaulttype::BaseVector* getSystemLHBaseVector() { return nullptr; }
 
     /// Get the linear system inverse matrix, or NULL if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return NULL; }
+    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return nullptr; }
 
     /// Read the Matrix solver from a file
     virtual bool readFile(std::istream& /*in*/) { return false;}

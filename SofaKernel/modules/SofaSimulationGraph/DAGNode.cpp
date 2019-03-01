@@ -329,7 +329,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
                 void* obj = parents[i]->getObject(class_info,newpath);
                 if (obj) return obj;
             }
-            return 0;   // not found in any parent node at all
+            return nullptr;   // not found in any parent node at all
         }
         else return getObject(class_info,newpath);
     }

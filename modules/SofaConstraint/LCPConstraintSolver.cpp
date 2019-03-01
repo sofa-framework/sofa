@@ -251,7 +251,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
     , _mu(0.6)
     , lcp(&lcp1)
-    , last_lcp(0)
+    , last_lcp(nullptr)
     , _W(&lcp1.W)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
@@ -271,7 +271,7 @@ LCPConstraintSolver::LCPConstraintSolver()
 
 LCPConstraintSolver::~LCPConstraintSolver()
 {
-    if (_Wdiag != 0)
+    if (_Wdiag != nullptr)
         delete _Wdiag;
 }
 

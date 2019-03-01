@@ -213,7 +213,7 @@ void SofaPluginManager::updateComponentList()
 
     QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
 
-    if(curItem == NULL ) return;
+    if(curItem == nullptr ) return;
     //update the component list when an item is selected
     listComponents->clear();
 
@@ -251,7 +251,7 @@ void SofaPluginManager::updateDescription()
 
     QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
 
-    if(curItem == NULL ) return;
+    if(curItem == nullptr ) return;
     //update the component list when an item is selected
     description->clear();
 

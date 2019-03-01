@@ -38,11 +38,11 @@ namespace qt
 {
 
 
-QString SOFA_SOFAGUIQT_API getExistingDirectory ( QWidget* parent, const QString & dir = QString(), const char * name = 0, const QString & caption = QString() );
+QString SOFA_SOFAGUIQT_API getExistingDirectory ( QWidget* parent, const QString & dir = QString(), const char * name = nullptr, const QString & caption = QString() );
 
-QString SOFA_SOFAGUIQT_API getOpenFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
+QString SOFA_SOFAGUIQT_API getOpenFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = nullptr, const QString & caption = QString(), QString * selectedFilter = nullptr );
 
-QString SOFA_SOFAGUIQT_API getSaveFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
+QString SOFA_SOFAGUIQT_API getSaveFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = nullptr, const QString & caption = QString(), QString * selectedFilter = nullptr );
 
 
 void SOFA_SOFAGUIQT_API getFilesInDirectory( const QString &path, std::vector< QString > &files, bool recursive=true, const std::vector< QString > &filter=std::vector< QString >() );

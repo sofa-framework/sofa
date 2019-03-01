@@ -55,7 +55,7 @@ static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setFilename(filename);
     Py_RETURN_NONE;

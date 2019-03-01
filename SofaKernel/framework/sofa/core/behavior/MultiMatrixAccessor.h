@@ -49,10 +49,10 @@ public:
     public:
         defaulttype::BaseMatrix* matrix;
         unsigned int offset;
-        MatrixRef() : matrix(NULL), offset(0) {}
+        MatrixRef() : matrix(nullptr), offset(0) {}
         defaulttype::BaseMatrix* operator->() const { return matrix; }
-        bool operator!() const { return matrix == NULL; }
-        operator bool() const { return matrix != NULL; }
+        bool operator!() const { return matrix == nullptr; }
+        operator bool() const { return matrix != nullptr; }
         void operator =(const MatrixRef& b) {offset = b.offset; matrix = b.matrix;}
     };
 
@@ -62,10 +62,10 @@ public:
     public:
         defaulttype::BaseMatrix* matrix;
         unsigned int offRow, offCol;
-        InteractionMatrixRef() : matrix(NULL), offRow(0), offCol(0) {}
+        InteractionMatrixRef() : matrix(nullptr), offRow(0), offCol(0) {}
         defaulttype::BaseMatrix* operator->() const { return matrix; }
-        bool operator!() const { return matrix == NULL; }
-        operator bool() const { return matrix != NULL; }
+        bool operator!() const { return matrix == nullptr; }
+        operator bool() const { return matrix != nullptr; }
         void operator =(const InteractionMatrixRef& b) {offRow = b.offRow; offCol = b.offCol; matrix = b.matrix;}
     };
 

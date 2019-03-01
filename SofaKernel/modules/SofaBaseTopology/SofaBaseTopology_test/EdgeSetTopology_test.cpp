@@ -64,9 +64,9 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -117,7 +117,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
         EXPECT_EQ(edge2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -129,9 +129,9 @@ bool EdgeSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -169,16 +169,16 @@ bool EdgeSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

@@ -230,17 +230,17 @@ ConstraintAnimationLoop::ConstraintAnimationLoop(simulation::Node* gnode)
     CP1.clear(0,_tol.getValue());
     CP2.clear(0,_tol.getValue());
 
-    timer = 0;
+    timer = nullptr;
 
     msg_deprecated("ConstraintAnimationLoop") << "WARNING : ConstraintAnimationLoop is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." ;
 }
 
 ConstraintAnimationLoop::~ConstraintAnimationLoop()
 {
-    if (timer != 0)
+    if (timer != nullptr)
     {
         delete timer;
-        timer = 0;
+        timer = nullptr;
     }
 }
 
@@ -513,7 +513,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     timeScale = 1.0 / (SReal)CTime::getTicksPerSec() * 1000;
     if ( displayTime.getValue() )
     {
-        if (timer == 0)
+        if (timer == nullptr)
             timer = new CTime();
 
         time = (SReal) timer->getTime();

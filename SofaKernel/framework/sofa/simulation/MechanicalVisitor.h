@@ -74,7 +74,7 @@ public:
 
     BaseMechanicalVisitor(const core::ExecParams* params)
         : Visitor(params)
-		, root(NULL), rootData(NULL)
+		, root(nullptr), rootData(nullptr)
     {
 		// mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
 		canAccessSleepingNode = false;
@@ -90,7 +90,7 @@ public:
 
     virtual void setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData)
     {
-        *nodeData = (parentData == NULL) ? 0.0 : *parentData;
+        *nodeData = (parentData == nullptr) ? 0.0 : *parentData;
     }
 
     virtual void addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData)
@@ -1933,7 +1933,7 @@ public:
     sofa::core::MultiVecDerivId res;
     double **W;
     MechanicalApplyConstraintsVisitor(const sofa::core::MechanicalParams* mparams,
-                                      sofa::core::MultiVecDerivId res, double **W = NULL)
+                                      sofa::core::MultiVecDerivId res, double **W = nullptr)
         : MechanicalVisitor(mparams) , res(res), W(W)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO

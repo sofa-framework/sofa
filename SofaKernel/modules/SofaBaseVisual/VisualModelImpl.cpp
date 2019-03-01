@@ -216,7 +216,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , groups			(initData	(&groups, "groups", "Groups of triangles and quads using a given material"))
     , xformsModified(false)
 {
-    m_topology = 0;
+    m_topology = nullptr;
 
     //material.setDisplayed(false);
     addAlias(&fileMesh, "filename");

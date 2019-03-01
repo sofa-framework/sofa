@@ -67,7 +67,7 @@ SceneLoader* SceneLoaderFactory::getEntryFileExtension(std::string extension)
         ++it;
     }
     // not found, sorry....
-    return 0;
+    return nullptr;
 }
 
 /// Get an entry given a file extension
@@ -81,7 +81,7 @@ SceneLoader* SceneLoaderFactory::getEntryFileName(std::string filename)
         ++it;
     }
     // not found, sorry....
-    return 0;
+    return nullptr;
 }
 
 
@@ -95,7 +95,7 @@ SceneLoader* SceneLoaderFactory::getExporterEntryFileExtension(std::string exten
         it++;
     }
     // not found, sorry....
-    return 0;
+    return nullptr;
 }
 
 SceneLoader* SceneLoaderFactory::getExporterEntryFileName(std::string filename)
@@ -108,7 +108,7 @@ SceneLoader* SceneLoaderFactory::getExporterEntryFileName(std::string filename)
         it++;
     }
     // not found, sorry....
-    return 0;
+    return nullptr;
 }
 
 /// Add a scene loader

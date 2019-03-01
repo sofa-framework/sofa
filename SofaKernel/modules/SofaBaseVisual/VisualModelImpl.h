@@ -67,8 +67,8 @@ public:
     virtual Data<VecDeriv>*	write(core::VecDerivId v ) ;
     virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const ;
 
-    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return NULL; }
-    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
+    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return nullptr; }
+    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return nullptr; }
 };
 
 /**

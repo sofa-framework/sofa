@@ -69,8 +69,8 @@ public:
     void freeConstraintResolutions();
     void solveTimed(double tol, int maxIt, double timeout) override;
 
-    void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
-    void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
+    void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = nullptr);
+    void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = nullptr);
 
     int getNumConstraints();
     int getNumConstraintGroups();
@@ -99,7 +99,7 @@ public:
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = 0) override;
+    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
     Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.

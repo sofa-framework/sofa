@@ -124,7 +124,7 @@ protected:
     typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
 
 public:
-    FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = NULL);
+    FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = nullptr);
 
     const tristate& state( ) const {return m_state;}
     tristate& state() {return m_state;}

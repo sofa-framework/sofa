@@ -47,7 +47,7 @@ class MessageFormatter;
 class SOFA_HELPER_API FileMessageHandler : public MessageHandler
 {
 public:
-    FileMessageHandler(const char* filename,MessageFormatter* formatter = 0);
+    FileMessageHandler(const char* filename,MessageFormatter* formatter = nullptr);
 
     ~FileMessageHandler() override;
     void process(Message& m) override ;

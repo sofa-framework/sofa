@@ -47,11 +47,11 @@ namespace sofa
 namespace gui
 {
 
-const char* BaseGUI::mProgramName = NULL;
+const char* BaseGUI::mProgramName = nullptr;
 std::string BaseGUI::mGuiName = "";
 std::string BaseGUI::configDirectoryPath = ".";
 std::string BaseGUI::screenshotDirectoryPath = ".";
-ArgumentParser* BaseGUI::mArgumentParser = NULL;
+ArgumentParser* BaseGUI::mArgumentParser = nullptr;
 
 BaseGUI::BaseGUI()
 {

@@ -35,7 +35,7 @@ namespace objectmodel
 
 PythonScriptFunctionParameter::PythonScriptFunctionParameter() : ScriptFunctionParameter(),
 	m_own(false),
-	m_pyData(0)
+	m_pyData(nullptr)
 {
 
 }
@@ -54,7 +54,7 @@ PythonScriptFunctionParameter::~PythonScriptFunctionParameter()
 
 PythonScriptFunctionResult::PythonScriptFunctionResult() : ScriptFunctionResult(),
 	m_own(false),
-	m_pyData(0)
+	m_pyData(nullptr)
 {
 	if(m_own && m_pyData) {
         simulation::PythonEnvironment::gil lock(__func__);
@@ -111,7 +111,7 @@ void PythonScriptFunction::onCall(const ScriptFunctionParameter* parameter, Scri
 	const PythonScriptFunctionParameter* pythonScriptParameter = dynamic_cast<const PythonScriptFunctionParameter*>(parameter);
 	PythonScriptFunctionResult* pythonScriptResult = dynamic_cast<PythonScriptFunctionResult*>(result);
 
-	PyObject* pyParameter = 0;
+	PyObject* pyParameter = nullptr;
 	if(pythonScriptParameter) {
 		pyParameter = pythonScriptParameter->data();
     }

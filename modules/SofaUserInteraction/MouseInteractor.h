@@ -44,7 +44,7 @@ namespace collision
  */
 struct BodyPicked
 {
-    BodyPicked():body(NULL), mstate(NULL), dist(0) {}
+    BodyPicked():body(nullptr), mstate(nullptr), dist(0) {}
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
@@ -54,7 +54,7 @@ struct BodyPicked
 #endif
     SReal dist;
     SReal rayLength;
-    operator bool() { return mstate != NULL; }
+    operator bool() { return mstate != nullptr; }
 };
 
 class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel

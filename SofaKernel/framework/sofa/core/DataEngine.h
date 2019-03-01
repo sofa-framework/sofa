@@ -172,7 +172,7 @@ public:
     /// This method is needed by DDGNode
     objectmodel::BaseData* getData() const override
     {
-        return NULL;
+        return nullptr;
     }
 
     /// Add a link.

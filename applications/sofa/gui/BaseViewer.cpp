@@ -36,14 +36,14 @@ BaseViewer::BaseViewer()
     : groot(NULL)
     , currentCamera(NULL)
 #ifndef SOFA_NO_OPENGL
-    , texLogo(NULL)
+    , texLogo(nullptr)
 #endif
     , _video(false)
     , _axis(false)
     , backgroundColour(defaulttype::Vector3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(defaulttype::Vector3())
-    , pick(NULL)
+    , pick(nullptr)
     , _screenshotDirectory(".")
 {
     pick = new PickHandler();
@@ -55,7 +55,7 @@ BaseViewer::~BaseViewer()
    if(texLogo)
     {
         delete texLogo;
-        texLogo = NULL;
+        texLogo = nullptr;
     }
 #endif
 }
@@ -220,7 +220,7 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
         if(texLogo)
         {
             delete texLogo;
-            texLogo = NULL;
+            texLogo = nullptr;
         }
         helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
         if( !image )

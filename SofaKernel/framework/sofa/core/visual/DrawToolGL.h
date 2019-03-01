@@ -181,7 +181,7 @@ public:
     void saveLastState() override;
     void restoreLastState() override;
 
-    void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL) override;
+    void readPixels(int x, int y, int w, int h, float* rgb, float* z = nullptr) override;
 
     void internalDrawSpheres(const helper::vector<Vector3>& centers, const float& radius, const unsigned int rings, const unsigned int sectors);
     void internalDrawSphere(const Vector3& center, const float& radius, const unsigned int rings, const unsigned int sectors);

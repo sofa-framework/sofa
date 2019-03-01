@@ -61,7 +61,7 @@ class SOFA_SOFAGUI_API Operation
 {
     friend class OperationFactory;
 public:
-    Operation(sofa::component::configurationsetting::MouseButtonSetting::SPtr s = NULL): pickHandle(NULL),mbsetting(s),performer(NULL),button(NONE) {}
+    Operation(sofa::component::configurationsetting::MouseButtonSetting::SPtr s = NULL): pickHandle(nullptr),mbsetting(s),performer(nullptr),button(NONE) {}
     virtual ~Operation() {}
     virtual void configure(PickHandler*picker, MOUSE_BUTTON b) { pickHandle=picker; button=b; }
     virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* s)
@@ -186,7 +186,7 @@ protected:
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
-    InciseOperation():startPerformer(NULL), cpt (0) {};
+    InciseOperation():startPerformer(nullptr), cpt (0) {};
     ~InciseOperation() override;
     void start() override ;
     void execution() override ;

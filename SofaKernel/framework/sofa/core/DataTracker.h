@@ -90,7 +90,7 @@ namespace core
 
         /// Set dirty flag to false
         /// for the DDGNode and for all the tracked Data
-        virtual void cleanDirty(const core::ExecParams* params = 0);
+        virtual void cleanDirty(const core::ExecParams* params = nullptr);
 
 
         /// utility function to ensure all inputs are up-to-date
@@ -205,7 +205,7 @@ namespace core
 
         /// The trick is here, this function is called as soon as the input data changes
         /// and can then trigger the callback
-        void setDirtyValue(const core::ExecParams* params = 0) override
+        void setDirtyValue(const core::ExecParams* params = nullptr) override
         {
             m_functor( this );
 

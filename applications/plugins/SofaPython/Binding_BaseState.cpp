@@ -36,7 +36,7 @@ static PyObject * BaseState_resize(PyObject *self, PyObject * args)
     BaseState* obj = get_basestate( self );
     int newSize;
     if (!PyArg_ParseTuple(args, "i", &newSize)) {
-        return NULL;
+        return nullptr;
     }
 
     obj->resize(newSize);
@@ -49,7 +49,7 @@ static PyObject * BaseState_getSize(PyObject *self, PyObject * args)
     BaseState* obj = get_basestate( self );
 
     if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
+        return nullptr;
     }
 
     return PyInt_FromSize_t(obj->getSize());

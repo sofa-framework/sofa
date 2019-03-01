@@ -276,7 +276,7 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    CollisionElementIterator(CollisionModel* model=NULL, int index=0)
+    CollisionElementIterator(CollisionModel* model=nullptr, int index=0)
         : TCollisionElementIterator<CollisionModel>(model, index)
     {
     }

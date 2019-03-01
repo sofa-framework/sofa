@@ -127,7 +127,7 @@ public slots:
 
     //File Menu
     /// Creation of a new scene (new tab will be created)
-    void fileNew() {fileNew(NULL);};
+    void fileNew() {fileNew(nullptr);};
     void fileNew(Node* root);
 
     /// Open an existing simulation (new tab will be created)

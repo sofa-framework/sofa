@@ -81,7 +81,7 @@ static int OptionsGroupData_setAttr_selectedId(PyObject *self, PyObject * args, 
 
 static PyObject * OptionsGroupData_getSelectedId(PyObject *self, PyObject *)
 {
-    return OptionsGroupData_getAttr_selectedId(self,NULL);
+    return OptionsGroupData_getAttr_selectedId(self,nullptr);
 }
 
 static PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args)
@@ -89,7 +89,7 @@ static PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
-        return NULL;
+        return nullptr;
     }
     OptionsGroupData_setAttr_selectedId_impl(self,index);
     Py_RETURN_NONE;
@@ -97,7 +97,7 @@ static PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args
 
 static PyObject * OptionsGroupData_getSelectedItem(PyObject *self, PyObject *)
 {
-    return OptionsGroupData_getAttr_selectedItem(self,NULL);
+    return OptionsGroupData_getAttr_selectedItem(self,nullptr);
 }
 
 static PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * args)
@@ -105,7 +105,7 @@ static PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * ar
     char *item;
     if (!PyArg_ParseTuple(args, "s",&item))
     {
-        return NULL;
+        return nullptr;
     }
     OptionsGroupData_setAttr_selectedItem_impl(self,item);
     Py_RETURN_NONE;
@@ -118,7 +118,7 @@ static PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&index))
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyString_FromString(data->getValue()[index].c_str());
 }

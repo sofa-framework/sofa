@@ -101,7 +101,7 @@ void TriangleLocalMinDistanceFilter::init()
         serr<<"WARNING: init failed for TriangleLocalMinDistanceFilter no mstateVec3d found"<<sendl;
     }
 
-    if (bmt != 0)
+    if (bmt != nullptr)
     {
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);

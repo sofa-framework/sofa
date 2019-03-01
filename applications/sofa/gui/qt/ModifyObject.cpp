@@ -71,12 +71,12 @@ ModifyObject::ModifyObject(void *Id,
     :QDialog(parent, f),
       Id_(Id),
       item_(item_clicked),
-      node(NULL),
-      data_(NULL),
+      node(nullptr),
+      data_(nullptr),
       dialogFlags_(dialogFlags),
-      messageTab(NULL),
-      messageEdit(NULL),
-      transformation(NULL)
+      messageTab(nullptr),
+      messageEdit(nullptr),
+      transformation(nullptr)
     #ifdef SOFA_HAVE_QWT
     ,energy(NULL)
     ,momentum(NULL)
@@ -89,7 +89,7 @@ ModifyObject::ModifyObject(void *Id,
 
 void ModifyObject::createDialog(core::objectmodel::Base* base)
 {
-    if(base == NULL)
+    if(base == nullptr)
     {
         return;
     }
@@ -104,7 +104,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     std::cout << "GUI<emit beginObjectModification(" << base->getName() << ")" << std::endl;
 #endif
     node = base;
-    data_ = NULL;
+    data_ = nullptr;
 
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
@@ -299,7 +299,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Adding buttons at the bottom of the dialog
-        QHBoxLayout *lineLayout = new QHBoxLayout( 0);
+        QHBoxLayout *lineLayout = new QHBoxLayout( nullptr);
         lineLayout->setMargin(0);
         lineLayout->setSpacing(6);
         lineLayout->setObjectName("Button Layout");
@@ -340,7 +340,7 @@ void ModifyObject::clearMessages()
 void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 {
     data_ = data;
-    node = NULL;
+    node = nullptr;
 
 #ifdef DEBUG_GUI
     std::cout << "GUI>emit beginDataModification("<<data->getName()<<")" << std::endl;
@@ -358,7 +358,7 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     generalLayout->setMargin(0);
     generalLayout->setSpacing(1);
     generalLayout->setObjectName("generalLayout");
-    QHBoxLayout *lineLayout = new QHBoxLayout( 0);
+    QHBoxLayout *lineLayout = new QHBoxLayout( nullptr);
     lineLayout->setMargin(0);
     lineLayout->setSpacing(6);
     lineLayout->setObjectName("Button Layout");
@@ -479,12 +479,12 @@ void ModifyObject::updateConsole()
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
-    if (buttonUpdate == NULL) return;
+    if (buttonUpdate == nullptr) return;
 
     //Make the update of all the values
     if (node)
     {
-        bool isNode =( dynamic_cast< simulation::Node *>(node) != 0);
+        bool isNode =( dynamic_cast< simulation::Node *>(node) != nullptr);
         //If the current element is a node of the graph, we first apply the transformations
         if (transformation && dialogFlags_.REINIT_FLAG && isNode)
         {

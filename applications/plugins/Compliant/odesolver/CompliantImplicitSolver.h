@@ -228,7 +228,7 @@ public:
     /// Compute the forces f (stiffness and constraint forces)
     virtual void compute_forces(SolverOperations& sop,
                                 core::behavior::MultiVecDeriv& f,  // the total force sum (stiffness + constraint forces if required)
-                                core::behavior::MultiVecDeriv* f_k = NULL // the stiffness force only
+                                core::behavior::MultiVecDeriv* f_k = nullptr // the stiffness force only
                                );
 
     /// evaluate violated and active constraints

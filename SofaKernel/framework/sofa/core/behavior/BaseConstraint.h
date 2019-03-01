@@ -152,7 +152,7 @@ public:
         int offsetPosition; ///< index of first constraint group info in vector of coordinates
         int offsetDirection; ///< index of first constraint info in vector of directions
         int offsetArea; ///< index of first constraint group info in vector of areas
-        ConstraintBlockInfo() : parent(NULL), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), hasDirection(false), hasArea(false), offsetId(0), offsetPosition(0), offsetDirection(0), offsetArea(0)
+        ConstraintBlockInfo() : parent(nullptr), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), hasDirection(false), hasArea(false), offsetId(0), offsetPosition(0), offsetDirection(0), offsetArea(0)
         {}
     };
     typedef helper::vector<ConstraintBlockInfo> VecConstraintBlockInfo;

@@ -108,7 +108,7 @@ static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
 
     obj->m_rawTemplate = nullptr ;
     if (!PyArg_ParseTuple(args, "O", &(obj->m_rawTemplate))) {
-        return NULL;
+        return nullptr;
     }
 
     std::stringstream s ;
@@ -142,14 +142,14 @@ static PyObject * Template_trackData(PyObject *self, PyObject * args)
     Template* obj = dynamic_cast<Template*>(((PySPtr<Base>*)self)->object.get()) ;
     PyObject* o  {nullptr} ;
     if (!PyArg_ParseTuple(args, "O", &o)) {
-        return NULL ;
+        return nullptr ;
     }
 
     BaseData* bd = ((PyPtr<BaseData>*)o)->object ;
     if(obj && bd)
         obj->addDataToTrack(bd) ;
     else
-        return NULL ;
+        return nullptr ;
     Py_RETURN_NONE ;
 }
 

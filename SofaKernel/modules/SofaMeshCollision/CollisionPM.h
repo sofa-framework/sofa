@@ -113,7 +113,7 @@ namespace collision
             for(int i = 0 ; i < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++i){
                 for(int j = 0 ; j < sofa::core::CollisionModel::ENUM_TYPE_SIZE ; ++j){
                     _order[i][j] = 0;
-                    _intersectors[i][j] = 0x0;
+                    _intersectors[i][j] = nullptr;
                 }
             }
         }

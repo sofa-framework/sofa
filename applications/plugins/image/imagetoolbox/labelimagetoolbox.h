@@ -114,7 +114,7 @@ protected:
 
 public:
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=NULL )=0;
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=nullptr )=0;
 
 };
 

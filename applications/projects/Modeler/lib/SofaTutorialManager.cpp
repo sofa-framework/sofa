@@ -42,7 +42,7 @@ namespace qt
 {
 
 SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name)
-    :QMainWindow(parent), tutorialList(0)
+    :QMainWindow(parent), tutorialList(nullptr)
 {
     this->setObjectName(name);
 
@@ -148,7 +148,7 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
 
     //Set the Graph
     xml::BaseElement* newXML = xml::loadFromFile ( filename.c_str() );
-    if (newXML == NULL) return;
+    if (newXML == nullptr) return;
 
     msg_info_when(!newXML->init(), "SofaTutorialManager")
             << "Objects initialization failed.";

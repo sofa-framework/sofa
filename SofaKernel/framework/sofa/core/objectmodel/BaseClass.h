@@ -344,7 +344,7 @@ public:
     }
     static const BaseClass* get(int)
     {
-        return NULL;
+        return nullptr;
     }
 };
 

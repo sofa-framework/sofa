@@ -80,7 +80,7 @@ DiscreteGridField::DiscreteGridField()
       dz( initData( &dz, 0.0, "dz", "z translation" ) )
 {
     m_usedDomains = 0;
-    m_imgData = 0;
+    m_imgData = nullptr;
 }
 
 
@@ -89,7 +89,7 @@ DiscreteGridField::~DiscreteGridField()
     if (m_imgData)
     {
         delete[] m_imgData;
-        m_imgData = 0;
+        m_imgData = nullptr;
     }
 }
 

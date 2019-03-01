@@ -68,7 +68,7 @@ public:
     void unload() override
     {
         sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
-        vparams->drawTool() = NULL;
+        vparams->drawTool() = nullptr;
     }
 };
 

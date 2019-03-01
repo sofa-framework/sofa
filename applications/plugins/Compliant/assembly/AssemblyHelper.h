@@ -219,7 +219,7 @@ public:
     Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
         // a compliant FF must be alone, so if there is one, it is the first one of the list.
-        const core::behavior::BaseForceField* ff = NULL;
+        const core::behavior::BaseForceField* ff = nullptr;
 
         if( !node->forceField.empty() ) ff = *node->forceField.begin();
         else if( !node->interactionForceField.empty() ) ff = *node->interactionForceField.begin();

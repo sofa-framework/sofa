@@ -70,9 +70,9 @@ bool TriangleSetTopology_test::testTriangleBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -127,7 +127,7 @@ bool TriangleSetTopology_test::testTriangleBuffers()
         EXPECT_EQ(tri2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -139,9 +139,9 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -234,9 +234,9 @@ bool TriangleSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -280,16 +280,16 @@ bool TriangleSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

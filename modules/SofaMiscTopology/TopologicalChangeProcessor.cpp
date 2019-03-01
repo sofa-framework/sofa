@@ -80,10 +80,10 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
     , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
-    , m_topology(NULL)
+    , m_topology(nullptr)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextTime(0)
     , lastTime(0)
@@ -131,7 +131,7 @@ void TopologicalChangeProcessor::readDataFile()
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 

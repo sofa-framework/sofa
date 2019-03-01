@@ -48,7 +48,7 @@ class SofaTutorialManager : public QMainWindow
 {
     Q_OBJECT
 public:
-    SofaTutorialManager(QWidget* parent = 0, const char *name = "");
+    SofaTutorialManager(QWidget* parent = nullptr, const char *name = "");
     GraphModeler *getGraph() {return graph;}
 
     void keyPressEvent ( QKeyEvent * e ) override;

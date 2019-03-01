@@ -44,7 +44,7 @@ class QTableViewUpdater : public QTableView
     Q_OBJECT
 
 public:
-    QTableViewUpdater (QWidget * parent = 0);
+    QTableViewUpdater (QWidget * parent = nullptr);
 
 public slots:
     void setDisplayed(bool b);
@@ -56,7 +56,7 @@ class QTableModelUpdater : public QStandardItemModel
     Q_OBJECT
     bool m_isReadOnly ;
 public:
-    QTableModelUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * /*name*/ = 0 );
+    QTableModelUpdater ( int numRows, int numCols, QWidget * parent = nullptr, const char * /*name*/ = nullptr );
 
     Qt::ItemFlags flags(const QModelIndex&) const override ;
     QVariant data(const QModelIndex &index, int role) const override;

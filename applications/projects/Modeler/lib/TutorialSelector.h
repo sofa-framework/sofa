@@ -82,7 +82,7 @@ class TutorialSelector : public QTreeWidget
 
     Q_OBJECT
 public:
-    TutorialSelector( QWidget* parent = 0);
+    TutorialSelector( QWidget* parent = nullptr);
     void init();
 
 
@@ -104,7 +104,7 @@ protected:
     void openTutorial(const Tutorial&);
 
     void loadTutorials(const std::string &fileTutorials);
-    void openNode(TiXmlNode* node, QTreeWidgetItem *parent=NULL, bool isRoot=false);
+    void openNode(TiXmlNode* node, QTreeWidgetItem *parent=nullptr, bool isRoot=false);
     void openAttribute(TiXmlElement* element,  QTreeWidgetItem *item);
 
     std::map< QTreeWidgetItem *, Category> itemToCategory;

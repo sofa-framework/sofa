@@ -81,10 +81,10 @@ protected:
     std::map<std::string, int> nextIndex;
 
     /// Test if a node should be displayed
-    bool display(GNode* node, const char** color=NULL);
+    bool display(GNode* node, const char** color=nullptr);
 
     /// Test if an object should be displayed
-    bool display(core::objectmodel::BaseObject* obj, const char** color=NULL);
+    bool display(core::objectmodel::BaseObject* obj, const char** color=nullptr);
 
     /// Find the node or object a given object should be attached to.
     /// This is the parent node if it is displayed, otherwise it is the attached MechanicalState or Solver.
