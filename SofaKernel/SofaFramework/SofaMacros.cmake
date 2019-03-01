@@ -270,6 +270,13 @@ endmacro()
 #
 # Assumes relative path.
 macro(sofa_set_python_directory plugin_name directory)
+    set(include_install_dir "lib/python2.7/site-packages")
+    set(optional_argv2 "${ARGV2}")
+    if(optional_argv2)
+        # ARGV3 is a non-breaking additional argument to handle INCLUDE_SOURCE_DIR (see sofa_generate_package)
+        # TODO: add a real argument "include_source_dir" to this macro
+        set(include_install_dir "${ARGV2}")
+    endif()
     ## Install python scripts, preserving the file tree
     file(GLOB_RECURSE ALL_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*")
     file(GLOB_RECURSE PYC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*.pyc")
@@ -280,7 +287,7 @@ macro(sofa_set_python_directory plugin_name directory)
         file(RELATIVE_PATH script "${CMAKE_CURRENT_SOURCE_DIR}/${directory}" "${python_file}")
         get_filename_component(path ${script} DIRECTORY)
         install(FILES ${directory}/${script}
-                DESTINATION "lib/python2.7/site-packages/${path}"
+                DESTINATION "${include_install_dir}/${path}"
                 COMPONENT headers)
     endforeach()
 
@@ -289,7 +296,7 @@ macro(sofa_set_python_directory plugin_name directory)
          "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
     ## Python configuration file (install tree)
      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
-         "lib/python2.7/site-packages")
+         "${include_install_dir}")
      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
              DESTINATION "etc/sofa/python.d"
              RENAME "${plugin_name}"
