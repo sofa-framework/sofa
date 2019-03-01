@@ -43,17 +43,11 @@ class SOFA_SIMULATION_CORE_API MutationListener
 
     virtual void removeChildBegin(Node *parent, Node *child) final;
 
-    virtual void moveChildBegin(Node *previous, Node *parent,
-                                Node *child) final;
-
     virtual void addObjectBegin(Node *parent,
                                 core::objectmodel::BaseObject *object) final;
 
     virtual void removeObjectBegin(Node *parent,
                                    core::objectmodel::BaseObject *object) final;
-
-    virtual void moveObjectBegin(Node *previous, Node *parent,
-                                 core::objectmodel::BaseObject *object) final;
 
     virtual void addSlaveBegin(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave) final;
@@ -61,17 +55,11 @@ class SOFA_SIMULATION_CORE_API MutationListener
     virtual void removeSlaveBegin(core::objectmodel::BaseObject *master,
                                   core::objectmodel::BaseObject *slave) final;
 
-    virtual void moveSlaveBegin(core::objectmodel::BaseObject *previousMaster,
-                                core::objectmodel::BaseObject *master,
-                                core::objectmodel::BaseObject *slave) final;
-
     virtual void sleepChanged(Node *node);
 
     virtual void addChildEnd(Node *parent, Node *child) final;
 
     virtual void removeChildEnd(Node *parent, Node *child) final;
-
-    virtual void moveChildEnd(Node *previous, Node *parent, Node *child) final;
 
     virtual void addObjectEnd(Node *parent,
                               core::objectmodel::BaseObject *object) final;
@@ -79,67 +67,56 @@ class SOFA_SIMULATION_CORE_API MutationListener
     virtual void removeObjectEnd(Node *parent,
                                  core::objectmodel::BaseObject *object) final;
 
-    virtual void moveObjectEnd(Node *previous, Node *parent,
-                               core::objectmodel::BaseObject *object) final;
-
     virtual void addSlaveEnd(core::objectmodel::BaseObject *master,
                              core::objectmodel::BaseObject *slave) final;
 
     virtual void removeSlaveEnd(core::objectmodel::BaseObject *master,
                                 core::objectmodel::BaseObject *slave) final;
 
-    virtual void moveSlaveEnd(core::objectmodel::BaseObject *previousMaster,
-                              core::objectmodel::BaseObject *master,
-                              core::objectmodel::BaseObject *slave) final;
-
   protected:
-    virtual void beginAddChild(Node *parent, Node *child);
+    virtual void onAddChildBegin(Node *parent, Node *child);
 
-    virtual void beginRemoveChild(Node *parent, Node *child);
+    virtual void onRemoveChildBegin(Node *parent, Node *child);
 
-    virtual void beginMoveChild(Node *previous, Node *parent, Node *child);
-
-    virtual void beginAddObject(Node *parent,
+    virtual void onAddObjectBegin(Node *parent,
                              core::objectmodel::BaseObject *object);
 
-    virtual void beginRemoveObject(Node *parent,
+    virtual void onRemoveObjectBegin(Node *parent,
                                 core::objectmodel::BaseObject *object);
 
-    virtual void beginMoveObject(Node *previous, Node *parent,
+    virtual void onMoveObjectBegin(Node *previous, Node *parent,
                               core::objectmodel::BaseObject *object);
 
-    virtual void beginAddSlave(core::objectmodel::BaseObject *master,
+    virtual void onAddSlaveBegin(core::objectmodel::BaseObject *master,
                             core::objectmodel::BaseObject *slave);
 
-    virtual void beginRemoveSlave(core::objectmodel::BaseObject *master,
+    virtual void onRemoveSlaveBegin(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave);
 
-    virtual void beginMoveSlave(core::objectmodel::BaseObject *previousMaster,
+    virtual void onMoveSlaveBegin(core::objectmodel::BaseObject *previousMaster,
                              core::objectmodel::BaseObject *master,
                              core::objectmodel::BaseObject *slave);
 
-    virtual void endAddChild(Node *parent, Node *child);
+    virtual void onAddChildEnd(Node *parent, Node *child);
 
-    virtual void endRemoveChild(Node *parent, Node *child);
+    virtual void onRemoveChildEnd(Node *parent, Node *child);
 
-    virtual void endMoveChild(Node *previous, Node *parent, Node *child);
-
-    virtual void endAddObject(Node *parent,
+    virtual void onAddObjectEnd(Node *parent,
                              core::objectmodel::BaseObject *object);
 
-    virtual void endRemoveObject(Node *parent,
+    virtual void onRemoveObjectEnd(Node *parent,
                                 core::objectmodel::BaseObject *object);
 
-    virtual void endMoveObject(Node *previous, Node *parent,
+    virtual void onMoveObjectEnd(Node *previous, Node *parent,
                               core::objectmodel::BaseObject *object);
 
-    virtual void endAddSlave(core::objectmodel::BaseObject *master,
+    virtual void onAddSlaveEnd(core::objectmodel::BaseObject *master,
                             core::objectmodel::BaseObject *slave);
 
-    virtual void endRemoveSlave(core::objectmodel::BaseObject *master,
+    virtual void onRemoveSlaveEnd(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave);
 
-    virtual void endMoveSlave(core::objectmodel::BaseObject *previousMaster,
+    virtual void onMoveSlaveEnd(core::objectmodel::BaseObject *previousMaster,
                              core::objectmodel::BaseObject *master,
                              core::objectmodel::BaseObject *slave);
 };

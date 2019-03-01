@@ -335,7 +335,7 @@ QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::beginAddChild(Node* parent, Node* child)
+void GraphListenerQListView::onAddChildBegin(Node* parent, Node* child)
 {
 
     if (frozen) return;
@@ -410,7 +410,7 @@ void GraphListenerQListView::beginAddChild(Node* parent, Node* child)
 }
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::beginRemoveChild(Node* parent, Node* child)
+void GraphListenerQListView::onRemoveChildBegin(Node* parent, Node* child)
 {
     SOFA_UNUSED(parent);
     if (items.count(child))
@@ -420,48 +420,9 @@ void GraphListenerQListView::beginRemoveChild(Node* parent, Node* child)
     }
 }
 
-/*****************************************************************************************************************/
-void GraphListenerQListView::beginMoveChild(Node* previous, Node* parent, Node* child)
-{
-    if (frozen && items.count(child))
-    {
-        QTreeWidgetItem* itemChild = items[child];
-        if (items.count(previous)) //itemChild->listView() != NULL)
-        {
-            QTreeWidgetItem* itemPrevious = items[previous];
-            //itemPrevious->takeItem(itemChild);
-            itemPrevious->removeChild(itemChild);
-        }
-        else
-        {
-            removeChildBegin(previous, child);
-        }
-        return;
-    }
-    if (!items.count(child) || !items.count(previous))
-    {
-        addChildBegin(parent, child);
-    }
-    else if (!items.count(parent))
-    {
-        removeChildBegin(previous, child);
-    }
-    else
-    {
-        QTreeWidgetItem* itemChild = items[child];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        QTreeWidgetItem* itemParent = items[parent];
-        //        itemPrevious->takeItem(itemChild);
-        itemPrevious->removeChild(itemChild);
-        //        itemParent->insertItem(itemChild);
-        itemParent->addChild(itemChild);
-    }
-}
-
-
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::beginAddObject(Node* parent, core::objectmodel::BaseObject* object)
+void GraphListenerQListView::onAddObjectBegin(Node* parent, core::objectmodel::BaseObject* object)
 {
     if (frozen) return;
     if (items.count(object))
@@ -511,7 +472,7 @@ void GraphListenerQListView::beginAddObject(Node* parent, core::objectmodel::Bas
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::beginRemoveObject(Node* parent, core::objectmodel::BaseObject* object)
+void GraphListenerQListView::onRemoveObjectBegin(Node* parent, core::objectmodel::BaseObject* object)
 {
     SOFA_UNUSED(parent);
     if (items.count(object))
@@ -521,39 +482,9 @@ void GraphListenerQListView::beginRemoveObject(Node* parent, core::objectmodel::
     }
 }
 
-/*****************************************************************************************************************/
-void GraphListenerQListView::beginMoveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object)
-{
-    if (frozen && items.count(object))
-    {
-        QTreeWidgetItem* itemObject = items[object];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        //        itemPrevious->takeItem(itemObject);
-        itemPrevious->removeChild(itemObject);
-        return;
-    }
-    if (!items.count(object) || !items.count(previous))
-    {
-        addObjectBegin(parent, object);
-    }
-    else if (!items.count(parent))
-    {
-        removeObjectBegin(previous, object);
-    }
-    else
-    {
-        QTreeWidgetItem* itemObject = items[object];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        QTreeWidgetItem* itemParent = items[parent];
-        //        itemPrevious->takeItem(itemObject);
-        itemPrevious->removeChild(itemObject);
-        //        itemParent->insertItem(itemObject);
-        itemParent->addChild(itemObject);
-    }
-}
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::beginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+void GraphListenerQListView::onAddSlaveBegin(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     if (frozen) return;
     if (items.count(slave))
@@ -600,7 +531,7 @@ void GraphListenerQListView::beginAddSlave(core::objectmodel::BaseObject* master
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::beginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+void GraphListenerQListView::onRemoveSlaveBegin(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     SOFA_UNUSED(master);
     if (items.count(slave))
@@ -609,38 +540,6 @@ void GraphListenerQListView::beginRemoveSlave(core::objectmodel::BaseObject* mas
         items.erase(slave);
     }
 }
-
-/*****************************************************************************************************************/
-void GraphListenerQListView::beginMoveSlave(core::objectmodel::BaseObject* previous, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    if (frozen && items.count(slave))
-    {
-        QTreeWidgetItem* itemSlave = items[slave];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        //        itemPrevious->takeItem(itemSlave);
-        itemPrevious->removeChild(itemSlave);
-        return;
-    }
-    if (!items.count(slave) || !items.count(previous))
-    {
-        addSlaveBegin(master, slave);
-    }
-    else if (!items.count(master))
-    {
-        removeSlaveBegin(previous, slave);
-    }
-    else
-    {
-        QTreeWidgetItem* itemSlave = items[slave];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        QTreeWidgetItem* itemMaster = items[master];
-        //        itemPrevious->takeItem(itemSlave);
-        itemPrevious->removeChild(itemSlave);
-        //        itemMaster->insertItem(itemSlave);
-        itemMaster->addChild(itemSlave);
-    }
-}
-
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::sleepChanged(Node* node)

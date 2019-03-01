@@ -577,23 +577,20 @@ private:
 
     virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyBeginMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
 
     virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
     virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
+
     virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyEndMoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev_parent);
 
     virtual void notifySleepChanged(Node* node);
 
     virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
     virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    virtual void notifyBeginMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
 
     virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
     virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    virtual void notifyEndMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
 
 
 protected:

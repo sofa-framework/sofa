@@ -139,8 +139,11 @@ void DAGNode::doMoveChild(BaseNode::SPtr node)
     if (!dagnode) return;
 
     setDirtyDescendancy();
-    for (DAGNode* prev : dagnode->l_parents.getValue())
-        prev->removeChild(node);
+    for (sofa::core::objectmodel::BaseNode* parent : dagnode->getParents())
+    {
+        parent->removeChild(node);
+    }
+
     addChild(node);
 }
 
