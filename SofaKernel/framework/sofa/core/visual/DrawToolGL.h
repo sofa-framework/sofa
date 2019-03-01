@@ -166,6 +166,9 @@ public:
 
     virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text );
 
+    virtual void enablePolygonOffset(float factor, float units);
+    virtual void disablePolygonOffset();
+
     virtual void enableBlending();
     virtual void disableBlending();
 

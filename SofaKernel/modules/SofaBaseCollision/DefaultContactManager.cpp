@@ -161,21 +161,21 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
                         std::make_pair(model1class, model2class))];
                     if (count <= 10)
                     {
-                        serr << "Contact " << responseUsed << " between " << model1->getClassName()
-                            << " and " << model2->getClassName() << " creation failed" << sendl;
+                        msg_error() << "Contact " << responseUsed << " between " << model1->getClassName()
+                                    << " and " << model2->getClassName() << " creation failed";
                         if (count == 1)
                         {
-                            serr << "Supported models for contact " << responseUsed << ":" << sendl;
+                            msg_error()<< "Supported models for contact " << responseUsed << ":";
                             for (Contact::Factory::const_iterator it =
                                 Contact::Factory::getInstance()->begin(),
                                 itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
                             {
                                 if (it->first != responseUsed) continue;
-                                serr << "   " << helper::gettypename(it->second->type()) << sendl;
+                                msg_error() << "   " << helper::gettypename(it->second->type());
                             }
-                            serr << sendl;
+                            msg_error() << "error..."; // was previously "serr << sendl", no idea why ??;
                         }
-                        if (count == 10) serr << "further messages suppressed" << sendl;
+                        if (count == 10) msg_error() << "further messages suppressed";
                     }
                     contactMap.erase(contactIt);
                 }

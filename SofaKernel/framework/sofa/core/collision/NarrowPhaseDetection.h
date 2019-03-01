@@ -72,6 +72,9 @@ public:
     {
         for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
             addCollisionPair(*it);
+
+        // m_outputsMap should just be filled in addCollisionPair function
+        m_primitiveTestCount = m_outputsMap.size();
     }
 
     virtual void endNarrowPhase()
@@ -99,7 +102,9 @@ public:
 
     //sofa::helper::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
 
-    const DetectionOutputMap& getDetectionOutputs()
+    size_t getPrimitiveTestCount() const { return m_primitiveTestCount; }
+
+    const DetectionOutputMap& getDetectionOutputs() const
     {
         return m_outputsMap;
     }
@@ -136,7 +141,10 @@ protected:
 private:
     std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
 
+protected:
     DetectionOutputMap m_outputsMap;
+
+    size_t m_primitiveTestCount; // used only for statistics purpose
 };
 
 } // namespace collision

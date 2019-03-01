@@ -70,7 +70,7 @@ void EdgePressureForceField<DataTypes>::init()
     _topology = this->getContext()->getMeshTopology();
     if(_topology == NULL)
     {
-        serr << "ERROR(EdgePressureForceField): No base topology available." << sendl;
+        msg_error() << " No base topology available." ;
         return;
     }
 
@@ -79,7 +79,7 @@ void EdgePressureForceField<DataTypes>::init()
 
     if (edgeGeo==NULL)
     {
-        serr << "ERROR(EdgePressureForceField): object must have an EdgeSetTopology."<<sendl;
+        msg_error() << " object must have an EdgeSetTopology.";
         return;
     }
 
@@ -89,7 +89,7 @@ void EdgePressureForceField<DataTypes>::init()
 
     if(_completeTopology == NULL && edgeIndices.getValue().empty() && edges.getValue().empty())
     {
-        serr << "ERROR(EdgePressureForceField): Either a pressure vector or a TriangleSetTopology is required." << sendl;
+        msg_error() << "Either a pressure vector or a TriangleSetTopology is required.";
     }
 
     // init edgesubsetData engine
@@ -142,7 +142,7 @@ void EdgePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template <class DataTypes>
 SReal EdgePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_error() << "Get potentialEnergy not implemented" ;
     return 0.0;
 }
 
@@ -165,13 +165,13 @@ bool EdgePressureForceField<DataTypes>::isPointInPlane(Coord p)
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
+    if (!this->mstate.get())
+        msg_error() << " No mechanical Object linked.";
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
-    {
-        serr << "ERROR(EdgePressureForceField): No mechanical Object linked."<<sendl;
         return;
-    }
 
     const helper::vector<Real>& intensities = p_intensity.getValue();
 
@@ -281,11 +281,13 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
+    if (!this->mstate.get())
+        msg_error() << " No mechanical Object linked.";
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
     {
-        serr << "ERROR(EdgePressureForceField): No mechanical Object linked."<<sendl;
         return;
     }
 
@@ -369,7 +371,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vec
         my_subset.push_back(t);
 
         if (inputIndices[i] >= sizeTest)
-            serr << "ERROR(EdgePressureForceField): Edge indice: " << inputIndices[i] << " is out of edge indices bounds. This could lead to non desired behavior." <<sendl;
+            msg_error() << " Edge indice: " << inputIndices[i] << " is out of edge indices bounds. This could lead to non desired behavior." ;
     }
     edgePressureMap.endEdit();
 

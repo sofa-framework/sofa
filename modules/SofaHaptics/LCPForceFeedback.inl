@@ -162,7 +162,7 @@ void LCPForceFeedback<DataTypes>::init()
     this->ForceFeedback::init();
     if(!c)
     {
-        serr << "LCPForceFeedback has no current context. Initialisation failed." << sendl;
+        msg_error() << "LCPForceFeedback has no current context. Initialisation failed.";
         return;
     }
 
@@ -170,14 +170,14 @@ void LCPForceFeedback<DataTypes>::init()
 
     if (!constraintSolver)
     {
-        serr << "LCPForceFeedback has no binding ConstraintSolver. Initialisation failed." << sendl;
+        msg_error() << "LCPForceFeedback has no binding ConstraintSolver. Initialisation failed.";
         return;
     }
 
     mState = dynamic_cast<core::behavior::MechanicalState<DataTypes> *> (c->getMechanicalState());
     if (!mState)
     {
-        serr << "LCPForceFeedback has no binding MechanicalState. Initialisation failed." << sendl;
+        msg_error() << "LCPForceFeedback has no binding MechanicalState. Initialisation failed.";
         return;
     }
 }

@@ -32,6 +32,9 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/StringUtils.h>
 using sofa::helper::getAStringCopy ;
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+using sofa::helper::system::Plugin;
 
 #if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
@@ -247,21 +250,53 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
 
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
 {
+    bool added = false;
     std::vector<std::string> files;
     FileSystem::listDirectory(pluginsDirectory, files);
 
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
-        const std::string pluginPath = pluginsDirectory + "/" + *i;
-        if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
+        const std::string pluginSubdir = pluginsDirectory + "/" + *i;
+        if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
         {
-            const std::string pythonDir = pluginPath + "/python";
+            const std::string pythonDir = pluginSubdir + "/python";
+            const std::string python27Dir = pluginSubdir + "/python2.7";
             if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
             {
                 addPythonModulePath(pythonDir);
+                added = true;
+            }
+            else if (FileSystem::exists(python27Dir) && FileSystem::isDirectory(python27Dir))
+            {
+                addPythonModulePath(python27Dir);
+                added = true;
             }
         }
     }
+
+    if(!added)
+    {
+        msg_warning("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
+    }
+}
+
+void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& pluginName)
+{
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == pluginName )
+        {
+            std::string pluginLibraryPath = elem.first;
+            // moduleRoot should be 2 levels above the library (plugin_name/lib/plugin_name.so)
+            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(pluginLibraryPath));
+
+            addPythonModulePathsForPlugins(moduleRoot);
+            return;
+        }
+    }
+    msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
 }
 
 // some basic RAII stuff to handle init/termination cleanly

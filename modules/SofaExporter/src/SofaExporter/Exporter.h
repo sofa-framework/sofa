@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_EXPORTER_INIT_H
-#define SOFA_COMPONENT_EXPORTER_INIT_H
-#include "config.h"
+#ifndef SOFA_EXPORTER_EXPORTER_H
+#define SOFA_EXPORTER_EXPORTER_H
 
-namespace sofa
-{
+#include <sofa/helper/system/config.h>
 
-namespace component
-{
-
-
-void SOFA_EXPORTER_API initExporter();
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_EXPORTER
+#  define SOFA_SOFAEXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAEXPORTER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#endif

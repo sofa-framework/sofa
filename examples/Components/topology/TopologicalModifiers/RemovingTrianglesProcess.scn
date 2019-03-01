@@ -19,7 +19,7 @@
         <FixedConstraint template="Vec3" name="fix" indices="0 1" />
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
-        
+        <TriangleModel name="CollisionModel" />
         <Node name="Visu">
             <OglModel template="ExtVec3" name="Visual" color="red" />
             <IdentityMapping template="Vec3,ExtVec3" input="@.." output="@Visual" />

@@ -53,7 +53,7 @@ namespace misc
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_EXPORTER_API WriteState: public core::objectmodel::BaseObject
+class SOFA_SOFAEXPORTER_API WriteState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
@@ -112,7 +112,7 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class SOFA_EXPORTER_API WriteStateCreator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);
@@ -138,7 +138,7 @@ protected:
 
 };
 
-class SOFA_EXPORTER_API WriteStateActivator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteStateActivator: public simulation::Visitor
 {
 public:
     WriteStateActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}

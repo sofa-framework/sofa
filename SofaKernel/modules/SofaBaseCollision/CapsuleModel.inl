@@ -90,14 +90,14 @@ void TCapsuleModel<DataTypes>::init()
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (_mstate==NULL)
     {
-        serr<<"TCapsuleModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error()<<"TCapsuleModel requires a Vec3 Mechanical Model";
         return;
     }
 
     core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (!bmt)
     {
-        serr <<"CapsuleModel requires a MeshTopology" << sendl;
+        msg_error()<<"CapsuleModel requires a MeshTopology";
         return;
     }
 

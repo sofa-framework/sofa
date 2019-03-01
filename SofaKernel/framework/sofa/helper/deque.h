@@ -46,7 +46,7 @@ std::ostream& operator<< ( std::ostream& os, const std::deque<T>& d )
     if( d.size()>0 )
     {
         for( unsigned int i=0, iend=d.size()-1; i<iend; ++i ) os<<d[i]<<" ";
-        os<<d.last();
+        os<<d.back();
     }
     return os;
 }

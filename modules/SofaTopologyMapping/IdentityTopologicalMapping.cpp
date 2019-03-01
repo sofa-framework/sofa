@@ -119,7 +119,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
     toModel->getContext()->get(toPointMod);
     if (!toPointMod)
     {
-        serr << "No PointSetTopologyModifier found for target topology." << sendl;
+         msg_error()<<"No PointSetTopologyModifier found for target topology." ;
         return;
     }
 
