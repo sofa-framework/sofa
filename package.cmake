@@ -21,7 +21,7 @@ macro(setSofaFilePath name value)
 endmacro()
 ######################
 
-setSofaString(CMAKE_BUILD_TYPE Release)
+#setSofaString(CMAKE_BUILD_TYPE Release)
 
 setSofaOption(APPLICATION_RUNSOFA ON)
 setSofaOption(APPLICATION_MODELER OFF)
