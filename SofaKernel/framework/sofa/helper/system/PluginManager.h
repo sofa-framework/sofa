@@ -184,8 +184,6 @@ public:
 
     Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
 
-    std::vector<std::string>& getSearchPaths() { return m_searchPaths; }
-
     void readFromIniFile(const std::string& path);
     void writeToIniFile(const std::string& path);
 
@@ -199,7 +197,6 @@ private:
     std::istream& readFromStream( std::istream& );
 private:
     PluginMap m_pluginMap;
-    std::vector<std::string> m_searchPaths;
 };
 
 
