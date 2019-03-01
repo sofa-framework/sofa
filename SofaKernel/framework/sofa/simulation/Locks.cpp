@@ -31,7 +31,7 @@ namespace sofa
 
 
         SpinLock::SpinLock()
-        : _flag(ATOMIC_FLAG_INIT)
+        : _flag()
         {
             
         }

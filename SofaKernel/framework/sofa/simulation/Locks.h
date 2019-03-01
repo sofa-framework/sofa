@@ -22,6 +22,8 @@
 #ifndef MultiThreadingLocks_h__
 #define MultiThreadingLocks_h__
 
+#include <sofa/config.h>
+
 #include <thread>
 #include <atomic>
 
@@ -32,7 +34,7 @@ namespace sofa
 	{
 
 
-        class SpinLock
+        class SOFA_SIMULATION_CORE_API SpinLock
         {
             enum
             {
