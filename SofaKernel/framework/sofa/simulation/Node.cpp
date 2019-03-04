@@ -194,16 +194,24 @@ void Node::removeChild(core::objectmodel::BaseNode::SPtr node)
     // If node has no parent
     if (node->getFirstParent() == nullptr)
         return;
-    notifyBeginRemoveChild(this, dynamic_cast<Node*>(node.get()));
+    notifyBeginRemoveChild(this, static_cast<Node*>(node.get()));
     doRemoveChild(node);
-    notifyEndRemoveChild(this, dynamic_cast<Node*>(node.get()));
+    notifyEndRemoveChild(this, static_cast<Node*>(node.get()));
 }
 
 
 /// Move a node from another node
 void Node::moveChild(BaseNode::SPtr node)
 {
+    if (!node->getFirstParent())
+    {
+        msg_error(this->getName()) << "Node::moveChild(BaseNode::SPtr node)\n" << node->getName() << " has no parent. Use addChild instead!";
+        addChild(node);
+        return;
+    }
+    notifyBeginMoveChild(this, static_cast<Node*>(node.get()));
     doMoveChild(node);
+    notifyEndMoveChild(this, static_cast<Node*>(node.get()));
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject::SPtr obj)
@@ -229,8 +237,6 @@ void Node::moveObject(BaseObject::SPtr obj)
     Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
     doMoveObject(obj, prev_parent);
 }
-
-
 
 void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child)
 {
@@ -259,6 +265,22 @@ void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child)
     for (auto& listener : root->listener)
         listener->onRemoveChildEnd(parent.get(), child.get());
 }
+
+
+void Node::notifyBeginMoveChild(Node::SPtr parent, Node::SPtr child)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onMoveChildBegin(parent.get(), child.get());
+}
+
+void Node::notifyEndMoveChild(Node::SPtr parent, Node::SPtr child)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onMoveChildEnd(parent.get(), child.get());
+}
+
 
 void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
 {

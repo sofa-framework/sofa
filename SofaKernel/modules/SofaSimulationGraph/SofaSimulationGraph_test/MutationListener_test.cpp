@@ -17,38 +17,38 @@ using sofa::modeling::addNew;
 
 class TestMutationListener : public MutationListener
 {
-    void doAddChildBegin(Node* parent, Node* child)
+    void onAddChildBegin(Node* parent, Node* child)
     {
         log += "Begin Add " + child->getName() + " to " + parent->getName() + "\n";
     }
-    void doAddChildEnd(Node* parent, Node* child)
+    void onAddChildEnd(Node* parent, Node* child)
     {
         log += "End Add " + child->getName() + " to " + parent->getName() + "\n";
     }
 
-    void doRemoveChildBegin(Node* parent, Node* child)
+    void onRemoveChildBegin(Node* parent, Node* child)
     {
         log += "Begin Remove " + child->getName() + " from " + parent->getName() + "\n";
     }
-    void doRemoveChildEnd(Node* parent, Node* child)
+    void onRemoveChildEnd(Node* parent, Node* child)
     {
         log += "End Remove " + child->getName() + " from " + parent->getName() + "\n";
     }
 
-    void doAddObjectBegin(Node* parent, BaseObject* obj)
+    void onAddObjectBegin(Node* parent, BaseObject* obj)
     {
         log += "Begin Add " + obj->getName() + " to " + parent->getName() + "\n";
     }
-    void doAddObjectEnd(Node* parent, BaseObject* obj)
+    void onAddObjectEnd(Node* parent, BaseObject* obj)
     {
         log += "End Add " + obj->getName() + " to " + parent->getName() + "\n";
     }
 
-    void doRemoveObjectBegin(Node* parent, BaseObject* obj)
+    void onRemoveObjectBegin(Node* parent, BaseObject* obj)
     {
         log += "Begin Remove " + obj->getName() + " from " + parent->getName() + "\n";
     }
-    void doRemoveObjectEnd(Node* parent, BaseObject* obj)
+    void onRemoveObjectEnd(Node* parent, BaseObject* obj)
     {
         log += "End Remove " + obj->getName() + " from " + parent->getName() + "\n";
     }
@@ -272,8 +272,6 @@ struct MutationListener_test : public sofa::BaseTest
 
     void test_addChildWithDescendency()
     {
-        // Adding a child notifies recursively to every subnode / subObjects
-        // present downstream
         DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
         DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
         node1->addChild(node2);
@@ -289,22 +287,13 @@ struct MutationListener_test : public sofa::BaseTest
 
         root->addChild(node1);
         EXPECT_EQ("Begin Add node1 to root\n"
-                  "Begin Add node2 to node1\n"
-                  "Begin Add obj1 to node2\n"
-                  "Begin Add obj2 to node2\n"
-
-                  "End Add node1 to root\n"
-                  "End Add node2 to node1\n"
-                  "End Add obj1 to node2\n"
-                  "End Add obj2 to node2\n",
+                  "End Add node1 to root\n",
                   listener.log);
         listener.clearLog();
     }
 
     void test_removeChildWithDescendency()
     {
-        // Removing a child does NOT notify recursively for every
-        // subnode / subObjects present downstream
         DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
         DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
         node1->addChild(node2);
@@ -328,8 +317,6 @@ struct MutationListener_test : public sofa::BaseTest
 
     void test_moveChildWithDescendency()
     {
-        // Moving a child removes the node from its parent(s) and adds it
-        // (recursively) to the new parent
         DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
         DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
         node1->addChild(node2);
@@ -349,13 +336,7 @@ struct MutationListener_test : public sofa::BaseTest
         EXPECT_EQ("Begin Remove node1 from root\n"
                   "End Remove node1 from root\n"
                   "Begin Add node1 to node3\n"
-                  "Begin Add node2 to node1\n"
-                  "Begin Add obj1 to node2\n"
-                  "Begin Add obj2 to node2\n"
-                  "End Add node1 to node3\n"
-                  "End Add node2 to node1\n"
-                  "End Add obj1 to node2\n"
-                  "End Add obj2 to node2\n",
+                  "End Add node1 to node3\n",
                   listener.log);
         listener.clearLog();
     }
@@ -401,11 +382,7 @@ struct MutationListener_test : public sofa::BaseTest
                   "Begin Remove node1 from node4\n"
                   "End Remove node1 from node4\n"
                   "Begin Add node1 to root\n"
-                  "Begin Add obj1 to node1\n"
-                  "Begin Add obj2 to node1\n"
-                  "End Add node1 to root\n"
-                  "End Add obj1 to node1\n"
-                  "End Add obj2 to node1\n",
+                  "End Add node1 to root\n",
                   listener.log);
     }
 

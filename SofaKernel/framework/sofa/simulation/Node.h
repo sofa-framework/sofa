@@ -581,6 +581,9 @@ private:
     virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
     virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
 
+    virtual void notifyBeginMoveChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyEndMoveChild(Node::SPtr parent, Node::SPtr child);
+
     virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
 

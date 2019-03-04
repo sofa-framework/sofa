@@ -43,6 +43,13 @@ void MutationListener::onRemoveChildBegin(Node *parent, Node *child)
     SOFA_UNUSED(parent);
     SOFA_UNUSED(child);
 }
+
+void MutationListener::onMoveChildBegin(Node *parent, Node *child)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+
 void MutationListener::onAddObjectBegin(Node *parent,
                                       core::objectmodel::BaseObject *object)
 {
@@ -93,6 +100,12 @@ void MutationListener::onRemoveChildEnd(Node *parent, Node *child)
     SOFA_UNUSED(parent);
     SOFA_UNUSED(child);
 }
+void MutationListener::onMoveChildEnd(Node *parent, Node *child)
+{
+    SOFA_UNUSED(parent);
+    SOFA_UNUSED(child);
+}
+
 void MutationListener::onAddObjectEnd(Node *parent,
                                     core::objectmodel::BaseObject *object)
 {

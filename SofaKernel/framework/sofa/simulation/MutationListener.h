@@ -45,6 +45,8 @@ class SOFA_SIMULATION_CORE_API MutationListener
 
     virtual void onRemoveChildBegin(Node *parent, Node *child);
 
+    virtual void onMoveChildBegin(Node *parent, Node *child);
+
     virtual void onAddObjectBegin(Node *parent,
                              core::objectmodel::BaseObject *object);
 
@@ -67,6 +69,8 @@ class SOFA_SIMULATION_CORE_API MutationListener
     virtual void onAddChildEnd(Node *parent, Node *child);
 
     virtual void onRemoveChildEnd(Node *parent, Node *child);
+
+    virtual void onMoveChildEnd(Node *parent, Node *child);
 
     virtual void onAddObjectEnd(Node *parent,
                              core::objectmodel::BaseObject *object);
