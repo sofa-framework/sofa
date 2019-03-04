@@ -128,7 +128,7 @@ protected:
     Data<unsigned> d_newton_iterations; ///< Number of newton iterations between each load increments (normally, one load increment per simulation time-step.
     Data<double> d_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of correction |du| reach this threshold.
     Data<double> d_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of the residual |f - K(u)| reach this threshold. Use a negative value to disable this criterion.
-    Data<bool> d_shoud_diverge_when_residual_is_growing; ///< Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration.
+    Data<bool> d_should_diverge_when_residual_is_growing; ///< Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration.
 };
 
 } // namespace odesolver

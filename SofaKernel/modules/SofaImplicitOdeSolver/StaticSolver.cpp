@@ -54,13 +54,16 @@ StaticSolver::StaticSolver()
             "residual_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the norm of the residual |f - K(u)| reach this threshold. "
             "Use a negative value to disable this criterion."))
-    , d_shoud_diverge_when_residual_is_growing( initData(&d_shoud_diverge_when_residual_is_growing,
+    , d_should_diverge_when_residual_is_growing( initData(&d_should_diverge_when_residual_is_growing,
             false,
-            "shoud_diverge_when_residual_is_growing",
+            "should_diverge_when_residual_is_growing",
             "Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration."))
 {}
 
-void StaticSolver::solve(const sofa::core::ExecParams* params, double /*dt*/, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/) {
+void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/) {
+
+    SOFA_UNUSED(dt);
+
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
 
@@ -132,7 +135,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double /*dt*/, so
             sofa::helper::AdvancedTimer::valSet("correction", dx_norm);
             sofa::helper::AdvancedTimer::stepEnd(stepname.c_str());
 
-            if (d_shoud_diverge_when_residual_is_growing.getValue() && f_cur_norm > f_norm && n_it>1) {
+            if (d_should_diverge_when_residual_is_growing.getValue() && f_cur_norm > f_norm && n_it>1) {
                 msg_info() << "[DIVERGED] residual's norm increased";
                 break;
             }
