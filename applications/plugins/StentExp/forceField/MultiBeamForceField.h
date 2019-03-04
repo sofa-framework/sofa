@@ -360,12 +360,13 @@ protected:
                                   const double yieldStress, const bool verbose = FALSE);
 
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
+    void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
+
     void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
                                 double &lambdaIncrement, MechanicalState &pointMechanicalState, const Displacement &lastDisp);
 
-    void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
     void computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);

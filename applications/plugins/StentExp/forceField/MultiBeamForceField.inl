@@ -2128,13 +2128,12 @@ void MultiBeamForceField<DataTypes>::solveDispIncrement(const tangentStiffnessMa
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
-                                                                  Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
+void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
+                                                              int i, Index a, Index b)
 {
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    // ***** Displacement for current position *****//
-    beamQuat(i) = pos[a].getOrientation();
+    beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
 
     beamsData.endEdit();
@@ -2144,18 +2143,19 @@ void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord
     // translations //
     P1P2_0 = x0[b].getCenter() - x0[a].getCenter();
     P1P2_0 = x0[a].getOrientation().inverseRotate(P1P2_0);
-    P1P2 = pos[b].getCenter() - pos[a].getCenter();
-    P1P2 = pos[a].getOrientation().inverseRotate(P1P2);
+    P1P2 = x[b].getCenter() - x[a].getCenter();
+    P1P2 = x[a].getOrientation().inverseRotate(P1P2);
     u = P1P2 - P1P2_0;
-    currentDisp[0] = 0.0; 	currentDisp[1] = 0.0; 	currentDisp[2] = 0.0;
-    currentDisp[6] = u[0]; currentDisp[7] = u[1]; currentDisp[8] = u[2];
+
+    localDisp[0] = 0.0; localDisp[1] = 0.0; localDisp[2] = 0.0;
+    localDisp[6] = u[0]; localDisp[7] = u[1]; localDisp[8] = u[2];
 
     // rotations //
     defaulttype::Quat dQ0, dQ;
 
     // dQ = QA.i * QB ou dQ = QB * QA.i() ??
     dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
-    dQ = qDiff(pos[b].getOrientation(), pos[a].getOrientation()); // pos[a].getOrientation().inverse() * pos[b].getOrientation();
+    dQ = qDiff(x[b].getOrientation(), x[a].getOrientation()); // x[a].getOrientation().inverse() * x[b].getOrientation();
                                                               //u = dQ.toEulerVector() - dQ0.toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
 
     dQ0.normalize();
@@ -2171,46 +2171,28 @@ void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord
                                      // rotation vector please use the following line instead
                                      //u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
 
-    currentDisp[3] = 0.0; 	currentDisp[4] = 0.0; 	currentDisp[5] = 0.0;
-    currentDisp[9] = u[0]; currentDisp[10] = u[1]; currentDisp[11] = u[2];
+    localDisp[3] = 0.0; localDisp[4] = 0.0; localDisp[5] = 0.0;
+    localDisp[9] = u[0]; localDisp[10] = u[1]; localDisp[11] = u[2];
+}
 
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
+                                                                  Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
+{
+    // ***** Displacement for current position *****//
+
+    computeLocalDisplacement(pos, currentDisp, i, a, b);
 
     // ***** Displacement for last position *****//
 
-    beamQuat(i) = lastPos[a].getOrientation();
-    beamQuat(i).normalize();
-
-    beamsData.endEdit();
-
-    // translations //
-    P1P2 = lastPos[b].getCenter() - lastPos[a].getCenter();
-    P1P2 = lastPos[a].getOrientation().inverseRotate(P1P2);
-    u = P1P2 - P1P2_0;
-    lastDisp[0] = 0.0; 	lastDisp[1] = 0.0; 	lastDisp[2] = 0.0;
-    lastDisp[6] = u[0]; lastDisp[7] = u[1]; lastDisp[8] = u[2];
-
-    // rotations //
-    // dQ = QA.i * QB ou dQ = QB * QA.i() ??
-    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
-    dQ = qDiff(lastPos[b].getOrientation(), lastPos[a].getOrientation()); // lastPos[a].getOrientation().inverse() * lastPos[b].getOrientation();
-    
-    dQ0.normalize();
-    dQ.normalize();
-
-    tmpQ = qDiff(dQ, dQ0);
-    tmpQ.normalize();
-
-    u = tmpQ.quatToRotationVector(); 
-
-    lastDisp[3] = 0.0; 	lastDisp[4] = 0.0; 	lastDisp[5] = 0.0;
-    lastDisp[9] = u[0]; lastDisp[10] = u[1]; lastDisp[11] = u[2];
-
+    computeLocalDisplacement(lastPos, lastDisp, i, a, b);
 
     // ***** Displacement increment *****//
 
     dispIncrement = currentDisp - lastDisp;
 }
-
 
 
 
@@ -2529,54 +2511,6 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     } //end if (!_isPerfectlyPlastic)
 }
 
-
-template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
-                                                              int i, Index a, Index b)
-{
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-    beamQuat(i) = x[a].getOrientation();
-    beamQuat(i).normalize();
-
-    beamsData.endEdit();
-
-    defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
-
-    // translations //
-    P1P2_0 = x0[b].getCenter() - x0[a].getCenter();
-    P1P2_0 = x0[a].getOrientation().inverseRotate(P1P2_0);
-    P1P2 = x[b].getCenter() - x[a].getCenter();
-    P1P2 = x[a].getOrientation().inverseRotate(P1P2);
-    u = P1P2 - P1P2_0;
-
-    localDisp[0] = 0.0; localDisp[1] = 0.0; localDisp[2] = 0.0;
-    localDisp[6] = u[0]; localDisp[7] = u[1]; localDisp[8] = u[2];
-
-    // rotations //
-    defaulttype::Quat dQ0, dQ;
-
-    // dQ = QA.i * QB ou dQ = QB * QA.i() ??
-    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
-    dQ = qDiff(x[b].getOrientation(), x[a].getOrientation()); // x[a].getOrientation().inverse() * x[b].getOrientation();
-                                                              //u = dQ.toEulerVector() - dQ0.toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
-
-    dQ0.normalize();
-    dQ.normalize();
-
-    defaulttype::Quat tmpQ = qDiff(dQ, dQ0);
-    tmpQ.normalize();
-
-    u = tmpQ.quatToRotationVector(); //dQ.quatToRotationVector() - dQ0.quatToRotationVector();  // Use of quatToRotationVector instead of toEulerVector:
-                                     // this is done to keep the old behavior (before the
-                                     // correction of the toEulerVector  function). If the
-                                     // purpose was to obtain the Eulerian vector and not the
-                                     // rotation vector please use the following line instead
-                                     //u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
-
-    localDisp[3] = 0.0; localDisp[4] = 0.0; localDisp[5] = 0.0;
-    localDisp[9] = u[0]; localDisp[10] = u[1]; localDisp[11] = u[2];
-}
 
 
 template< class DataTypes>
