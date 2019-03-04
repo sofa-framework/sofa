@@ -357,7 +357,7 @@ protected:
 
     bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
     bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
-                                  const double yieldStress, const bool verbose = FALSE);
+                         const bool verbose = FALSE);
 
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
     void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
@@ -375,7 +375,7 @@ protected:
 
     double equivalentStress(const VoigtTensor2 &stressTensor);
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
-    VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double yieldStress);
+    VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor);
     VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
     VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double yieldStress);

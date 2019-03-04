@@ -1882,19 +1882,13 @@ bool MultiBeamForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTenso
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressTensor,
                                                      const VoigtTensor2 &stressIncrement,
-                                                     const double yieldStress,
                                                      const bool verbose /*=FALSE*/)
 {
     double threshold = -0.f; //TO DO: use proper threshold
 
-    // Computing the normal to the yield surface using the deviatoric stress
-    double meanStress = (1.0 / 3)*(stressTensor[0] + stressTensor[1] + stressTensor[2]);
-    VoigtTensor2 deviatoricStress = stressTensor;
-    deviatoricStress[0] -= meanStress;
-    deviatoricStress[1] -= meanStress;
-    deviatoricStress[2] -= meanStress;
-    double sigmaEq = equivalentStress(stressTensor);
-    VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1 / sigmaEq)*deviatoricStress;
+    // Computing the unit normal to the yield surface from the Von Mises gradient
+    VoigtTensor2 gradient = vonMisesGradient(stressTensor);
+    VoigtTensor2 yieldNormal = helper::rsqrt(2.0 / 3)*gradient;
 
     // Computing the dot product with the incremental elastic predictor
     double cp = voigtDotProduct(yieldNormal.transpose(), stressIncrement);
@@ -1937,9 +1931,14 @@ double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressT
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor,
-                                                                             const double yieldStress)
+Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor)
 {
+    // NB: this gradient represent the normal to the yield surface
+    // in case the Von Mises yield criterion is used.
+    //
+    // /!\ the Norm of the gradient is sqrt(3/2): it has to be multiplied
+    // by sqrt(2/3) to give the unit normal to the yield surface
+
     VoigtTensor2 res = VoigtTensor2::Zero();
 
     if (stressTensor.isZero())
@@ -1952,16 +1951,16 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(con
     double sigmaZX = stressTensor[4];
     double sigmaXY = stressTensor[5];
 
-    double fact = 1 / (2 * (vonMisesYield(stressTensor, yieldStress) + yieldStress));
-
     res[0] = 2 * sigmaX - sigmaY - sigmaZ;
     res[1] = 2 * sigmaY - sigmaZ - sigmaX;
     res[2] = 2 * sigmaZ - sigmaX - sigmaY;
-    res[3] = 6 * sigmaYZ;
-    res[4] = 6 * sigmaZX;
-    res[5] = 6 * sigmaXY;
+    res[3] = 3 * sigmaYZ;
+    res[4] = 3 * sigmaZX;
+    res[5] = 3 * sigmaXY;
 
-    res *= fact;
+    double sigmaEq = equivalentStress(stressTensor);
+
+    res *= 1 / (2 * sigmaEq);
     return res;
 }
 
@@ -2092,6 +2091,8 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessianFD(co
     VoigtTensor4 res = VoigtTensor4::Zero();
     return res;
 }
+
+//*****************************************************************************************//
 
 template< class DataTypes>
 double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2)
@@ -2273,7 +2274,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     else
     {
         bool isPostPlastic;
-        isPostPlastic = goToPostPlastic(initialStress, elasticIncrement, yieldStress);
+        isPostPlastic = goToPostPlastic(initialStress, elasticIncrement);
 
         if (isPostPlastic)
         {
@@ -2406,7 +2407,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
         double yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-        VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
+        VoigtTensor2 gradient = vonMisesGradient(currentStressPoint);
 
         newIncrement(6, 0) = yieldCondition / voigtDotProduct(gradient.transpose(), C*gradient);
         newIncrement.block<6, 1>(0, 0) = -newIncrement(6, 0)*C*gradient;
@@ -2445,7 +2446,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
             Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
 
             // Updating gradient
-            gradient = vonMisesGradient(currentStressPoint, yieldStress);
+            gradient = vonMisesGradient(currentStressPoint);
             // Updating / initialising hessian
             VoigtTensor4 hessian = vonMisesHessian(currentStressPoint, yieldStress);
             // NB: yieldCondition was already updated after first iterations
@@ -2472,7 +2473,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
                 // Update of the yield condition, gradient and hessian.
                 currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
                 yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
-                gradient = vonMisesGradient(currentStressPoint, yieldStress);
+                gradient = vonMisesGradient(currentStressPoint);
                 //gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress); //DEBUG
                 hessian = vonMisesHessian(currentStressPoint, yieldStress);
 
@@ -2934,7 +2935,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         // Cep
         currentStressPoint = _prevStresses[i][gaussPointIt];
 
-        VMgradient = vonMisesGradient(currentStressPoint, yieldStress);
+        VMgradient = vonMisesGradient(currentStressPoint);
 
         if (VMgradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
             Cep = C; //TO DO: is that correct ?
