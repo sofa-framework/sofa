@@ -2422,6 +2422,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
     if (_draw.getValue() && this->m_topology->getNbTriangles() != 0)
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
         // Draw triangle surfaces
@@ -2451,7 +2454,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
         }
 
-
+        if (!vparams->displayFlags().getShowWireFrame())
         {//   Draw triangle edges for better display
             const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
             std::vector<defaulttype::Vector3> pos;
@@ -2481,6 +2484,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                 c /= 2;
             vparams->drawTool()->drawLines(pos, 1.0f, colorL);
         }
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
     }
 
 
