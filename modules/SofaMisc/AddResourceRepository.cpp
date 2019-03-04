@@ -79,6 +79,7 @@ void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescrip
 
     m_currentAddedPath = FileSystem::cleanPath(tmpAddedPath);
     m_repository->addLastPath(m_currentAddedPath);
+    msg_info(this) << "Added path: " << m_currentAddedPath;
 
     if(this->f_printLog.getValue())
         m_repository->print();

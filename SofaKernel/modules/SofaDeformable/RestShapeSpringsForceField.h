@@ -144,12 +144,9 @@ private :
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
-
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3Types>;
-
-
 #endif
 
 } // namespace forcefield
