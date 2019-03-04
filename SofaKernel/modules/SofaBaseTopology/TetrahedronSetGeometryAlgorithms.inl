@@ -968,24 +968,37 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
         std::vector<defaulttype::Vector3>   pos;
-        pos.reserve(tetraArray.size()*4u);
+        pos.reserve(tetraArray.size() * 4u);
 
-        for (size_t i = 0; i<tetraArray.size(); ++i)
+        for (size_t i = 0; i < tetraArray.size(); ++i)
         {
             const Tetrahedron& tet = tetraArray[i];
-            for (unsigned int j = 0u; j<4u; ++j)
+            for (unsigned int j = 0u; j < 4u; ++j)
             {
                 pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[tet[j]])));
             }
         }
 
         const float& scale = d_drawScaleTetrahedra.getValue();
-
-        if (scale >= 1.0 && scale < 0.001)
+        
+        if (scale >= 1.0 || scale < 0.001)
             vparams->drawTool()->drawTetrahedra(pos, color4);
         else
             vparams->drawTool()->drawScaledTetrahedra(pos, color4, scale);
 
+        // Draw Tetra border
+        if (!vparams->displayFlags().getShowWireFrame())
+        {
+            vparams->drawTool()->setPolygonMode(0, true);
+            //vparams->drawTool()->enablePolygonOffset(0.0, -1.0);
+            if (scale >= 1.0 || scale < 0.001)
+                vparams->drawTool()->drawTetrahedra(pos, sofa::helper::types::RGBAColor::gray());
+            else
+                vparams->drawTool()->drawScaledTetrahedra(pos, sofa::helper::types::RGBAColor::gray(), scale);
+            //vparams->drawTool()->disablePolygonOffset();
+            vparams->drawTool()->setPolygonMode(0, false);
+        }
+       
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }
