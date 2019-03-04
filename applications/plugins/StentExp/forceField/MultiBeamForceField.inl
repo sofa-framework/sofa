@@ -126,8 +126,6 @@ void MultiBeamForceField<DataTypes>::bwdInit()
     lastUpdatedStep=-1.0;
 }
 
-
-
 template <class DataTypes>
 void MultiBeamForceField<DataTypes>::init()
 {
@@ -2944,8 +2942,13 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         {
             Cgrad = C*VMgradient;
             gradTC = VMgradient.transpose()*C;
-            //Assuming associative flow rule and isotropic hardening
-            Cep = C - (Cgrad*gradTC) / (H + voigtDotProduct(gradTC,VMgradient));
+
+            if (_isPerfectlyPlastic.getValue())
+                //Assuming associative flow rule
+                Cep = C - (Cgrad*gradTC) / (voigtDotProduct(gradTC, VMgradient));
+            else
+                //Assuming associative flow rule and isotropic hardening
+                Cep = C - (Cgrad*gradTC) / (H + voigtDotProduct(gradTC,VMgradient));
         }
 
         tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;
