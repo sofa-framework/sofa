@@ -118,9 +118,16 @@ protected:
         typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
-        helper::fixed_array<MechanicalState, 27> _isPlasticPoint;
+        helper::fixed_array<MechanicalState, 27> _pointMechanicalState;
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
-        bool _isPlasticBeam; ///< true if at least one Gauss point has PLASTIC mechanical state
+
+        ///< Indicates which type of mechanical computation should be used.
+        ///  The meaning of the three cases is the following :
+        ///     - ELASTIC: all the element Gauss points are in an ELASTIC state
+        ///     - PLASTIC: at least one Gauss point is in a PLASTIC state.
+        ///     - POSTPLASTIC: Gauss points are either in an ELASTIC or POSTPLASTIC state.
+        MechanicalState _beamMechanicalState;
+
 
         ///< For drawing
         int _nbCentrelineSeg = 10;
@@ -356,7 +363,12 @@ protected:
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
     void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
-                                double &lambdaIncrement, MechanicalState &isPlasticPoint, const Displacement &lastDisp);
+                                double &lambdaIncrement, MechanicalState &pointMechanicalState, const Displacement &lastDisp);
+
+    void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
+    void computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
+    void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
+    void computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
 
