@@ -66,7 +66,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
-    , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
@@ -94,7 +93,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
     , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
-    , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
@@ -131,13 +129,6 @@ void MultiBeamForceField<DataTypes>::init()
 
     stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
-
-    if (!_virtualDisplacementMethod.getValue())
-    {
-        _VFPlasticYieldThreshold = { (Real)0.0001f, (Real)0.0001f, (Real)0.0001f, (Real)0.0001f, (Real)0.0001f, (Real)0.0001f };
-        _VFPlasticMaxThreshold = (Real)0.f;
-        _VFPlasticCreep = (Real)0.1f;
-    }
 
     // Retrieving the 1D plastic constitutive law model
     std::string constitutiveModel = d_modelName.getValue();
@@ -213,14 +204,6 @@ void MultiBeamForceField<DataTypes>::reinit()
             for (int j = 0; j < 27; j++)
                 _prevStresses[i][j] = VoigtTensor2::Zero();
     }
-    else
-    {
-        _VFPlasticStrains.resize(n);
-        _VFTotalStrains.resize(n);
-        _nodalForces.resize(n);
-        _plasticZones.resize(n);
-        _isPlasticZoneComplete.resize(n);
-    }
 
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
@@ -259,9 +242,6 @@ void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
     else
     {
         computeStiffness(i, a, b);
-
-        if (_isPlasticMuller.getValue())
-            initPlasticityMatrix(i, a, b);
     }
 
     // Initialisation of the beam element orientation
@@ -1127,293 +1107,11 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
     //**********************************//
 }
 
-
-
-/**************************************************************************/
-/*                      Plasticity - virtual forces                       */
-/**************************************************************************/
-
-
 template <class DataTypes>
 void MultiBeamForceField<DataTypes>::reset()
 {
     //serr<<"MultiBeamForceField<DataTypes>::reset"<<sendl;
-
-    for (unsigned i = 0; i < _VFPlasticStrains.size(); ++i)
-    {
-        _VFPlasticStrains[i].clear();
-    }
 }
-
-
-template<class DataTypes>
-void MultiBeamForceField<DataTypes>::initPlasticityMatrix(int i, Index a, Index b) 
-{
-    Real phiy, phiz;
-    Real _L = (Real)beamsData.getValue()[i]._L;
-    Real _A = (Real)beamsData.getValue()[i]._A;
-    Real _E = (Real)beamsData.getValue()[i]._E;
-    Real _Iy = (Real)beamsData.getValue()[i]._Iy;
-    Real _Iz = (Real)beamsData.getValue()[i]._Iz;
-    Real _Asy = (Real)beamsData.getValue()[i]._Asy;
-    Real _Asz = (Real)beamsData.getValue()[i]._Asz;
-    Real _G = (Real)beamsData.getValue()[i]._G;
-    
-    Real L2 = (Real)(_L * _L);
-    Real EIy = (Real)(_E * _Iy);
-    Real EIz = (Real)(_E * _Iz);
-    Real EA = (Real)(_E * _A);
-
-    // Find shear-deformation parameters
-    phiy = (Real)(12.0*_E*_Iz / (_G*_Asy*L2));
-    phiz = (Real)(12.0*_E*_Iy / (_G*_Asz*L2));
-
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    plasticityMatrix& M_loc = bd[i]._M_loc;
-
-    // Define plasticity matrix 'M' in local coordinates
-    M_loc.clear(); //TO DO: useful?
-    M_loc[0][0] = -EA;
-    M_loc[6][0] = EA;
-
-    M_loc[1][1] = (Real)( 12.0*EIz / (L2 * (1.0 + phiy)) );
-    M_loc[5][1] = (Real)( 6.0*EIz / (_L * (1.0 + phiy)) );
-    M_loc[7][1] = (Real)( -12.0*EIz / (L2 * (1.0 + phiy)) );
-    M_loc[11][1] = (Real)( 6.0*EIz / (_L * (1.0 + phiy)) );
-
-    M_loc[2][2] = (Real)( 12.0*EIy / (L2 * (1 + phiz)) );
-    M_loc[4][2] = (Real)( -6.0*EIy / (_L * (1 + phiz)) );
-    M_loc[8][2] = (Real)( -12.0*EIy / (L2 * (1 + phiz)) );
-    M_loc[10][2] = (Real)( -6.0*EIy / (_L * (1 + phiz)) );
-
-    // Not necessary
-    _isPlasticZoneComplete[i][0] = true;
-    _isPlasticZoneComplete[i][1] = true;
-    _isPlasticZoneComplete[i][2] = true;
-    _isPlasticZoneComplete[i][3] = true;
-
-    //NB: columns 4 to 7 are left empty, as they are updated in updatePlasticityMatrix
-
-    beamsData.endEdit();
-}
-
-template<class DataTypes>
-void MultiBeamForceField<DataTypes>::updatePlasticityMatrix(int i, Index a, Index b)
-{
-    Real phiy, phiz;
-    Real _L = (Real)beamsData.getValue()[i]._L;
-    Real _E = (Real)beamsData.getValue()[i]._E;
-    Real _Iy = (Real)beamsData.getValue()[i]._Iy;
-    Real _Iz = (Real)beamsData.getValue()[i]._Iz;
-    Real _Asy = (Real)beamsData.getValue()[i]._Asy;
-    Real _Asz = (Real)beamsData.getValue()[i]._Asz;
-    Real _G = (Real)beamsData.getValue()[i]._G;
-
-    Real L2 = (Real)(_L * _L);
-    Real EIy = (Real)(_E * _Iy);
-    Real EIz = (Real)(_E * _Iz);
-
-    Real aKy, bKy, aKz, bKz;
-
-    aKy = _plasticZones[i][4][0];
-    bKy = _plasticZones[i][4][1];
-    aKz = _plasticZones[i][5][0];
-    bKz = _plasticZones[i][5][1];
-
-    Real _I4, _I5, _I6, _I7;
-    _I4 = (Real)(bKy - aKy);
-    _I5 = (Real)( ((2*aKy - _L)*(2*aKy - _L)*(2*aKy - _L) - (2*bKy - _L)*(2*bKy - _L)*(2*bKy - _L)) / (6*L2));
-
-    _I6 =(Real)(aKz - bKz);
-    _I7 = (Real)( ((2*bKz - _L)*(2*bKz - _L)*(2*bKz - _L) - (2*aKz - _L)*(2*aKz - _L)*(2*aKz - _L)) / (6*L2));
-
-    // Find shear-deformation parameters
-    phiy = (Real)(12.0*_E*_Iz / (_G*_Asy*L2));
-    phiz = (Real)(12.0*_E*_Iy / (_G*_Asz*L2));
-
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    plasticityMatrix& M_loc = bd[i]._M_loc;
-
-    // Only columns 4 to 7 are none-constant in matrix M
-
-    M_loc[4][4] = -EIy*_I4 / _L;
-    M_loc[10][4] = EIy*_I4 / _L;
-
-    M_loc[2][5] = (Real)(6*EIy*_I5 / (L2 * (1 + phiz)));
-    M_loc[4][5] = (Real)(-3*EIy*_I5 / (_L * (1 + phiz)));
-    M_loc[8][5] = (Real)(-6*EIy*_I5 / (L2 * (1 + phiz)));
-    M_loc[10][5] = (Real)(-3*EIy*_I5 / (_L * (1 + phiz)));
-
-    M_loc[5][6] = EIz*_I6 / _L;
-    M_loc[11][6] = -EIz*_I6 / _L;
-
-    M_loc[1][7] = (Real)(6*EIz*_I7 / (L2 * (1 + phiy)));
-    M_loc[5][7] = (Real)(3*EIz*_I7 / (_L * (1 + phiy)));
-    M_loc[7][7] = (Real)(-6*EIz*_I7 / (L2 * (1 + phiy)));
-    M_loc[11][7] = (Real)(3*EIz*_I7 / (_L * (1 + phiy)));
-
-    beamsData.endEdit();
-}
-
-template<class DataTypes>
-void MultiBeamForceField<DataTypes>::updatePlasticity(int i, Index a, Index b)
-{
-    Real epsilon, gammaXY, gammaXZ, kappaY1, kappaY2, kappaZ1, kappaZ2;
-    bool update = false;
-
-    Real _L = (Real)beamsData.getValue()[i]._L;
-
-    //Updating total strains
-    totalStrainEvaluation(i, a, b);
-    epsilon = _VFTotalStrains[i][0];
-    gammaXY = _VFTotalStrains[i][1];
-    gammaXZ = _VFTotalStrains[i][2];
-    kappaY1 = _VFTotalStrains[i][4];
-    kappaY2 = _VFTotalStrains[i][5];
-    kappaZ1 = _VFTotalStrains[i][6];
-    kappaZ2 = _VFTotalStrains[i][7];
-
-    // Strains are tested together if they have the same mechanical interpretation
-    // No need to update plastic limits for epsilon, gammaXY, and gammaXZ which are constant over x
-    if (epsilon > _VFPlasticYieldThreshold[0]) 
-    {
-        _VFPlasticStrains[i][0] += _VFPlasticCreep*epsilon;
-    }
-
-    if (gammaXY > _VFPlasticYieldThreshold[1])
-    {
-        _VFPlasticStrains[i][1] += _VFPlasticCreep*gammaXY;
-    }
-
-    if (gammaXZ > _VFPlasticYieldThreshold[2])
-    {
-        _VFPlasticStrains[i][2] += _VFPlasticCreep*gammaXZ;
-    }
-
-    Real cKy = _VFPlasticYieldThreshold[4];
-    if (kappaY1*kappaY1 >= cKy)
-    {
-        // Plastic zone is [0,l]
-        // NB: potentially, kappaY2 can be 0, but it doesn't change the computation
-        _VFPlasticStrains[i][4] += _VFPlasticCreep*kappaY1;
-        _VFPlasticStrains[i][5] += _VFPlasticCreep*kappaY2;
-
-        if (!_isPlasticZoneComplete[i][4])
-        {
-            _plasticZones[i][4][0] = 0;
-            _plasticZones[i][4][1] = _L;
-            _isPlasticZoneComplete[i][4] = true;
-            update = true;
-        }
-    }
-    else
-    {
-        // Plastic zone limits have to be computed
-        // They are computed using the condition: Norm2(kappaY1, kappaY2)^2 > _VFPlasticYieldThreshold[4]
-        if (kappaY2 != 0)
-        {
-            Real aKy, bKy;
-            aKy = (Real)((_L / 2) * (1 - (helper::rsqrt(cKy - kappaY1*kappaY1) / helper::rabs(kappaY2))));
-            bKy = (Real)((_L / 2) * (1 + (helper::rsqrt(cKy - kappaY1*kappaY1) / helper::rabs(kappaY2))));
-
-            if (aKy >= 0)
-            {
-                //Both limits are symetric regarding _L/2
-                _plasticZones[i][4][0] = aKy;
-                _plasticZones[i][4][1] = bKy;
-
-                _VFPlasticStrains[i][4] += _VFPlasticCreep*kappaY1;
-                _VFPlasticStrains[i][5] += _VFPlasticCreep*kappaY2;
-                update = true;
-            }            
-        }
-        //NB: if kappaY2 == 0 here, then there is no plasticity regarding kappaY
-    }
-
-
-    Real cKz = _VFPlasticYieldThreshold[5];
-    if (kappaZ1*kappaZ1 >= cKz)
-    {
-        // Plastic zone is [0,l]
-        // NB: potentially, kappaZ2 can be 0, but it doesn't change the computation
-        _VFPlasticStrains[i][6] += _VFPlasticCreep*kappaZ1;
-        _VFPlasticStrains[i][7] += _VFPlasticCreep*kappaZ2;
-
-        if (!_isPlasticZoneComplete[i][5])
-        {
-            _plasticZones[i][5][0] = 0;
-            _plasticZones[i][5][1] = _L;
-            _isPlasticZoneComplete[i][5] = true;
-            update = true;
-        }
-    }
-    else
-    {
-        // Plastic zone limits have to be computed
-        // They are computed using the condition: Norm2(kappaZ1, kappaZ2)^2 > _VFPlasticYieldThreshold[5]
-        if (kappaZ2 != 0)
-        {
-            Real aKz, bKz;
-            aKz = (Real)((_L / 2) * (1 - (helper::rsqrt(cKz - kappaZ1*kappaZ1) / helper::rabs(kappaZ2))));
-            bKz = (Real)((_L / 2) * (1 + (helper::rsqrt(cKz - kappaZ1*kappaZ1) / helper::rabs(kappaZ2))));
-
-            if (aKz >= 0)
-            {
-                //Both limits are symetric regarding _L/2
-                _plasticZones[i][5][0] = aKz;
-                _plasticZones[i][5][1] = bKz;
-
-                _VFPlasticStrains[i][6] += _VFPlasticCreep*kappaZ1;
-                _VFPlasticStrains[i][7] += _VFPlasticCreep*kappaZ2;
-                update = true;
-            }           
-        }
-        //NB: if kappaZ2 == 0 here, then there is no plasticity regarding kappaZ
-    }
-
-    if (update)
-        updatePlasticityMatrix(i, a, b);
-
-}
-
-
-template<class DataTypes>
-void MultiBeamForceField<DataTypes>::totalStrainEvaluation(int i, Index a, Index b)
-{
- 
-    Real _L = (Real)beamsData.getValue()[i]._L;
-    Real _A = (Real)beamsData.getValue()[i]._A;
-    Real _E = (Real)beamsData.getValue()[i]._E;
-    Real _Iy = (Real)beamsData.getValue()[i]._Iy;
-    Real _Iz = (Real)beamsData.getValue()[i]._Iz;
-    Real _Asy = (Real)beamsData.getValue()[i]._Asy;
-    Real _Asz = (Real)beamsData.getValue()[i]._Asz;
-    Real _G = (Real)beamsData.getValue()[i]._G;
-
-    Real _N1 = _nodalForces[i][0];
-    Real _Qy1 = _nodalForces[i][1];
-    Real _Qz1 = _nodalForces[i][2];
-    Real _My1 = _nodalForces[i][4];
-    Real _Mz1 = _nodalForces[i][5];
-    Real _N2 = _nodalForces[i][6];
-    Real _Qy2 = _nodalForces[i][7];
-    Real _Qz2 = _nodalForces[i][8];
-    Real _My2 = _nodalForces[i][10];
-    Real _Mz2 = _nodalForces[i][11];
-
-    //Updating the total strain constants
-    _VFTotalStrains[i][0] = (Real)( (_N2 - _N1) / (2*_E*_A) );
-    _VFTotalStrains[i][1] = (Real)( (_Qy1 - _Qy2) / (2 *_G*_Asy) );
-    _VFTotalStrains[i][2] = (Real)( (_Qz1 - _Qz2) / (2*_G*_Asz) );
-    _VFTotalStrains[i][3] = 0;
-    _VFTotalStrains[i][4] = (Real)( (_My2 - _My1) / (2*_E*_Iy) );
-    _VFTotalStrains[i][5] = (Real)( (_My2 + _My1) / (2*_E*_Iy) );
-    _VFTotalStrains[i][6] = (Real)( (_Mz2 - _Mz1) / (2*_E*_Iz) );
-    _VFTotalStrains[i][7] = (Real)( (_Mz2 + _Mz1) / (2*_E*_Iz) );
-}
-/**************************************************************************/
-
-
 
 
 /**************************************************************************/

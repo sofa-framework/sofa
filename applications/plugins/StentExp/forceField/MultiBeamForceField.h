@@ -101,7 +101,6 @@ protected:
         /*                     Virtual Displacement method                   */
         /*********************************************************************/
 
-        plasticityMatrix _M_loc;
         StiffnessMatrix _Ke_loc; //elastic stiffness
         StiffnessMatrix _Kt_loc; //tangent stiffness
 
@@ -127,7 +126,6 @@ protected:
         ///     - PLASTIC: at least one Gauss point is in a PLASTIC state.
         ///     - POSTPLASTIC: Gauss points are either in an ELASTIC or POSTPLASTIC state.
         MechanicalState _beamMechanicalState;
-
 
         ///< For drawing
         int _nbCentrelineSeg = 10;
@@ -189,7 +187,6 @@ protected:
                 << bi._A << " "
                 << bi._Asy << " "
                 << bi._Asz << " "
-                << bi._M_loc << " "
                 << bi._Ke_loc << " "
                 << bi._Kt_loc << " "
                 << bi._k_loc;
@@ -212,7 +209,6 @@ protected:
                 >> bi._A
                 >> bi._Asy
                 >> bi._Asz
-                >> bi._M_loc
                 >> bi._Ke_loc
                 >> bi._Kt_loc
                 >> bi._k_loc;
@@ -261,44 +257,15 @@ protected:
 
     /**************************************************************************/
 
-
-
-    /**************************************************************************/
-    /*                         Virtual Force Method                           */
-    /**************************************************************************/
-
-    /// Virtual Force method, same as in BeamFEMForceField
-
-    defaulttype::Vec<6, Real> _VFPlasticYieldThreshold;
-    Real _VFPlasticMaxThreshold;
-    Real _VFPlasticCreep;
-
-    typedef defaulttype::Vec<8, Real> VFStrain; ///< 6 strain components used in the 3D Timoshenko beam model
-    typedef defaulttype::Vec<12, Real> nodalForces; ///<  Intensities of the nodal forces in the Timoshenko beam element
-    typedef defaulttype::Mat<6, 2, Real> plasticLimits; ///< 6 pairs of 1D interval limits (one for each strain)
-    typedef defaulttype::Vec<6, bool> completePlasticZones; ///< true if the corresponding plastic zone limits are [0,l]
-
-    helper::vector<VFStrain> _VFPlasticStrains; ///< one plastic strain vector per element
-    helper::vector<VFStrain> _VFTotalStrains; ///< one total strain vector per element
-    helper::vector<nodalForces> _nodalForces;
-    helper::vector<plasticLimits> _plasticZones; ///< one plastic zone per element
-    helper::vector<completePlasticZones> _isPlasticZoneComplete;
-
     virtual void reset() override;
-
-    void initPlasticityMatrix(int i, Index a, Index b);
-    void updatePlasticityMatrix(int i, Index a, Index b);
-    void updatePlasticity(int i, Index a, Index b);
-    void totalStrainEvaluation(int i, Index a, Index b);
-
-    /**************************************************************************/
-
 
     /**************************************************************************/
     /*                     Virtual Displacement Method                        */
     /**************************************************************************/
 
 public:
+
+    typedef defaulttype::Vec<12, Real> nodalForces; ///<  Intensities of the nodal forces in the Timoshenko beam element
 
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
     typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
@@ -310,7 +277,6 @@ protected:
 
     /// virtual displacement method, same as in TetrahedronFEMForceField
     Data<bool> _virtualDisplacementMethod;
-    Data<bool> _isPlasticMuller;
 
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
