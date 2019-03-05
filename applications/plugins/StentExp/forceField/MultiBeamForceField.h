@@ -462,8 +462,6 @@ protected:
 
     ////////////// large displacements method
     helper::vector<Transformation> _nodeRotations;
-    void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
-    void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP)
