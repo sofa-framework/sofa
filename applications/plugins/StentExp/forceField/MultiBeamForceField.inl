@@ -348,12 +348,9 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
         Index a = (*it)[0];
         Index b = (*it)[1];
 
-        const bool beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
-
-        if (!beamMechanicalState)
-            applyStiffnessLarge(df, dx, i, a, b, kFactor);
-        else
-            applyNonLinearStiffness(df, dx, i, a, b, kFactor);
+        // The choice of the computational method (elastic, plastic, or post-plastic)
+        // is made in applyNonLinearStiffness
+        applyNonLinearStiffness(df, dx, i, a, b, kFactor);
     }
 
     datadF.endEdit();
@@ -2838,9 +2835,8 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
                                                              Index a, Index b, double fact)
 {
     //Concrete implementation of addDForce
-    //Computes df += Kdx, assuming that this component is linear
-    //All non-linearity has already been handled through the call to
-    //the addForce method
+    //Computes df += Kdx, the expression of K depending on the mechanical state
+    //of the beam element
 
     //Computes displacement increment, from last system solution
     Displacement local_depl;
@@ -2868,16 +2864,24 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     local_depl[10] = u[1];
     local_depl[11] = u[2];
 
-    //std::cout << "deplacement vitesse pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //DEBUG
+    beamsData.endEdit(); // consecutive to the call to beamQuat
 
-    // If applyNonLinearStiffness is called, then the beam element is plastic
-    // (i.e. at least one Gauss point is in PLASTIC state). Thus the tangent
-    // stiffness matrix has to be used
+    const bool beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
     defaulttype::Vec<12, Real> local_dforce;
-    local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
 
-
-    //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_dforce << " " << std::endl << std::endl; //DEBUG
+    // The stiffness matrix we use depends on the mechanical state of the beam element
+    if (_virtualDisplacementMethod.getValue())
+    {
+        if (beamMechanicalState == PLASTIC)
+            local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
+        else
+            local_dforce = beamsData.getValue()[i]._Ke_loc * local_depl; //TO DO: distinction between ELASTIC and POST-PLASTIC ?
+    }
+    else
+    {
+        // this computation can be optimised: (we know that half of "depl" is null)
+        local_dforce = beamsData.getValue()[i]._k_loc * local_depl;
+    }
 
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
     Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_dforce[3], local_dforce[4], local_dforce[5]));
