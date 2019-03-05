@@ -1111,6 +1111,17 @@ template <class DataTypes>
 void MultiBeamForceField<DataTypes>::reset()
 {
     //serr<<"MultiBeamForceField<DataTypes>::reset"<<sendl;
+
+    if (_virtualDisplacementMethod.getValue())
+    {
+        for (unsigned i = 0; i < _beamLocalOrientations.size(); ++i)
+            _beamLocalOrientations[i].clear();
+
+        for (unsigned i = 0; i < _prevStresses.size(); ++i)
+            for (unsigned j = 0; j < _prevStresses.size(); ++j)
+            _prevStresses[i][j] = VoigtTensor2::Zero();
+    }
+    // TO DO: call to init?
 }
 
 
