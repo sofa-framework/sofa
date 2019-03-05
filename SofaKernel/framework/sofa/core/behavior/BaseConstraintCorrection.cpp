@@ -30,6 +30,9 @@ namespace core
 namespace behavior
 {
 
+BaseConstraintCorrection::BaseConstraintCorrection(){}
+BaseConstraintCorrection::~BaseConstraintCorrection(){}
+
 void BaseConstraintCorrection::rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
 
 void BaseConstraintCorrection::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
