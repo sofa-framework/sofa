@@ -29,7 +29,7 @@
 #include <vector>
 #include <sofa/defaulttype/Vec.h>
 #include <sstream>
-#include <string.h>
+#include <cstring>
 
 /// This register the TriangleLoader object to the logging system so that we can use msg_*(this)
 MSG_REGISTER_CLASS(sofa::helper::io::TriangleLoader, "TriangleLoader")

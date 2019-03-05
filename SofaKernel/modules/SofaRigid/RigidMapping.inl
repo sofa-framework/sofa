@@ -38,7 +38,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <cassert>
 #include <numeric>

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/helper/Quater.h>
 #include <gtest/gtest.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 
 using sofa::helper::Quater;
 

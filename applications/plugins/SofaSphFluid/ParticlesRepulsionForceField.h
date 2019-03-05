@@ -29,7 +29,7 @@
 #include <SofaSphFluid/SpatialGridContainer.h>
 #include <sofa/helper/rmath.h>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 
 namespace sofa

@@ -25,7 +25,7 @@
 #include <vector>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/helper.h>
 

@@ -24,7 +24,7 @@
 
 #include <SofaBoundaryCondition/OscillatorConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 

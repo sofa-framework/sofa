@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/SVector.h>
 #include <gtest/gtest.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 using sofa::helper::SVector;
 

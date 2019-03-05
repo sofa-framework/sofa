@@ -38,7 +38,7 @@
 #include <sofa/simulation/Visitor.h>
 #endif
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES

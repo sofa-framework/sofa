@@ -22,8 +22,8 @@
 #ifndef SOFA_SIMULATION_COLORS_H
 #define SOFA_SIMULATION_COLORS_H
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 namespace sofa
 {

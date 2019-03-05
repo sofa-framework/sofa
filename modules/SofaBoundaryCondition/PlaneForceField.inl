@@ -28,7 +28,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>

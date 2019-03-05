@@ -44,7 +44,7 @@
 #include <QTextBrowser>
 #include <QDockWidget>
 #include <QWindow>
-#include <time.h>
+#include <ctime>
 
 #include <sofa/helper/system/FileMonitor.h>
 

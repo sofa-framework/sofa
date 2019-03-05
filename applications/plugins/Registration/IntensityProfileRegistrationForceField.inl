@@ -28,7 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-#include "float.h"
+#include <cfloat>
 #include <sofa/helper/IndexOpenMP.h>
 
 #ifdef _OPENMP

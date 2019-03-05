@@ -25,7 +25,7 @@
 
 #include <sofa/core/State.h>
 #include <vector>
-#include <assert.h>
+#include <cassert>
 #include <fstream>
 
 namespace sofa

@@ -28,7 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <string.h>
+#include <cstring>
 #include <sofa/helper/types/RGBAColor.h>
 
 //#define NO_VBO

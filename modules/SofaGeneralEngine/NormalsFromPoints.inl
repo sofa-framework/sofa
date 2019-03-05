@@ -24,7 +24,7 @@
 
 #include "NormalsFromPoints.h"
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

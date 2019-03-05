@@ -28,7 +28,7 @@ using sofa::helper::logging::Message ;
 
 #include <map>
 #include <typeinfo>
-#include <string.h>
+#include <cstring>
 #include <sstream>
 
 #define ERROR_LOG_SIZE 100

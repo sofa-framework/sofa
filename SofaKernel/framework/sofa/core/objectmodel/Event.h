@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_EVENT_H
 
 #include <sofa/core/core.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace sofa
 {

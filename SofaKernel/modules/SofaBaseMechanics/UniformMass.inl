@@ -33,7 +33,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <iostream>
-#include <string.h>
+#include <cstring>
 
 
 

@@ -25,7 +25,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

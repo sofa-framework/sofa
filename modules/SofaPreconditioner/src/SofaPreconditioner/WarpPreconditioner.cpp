@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

@@ -26,7 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

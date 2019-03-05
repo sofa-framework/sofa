@@ -26,7 +26,7 @@
 # include <GL/glx.h>
 #endif
 
-#include <string.h>
+#include <cstring>
 
 
 #include <sofa/helper/gl/glfont.h>

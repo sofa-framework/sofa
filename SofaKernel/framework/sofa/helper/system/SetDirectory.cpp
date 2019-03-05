@@ -31,7 +31,7 @@
 #include <sys/param.h>
 #include <mach-o/dyld.h>
 #endif
-#include <string.h>
+#include <cstring>
 #include <iostream>
 
 #include <sofa/helper/logging/Messaging.h>

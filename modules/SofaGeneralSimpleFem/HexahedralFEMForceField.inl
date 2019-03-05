@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/decompose.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 

@@ -21,14 +21,14 @@
 ******************************************************************************/
 #include <string>
 #include <typeinfo>
-#include <stdlib.h>
+#include <cstdlib>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <SofaSimulationCommon/xml/ElementNameHelper.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Message.h>
 

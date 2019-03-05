@@ -37,7 +37,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <string.h>
+#include <cstring>
 
 #include <SofaSimulationTree/GNode.h>
 #include <sofa/helper/AdvancedTimer.h>

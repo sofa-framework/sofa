@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 #define SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 
-#include <limits.h>
+#include <climits>
 
 namespace sofa
 {

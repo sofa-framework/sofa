@@ -27,7 +27,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 

@@ -2,7 +2,7 @@
 
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 
-#include <assert.h>
+#include <cassert>
 
 
 namespace sofa

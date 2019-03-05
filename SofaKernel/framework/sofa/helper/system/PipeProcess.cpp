@@ -27,7 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 typedef int ssize_t;
 typedef HANDLE fd_t;
 typedef SOCKET socket_t;

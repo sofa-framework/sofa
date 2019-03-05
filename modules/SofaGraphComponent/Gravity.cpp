@@ -24,7 +24,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 
 
 namespace sofa

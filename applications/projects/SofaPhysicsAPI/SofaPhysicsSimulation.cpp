@@ -43,7 +43,7 @@
 #include <sofa/gui/BaseGUI.h>
 #include "fakegui.h"
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #include "../plugins/SceneCreator/SceneCreator.h"

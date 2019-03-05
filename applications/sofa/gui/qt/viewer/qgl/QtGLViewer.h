@@ -25,10 +25,10 @@
 #include <sofa/helper/system/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>

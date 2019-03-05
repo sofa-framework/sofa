@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 namespace sofa

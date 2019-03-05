@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "UnitTest.h"
-#include <time.h>
+#include <ctime>
 #include <iostream>
 
 namespace sofa

@@ -24,7 +24,7 @@
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <sofa/helper/system/config.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>

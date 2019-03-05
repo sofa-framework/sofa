@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/helper/RandomGenerator.h>
 
 #include <vector>

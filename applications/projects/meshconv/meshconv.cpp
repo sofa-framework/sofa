@@ -45,9 +45,9 @@
 * Contacts:                                                       *
 *                                                                 *
 ******************************************************************/
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
 
 #include <ftl/cmdline.h>
 #include <flowvr/render/mesh.h>

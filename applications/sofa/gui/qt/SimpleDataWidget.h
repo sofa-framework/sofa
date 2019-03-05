@@ -30,7 +30,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/core/topology/Topology.h>
 #include "WDoubleLineEdit.h"
-#include <limits.h>
+#include <climits>
 
 #include <sstream>
 #include <sofa/helper/Polynomial_LD.inl>

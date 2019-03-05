@@ -32,7 +32,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 
 namespace sofa

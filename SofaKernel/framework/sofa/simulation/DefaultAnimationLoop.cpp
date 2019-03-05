@@ -37,8 +37,8 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <algorithm>
 
 namespace sofa

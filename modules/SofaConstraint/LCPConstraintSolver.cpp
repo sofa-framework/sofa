@@ -30,7 +30,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #include <sofa/core/ObjectFactory.h>

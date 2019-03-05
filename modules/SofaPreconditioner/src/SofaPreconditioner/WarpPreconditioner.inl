@@ -40,7 +40,7 @@
 #include <sofa/simulation/MechanicalMatrixVisitor.h>
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 #include <sofa/helper/Quater.h>
 

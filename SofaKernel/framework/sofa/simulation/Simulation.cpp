@@ -57,7 +57,7 @@
 
 
 #include <fstream>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
 

@@ -31,7 +31,7 @@
 #include <SofaGraphComponent/StatsSetting.h>
 
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>

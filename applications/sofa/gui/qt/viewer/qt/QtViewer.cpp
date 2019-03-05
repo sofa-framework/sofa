@@ -27,12 +27,12 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cmath>
+#include <cstdlib>
 
 #include <qevent.h>
 

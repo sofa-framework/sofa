@@ -31,7 +31,7 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 

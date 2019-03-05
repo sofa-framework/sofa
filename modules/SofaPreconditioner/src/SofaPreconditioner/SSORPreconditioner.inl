@@ -32,7 +32,7 @@
 #include <iostream>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa

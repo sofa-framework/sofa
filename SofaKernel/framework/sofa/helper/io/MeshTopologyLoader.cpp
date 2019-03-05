@@ -22,7 +22,7 @@
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
-#include <string.h>
+#include <cstring>
 
 #if defined(WIN32)
 #define strcasecmp stricmp

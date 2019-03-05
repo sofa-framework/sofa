@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
 #include "config.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <sofa/core/topology/Topology.h>

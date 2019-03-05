@@ -33,7 +33,7 @@
 #include <vector>
 #include <algorithm>
 #include <sofa/defaulttype/VecTypes.h>
-#include <assert.h>
+#include <cassert>
 
 // #define DEBUG_TRIANGLEFEM
 

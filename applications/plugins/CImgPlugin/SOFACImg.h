@@ -33,7 +33,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <queue>

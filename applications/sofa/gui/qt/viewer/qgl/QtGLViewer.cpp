@@ -31,11 +31,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 //#include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
+#include <cstring>
+#include <cmath>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/gui/BaseGUI.h>

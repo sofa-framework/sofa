@@ -23,8 +23,8 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalMatrixVisitor.h>
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 namespace sofa
 {

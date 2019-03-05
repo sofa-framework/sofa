@@ -29,7 +29,7 @@
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>

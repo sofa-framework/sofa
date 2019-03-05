@@ -24,7 +24,7 @@
 
 #include <image/config.h>
 #include "ImageTypes.h"
-#include <limits.h>
+#include <climits>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>

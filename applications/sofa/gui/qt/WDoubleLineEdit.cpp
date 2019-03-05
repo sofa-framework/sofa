@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /* -------------------------------------------------------- */
-#include <math.h>
+#include <cmath>
 #include "WDoubleLineEdit.h"
 #include <iostream>
 using std::cerr; using std::endl;

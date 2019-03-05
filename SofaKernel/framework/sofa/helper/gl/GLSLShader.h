@@ -44,7 +44,7 @@ namespace sofa {
 #include <sofa/helper/system/glu.h>
 
 #include <string>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/helper.h>

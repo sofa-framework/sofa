@@ -27,7 +27,7 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiVec.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 

@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <limits>
 
 namespace sofa

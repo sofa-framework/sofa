@@ -23,7 +23,7 @@
 #include "BaseElement.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/SetDirectory.h>
-#include <string.h>
+#include <cstring>
 
 namespace sofa
 {

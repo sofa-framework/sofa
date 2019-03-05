@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>

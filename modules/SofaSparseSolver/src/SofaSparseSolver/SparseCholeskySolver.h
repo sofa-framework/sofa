@@ -30,7 +30,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
-#include <math.h>
+#include <cmath>
 #include <csparse.h>
 
 namespace sofa

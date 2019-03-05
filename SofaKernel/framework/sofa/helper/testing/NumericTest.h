@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/random.h>
 #include <sofa/helper/cast.h>
-#include <time.h>
+#include <ctime>
 #include <iostream>
 
 namespace sofa {

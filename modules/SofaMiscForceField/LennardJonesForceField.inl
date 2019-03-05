@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/config.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 

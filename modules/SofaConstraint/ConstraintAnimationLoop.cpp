@@ -45,7 +45,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <math.h>
+#include <cmath>
 
 #include <map>
 #include <string>

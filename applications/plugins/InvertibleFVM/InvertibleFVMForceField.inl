@@ -29,7 +29,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 

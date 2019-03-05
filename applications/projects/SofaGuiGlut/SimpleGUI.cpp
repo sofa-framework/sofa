@@ -28,11 +28,11 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include <math.h>
+#include <cstring>
+#include <cmath>
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>

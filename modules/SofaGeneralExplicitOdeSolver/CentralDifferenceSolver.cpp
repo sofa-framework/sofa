@@ -25,7 +25,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 

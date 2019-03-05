@@ -24,7 +24,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include <sofa/defaulttype/BoundingBox.h>
 
 namespace sofa

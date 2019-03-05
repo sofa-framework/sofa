@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/BackTrace.h>
 
-#include <signal.h>
+#include <csignal>
 #if !defined(WIN32) && !defined(__APPLE__)
 #include <execinfo.h>
 #include <unistd.h>

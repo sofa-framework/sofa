@@ -32,7 +32,7 @@
 
 #define PRECISION 16384.0
 
-#include <string.h>
+#include <cstring>
 #include <set>
 
 MSG_REGISTER_CLASS(sofa::helper::MarchingCubeUtility, "MarchingCubeUtility")

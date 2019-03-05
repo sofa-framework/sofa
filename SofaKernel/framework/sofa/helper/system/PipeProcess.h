@@ -22,7 +22,7 @@
 #ifndef PIPEPROCESS_H_
 #define PIPEPROCESS_H_
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 

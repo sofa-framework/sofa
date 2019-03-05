@@ -27,7 +27,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
-#include <string.h>
+#include <cstring>
 #include <sstream>
 
 namespace sofa

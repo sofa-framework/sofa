@@ -27,7 +27,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

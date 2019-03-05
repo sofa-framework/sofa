@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/RGBAColor.h>
 #include <cstdlib>
 #include <ctime>
-#include <limits.h>
+#include <climits>
 
 namespace sofa
 {

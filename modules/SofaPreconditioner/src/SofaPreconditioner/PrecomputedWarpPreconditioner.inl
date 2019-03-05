@@ -35,7 +35,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/VecTypes.h>

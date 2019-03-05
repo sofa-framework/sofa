@@ -38,7 +38,7 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/Simulation.h>
 
-#include <time.h>
+#include <ctime>
 
 #ifndef NDEBUG
     #define DEBUG_MSG true

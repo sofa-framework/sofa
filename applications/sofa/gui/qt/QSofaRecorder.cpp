@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "QSofaRecorder.h"
 #include "RealGUI.h"
-#include <time.h>
+#include <ctime>
 
 #include <sofa/core/objectmodel/Tag.h>
 

@@ -28,7 +28,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

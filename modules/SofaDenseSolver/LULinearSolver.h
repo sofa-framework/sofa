@@ -27,7 +27,7 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

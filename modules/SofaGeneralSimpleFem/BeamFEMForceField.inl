@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/rmath.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 #include <sofa/helper/system/gl.h>
