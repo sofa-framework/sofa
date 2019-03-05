@@ -77,7 +77,6 @@ PluginManager & PluginManager::getInstance()
 
 PluginManager::PluginManager()
 {
-    m_searchPaths = PluginRepository.getPaths();
 }
 
 PluginManager::~PluginManager()
@@ -295,12 +294,14 @@ void PluginManager::init(const std::string& pluginPath)
 
 std::string PluginManager::findPlugin(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, int maxRecursiveDepth)
 {
+    std::vector<std::string> searchPaths = PluginRepository.getPaths();
+
     std::string name(pluginName);
     name  += suffix;
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
-    for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
+    for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
     {
         const std::string path = *i + "/" + libName;
         if (FileSystem::isFile(path))
@@ -312,7 +313,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         if(!recursive) maxRecursiveDepth = 0;
         const std::string downcaseLibName = Utils::downcaseString(libName);
 
-        for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
+        for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
         {
             const std::string& dir = *i;
 
