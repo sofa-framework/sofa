@@ -1885,14 +1885,8 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
 
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
 
-    MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
-    const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
     const double yieldStress = beamsData.getValue()[index]._yS;
-    bool res;
-    bool isPlasticBeam = false;
     VoigtTensor2 newStress;
     helper::fixed_array<VoigtTensor2, 27> newStresses;
 
@@ -1903,39 +1897,37 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
         newStress = C*Be*eigenDepl; // Point is assumed to be ELASTIC
 
         // Checking if the deformation becomes plastic
+
         bool isNewPlastic = goToPlastic(newStress, yieldStress);
         if (isNewPlastic)
         {
-            pointMechanicalState[gaussPointIt] = PLASTIC;
-            //TO DO : call to computePlasticForce
+            // If a point is detected as entering a PLASTIC state, we stop
+            // the computation and call computePlasticForce instead.
+            // The computation of the internal forces will thus be carried out
+            // incrementally, which will change nothing for the points remaining
+            // in an ELASTIC state, but will allow the new PLASTIC points to be
+            // handled correctly.
+            computePlasticForce(internalForces, x, index, a, b);
+            return;
         }
-        isPlasticBeam = isPlasticBeam || isNewPlastic;
 
         newStresses[gaussPointIt] = newStress;
-
     }
-    beamsData.endEdit();
-
     //***************************************************//
 
-    if (isPlasticBeam)
-    {
-        // The computation of these new stresses should be plastic
-        beamMechanicalState = PLASTIC;
-        computePlasticForce(internalForces, x, index, a, b);
-    }
-    else
-    {
-        // Storing the new stresses for the next time step, in case plasticity occurs.
-        _prevStresses[index] = newStresses;
+    // Here, all Gauss points remained ELASTIC (otherwise the method execution
+    // would have been stopped by a call to computePlasticForce).
 
-        // As all the points are in an ELASTIC state, it is not necessary
-        // to use reduced integration (all the computation is linear).
-        nodalForces auxF = beamsData.getValue()[index]._Ke_loc * localDisp;
+    // Storing the new stresses for the next time step, in case plasticity occurs.
+    _prevStresses[index] = newStresses;
 
-        for (int i=0; i<12; i++)
-            internalForces(i) = auxF[i]; //TO DO: not very efficient, we should settle for one data structure only
-    }
+    // As all the points are in an ELASTIC state, it is not necessary
+    // to use reduced integration (all the computation is linear).
+    nodalForces auxF = beamsData.getValue()[index]._Ke_loc * localDisp;
+
+    for (int i=0; i<12; i++)
+        internalForces(i) = auxF[i]; //TO DO: not very efficient, we should settle for one data structure only
+
 }
 
 
@@ -2046,11 +2038,6 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
 
     Displacement localDisp;
     computeLocalDisplacement(x, localDisp, index, a, b);
-
-    // Here _beamMechanicalState = true
-    // Consequently, the deformation is plastic. We do not have to recompute
-    // the stiffness matrix, but we have to take into account the plastic history
-    // for POST-PLASTIC Gauss points
 
     Eigen::Matrix<double, 12, 1> eigenDepl;
     for (int i = 0; i < 12; i++)
