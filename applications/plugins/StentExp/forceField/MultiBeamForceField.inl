@@ -137,12 +137,7 @@ void MultiBeamForceField<DataTypes>::init()
     stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
 
-    if (_virtualDisplacementMethod.getValue())
-    {
-        _VDPlasticYieldThreshold = (Real)0.1f;
-        _VDPlasticCreep = (Real)0.7f;
-    }
-    else
+    if (!_virtualDisplacementMethod.getValue())
     {
         _VFPlasticYieldThreshold = { (Real)0.0001f, (Real)0.0001f, (Real)0.0001f, (Real)0.0001f, (Real)0.0001f, (Real)0.0001f };
         _VFPlasticMaxThreshold = (Real)0.f;
@@ -219,16 +214,10 @@ void MultiBeamForceField<DataTypes>::reinit()
                 _beamLocalOrientations[i] = _inputLocalOrientations.getValue()[i];
         }
 
-
-
         _prevStresses.resize(n);
         for (int i = 0; i < n; i++)
             for (int j = 0; j < 27; j++)
-                _prevStresses[i][j] = VoigtTensor::Zero();
-
-        _VDPlasticStrains.resize(n);
-        for (unsigned int i = 0; i < n; i++)
-            _VDPlasticStrains[i] = elementPlasticStrain::Zero();
+                _prevStresses[i][j] = VoigtTensor2::Zero();
     }
     else
     {
@@ -354,12 +343,6 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
     }
 
     datadF.endEdit();
-}
-
-template<class DataTypes>
-typename MultiBeamForceField<DataTypes>::Real MultiBeamForceField<DataTypes>::peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M )
-{
-    return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
 }
 
 template<class DataTypes>
@@ -718,8 +701,6 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     centrelinePoints[0].push_back(pb);
 }
 
-
-
 template<class DataTypes>
 void MultiBeamForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
@@ -749,9 +730,6 @@ void MultiBeamForceField<DataTypes>::computeBBox(const core::ExecParams* params,
     this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<Real>(minBBox, maxBBox));
 
 }
-
-
-
 
 template<class DataTypes>
 void MultiBeamForceField<DataTypes>::initBeams(size_t size)
@@ -1545,80 +1523,6 @@ void MultiBeamForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, In
 };
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::computePlasticForces(int i, Index a, Index b, const Displacement& totalDisplacement, nodalForces& plasticForces)
-{
-    // Computes the contribution of plasticity by numerical integration
-    // Step 1: total strain is computed at each integration node
-    // Step 2: if totalStrain > plasticThreshold for a node, plastic strain is updated
-    // Step 3: the corresponding force is computed through numerical integration
-
-    Real _L = (Real)beamsData.getValue()[i]._L;
-    Real _yDim = (Real)beamsData.getValue()[i]._yDim;
-    Real _zDim = (Real)beamsData.getValue()[i]._zDim;
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
-    
-    VoigtTensor totalStrain;
-    
-    Eigen::Matrix<double, 12, 1> totalDisp;
-    for (int i=0; i<12; i++)
-        totalDisp(i) = totalDisplacement[i];
-
-    // Reduced integration
-    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
-    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
-
-    // Setting variables for the reduced intergation process defined in quadrature.h
-    Eigen::Matrix<double, 6, 12> Be;
-    Eigen::Matrix<double, 12, 1> fe_pla = Eigen::VectorXd::Zero(12);
-    int gaussPointIterator = 0;
-
-    // Stress matrix, to be integrated
-    LambdaType computeStressMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
-    {
-        // Be
-        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
-
-        totalStrain = Be*totalDisp;
-
-        //Step 2: test of the plasticity threshold
-        updatePlasticStrain(i, a, b, totalStrain, gaussPointIterator);
-        
-        //Step3: addition of this Gauss point contribution to the plastic forces
-        VoigtTensor plasticStrain = _VDPlasticStrains[i].row(gaussPointIterator);
-        fe_pla += (w1*w2*w3)*Be.transpose()*C*plasticStrain;
-        gaussPointIterator++; //Next Gauss Point
-    };
-
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
-    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressMatrix);
-
-    //Transfer to the force compuation
-    for (int i = 0; i < 12; i++)
-        plasticForces[i] = fe_pla(i);
-
-};
-
-
-template<class DataTypes>
-void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b, VoigtTensor& totalStrain, int gaussPointIterator)
-{
-    // gaussPointIterator represents the ith Gauss point (over a total of 27) where the strain is computed
-    // The number itself has no importance as the order is entirely fixed by the reduced integration procedure
-
-    VoigtTensor plasticStrain = _VDPlasticStrains[i].row(gaussPointIterator);
-    VoigtTensor elasticStrain = totalStrain - plasticStrain;
-    double strainNorm = elasticStrain.squaredNorm();
-
-    if (strainNorm > _VDPlasticYieldThreshold*_VDPlasticYieldThreshold) //TO DO: potentially the threshold should be squared
-    {
-        //Update this Gauss point plasticStrain
-        _VDPlasticStrains[i].row(gaussPointIterator) = _VDPlasticCreep*totalStrain; // 6x1 vector
-    }
-};
-
-
-
-template<class DataTypes>
 void MultiBeamForceField<DataTypes>::updateYieldStress(int beamIndex, double yieldStressIncrement)
 {
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
@@ -1626,8 +1530,6 @@ void MultiBeamForceField<DataTypes>::updateYieldStress(int beamIndex, double yie
     yieldStress += yieldStressIncrement;
     beamsData.endEdit();
 }
-
-
 
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTensor,
@@ -1644,7 +1546,6 @@ bool MultiBeamForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTenso
     }
     return yield > threshold;
 }
-
 
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressTensor,
@@ -1666,8 +1567,6 @@ bool MultiBeamForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressT
     }
     return (cp < threshold); //if true, the stress point goes into post-plastic phase
 }
-
-
 
 template< class DataTypes>
 double MultiBeamForceField<DataTypes>::equivalentStress (const VoigtTensor2 &stressTensor)
@@ -1730,7 +1629,6 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(con
     res *= 1 / (2 * sigmaEq);
     return res;
 }
-
 
 template< class DataTypes>
 Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
@@ -1815,8 +1713,6 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(cons
     return res;
 }
 
-
-
 //*****************************************************************************************//
 //***************************************** DEBUG *****************************************//
 //*****************************************************************************************//
@@ -1848,7 +1744,6 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradientFD(c
 
     return res;
 }
-
 
 template< class DataTypes>
 Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessianFD(const VoigtTensor2 &lastStressTensor,
@@ -1890,8 +1785,6 @@ void MultiBeamForceField<DataTypes>::solveDispIncrement(const tangentStiffnessMa
     Eigen::FullPivLU<tangentStiffnessMatrix> LU(tangentStiffness);
     du = LU.solve(residual);
 }
-
-
 
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
@@ -1941,8 +1834,6 @@ void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x,
     localDisp[9] = u[0]; localDisp[10] = u[1]; localDisp[11] = u[2];
 }
 
-
-
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
                                                                   Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
@@ -1959,8 +1850,6 @@ void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord
 
     dispIncrement = currentDisp - lastDisp;
 }
-
-
 
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
@@ -2277,8 +2166,6 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     } //end if (!_isPerfectlyPlastic)
 }
 
-
-
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
                                                          const VecCoord& x, int index, Index a, Index b)
@@ -2290,7 +2177,7 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
     // A new stress tensor has to be computed (elastically) for the Gauss points,
     // to check whether any of them enters a PLASTIC state. If at least one of
     // them does, we update the mechanical states accordingly, and call
-    // computePlasticForces, to carry out the approriate (incremental) computation.
+    // computePlasticForce, to carry out the approriate (incremental) computation.
 
     Displacement localDisp;
     computeLocalDisplacement(x, localDisp, index, a, b);
@@ -2454,7 +2341,6 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
         updateTangentStiffness(index, a, b);
 }
 
-
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
                                                              const VecCoord& x, int index, Index a, Index b)
@@ -2553,7 +2439,6 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
     }
 }
 
-
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
                                                               const VecCoord& x,
@@ -2596,7 +2481,6 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     //std::cout << "Ftot pour l'element " << i << " : " << std::endl << f << " " << std::endl << std::endl; //DEBUG
 }
-
 
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
@@ -2661,7 +2545,6 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     df[a] += Deriv(-fa1, -fa2) * fact;
     df[b] += Deriv(-fb1, -fb2) * fact;
 }
-
 
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,

@@ -302,6 +302,15 @@ protected:
     /*                     Virtual Displacement Method                        */
     /**************************************************************************/
 
+public:
+    typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
+    typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
+    typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///<Nodal displacement
+    typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
+    typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
+
+
+protected:
     /// virtual displacement method, same as in TetrahedronFEMForceField
     Data<bool> _virtualDisplacementMethod;
 
@@ -309,14 +318,8 @@ protected:
     void computeMaterialBehaviour(int i, Index a, Index b);
 
     Data<bool> _isPlasticMuller;
-    /// Symmetrical 3x3 stensor written as a vector following the Voigt notation
-    typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
-    typedef Eigen::Matrix<double, 27, 6> elementPlasticStrain; ///< one 6x1 strain tensor for each of the 27 points of integration
-    helper::vector<elementPlasticStrain> _VDPlasticStrains;
 
-    //NB: These elements are used to describe the plastic deforation, but have
-    //to be accessed during the elastic process
-    typedef helper::fixed_array<VoigtTensor, 27>  elementPreviousStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
+    typedef helper::fixed_array<VoigtTensor2, 27>  elementPreviousStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
     helper::vector<elementPreviousStresses> _prevStresses;
 
     //Position at the last time step, to handle increments for the plasticity resolution
@@ -324,21 +327,6 @@ protected:
 
     /************** Plasticity elements ***********************/
 
-    Real _VDPlasticYieldThreshold;
-    Real _VDPlasticCreep;
-
-    void computePlasticForces(int i, Index a, Index b, const Displacement& totalDisplacement, nodalForces& plasticForces);
-    void updatePlasticStrain(int i, Index a, Index b, VoigtTensor& totalStrain, int gaussPointIterator);
-
-public:
-    typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; //Tensor of order 2
-    typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; //Tensor of order 4
-    typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///<Nodal displacement
-    typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
-    typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
-
-
-protected:
     //Newton-Raphson parameters
     double _NRThreshold;
     unsigned int _NRMaxIterations;
@@ -455,8 +443,6 @@ protected:
     void drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
                      std::vector< defaulttype::Vector3 >* centrelinePoints,
                      std::vector<defaulttype::Vec<4, float>>* colours, const VecCoord& x);
-
-    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
     void computeStiffness(int i, Index a, Index b);
 
