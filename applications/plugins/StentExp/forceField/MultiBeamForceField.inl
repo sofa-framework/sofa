@@ -1872,11 +1872,6 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
     Displacement localDisp;
     computeLocalDisplacement(x, localDisp, index, a, b);
 
-    // Here _beamMechanicalState = true
-    // Consequently, the deformation is plastic. We do not have to recompute
-    // the stiffness matrix, but we have to take into account the plastic history
-    // for POST-PLASTIC Gauss points
-
     Eigen::Matrix<double, 12, 1> eigenDepl;
     for (int i = 0; i < 12; i++)
         eigenDepl(i) = localDisp[i];
@@ -2046,20 +2041,20 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
     //***** Test if we enter in plastic deformation *****//
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
+    const helper::fixed_array<MechanicalState, 27>& pointMechanicalState = beamsData.getValue()[index]._pointMechanicalState;
 
-    MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
+    const MechanicalState& beamMechanicalState = beamsData.getValue()[index]._beamMechanicalState;
     const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
     const double yieldStress = beamsData.getValue()[index]._yS;
-    bool res;
-    bool isPlasticBeam = false;
     VoigtTensor2 newStress;
     helper::fixed_array<VoigtTensor2, 27> newStresses;
 
     //For each Gauss point, we compute the new stress tensor
     // Distinction has to be made depending if the points are ELASTIC or
-    // POST-PLASTIC
+    // POST-PLASTIC.
+    // If one point enters a PLASTIC state, the computation is stopped, and
+    // computePlasticForce is called, to update properly the points' mechanical
+    // states
     for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
     {
         Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
@@ -2077,43 +2072,40 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
         bool isNewPlastic = goToPlastic(newStress, yieldStress);
         if (isNewPlastic)
         {
-            pointMechanicalState[gaussPointIt] = PLASTIC;
-            //TO DO : call to computePlasticForce
+            // If a point is detected as entering a PLASTIC state, we stop
+            // the computation and call computePlasticForce instead.
+            // The computation of the internal forces will thus be carried out
+            // incrementally, which will change nothing for the points remaining
+            // in an ELASTIC or POSTPLASTIC state, but will allow the new
+            // PLASTIC points to be handled correctly.
+            computePlasticForce(internalForces, x, index, a, b);
+            return;
         }
-        isPlasticBeam = isPlasticBeam || isNewPlastic;
 
         newStresses[gaussPointIt] = newStress;
     }
-    beamsData.endEdit();
 
-    if (isPlasticBeam)
+    // Here, all Gauss points remained in the same mechanical state (either
+    // ELASTIC or POSTPLASTIC). Otherwise the method execution would have
+    // been stopped by a call to computePlasticForce.
+
+    // Storing the new stresses for the next time step, in case plasticity occurs.
+    _prevStresses[index] = newStresses;
+
+    // Computation of the resulting internal forces, using Gaussian reduced integration.
+    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
+
+    int gaussPointIt = 0;
+    LambdaType computePostPlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        // The computation of these new stresses should be plastic
-        beamMechanicalState == PLASTIC;
-        computePlasticForce(internalForces, x, index, a, b);
-    }
-    else
-    {
-        // Storing the new stresses for the next time step, in case plasticity occurs.
-        _prevStresses[index] = newStresses;
+        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        internalForces += (w1*w2*w3)*Be.transpose()*newStresses[gaussPointIt];
+        gaussPointIt++; //Next Gauss Point
+    };
 
-        // Computation of the resulting internal forces, using Gaussian reduced integration.
-
-        typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
-        typedef std::function<void(double, double, double, double, double, double)> LambdaType;
-
-        int gaussPointIt = 0;
-        LambdaType computePostPlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
-        {
-            Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
-            MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
-            internalForces += (w1*w2*w3)*Be.transpose()*newStresses[gaussPointIt];
-            gaussPointIt++; //Next Gauss Point
-        };
-
-        ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
-        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePostPlastic);
-    }
+    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePostPlastic);
 }
 
 template< class DataTypes>
