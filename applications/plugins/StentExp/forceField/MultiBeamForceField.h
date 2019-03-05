@@ -58,7 +58,9 @@ namespace forcefield
 template<class DataTypes>
 class SOFA_StentExp_API MultiBeamForceField : public core::behavior::ForceField<DataTypes>
 {
+
 public:
+
     SOFA_CLASS(SOFA_TEMPLATE(MultiBeamForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
     typedef typename DataTypes::Real        Real        ;
@@ -85,7 +87,6 @@ public:
         POSTPLASTIC = 2,
     };
 
-
 protected:
 
     typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
@@ -93,7 +94,6 @@ protected:
 
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
     typedef defaulttype::Mat<12, 8, Real> plasticityMatrix; ///< contribution of plasticity to internal forces
-
 
     struct BeamInfo
     {
@@ -220,11 +220,7 @@ protected:
         }
     };
 
-    //just for draw forces
-    VecDeriv _forces;
-
     topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
     class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
     {
@@ -303,21 +299,21 @@ protected:
     /**************************************************************************/
 
 public:
+
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
     typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
     typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///<Nodal displacement
     typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
     typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
 
-
 protected:
+
     /// virtual displacement method, same as in TetrahedronFEMForceField
     Data<bool> _virtualDisplacementMethod;
+    Data<bool> _isPlasticMuller;
 
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
-
-    Data<bool> _isPlasticMuller;
 
     typedef helper::fixed_array<VoigtTensor2, 27>  elementPreviousStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
     helper::vector<elementPreviousStresses> _prevStresses;
@@ -347,7 +343,6 @@ protected:
     bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
                          const bool verbose = FALSE);
 
-    void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
     void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
@@ -359,14 +354,15 @@ protected:
     void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
 
-    //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
-
     double equivalentStress(const VoigtTensor2 &stressTensor);
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor);
-    VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
     VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
+
+    //*************************************************************** DEBUG ***************************************************************//
+    VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
     VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double yieldStress);
+    //************************************************************************************************************************************//
 
     // Special implementation for second-order tensor dot product, with the Voigt notation.
     double voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2);
@@ -376,9 +372,9 @@ protected:
     void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact);
     void updateTangentStiffness(int i, Index a, Index b);
 
+
     /**********************************************************/
 
-    /**************************************************************************/
 
     const VecElement *_indexedElements;
 
@@ -389,9 +385,6 @@ protected:
     Data<Real> _ySection;
     Data< bool> _useSymmetricAssembly;
     Data<bool> _isTimoshenko;
-
-    bool _updateStiffnessMatrix;
-    bool _assembling;
 
     double lastUpdatedStep;
 
@@ -406,16 +399,13 @@ protected:
     sofa::core::topology::BaseMeshTopology* _topology;
     BeamFFEdgeHandler* edgeHandler;
 
-
     MultiBeamForceField();
     MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                         helper::vector<defaulttype::Quat> localOrientations);
     virtual ~MultiBeamForceField();
-public:
-    void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
 
-    void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
+public:
 
     virtual void init();
     virtual void bwdInit();
@@ -446,8 +436,6 @@ protected:
 
     void computeStiffness(int i, Index a, Index b);
 
-    ////////////// large displacements method
-    helper::vector<Transformation> _nodeRotations;
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP)

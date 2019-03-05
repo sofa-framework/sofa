@@ -71,8 +71,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , _isTimoshenko(initData(&_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
-    , _updateStiffnessMatrix(true)
-    , _assembling(false)
     , edgeHandler(NULL)
 {
     edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
@@ -101,8 +99,6 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , _isTimoshenko(initData(&_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
-    , _updateStiffnessMatrix(true)
-    , _assembling(false)
     , edgeHandler(NULL)
 {
     edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
@@ -122,7 +118,6 @@ void MultiBeamForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
-    matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep=-1.0;
 }
 
@@ -186,7 +181,6 @@ template <class DataTypes>
 void MultiBeamForceField<DataTypes>::reinit()
 {
     size_t n = _indexedElements->size();
-    _forces.resize( this->mstate->getSize() );
 
     if (_virtualDisplacementMethod.getValue())
     {
@@ -1772,19 +1766,6 @@ double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, c
 
 //*****************************************************************************************//
 
-
-template< class DataTypes>
-void MultiBeamForceField<DataTypes>::solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness,
-                                                        EigenDisplacement &du,
-                                                        const EigenNodalForces &residual)
-{
-    //Solve the linear system K*du = residual, for du
-
-    //First try is with the dense LU decomposition provided by the Eigen library
-    //NB: this is not inplace decomposition because we pass a const reference as argument
-    Eigen::FullPivLU<tangentStiffnessMatrix> LU(tangentStiffness);
-    du = LU.solve(residual);
-}
 
 template< class DataTypes>
 void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
