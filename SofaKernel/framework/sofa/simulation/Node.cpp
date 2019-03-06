@@ -246,14 +246,16 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 void Node::notifyStepBegin()
 {
-    for (auto& listener : listener)
-        listener->onStepBegin(this);
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        l->onStepBegin(this);
 }
 
 void Node::notifyStepEnd()
 {
-    for (auto& listener : listener)
-        listener->onStepEnd(this);
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        l->onStepEnd(this);
 }
 
 
