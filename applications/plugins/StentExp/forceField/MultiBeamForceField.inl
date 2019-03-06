@@ -1903,6 +1903,10 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
             // in an ELASTIC state, but will allow the new PLASTIC points to be
             // handled correctly.
             computePlasticForce(internalForces, x, index, a, b);
+            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
+            beamMechanicalState = PLASTIC;
+            beamsData.endEdit();
             return;
         }
 
@@ -1974,7 +1978,6 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
 
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
-    MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
     bool isPlasticBeam = false;
     int gaussPointIt = 0;
 
@@ -2008,8 +2011,10 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
 
     // Updates the beam mechanical state information
     if (!isPlasticBeam)
-        beamMechanicalState == POSTPLASTIC;
-
+    {
+        MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
+        beamMechanicalState = POSTPLASTIC;
+    }
     beamsData.endEdit();
 
     //Update the tangent stiffness matrix with the new computed stresses
@@ -2079,6 +2084,10 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
             // in an ELASTIC or POSTPLASTIC state, but will allow the new
             // PLASTIC points to be handled correctly.
             computePlasticForce(internalForces, x, index, a, b);
+            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
+            beamMechanicalState = PLASTIC;
+            beamsData.endEdit();
             return;
         }
 
