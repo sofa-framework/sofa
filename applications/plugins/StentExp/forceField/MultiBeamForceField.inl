@@ -1692,7 +1692,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         // Updating the plastic strain
 
         VoigtTensor2 yieldNormal = helper::rsqrt(3.0 / 2)*(1 / sigmaEq)*elasticDeviatoricStress;
-        double lambda = voigtDotProduct(yieldNormal, elasticPredictor) / voigtDotProduct(yieldNormal, C*yieldNormal);
+        double lambda = voigtDotProduct(yieldNormal, elasticIncrement) / voigtDotProduct(yieldNormal, C*yieldNormal);
 
         VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
