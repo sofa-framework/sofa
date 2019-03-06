@@ -100,7 +100,7 @@ public:
     virtual void removeChild(BaseNode::SPtr node) = 0;
 
     /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr node) = 0;
+    virtual void moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) = 0;
 
     /// Add a generic object
     virtual bool addObject(BaseObject::SPtr obj) = 0;

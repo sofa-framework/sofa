@@ -132,16 +132,13 @@ void DAGNode::doRemoveChild(BaseNode::SPtr node)
 }
 
 /// Move a node from another node
-void DAGNode::doMoveChild(BaseNode::SPtr node)
+void DAGNode::doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
     setDirtyDescendancy();
-    for (sofa::core::objectmodel::BaseNode* parent : dagnode->getParents())
-    {
-        parent->removeChild(node);
-    }
+    previous_parent->removeChild(node);
 
     addChild(node);
 }

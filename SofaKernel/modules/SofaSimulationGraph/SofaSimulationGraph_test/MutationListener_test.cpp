@@ -14,7 +14,6 @@ using sofa::simulation::graph::DAGNode;
 using sofa::modeling::addNew;
 
 
-
 class TestMutationListener : public MutationListener
 {
     void onAddChildBegin(Node* parent, Node* child)
@@ -60,8 +59,6 @@ public:
         log = "";
     }
 };
-
-class MyComponent : public BaseObject {};
 
 struct MutationListener_test : public sofa::BaseTest
 {
@@ -148,7 +145,7 @@ struct MutationListener_test : public sofa::BaseTest
         node2 = root->createChild("node2");
         node1_1 = node1->createChild("node1_1");
         listener.clearLog();
-        node2->moveChild(node1_1);
+        node2->moveChild(node1_1, node1);
         // New version considers a Move to be a succession of 0-N Removes and 1 add.
         // Thus no move message ever sent to the listener!
         EXPECT_STREQ(/*"Begin Move node1_1 from node1 to node2\n"*/
@@ -160,26 +157,29 @@ struct MutationListener_test : public sofa::BaseTest
         listener.clearLog();
     }
 
-    void test_moveChild2Parents()
-    {
-        node1 = root->createChild("node1");
-        node2 = root->createChild("node2");
-        node1_1 = node1->createChild("node1_1");
-        node2->addChild(node1_1);
-        listener.clearLog();
-        root->moveChild(node1_1);
-        // New version considers a Move to be a succession of 0-N Removes and 1 add.
-        // Thus no move message ever sent to the listener!
-        EXPECT_STREQ(/*"Begin Move node1_1 from node1 to node2\n"*/
-                     "Begin Remove node1_1 from node1\n"
-                     "End Remove node1_1 from node1\n"
-                     "Begin Remove node1_1 from node2\n"
-                     "End Remove node1_1 from node2\n"
-                     "Begin Add node1_1 to root\n"
-                     "End Add node1_1 to root\n"
-                     /*"End Move node1_1 from node1 to node2\n"*/, listener.log.c_str());
-        listener.clearLog();
-    }
+
+    // This test makes no sense anymore since moveChild now removes only from 1
+    // parent at a time, that must be passed as an argument to the function
+//    void test_moveChild2Parents()
+//    {
+//        node1 = root->createChild("node1");
+//        node2 = root->createChild("node2");
+//        node1_1 = node1->createChild("node1_1");
+//        node2->addChild(node1_1);
+//        listener.clearLog();
+//        root->moveChild(node1_1);
+//        // New version considers a Move to be a succession of 0-N Removes and 1 add.
+//        // Thus no move message ever sent to the listener!
+//        EXPECT_STREQ(/*"Begin Move node1_1 from node1 to node2\n"*/
+//                     "Begin Remove node1_1 from node1\n"
+//                     "End Remove node1_1 from node1\n"
+//                     "Begin Remove node1_1 from node2\n"
+//                     "End Remove node1_1 from node2\n"
+//                     "Begin Add node1_1 to root\n"
+//                     "End Add node1_1 to root\n"
+//                     /*"End Move node1_1 from node1 to node2\n"*/, listener.log.c_str());
+//        listener.clearLog();
+//    }
 
     void test_moveChildNoParent()
     {
@@ -188,7 +188,7 @@ struct MutationListener_test : public sofa::BaseTest
         node1_1 = node1->createChild("node1_1");
         node1_1->detachFromGraph();
         listener.clearLog();
-        root->moveChild(node1_1);
+        root->moveChild(node1_1, nullptr);
         // New version considers a Move to be a succession of 0-N Removes and 1 add.
         // Thus no move message ever sent to the listener!
         EXPECT_STREQ(/*"Begin Move node1_1 from node1 to node2\n"*/
@@ -332,7 +332,7 @@ struct MutationListener_test : public sofa::BaseTest
         Node::SPtr node3 = root->createChild("node3");
         listener.clearLog();
 
-        node3->moveChild(node1);
+        node3->moveChild(node1, root);
         EXPECT_EQ("Begin Remove node1 from root\n"
                   "End Remove node1 from root\n"
                   "Begin Add node1 to node3\n"
@@ -374,11 +374,17 @@ struct MutationListener_test : public sofa::BaseTest
         node4->addChild(node1);
         listener.clearLog();
 
-        root->moveChild(node1);
+        root->moveChild(node1, node2);
+        root->moveChild(node1, node3);
+        root->moveChild(node1, node4);
         EXPECT_EQ("Begin Remove node1 from node2\n"
                   "End Remove node1 from node2\n"
+                  "Begin Add node1 to root\n"
+                  "End Add node1 to root\n"
                   "Begin Remove node1 from node3\n"
                   "End Remove node1 from node3\n"
+                  "Begin Add node1 to root\n"
+                  "End Add node1 to root\n"
                   "Begin Remove node1 from node4\n"
                   "End Remove node1 from node4\n"
                   "Begin Add node1 to root\n"

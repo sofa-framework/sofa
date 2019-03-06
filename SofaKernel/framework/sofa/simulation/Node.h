@@ -308,7 +308,7 @@ public:
     /// Remove a child node
     virtual void removeChild(BaseNode::SPtr node) final;
     /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr obj) final;
+    virtual void moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) final;
 
     /// Delegate methods overridden in child classes
     /// Add a child node
@@ -316,7 +316,7 @@ public:
     /// Remove a child node
     virtual void doRemoveChild(BaseNode::SPtr node) = 0;
     /// Move a node from another node
-    virtual void doMoveChild(BaseNode::SPtr obj) = 0;
+    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) = 0;
 
     /// @}
 
@@ -562,6 +562,9 @@ public:
 	/// override context setSleeping to add notification.
 	virtual void setSleeping(bool /*val*/) override;
 
+    virtual void notifyStepBegin();
+    virtual void notifyStepEnd();
+
 protected:
     bool debug_;
     bool initialized;
@@ -571,7 +574,7 @@ protected:
     virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;
-private:
+private:    
     virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child);
     virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child);
 
@@ -580,9 +583,6 @@ private:
 
     virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
     virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
-
-    virtual void notifyBeginMoveChild(Node::SPtr parent, Node::SPtr child);
-    virtual void notifyEndMoveChild(Node::SPtr parent, Node::SPtr child);
 
     virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);

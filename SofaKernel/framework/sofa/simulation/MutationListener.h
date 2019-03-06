@@ -39,13 +39,15 @@ class SOFA_SIMULATION_CORE_API MutationListener
   public:
     virtual ~MutationListener();
 
+    virtual void onStepEnd(Node *root);
+
+    virtual void onStepBegin(Node *root);
+
     virtual void sleepChanged(Node *node);
 
     virtual void onAddChildBegin(Node *parent, Node *child);
 
     virtual void onRemoveChildBegin(Node *parent, Node *child);
-
-    virtual void onMoveChildBegin(Node *parent, Node *child);
 
     virtual void onAddObjectBegin(Node *parent,
                              core::objectmodel::BaseObject *object);
@@ -53,24 +55,15 @@ class SOFA_SIMULATION_CORE_API MutationListener
     virtual void onRemoveObjectBegin(Node *parent,
                                 core::objectmodel::BaseObject *object);
 
-    virtual void onMoveObjectBegin(Node *previous, Node *parent,
-                              core::objectmodel::BaseObject *object);
-
     virtual void onAddSlaveBegin(core::objectmodel::BaseObject *master,
                             core::objectmodel::BaseObject *slave);
 
     virtual void onRemoveSlaveBegin(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave);
 
-    virtual void onMoveSlaveBegin(core::objectmodel::BaseObject *previousMaster,
-                             core::objectmodel::BaseObject *master,
-                             core::objectmodel::BaseObject *slave);
-
     virtual void onAddChildEnd(Node *parent, Node *child);
 
     virtual void onRemoveChildEnd(Node *parent, Node *child);
-
-    virtual void onMoveChildEnd(Node *parent, Node *child);
 
     virtual void onAddObjectEnd(Node *parent,
                              core::objectmodel::BaseObject *object);
@@ -78,18 +71,11 @@ class SOFA_SIMULATION_CORE_API MutationListener
     virtual void onRemoveObjectEnd(Node *parent,
                                 core::objectmodel::BaseObject *object);
 
-    virtual void onMoveObjectEnd(Node *previous, Node *parent,
-                              core::objectmodel::BaseObject *object);
-
     virtual void onAddSlaveEnd(core::objectmodel::BaseObject *master,
                             core::objectmodel::BaseObject *slave);
 
     virtual void onRemoveSlaveEnd(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave);
-
-    virtual void onMoveSlaveEnd(core::objectmodel::BaseObject *previousMaster,
-                             core::objectmodel::BaseObject *master,
-                             core::objectmodel::BaseObject *slave);
 };
 
 } // namespace simulation
