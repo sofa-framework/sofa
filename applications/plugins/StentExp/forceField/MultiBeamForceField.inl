@@ -426,7 +426,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
             Index a = (*it)[0];
             Index b = (*it)[1];
 
-            const bool beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+            const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
 
             defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
             q.normalize();
@@ -2120,7 +2120,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
 
-    const bool beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+    const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
 
     if (beamMechanicalState == ELASTIC)
         computeElasticForce(fint, x, i, a, b);
@@ -2189,7 +2189,7 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
 
     beamsData.endEdit(); // consecutive to the call to beamQuat
 
-    const bool beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+    const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
     defaulttype::Vec<12, Real> local_dforce;
 
     // The stiffness matrix we use depends on the mechanical state of the beam element
