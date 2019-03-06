@@ -1118,7 +1118,7 @@ void MultiBeamForceField<DataTypes>::reset()
             _beamLocalOrientations[i].clear();
 
         for (unsigned i = 0; i < _prevStresses.size(); ++i)
-            for (unsigned j = 0; j < _prevStresses.size(); ++j)
+            for (unsigned j = 0; j < 27; ++j)
             _prevStresses[i][j] = VoigtTensor2::Zero();
     }
     // TO DO: call to init?
