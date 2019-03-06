@@ -31,6 +31,9 @@ namespace simulation
 
 MutationListener::~MutationListener() {}
 
+void MutationListener::onStepBegin(Node *node) { SOFA_UNUSED(node); }
+void MutationListener::onStepEnd(Node *node) { SOFA_UNUSED(node); }
+
 void MutationListener::sleepChanged(Node *node) { SOFA_UNUSED(node); }
 
 void MutationListener::onAddChildBegin(Node *parent, Node *child)
@@ -55,13 +58,6 @@ void MutationListener::onRemoveObjectBegin(Node *parent,
     SOFA_UNUSED(parent);
     SOFA_UNUSED(object);
 }
-void MutationListener::onMoveObjectBegin(Node *previous, Node *parent,
-                                       core::objectmodel::BaseObject *object)
-{
-    SOFA_UNUSED(previous);
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(object);
-}
 void MutationListener::onAddSlaveBegin(core::objectmodel::BaseObject *master,
                                      core::objectmodel::BaseObject *slave)
 {
@@ -71,14 +67,6 @@ void MutationListener::onAddSlaveBegin(core::objectmodel::BaseObject *master,
 void MutationListener::onRemoveSlaveBegin(core::objectmodel::BaseObject *master,
                                         core::objectmodel::BaseObject *slave)
 {
-    SOFA_UNUSED(master);
-    SOFA_UNUSED(slave);
-}
-void MutationListener::onMoveSlaveBegin(
-    core::objectmodel::BaseObject *previousMaster,
-    core::objectmodel::BaseObject *master, core::objectmodel::BaseObject *slave)
-{
-    SOFA_UNUSED(previousMaster);
     SOFA_UNUSED(master);
     SOFA_UNUSED(slave);
 }
@@ -105,13 +93,6 @@ void MutationListener::onRemoveObjectEnd(Node *parent,
     SOFA_UNUSED(parent);
     SOFA_UNUSED(object);
 }
-void MutationListener::onMoveObjectEnd(Node *previous, Node *parent,
-                                     core::objectmodel::BaseObject *object)
-{
-    SOFA_UNUSED(previous);
-    SOFA_UNUSED(parent);
-    SOFA_UNUSED(object);
-}
 void MutationListener::onAddSlaveEnd(core::objectmodel::BaseObject *master,
                                    core::objectmodel::BaseObject *slave)
 {
@@ -121,14 +102,6 @@ void MutationListener::onAddSlaveEnd(core::objectmodel::BaseObject *master,
 void MutationListener::onRemoveSlaveEnd(core::objectmodel::BaseObject *master,
                                       core::objectmodel::BaseObject *slave)
 {
-    SOFA_UNUSED(master);
-    SOFA_UNUSED(slave);
-}
-void MutationListener::onMoveSlaveEnd(
-    core::objectmodel::BaseObject *previousMaster,
-    core::objectmodel::BaseObject *master, core::objectmodel::BaseObject *slave)
-{
-    SOFA_UNUSED(previousMaster);
     SOFA_UNUSED(master);
     SOFA_UNUSED(slave);
 }

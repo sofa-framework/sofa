@@ -201,9 +201,15 @@ void Node::removeChild(core::objectmodel::BaseNode::SPtr node)
 
 
 /// Move a node from another node
-void Node::moveChild(BaseNode::SPtr node)
+void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
 {
-    doMoveChild(node);
+    if (!prev_parent.get())
+    {
+        msg_error(this->getName()) << "Node::moveChild(BaseNode::SPtr node)\n" << node->getName() << " has no parent. Use addChild instead!";
+        addChild(node);
+        return;
+    }
+    doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject::SPtr obj)
@@ -227,9 +233,28 @@ bool Node::removeObject(BaseObject::SPtr obj)
 void Node::moveObject(BaseObject::SPtr obj)
 {
     Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
-    doMoveObject(obj, prev_parent);
+    if (prev_parent)
+    {
+        doMoveObject(obj, prev_parent);
+    }
+    else
+    {
+        obj->getContext()->removeObject(obj);
+        addObject(obj);
+    }
 }
 
+void Node::notifyStepBegin()
+{
+    for (auto& listener : listener)
+        listener->onStepBegin(this);
+}
+
+void Node::notifyStepEnd()
+{
+    for (auto& listener : listener)
+        listener->onStepEnd(this);
+}
 
 
 void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child)

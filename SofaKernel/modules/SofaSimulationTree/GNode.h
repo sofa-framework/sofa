@@ -61,7 +61,7 @@ public:
     virtual void doRemoveChild(BaseNode::SPtr node) override;
 
     /// Move a node from another node
-    virtual void doMoveChild(BaseNode::SPtr node) override;
+    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev) override;
 
     /// Remove the current node from the graph: consists in removing the link to its parent
     virtual void detachFromGraph() override;

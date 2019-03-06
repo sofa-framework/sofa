@@ -76,9 +76,9 @@ void GNode::doRemoveChild(BaseNode::SPtr node)
 }
 
 /// Remove a child
-void GNode::doMoveChild(BaseNode::SPtr node)
+void GNode::doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev)
 {
-    Node* parentNode = down_cast<Node>(node->getContext()->toBaseNode());
+    Node* parentNode = static_cast<Node*>(prev.get());
     if (parentNode != nullptr)
         parentNode->removeChild(node);
     addChild(node);

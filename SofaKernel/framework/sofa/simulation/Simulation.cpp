@@ -233,7 +233,9 @@ void Simulation::animate ( Node* root, SReal dt )
     sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop();
     if(aloop)
     {
+        root->notifyStepBegin();
         aloop->step(params,dt);
+        root->notifyStepEnd();
     }
     else
     {

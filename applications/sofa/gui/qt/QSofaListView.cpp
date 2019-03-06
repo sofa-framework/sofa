@@ -120,6 +120,7 @@ void QSofaListView::Clear(Node* rootNode)
     this->setSortingEnabled(false);
 
     header()->hide();
+    rootNode->addListener(graphListener_);
     graphListener_->onAddChildBegin ( nullptr, rootNode );
     graphListener_->freeze ( rootNode );
     std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;

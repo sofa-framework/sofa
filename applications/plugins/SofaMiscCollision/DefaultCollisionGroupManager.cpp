@@ -54,7 +54,12 @@ void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,
                                               simulation::Node::SPtr group)
 {
     core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
-    while(!group->child.empty()) parent->moveChild(*group->child.begin());
+    while(!group->child.empty())
+    {
+        sofa::simulation::Node::SPtr child = *group->child.begin();
+        while (child->getFirstParent() != nullptr)
+            parent->moveChild(child, child->getFirstParent());
+    }
 
     simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
     cleanupvis.execute(group.get());
@@ -117,8 +122,14 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // create a new group
                     group = parent->createChild(groupName);
 
-                    group->moveChild((simulation::Node*)group1);
-                    group->moveChild((simulation::Node*)group2);
+                    sofa::simulation::Node::SPtr c = *group1->child.begin();
+                    while (c->getFirstParent() != nullptr)
+                        group->moveChild(c, c->getFirstParent());
+
+                    c = *group2->child.begin();
+                    while (c->getFirstParent() != nullptr)
+                        group->moveChild(c, c->getFirstParent());
+
                     groupSet.insert(group.get());
                 }
                 else if (group1IsColl)
@@ -127,7 +138,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // merge group2 in group1
                     if (!group2IsColl)
                     {
-                        group->moveChild(group2);
+                        sofa::simulation::Node::SPtr c = *group2->child.begin();
+                        while (c->getFirstParent() != nullptr)
+                            group->moveChild(c, c->getFirstParent());
                     }
                     else
                     {
@@ -151,7 +164,11 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                         while(!group2->object.empty())
                             group->moveObject(*group2->object.begin());
                         while(!group2->child.empty())
-                            group->moveChild(*group2->child.begin());
+                        {
+                            sofa::simulation::Node::SPtr c = *group2->child.begin();
+                            while (c->getFirstParent() != nullptr)
+                                group->moveChild(c, c->getFirstParent());
+                        }
                         parent->removeChild((simulation::Node*)group2);
                         groupSet.erase(group2);
                         mergedGroups[group2] = group;
@@ -167,7 +184,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 {
                     // group1 is not a collision group while group2 is
                     group = group2;
-                    group->moveChild(group1);
+                    while (group1->getFirstParent() != nullptr)
+                        group->moveChild(group1, group1->getFirstParent());
                 }
                 if (!group->solver.empty())
                 {
