@@ -248,14 +248,14 @@ void Node::notifyStepBegin()
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        l->onStepBegin(this);
+        listener->onStepBegin(this);
 }
 
 void Node::notifyStepEnd()
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        l->onStepEnd(this);
+        listener->onStepEnd(this);
 }
 
 
