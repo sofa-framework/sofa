@@ -112,6 +112,16 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
     return std::move(newchild);
 }
 
+
+void DAGNode::moveChild(BaseNode::SPtr node)
+{
+    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    for (auto& parent : dagnode->getParents()) {
+        Node::moveChild(node, parent);
+    }
+}
+
+
 /// Add a child node
 void DAGNode::doAddChild(BaseNode::SPtr node)
 {

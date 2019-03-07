@@ -309,6 +309,7 @@ public:
     virtual void removeChild(BaseNode::SPtr node) final;
     /// Move a node from another node
     virtual void moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) final;
+    virtual void moveChild(BaseNode::SPtr node) = 0;
 
     /// Delegate methods overridden in child classes
     /// Add a child node
