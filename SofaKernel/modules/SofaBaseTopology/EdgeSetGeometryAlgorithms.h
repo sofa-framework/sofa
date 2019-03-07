@@ -80,7 +80,7 @@ protected:
         : PointSetGeometryAlgorithms<DataTypes>()
         ,initializedEdgeCubatureTables(false)
         , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
-        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology."))
+        , d_drawEdges(core::objectmodel::Base::initData(&d_drawEdges, false, "drawEdges","if true, draw the edges in the topology."))
         , _drawColor(initData(&_drawColor, RGBAColor(0.4f,1.0f,0.3f, 1.0f), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
@@ -166,7 +166,7 @@ public:
 
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
-    Data<bool>  _draw; ///< if true, draw the edges in the topology.
+    Data<bool>  d_drawEdges; ///< if true, draw the edges in the topology.
     Data<RGBAColor> _drawColor; ///< RGB code color used to draw edges.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,1> edgeNumericalIntegration;

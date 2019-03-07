@@ -166,6 +166,10 @@ public:
 
     void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text ) override;
 
+    /** Set the scale and units used to add depth values
+    * @param factor : Specifies a scale factor that is used to create a variable depth offset for each polygon. The initial value is 0.
+    * @param units : Is multiplied by an implementation-specific value to create a constant depth offset. The initial value is 0.
+    */
     void enablePolygonOffset(float factor, float units) override;
     void disablePolygonOffset() override;
 
