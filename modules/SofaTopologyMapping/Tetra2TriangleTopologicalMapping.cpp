@@ -235,7 +235,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     iter_last = Glob2LocMap.find(oldGlobTriId);
                     if(iter_last == Glob2LocMap.end())
                     {
-                        msg_error() << "Could not find last triangle id in Glob2LocMap: " << lastGlobId << " nor removed triangle id: " << oldGlobTriId;
+                        msg_warning() << "Could not find last triangle id in Glob2LocMap: " << lastGlobId << " nor removed triangle id: " << oldGlobTriId;
+                        lastGlobId--;
                         continue;
                     }
                 }
