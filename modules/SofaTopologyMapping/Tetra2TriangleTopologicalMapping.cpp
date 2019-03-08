@@ -506,6 +506,79 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 }
 
 
+bool Tetra2TriangleTopologicalMapping::checkTopologies()
+{
+    if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
+        return false;
+
+    // result of the method to be changed in case of error encountered
+    bool allOk = true;
+
+    //const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetraArray_top = fromModel->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangleArray_top = fromModel->getTriangles();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangleArray_bot = toModel->getTriangles();
+    const sofa::helper::vector <unsigned int>& buffer = Loc2GlobDataVec.getValue();
+
+    dmsg_info() << "################# checkTopologies #####################";
+    dmsg_info() << "triangleArray_bot.size(): " << triangleArray_bot.size();
+    dmsg_info() << "Glob2LocMap.size(): " << Glob2LocMap.size();
+    dmsg_info() << "Loc2GlobDataVec.size(): " << buffer.size();
+
+    std::map<unsigned int, unsigned int>::iterator itM;
+    for (size_t i=0; i<triangleArray_top.size(); i++)
+    {
+        const core::topology::BaseMeshTopology::Triangle& tri = triangleArray_top[i];
+        const BaseMeshTopology::TetrahedraAroundTriangle& tetraATri = fromModel->getTetrahedraAroundTriangle(i);
+        if (tetraATri.size() != 1)
+            continue;
+
+        itM = Glob2LocMap.find(i);
+        if (itM == Glob2LocMap.end()){
+            msg_error() << "Top triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " NOT FOUND";
+            allOk = false;
+            continue;
+        }
+
+        unsigned int triLocID = (*itM).second;
+        if (triLocID >= triangleArray_bot.size()){
+            msg_error() << "## Glob2LocMap out of bounds: " << i << " - " << triLocID;
+            allOk = false;
+            continue;
+        }
+        const core::topology::BaseMeshTopology::Triangle& tri2 = triangleArray_bot[triLocID];
+
+
+
+        bool ok = false;
+        for (int j=0; j<3; ++j)
+        {
+            ok = false;
+            for (int k=0; k<3; ++k)
+                if (tri[j] == tri2[k])
+                {
+                    ok = true;
+                    break;
+                }
+            if (!ok)
+                break;
+        }
+
+        if (!ok){
+            msg_error() << "## Top Triangle Not same as bottom Triangle: ";
+            msg_error() << "Top Triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " --> Bottom Triangle: " << triLocID << " -> " << tri2[0] << " " << tri2[1] << " " << tri2[2];
+            allOk = false;
+        }
+
+        if (buffer[triLocID] != i) {
+            msg_error() << "## Maps no coherent: Loc2Glob: " << triLocID << " -> " << buffer[triLocID];
+            allOk = false;
+        }
+    }
+
+    dmsg_info() << "###############################################";
+    return allOk;
+}
+
 } // namespace topology
 
 } // namespace component
