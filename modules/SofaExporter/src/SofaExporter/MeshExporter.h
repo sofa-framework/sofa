@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -83,11 +83,11 @@ public:
     helper::vector<std::string> cellsDataField;
     helper::vector<std::string> cellsDataName;
 
-    virtual void doInit() override ;
-    virtual void doReInit() override ;
-    virtual void handleEvent(Event *) override ;
+    void doInit() override ;
+    void doReInit() override ;
+    void handleEvent(Event *) override ;
 
-    virtual bool write() override ;
+    bool write() override ;
 
     bool writeMesh();
     bool writeMeshVTKXML();
@@ -99,7 +99,7 @@ public:
 
 protected:
     MeshExporter();
-    virtual ~MeshExporter();
+    ~MeshExporter() override;
 
     BaseMeshTopology*     m_inputtopology {nullptr};
     BaseMechanicalState*  m_inputmstate {nullptr};

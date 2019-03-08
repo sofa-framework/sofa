@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -214,13 +214,13 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
 void QDisplayPropertyWidget::addGroup(const QString& component, const QString& group)
 {
     // return now if the component does not exist
-    QTreeWidgetItem *componentItem = NULL;
+    QTreeWidgetItem *componentItem = nullptr;
     componentItem = findComponent(component);
     if(!componentItem)
         return;
 
     // return now if the group component already exist
-    QTreeWidgetItem *groupItem = NULL;
+    QTreeWidgetItem *groupItem = nullptr;
     groupItem = findGroup(component, group);
     if(groupItem)
         return;
@@ -251,14 +251,14 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
         return;
 
     addGroup(component, group);
-    QTreeWidgetItem *groupItem = NULL;
+    QTreeWidgetItem *groupItem = nullptr;
     groupItem = findGroup(component, group);
 
     if(!groupItem)
         return;
 
     QTreeWidgetItem *dataItem = new QTreeWidgetItem(groupItem);
-    QBrush *brush = NULL;
+    QBrush *brush = nullptr;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
@@ -295,14 +295,14 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
         return;
 
     addGroup(component, group);
-    QTreeWidgetItem *groupItem = NULL;
+    QTreeWidgetItem *groupItem = nullptr;
     groupItem = findGroup(component, group);
 
     if(!groupItem)
         return;
 
     QTreeWidgetItem *linkItem = new QTreeWidgetItem(groupItem);
-    QBrush *brush = NULL;
+    QBrush *brush = nullptr;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
@@ -340,13 +340,13 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
         return;
 
     addGroup(component, group);
-    QTreeWidgetItem *groupItem = NULL;
+    QTreeWidgetItem *groupItem = nullptr;
     groupItem = findGroup(component, group);
 
     if(!groupItem)
         return;
 
-    QBrush *brush = NULL;
+    QBrush *brush = nullptr;
     QFont categoryFont;
     categoryFont.setBold(true);
 
@@ -411,7 +411,7 @@ void QDisplayPropertyWidget::addDescriptionItem(QTreeWidgetItem *groupItem, cons
 {
     QTreeWidgetItem *descriptionItem = new QTreeWidgetItem(groupItem);
 
-    QBrush *brush = NULL;
+    QBrush *brush = nullptr;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
@@ -444,7 +444,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         return;
 
     addGroup(component, group);
-    QTreeWidgetItem *groupItem = NULL;
+    QTreeWidgetItem *groupItem = nullptr;
     groupItem = findGroup(component, group);
 
     if(!groupItem)
@@ -454,7 +454,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
     if(!infos.empty())
     {
         QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
-        QBrush *brush = NULL;
+        QBrush *brush = nullptr;
         if(groupItem->childCount() % 2 == 0)
             brush = new QBrush(QColor(255, 255, 191));
         else
@@ -501,7 +501,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
     if(!warnings.empty())
     {
         QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
-        QBrush *brush = NULL;
+        QBrush *brush = nullptr;
         if(groupItem->childCount() % 2 == 0)
             brush = new QBrush(QColor(255, 255, 191));
         else
@@ -547,8 +547,8 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
 
 void QDisplayPropertyWidget::clear()
 {
-    QTreeWidgetItem *item = NULL;
-    QPushButton* pin = NULL;
+    QTreeWidgetItem *item = nullptr;
+    QPushButton* pin = nullptr;
     for(unsigned int i = 0; (item = topLevelItem(i));)
     {
         pin = static_cast<QPushButton*>(itemWidget(item, 1));
@@ -600,7 +600,7 @@ void QDisplayPropertyWidget::updateListViewItem()
 void QDisplayPropertyWidget::clearComponentOutput()
 {
     QObject* signalEmitter = sender();
-    if(0 == signalEmitter)
+    if(nullptr == signalEmitter)
         return;
 
     QVariant variant = signalEmitter->property("base");
@@ -612,7 +612,7 @@ void QDisplayPropertyWidget::clearComponentOutput()
 void QDisplayPropertyWidget::clearComponentWarning()
 {
     QObject* signalEmitter = sender();
-    if(0 == signalEmitter)
+    if(nullptr == signalEmitter)
         return;
 
     QVariant variant = signalEmitter->property("base");
@@ -623,7 +623,7 @@ void QDisplayPropertyWidget::clearComponentWarning()
 
 QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component) const
 {
-    QTreeWidgetItem *componentItem = NULL;
+    QTreeWidgetItem *componentItem = nullptr;
     for(unsigned int i = 0; (componentItem = topLevelItem(i)); ++i)
         if(componentItem->text(0) == component)
             break;
@@ -633,12 +633,12 @@ QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component)
 
 QTreeWidgetItem* QDisplayPropertyWidget::findGroup(const QString& component, const QString& group) const
 {
-    QTreeWidgetItem *componentItem = NULL;
+    QTreeWidgetItem *componentItem = nullptr;
     componentItem = findComponent(component);
     if(!componentItem)
-        return NULL;
+        return nullptr;
 
-    QTreeWidgetItem *groupItem = NULL;
+    QTreeWidgetItem *groupItem = nullptr;
     for(unsigned int i = 0; (groupItem = componentItem->child(i)); ++i)
         if(groupItem->text(0) == group)
             break;

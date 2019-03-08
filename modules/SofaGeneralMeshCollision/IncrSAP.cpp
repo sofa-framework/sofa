@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -723,7 +723,7 @@ void IncrSAP::updateMovingBoxes(){
         return;
 
     EndPointID * cur_end_point_min,*cur_end_point_max;
-    cur_end_point_min = cur_end_point_max = 0x0;
+    cur_end_point_min = cur_end_point_max = nullptr;
 
     EndPointList::iterator it_min,next_it_min,prev_it_min,base_it_min,it_max,next_it_max,prev_it_max,base_it_max;
     bool min_updated,max_updated,min_moving,max_moving;

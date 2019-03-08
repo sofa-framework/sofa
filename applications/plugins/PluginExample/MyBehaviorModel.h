@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,12 +47,12 @@ public:
 
 protected:
     MyBehaviorModel();
-    ~MyBehaviorModel();
+    ~MyBehaviorModel() override;
 
 public:
-    virtual void init();
-    virtual void reinit();
-    virtual void updatePosition(double dt);
+    void init() override;
+    void reinit() override;
+    void updatePosition(double dt) override;
 
 protected:
     Data<unsigned> customUnsignedData; ///< Example of unsigned data with custom widget

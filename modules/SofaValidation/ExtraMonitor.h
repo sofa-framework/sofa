@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,19 +50,19 @@ public:
 protected:
     ExtraMonitor();
 public:
-    virtual void init() override;
+    void init() override;
 
     //	virtual void reset();
 
     //	virtual void reinit();
 
-    virtual void handleEvent( core::objectmodel::Event* ev ) override;
+    void handleEvent( core::objectmodel::Event* ev ) override;
 
     ///create gnuplot files
-    virtual void initGnuplot ( const std::string path ) override;
+    void initGnuplot ( const std::string path ) override;
 
     ///write in gnuplot files the Monitored desired data (velocities,positions,forces)
-    virtual void exportGnuplot ( Real time ) override;
+    void exportGnuplot ( Real time ) override;
 
     /// Editable Data
     Data< bool > saveWcinToGnuplot;

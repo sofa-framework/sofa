@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -51,10 +51,10 @@ public:
     typedef QGridLayout CategoryLayout;
 public:
     QCategoryTreeLibrary(QWidget *parent, const std::string &categoryName, unsigned int numCom);
-    ~QCategoryTreeLibrary();
+    ~QCategoryTreeLibrary() override;
 
     ComponentLibrary *addComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles);
-    void endConstruction();
+    void endConstruction() override;
 
     void setDisplayed(bool b);
 

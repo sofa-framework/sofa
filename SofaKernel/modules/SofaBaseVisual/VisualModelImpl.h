@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,8 +67,8 @@ public:
     virtual Data<VecDeriv>*	write(core::VecDerivId v ) ;
     virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const ;
 
-    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return NULL; }
-    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
+    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return nullptr; }
+    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return nullptr; }
 };
 
 /**
@@ -153,14 +153,14 @@ public:
     Data< TexCoord > m_scaleTex; ///< Scale of the texture
     Data< TexCoord > m_translationTex; ///< Translation of the texture
 
-    virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
+    void applyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
 
     /// Apply Rotation from Euler angles (in degree!)
-    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
+    void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
 
-    virtual void applyRotation(const sofa::defaulttype::Quat q) override;
+    void applyRotation(const sofa::defaulttype::Quat q) override;
 
-    virtual void applyScale(const SReal sx, const SReal sy, const SReal sz) override;
+    void applyScale(const SReal sx, const SReal sy, const SReal sz) override;
 
     virtual void applyUVTransformation();
 
@@ -228,17 +228,17 @@ protected:
     VisualModelImpl();
 
     /// Default destructor.
-    ~VisualModelImpl();
+    ~VisualModelImpl() override;
 
 public:
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     virtual bool hasTransparent();
     bool hasOpaque();
 
-    virtual void drawVisual(const core::visual::VisualParams* vparams) override;
-    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
-    virtual void drawShadow(const core::visual::VisualParams* vparams) override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
+    void drawShadow(const core::visual::VisualParams* vparams) override;
 
     virtual bool loadTextures() {return false;}
     virtual bool loadTexture(const std::string& /*filename*/) { return false; }
@@ -375,24 +375,24 @@ public:
     virtual void computeMesh();
     virtual void computeNormals();
     virtual void computeTangents();
-    virtual void computeBBox(const core::ExecParams* params, bool=false) override;
+    void computeBBox(const core::ExecParams* params, bool=false) override;
     virtual void computeUVSphereProjection();
 
     virtual void updateBuffers() {}
 
-    virtual void updateVisual() override;
+    void updateVisual() override;
 
     /// Handle topological changes
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void initVisual() override;
+    void initVisual() override;
 
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
-    virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count) override;
+    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count) override;
 
     virtual std::string getTemplateName() const override
     {
@@ -417,8 +417,8 @@ public:
     bool xformsModified;
 
 
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 

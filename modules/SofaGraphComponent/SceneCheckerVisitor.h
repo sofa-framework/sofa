@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,10 +41,10 @@ class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
     SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance()) ;
-    virtual ~SceneCheckerVisitor() ;
+    ~SceneCheckerVisitor() override;
 
     void validate(Node* node) ;
-    virtual Result processNodeTopDown(Node* node) override ;
+    Result processNodeTopDown(Node* node) override ;
 
     void addCheck(SceneCheck::SPtr check) ;
     void removeCheck(SceneCheck::SPtr check) ;

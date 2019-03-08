@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/defaulttype/Mat.h>
 
 namespace sofa
@@ -124,7 +124,7 @@ public:
 
     BlocFullMatrix(Index nbRow, Index nbCol);
 
-    ~BlocFullMatrix();
+    ~BlocFullMatrix() override;
 
     Bloc* ptr() { return data; }
     const Bloc* ptr() const { return data; }
@@ -133,13 +133,13 @@ public:
 
     Bloc& bloc(Index bi, Index bj);
 
-    void resize(Index nbRow, Index nbCol);
+    void resize(Index nbRow, Index nbCol) override;
 
-    Index rowSize(void) const;
+    Index rowSize(void) const override;
 
-    Index colSize(void) const;
+    Index colSize(void) const override;
 
-    SReal element(Index i, Index j) const;
+    SReal element(Index i, Index j) const override;
 
     const Bloc& asub(Index bi, Index bj, Index, Index) const;
 
@@ -161,19 +161,19 @@ public:
     template<class B>
     void setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const B& m);
 
-    void set(Index i, Index j, double v);
+    void set(Index i, Index j, double v) override;
 
-    void add(Index i, Index j, double v);
+    void add(Index i, Index j, double v) override;
 
-    void clear(Index i, Index j);
+    void clear(Index i, Index j) override;
 
-    void clearRow(Index i);
+    void clearRow(Index i) override;
 
-    void clearCol(Index j);
+    void clearCol(Index j) override;
 
-    void clearRowCol(Index i);
+    void clearRowCol(Index i) override;
 
-    void clear();
+    void clear() override;
 
     template<class Real2>
     FullVector<Real2> operator*(const FullVector<Real2>& v) const
@@ -371,7 +371,7 @@ public:
 
     BTDMatrix(Index nbRow, Index nbCol);
 
-    ~BTDMatrix();
+    ~BTDMatrix() override;
 
     Bloc* ptr() { return data; }
     const Bloc* ptr() const { return data; }
@@ -384,13 +384,13 @@ public:
 
     Bloc& bloc(Index bi, Index bj);
 
-    void resize(Index nbRow, Index nbCol);
+    void resize(Index nbRow, Index nbCol) override;
 
-    Index rowSize(void) const;
+    Index rowSize(void) const override;
 
-    Index colSize(void) const;
+    Index colSize(void) const override;
 
-    SReal element(Index i, Index j) const;
+    SReal element(Index i, Index j) const override;
 
     const Bloc& asub(Index bi, Index bj, Index, Index) const;
 
@@ -412,19 +412,19 @@ public:
     template<class B>
     void setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const B& m);
 
-    void set(Index i, Index j, double v);
+    void set(Index i, Index j, double v) override;
 
-    void add(Index i, Index j, double v);
+    void add(Index i, Index j, double v) override;
 
-    void clear(Index i, Index j);
+    void clear(Index i, Index j) override;
 
-    void clearRow(Index i);
+    void clearRow(Index i) override;
 
-    void clearCol(Index j);
+    void clearCol(Index j) override;
 
-    void clearRowCol(Index i);
+    void clearRowCol(Index i) override;
 
-    void clear();
+    void clear() override;
 
     template<class Real2>
     FullVector<Real2> operator*(const FullVector<Real2>& v) const

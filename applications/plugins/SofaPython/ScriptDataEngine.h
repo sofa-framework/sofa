@@ -25,20 +25,20 @@ public:
 
 protected:
     ScriptDataEngine();
-    virtual ~ScriptDataEngine();
+    ~ScriptDataEngine() override;
 
 public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
-    virtual void init() override ;
-    virtual void reinit() override ;
+    void init() override ;
+    void reinit() override ;
 
 
     void call_update();
-    virtual void doUpdate() override ;
+    void doUpdate() override ;
 
 
 protected:

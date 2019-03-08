@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -52,11 +52,11 @@ protected:
     QPoint            m_prevMousePosition ;
 
     void              checkValue();
-    virtual void      keyPressEvent(QKeyEvent *);
+    void      keyPressEvent(QKeyEvent *) override;
 
-    virtual void      mouseMoveEvent(QMouseEvent *) ;
-    virtual void      mousePressEvent(QMouseEvent *) ;
-    virtual void      mouseReleaseEvent(QMouseEvent *) ;
+    void      mouseMoveEvent(QMouseEvent *) override ;
+    void      mousePressEvent(QMouseEvent *) override ;
+    void      mouseReleaseEvent(QMouseEvent *) override ;
 
 public:
 

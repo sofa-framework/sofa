@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -128,7 +128,7 @@ JoystickEvent::HatEvent::State JoystickEvent::HatEvent::getState() const
 
 JoystickEvent::JoystickEvent()
 {
-    buttonEvent = 0;
+    buttonEvent = nullptr;
 }
 
 
@@ -214,7 +214,7 @@ const JoystickEvent::HatEvent *JoystickEvent::getHatEvent(const int index) const
             return hatEvents[i];
     }
 
-    return 0l;
+    return nullptr;
 }
 
 

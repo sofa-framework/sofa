@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,10 +69,10 @@ public:
         resize(nbRow);
     }
 
-    Index size() const { return eigenVector.size(); }
+    Index size() const override { return eigenVector.size(); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow)
+    void resize(Index nbRow) override
     {
         eigenVector.resize((IndexEigen)nbRow);
     }
@@ -86,7 +86,7 @@ public:
 
 
 
-    SReal element(Index i) const
+    SReal element(Index i) const override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -98,7 +98,7 @@ public:
         return eigenVector.coeff((IndexEigen)i);
     }
 
-    void set(Index i, double v)
+    void set(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -126,7 +126,7 @@ public:
 
 
 
-    void add(Index i, double v)
+    void add(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -138,7 +138,7 @@ public:
         eigenVector.coeffRef((IndexEigen)i) += (Real)v;
     }
 
-    void clear(Index i)
+    void clear(Index i) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -152,7 +152,7 @@ public:
 
 
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
+    void clear() override
     {
         resize(0);
         resize(size());
@@ -202,7 +202,7 @@ public:
     const VectorEigen& getVectorEigen() const { return eigenVector; }
 
 
-    Index size() const { return eigenVector.size(); }
+    Index size() const override { return eigenVector.size(); }
 
     EigenVector(Index nbRow=0)
     {
@@ -210,14 +210,14 @@ public:
     }
 
     /// Resize the matrix without preserving the data
-    void resize(Index nbRow)
+    void resize(Index nbRow) override
     {
         eigenVector.resize(nbRow);
     }
 
 
 
-    SReal element(Index i) const
+    SReal element(Index i) const override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -229,7 +229,7 @@ public:
         return eigenVector.coeff(i);
     }
 
-    void set(Index i, double v)
+    void set(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -245,7 +245,7 @@ public:
 
 
 
-    void add(Index i, double v)
+    void add(Index i, double v) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -257,7 +257,7 @@ public:
         eigenVector.coeffRef(i) += (Real)v;
     }
 
-    void clear(Index i)
+    void clear(Index i) override
     {
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -271,7 +271,7 @@ public:
 
 
     /// Set all values to 0
-    void clear()
+    void clear() override
     {
         eigenVector.setZero();
     }

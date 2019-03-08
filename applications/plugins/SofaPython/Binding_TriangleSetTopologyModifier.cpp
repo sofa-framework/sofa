@@ -126,9 +126,9 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    PyObject* triangleArgs  = NULL;
-    PyObject* ancestorsArgs = NULL;
-    PyObject* coefsArgs     = NULL;
+    PyObject* triangleArgs  = nullptr;
+    PyObject* ancestorsArgs = nullptr;
+    PyObject* coefsArgs     = nullptr;
 
     if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs))
     {
@@ -156,9 +156,9 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    PyObject* triangleIndicesArg      = NULL;
-    PyObject* removeIsolatedEdgesArg  = NULL;
-    PyObject* removeIsolatedPointsArg = NULL;
+    PyObject* triangleIndicesArg      = nullptr;
+    PyObject* removeIsolatedEdgesArg  = nullptr;
+    PyObject* removeIsolatedPointsArg = nullptr;
 
     if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg))
     {
@@ -199,11 +199,11 @@ static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self,
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    PyObject* trianglesArg            = NULL;
-    PyObject* triangleIndicesArg      = NULL;
-    PyObject* ancestorsArg            = NULL;
-    PyObject* coefsArg                = NULL;
-    PyObject* triangles2RemoveArg      = NULL;
+    PyObject* trianglesArg            = nullptr;
+    PyObject* triangleIndicesArg      = nullptr;
+    PyObject* ancestorsArg            = nullptr;
+    PyObject* coefsArg                = nullptr;
+    PyObject* triangles2RemoveArg      = nullptr;
 
     if (PyArg_UnpackTuple(args, "removeTriangles", 5, 5, &trianglesArg,
                                                          &triangleIndicesArg,

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <image/config.h>
 #include "ImageTypes.h"
-#include <limits.h>
+#include <climits>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -73,7 +73,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         container->f_listening.setValue(true);  // to update camera during animate
     }
 
-    static void parse( ImageContainerT* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
+    static void parse( ImageContainerT* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = nullptr )
     {
         if( container->image.isSet() ) return; // image is set from data link
 
@@ -391,11 +391,11 @@ public:
         wimage->clear();
     }
 
-    virtual ~ImageContainer() {clear();}
+    ~ImageContainer() override {clear();}
 
     bool transformIsSet;
 
-    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
+    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
     {
         Inherited::parse(arg);
 
@@ -411,7 +411,7 @@ public:
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
 
-    virtual void init() override
+    void init() override
     {
         ImageContainerSpecialization<ImageTypes>::init( this );
 
@@ -530,7 +530,7 @@ protected:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
+    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
         if( onlyVisible && !drawBB.getValue()) return;
 

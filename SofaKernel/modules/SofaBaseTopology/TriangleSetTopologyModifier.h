@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,14 +53,14 @@ protected:
         : list_Out(initData(&list_Out,"list_Out","triangles with at least one null values."))
     {}
 
-    virtual ~TriangleSetTopologyModifier() override {}
+    ~TriangleSetTopologyModifier() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges() override;
+    void propagateTopologicalEngineChanges() override;
 
     /** \brief add a set of triangles
     @param triangles an array of vertex indices describing the triangles to be created
@@ -111,7 +111,7 @@ public:
      *
      * \sa addPointsWarning
      */
-    virtual void addPointsProcess(const size_t nPoints) override;
+    void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *
@@ -146,7 +146,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
      */
-    virtual void removeItems(const sofa::helper::vector< TriangleID >& items) override;
+    void removeItems(const sofa::helper::vector< TriangleID >& items) override;
 
     /** \brief Remove a set  of triangles
         @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
@@ -214,7 +214,7 @@ public:
      * @param removeIsolatedItems if true isolated vertices are also removed
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
+    void removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
             const bool removeIsolatedItems=false) override;
 
 
@@ -226,7 +226,7 @@ public:
      * \sa removePointsWarning
      * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
-    virtual void removePointsProcess(const sofa::helper::vector<PointID> &indices,
+    void removePointsProcess(const sofa::helper::vector<PointID> &indices,
             const bool removeDOF = true) override;
 
 
@@ -235,14 +235,14 @@ public:
      * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
+    void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
             const sofa::helper::vector<PointID> &inv_index,
             const bool renumberDOF = true) override;
 
 
     /** \brief Generic method for points renumbering
      */
-    virtual void renumberPoints( const sofa::helper::vector<PointID> &index,
+    void renumberPoints( const sofa::helper::vector<PointID> &index,
             const sofa::helper::vector<PointID> &inv_index) override;
 
 
@@ -254,7 +254,7 @@ public:
      * @param coefs : barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    virtual void movePointsProcess (const sofa::helper::vector < PointID >& id,
+    void movePointsProcess (const sofa::helper::vector < PointID >& id,
             const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool moveDOF = true) override;

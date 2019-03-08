@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,9 +44,9 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    virtual void doInit(Node* node) override { SOFA_UNUSED(node); }
-    virtual void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
-    virtual void doPrintSummary() override;
+    void doInit(Node* node) override { SOFA_UNUSED(node); }
+    void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
+    void doPrintSummary() override;
 
 private:
     std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;

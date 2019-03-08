@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -48,10 +48,10 @@ class SofaTutorialManager : public QMainWindow
 {
     Q_OBJECT
 public:
-    SofaTutorialManager(QWidget* parent = 0, const char *name = "");
+    SofaTutorialManager(QWidget* parent = nullptr, const char *name = "");
     GraphModeler *getGraph() {return graph;}
 
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
 
 public slots:
     void openCategory(const std::string &);

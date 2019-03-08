@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,13 +79,13 @@ protected:
     double lastTime;
     WriteTopology();
 
-    virtual ~WriteTopology();
+    ~WriteTopology() override;
 
 public:
-    virtual void init() override;
-    virtual void reset() override;
+    void init() override;
+    void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MeshTopology.
@@ -106,14 +106,14 @@ class SOFA_SOFAEXPORTER_API WriteTopologyCreator: public simulation::Visitor
 public:
     WriteTopologyCreator(const core::ExecParams* params);
     WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n)                  { sceneName = n; }
     void setRecordContainers(bool b)                   { recordContainers=b; }
     void setRecordShellContainersV(bool b)             { recordShellContainers=b; }
     void setCreateInMapping(bool b)                    { createInMapping=b; }
     void setCounter(int c)                             { counterWriteTopology = c; }
-    virtual const char* getClassName() const { return "WriteTopologyCreator"; }
+    const char* getClassName() const override { return "WriteTopologyCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -131,11 +131,11 @@ class SOFA_SOFAEXPORTER_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
     WriteTopologyActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getState() const { return state; }
     void setState(bool active) { state=active; }
-    virtual const char* getClassName() const { return "WriteTopologyActivator"; }
+    const char* getClassName() const override { return "WriteTopologyActivator"; }
 protected:
     void changeStateWriter(sofa::component::misc::WriteTopology *wt);
 
