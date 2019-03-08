@@ -1593,9 +1593,8 @@ const vector< MeshTopology::EdgesAroundVertex >& MeshTopology::getEdgesAroundVer
 {
     if (m_edgesAroundVertex.empty())	// this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        sout << "Warning. [MeshTopology::getEdgesAroundVertexArray] EdgesAroundVertex array is empty." << sendl;
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetEdgesAroundVertexArray EdgesAroundVertex array is empty.";
 
         createEdgesAroundVertexArray();
     }
@@ -1607,9 +1606,8 @@ const vector< MeshTopology::EdgesInTriangle >& MeshTopology::getEdgesInTriangleA
 {
     if(m_edgesInTriangle.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getEdgesInTriangleArray] EdgesInTriangle array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetEdgesInTriangleArray EdgesInTriangle array is empty.";
 
         createEdgesInTriangleArray();
     }
@@ -1621,9 +1619,8 @@ const vector< MeshTopology::TrianglesAroundVertex >& MeshTopology::getTrianglesA
 {
     if(m_trianglesAroundVertex.empty())	// this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getTrianglesAroundVertexArray] TrianglesAroundVertex array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetTrianglesAroundVertexArray TrianglesAroundVertex array is empty.";
 
         createTrianglesAroundVertexArray();
     }
@@ -1635,9 +1632,8 @@ const vector< MeshTopology::TrianglesAroundEdge >& MeshTopology::getTrianglesAro
 {
     if(m_trianglesAroundEdge.empty())	// this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getTrianglesAroundEdgeArray] TrianglesAroundEdge array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetTrianglesAroundEdgeArray TrianglesAroundEdge array is empty.";
 
         createTrianglesAroundEdgeArray();
     }
@@ -1652,9 +1648,8 @@ const vector< MeshTopology::EdgesInQuad >& MeshTopology::getEdgesInQuadArray()
 {
     if(m_edgesInQuad.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getEdgesInQuadArray] EdgesInQuad array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetEdgesInQuadArray EdgesInQuad array is empty.";
 
         createEdgesInQuadArray();
     }
@@ -1666,9 +1661,8 @@ const vector< MeshTopology::QuadsAroundVertex >& MeshTopology::getQuadsAroundVer
 {
     if(m_quadsAroundVertex.empty())	// this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-       msg_info()<< "Warning. [MeshTopology::getQuadsAroundVertexArray] QuadsAroundVertex array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetQuadsAroundVertexArray QuadsAroundVertex array is empty.";
 
         createQuadsAroundVertexArray();
     }
@@ -1680,9 +1674,8 @@ const vector< MeshTopology::QuadsAroundEdge >& MeshTopology::getQuadsAroundEdgeA
 {
     if(m_quadsAroundEdge.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getQuadsAroundEdgeArray] QuadsAroundEdge array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetQuadsAroundEdgeArray QuadsAroundEdge array is empty.";
 
         createQuadsAroundEdgeArray();
     }
@@ -1698,9 +1691,8 @@ const vector< MeshTopology::EdgesInTetrahedron >& MeshTopology::getEdgesInTetrah
 {
     if (m_edgesInTetrahedron.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-       msg_info()<< "Warning. [MeshTopology::getEdgesInTetrahedronArray] EdgesInTetrahedron array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+           msg_warning() << "GetEdgesInTetrahedronArray EdgesInTetrahedron array is empty.";
 
         createEdgesInTetrahedronArray();
     }
@@ -1712,9 +1704,8 @@ const vector< MeshTopology::TrianglesInTetrahedron >& MeshTopology::getTriangles
 {
     if (m_trianglesInTetrahedron.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getTrianglesInTetrahedronArray] TrianglesInTetrahedron array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetTrianglesInTetrahedronArray TrianglesInTetrahedron array is empty.";
 
         createTrianglesInTetrahedronArray();
     }
@@ -1726,9 +1717,8 @@ const vector< MeshTopology::TetrahedraAroundVertex >& MeshTopology::getTetrahedr
 {
     if (m_tetrahedraAroundVertex.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getTetrahedraAroundVertexArray] TetrahedraAroundVertex array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetTetrahedraAroundVertexArray TetrahedraAroundVertex array is empty.";
 
         createTetrahedraAroundVertexArray();
     }
@@ -1740,9 +1730,8 @@ const vector< MeshTopology::TetrahedraAroundEdge >& MeshTopology::getTetrahedraA
 {
     if (m_tetrahedraAroundEdge.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getTetrahedraAroundEdgeArray] TetrahedraAroundEdge array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetTetrahedraAroundEdgeArray TetrahedraAroundEdge array is empty.";
 
         createTetrahedraAroundEdgeArray();
     }
@@ -1753,9 +1742,8 @@ const vector< MeshTopology::TetrahedraAroundTriangle >& MeshTopology::getTetrahe
 {
     if (m_tetrahedraAroundTriangle.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getTetrahedraAroundTriangleArray] TetrahedraAroundTriangle array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetTetrahedraAroundTriangleArray TetrahedraAroundTriangle array is empty.";
 
         createTetrahedraAroundTriangleArray();
     }
@@ -1770,9 +1758,8 @@ const vector< MeshTopology::EdgesInHexahedron >& MeshTopology::getEdgesInHexahed
 {
     if (m_edgesInHexahedron.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getEdgesInHexahedronArray] EdgesInHexahedron array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetEdgesInHexahedronArray EdgesInHexahedron array is empty.";
 
         createEdgesInHexahedronArray();
     }
@@ -1784,9 +1771,8 @@ const vector< MeshTopology::QuadsInHexahedron >& MeshTopology::getQuadsInHexahed
 {
     if (m_quadsInHexahedron.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getQuadsInHexahedronArray] QuadsInHexahedron array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetQuadsInHexahedronArray QuadsInHexahedron array is empty.";
 
         createQuadsInHexahedronArray();
     }
@@ -1798,9 +1784,8 @@ const vector< MeshTopology::HexahedraAroundVertex >& MeshTopology::getHexahedraA
 {
     if (m_hexahedraAroundVertex.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getHexahedraAroundVertexArray] HexahedraAroundVertex array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetHexahedraAroundVertexArray HexahedraAroundVertex array is empty.";
 
         createHexahedraAroundVertexArray();
     }
@@ -1812,9 +1797,8 @@ const vector< MeshTopology::HexahedraAroundEdge >& MeshTopology::getHexahedraAro
 {
     if (m_hexahedraAroundEdge.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::getHexahedraAroundEdgeArray] HexahedraAroundEdge array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetHexahedraAroundEdgeArray HexahedraAroundEdge array is empty.";
 
         createHexahedraAroundEdgeArray();
     }
@@ -1826,9 +1810,8 @@ const vector< MeshTopology::HexahedraAroundQuad >& MeshTopology::getHexahedraAro
 {
     if (m_hexahedraAroundQuad.empty()) // this method should only be called when the array exists.
     {
-#ifndef NDEBUG
-        msg_info()<< "Warning. [MeshTopology::getHexahedraAroundQuadArray] HexahedraAroundQuad array is empty.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "GetHexahedraAroundQuadArray HexahedraAroundQuad array is empty.";
 
         createHexahedraAroundQuadArray();
     }
@@ -2246,9 +2229,8 @@ void MeshTopology::reOrientateTriangle(TriangleID id)
 {
     if (id >= (unsigned int)this->getNbTriangles())
     {
-#ifndef NDEBUG
-        msg_info() << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds.";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "reOrientateTriangle Triangle ID out of bounds.";
         return;
     }
     Triangle& tri = (*seqTriangles.beginEdit())[id];
@@ -2344,9 +2326,9 @@ bool MeshTopology::checkConnexity()
 
     if (nbr == 0)
     {
-#ifndef NDEBUG
-        msg_error() << "Warning. [MeshTopology::checkConnexity] Can't compute connexity as some element are missing";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_error() << "CheckConnexity: Can't compute connexity as some element are missing.";
+
         return false;
     }
 
@@ -2354,7 +2336,7 @@ bool MeshTopology::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_error() << "Warning: in computing connexity, elements are missings. There is more than one connexe component.";
+        msg_error() << "CheckConnexity: elements are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -2379,9 +2361,9 @@ size_t MeshTopology::getNumberOfConnectedComponent()
 
     if (nbr == 0)
     {
-#ifndef NDEBUG
-        msg_error() << "Warning. [MeshTopology::getNumberOfConnectedComponent] Can't compute connexity as there are no elements";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_error() << "GetNumberOfConnectedComponent Can't compute connexity as there are no elements.";
+
         return 0;
     }
 
@@ -2467,9 +2449,9 @@ const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsi
         if (elemPreviousFront.empty())
         {
             end = true;
-#ifndef NDEBUG
-            msg_error() << "Loop for computing connexity has reach end.";
-#endif
+            if (CHECK_TOPOLOGY)
+                msg_error() << "Loop for computing connexity has reach end.";
+
         }
 
         // iterate
