@@ -41,7 +41,7 @@ public:
     bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr load(const char *filename);
+    virtual sofa::simulation::Node::SPtr doLoad(const char *filename);
 
     /// write the file
     void write(sofa::simulation::Node* node, const char *filename) override;

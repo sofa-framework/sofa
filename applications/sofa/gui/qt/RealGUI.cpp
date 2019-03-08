@@ -116,17 +116,6 @@ using sofa::helper::system::FileMonitor;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
-
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -756,7 +745,6 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
-    SceneCheckerVisitor checker(ExecParams::defaultInstance());
     std::vector<std::string> expandedNodes;
 
     if(reload)
@@ -765,13 +753,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
         if(simulationGraph)
             simulationGraph->getExpandedNodes(expandedNodes);
-    }
-    else
-    {
-        checker.addCheck(SceneCheckAPIChange::newSPtr());
-        checker.addCheck(SceneCheckDuplicatedName::newSPtr());
-        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-        checker.addCheck(SceneCheckUsingAlias::newSPtr());
     }
 
     const std::string &extension=SetDirectory::GetExtension(filename.c_str());
@@ -816,14 +797,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if(!expandedNodes.empty())
     {
         simulationGraph->expandPathFrom(expandedNodes);
-    }
-
-    /// We want to warn user that there is component that are implemented in specific plugin
-    /// and that there is no RequiredPlugin in their scene.
-    /// But we don't want that to happen each reload in interactive mode.
-    if(!reload)
-    {
-        checker.validate(mSimulation.get());
     }
 }
 
@@ -959,15 +932,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
 
     if (root)
     {
-        /// We want to warn user that there is component that are implemented in specific plugin
-        /// and that there is no RequiredPlugin in their scene.
-//        SceneCheckerVisitor checker(ExecParams::defaultInstance());
-//        checker.addCheck(SceneCheckAPIChange::newSPtr());
-//        checker.addCheck(SceneCheckDuplicatedName::newSPtr());
-//        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-//        checker.addCheck(SceneCheckUsingAlias::newSPtr());
-//        checker.validate(root.get());
-
         //Check the validity of the BBox
         const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
         if(nodeBBox.isNegligeable())

@@ -50,10 +50,11 @@ public:
     bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
-    virtual Node::SPtr load(const char *filename);
+    virtual Node::SPtr doLoad(const char *filename);
 
     // max: added out parameter to get the root *before* createScene is called
     void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
+    virtual void doLoadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
     bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file

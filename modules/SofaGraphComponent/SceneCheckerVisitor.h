@@ -40,8 +40,8 @@ namespace _scenechecking_
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
-    ~SceneCheckerVisitor() override ;
+    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance()) ;
+    ~SceneCheckerVisitor() override;
 
     void validate(Node* node) ;
     Result processNodeTopDown(Node* node) override ;

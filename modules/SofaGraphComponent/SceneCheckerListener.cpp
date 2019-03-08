@@ -19,10 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerVisitor.h"
+#include "SceneCheckerListener.h"
 
-#include <algorithm>
-#include <sofa/version.h>
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+#include <SofaGraphComponent/SceneCheckUsingAlias.h>
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 namespace sofa
 {
@@ -31,66 +37,26 @@ namespace simulation
 namespace _scenechecking_
 {
 
-using sofa::core::ExecParams ;
 
-SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
+SceneCheckerListener::SceneCheckerListener()
 {
-
+    m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
 }
 
-
-SceneCheckerVisitor::~SceneCheckerVisitor()
+SceneCheckerListener* SceneCheckerListener::getInstance()
 {
+    static SceneCheckerListener sceneLoaderListener;
+    return &sceneLoaderListener;
 }
 
-
-void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
 {
-    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
-        m_checkset.push_back(check) ;
+    m_sceneChecker.validate(node.get());
 }
 
-
-void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
-{
-    m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
-}
-
-void SceneCheckerVisitor::validate(Node* node)
-{
-    std::stringstream tmp;
-    bool first = true;
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        tmp << (first ? "" : ", ") << check->getName() ;
-        first = false;
-    }
-    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
-
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doInit(node) ;
-    }
-
-    execute(node) ;
-
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doPrintSummary() ;
-    }
-    msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
-}
-
-
-Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
-{
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doCheckOn(node) ;
-    }
-
-    return RESULT_CONTINUE;
-}
 
 } // namespace _scenechecking_
 } // namespace simulation

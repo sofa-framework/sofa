@@ -22,7 +22,6 @@
 #include <sofa/helper/system/config.h>
 #include <SofaGraphComponent/initGraphComponent.h>
 
-
 namespace sofa
 {
 
