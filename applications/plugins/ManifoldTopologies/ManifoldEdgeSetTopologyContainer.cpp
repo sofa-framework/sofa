@@ -74,9 +74,9 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
     if(!hasEdges())	//  this method should only be called when edges exist
     {
-#ifndef NDEBUG
-        sout << "Warning. [ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray] edge array is empty." << endl;
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_warning() << "Edge array is empty.";
+
         createEdgeSetArray();
     }
 
@@ -113,7 +113,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
             // not manifold !!!
             m_edgesAroundVertex[ m_edge[edge][1] ].push_back( edge );
 
-            sout << "Error. [ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray] The given EdgeSet is not manifold." << endl;
+            msg_error() << "CreateEdgesAroundVertexArray: The given EdgeSet is not manifold.";
         }
     }
 }
@@ -197,7 +197,9 @@ void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
 
 bool ManifoldEdgeSetTopologyContainer::checkTopology() const
 {
-#ifndef NDEBUG
+    if (!CHECK_TOPOLOGY)
+        return true;
+
     bool ret = true;
 
     if (hasEdgesAroundVertex())
@@ -208,17 +210,13 @@ bool ManifoldEdgeSetTopologyContainer::checkTopology() const
 
             if(es.size() != 1 && es.size() != 2)
             {
-                //serr << "ERROR: ManifoldEdgeSetTopologyContainer::checkTopology() fails ."<<sendl;
-                std::cout << "*** CHECK FAILED : check_manifold_edge_vertex_shell, i = " << i << std::endl;
+                msg_error() << "CheckTopology failed at i: " << i;
                 ret = false;
             }
         }
     }
 
     return ret &&  EdgeSetTopologyContainer::checkTopology();
-#else
-    return true;
-#endif
 }
 
 void ManifoldEdgeSetTopologyContainer::clear()

@@ -123,7 +123,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const 
 
     if (commonEdgeIndex == -1 || listVertex.size() > 4)
     {
-        std::cout << "Error: edgeSwapProcess: the two selected triangles are not adjacent" << std::endl;
+        msg_error() << "EdgeSwapProcess: the two selected triangles are not adjacent";
         return;
     }
     else
@@ -149,12 +149,12 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
 
     if(trianglesIndex2remove.size()>2)
     {
-        std::cout << "Error: edgeSwap: the topology is not manifold around the input edge: "<< edgeIndex << std::endl;
+        msg_error() << "EdgeSwap: the topology is not manifold around the input edge: " << edgeIndex;
         return false;
     }
     else if (trianglesIndex2remove.size() == 1)
     {
-        std::cout << "Error: edgeSwap: the edge: "<< edgeIndex << " is on the border of the mesh. Swaping this edge is impossible" << std::endl;
+        msg_error() << "EdgeSwap: the edge: "<< edgeIndex << " is on the border of the mesh. Swaping this edge is impossible";
         return false;
     }
 
@@ -185,7 +185,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
 
     if (!m_geometryAlgorithms->isDiagonalsIntersectionInQuad (tri1, tri2) )
     {
-        std::cout << "Error: edgeSwap: the new edge swaped will be outside the quad." << std::endl;
+        msg_error() << "EdgeSwap: the new edge swaped will be outside the quad.";
         return false;
     }
 
@@ -334,8 +334,6 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned 
 template<class DataTypes>
 bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder)
 {
-    // std::cout << "ManifoldTriangleSetTopologyAlgorithms::InciseAlongEdgeList()" << std::endl;
-
     //// STEP 1 - Incise with the TriangleSetTopologyAlgorithms function. Addremovetriangles() automatically reorder the mesh
     bool ok = TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points, reachBorder);
 
@@ -426,8 +424,6 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
 
 
     swapRemeshing (listEdges);
-
-    // std::cout <<"end incision"<<std::endl;
 
     return ok;
 }
