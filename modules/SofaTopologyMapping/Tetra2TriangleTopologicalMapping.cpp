@@ -174,7 +174,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     while( itBegin != itEnd )
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
-        std::string topoChangeType = "Triangle2EdgeTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
+        std::string topoChangeType = "Tetra2TriangleTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
         switch( changeType )
@@ -193,30 +193,19 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             // search for the list of triangles to remove in mapped topology
             sofa::helper::vector< unsigned int > triangles_to_remove;
-            std::map <unsigned int, unsigned int> tmpLoc2Glob;
+
             for (auto globTriId : triIDtoRemove)
             {
                 std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(globTriId);
                 if (iter_1 != Glob2LocMap.end())
                     triangles_to_remove.push_back(iter_1->second);
-                tmpLoc2Glob.insert(std::pair<unsigned int, unsigned int>(iter_1->second, globTriId));
             }
-
             std::sort(triangles_to_remove.begin(), triangles_to_remove.end(), std::greater<unsigned int>());
-            m_outTopoModifier->removeTriangles(triangles_to_remove, true, false);
-
-            // update the maps from toModel changes
-            for (auto oldLocTriId : triangles_to_remove)
-            {
-                //unsigned int oldGlobTriId = tmpLoc2Glob[oldLocTriId];
-                unsigned int newGlobTriId = Loc2GlobVec.back();
-                Loc2GlobVec[oldLocTriId] = newGlobTriId; // swap loc2Glob map
-                Loc2GlobVec.pop_back(); //pop last
-
-                Glob2LocMap[newGlobTriId] = oldLocTriId; // update Glob2LocMap of new loc ids
-            }
 
             unsigned int lastGlobId = (unsigned int)fromModel->getNbTriangles() - 1;
+            unsigned int nbrGlobElem = fromModel->getNbTriangles() - triIDtoRemove.size();
+            unsigned int nbrBotElem = toModel->getNbTriangles() - triangles_to_remove.size();
+
             // update Glob2LocMap from fromModel changes
             for (auto oldGlobTriId : triIDtoRemove)
             {
@@ -227,8 +216,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     unsigned int lastLocId = iter_last->second;
                     Glob2LocMap[oldGlobTriId] = lastLocId;
 
-                    if (lastLocId < Loc2GlobVec.size()) // could map to already removed element in loc2Glob
-                        Loc2GlobVec[iter_last->second] = oldGlobTriId;
+                    if (lastLocId < Loc2GlobVec.size()) // could be maped to an already removed element in loc2Glob
+                        Loc2GlobVec[lastLocId] = oldGlobTriId;
                 }
                 else
                 {
@@ -240,10 +229,25 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         continue;
                     }
                 }
-
                 Glob2LocMap.erase(iter_last);
                 lastGlobId--;
             }
+
+
+            // update the maps from toModel changes
+            for (auto oldLocTriId : triangles_to_remove)
+            {
+                //unsigned int oldGlobTriId = tmpLoc2Glob[oldLocTriId];
+                unsigned int newGlobTriId = Loc2GlobVec.back();
+                Loc2GlobVec[oldLocTriId] = newGlobTriId; // swap loc2Glob map like normal triangle removal
+
+                if (newGlobTriId < nbrGlobElem && oldLocTriId < nbrBotElem){
+                    Glob2LocMap[newGlobTriId] = oldLocTriId; // update Glob2LocMap of new loc ids
+                }
+                Loc2GlobVec.pop_back(); //pop last
+            }
+
+            m_outTopoModifier->removeTriangles(triangles_to_remove, true, false);
 
             break;
         }
@@ -414,10 +418,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     // check if already exist
                     std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(triangleId);
                     if(iter_1 != Glob2LocMap.end() )
-                    {
-                        msg_error() << "Fail to add triangle " << triangleId << "which already exists with value: " << (*iter_1).second;
                         Glob2LocMap.erase(iter_1);
-                    }
+
                     Glob2LocMap[triangleId] = (unsigned int)Loc2GlobVec.size()-1;
                 }
             }
