@@ -289,8 +289,6 @@ const defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mapping
     else
         m_matrixJ->clear();
 
-    return m_matrixJ;
-
     const helper::vector<Element>& elements = getElements();
 
     for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
