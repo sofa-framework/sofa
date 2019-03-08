@@ -1853,9 +1853,6 @@ core::topology::Topology::EdgeID MeshTopology::getEdgeIndex(PointID v1, PointID 
         i++;
     }
 
-    if (result == InvalidID)
-        msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
-
     return result;
 }
 
@@ -1885,10 +1882,8 @@ core::topology::Topology::TriangleID MeshTopology::getTriangleIndex(PointID v1, 
 
     if (out2.size()==1)
         return (int) (out2[0]);
-    else {
-        msg_warning() << "Triangle with indices: [" << v1 << "; " << v2 << "; " << v3 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 core::topology::Topology::QuadID MeshTopology::getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4)
@@ -1924,10 +1919,8 @@ core::topology::Topology::QuadID MeshTopology::getQuadIndex(PointID v1, PointID 
 
     if (out3.size()==1)
         return (int) (out3[0]);
-    else {
-        msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 core::topology::Topology::TetrahedronID MeshTopology::getTetrahedronIndex(PointID v1, PointID v2, PointID v3,  PointID v4)
@@ -1960,10 +1953,8 @@ core::topology::Topology::TetrahedronID MeshTopology::getTetrahedronIndex(PointI
 
     if (out3.size()==1)
         return (int) (out3[0]);
-    else {
-        msg_warning() << "Tetrahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 core::topology::Topology::HexahedronID MeshTopology::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8)
@@ -2020,11 +2011,8 @@ core::topology::Topology::HexahedronID MeshTopology::getHexahedronIndex(PointID 
 
     if (out7.size()==1)
         return (int) (out7[0]);
-    else {
-        msg_warning() << "Hexahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
-                         << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 int MeshTopology::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const
