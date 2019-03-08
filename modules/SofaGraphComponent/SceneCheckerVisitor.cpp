@@ -78,6 +78,7 @@ void SceneCheckerVisitor::validate(Node* node)
     {
         check->doPrintSummary() ;
     }
+    msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
 }
 
 

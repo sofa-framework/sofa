@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,25 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaGraphComponent/initGraphComponent.h>
+#include "SceneCheckerListener.h"
+
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+#include <SofaGraphComponent/SceneCheckUsingAlias.h>
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
 
-void initGraphComponent()
+SceneCheckerListener::SceneCheckerListener()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
 }
 
-} // namespace component
+SceneCheckerListener* SceneCheckerListener::getInstance()
+{
+    static SceneCheckerListener sceneLoaderListener;
+    return &sceneLoaderListener;
+}
 
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+{
+    m_sceneChecker.validate(node.get());
+}
+
+
+} // namespace _scenechecking_
+} // namespace simulation
 } // namespace sofa

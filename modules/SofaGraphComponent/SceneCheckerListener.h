@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,25 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaGraphComponent/initGraphComponent.h>
+#ifndef SOFA_SIMULATION_SCENECHECKERLISTENER_H
+#define SOFA_SIMULATION_SCENECHECKERLISTENER_H
+
+#include "config.h"
+
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/Visitor.h>
+
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
-
-void initGraphComponent()
+/// to be able to react when a scene is loaded
+class SOFA_GRAPH_COMPONENT_API SceneCheckerListener : public SceneLoader::Listener
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+public:
+    static SceneCheckerListener* getInstance();
+    virtual ~SceneCheckerListener() {}
+
+    virtual void rightAfterLoadingScene(sofa::simulation::Node::SPtr node) override;
+
+private:
+    SceneCheckerListener();
+    SceneCheckerVisitor m_sceneChecker;
+};
+
+} // namespace _scenechecking_
+
+namespace scenechecking
+{
+using _scenechecking_::SceneCheckerListener;
 }
 
-} // namespace component
-
+} // namespace simulation
 } // namespace sofa
+
+#endif
