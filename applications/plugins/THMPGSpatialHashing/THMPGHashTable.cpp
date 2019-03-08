@@ -195,7 +195,7 @@ void THMPGHashTable::collide(THMPGHashTable & other,sofa::core::collision::Narro
     bool swap;
     core::collision::ElementIntersector* ei = interMehtod->findIntersector(cm1,cm2,swap);
 
-    if(ei == 0x0)
+    if(ei == nullptr)
         return;
 
     doCollision(*ptable1,*ptable2,phase,timeStamp,ei,swap);

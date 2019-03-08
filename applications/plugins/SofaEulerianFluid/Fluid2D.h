@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,7 +64,7 @@ public:
     sofa::core::objectmodel::Data<real> f_tstop; ///< stopping time for fluid source
 protected:
     Fluid2D();
-    virtual ~Fluid2D();
+    ~Fluid2D() override;
 public:
     int getNx() const { return f_nx.getValue(); }
     void setNx(int v) { f_nx.setValue(v);       }
@@ -72,15 +72,15 @@ public:
     int getNy() const { return f_ny.getValue(); }
     void setNy(int v) { f_ny.setValue(v);       }
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void reset() override;
+    void reset() override;
 
-    virtual void updatePosition(SReal dt) override;
+    void updatePosition(SReal dt) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false) override;
+    void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false) override;
 
     virtual void updateVisual();
 

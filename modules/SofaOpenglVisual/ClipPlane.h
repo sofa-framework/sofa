@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,14 +47,14 @@ public:
     Data<bool> active; ///< Control whether the clipping plane should be applied or not
 
     virtual sofa::core::objectmodel::ComponentState checkDataValues();
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void fwdDraw(core::visual::VisualParams*) override;
-    virtual void bwdDraw(core::visual::VisualParams*) override;
+    void init() override;
+    void reinit() override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
 protected:
     ClipPlane();
-    virtual ~ClipPlane();
+    ~ClipPlane() override;
 
     GLboolean wasActive;
     double saveEq[4];

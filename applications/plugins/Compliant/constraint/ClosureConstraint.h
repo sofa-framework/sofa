@@ -21,7 +21,7 @@ struct SOFA_Compliant_API ClosureConstraint : Constraint {
     SOFA_CLASS(ClosureConstraint, Constraint);
     SOFA_COMPLIANT_CONSTRAINT_H( ClosureConstraint )
 	
-    virtual void project(SReal*, unsigned, unsigned, bool=false) const {}
+    void project(SReal*, unsigned, unsigned, bool=false) const override {}
 	
 };
 

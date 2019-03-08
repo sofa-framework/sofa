@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,7 +74,7 @@ public:
 
     BaseMechanicalVisitor(const core::ExecParams* params)
         : Visitor(params)
-		, root(NULL), rootData(NULL)
+		, root(nullptr), rootData(nullptr)
     {
 		// mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
 		canAccessSleepingNode = false;
@@ -90,7 +90,7 @@ public:
 
     virtual void setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData)
     {
-        *nodeData = (parentData == NULL) ? 0.0 : *parentData;
+        *nodeData = (parentData == nullptr) ? 0.0 : *parentData;
     }
 
     virtual void addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData)
@@ -116,7 +116,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVisitor"; }
+    const char* getClassName() const override { return "MechanicalVisitor"; }
 
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.
@@ -127,11 +127,11 @@ public:
     ///@{
 
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Parallel version of processNodeTopDown.
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage* stack);
+    Result processNodeTopDown(simulation::Node* node, LocalStorage* stack) override;
 
     /// Process the OdeSolver
     virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
@@ -290,11 +290,11 @@ public:
     ///@{
 
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    virtual void processNodeBottomUp(simulation::Node* node);
+    void processNodeBottomUp(simulation::Node* node) override;
 
     /// Parallel version of processNodeBottomUp.
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack);
+    void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack) override;
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
@@ -357,7 +357,7 @@ public:
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const
+    const char* getCategoryName() const override
     {
         return "animate";
     }
@@ -414,13 +414,13 @@ public:
         rootData = result;
     }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetDimensionVisitor";}
+    const char* getClassName() const override { return "MechanicalGetDimensionVisitor";}
 
-    virtual bool writeNodeData() const
+    bool writeNodeData() const override
     {
         return true;
     }
@@ -450,14 +450,14 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVAvailVisitor"; }
+    const char* getClassName() const override { return "MechanicalVAvailVisitor"; }
     virtual std::string getInfos() const;
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
@@ -502,18 +502,18 @@ public:
 #endif
     }
 
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const
+    const char* getClassName() const override
     {
         return "MechanicalVInitVisitor";
     }
@@ -521,7 +521,7 @@ public:
     virtual std::string getInfos() const;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
@@ -553,14 +553,14 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVAllocVisitor"; }
+    const char* getClassName() const override { return "MechanicalVAllocVisitor"; }
     virtual std::string getInfos() const;
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -604,20 +604,20 @@ public:
 #endif
     }
 
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
+    Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const
+    const char* getClassName() const override
     {
         return "MechanicalVReallocVisitor";
     }
@@ -625,7 +625,7 @@ public:
     virtual std::string getInfos() const;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -661,16 +661,16 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVFreeVisitor"; }
+    const char* getClassName() const override { return "MechanicalVFreeVisitor"; }
     virtual std::string getInfos() const;
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -703,7 +703,7 @@ public:
     }
 
     // If mapped or only_mapped is ste, this visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         if (mapped || only_mapped)
             return false;
@@ -714,18 +714,18 @@ public:
     MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
     MechanicalVOpVisitor& setOnlyMapped(bool m = true) { only_mapped = m; return *this; }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
-    virtual const char* getClassName() const { return "MechanicalVOpVisitor";}
+    const char* getClassName() const override { return "MechanicalVOpVisitor";}
     virtual std::string getInfos() const ;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
-    virtual bool readNodeData() const
+    bool readNodeData() const override
     {
         return true;
     }
@@ -759,18 +759,18 @@ public:
 
     MechanicalVMultiOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
-    virtual const char* getClassName() const { return "MechanicalVMultiOpVisitor"; }
+    const char* getClassName() const override { return "MechanicalVMultiOpVisitor"; }
     virtual std::string getInfos() const ;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
-    virtual bool readNodeData() const
+    bool readNodeData() const override
     {
         return true;
     }
@@ -813,11 +813,11 @@ public:
         rootData = t;
     }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVDotVisitor";}
+    const char* getClassName() const override { return "MechanicalVDotVisitor";}
     virtual std::string getInfos() const
     {
         std::string name("v= a*b with a[");
@@ -825,11 +825,11 @@ public:
         return name;
     }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
-    virtual bool writeNodeData() const
+    bool writeNodeData() const override
     {
         return true;
     }
@@ -863,19 +863,19 @@ public:
     }
     SReal getResult() const;
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVNormVisitor";}
+    const char* getClassName() const override { return "MechanicalVNormVisitor";}
     virtual std::string getInfos() const ;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
-    virtual bool writeNodeData() const
+    bool writeNodeData() const override
     {
         return true;
     }
@@ -908,12 +908,12 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         if (ignoreFlag)
             return false;
@@ -923,14 +923,14 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateDxVisitor"; }
+    const char* getClassName() const override { return "MechanicalPropagateDxVisitor"; }
     virtual std::string getInfos() const
     {
         std::string name="["+dx.getName()+"]";
         return name;
     }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -958,18 +958,18 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateDxAndResetForceVisitor";}
+    const char* getClassName() const override { return "MechanicalPropagateDxAndResetForceVisitor";}
     virtual std::string getInfos() const { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name;}
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1002,17 +1002,17 @@ public:
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateOnlyPositionAndResetForceVisitor"; }
+    const char* getClassName() const override { return "MechanicalPropagateOnlyPositionAndResetForceVisitor"; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1044,19 +1044,19 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAddMDxVisitor"; }
+    const char* getClassName() const override { return "MechanicalAddMDxVisitor"; }
     virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1082,16 +1082,16 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccFromFVisitor"; }
+    const char* getClassName() const override { return "MechanicalAccFromFVisitor"; }
     virtual std::string getInfos() const { std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1118,15 +1118,15 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalProjectJacobianMatrixVisitor"; }
+    const char* getClassName() const override { return "MechanicalProjectJacobianMatrixVisitor"; }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1151,19 +1151,19 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalProjectVelocityVisitor"; }
+    const char* getClassName() const override { return "MechanicalProjectVelocityVisitor"; }
     virtual std::string getInfos() const
     {
         std::string name="["+vel.getName()+"]"; return name;
     }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1189,19 +1189,19 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalProjectPositionVisitor"; }
+    const char* getClassName() const override { return "MechanicalProjectPositionVisitor"; }
     virtual std::string getInfos() const
     {
         std::string name="["+pos.getName()+"]"; return name;
     }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1229,20 +1229,20 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalProjectPositionAndVelocityVisitor"; }
+    const char* getClassName() const override { return "MechanicalProjectPositionAndVelocityVisitor"; }
     virtual std::string getInfos() const
     {
         std::string name="x["+pos.getName()+"] v["+vel.getName()+"]";
         return name;
     }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1274,19 +1274,19 @@ public:
     MechanicalPropagateOnlyPositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
                                         sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateOnlyPositionVisitor";}
+    const char* getClassName() const override { return "MechanicalPropagateOnlyPositionVisitor";}
     virtual std::string getInfos() const
     {
         std::string name="x["+x.getName()+"]";
@@ -1296,7 +1296,7 @@ public:
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1330,23 +1330,23 @@ public:
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true );  
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateOnlyPositionAndVelocityVisitor";}
+    const char* getClassName() const override { return "MechanicalPropagateOnlyPositionAndVelocityVisitor";}
     virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1380,22 +1380,22 @@ public:
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateOnlyVelocityVisitor";}
+    const char* getClassName() const override { return "MechanicalPropagateOnlyVelocityVisitor";}
     virtual std::string getInfos() const { std::string name="v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1421,15 +1421,15 @@ public:
                                             sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(),
                                             sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity());
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalSetPositionAndVelocityVisitor";}
+    const char* getClassName() const override { return "MechanicalSetPositionAndVelocityVisitor";}
     virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1461,12 +1461,12 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {  return "MechanicalResetForceVisitor";}
+    const char* getClassName() const override {  return "MechanicalResetForceVisitor";}
     virtual std::string getInfos() const
     {
         std::string name="["+res.getName()+"]";
@@ -1475,7 +1475,7 @@ public:
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1505,16 +1505,16 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeForceVisitor";}
+    const char* getClassName() const override {return "MechanicalComputeForceVisitor";}
     virtual std::string getInfos() const
     {
         std::string name=std::string("[")+res.getName()+std::string("]");
@@ -1524,7 +1524,7 @@ public:
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1559,15 +1559,15 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeDfVisitor";}
+    const char* getClassName() const override {return "MechanicalComputeDfVisitor";}
     virtual std::string getInfos() const
     {
         std::string name="["+res.getName()+"]";
@@ -1577,7 +1577,7 @@ public:
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1606,11 +1606,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeGeometricStiffness";}
+    const char* getClassName() const override {return "MechanicalComputeGeometricStiffness";}
     virtual std::string getInfos() const
     {
         std::string name="["+childForce.getName()+"]";
@@ -1618,7 +1618,7 @@ public:
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1653,19 +1653,19 @@ public:
         mparamsWithoutStiffness = *mparams;
         mparamsWithoutStiffness.setKFactor(0);
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAddMBKdxVisitor"; }
+    const char* getClassName() const override { return "MechanicalAddMBKdxVisitor"; }
     virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1692,22 +1692,22 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalResetConstraintVisitor"; }
+    const char* getClassName() const override { return "MechanicalResetConstraintVisitor"; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1734,16 +1734,16 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
+    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalWriteLMConstraint"; }
+    const char* getClassName() const override { return "MechanicalWriteLMConstraint"; }
     virtual std::string getInfos() const ;
 
     virtual void clear() {datasC.clear(); offset=0;}
@@ -1757,7 +1757,7 @@ public:
     virtual void setOrder(core::ConstraintParams::ConstOrder i) {order=i;}
     core::ConstraintParams::ConstOrder getOrder() const { return order; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
@@ -1795,21 +1795,21 @@ public:
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
 
-    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
+    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
 
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint"; }
+    const char* getClassName() const override { return "MechanicalAccumulateConstraint"; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
@@ -1844,19 +1844,19 @@ public:
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
 
-    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
+    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalBuildConstraintMatrix"; }
+    const char* getClassName() const override { return "MechanicalBuildConstraintMatrix"; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
@@ -1891,22 +1891,22 @@ public:
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
 
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// Return true to reverse the order of traversal of child nodes
-    virtual bool childOrderReversed(simulation::Node* /*node*/) { return reverseOrder; }
+    bool childOrderReversed(simulation::Node* /*node*/) override { return reverseOrder; }
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateMatrixDeriv"; }
+    const char* getClassName() const override { return "MechanicalAccumulateMatrixDeriv"; }
 
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }
@@ -1933,29 +1933,29 @@ public:
     sofa::core::MultiVecDerivId res;
     double **W;
     MechanicalApplyConstraintsVisitor(const sofa::core::MechanicalParams* mparams,
-                                      sofa::core::MultiVecDerivId res, double **W = NULL)
+                                      sofa::core::MultiVecDerivId res, double **W = nullptr)
         : MechanicalVisitor(mparams) , res(res), W(W)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
-    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalApplyConstraintsVisitor"; }
+    const char* getClassName() const override { return "MechanicalApplyConstraintsVisitor"; }
     virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -1980,20 +1980,20 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalBeginIntegrationVisitor"; }
+    const char* getClassName() const override { return "MechanicalBeginIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -2017,21 +2017,21 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalEndIntegrationVisitor"; }
+    const char* getClassName() const override { return "MechanicalEndIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -2055,18 +2055,18 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
-    virtual Result fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj);
-    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*obj*/)
+    Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj) override;
+    Result fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj) override;
+    void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*obj*/) override
     {
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalIntegrationVisitor"; }
+    const char* getClassName() const override { return "MechanicalIntegrationVisitor"; }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -2094,16 +2094,16 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { std::string name= "MechanicalComputeContactForceVisitor["+res.getName()+"]"; return name.c_str(); }
+    const char* getClassName() const override { std::string name= "MechanicalComputeContactForceVisitor["+res.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return true;
     }
@@ -2132,11 +2132,11 @@ public:
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
+    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAddSeparateGravityVisitor"; }
+    const char* getClassName() const override { return "MechanicalAddSeparateGravityVisitor"; }
     virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
@@ -2164,13 +2164,13 @@ public:
     {
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPickParticles"; }
+    const char* getClassName() const override { return "MechanicalPickParticles"; }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
@@ -2203,13 +2203,13 @@ public:
 	{
 	}
 
-	virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-	virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-	virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+	Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+	Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+	Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
 	/// Return a class name for this visitor
 	/// Only used for debugging / profiling purposes
-	virtual const char* getClassName() const { return "MechanicalPickParticlesWithTags"; }
+	const char* getClassName() const override { return "MechanicalPickParticlesWithTags"; }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 	void setReadWriteVectors()
@@ -2244,19 +2244,19 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVSizeVisitor";}
+    const char* getClassName() const override { return "MechanicalVSizeVisitor";}
     virtual std::string getInfos() const
     {
         std::string name = "[" + v.getName() + "]";
         return name;
     }
     /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
+    bool isThreadSafe() const override
     {
         return false;
     }

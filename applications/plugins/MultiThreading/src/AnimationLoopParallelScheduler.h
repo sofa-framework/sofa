@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,20 +59,20 @@ public:
 protected:
 	AnimationLoopParallelScheduler(simulation::Node* gnode = NULL);
 
-	virtual ~AnimationLoopParallelScheduler();
+	~AnimationLoopParallelScheduler() override;
 
 public:
-    virtual void init();
+    void init() override;
 
 	/// Initialization method called at graph creation and modification, during bottom-up traversal.
-	virtual void bwdInit();
+	void bwdInit() override;
 
 	/// Update method called when variables used in precomputation are modified.
-    virtual void reinit();
+    void reinit() override;
 
-	virtual void cleanup();
+	void cleanup() override;
 
-	virtual void step(const core::ExecParams* params, SReal dt);
+	void step(const core::ExecParams* params, SReal dt) override;
 
 
 	/// Construction method called by ObjectFactory.

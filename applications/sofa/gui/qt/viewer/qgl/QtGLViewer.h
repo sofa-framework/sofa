@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,10 +25,10 @@
 #include <sofa/helper/system/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>
@@ -118,7 +118,7 @@ public:
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
 
     QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
-    ~QtGLViewer();
+    ~QtGLViewer() override;
 
     QWidget* getQWidget() { return this; }
 
@@ -126,12 +126,12 @@ protected:
      static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
 
     //     void calcProjection();
-    void init();
+    void init() override;
     /// Overloaded from QGLViewer to render the scene
-    virtual void draw();
+    void draw() override;
     /// Overloaded from SofaViewer
     virtual void viewAll();
-    void resizeGL( int w, int h );
+    void resizeGL( int w, int h ) override;
 
 public:
 
@@ -153,7 +153,7 @@ public:
 
     void setCameraMode(core::visual::VisualParams::CameraType mode);
 
-    QString helpString() const;
+    QString helpString() const override;
 
 
 private:
@@ -182,12 +182,12 @@ protected:
     virtual void	DrawLogo(void);
 
 
-    virtual void keyPressEvent ( QKeyEvent * e );
-    virtual void keyReleaseEvent ( QKeyEvent * e );
-    virtual void mousePressEvent ( QMouseEvent * e );
-    virtual void mouseReleaseEvent ( QMouseEvent * e );
-    virtual void mouseMoveEvent ( QMouseEvent * e );
-    virtual void wheelEvent(QWheelEvent* e);
+    void keyPressEvent ( QKeyEvent * e ) override;
+    void keyReleaseEvent ( QKeyEvent * e ) override;
+    void mousePressEvent ( QMouseEvent * e ) override;
+    void mouseReleaseEvent ( QMouseEvent * e ) override;
+    void mouseMoveEvent ( QMouseEvent * e ) override;
+    void wheelEvent(QWheelEvent* e) override;
     bool         mouseEvent( QMouseEvent * e );
 
 

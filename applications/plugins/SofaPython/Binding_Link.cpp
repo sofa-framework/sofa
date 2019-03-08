@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -153,7 +153,7 @@ static PyObject * Link_isPersistant(PyObject *self, PyObject * args)
     const size_t argSize = PyTuple_Size(args);
     if( argSize != 0 ) {
         PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
-        return NULL;
+        return nullptr;
     }
 
     return PyBool_FromLong(link->isPersistent());
@@ -166,7 +166,7 @@ static PyObject * Link_setPersistant(PyObject* self, PyObject* args)
     PyObject* state = nullptr ;
     if (!PyArg_ParseTuple(args, "O", &state))
     {
-        return NULL;
+        return nullptr;
     }
 
     link->setPersistent(PyObject_IsTrue(state));

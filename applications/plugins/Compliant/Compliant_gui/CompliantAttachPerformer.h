@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,7 +50,7 @@ public:
 protected:
     virtual std::string defaultPerformerType() { return "CompliantAttach"; }
 
-    virtual void setSetting(component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = down_cast<component::configurationsetting::CompliantAttachButtonSetting>(s); }
+    void setSetting(component::configurationsetting::MouseButtonSetting* s) override { Operation::setSetting(s); setting = down_cast<component::configurationsetting::CompliantAttachButtonSetting>(s); }
     component::configurationsetting::CompliantAttachButtonSetting::SPtr setting;
 };
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -56,10 +56,10 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         const char* name,
         Qt::WindowFlags f):
     QTreeWidget(parent),
-    graphListener_(NULL),
-    AddObjectDialog_(NULL),
+    graphListener_(nullptr),
+    AddObjectDialog_(nullptr),
     attribute_(attribute),
-    propertyWidget(NULL)
+    propertyWidget(nullptr)
 {
     this->setObjectName(name);
     this->setWindowFlags(f);
@@ -108,7 +108,7 @@ QSofaListView::~QSofaListView()
 
 void QSofaListView::Clear(Node* rootNode)
 {
-    if(graphListener_ != NULL)
+    if(graphListener_ != nullptr)
     {
         delete graphListener_;
     }
@@ -120,7 +120,7 @@ void QSofaListView::Clear(Node* rootNode)
     this->setSortingEnabled(false);
 
     header()->hide();
-    graphListener_->addChild ( NULL, rootNode );
+    graphListener_->addChild ( nullptr, rootNode );
     graphListener_->freeze ( rootNode );
     std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
 

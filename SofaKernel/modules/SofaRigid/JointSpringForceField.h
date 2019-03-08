@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -113,14 +113,14 @@ protected:
 public:
 
     ////////////////////////// Inherited from BaseObject /////////////////////////
-    virtual void init() override;
-    virtual void bwdInit() override;
+    void init() override;
+    void bwdInit() override;
     void draw(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams*  params, bool /*onlyVisible*/) override;
 
 
     ///////////////////////// Inherited from PairInteractionForceField ///////////////////
-    virtual void addForce(  const core::MechanicalParams* mparams,
+    void addForce(  const core::MechanicalParams* mparams,
                             DataVecDeriv& data_f1,
                             DataVecDeriv& data_f2,
                             const DataVecCoord& data_x1,
@@ -128,19 +128,19 @@ public:
                             const DataVecDeriv& data_v1,
                             const DataVecDeriv& data_v2 ) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams,
+    void addDForce(const core::MechanicalParams* mparams,
                            DataVecDeriv& data_df1,
                            DataVecDeriv& data_df2,
                            const DataVecDeriv& data_dx1,
                            const DataVecDeriv& data_dx2) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*,
+    SReal getPotentialEnergy(const core::MechanicalParams*,
                                      const DataVecCoord&,
                                      const DataVecCoord& ) const override { return m_potentialEnergy; }
 
 
     ////////////////////////// Inherited from BaseMapping /////////////////////////
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
 
     //////////////////////////   Data fields    //////////////////////////////////

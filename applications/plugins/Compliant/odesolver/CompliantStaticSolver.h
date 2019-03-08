@@ -41,15 +41,15 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
 				
 	SOFA_CLASS(CompliantStaticSolver, sofa::core::behavior::OdeSolver);
 
-    virtual void init();
+    void init() override;
 
     // OdeSolver API
-    virtual void solve(const core::ExecParams* params,
+    void solve(const core::ExecParams* params,
                        SReal dt,
                        core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId);
+                       core::MultiVecDerivId velId) override;
 
-    virtual void reset();
+    void reset() override;
 
 
     CompliantStaticSolver();

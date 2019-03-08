@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -103,7 +103,7 @@ static PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     char *valueString;
     PyObject *pyLoader;
     if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader)) {
-        return NULL;
+        return nullptr;
     }
     BaseObject* loader = get_baseobject( self );
     obj->setSrc(valueString,loader);

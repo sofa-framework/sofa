@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ public:
         m_controller = psc ;
     }
 
-    virtual ~MyFileEventListener(){}
+    ~MyFileEventListener() override{}
 
     virtual void fileHasChanged(const std::string& filepath){
         PythonEnvironment::gil lock {__func__} ;
@@ -123,8 +123,8 @@ PythonScriptController::PythonScriptController()
     , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
-    , m_ScriptControllerClass(0)
-    , m_ScriptControllerInstance(0)
+    , m_ScriptControllerClass(nullptr)
+    , m_ScriptControllerInstance(nullptr)
 {
     m_filelistener = new MyFileEventListener(this) ;
 }

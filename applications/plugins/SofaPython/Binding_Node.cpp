@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,7 +50,7 @@ static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
 
     PyObject* pyVisitor;
     if (!PyArg_ParseTuple(args, "O", &pyVisitor)) {
-        return NULL;
+        return nullptr;
     }
 
     PythonVisitor visitor(ExecParams::defaultInstance(), pyVisitor);
@@ -71,7 +71,7 @@ static PyObject * Node_simulationStep(PyObject * self, PyObject * args) {
     Node* node = get_node(self);
     double dt;
     if (!PyArg_ParseTuple(args, "d",&dt)) {
-        return NULL;
+        return nullptr;
     }
 
     getSimulation()->animate ( node, (SReal)dt );
@@ -104,7 +104,7 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
     char *path;
 
     if (!PyArg_ParseTuple(args, "s",&path)) {
-        return NULL;
+        return nullptr;
     }
 
     /// looking for optional keywork "warning"
@@ -128,7 +128,7 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
     }
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
-    Node *childNode = 0;
+    Node *childNode = nullptr;
     /// BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
     /// graphes étant toujours des Nodes, on caste directement en Node.
     for (unsigned int i=0; i<children.size(); ++i) {
@@ -208,7 +208,7 @@ static PyObject * Node_createChild(PyObject *self, PyObject * args) {
     Node* obj = get_node(self);
     char *nodeName;
     if (!PyArg_ParseTuple(args, "s", &nodeName)) {
-        return NULL;
+        return nullptr;
     }
     Node* child = obj->createChild(nodeName).get();
     return sofa::PythonFactory::toPython(child);
@@ -220,7 +220,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
 
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
-        return NULL;
+        return nullptr;
     }
 
     /// looking for optional keywork "warning"
@@ -247,7 +247,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
     BaseObject* object = sofa::py::unwrap<BaseObject>(pyChild);
     if (!object) {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     node->addObject(object);
 
@@ -265,20 +265,20 @@ static PyObject * Node_addObject(PyObject * self, PyObject * args, PyObject * kw
 static PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args) {
     SP_MESSAGE_DEPRECATED("Node_addObject_noWarning is deprecated, use the keyword warning=False in Node_addObject instead.");
 
-    return Node_addObject_Impl( self, args, NULL, false );
+    return Node_addObject_Impl( self, args, nullptr, false );
 }
 
 static PyObject * Node_removeObject(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseObject* object = sofa::py::unwrap<BaseObject>(pyChild);
     if (!object) {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     node->removeObject(object);
@@ -291,7 +291,7 @@ static PyObject * Node_addChild(PyObject *self, PyObject * args) {
 
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseNode* child = get_node(pyChild);
@@ -299,7 +299,7 @@ static PyObject * Node_addChild(PyObject *self, PyObject * args) {
 
     if (!child) {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     obj->addChild(child);
@@ -311,13 +311,13 @@ static PyObject * Node_removeChild(PyObject *self, PyObject * args) {
 
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseNode* child = get_node(pyChild);
     if (!child) {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     obj->removeChild(child);
@@ -329,13 +329,13 @@ static PyObject * Node_moveChild(PyObject *self, PyObject * args) {
 
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
-        return NULL;
+        return nullptr;
     }
 
     BaseNode* child = get_node(pyChild);
     if (!child) {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     obj->moveChild(child);
@@ -356,7 +356,7 @@ static PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args) {
     char* eventName;
 
     if (!PyArg_ParseTuple(args, "sO", &eventName, &pyUserData)) {
-        return NULL;
+        return nullptr;
     }
 
     PythonScriptEvent event(node, eventName, pyUserData);
@@ -369,7 +369,7 @@ static PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args) {
     char* eventName;
 
     if (!PyArg_ParseTuple(args, "s", &eventName)) {
-        return NULL;
+        return nullptr;
     }
 
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
@@ -382,7 +382,7 @@ static PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args) {
     char* eventName;
 
     if (!PyArg_ParseTuple(args, "s", &eventName)) {
-        return NULL;
+        return nullptr;
     }
 
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
@@ -415,7 +415,7 @@ static PyObject * Node_getMass(PyObject * self, PyObject * /*args*/) {
 static PyObject * Node_getForceField(PyObject * self, PyObject * args) {
     int index = 0;
     if(!PyArg_ParseTuple(args, "i", &index)) {
-        return NULL;
+        return nullptr;
     }
 
     Node* node = get_node(self);
@@ -477,7 +477,7 @@ static PyObject * Node_initVisual(PyObject *self, PyObject * /*args*/) {
     sofa::core::visual::VisualLoop* loop = node->getVisualLoop();
     if(!loop) {
         PyErr_SetString(PyExc_RuntimeError, "no visual loop for this node");
-        return NULL;
+        return nullptr;
     }
 
     loop->initStep(sofa::core::ExecParams::defaultInstance());
