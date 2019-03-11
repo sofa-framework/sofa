@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -30,7 +30,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/core/topology/Topology.h>
 #include "WDoubleLineEdit.h"
-#include <limits.h>
+#include <climits>
 
 #include <sstream>
 #include <sofa/helper/Polynomial_LD.inl>

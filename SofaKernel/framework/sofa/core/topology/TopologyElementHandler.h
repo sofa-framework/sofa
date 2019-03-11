@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,7 +62,7 @@ public:
 
     TopologyElementHandler() : TopologyHandler() {}
 
-    virtual ~TopologyElementHandler() {}
+    ~TopologyElementHandler() override {}
 
 
     using TopologyHandler::ApplyTopologyChange;
@@ -84,7 +84,7 @@ public:
 
 protected:
     /// Swaps values at indices i1 and i2.
-    virtual void swap( Topology::ElemID /*i1*/, Topology::ElemID /*i2*/ ) {}
+    void swap( Topology::ElemID /*i1*/, Topology::ElemID /*i2*/ ) override {}
 
     /// Reorder the values.
     virtual void renumber( const sofa::helper::vector<Topology::ElemID> &/*index*/ ) {}

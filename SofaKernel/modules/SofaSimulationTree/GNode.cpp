@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,9 +76,9 @@ void GNode::doRemoveChild(BaseNode::SPtr node)
 }
 
 /// Remove a child
-void GNode::doMoveChild(BaseNode::SPtr node)
+void GNode::doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev)
 {
-    Node* parentNode = down_cast<Node>(node->getContext()->toBaseNode());
+    Node* parentNode = static_cast<Node*>(prev.get());
     if (parentNode != nullptr)
         parentNode->removeChild(node);
     addChild(node);

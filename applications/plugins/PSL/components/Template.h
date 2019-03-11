@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,13 +62,13 @@ public:
     SOFA_CLASS(Template, BaseObject);
 
     Template() ;
-    virtual ~Template() ;
+    ~Template() override ;
 
     PyObject* m_rawTemplate { nullptr };
     Data<std::string> m_template  ; ///< Current template source
 
     void addDataToTrack(BaseData*) ;
-    virtual void handleEvent(Event *event) override ;
+    void handleEvent(Event *event) override ;
 private:
     DataTracker m_dataTracker ;
     vector<BaseData*> m_trackedDatas ;

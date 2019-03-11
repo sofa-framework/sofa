@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -194,16 +194,22 @@ void Node::removeChild(core::objectmodel::BaseNode::SPtr node)
     // If node has no parent
     if (node->getFirstParent() == nullptr)
         return;
-    notifyBeginRemoveChild(this, dynamic_cast<Node*>(node.get()));
+    notifyBeginRemoveChild(this, static_cast<Node*>(node.get()));
     doRemoveChild(node);
-    notifyEndRemoveChild(this, dynamic_cast<Node*>(node.get()));
+    notifyEndRemoveChild(this, static_cast<Node*>(node.get()));
 }
 
 
 /// Move a node from another node
-void Node::moveChild(BaseNode::SPtr node)
+void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
 {
-    doMoveChild(node);
+    if (!prev_parent.get())
+    {
+        msg_error(this->getName()) << "Node::moveChild(BaseNode::SPtr node)\n" << node->getName() << " has no parent. Use addChild instead!";
+        addChild(node);
+        return;
+    }
+    doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject::SPtr obj)
@@ -227,9 +233,28 @@ bool Node::removeObject(BaseObject::SPtr obj)
 void Node::moveObject(BaseObject::SPtr obj)
 {
     Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
-    doMoveObject(obj, prev_parent);
+    if (prev_parent)
+    {
+        doMoveObject(obj, prev_parent);
+    }
+    else
+    {
+        obj->getContext()->removeObject(obj);
+        addObject(obj);
+    }
 }
 
+void Node::notifyStepBegin()
+{
+    for (auto& listener : listener)
+        listener->onStepBegin(this);
+}
+
+void Node::notifyStepEnd()
+{
+    for (auto& listener : listener)
+        listener->onStepEnd(this);
+}
 
 
 void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child)

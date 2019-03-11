@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -168,7 +168,7 @@ public:
     static inline int currentAspect(const core::ExecParams* params)
     {
         if (SOFA_DATA_MAX_ASPECTS == 1) return 0;
-        else                             return params != 0 ? params->aspectID() : defaultInstance()->aspectID();
+        else                             return params != nullptr ? params->aspectID() : defaultInstance()->aspectID();
     }
 
 };

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -44,7 +44,7 @@
 #include <QTextBrowser>
 #include <QDockWidget>
 #include <QWindow>
-#include <time.h>
+#include <ctime>
 
 #include <sofa/helper/system/FileMonitor.h>
 
@@ -107,12 +107,12 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
 protected:
-    static void CreateApplication(int _argc=0, char** _argv=0l);
+    static void CreateApplication(int _argc=0, char** _argv=nullptr);
     static void InitApplication( RealGUI* _gui);
 //-----------------STATIC METHODS------------------------}
 
@@ -122,7 +122,7 @@ protected:
 public:
     RealGUI( const char* viewername);
 
-    ~RealGUI();
+    ~RealGUI() override;
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------}
 
 
@@ -134,7 +134,7 @@ public:
     virtual void setTraceVisitors(bool);
 #endif
 
-    virtual void showFPS(double fps);
+    void showFPS(double fps) override;
 
 protected:
 
@@ -224,17 +224,17 @@ private:
 
 //-----------------METHODS------------------------{
 public:
-    void stepMainLoop ();
+    void stepMainLoop () override;
 
-    virtual int mainLoop();
-    virtual int closeGUI();
-    virtual sofa::simulation::Node* currentSimulation();
+    int mainLoop() override;
+    int closeGUI() override;
+    sofa::simulation::Node* currentSimulation() override;
     virtual void fileOpen(std::string filename, bool temporaryFile=false, bool reload=false);
 
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
-    virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
-    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setScene(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
+    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
 
     virtual void unloadScene(bool _withViewer = true);
 
@@ -242,18 +242,18 @@ public:
     virtual void fileSaveAs(Node* node,const char* filename);
 //    virtual void saveXML();
 
-    virtual void setViewerResolution(int w, int h);
-    virtual void setFullScreen() { setFullScreen(true); }
+    void setViewerResolution(int w, int h) override;
+    void setFullScreen() override { setFullScreen(true); }
     virtual void setFullScreen(bool enable);
-    virtual void setBackgroundColor(const defaulttype::RGBAColor& c);
+    void setBackgroundColor(const defaulttype::RGBAColor& c) override;
     virtual void setBackgroundImage(const std::string& i);
-    virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);
-    virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button);
+    void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
+    void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button) override;
 
     //Configuration methods
-    virtual void setDumpState(bool);
-    virtual void setLogTime(bool);
-    virtual void setExportState(bool);
+    void setDumpState(bool) override;
+    void setLogTime(bool) override;
+    void setExportState(bool) override;
     virtual void setRecordPath(const std::string & path);
     virtual void setGnuplotPath(const std::string & path);
 
@@ -264,9 +264,9 @@ public:
     virtual void createViewer(const char* _viewerName, bool _updateViewerList=false);
 
     /// Used to directly replace the current viewer
-    virtual void registerViewer(BaseViewer* _viewer);
+    void registerViewer(BaseViewer* _viewer) override;
 
-    virtual BaseViewer* getViewer();
+    BaseViewer* getViewer() override;
 
     /// A way to know if our viewer is embedded or not... (see initViewer)
     /// TODO: Find a better way to do this
@@ -293,7 +293,7 @@ protected:
     void stopDumpVisitor();
 
     /// init the viewer for the GUI (embeded or not we have to connect some info about viewer in the GUI)
-    virtual void initViewer(BaseViewer* _viewer);
+    void initViewer(BaseViewer* _viewer) override;
 
     /// Our viewer is a QObject SofaViewer
     void isEmbeddedViewer(bool _onOff)
@@ -362,7 +362,7 @@ public slots:
 
     virtual void clear();
     /// refresh the visualization window
-    virtual void redraw();
+    void redraw() override;
     virtual void exportOBJ(sofa::simulation::Node* node, bool exportMTL=true);
     virtual void dumpState(bool);
     virtual void displayComputationTime(bool);
@@ -376,7 +376,7 @@ public slots:
     virtual void fileSave();
     virtual void fileExit();
     virtual void fileSaveAs() {
-        fileSaveAs((Node *)NULL);
+        fileSaveAs((Node *)nullptr);
     }
     virtual void helpAbout() { /* TODO */ }
     virtual void editRecordDirectory();

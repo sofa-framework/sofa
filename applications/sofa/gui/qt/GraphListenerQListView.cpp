@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -337,7 +337,8 @@ QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 /*****************************************************************************************************************/
 void GraphListenerQListView::onAddChildBegin(Node* parent, Node* child)
 {
-    if (frozen) return;
+    if (frozen)
+        return;
     if (items.count(child))
     {
         QTreeWidgetItem* item = items[child];
@@ -349,7 +350,9 @@ void GraphListenerQListView::onAddChildBegin(Node* parent, Node* child)
                 widget->insertTopLevelItem(0, item);
             }
             else if (items.count(parent))
+            {
                 items[parent]->insertChild(0, item);
+            }
             else
             {
                 dmsg_error("GraphListenerQListView") << "Unknown parent node '"<<parent->getName()<<"'";
@@ -393,7 +396,9 @@ void GraphListenerQListView::onAddChildBegin(Node* parent, Node* child)
         if (parent == nullptr)
             item = new QTreeWidgetItem(widget);
         else if (items.count(parent))
+        {
             item = createItem(items[parent]);
+        }
         else
         {
             dmsg_error("GraphListenerQListView") << "Unknown parent node '"<<parent->getName()<<"'";
@@ -444,7 +449,7 @@ void GraphListenerQListView::onAddObjectBegin(Node* parent, core::objectmodel::B
                 items[parent]->addChild(item);
             else
             {
-                dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
+                dmsg_error("GraphListenerQListView") << "Unknown parent node " << parent->getName()<< "'";
                 return;
             }
         }
@@ -456,7 +461,7 @@ void GraphListenerQListView::onAddObjectBegin(Node* parent, core::objectmodel::B
             item = createItem(items[parent]);
         else
         {
-            dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
+            dmsg_error("GraphListenerQListView") << "Unknown parent node " << parent->getName()<< "'";
             return;
         }
 

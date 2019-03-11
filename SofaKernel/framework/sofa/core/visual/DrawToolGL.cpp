@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,7 +82,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
 {
     setMaterial(color);
     glPointSize(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_POINTS);
     {
         for (std::size_t i=0; i<points.size(); ++i)
@@ -98,17 +98,17 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
 void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& color)
 {
     glPointSize(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_POINTS);
     {
         for (std::size_t i=0; i<points.size(); ++i)
         {
             setMaterial(color[i]);
             internalDrawPoint(points[i], color[i]);
-            if (getLightEnabled()) enableLighting();
             resetMaterial(color[i]);
         }
     } glEnd();
+    if (getLightEnabled()) enableLighting();
     glPointSize(1);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 {
     setMaterial(color);
     glLineWidth(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_LINES);
     {
         for (std::size_t i=0; i<points.size()/2; ++i)
@@ -138,8 +138,8 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
         }
     } glEnd();
     if (getLightEnabled()) enableLighting();
-    resetMaterial(color);
     glLineWidth(1);
+    resetMaterial(color);
 }
 
 void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec<4,float> >& colors)
@@ -151,7 +151,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
     }
 
     glLineWidth(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_LINES);
     {
         for (std::size_t i=0; i<points.size()/2; ++i)
@@ -171,7 +171,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
 {
     setMaterial(color);
     glLineWidth(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_LINES);
     {
         for (std::size_t i=0; i<index.size(); ++i)
@@ -190,7 +190,7 @@ void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, c
 {
     setMaterial(color);
     glLineWidth(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_LINE_STRIP);
     {
         for (std::size_t i=0; i<points.size(); ++i)
@@ -209,7 +209,7 @@ void DrawToolGL::drawLineLoop(const std::vector<Vector3> &points, float size, co
 {
     setMaterial(color);
     glLineWidth(size);
-    disableLighting();
+    if (getLightEnabled()) disableLighting();
     glBegin(GL_LINE_LOOP);
     {
         for (std::size_t i=0; i<points.size(); ++i)

@@ -15,7 +15,7 @@ protected:
 
     sofa::simulation::Node::SPtr root;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_PythonScriptControllerHelper.py");
 

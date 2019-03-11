@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,7 +75,7 @@ TEST(MessageHandlerComponent, simpleInit)
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=NULL) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
 
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
@@ -96,7 +96,7 @@ TEST(MessageHandlerComponent, missingHandler)
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
     EXPECT_FALSE(component->isValid()) ;
@@ -116,7 +116,7 @@ TEST(MessageHandlerComponent, invalidHandler)
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
     EXPECT_FALSE(component->isValid()) ;
@@ -136,7 +136,7 @@ TEST(MessageHandlerComponent, clangHandler)
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
-    MessageHandlerComponent* component = NULL;
+    MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
     EXPECT_TRUE(component->isValid()) ;

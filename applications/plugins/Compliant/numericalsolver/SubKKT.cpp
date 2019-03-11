@@ -167,7 +167,7 @@ void SubKKT::filter_kkt(rmat& res,
         }
 
         // C
-        SReal* diag = 0;
+        SReal* diag = nullptr;
         for(rmat::InnerIterator itC(C, i); itC; ++itC) {
 
             if( only_lower && itC.col() > itC.row() ) break;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -66,7 +66,7 @@ class SOFA_Compliant_gui_API QCompliantAttachOperation : public QMouseOperation,
     Q_OBJECT
 public:
     QCompliantAttachOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *complianceWidget;
