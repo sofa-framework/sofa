@@ -54,31 +54,25 @@ using sofa::core::objectmodel::DDGNode;
 /// Example of use:
 ///   Data<int> a;
 ///   Data<int> b;
-///   DataCallback cb({a,b});
+///   DataCallback cb;
+///
+///   In constructor:
 ///   cb.addCallback([&a,&b](DataCallback*){
 ///                     std::cout << "sum is:" << a.getValue()+b.getValue() << std::endl;
 ///                   });
+///
+///   cb.addInputs({&a,&b});  or cb.addInput(&a);  cb.addInput(&b);
+///
 ///   a.setValue(5);       /// should print: "sum is 5"
 ///   b.setValue(6);       /// should print: "sum is 11"
 class SOFA_CORE_API DataCallback : public DDGNode
 {
 public:
-    /// Create a DataCallback object associated with a single Data.
-    DataCallback(BaseData* data);
-
     /// Create a DataCallback object associated with multiple Data.
-    DataCallback(std::initializer_list<BaseData*> datas);
+    void addInputs(std::initializer_list<BaseData*> datas);
 
     /// Register a new callback function to this DataCallback
     void addCallback(std::function<void(void)>);
-
-    /// Register a new callback method using the "old way"
-    template<class FwdObject, class FwdMethod>
-    [[deprecated("This is there just for backward compatibility")]]
-    void addCallback(FwdObject* o, FwdMethod m)
-    {
-        addCallback(std::bind(m, o));
-    }
 
     /// The trick is here, this function is called as soon as the input data changes
     /// and can then trigger the callback

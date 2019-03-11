@@ -30,16 +30,11 @@ namespace core
 namespace objectmodel
 {
 
-DataCallback::DataCallback(BaseData* data)
+void DataCallback::addInputs(std::initializer_list<BaseData*> data)
 {
-    addInput(data);
-}
-
-DataCallback::DataCallback(std::initializer_list<BaseData*> datas)
-{
-    for(BaseData* data : datas)
+    for(BaseData* d : data)
     {
-        addInput(data);
+        addInput(d);
     }
 }
 
