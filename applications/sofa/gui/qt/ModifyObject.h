@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -127,7 +127,7 @@ public:
             bool  modal= false,
             Qt::WindowFlags f= 0 );
 
-    ~ModifyObject()
+    ~ModifyObject() override
     {
         delete buttonUpdate;
     }
@@ -142,10 +142,10 @@ public:
 
 public slots:
     void openExternalBrowser(const QUrl &link);
-    void reject   ();
-    void accept   ();
+    void reject   () override;
+    void accept   () override;
     void closeNow () {emit(reject());} //called from outside to close the current widget
-    virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
+    void closeEvent ( QCloseEvent * ) override {emit(reject());}
     void updateTables();
     virtual void updateValues();              //update the node with the values of the field
     void updateListViewItem();

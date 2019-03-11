@@ -30,6 +30,7 @@ list(APPEND HEADER_FILES
     SceneCheckAPIChange.h
     SceneCheckUsingAlias.h
     SceneCheckerVisitor.h
+    SceneCheckerListener.h
     APIVersion.h
     )
 list(APPEND SOURCE_FILES
@@ -50,6 +51,7 @@ list(APPEND SOURCE_FILES
     SceneCheckAPIChange.cpp
     SceneCheckUsingAlias.cpp
     SceneCheckerVisitor.cpp
+    SceneCheckerListener.cpp
     APIVersion.cpp
     )
 

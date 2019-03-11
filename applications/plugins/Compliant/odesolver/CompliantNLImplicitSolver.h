@@ -39,15 +39,15 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
 //    Data<bool> staticSolver;      ///< solve a static analysis (dynamics otherwise) WIP
 
 	CompliantNLImplicitSolver();
-    virtual ~CompliantNLImplicitSolver(){}
+    ~CompliantNLImplicitSolver() override{}
 
-    virtual void cleanup();
+    void cleanup() override;
 	
     // OdeSolver API
-    virtual void solve(const core::ExecParams* params,
+    void solve(const core::ExecParams* params,
                        SReal dt,
                        core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId);
+                       core::MultiVecDerivId velId) override;
 
     typedef Eigen::Map<vec> chuck_type;
 
@@ -62,7 +62,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
     /// compute a first approximation with the regular, linearized system
     void firstGuess( SolverOperations& sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
 
-    virtual void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv* f_k=NULL );
+    void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv* f_k=NULL ) override;
 
     /// Residual of the non-linear implicit integration equation
     SReal compute_residual( SolverOperations sop, core::MultiVecDerivId residual, core::MultiVecCoordId newX, const core::MultiVecDerivId newV, core::MultiVecDerivId newF, core::MultiVecCoordId oldX, core::MultiVecDerivId oldV, core::MultiVecDerivId oldF, const vec& lambda, chuck_type* residual_constraints=NULL );

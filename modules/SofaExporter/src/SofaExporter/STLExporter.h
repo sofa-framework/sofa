@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,7 +61,7 @@ using sofa::core::visual::VisualModel ;
 using sofa::core::objectmodel::Event ;
 using sofa::simulation::BaseSimulationExporter ;
 
-class SOFA_EXPORTER_API STLExporter : public BaseSimulationExporter
+class SOFA_SOFAEXPORTER_API STLExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(STLExporter, BaseSimulationExporter);
@@ -71,18 +71,18 @@ public:
     Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
     Data< helper::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
 
-    virtual void doInit() override ;
-    virtual void doReInit() override ;
-    virtual void handleEvent(Event *) override ;
+    void doInit() override ;
+    void doReInit() override ;
+    void handleEvent(Event *) override ;
 
-    virtual bool write() override ;
+    bool write() override ;
 
     bool writeSTL(bool autonumbering=true);
     bool writeSTLBinary(bool autonumbering=true);
 
 protected:
     STLExporter();
-    virtual ~STLExporter();
+    ~STLExporter() override;
 
 private:
     BaseMeshTopology*    m_inputtopology {nullptr};

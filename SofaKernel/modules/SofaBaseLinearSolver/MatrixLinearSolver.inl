@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -114,6 +114,12 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
 
     if (!this->frozen)
     {
+        simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
+        SReal dim = 0;
+        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
+        currentGroup->systemSize = dim;
+        currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
+
         simulation::common::MechanicalOperations mops(mparams, this->getContext());
         if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
         currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);

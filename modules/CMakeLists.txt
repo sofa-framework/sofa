@@ -1,7 +1,9 @@
 ### These are real modules. If you need components from there you
 ### need to first add find_package(XXX) in your CMakeLists.txt
+sofa_add_module(SofaExporter SofaExporter ON)
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
+
 
 ### All the other targets visible in "modules" are not real module
 ### and are contained in the SofaGeneral, SofaMisc, SofaAdvanced

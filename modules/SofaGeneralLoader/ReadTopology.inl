@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
-#include <string.h>
+#include <cstring>
 #include <sstream>
 
 namespace sofa
@@ -44,10 +44,10 @@ ReadTopology::ReadTopology()
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))
     , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
-    , m_topology(NULL)
+    , m_topology(nullptr)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextTime(0.0)
     , lastTime(0.0)
@@ -84,7 +84,7 @@ void ReadTopology::reset()
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 
@@ -176,7 +176,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
                 size_t l = strlen(buf);
                 if (buf[l-1] == '\n')

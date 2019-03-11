@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -455,7 +455,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                         }
                         if (err)
                         {
-                            serr << "Error in " << __FUNCTION__ << " : wrong source edge / destination point association" << sendl;
+                            msg_error() <<" wrong source edge / destination point association" ;
                         }
                     }
 
@@ -493,7 +493,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                         }
                         if (err)
                         {
-                            serr << "Error in " << __FUNCTION__ << " : wrong source triangle / destination point association" << sendl;
+                            msg_error() << " wrong source triangle / destination point association" ;
                         }
                     }
 
@@ -532,7 +532,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                         }
                         if (err)
                         {
-                            serr << "Error in " << __FUNCTION__ << " : wrong source quad / destination point association" << sendl;
+                            msg_error() << " wrong source quad / destination point association" ;
                         }
                     }
 
@@ -575,7 +575,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                         }
                         if (err)
                         {
-                            serr << "Error in " << __FUNCTION__ << " : wrong source tetra / destination point association" << sendl;
+                            msg_error() << " wrong source tetra / destination point association" ;
                         }
                     }
 
@@ -617,7 +617,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                         }
                         if (err)
                         {
-                            serr << "Error in " << __FUNCTION__ << " : wrong source hexa / destination point association" << sendl;
+                            msg_error() << " wrong source hexa / destination point association" ;
                         }
                     }
 

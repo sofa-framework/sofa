@@ -25,7 +25,7 @@
 			<EdgeSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
 			<EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Triangle_topo"  output="@Edge_topo" />
-			<EdgePressureForceField template="Vec3" name="edgePressureFF0"  edges="@Edge_topo.edges" pressure="0 0 1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10" showForces="1"/>
+			<EdgePressureForceField template="Vec3" name="edgePressureFF0"  edges="@Edge_topo.edges" pressure="0 0 1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10" showForces="1" mstate="@../dofs"/>
 		</Node>
         
         <Node name="Visu">

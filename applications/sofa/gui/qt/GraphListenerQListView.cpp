@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -223,7 +223,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         if (!flags)
             flags |= 1 << OBJECT;
     }
-    else return NULL;
+    else return nullptr;
 
     if(haveInfo)
         flags |= 1 << (ALLCOLORS+1) ;
@@ -342,9 +342,9 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
     if (items.count(child))
     {
         QTreeWidgetItem* item = items[child];
-        if (item->treeWidget() == NULL)
+        if (item->treeWidget() == nullptr)
         {
-            if (parent == NULL)
+            if (parent == nullptr)
                 widget->insertTopLevelItem(0, item);
             else if (items.count(parent))
                 items[parent]->insertChild(0, item);
@@ -388,7 +388,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
     else
     {
         QTreeWidgetItem* item;
-        if (parent == NULL)
+        if (parent == nullptr)
             item = new QTreeWidgetItem(widget);
         else if (items.count(parent))
             item = createItem(items[parent]);
@@ -466,7 +466,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
     if (items.count(object))
     {
         QTreeWidgetItem* item = items[object];
-        if (item->treeWidget() == NULL)
+        if (item->treeWidget() == nullptr)
         {
             if (items.count(parent))
                 //                items[parent]->insertItem(item);
@@ -561,7 +561,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
     if (items.count(slave))
     {
         QTreeWidgetItem* item = items[slave];
-        if (item->treeWidget() == NULL)
+        if (item->treeWidget() == nullptr)
         {
             if (items.count(master))
                 //                items[master]->insertItem(item);
@@ -671,13 +671,13 @@ void GraphListenerQListView::unfreeze(Node* groot)
 {
     if (!items.count(groot)) return;
     frozen = false;
-    addChild(NULL, groot);
+    addChild(nullptr, groot);
 }
 
 /*****************************************************************************************************************/
 core::objectmodel::Base* GraphListenerQListView::findObject(const QTreeWidgetItem* item)
 {
-    core::objectmodel::Base* base = NULL;
+    core::objectmodel::Base* base = nullptr;
 
     if(item)
     {
@@ -705,7 +705,7 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const QTreeWidgetIte
 core::objectmodel::BaseData* GraphListenerQListView::findData(const QTreeWidgetItem* item)
 // returns NULL if nothing is found.
 {
-    BaseData* data = NULL;
+    BaseData* data = nullptr;
     if(item)
     {
         std::map<BaseData*,QTreeWidgetItem*>::const_iterator it;
@@ -723,7 +723,7 @@ core::objectmodel::BaseData* GraphListenerQListView::findData(const QTreeWidgetI
 void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
 {
 
-    BaseData* data = NULL;
+    BaseData* data = nullptr;
     std::string name;
     if (frozen) return;
 
@@ -750,7 +750,7 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
     if (frozen) return;
     QTreeWidgetItem* new_item;
     std::string name;
-    BaseData* data = NULL;
+    BaseData* data = nullptr;
     if(items.count(parent))
     {
         const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();

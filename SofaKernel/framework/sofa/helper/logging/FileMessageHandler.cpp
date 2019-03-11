@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,7 @@ namespace logging
 
 FileMessageHandler::FileMessageHandler(const char* filename,MessageFormatter *formatter)
 {
-    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
+    m_formatter = (formatter==nullptr?&DefaultStyleMessageFormatter::getInstance():formatter);
     m_outFile.open(filename,std::ios_base::out | std::ios_base::trunc);
     if (!m_outFile.is_open())
         msg_error("FileMessageHandler") << "Could not open outpout log file: " << filename;

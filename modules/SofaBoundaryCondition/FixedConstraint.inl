@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,7 +31,8 @@
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::ComponentState;
 
 
 namespace sofa
@@ -121,11 +122,17 @@ void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
+    this->m_componentstate = ComponentState::Invalid;
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (!this->mstate.get())
+    {
+        msg_warning() << "Missing mstate, cannot initialize the component.";
+        return;
+    }
 
-      if (!topology)
+    topology = this->getContext()->getMeshTopology();
+    if (!topology)
         msg_warning() << "Can not find the topology, won't be able to handle topological changes";
 
     // Initialize topological functions
@@ -133,6 +140,7 @@ void FixedConstraint<DataTypes>::init()
     d_indices.registerTopologicalData();
 
     this->checkIndices();
+    this->m_componentstate = ComponentState::Valid;
 }
 
 template <class DataTypes>
@@ -338,12 +346,10 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
     }
 }
 
-
-
-
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if (this->m_componentstate!=ComponentState::Valid) return;
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;

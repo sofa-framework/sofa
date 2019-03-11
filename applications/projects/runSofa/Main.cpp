@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -43,6 +43,9 @@ using std::vector;
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <SofaGraphComponent/SceneCheckerListener.h>
+using sofa::simulation::scenechecking::SceneCheckerListener;
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
@@ -163,6 +166,9 @@ int main(int argc, char** argv)
         }
     }
 
+    // Force add plugins dir to PluginRepository (even if not existing)
+    PluginRepository.addFirstPath( Utils::getSofaPathPrefix()+"/plugins" );
+
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
@@ -198,6 +204,7 @@ int main(int argc, char** argv)
     bool        temporaryFile = false;
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
+    bool        noSceneCheck = false;
     unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
@@ -238,6 +245,7 @@ int main(int argc, char** argv)
     argParser->addArgument(po::value<std::string>(&gui)->default_value(""),                                         "gui,g", gui_help.c_str());
     argParser->addArgument(po::value<std::vector<std::string>>(&plugins),                                           "load,l", "load given plugins");
     argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true),         "noautoload", "disable plugins autoloading");
+    argParser->addArgument(po::value<bool>(&noSceneCheck)->default_value(false)->implicit_value(true),              "noscenecheck", "disable scene checking for each scene loading");
 
     // example of an option using lambda function which ensure the value passed is > 0
     argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1)->notifier([](unsigned int value)
@@ -406,6 +414,12 @@ int main(int argc, char** argv)
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     GUIManager::SetDimension(width, height);
+
+    // Create and register the SceneCheckerListener before scene loading
+    if(!noSceneCheck)
+    {
+        sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
+    }
 
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
     if( !groot )

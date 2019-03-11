@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,7 +44,9 @@ namespace core
 namespace loader
 {
 
+//todo(dmarchal 05/02/2019): This mix of types is bad.
 using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3;
 using topology::Topology;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
@@ -82,14 +84,14 @@ public:
 protected:
     MeshLoader();
 public:
-    virtual bool canLoad() override;
+    bool canLoad() override;
 
     //virtual void init();
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
 
     /// Apply Homogeneous transformation to the positions
@@ -133,7 +135,7 @@ public:
     /// @}
 
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Vertices of the mesh loaded
+    Data< helper::vector< Vec3 > > d_positions; ///< Vertices of the mesh loaded
 
     //Tab of 1D elements
     Data< helper::vector< Polyline > > d_polylines; ///< Polylines of the mesh loaded

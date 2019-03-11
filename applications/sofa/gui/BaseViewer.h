@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -86,7 +86,7 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = NULL, bool /*keepParams*/= false);
+    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = nullptr, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
     /// true when the viewer keep the hand on the render

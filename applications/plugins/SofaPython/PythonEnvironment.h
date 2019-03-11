@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,6 +55,7 @@ public:
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
     /// NB: can also be used for projects <projectDirectory>/*/python
     static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);
+    static void addPythonModulePathsForPluginsByName(const std::string& pluginName);
 
     /// add module to python context, Init() must have been called before
     static void addModule(const std::string& name, PyMethodDef* methodDef);
@@ -85,7 +86,7 @@ public:
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
-        virtual void rightBeforeLoadingScene(); // possibly unload python modules to force importing their eventual modifications
+        void rightBeforeLoadingScene() override; // possibly unload python modules to force importing their eventual modifications
         static SceneLoaderListerner* getInstance() { static SceneLoaderListerner sceneLoaderListerner; return &sceneLoaderListerner; } // singleton
     private:
         SceneLoaderListerner(){}

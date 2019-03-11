@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,7 +53,7 @@ namespace misc
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_EXPORTER_API WriteState: public core::objectmodel::BaseObject
+class SOFA_SOFAEXPORTER_API WriteState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
@@ -88,15 +88,15 @@ protected:
 
     WriteState();
 
-    virtual ~WriteState();
+    ~WriteState() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
-    virtual void reset() override;
+    void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -112,12 +112,12 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class SOFA_EXPORTER_API WriteStateCreator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);
     WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n; }
     void setRecordX(bool b) {recordX=b;}
@@ -125,7 +125,7 @@ public:
     void setRecordF(bool b) {recordF=b;}
     void setCreateInMapping(bool b) { createInMapping=b; }
     void setCounter(int c) { counterWriteState = c; }
-    virtual const char* getClassName() const { return "WriteStateCreator"; }
+    const char* getClassName() const override { return "WriteStateCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -138,15 +138,15 @@ protected:
 
 };
 
-class SOFA_EXPORTER_API WriteStateActivator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteStateActivator: public simulation::Visitor
 {
 public:
     WriteStateActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getState() const { return state; }
     void setState(bool active) { state=active; }
-    virtual const char* getClassName() const { return "WriteStateActivator"; }
+    const char* getClassName() const override { return "WriteStateActivator"; }
 protected:
     void changeStateWriter(sofa::component::misc::WriteState *ws);
 

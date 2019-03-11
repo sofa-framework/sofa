@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -167,7 +167,7 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
     if (m_topology && lastTopologyRevision != m_topology->getRevision())
     {
         if (lastTopologyRevision >= 0)
-            serr << "NEW TOPOLOGY v" << m_topology->getRevision() << sendl;
+            msg_error() << "NEW TOPOLOGY v" << m_topology->getRevision();
 
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
@@ -317,7 +317,7 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
 template<class DataTypes>
 SReal TaitSurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {
-    serr << "Get potentialEnergy not implemented" << sendl;
+    msg_error() << "Get potentialEnergy not implemented";
     return 0.0;
 }
 
@@ -468,7 +468,7 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureAndStiffness(Real&
 {
     if (currentVolume > 10*v0 || 10*currentVolume < v0)
     {
-        serr << "TOO MUCH VOLUME VARIATION." << sendl;
+        msg_error() << "TOO MUCH VOLUME VARIATION.";
         pressure = 0;
         stiffness = 0;
     }

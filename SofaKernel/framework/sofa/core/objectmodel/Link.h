@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -339,41 +339,41 @@ public:
         if (m_owner) m_owner->addLink(this);
     }
 
-    virtual ~TLink()
+    ~TLink() override
     {
     }
 
-    size_t size(const core::ExecParams* params = 0) const
+    size_t size(const core::ExecParams* params = nullptr) const
     {
         return (size_t)m_value[core::ExecParams::currentAspect(params)].size();
     }
 
-    bool empty(const core::ExecParams* params = 0) const
+    bool empty(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].empty();
     }
 
-    const Container& getValue(const core::ExecParams* params = 0) const
+    const Container& getValue(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)];
     }
 
-    const_iterator begin(const core::ExecParams* params = 0) const
+    const_iterator begin(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].cbegin();
     }
 
-    const_iterator end(const core::ExecParams* params = 0) const
+    const_iterator end(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].cend();
     }
 
-    const_reverse_iterator rbegin(const core::ExecParams* params = 0) const
+    const_reverse_iterator rbegin(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].crbegin();
     }
 
-    const_reverse_iterator rend(const core::ExecParams* params = 0) const
+    const_reverse_iterator rend(const core::ExecParams* params = nullptr) const
     {
         return m_value[core::ExecParams::currentAspect(params)].crend();
     }
@@ -453,17 +453,17 @@ public:
         return false;
     }
 
-    const BaseClass* getDestClass() const
+    const BaseClass* getDestClass() const override
     {
         return DestType::GetClass();
     }
 
-    const BaseClass* getOwnerClass() const
+    const BaseClass* getOwnerClass() const override
     {
         return OwnerType::GetClass();
     }
 
-    size_t getSize() const
+    size_t getSize() const override
     {
         return size();
     }
@@ -485,11 +485,11 @@ public:
         return path;
     }
 
-    Base* getLinkedBase(unsigned int index=0) const
+    Base* getLinkedBase(unsigned int index=0) const override
     {
         return TraitsDestCasts::getBase(getIndex(index));
     }
-    BaseData* getLinkedData(unsigned int index=0) const
+    BaseData* getLinkedData(unsigned int index=0) const override
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
@@ -608,24 +608,24 @@ public:
     /// @}
 
     /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect)
+    void copyAspect(int destAspect, int srcAspect) override
     {
         BaseLink::copyAspect(destAspect, srcAspect);
         m_value[destAspect] = m_value[srcAspect];
     }
 
     /// Release memory allocated for the specified aspect.
-    virtual void releaseAspect(int aspect)
+    void releaseAspect(int aspect) override
     {
         BaseLink::releaseAspect(aspect);
         TraitsContainer::clear(m_value[aspect]);
     }
 
-    sofa::core::objectmodel::Base* getOwnerBase() const
+    sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return TraitsOwnerCasts::getBase(m_owner);
     }
-    sofa::core::objectmodel::BaseData* getOwnerData() const
+    sofa::core::objectmodel::BaseData* getOwnerData() const override
     {
         return TraitsOwnerCasts::getData(m_owner);
     }
@@ -747,7 +747,7 @@ public:
         return ok;
     }
 
-    DestType* get(unsigned int index, const core::ExecParams* params = 0) const
+    DestType* get(unsigned int index, const core::ExecParams* params = nullptr) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
         if (index < this->m_value[aspect].size())
@@ -830,7 +830,7 @@ public:
         return Inherit::getPath(0);
     }
 
-    DestType* get(const core::ExecParams* params = 0) const
+    DestType* get(const core::ExecParams* params = nullptr) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
         return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect].get()));

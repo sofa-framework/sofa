@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,6 +40,7 @@ namespace misc
 {
 
 
+
 WriteTopology::WriteTopology()
     : f_filename( initData(&f_filename, "filename", "output file name"))
     , f_writeContainers( initData(&f_writeContainers, true, "writeContainers", "flag enabling output of common topology containers."))
@@ -47,20 +48,13 @@ WriteTopology::WriteTopology()
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
-    //    , f_DOFsX( initData(&f_DOFsX, helper::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
-    //    , f_DOFsV( initData(&f_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
-    //    , f_stopAt( initData(&f_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
-    //    , f_keperiod( initData(&f_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
-    , m_topology(NULL)
+    , m_topology(nullptr)
     , outfile(NULL)
-#ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
-#endif
+    #ifdef SOFA_HAVE_ZLIB
+    , gzfile(nullptr)
+    #endif
     , nextTime(0)
     , lastTime(0)
-    //    , kineticEnergyThresholdReached(false)
-    //    , timeToTestEnergyIncrease(0)
-    //    , savedKineticEnergy(0)
 {
     this->f_listening.setValue(true);
 }
@@ -81,42 +75,29 @@ void WriteTopology::init()
 {
     m_topology = this->getContext()->getMeshTopology();
 
-    // test the size and range of the DOFs to write in the file output
-    //    if (m_topology)
-    //    {
-    //      timeToTestEnergyIncrease = f_keperiod.getValue();
-    //    }
-    ///////////// end of the tests.
-
     const std::string& filename = f_filename.getFullPath();
-    if (!filename.empty())
-    {
-        // 	    std::ifstream infile(filename.c_str());
-        // 	    if( infile.is_open() )
-        // 	      {
-        // 		serr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<sendl;
-        // 	      }
-        // 	    else
+
+    if (filename.empty())
+        return;
+
 #ifdef SOFA_HAVE_ZLIB
-        if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
+    if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
+    {
+        gzfile = gzopen(filename.c_str(),"wb");
+        if( !gzfile )
         {
-            gzfile = gzopen(filename.c_str(),"wb");
-            if( !gzfile )
-            {
-                serr << "Error creating compressed file "<<filename<<sendl;
-            }
+            msg_error() << "Unable to create the compressed file '"<<filename<<"'.";
         }
-        else
+        return;
+    }
 #endif
-        {
-            outfile = new std::ofstream(filename.c_str());
-            if( !outfile->is_open() )
-            {
-                serr << "Error creating file "<<filename<<sendl;
-                delete outfile;
-                outfile = NULL;
-            }
-        }
+
+    outfile = new std::ofstream(filename.c_str());
+    if( !outfile->is_open() )
+    {
+        msg_error() << "Unable to create the file "<<filename;
+        delete outfile;
+        outfile = NULL;
     }
 }
 
@@ -125,24 +106,19 @@ void WriteTopology::reset()
 {
     nextTime = 0;
     lastTime = 0;
-    //    kineticEnergyThresholdReached = false;
-    //    timeToTestEnergyIncrease = f_keperiod.getValue();
-    //    savedKineticEnergy = 0;
-
-
 }
 
 
 void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (!m_topology) return;
         if (!outfile
-#ifdef SOFA_HAVE_ZLIB
-            && !gzfile
-#endif
-           )
+        #ifdef SOFA_HAVE_ZLIB
+                && !gzfile
+        #endif
+                )
             return;
 
         SReal time = getContext()->getTime();
@@ -284,7 +260,6 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
                 }
         }
     }
-
 }
 
 } // namespace misc

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_EXPORTER_INIT_H
-#define SOFA_COMPONENT_EXPORTER_INIT_H
+/* OBJExporter.h
+ *
+ *  Created on: 9 sept. 2009
+ *
+ *  Contributors:
+ *    - froy
+ *    - damien.marchal@univ-lille1.fr
+ *
+ ************************************************************************************/
+
+#ifndef OBJEXPORTER_H_
+#define OBJEXPORTER_H_
 #include "config.h"
+
+#include <sofa/simulation/BaseSimulationExporter.h>
+
+#include <fstream>
 
 namespace sofa
 {
@@ -29,12 +43,36 @@ namespace sofa
 namespace component
 {
 
+namespace _objexporter_
+{
 
-void SOFA_EXPORTER_API initExporter();
+using sofa::simulation::BaseSimulationExporter ;
+using sofa::core::objectmodel::Event ;
+using sofa::core::objectmodel::Base ;
 
-} // namespace component
+class SOFA_SOFAEXPORTER_API OBJExporter : public BaseSimulationExporter
+{
+public:
+    SOFA_CLASS(OBJExporter, BaseSimulationExporter);
 
-} // namespace sofa
+    bool write() override ;
+    bool writeOBJ();
 
-#endif
+    void handleEvent(Event *event) override ;
 
+protected:
+    ~OBJExporter() override;
+};
+
+}
+
+using _objexporter_::OBJExporter ;
+
+/// This is for compatibility with old code base in which OBJExporter where in sofa::component::misc.
+namespace misc  { using _objexporter_::OBJExporter ; }
+
+}
+
+}
+
+#endif /* OBJEXPORTER_H_ */

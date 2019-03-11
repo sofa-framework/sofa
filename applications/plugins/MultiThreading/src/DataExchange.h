@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,10 +49,10 @@ namespace sofa
 				, dt(dt) 
 			{}
 
-			~DataExchangeEvent() {}
+			~DataExchangeEvent() override {}
 
 			double getDt() const { return dt; }
-			virtual const char* getClassName() const { return "DataExchangeEvent"; }
+			const char* getClassName() const override { return "DataExchangeEvent"; }
 		protected:
 			double dt;
 		};
@@ -72,17 +72,17 @@ namespace sofa
 
 			DataExchange( const char* from, const char* to );
 		
-			virtual ~DataExchange();
+			~DataExchange() override;
 			
 			void copyData();
 
 		public:
 
 			 /// Initialization method called at graph creation and modification, during top-down traversal.
-			virtual void init();
+			void init() override;
 			
 
-			virtual void handleEvent( core::objectmodel::Event* event );
+			void handleEvent( core::objectmodel::Event* event ) override;
 
             virtual std::string getTemplateName() const  override
             { 

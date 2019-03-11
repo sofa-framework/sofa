@@ -25,18 +25,18 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 	
     BaseSequentialSolver();
 
-	virtual void factor(const system_type& system);
+	void factor(const system_type& system) override;
 
-    virtual void solve(vec& x,
+    void solve(vec& x,
                        const system_type& system,
-                       const vec& rhs) const;
+                       const vec& rhs) const override;
 
-    virtual void correct(vec& x,
+    void correct(vec& x,
                          const system_type& system,
                          const vec& rhs,
-                         real damping) const;
+                         real damping) const override;
 
-	virtual void init();
+	void init() override;
 
     Data<SReal> omega; ///< SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode
 
@@ -142,16 +142,16 @@ public:
     Data<bool> d_iterateOnBilaterals; ///< Should the bilateral constraint must be solved iteratively or factorized with the dynamics?
     Data<SReal> d_regularization; ///< Optional diagonal Tikhonov regularization on bilateral constraints
 
-    virtual void factor(const system_type& system);
+    void factor(const system_type& system) override;
 
-    virtual void solve(vec& x,
+    void solve(vec& x,
                        const system_type& system,
-                       const vec& rhs) const;
+                       const vec& rhs) const override;
 
-    virtual void correct(vec& x,
+    void correct(vec& x,
                          const system_type& system,
                          const vec& rhs,
-                         real damping) const;
+                         real damping) const override;
 
 protected:
 

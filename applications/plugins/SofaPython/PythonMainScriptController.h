@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,41 +62,41 @@ protected:
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists
     /// @{
 
-    virtual void loadScript() override;
+    void loadScript() override;
 
-    virtual void script_onLoaded(sofa::simulation::Node* node) override ;     /// called once, immediately after the script is loaded
-    virtual void script_createGraph(sofa::simulation::Node* node) override ;  /// called when the script must create its graph
-    virtual void script_initGraph(sofa::simulation::Node* node) override ;    /// called when the script must init its graph, once all the graph has been create
-    virtual void script_bwdInitGraph(sofa::simulation::Node* node) override ; /// called when the script must init its graph, once all the graph has been create
+    void script_onLoaded(sofa::simulation::Node* node) override ;     /// called once, immediately after the script is loaded
+    void script_createGraph(sofa::simulation::Node* node) override ;  /// called when the script must create its graph
+    void script_initGraph(sofa::simulation::Node* node) override ;    /// called when the script must init its graph, once all the graph has been create
+    void script_bwdInitGraph(sofa::simulation::Node* node) override ; /// called when the script must init its graph, once all the graph has been create
 
-    virtual void script_storeResetState() override;
-    virtual void script_reset() override;
+    void script_storeResetState() override;
+    void script_reset() override;
 
-    virtual void script_cleanup() override ;
+    void script_cleanup() override ;
 
     /// keyboard & mouse events
-    virtual bool script_onKeyPressed(const char c) override;
-    virtual bool script_onKeyReleased(const char c) override ;
+    bool script_onKeyPressed(const char c) override;
+    bool script_onKeyReleased(const char c) override ;
 
-    virtual void script_onMouseMove(const int posX,const int posY) override;
-    virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
-    virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
-    virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;
-    virtual void script_onMouseWheel(const int posX,const int posY,const int delta) override;
+    void script_onMouseMove(const int posX,const int posY) override;
+    void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
+    void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
+    void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;
+    void script_onMouseWheel(const int posX,const int posY,const int delta) override;
 
     /// called each frame
-    virtual void script_onBeginAnimationStep(const double dt) override ;
-    virtual void script_onEndAnimationStep(const double dt) override;
+    void script_onBeginAnimationStep(const double dt) override ;
+    void script_onEndAnimationStep(const double dt) override;
 
-    virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value) override ;
+    void script_onGUIEvent(const char* controlID, const char* valueName, const char* value) override ;
 
     /// Script events; user data is implementation-dependant
-    virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event) override ;
+    void script_onScriptEvent(core::objectmodel::ScriptEvent* event) override ;
 
     /// drawing
-    virtual void script_draw(const core::visual::VisualParams*) override ;
+    void script_draw(const core::visual::VisualParams*) override ;
 
-    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) override ;
+    void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) override ;
 
     /// @}
 

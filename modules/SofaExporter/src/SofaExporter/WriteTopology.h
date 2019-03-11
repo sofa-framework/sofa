@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ namespace misc
  * Stop to write infos if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_EXPORTER_API WriteTopology: public core::objectmodel::BaseObject
+class SOFA_SOFAEXPORTER_API WriteTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
@@ -68,10 +68,6 @@ public:
     Data < double > f_interval; ///< time duration between outputs
     Data < helper::vector<double> > f_time; ///< set time to write outputs
     Data < double > f_period; ///< period between outputs
-    //    Data < helper::vector<unsigned int> > f_DOFsX;
-    //    Data < helper::vector<unsigned int> > f_DOFsV;
-    //    Data < double > f_stopAt;
-    //    Data < double > f_keperiod;
 
 protected:
     core::topology::BaseMeshTopology* m_topology;
@@ -81,21 +77,15 @@ protected:
 #endif
     unsigned int nextTime;
     double lastTime;
-    //    bool kineticEnergyThresholdReached;
-    //    double timeToTestEnergyIncrease;
-    //    double savedKineticEnergy;
-
-
     WriteTopology();
 
-    virtual ~WriteTopology();
+    ~WriteTopology() override;
+
 public:
-    virtual void init() override;
+    void init() override;
+    void reset() override;
 
-    virtual void reset() override;
-
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
-
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MeshTopology.
@@ -111,19 +101,19 @@ public:
 
 
 ///Create WriteTopology component in the graph each time needed
-class SOFA_EXPORTER_API WriteTopologyCreator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteTopologyCreator: public simulation::Visitor
 {
 public:
     WriteTopologyCreator(const core::ExecParams* params);
     WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n)                  { sceneName = n; }
     void setRecordContainers(bool b)                   { recordContainers=b; }
     void setRecordShellContainersV(bool b)             { recordShellContainers=b; }
     void setCreateInMapping(bool b)                    { createInMapping=b; }
     void setCounter(int c)                             { counterWriteTopology = c; }
-    virtual const char* getClassName() const { return "WriteTopologyCreator"; }
+    const char* getClassName() const override { return "WriteTopologyCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -133,20 +123,19 @@ protected:
     int counterWriteTopology; //avoid to have two same files if two Topologies are present with the same name
 
     void addWriteTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode);
-
 };
 
 
 
-class SOFA_EXPORTER_API WriteTopologyActivator: public simulation::Visitor
+class SOFA_SOFAEXPORTER_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
     WriteTopologyActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getState() const { return state; }
     void setState(bool active) { state=active; }
-    virtual const char* getClassName() const { return "WriteTopologyActivator"; }
+    const char* getClassName() const override { return "WriteTopologyActivator"; }
 protected:
     void changeStateWriter(sofa::component::misc::WriteTopology *wt);
 

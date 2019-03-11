@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,12 +56,12 @@ struct PluginManager_test: public BaseTest
 {
     std::string pluginDir;
 
-    void SetUp()
+    void SetUp() override
     {
         pluginDir = sofa::helper::system::PluginRepository.getFirstPath();
     }
 
-    void TearDown()
+    void TearDown() override
     {
         PluginManager&pm = PluginManager::getInstance();
         //empty loaded plugin(s)

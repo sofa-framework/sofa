@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,7 +51,7 @@ namespace sofa
             {
                 mmodel = Inherit::searchLocal<DataType>();
                 if(mmodel == NULL)
-                    serr<<"Initialization failed!"<<sendl;
+                    msg_error()<<"Initialization failed!";
                 Inherit::init();
                 // if hair type simulation, create an additional information frame 
                 if(simulationType.getValue()==Hair)
@@ -63,7 +63,7 @@ namespace sofa
                     ofstream file(fileName.c_str(), ios::out|ios::binary);
                     if(file)
                     {
-                        sout<<"writing in "<<fileName<<sendl;
+                        msg_info()<<"writing in "<<fileName;
                         const string bphysics = "BPHYSICS";
                         file.write(bphysics.c_str(),8);
                         unsigned tmp[3]={1,1,64};
@@ -100,7 +100,7 @@ namespace sofa
 
                         if(file)
                         {
-                            sout<<"writing in "<<fileName<<sendl;
+                            msg_info()<<"writing in "<<fileName;
 
                             // ############# write header
 
@@ -222,7 +222,7 @@ namespace sofa
                             file.close();
                         }
                         else
-                            serr<<"Unable to create the following file: "<<fileName<<sendl;
+                            msg_error() << "Unable to create the following file: "<<fileName;
 
                     }
                     frameCounter++;

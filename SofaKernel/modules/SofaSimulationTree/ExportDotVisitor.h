@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,14 +64,14 @@ public:
     bool labelObjectClass;
 
     ExportDotVisitor(const sofa::core::ExecParams* params, std::ostream* out);
-    ~ExportDotVisitor();
+    ~ExportDotVisitor() override;
 
     void processObject(GNode* node, core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(GNode* node);
-    virtual void processNodeBottomUp(GNode* node);
+    Result processNodeTopDown(GNode* node) override;
+    void processNodeBottomUp(GNode* node) override;
 
-    virtual const char* getClassName() const { return "ExportDotVisitor"; }
+    const char* getClassName() const override { return "ExportDotVisitor"; }
 
 protected:
 
@@ -81,10 +81,10 @@ protected:
     std::map<std::string, int> nextIndex;
 
     /// Test if a node should be displayed
-    bool display(GNode* node, const char** color=NULL);
+    bool display(GNode* node, const char** color=nullptr);
 
     /// Test if an object should be displayed
-    bool display(core::objectmodel::BaseObject* obj, const char** color=NULL);
+    bool display(core::objectmodel::BaseObject* obj, const char** color=nullptr);
 
     /// Find the node or object a given object should be attached to.
     /// This is the parent node if it is displayed, otherwise it is the attached MechanicalState or Solver.

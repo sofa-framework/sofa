@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExporter/Exporter.h>
-#include <sofa/core/Plugin.h>
+#ifndef SOFA_SIMULATION_SCENECHECKERLISTENER_H
+#define SOFA_SIMULATION_SCENECHECKERLISTENER_H
 
-class ExporterPlugin: public sofa::core::Plugin {
+#include "config.h"
+
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/Visitor.h>
+
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+
+
+namespace sofa
+{
+namespace simulation
+{
+namespace _scenechecking_
+{
+
+/// to be able to react when a scene is loaded
+class SOFA_GRAPH_COMPONENT_API SceneCheckerListener : public SceneLoader::Listener
+{
 public:
-    ExporterPlugin(): Plugin("Exporter") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
-    }
+    static SceneCheckerListener* getInstance();
+    virtual ~SceneCheckerListener() {}
+
+    virtual void rightAfterLoadingScene(sofa::simulation::Node::SPtr node) override;
+
+private:
+    SceneCheckerListener();
+    SceneCheckerVisitor m_sceneChecker;
 };
 
-SOFA_PLUGIN(ExporterPlugin);
+} // namespace _scenechecking_
+
+namespace scenechecking
+{
+using _scenechecking_::SceneCheckerListener;
+}
+
+} // namespace simulation
+} // namespace sofa
+
+#endif

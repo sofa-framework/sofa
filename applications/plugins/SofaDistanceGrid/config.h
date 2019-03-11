@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,7 @@
 #ifndef SOFA_SOFADISTANCEGRID_CONFIG_H
 #define SOFA_SOFADISTANCEGRID_CONFIG_H
 
-#include <SofaGui/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_HAVE_SOFADISTANCEGRID
 #  define SOFA_TARGET SofaDistanceGrid

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExporter/WriteTopology.inl>
+#include <SofaExporter/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,79 +35,82 @@ using namespace defaulttype;
 
 
 
-int WriteTopologyClass = core::RegisterObject("Write topology containers informations to file at each timestep")
-        .add< WriteTopology >();
+int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
+        .add< WriteState >();
 
-
-
-WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
-    :Visitor(params)
-    ,sceneName("")
+WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
+    :simulation::Visitor(params)
+    , sceneName("")
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
 #endif
-    , recordContainers(true)
-    , recordShellContainers(false)
+    , recordX(true)
+    , recordV(true)
     , createInMapping(false)
-    , counterWriteTopology(0)
+    , counterWriteState(0)
 {
 }
 
-WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c)
-    :Visitor(params)
+WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c)
+    :simulation::Visitor(params)
     , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
 #endif
-    , recordContainers(_writeContainers)
-    , recordShellContainers(_writeShellContainers)
+    , recordX(_recordX)
+    , recordV(_recordV)
+    , recordF(_recordF)
     , createInMapping(_createInMapping)
-    , counterWriteTopology(c)
+    , counterWriteState(c)
 {
 }
 
 
-//Create a Write Topology component each time a BaseMeshTopology is found
-simulation::Visitor::Result WriteTopologyCreator::processNodeTopDown( simulation::Node* gnode)
+//Create a Write State component each time a mechanical state is found
+simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::core::topology::BaseMeshTopology* topo = dynamic_cast<sofa::core::topology::BaseMeshTopology *>( gnode->getMeshTopology());
-    if (!topo)   return simulation::Visitor::RESULT_CONTINUE;
-    //We have a meshTopology
-    addWriteTopology(topo, gnode);
+    sofa::core::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
+    if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
+    core::behavior::OdeSolver *isSimulated;
+    mstate->getContext()->get(isSimulated);
+    if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
+
+    //We have a mechanical state
+    addWriteState(mstate, gnode);
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
 
-void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode)
+void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if ( createInMapping || mapping == NULL)
+    if ( createInMapping || mapping == nullptr)
     {
-        sofa::component::misc::WriteTopology::SPtr wt;
-        context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
-
-        if (wt.get() == NULL)
+        sofa::component::misc::WriteState::SPtr ws;
+        context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
+        if ( ws == NULL )
         {
-            wt = sofa::core::objectmodel::New<WriteTopology>();
-            gnode->addObject(wt);
-            wt->f_writeContainers.setValue(recordContainers);
-            wt->f_writeShellContainers.setValue(recordShellContainers);
+            ws = sofa::core::objectmodel::New<WriteState>();
+            gnode->addObject(ws);
+            ws->d_writeX.setValue(recordX);
+            ws->d_writeV.setValue(recordV);
+            ws->d_writeF.setValue(recordF);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
-                wt->addTag(*it);
+                ws->addTag(*it);
+
         }
-
         std::ostringstream ofilename;
-        ofilename << sceneName << "_" << counterWriteTopology << "_" << topology->getName()  << "_topology" << extension ;
+        ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        wt->f_filename.setValue(ofilename.str()); wt->init(); wt->f_listening.setValue(true);  //Activated at init
+        ws->d_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
 
-        ++counterWriteTopology;
+        ++counterWriteState;
 
     }
 }
@@ -115,17 +118,17 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
 
 
 //if state is true, we activate all the write states present in the scene.
-simulation::Visitor::Result WriteTopologyActivator::processNodeTopDown( simulation::Node* gnode)
+simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::WriteTopology *wt = gnode->get< sofa::component::misc::WriteTopology >(this->subsetsToManage);
-    if (wt != NULL) { changeStateWriter(wt);}
+    sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >(this->subsetsToManage);
+    if (ws != nullptr) { changeStateWriter(ws);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void WriteTopologyActivator::changeStateWriter(sofa::component::misc::WriteTopology* wt)
+void WriteStateActivator::changeStateWriter(sofa::component::misc::WriteState*ws)
 {
-    if (!state) wt->reset();
-    wt->f_listening.setValue(state);
+    if (!state) ws->reset();
+    ws->f_listening.setValue(state);
 }
 
 

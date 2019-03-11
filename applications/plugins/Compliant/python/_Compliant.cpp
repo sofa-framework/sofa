@@ -35,14 +35,14 @@ static PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyO
     float M,B,K;
     if (!PyArg_ParseTuple(args, "Offf", &pyNode, &M, &B, &K)) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: wrong arguments" );
-        return NULL;
+        return nullptr;
     }
 
     BaseNode* node = sofa::py::unwrap<BaseNode>( pyNode );
     if (!node) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
 
@@ -88,14 +88,14 @@ static PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/, PyO
     PyObject* pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode)) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: wrong arguments" );
-        return NULL;
+        return nullptr;
     }
 
     sofa::core::objectmodel::BaseNode* node = sofa::py::unwrap<BaseNode>(pyNode);
     if (!node) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     SReal dt = down_cast<Node>(node)->getDt();
@@ -126,7 +126,7 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "OO", &pySolver, &pyState))
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
-        return NULL;
+        return nullptr;
     }
 
     CompliantImplicitSolver* solver = sofa::py::unwrap<CompliantImplicitSolver>( pySolver );
@@ -134,7 +134,7 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
         PyErr_BadArgument();
-        return NULL;        
+        return nullptr;        
     }
 
     BaseMechanicalState* mstate = sofa::py::unwrap<BaseMechanicalState>( pyState );
@@ -142,7 +142,7 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseMechanicalState" );
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     objectmodel::BaseData* data;
@@ -173,7 +173,7 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     BaseContext* context = sofa::py::unwrap<BaseContext>( pyNode );
@@ -181,7 +181,7 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseContext" );
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     CompliantImplicitSolver* solver = sofa::py::unwrap<CompliantImplicitSolver>( pySolver );
@@ -189,7 +189,7 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     propagate_lambdas_visitor vis( MechanicalParams::defaultInstance(), solver->lagrange );

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,26 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_EXPORTER_EXPORTER_H
+#define SOFA_EXPORTER_EXPORTER_H
+
 #include <sofa/helper/system/config.h>
-#include <SofaExporter/initExporter.h>
 
+#ifdef SOFA_BUILD_EXPORTER
+#  define SOFA_SOFAEXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAEXPORTER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-
-void initExporter()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+#endif

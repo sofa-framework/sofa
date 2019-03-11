@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,28 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExporter/BlenderExporter.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <SofaExporter/Exporter.h>
+#include <sofa/core/Plugin.h>
 
-namespace sofa
-{
+class ExporterPlugin: public sofa::core::Plugin {
+public:
+    ExporterPlugin(): Plugin("Exporter") {
+        setDescription("");
+        setVersion("");
+        setLicense("LGPL");
+        setAuthors("The SOFA Team");
+    }
+};
 
-    namespace component
-    {
-
-        namespace misc
-        {
-            using namespace defaulttype;
-
-                int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
-                .add< BlenderExporter<Vec3dTypes> >()
-                .add< BlenderExporter<Rigid3Types> >()
-				.add< BlenderExporter<ExtVec3Types> >()
-
-				;
-
-        } // namespace misc
-
-    } // namespace component
-
-} // namespace sofa
+SOFA_PLUGIN(ExporterPlugin);
