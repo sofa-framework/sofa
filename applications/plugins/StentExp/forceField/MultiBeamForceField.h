@@ -332,6 +332,9 @@ protected:
 
     // Special implementation for second-order tensor dot product, with the Voigt notation.
     double voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2);
+    Eigen::Matrix<double, 12, 1> beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT, const VoigtTensor2 &T);
+    Eigen::Matrix<double, 12, 12> beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT, const VoigtTensor4 &C,
+                                             const double nu, const double E);
 
     //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
     void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);

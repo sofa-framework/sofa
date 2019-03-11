@@ -1136,6 +1136,9 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     Real _yDim = (Real)beamsData.getValue()[i]._yDim;
     Real _zDim = (Real)beamsData.getValue()[i]._zDim;
 
+    const double E = (Real)beamsData.getValue()[i]._E;
+    const double nu = (Real)beamsData.getValue()[i]._nu;
+
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Ke_loc = bd[i]._Ke_loc;
@@ -1160,7 +1163,7 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     {
         Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
-        stiffness += (w1*w2*w3)*Be.transpose()*C*Be;
+        stiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), C, nu, E);
 
         gaussPointIterator++; //next Gauss Point
     };
@@ -1459,6 +1462,7 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessianFD(co
 
 //*****************************************************************************************//
 
+
 template< class DataTypes>
 double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2)
 {
@@ -1469,6 +1473,64 @@ double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, c
     double res = 0.0;
     res += t1[0]*t2[0] + t1[1]*t2[1] + t1[2]*t2[2];      //diagonal elements
     res += 2*(t1[3]*t2[3] + t1[4]*t2[4] + t1[5]*t2[5]);  //non-diagonal elements
+    return res;
+}
+
+template< class DataTypes>
+Eigen::Matrix<double, 12, 1> MultiBeamForceField<DataTypes>::beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT,
+                                                                            const VoigtTensor2 &T)
+{
+    // In Voigt notation, 3 rows in Be (i.e. 3 columns in Be^T) are missing.
+    // These rows correspond to the 3 symmetrical non-diagonal elements of the
+    // tensors, which are not expressed in Voigt notation.
+    // We have to add the contribution of these rows in the computation BeT*Tensor.
+
+    Eigen::Matrix<double, 12, 1> res = Eigen::Matrix<double, 12, 1>::Zero();
+
+    res += BeT*T; // contribution of the 6 first columns
+
+    // We compute the contribution of the 3 missing columns.
+    // This can be achieved with block computation.
+
+    Eigen::Matrix<double, 12, 3> additionalColumns = Eigen::Matrix<double, 12, 3>::Zero();
+    additionalColumns.block<12, 1>(0, 0) = BeT.block<12, 1>(0, 3); // T_yz
+    additionalColumns.block<12, 1>(0, 1) = BeT.block<12, 1>(0, 4); // T_zx
+    additionalColumns.block<12, 1>(0, 2) = BeT.block<12, 1>(0, 5); // T_xy
+
+    Eigen::Matrix<double, 3, 1> additionalTensorElements = Eigen::Matrix<double, 3, 1>::Zero();
+    additionalTensorElements[0] = T[3]; // T_yz
+    additionalTensorElements[1] = T[4]; // T_zx
+    additionalTensorElements[2] = T[5]; // T_xy
+
+    res += additionalColumns*additionalTensorElements;
+    return res;
+}
+
+template< class DataTypes>
+Eigen::Matrix<double, 12, 12> MultiBeamForceField<DataTypes>::beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT,
+                                                                         const VoigtTensor4 &C,
+                                                                         const double nu, const double E)
+{
+    // In Voigt notation, 3 rows in Be (i.e. 3 columns in Be^T) are missing.
+    // These rows correspond to the 3 symmetrical non-diagonal elements of the
+    // tensors, which are not expressed in Voigt notation.
+    // We have to add the contribution of these rows in the computation BeT*C*Be.
+
+    // First part of the computation in Voigt Notation
+    Eigen::Matrix<double, 12, 12> res = Eigen::Matrix<double, 12, 12>::Zero();
+    res += BeT*C*(BeT.transpose()); // contribution of the 6 first columns
+
+    // Second part : contribution of the missing rows in Be
+    Eigen::Matrix<double, 12, 3> leftTerm = Eigen::Matrix<double, 12, 3>::Zero();
+    leftTerm.block<12, 1>(0, 0) = BeT.block<12, 1>(0, 3); // S_3N^T
+    leftTerm.block<12, 1>(0, 1) = BeT.block<12, 1>(0, 4); // S_4N^T
+    leftTerm.block<12, 1>(0, 2) = BeT.block<12, 1>(0, 5); // S_5N^T
+
+    Eigen::Matrix<double, 3, 12> rightTerm = leftTerm.transpose();
+    rightTerm *= E/(1+nu);
+
+    res += leftTerm*rightTerm;
+
     return res;
 }
 
@@ -1592,9 +1654,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         EigenDisplacement eigenCurrentDisp;
         for (int k = 0; k < 12; k++)
-        {
             eigenCurrentDisp(k) = currentDisp[k];
-        }
 
         VoigtTensor2 elasticStrain = Be*eigenCurrentDisp;
         VoigtTensor2 plasticStrain = plasticStrainHistory[gaussPointIt];
@@ -2001,7 +2061,7 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
 
         _prevStresses[index][gaussPointIt] = newStressPoint;
 
-        internalForces += (w1*w2*w3)*Be.transpose()*newStressPoint;
+        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
 
         gaussPointIt++; //Next Gauss Point
     };
@@ -2109,7 +2169,9 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
     LambdaType computePostPlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
-        internalForces += (w1*w2*w3)*Be.transpose()*newStresses[gaussPointIt];
+
+        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStresses[gaussPointIt]);
+
         gaussPointIt++; //Next Gauss Point
     };
 
@@ -2233,6 +2295,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
     const double E = bd[i]._E;
+    const double nu = bd[i]._nu;
     helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[i]._pointMechanicalState;
 
     // Reduced integration
@@ -2285,7 +2348,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
                 Cep = C - (Cgrad*gradTC) / (H + voigtDotProduct(gradTC,VMgradient));
         }
 
-        tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;
+        tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), Cep, nu, E);
 
         gaussPointIt++; //Next Gauss Point
     };
