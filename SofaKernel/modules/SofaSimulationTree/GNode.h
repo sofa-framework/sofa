@@ -53,6 +53,8 @@ public:
     //Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
+    virtual void moveChild(BaseNode::SPtr node) override;
+
     //Pure Virtual method from BaseNode
     /// Add a child node
     virtual void doAddChild(BaseNode::SPtr node) override;

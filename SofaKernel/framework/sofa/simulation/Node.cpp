@@ -244,18 +244,6 @@ void Node::moveObject(BaseObject::SPtr obj)
     }
 }
 
-void Node::notifyStepBegin()
-{
-    for (auto& listener : listener)
-        listener->onStepBegin(this);
-}
-
-void Node::notifyStepEnd()
-{
-    for (auto& listener : listener)
-        listener->onStepEnd(this);
-}
-
 
 void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child)
 {

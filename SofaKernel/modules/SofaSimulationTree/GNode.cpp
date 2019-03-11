@@ -59,6 +59,12 @@ Node::SPtr GNode::createChild(const std::string& nodeName)
     return std::move(newchild);
 }
 
+void GNode::moveChild(BaseNode::SPtr node)
+{
+    Node::moveChild(node, node->getFirstParent());
+}
+
+
 /// Add a child node
 void GNode::doAddChild(BaseNode::SPtr node)
 {

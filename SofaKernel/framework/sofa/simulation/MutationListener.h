@@ -39,6 +39,10 @@ class SOFA_SIMULATION_CORE_API MutationListener
   public:
     virtual ~MutationListener();
 
+    virtual void onStepEnd(Node *root);
+
+    virtual void onStepBegin(Node *root);
+
     virtual void sleepChanged(Node *node);
 
     virtual void onAddChildBegin(Node *parent, Node *child);
