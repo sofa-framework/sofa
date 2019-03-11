@@ -343,11 +343,6 @@ static PyObject * Node_moveChild(PyObject *self, PyObject * args) {
         PyErr_BadArgument();
         return NULL;
     }
-    BaseNode* prevParent = get_node(pyPrevParent);
-    if (!child) {
-        PyErr_BadArgument();
-        return NULL;
-    }
 
     obj->moveChild(child, prevParent);
     Py_RETURN_NONE;

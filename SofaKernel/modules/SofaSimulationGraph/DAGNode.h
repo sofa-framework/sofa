@@ -223,56 +223,6 @@ protected:
     /// @}
 };
 
-/// get all down objects respecting specified class_info and tags
-class GetDownObjectsVisitor : public Visitor
-{
-public:
-
-    GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
-
-    virtual Result processNodeTopDown(simulation::Node* node);
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const;
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const;
-    virtual const char* getClassName()    const;
-
-
-protected:
-
-    const sofa::core::objectmodel::ClassInfo& _class_info;
-    DAGNode::GetObjectsCallBack& _container;
-    const sofa::core::objectmodel::TagSet& _tags;
-};
-
-/// get all up objects respecting specified class_info and tags
-class GetUpObjectsVisitor : public Visitor
-{
-public:
-    GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
-
-    virtual Result processNodeTopDown(simulation::Node* node);
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const;
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const;
-    virtual const char* getClassName()    const;
-
-
-protected:
-    DAGNode* _searchNode;
-    const sofa::core::objectmodel::ClassInfo& _class_info;
-    DAGNode::GetObjectsCallBack& _container;
-    const sofa::core::objectmodel::TagSet& _tags;
-
-};
-
 } // namespace graph
 
 } // namespace simulation
