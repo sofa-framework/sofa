@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -285,7 +285,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
                 break;
             default:
                 msg_warning("VoxelGridLoader") << "Unknown bitdepth: " << bpp ;
-                return 0;
+                return nullptr;
             }
             helper::io::ImageRAW *imageRAW = new helper::io::ImageRAW();
             imageRAW->init(res[0], res[1], res[2], 1, helper::io::Image::UNORM8, channels);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,19 +66,19 @@ public:
         , initialNbTriangles(0)
         , initialNbPoints(0) {};
 
-    ~InciseAlongPathPerformer();
+    ~InciseAlongPathPerformer() override;
 
-    void start();
+    void start() override;
 
-    void execute();
+    void execute() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     BodyPicked& getFirstIncisionBodyPicked() {return firstIncisionBody;}
 
     BodyPicked& getLastBodyPicked() {return firstBody;}
 
-    void setPerformerFreeze();
+    void setPerformerFreeze() override;
 
 protected:
     /// Incision will be perfomed between firstIncisionBody (first point clicked) and firstBody (last point clicked in memory)

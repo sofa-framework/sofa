@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,7 +48,7 @@ public:
 
     }
 
-    virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
+    void resolution(int line, double** w, double* d, double* force, double *dfree) override
     {
         SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
@@ -99,9 +99,9 @@ public:
     {
     }
 
-    virtual void init(int line, double** w, double* force);
-    virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
-    virtual void store(int line, double* force, bool /*convergence*/);
+    void init(int line, double** w, double* force) override;
+    void resolution(int line, double** w, double* d, double* force, double *dFree) override;
+    void store(int line, double* force, bool /*convergence*/) override;
 
 protected:
     double _mu;
@@ -209,9 +209,9 @@ public:
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
 
-    virtual void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) override;
+    void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) override;
 
-    virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
+    void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
     bool isActive() const override;
 
     void draw(const core::visual::VisualParams* vparams) override;

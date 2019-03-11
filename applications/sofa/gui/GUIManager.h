@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -64,24 +64,24 @@ public:
      *  \param priority : If nothing is given as name GUIManager::Init parameter GUIManager::valid_guiname is automaticly set compared with the priority
      *  \return 1 if the name is already used (failed), 0 if restry succed
      */
-    static int RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIParameters* parameters=NULL, int priority=0);
+    static int RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIParameters* parameters=nullptr, int priority=0);
     static const char* GetValidGUIName();
     static const std::string& GetCurrentGUIName();
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
     static void RegisterParameters(ArgumentParser* parser);
-    static int createGUI(sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static int createGUI(sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
     static void closeGUI();
 
     /// @name Static methods for direct access to GUI
     /// @{
-    static int MainLoop(sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static int MainLoop(sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
 
     static void Redraw();
 
     static sofa::simulation::Node* CurrentSimulation();
 
-    static void SetScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    static void SetScene(sofa::simulation::Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
     static void SetDimension(int  width , int  height );
     static void SetFullScreen();
     static void SaveScreenshot(const char* filename);
@@ -93,7 +93,7 @@ protected:
      *  \param name : It is the name of your gui.
      *  \return NULL if the name don't match with any guiCreators name, the correct pointer otherwise
      */
-    static GUICreator* GetGUICreator(const char* name = NULL);
+    static GUICreator* GetGUICreator(const char* name = nullptr);
     /* CLASS FIELDS */
 
     static std::list<GUICreator> guiCreators;

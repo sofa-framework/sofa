@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,7 +66,7 @@ class SOFA_HELPER_API LoggingMessageHandler : public MessageHandler
 {
 public:
     LoggingMessageHandler() ;
-    virtual ~LoggingMessageHandler() {}
+    ~LoggingMessageHandler() override {}
 
     //TODO(dmarchal): there is several defect in the design of this class:
     //   - no maximum buffer size (we should implement a circular buffer approach)
@@ -80,7 +80,7 @@ public:
     const vector<Message>& getMessages() const ;
 
     /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
+    void process(Message& m) override ;
 
 private:
     int             m_activationCount    {0};

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,7 +65,7 @@ namespace sofa
 
                 MeanComputation();
 
-                ~MeanComputation() {}
+                ~MeanComputation() override {}
 
                 void compute();
 
@@ -74,7 +74,7 @@ namespace sofa
 
                 void reinit() override;
 
-                virtual void handleEvent(core::objectmodel::Event* event) override;
+                void handleEvent(core::objectmodel::Event* event) override;
 
                 virtual std::string getTemplateName() const override
                 {

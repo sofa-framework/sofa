@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,10 +49,10 @@ public:
     public:
         defaulttype::BaseMatrix* matrix;
         unsigned int offset;
-        MatrixRef() : matrix(NULL), offset(0) {}
+        MatrixRef() : matrix(nullptr), offset(0) {}
         defaulttype::BaseMatrix* operator->() const { return matrix; }
-        bool operator!() const { return matrix == NULL; }
-        operator bool() const { return matrix != NULL; }
+        bool operator!() const { return matrix == nullptr; }
+        operator bool() const { return matrix != nullptr; }
         void operator =(const MatrixRef& b) {offset = b.offset; matrix = b.matrix;}
     };
 
@@ -62,10 +62,10 @@ public:
     public:
         defaulttype::BaseMatrix* matrix;
         unsigned int offRow, offCol;
-        InteractionMatrixRef() : matrix(NULL), offRow(0), offCol(0) {}
+        InteractionMatrixRef() : matrix(nullptr), offRow(0), offCol(0) {}
         defaulttype::BaseMatrix* operator->() const { return matrix; }
-        bool operator!() const { return matrix == NULL; }
-        operator bool() const { return matrix != NULL; }
+        bool operator!() const { return matrix == nullptr; }
+        operator bool() const { return matrix != nullptr; }
         void operator =(const InteractionMatrixRef& b) {offRow = b.offRow; offCol = b.offCol; matrix = b.matrix;}
     };
 

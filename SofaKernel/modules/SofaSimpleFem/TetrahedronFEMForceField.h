@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -236,7 +236,7 @@ public:
 
 protected:
     TetrahedronFEMForceField() ;
-    virtual ~TetrahedronFEMForceField();
+    ~TetrahedronFEMForceField() override;
 
 public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
@@ -252,22 +252,22 @@ public:
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
-    virtual void reset() override;
-    virtual void init() override;
-    virtual void reinit() override;
+    void reset() override;
+    void init() override;
+    void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using InheritForceField::getPotentialEnergy;
     // getPotentialEnergy is implemented for small method
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
+    void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;

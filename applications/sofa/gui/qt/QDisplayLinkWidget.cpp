@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -47,11 +47,11 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         const ModifyObjectFlags& flags)
     : QGroupBox(parent),
       link_(link),
-      linkinfowidget_(NULL),
-      linkwidget_(NULL),
+      linkinfowidget_(nullptr),
+      linkwidget_(nullptr),
       numWidgets_(0)
 {
-    if(link_ == NULL)
+    if(link_ == nullptr)
     {
         return;
     }
@@ -72,7 +72,7 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
 
     linkwidget_= LinkWidget::CreateLinkWidget(dwarg);
 
-    if (linkwidget_ == 0)
+    if (linkwidget_ == nullptr)
     {
         linkwidget_ = new QLinkSimpleEdit(this,dwarg.link->getName().c_str(), dwarg.link);
         linkwidget_->createWidgets();

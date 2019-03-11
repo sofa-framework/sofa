@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,20 +68,20 @@ class ImagePlaneGraphScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    ImagePlaneGraphScene(QImage* im,QObject *parent=0) : QGraphicsScene(parent)	, drawrectangle(false),image(im) 	{ this->setSceneRect(0,0,image->width(),image->height()); }
+    ImagePlaneGraphScene(QImage* im,QObject *parent=nullptr) : QGraphicsScene(parent)	, drawrectangle(false),image(im) 	{ this->setSceneRect(0,0,image->width(),image->height()); }
     QPointF P1;
     QPointF P2;
     bool drawrectangle;
 
 private:
     const QImage *image;
-    void drawBackground(QPainter *painter, const QRectF &rect)
+    void drawBackground(QPainter *painter, const QRectF &rect) override
     {
         QGraphicsScene::drawBackground(painter,rect);
         if(image) painter->drawImage(this->sceneRect(),*image);
     }
 
-    void drawForeground(QPainter *painter, const QRectF &rect)
+    void drawForeground(QPainter *painter, const QRectF &rect) override
     {
         QGraphicsScene::drawForeground(painter,rect);
 
@@ -144,7 +144,7 @@ signals:
     void onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);  // when the mouse is on image -> update info
 
 public:
-    ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(NULL)   {	 this->setMouseTracking(true); }
+    ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(nullptr)   {	 this->setMouseTracking(true); }
 
     virtual void fromOption(const unsigned int i)=0;					// slice index change -> redraw
     virtual void fromGraph(const QPointF &pt,const bool clicked)=0;		// mouse move -> get image info
@@ -155,7 +155,7 @@ public:
     ImagePlaneGraphScene *graphscene(){return scene;}
 
 protected:
-    void resizeEvent ( QResizeEvent* /*resizeevent*/)  { this->fitInView();	}
+    void resizeEvent ( QResizeEvent* /*resizeevent*/) override  { this->fitInView();	}
 
     void fitInView() // modified version of original fitinview (no margin)
     {
@@ -184,7 +184,7 @@ protected:
     //	roi.translate  ( this->mapToScene(dx, dy ));
     //}
 
-    void mousePressEvent(QMouseEvent *mouseEvent)
+    void mousePressEvent(QMouseEvent *mouseEvent) override
     {
         QGraphicsView::mousePressEvent(mouseEvent);
         if (mouseEvent->modifiers()==Qt::ControlModifier)	{	scene->P1=scene->P2=this->mapToScene(mouseEvent->pos());		scene->drawrectangle=true; }
@@ -192,7 +192,7 @@ protected:
         emit mousepressevent();
     }
 
-    void mouseReleaseEvent(QMouseEvent *mouseEvent)
+    void mouseReleaseEvent(QMouseEvent *mouseEvent) override
     {
         QGraphicsView::mouseReleaseEvent(mouseEvent);
         if (scene->drawrectangle) {  setRoi(QRectF(scene->P1,scene->P2)); emit roiResized(); scene->drawrectangle=false; }
@@ -200,7 +200,7 @@ protected:
         emit  mousereleaseevent();
     }
 
-    void mouseDoubleClickEvent ( QMouseEvent *mouseEvent )
+    void mouseDoubleClickEvent ( QMouseEvent *mouseEvent ) override
     {
         QGraphicsView::mouseDoubleClickEvent(mouseEvent);
         if (mouseEvent->modifiers()==Qt::ControlModifier)  {  setRoi(QRectF(0,0,image.width(),image.height()));  emit roiResized(); }
@@ -213,7 +213,7 @@ protected:
         emit mousedoubleclickevent();
     }
 
-    void mouseMoveEvent(QMouseEvent *mouseEvent)
+    void mouseMoveEvent(QMouseEvent *mouseEvent) override
     {
         QGraphicsView::mouseMoveEvent(mouseEvent);
         QPointF pt(this->mapToScene(mouseEvent->pos()));
@@ -224,7 +224,7 @@ protected:
         else { scene->P1=pt; emit cursorChangedX(pt.x()); emit cursorChangedY(pt.y()); Render ();}
     }
 
-    void wheelEvent (QWheelEvent *wheelev) {		emit wheelevent((wheelev->delta()>0)?1:-1);  }
+    void wheelEvent (QWheelEvent *wheelev) override {		emit wheelevent((wheelev->delta()>0)?1:-1);  }
 
     ImagePlaneGraphScene * scene;
     QRectF roi;
@@ -278,7 +278,7 @@ public:
         Render();
     }
 
-    virtual ~TImagePlaneGraphWidget() {};
+    ~TImagePlaneGraphWidget() override {};
 
     void readFromData(const ImagePlanetype& d0)
     {
@@ -311,7 +311,7 @@ public:
         }
     }
 
-    void fromGraph(const QPointF &pt,const bool isMouseClicked)
+    void fromGraph(const QPointF &pt,const bool isMouseClicked) override
     {
         if(!this->imageplane) return;
         Coord P;
@@ -346,7 +346,7 @@ public:
         }
     }
 
-    void fromOption(const unsigned int i)
+    void fromOption(const unsigned int i) override
     {
         if(!this->imageplane) return;
         if(this->index!=i)
@@ -358,7 +358,7 @@ public:
         draw();
     }
 
-    void draw()
+    void draw() override
     {
         if(!this->imageplane) return;
 
@@ -747,7 +747,7 @@ public:
 
     }
 
-    void handleSliderPolicies()
+    void handleSliderPolicies() override
     {
         if(graphXY && graphXZ && graphZY)
         {

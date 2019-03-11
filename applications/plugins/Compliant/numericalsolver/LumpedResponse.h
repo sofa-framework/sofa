@@ -18,8 +18,8 @@ class SOFA_Compliant_API LumpedResponse : public Response {
 public:
     SOFA_CLASS(LumpedResponse, Response);
 
-    virtual void factor(const rmat& sys);
-	virtual void solve(cmat& lval, const cmat& rval) const;
+    void factor(const rmat& sys) override;
+	void solve(cmat& lval, const cmat& rval) const override;
     virtual void solve(vec& lval,  const vec& rval) const;
 
 	

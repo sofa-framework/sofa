@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,15 +40,15 @@ public:
     InitGnuplotVisitor(const core::ExecParams* params, std::string dir) : Visitor(params),gnuplotDirectory(dir) {}
 
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const
+    const char* getCategoryName() const override
     {
         return "initGnuplot";
     }
-    virtual const char* getClassName() const { return "InitGnuplotVisitor"; }
+    const char* getClassName() const override { return "InitGnuplotVisitor"; }
 };
 
 class SOFA_SIMULATION_CORE_API ExportGnuplotVisitor : public simulation::Visitor
@@ -56,15 +56,15 @@ class SOFA_SIMULATION_CORE_API ExportGnuplotVisitor : public simulation::Visitor
 public:
     ExportGnuplotVisitor(const core::ExecParams* params, SReal time);
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const
+    const char* getCategoryName() const override
     {
         return "exportGnuplot";
     }
-    virtual const char* getClassName() const { return "ExportGnuplotVisitor"; }
+    const char* getClassName() const override { return "ExportGnuplotVisitor"; }
 protected:
     SReal m_time;
 };

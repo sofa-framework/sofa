@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,12 +54,12 @@ protected:
         : PointSetTopologyModifier()
     {}
 
-    virtual ~EdgeSetTopologyModifier() override {}
+    ~EdgeSetTopologyModifier() override {}
 public:
-    virtual void init() override;
+    void init() override;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges() override;
+    void propagateTopologicalEngineChanges() override;
 
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -188,7 +188,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const size_t nPoints) override;
+    void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -198,7 +198,7 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(const sofa::helper::vector<PointID> &indices,
+    void removePointsProcess(const sofa::helper::vector<PointID> &indices,
             const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
@@ -206,7 +206,7 @@ public:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
+    void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
             const sofa::helper::vector<PointID> &/*inv_index*/,
             const bool renumberDOF = true) override;
 
@@ -219,11 +219,11 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<EdgeID> &items) override;
+    void removeItems(const sofa::helper::vector<EdgeID> &items) override;
 
     /** \brief Generic method for points renumbering
     */
-    virtual void renumberPoints( const sofa::helper::vector<PointID> & index,
+    void renumberPoints( const sofa::helper::vector<PointID> & index,
             const sofa::helper::vector<PointID> & inv_index) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
@@ -267,7 +267,7 @@ public:
      * @param coefs The barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    virtual void movePointsProcess (const sofa::helper::vector <PointID>& id,
+    void movePointsProcess (const sofa::helper::vector <PointID>& id,
             const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool moveDOF = true) override;

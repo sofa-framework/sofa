@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,29 +86,29 @@ public:
     void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override;
 
     /// Add the forces
-    virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f,
+    void addForce (const core::MechanicalParams* params, DataVecDeriv& f,
                            const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Constant force has null variation
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df ,
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df ,
                            const DataVecDeriv& d_dx) override;
 
     using Inherit::addKToMatrix;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m,
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *m,
                               SReal kFactor, unsigned int &offset) override;
 
     /// Constant force has null variation
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/,
                               SReal /*kFact*/) ;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* params,
+    SReal getPotentialEnergy(const core::MechanicalParams* params,
                                      const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );

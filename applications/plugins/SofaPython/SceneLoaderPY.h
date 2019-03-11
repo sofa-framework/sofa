@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,25 +45,26 @@ class SOFA_SOFAPYTHON_API SceneLoaderPY : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension);
+    bool canLoadFileExtension(const char *extension) override;
     /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension);
+    bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
-    virtual Node::SPtr load(const char *filename);
+    virtual Node::SPtr doLoad(const char *filename);
 
     // max: added out parameter to get the root *before* createScene is called
-    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = 0);
+    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
+    virtual void doLoadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
     bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file
-    virtual void write(Node* node, const char *filename);
+    void write(Node* node, const char *filename) override;
 
     /// get the file type description
     virtual std::string getFileTypeDesc();
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list);
+    void getExtensionList(ExtensionList* list) override;
 
     /// add a header that will be injected before the loading of the scene
     static void setHeader(const std::string& header);
@@ -74,7 +75,7 @@ private:
 };
 
 /// Export the scene graph in Python format
-void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=NULL );
+void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=nullptr );
 
 /// Visitor that exports all nodes/components in python
 class SOFA_SOFAPYTHON_API PythonExporterVisitor : public Visitor
@@ -92,10 +93,10 @@ public:
 
     template<class T> void processObject( T obj, const std::string& nodeVariable );
 
-    virtual Result processNodeTopDown(Node* node) override ;
-    virtual void processNodeBottomUp(Node* node) override ;
+    Result processNodeTopDown(Node* node) override ;
+    void processNodeBottomUp(Node* node) override ;
 
-    virtual const char* getClassName() const override { return "PythonExporterVisitor"; }
+    const char* getClassName() const override { return "PythonExporterVisitor"; }
 };
 
 

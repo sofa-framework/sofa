@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,13 +63,13 @@ using helper::vector;
 class LegacyVTKReader : public BaseVTKReader
 {
 public:
-    bool readFile(const char* filename);
+    bool readFile(const char* filename) override;
 };
 
 class XMLVTKReader : public BaseVTKReader
 {
 public:
-    bool readFile(const char* filename);
+    bool readFile(const char* filename) override;
 protected:
     bool loadUnstructuredGrid(TiXmlHandle datasetFormatHandle);
     bool loadPolydata(TiXmlHandle datasetFormatHandle);
@@ -964,7 +964,7 @@ bool XMLVTKReader::readFile(const char* filename)
 
     TiXmlHandle hVTKDoc(&vtkDoc);
     TiXmlElement* pElem;
-    TiXmlHandle hVTKDocRoot(0);
+    TiXmlHandle hVTKDocRoot(nullptr);
 
     //block VTKFile
     pElem = hVTKDoc.FirstChildElement().ToElement();

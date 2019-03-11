@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,16 +64,16 @@ public:
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
     /// Remove the current node from the graph: consists in removing the link to its parent
-    virtual void detachFromGraph() override;
+    void detachFromGraph() override;
 
     /// Get a list of parent node
-    virtual Parents getParents() const override;
+    Parents getParents() const override;
 
     /// returns number of parents
-    virtual size_t getNbParents() const override;
+    size_t getNbParents() const override;
 
     /// return the first parent (returns NULL if no parent)
-    virtual BaseNode* getFirstParent() const override;
+    BaseNode* getFirstParent() const override;
 
     /// Test if the given node is a parent of this node.
     bool hasParent(const BaseNode* node) const override;
@@ -96,32 +96,32 @@ public:
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override;
 
     /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
+    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
+    core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children
-    virtual void initVisualContext() override;
+    void initVisualContext() override;
 
     /// Update the whole context values, based on parent and local ContextObjects
-    virtual void updateContext() override;
+    void updateContext() override;
 
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
-    virtual void updateSimulationContext() override;
+    void updateSimulationContext() override;
 
     static DAGNode::SPtr create(DAGNode*, core::objectmodel::BaseObjectDescription* arg)
     {
@@ -132,10 +132,10 @@ public:
 
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
-    virtual Node* findCommonParent( Node* node2 ) override;
+    Node* findCommonParent( Node* node2 ) override;
 
     /// compute the traversal order from this Node
-    virtual void precomputeTraversalOrder( const core::ExecParams* params ) override;
+    void precomputeTraversalOrder( const core::ExecParams* params ) override;
 
 protected:
 

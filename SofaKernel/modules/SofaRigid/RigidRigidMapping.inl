@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 
 namespace sofa
@@ -72,7 +72,7 @@ public:
     RigidRigidMapping<TIn, TOut>* dest;
     Loader(RigidRigidMapping<TIn, TOut>* dest) : dest(dest) {}
 
-    virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal, SReal, SReal, bool, bool)
+    void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal, SReal, SReal, bool, bool) override
     {
         OutCoord c;
         Out::set(c,px,py,pz);
@@ -80,7 +80,7 @@ public:
         dest->points.endEdit();
     }
 
-    virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
+    void addSphere(SReal px, SReal py, SReal pz, SReal) override
     {
         OutCoord c;
         Out::set(c,px,py,pz);

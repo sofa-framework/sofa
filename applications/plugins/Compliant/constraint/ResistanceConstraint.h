@@ -23,7 +23,7 @@ struct SOFA_Compliant_API ResistanceConstraint : Constraint {
 
     ResistanceConstraint();
 
-    virtual void project( SReal* out, unsigned n, unsigned index, bool correctionPass=false ) const;
+    void project( SReal* out, unsigned n, unsigned index, bool correctionPass=false ) const override;
 
 
     Data<SReal> d_threshold; ///< the resistance force

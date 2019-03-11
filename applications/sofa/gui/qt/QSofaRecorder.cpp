@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "QSofaRecorder.h"
 #include "RealGUI.h"
-#include <time.h>
+#include <ctime>
 
 #include <sofa/core/objectmodel/Tag.h>
 
@@ -142,7 +142,7 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     connect ( timerStep, SIGNAL( timeout() ), this, SLOT(slot_stepforward() ));
 
     this->setMaximumHeight(timeRecord->height());
-    root = NULL;
+    root = nullptr;
 
 }
 

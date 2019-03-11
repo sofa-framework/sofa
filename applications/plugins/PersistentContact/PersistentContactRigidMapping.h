@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,27 +76,27 @@ public:
 
     PersistentContactRigidMapping();
 
-    virtual ~PersistentContactRigidMapping() {}
+    ~PersistentContactRigidMapping() override {}
 
-    void beginAddContactPoint();
+    void beginAddContactPoint() override;
 
     int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
-    int keepContactPointFromInputMapping(const int index);
+    int keepContactPointFromInputMapping(const int index) override;
 
-    void init();
+    void init() override;
 
-    void bwdInit();
+    void bwdInit() override;
 
-    void reset();
+    void reset() override;
 
-    void handleEvent(sofa::core::objectmodel::Event*);
+    void handleEvent(sofa::core::objectmodel::Event*) override;
 
     void storeFreePositionAndDx();
 
     void applyLinearizedPosition();
 
-    void applyPositionAndFreePosition();
+    void applyPositionAndFreePosition() override;
 
     void applyJT(const core::ConstraintParams *cparams  /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
     {
