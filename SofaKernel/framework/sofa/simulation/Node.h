@@ -560,14 +560,9 @@ public:
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
-	/// override context setSleeping to add notification.
-	void setSleeping(bool /*val*/) override;
+    /// override context setSleeping to add notification.
+    void setSleeping(bool /*val*/) override;
 
-    virtual void notifyStepBegin();
-    virtual void notifyStepEnd();
-
-    virtual void notifyStepBegin();
-    virtual void notifyStepEnd();
 
 protected:
     bool debug_;
