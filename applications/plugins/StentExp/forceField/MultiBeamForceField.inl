@@ -1684,18 +1684,27 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         if (isPostPlastic)
         {
-            //The newly computed stresses don't correspond anymore to plastic
-            //deformation. We must re-compute them in an elastic way, while
-            //keeping track of the plastic deformation history
+            //The new computed stress for this Gauss point doesn't correspond
+            // anymore to plastic deformation. We must re-compute it in an
+            // elastic way, while taking into account the plastic deformation
+            // history.
 
             pointMechanicalState = POSTPLASTIC;
-            newStressPoint = currentStressPoint; //TO DO: check if we should take back the plastic strain
+            newStressPoint = currentStressPoint;
 
-            //************ Computation of the remaining plastic strain ************//
+            // Recomputation of the stress, taking off the plastic strain history
+            const Eigen::Matrix<double, 6, 12> &Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+            const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
 
-            //TO DO: change with some kind of integration of the plastic strain increments over the plastic deformation path.
-            //       For the moment the plastic strain increments are just summed up at the end of the plastic stress
-            //       increment computation
+            EigenDisplacement eigenCurrentDisp;
+            for (int k = 0; k < 12; k++)
+                eigenCurrentDisp(k) = currentDisp[k];
+
+            VoigtTensor2 elasticStrain = Be*eigenCurrentDisp;
+            VoigtTensor2 plasticStrain = plasticStrainHistory[gaussPointIt];
+
+            currentStressPoint = C*(elasticStrain - plasticStrain);
+            newStressPoint = currentStressPoint;
 
             return;
         }
