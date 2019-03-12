@@ -69,7 +69,7 @@ protected:
     constraintset::BilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
-    std::vector< sofa::core::collision::DetectionOutput* > contacts;
+    std::vector< const sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
     void activateMappers();
 

@@ -46,7 +46,9 @@ namespace collision
 
 class SOFA_MESH_COLLISION_API MeshNewProximityIntersection : public core::collision::BaseIntersector
 {
-    typedef NewProximityIntersection::OutputVector OutputVector;
+    typedef BaseIntersector::OutputVector OutputVector;
+
+    typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
 public:
     MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
@@ -75,13 +77,13 @@ public:
         return MeshIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(),e1.getProximity() + e2.getProximity() + intersection->getContactDistance(),contacts);
     }
 
-    static inline int doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id);
+    static inline int doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, DetectionOutput& detection, int id);
 
-    static inline int doIntersectionLinePoint(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
+    static inline int doIntersectionLinePoint(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, DetectionOutput& detection, int id, bool swapElems = false);
 
-    static inline int doIntersectionTrianglePoint(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
+    static inline int doIntersectionTrianglePoint(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, DetectionOutput& detection, int id, bool swapElems = false);
 
-    static inline int doIntersectionTrianglePoint2(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
+    static inline int doIntersectionTrianglePoint2(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, DetectionOutput& detection, int id, bool swapElems = false);
 
 protected:
 

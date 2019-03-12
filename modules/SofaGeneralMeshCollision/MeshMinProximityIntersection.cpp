@@ -166,8 +166,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
@@ -178,31 +177,32 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
         Pfree = e1.p1Free() + ABfree * alpha;
         Qfree = e2.p1Free() + CDfree * beta;
 
-        detection->freePoint[0] = Pfree;
-        detection->freePoint[1] = Qfree;
+        detection.freePoint[0] = Pfree;
+        detection.freePoint[1] = Qfree;
     }
 #endif
 
     const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->point[0] = P;
-    detection->point[1] = Q;
-    detection->normal = PQ;
-    detection->value = detection->normal.norm();
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection.id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    detection.point[0] = P;
+    detection.point[1] = Q;
+    detection.normal = PQ;
+    detection.value = detection.normal.norm();
 
-    if(detection->value>1e-15)
+    if(detection.value>1e-15)
     {
-        detection->normal /= detection->value;
+        detection.normal /= detection.value;
     }
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection.normal= Vector3(1,0,0);
     }
-    detection->value -= contactDist;
+    detection.value -= contactDist;
 
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -292,8 +292,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
     //Vector3 PQ = Q-P;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
@@ -304,36 +303,37 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
         Pfree = e1.pFree();
         Qfree = e2.p1Free() + ABfree * alpha + ACfree * beta;
 
-        detection->freePoint[0] = Qfree;
-        detection->freePoint[1] = Pfree;
+        detection.freePoint[0] = Qfree;
+        detection.freePoint[1] = Pfree;
     }
 #endif
 
     const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
-    detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
-    detection->normal = QP;
-    detection->value = detection->normal.norm();
-    if(detection->value>1e-15)
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection.id = e1.getIndex();
+    detection.point[0]=Q;
+    detection.point[1]=P;
+    detection.normal = QP;
+    detection.value = detection.normal.norm();
+    if(detection.value>1e-15)
     {
-        detection->normal /= detection->value;
+        detection.normal /= detection.value;
     }
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection.normal= Vector3(1,0,0);
     }
-    detection->value -= contactDist;
+    detection.value -= contactDist;
 
     if(intersection->getUseSurfaceNormals())
     {
         int normalIndex = e2.getIndex();
-        detection->normal = e2.model->getNormals()[normalIndex];
+        detection.normal = e2.model->getNormals()[normalIndex];
     }    
 
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -399,8 +399,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
@@ -408,30 +407,31 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
         Vector3 ABfree = e2.p2Free()-e2.p1Free();
         Vector3 Pfree = e1.pFree();
         Vector3 Qfree = e2.p1Free() + ABfree * alpha;
-        detection->freePoint[0] = Qfree;
-        detection->freePoint[1] = Pfree;
+        detection.freePoint[0] = Qfree;
+        detection.freePoint[1] = Pfree;
     }
 #endif
 
     const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
-    detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
-    detection->normal=QP;
-    detection->value = detection->normal.norm();
-    if(detection->value>1e-15)
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection.id = e1.getIndex();
+    detection.point[0]=Q;
+    detection.point[1]=P;
+    detection.normal=QP;
+    detection.value = detection.normal.norm();
+    if(detection.value>1e-15)
     {
-        detection->normal /= detection->value;
+        detection.normal /= detection.value;
     }
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection.normal= Vector3(1,0,0);
     }
-    detection->value -= contactDist;
+    detection.value -= contactDist;
 
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -459,8 +459,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
@@ -469,31 +468,32 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
-        detection->freePoint[0] = Pfree;
-        detection->freePoint[1] = Qfree;
+        detection.freePoint[0] = Pfree;
+        detection.freePoint[1] = Qfree;
     }
 #endif
 
     const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->point[0]=P;
-    detection->point[1]=Q;
-    detection->normal=PQ;
-    detection->value = detection->normal.norm();
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection.id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    detection.point[0]=P;
+    detection.point[1]=Q;
+    detection.normal=PQ;
+    detection.value = detection.normal.norm();
 
-    if(detection->value>1e-15)
+    if(detection.value>1e-15)
     {
-        detection->normal /= detection->value;
+        detection.normal /= detection.value;
     }
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection.normal= Vector3(1,0,0);
     }
-    detection->value -= contactDist;
+    detection.value -= contactDist;
 
+    contacts->addContact(&detection);
     return 1;
 }
 

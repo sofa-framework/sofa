@@ -43,7 +43,7 @@ namespace collision
 {
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
+inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, DetectionOutput& detection, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
 {
     bool debug=false;
     if(indexLine1==-1 || indexLine2==-1)
@@ -105,14 +105,13 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     }
 
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts->resize(contacts->size()+1);
-    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    detection->id = id;
-    detection->point[0]=p;
-    detection->point[1]=q;
-    detection->normal=pq;
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+
+    detection.id = id;
+    detection.point[0]=p;
+    detection.point[1]=q;
+    detection.normal=pq;
+    detection.value = detection.normal.norm();
+    detection.normal /= detection.value;
 
     if(debug)
         std::cout<<" --------------------------------- ACCEPTED ! --------------------------------"<<pq<<std::endl;
@@ -120,7 +119,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, DetectionOutput& detection, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
     std::cout<<"doIntersectionLinePoint is called"<<std::endl;
     const defaulttype::Vector3 AB = p2-p1;
@@ -149,29 +148,27 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-
-    detection->id = id;
+    detection.id = id;
     if (swapElems)
     {
-        detection->point[0]=q;
-        detection->point[1]=p;
-        detection->normal = -pq;
+        detection.point[0]=q;
+        detection.point[1]=p;
+        detection.normal = -pq;
     }
     else
     {
-        detection->point[0]=p;
-        detection->point[1]=q;
-        detection->normal = pq;
+        detection.point[0]=p;
+        detection.point[1]=q;
+        detection.normal = pq;
     }
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    detection.value = detection.normal.norm();
+    detection.normal /= detection.value;
+
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
+inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, DetectionOutput& detection, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
 {
     defaulttype::Vector3 pq;
     pq = q-p;
@@ -185,19 +182,17 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    detection->id = id;
-    detection->point[0]=p;
-    detection->point[1]=q;
-    detection->normal=pq;
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    detection.id = id;
+    detection.point[0]=p;
+    detection.point[1]=q;
+    detection.normal=pq;
+    detection.value = detection.normal.norm();
+    detection.normal /= detection.value;
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, DetectionOutput& detection, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
     const defaulttype::Vector3 AB = p2-p1;
     const defaulttype::Vector3 AC = p3-p1;
@@ -348,35 +343,33 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    detection->id = id;
+    detection.id = id;
     if (swapElems)
     {
-        detection->point[0]=q;
-        detection->point[1]=p;
-        detection->normal = -pq;
+        detection.point[0]=q;
+        detection.point[1]=p;
+        detection.normal = -pq;
     }
     else
     {
-        detection->point[0]=p;
-        detection->point[1]=q;
-        detection->normal = pq;
+        detection.point[0]=p;
+        detection.point[1]=q;
+        detection.normal = pq;
     }
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    detection.value = detection.normal.norm();
+    detection.normal /= detection.value;
     return 1;
 }
 
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
 {
-    OutputVector contacts;
+    //OutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
 
     EmptyFilter emptyFilter;
-
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    DetectionOutput detection;
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), detection, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     return (n > 0);
 }
@@ -387,17 +380,15 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
 
     EmptyFilter emptyFilter;
-
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    DetectionOutput detection;
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), detection, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }
@@ -405,11 +396,11 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, 
 template<class T1, class T2>
 bool LMDNewProximityIntersection::testIntersection(TSphere<T1>& e1, TSphere<T2>& e2)
 {
-    OutputVector contacts;
+    //OutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
     EmptyFilter emptyFilter;
-
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    DetectionOutput detection;
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), detection, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     return (n > 0);
 }
@@ -419,17 +410,16 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
     EmptyFilter emptyFilter;
-
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    DetectionOutput detection;
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), detection, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
+
     }
     return n;
 }
@@ -447,17 +437,15 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     EmptyFilter emptyFilter;
     int id= e2.getIndex();
-
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, id, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
+    DetectionOutput detection;
+    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), detection, id, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }
@@ -510,16 +498,15 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
 
     int id= e2.getIndex();
 
-    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, id, e1, e1_edgesIndex, e2.getIndex(), emptyFilter, emptyFilter);
+    DetectionOutput detection;
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), detection, id, e1, e1_edgesIndex, e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }

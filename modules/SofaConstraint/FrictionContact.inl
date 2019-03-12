@@ -88,9 +88,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::clean
 
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
-void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
+void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* outputs)
 {
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
     const double minDist2 = 0.00000001f;
 
@@ -98,23 +97,22 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
 
     if (model1->getContactStiffness(0) == 0 || model2->getContactStiffness(0) == 0)
     {
-        serr << "Disabled FrictionContact with " << (outputs.size()) << " collision points." << sendl;
+        serr << "Disabled FrictionContact with " << (outputs->size()) << " collision points." << sendl;
         return;
     }
 
-    contacts.reserve(outputs.size());
+    contacts.reserve(outputs->size());
 
-    int SIZE = outputs.size();
+    int SIZE = outputs->size();
+    const sofa::core::collision::DetectionOutput* o = outputs->getContacts();
 
     // the following procedure cancels the duplicated detection outputs
-    for (int cpt=0; cpt<SIZE; cpt++)
+    for (int cpt=0; cpt<SIZE; o++, cpt++)
     {
-        sofa::core::collision::DetectionOutput* o = &outputs[cpt];
-
         bool found = false;
         for (unsigned int i=0; i<contacts.size() && !found; i++)
         {
-            sofa::core::collision::DetectionOutput* p = contacts[i];
+            const sofa::core::collision::DetectionOutput* p = contacts[i];
             if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
@@ -124,7 +122,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
     }
 
     // DUPLICATED CONTACTS FOUND
-    msg_info_when(contacts.size()<outputs.size()) << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << msgendl;
+    msg_info_when(contacts.size()<outputs->size()) << "Removed " << (outputs->size()-contacts.size()) <<" / " << outputs->size() << " collision points." << msgendl;
 }
 
 
@@ -164,9 +162,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
     mappedContacts.resize(contacts.size());
-    for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+    for (std::vector<const sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
-        sofa::core::collision::DetectionOutput* o = *it;
+        const sofa::core::collision::DetectionOutput* o = *it;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
@@ -225,9 +223,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
     int i=0;
     if (m_constraint)
     {
-        for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+        for (std::vector<const sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
-            sofa::core::collision::DetectionOutput* o = *it;
+            const sofa::core::collision::DetectionOutput* o = *it;
             int index1 = mappedContacts[i].first.first;
             int index2 = mappedContacts[i].first.second;
             double distance = mappedContacts[i].second;

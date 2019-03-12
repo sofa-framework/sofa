@@ -45,44 +45,24 @@ namespace collision
 
 
 /**
- *  \brief Abstract description of a set of contact point.
- */
+*  \brief Generic description of a contact point, used for most collision models except special cases such as GPU-based collisions.
+*
+*  Each contact point is described by :
+*
+*  - elem: pair of colliding elements.
+*  - id: unique id of the contact for the given pair of collision models.
+*  - point: contact points on the surface of each model.
+*  - normal: normal of the contact, pointing outward from the first model.
+*  - value: signed distance (negative if objects are interpenetrating).
+*  - deltaT: estimated of time of contact.
+*
+*  The contact id is used to filter redundant contacts (only the contact with
+*  the smallest distance is kept), and to store persistant data over time for
+*  the response.
+*
+*/
 
-class DetectionOutputVector
-{
-protected:
-    virtual ~DetectionOutputVector() {}
-public:
-    /// Clear the content of this vector
-    virtual void clear() = 0;
-    /// Current size (number of detected contacts
-    virtual unsigned int size() const = 0;
-    /// Test if the vector is empty
-    bool empty() const { return size()==0; }
-    /// Delete this vector from memory once the contact pair is no longer active
-    virtual void release() { delete this; }
-};
-
-
-/**
- *  \brief Generic description of a contact point, used for most collision models except special cases such as GPU-based collisions.
- *
- *  Each contact point is described by :
- *
- *  - elem: pair of colliding elements.
- *  - id: unique id of the contact for the given pair of collision models.
- *  - point: contact points on the surface of each model.
- *  - normal: normal of the contact, pointing outward from the first model.
- *  - value: signed distance (negative if objects are interpenetrating).
- *  - deltaT: estimated of time of contact.
- *
- *  The contact id is used to filter redundant contacts (only the contact with
- *  the smallest distance is kept), and to store persistant data over time for
- *  the response.
- *
- */
-
-class DetectionOutput
+class SOFA_CORE_API DetectionOutput
 {
 public:
     typedef sofa::defaulttype::Vector3 Vector3;
@@ -98,10 +78,10 @@ public:
 #endif
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     Vector3 baryCoords[2]; ///< provides the barycentric Coordinates (alpha, beta, gamma) of each contact points over the element
-    ///< (alpha is used for lines / alpha and beta for triangles / alpha, beta and gamma for tetrahedrons)
+                            ///< (alpha is used for lines / alpha and beta for triangles / alpha, beta and gamma for tetrahedrons)
 #endif
 
-    /// Normal of the contact, pointing outward from the first model
+                            /// Normal of the contact, pointing outward from the first model
     Vector3 normal;
     /*
     /// Signed distance (negative if objects are interpenetrating). If using a proximity-based detection, this is the actual distance between the objets minus the specified contact distance.
@@ -111,12 +91,33 @@ public:
     /// If using a continuous collision detection, estimated of time of contact.
     double deltaT;
     DetectionOutput()
-        : elem( (sofa::core::CollisionModel* )NULL,
-                (sofa::core::CollisionModel* ) NULL), id(0), value(0.0), deltaT(0.0)
+        : elem((sofa::core::CollisionModel*)NULL,
+        (sofa::core::CollisionModel*) NULL), id(0), value(0.0), deltaT(0.0)
     {
     }
 };
 
+
+/**
+ *  \brief Abstract description of a set of contact point.
+ */
+
+class SOFA_CORE_API DetectionOutputVector
+{
+public:
+    virtual ~DetectionOutputVector() {}
+    /// Clear the content of this vector
+    virtual void clear() = 0;
+    /// Current size (number of detected contacts
+    virtual unsigned int size() const = 0;
+    /// Test if the vector is empty
+    bool empty() const { return size()==0; }
+    /// Delete this vector from memory once the contact pair is no longer active
+    virtual void release() { delete this; }
+    virtual void addContact(DetectionOutput* detectionOutput) = 0;
+    virtual bool isThreadSafe() = 0;
+    virtual const DetectionOutput* getContacts() = 0;
+};
 
 
 /**
@@ -124,21 +125,42 @@ public:
  */
 
 template<class CM1, class CM2>
-class TDetectionOutputVector : public DetectionOutputVector, public sofa::helper::vector<DetectionOutput>
+class TDetectionOutputVector : public DetectionOutputVector
 {
 public:
     typedef sofa::helper::vector<DetectionOutput> Vector;
-    ~TDetectionOutputVector() override {}
+
+    virtual ~TDetectionOutputVector() {}
+
     /// Clear the content of this vector
-    void clear() override
+    virtual void clear() override final
     {
-        return this->Vector::clear();
+        return m_detectionOutput.clear();
     }
+
     /// Current size (number of detected contacts)
-    unsigned int size() const override
+    virtual unsigned int size() const override final
     {
-        return (unsigned int)this->Vector::size();
+        return (unsigned int)m_detectionOutput.size();
     }
+
+    virtual void addContact(DetectionOutput* detectionOutput) override final
+    {
+        m_detectionOutput.push_back(*detectionOutput);
+    }
+
+    virtual bool isThreadSafe() override final
+    {
+        return false;
+    }
+
+    virtual const DetectionOutput* getContacts() override final
+    {
+        return m_detectionOutput.data();
+    }
+
+private:
+    Vector m_detectionOutput;
 };
 
 } // namespace collision

@@ -34,7 +34,7 @@ namespace collision{
 
 class SOFA_BASE_COLLISION_API OBBIntTool{
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::core::collision::DetectionOutputVector OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
     static int computeIntersection(OBB&, OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -52,24 +52,22 @@ int OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,SReal 
         if((!intr.colliding()) && dist > alarmDist)
             return 0;
 
-        contacts->resize(contacts->size()+1);
-        DetectionOutput *detection = &*(contacts->end()-1);
-
-        detection->normal = intr.separatingAxis();
-        detection->point[0] = sphere.getContactPointWithSurfacePoint( intr.pointOnFirst() );
-        detection->point[1] = intr.pointOnSecond();
+        DetectionOutput detection;
+        detection.normal = intr.separatingAxis();
+        detection.point[0] = sphere.getContactPointWithSurfacePoint( intr.pointOnFirst() );
+        detection.point[1] = intr.pointOnSecond();
 
         if(intr.colliding())
-            detection->value = -dist - contactDist;
+            detection.value = -dist - contactDist;
         else
-            detection->value = dist - contactDist;
+            detection.value = dist - contactDist;
 
-        detection->elem.first = sphere;
-        detection->elem.second = box;
-        //detection->id = (box.getCollisionModel()->getSize() > sphere.getCollisionModel()->getSize()) ? box.getIndex() : sphere.getIndex();
-        detection->id = sphere.getIndex();
+        detection.elem.first = sphere;
+        detection.elem.second = box;
+        //detection.id = (box.getCollisionModel()->getSize() > sphere.getCollisionModel()->getSize()) ? box.getIndex() : sphere.getIndex();
+        detection.id = sphere.getIndex();
 
-
+        contacts->addContact(&detection);
         return 1;
     }
 

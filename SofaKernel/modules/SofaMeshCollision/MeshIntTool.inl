@@ -29,12 +29,15 @@ namespace collision
 
 
 template <class DataTypes>
-int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts){
-    if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist,contacts)){
-        DetectionOutput *detection = &*(contacts->end()-1);
-
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
-
+int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts)
+{
+    DetectionOutput detection;
+    if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist, detection))
+    {
+        //DetectionOutput *detection = &*(contacts->end()-1);        
+        //detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
+        contacts->addContact(&detection);
         return 1;
     }
 
@@ -42,7 +45,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SRea
 }
 
 template <class DataTypes>
-int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vector3& q,SReal alarmDist,SReal contactDist, DetectionOutput& detection){
     const defaulttype::Vector3 p1 = cap.point1();
     const defaulttype::Vector3 p2 = cap.point2();
     const defaulttype::Vector3 AB = p2-p1;
@@ -68,17 +71,17 @@ int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vect
         return 0;
 
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    //contacts->resize(contacts->size()+1);
+    //DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->point[0]=p;
-    detection->point[1]=q;
-    detection->normal = pq;
+    detection.point[0]=p;
+    detection.point[1]=q;
+    detection.normal = pq;
 
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    detection.value = detection.normal.norm();
+    detection.normal /= detection.value;
 
-    detection->value -= (contactDist + cap_rad);
+    detection.value -= (contactDist + cap_rad);
 
     return 1;
 }
@@ -91,12 +94,16 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Line & lin,SReal
     const defaulttype::Vector3 p2 = cap.point2();
     const defaulttype::Vector3 q1 = lin.p1();
     const defaulttype::Vector3 q2 = lin.p2();
+    DetectionOutput detection;
 
-    if(doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts)){
-        OutputVector::iterator detection = contacts->end()-1;
-        //detection->id = cap.getCollisionModel()->getSize() > lin.getCollisionModel()->getSize() ? cap.getIndex() : lin.getIndex();
-        detection->id = cap.getIndex();
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, lin);
+    if(doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist, detection)){
+        //OutputVector::iterator detection = contacts->end()-1;
+        //detection.id = cap.getCollisionModel()->getSize() > lin.getCollisionModel()->getSize() ? cap.getIndex() : lin.getIndex();
+        //detection.id = cap.getIndex();
+        //detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, lin);
+        detection.id = cap.getIndex();
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, lin);
+        contacts->addContact(&detection);
         return 1;
     }
 
@@ -104,13 +111,13 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Line & lin,SReal
 }
 
 template <class DataTypes>
-int MeshIntTool::doCapLineInt(TCapsule<DataTypes> & cap,const defaulttype::Vector3 & q1,const defaulttype::Vector3 & q2 ,SReal alarmDist,SReal contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
+int MeshIntTool::doCapLineInt(TCapsule<DataTypes> & cap,const defaulttype::Vector3 & q1,const defaulttype::Vector3 & q2 ,SReal alarmDist,SReal contactDist, DetectionOutput& detection, bool ignore_p1, bool ignore_p2)
 {
     SReal cap_rad = cap.radius();
     const defaulttype::Vector3 p1 = cap.point1();
     const defaulttype::Vector3 p2 = cap.point2();
 
-    return doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts,ignore_p1,ignore_p2);
+    return doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist, detection,ignore_p1,ignore_p2);
 }
 
 
@@ -119,7 +126,8 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     const int tri_flg = tri.flags();
 
     int id = cap.getIndex();
-    int n = 0;
+    int n1 = 0;
+    int n2 = 0;
 
     const defaulttype::Vector3 cap_p1 = cap.point1();
     const defaulttype::Vector3 cap_p2 = cap.point2();
@@ -131,55 +139,102 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     const defaulttype::Vector3 tri_p3 = tri.p3();
 
     SReal substract_dist = contactDist + cap_rad;
-    n += doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p1,contacts,true);
-    n += doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p2,contacts,true);
+    DetectionOutput detection1, detection2;
+    n1 = doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p1,detection1,true);
+    n2 = doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p2,detection2,true);
 
-    if(n == 2){
-        OutputVector::iterator detection1 = contacts->end() - 2;
-        OutputVector::iterator detection2 = contacts->end() - 1;
+    if(n1 > 0 && n2 > 0){
+        //OutputVector::iterator detection1 = contacts->end() - 2;
+        //OutputVector::iterator detection2 = contacts->end() - 1;
 
-        if(detection1->value > detection2->value - 1e-15 && detection1->value < detection2->value + 1e-15){
-            detection1->point[0] = (detection1->point[0] + detection2->point[0])/2.0;
-            detection1->point[1] = (detection1->point[1] + detection2->point[1])/2.0;
-            detection1->normal = (detection1->normal + detection2->normal)/2.0;
-            detection1->value = (detection1->value + detection2->value)/2.0 - substract_dist;
-            detection1->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+        if(detection1.value > detection2.value - 1e-15 && detection1.value < detection2.value + 1e-15){
+            detection1.point[0] = (detection1.point[0] + detection2.point[0])/2.0;
+            detection1.point[1] = (detection1.point[1] + detection2.point[1])/2.0;
+            detection1.normal = (detection1.normal + detection2.normal)/2.0;
+            detection1.value = (detection1.value + detection2.value)/2.0 - substract_dist;
+            detection1.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
 
-            contacts->pop_back();
-            n = 1;
+            //contacts->pop_back();
+            contacts->addContact(&detection1);
+            //n = 1;
         }
         else{
-            for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
-                detection->value -= substract_dist;
-                detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
-                detection->id = id;
-            }
+
+            //for (OutputVector::iterator detection = contacts->end() - n; detection != contacts->end(); ++detection) {
+            //    detection.value -= substract_dist;
+            //    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            //    detection.id = id;
+            //}
+
+            detection1.value -= substract_dist;
+            detection1.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection1.id = id;
+            contacts->addContact(&detection1);
+
+            detection2.value -= substract_dist;
+            detection2.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection2.id = id;
+            contacts->addContact(&detection2);
         }
     }
     else{
-        for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
-            detection->value -= substract_dist;
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
-            detection->id = id;
-        }
+        //for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
+        //    detection.value -= substract_dist;
+        //    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+        //    detection.id = id;
+        //}
+        detection1.value -= substract_dist;
+        detection1.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+        detection1.id = id;
+        contacts->addContact(&detection1);
+
+        detection2.value -= substract_dist;
+        detection2.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+        detection2.id = id;
+        contacts->addContact(&detection2);
     }
 
-    int old_n = n;
-    n = 0;
+    //int old_n = n;
+    int n = 0;
+    DetectionOutput detection;
 
     if (tri_flg&TriangleModel::FLAG_E12)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P1),!(tri_flg&TriangleModel::FLAG_P2));
+    {
+        if (doCapLineInt(cap_p1, cap_p2, cap_rad, tri_p1, tri_p2, alarmDist, contactDist, detection, !(tri_flg&TriangleModel::FLAG_P1), !(tri_flg&TriangleModel::FLAG_P2)))
+        {            
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection.id = id;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }       
     if (tri_flg&TriangleModel::FLAG_E23)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P2),!(tri_flg&TriangleModel::FLAG_P3));
+    {
+        if (doCapLineInt(cap_p1, cap_p2, cap_rad, tri_p2, tri_p3, alarmDist, contactDist, detection, !(tri_flg&TriangleModel::FLAG_P2), !(tri_flg&TriangleModel::FLAG_P3)) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection.id = id;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }        
     if (tri_flg&TriangleModel::FLAG_E31)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P3),!(tri_flg&TriangleModel::FLAG_P1));
+    {
+        if(doCapLineInt(cap_p1, cap_p2, cap_rad, tri_p3, tri_p1, alarmDist, contactDist, detection, !(tri_flg&TriangleModel::FLAG_P3), !(tri_flg&TriangleModel::FLAG_P1)) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection.id = id;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }        
 
-    for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
-        detection->id = id;
-    }
+    //for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
+    //    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+    //    detection.id = id;
+    //}
 
-    return n + old_n;
+    return n + n1 + n2;
 }
 
 

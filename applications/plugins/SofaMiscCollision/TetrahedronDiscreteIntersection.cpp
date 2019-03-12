@@ -99,15 +99,18 @@ int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point&
     double l = l1;
     Vector3 X = P-n*l;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->point[0] = X;
-    detection->point[1] = P;
-    detection->normal = -n;
-    detection->value = -l;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e2.getIndex();
+    //contacts->resize(contacts->size()+1);
+    //DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
+    detection.point[0] = X;
+    detection.point[1] = P;
+    detection.normal = -n;
+    detection.value = -l;
+    detection.elem.first = e1;
+    detection.elem.second = e2;
+    detection.id = e2.getIndex();
+
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -162,16 +165,20 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
     //sout << "l0 = "<<l0<<" \tl1 = "<<l1<<" \tX = "<<X<<" \tbX = "<<e2.getBary(X)<<" \t?=? "<<(b0+bdir*l)<<sendl;
     //sout << "b1 = "<<e2.getBary(e2.p1())<<" \nb2 = "<<e2.getBary(e2.p2())<<" \nb3 = "<<e2.getBary(e2.p3())<<" \nb4 = "<<e2.getBary(e2.p4())<<sendl;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->point[0] = X;
-    detection->point[1] = X;
+    //contacts->resize(contacts->size()+1);
+    //DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
+
+    detection.point[0] = X;
+    detection.point[1] = X;
     PQ.normalize();
-    detection->normal = PQ;
-    detection->value = 0;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e1.getIndex();
+    detection.normal = PQ;
+    detection.value = 0;
+    detection.elem.first = e1;
+    detection.elem.second = e2;
+    detection.id = e1.getIndex();
+
+    contacts->addContact(&detection);
     return 1;
 }
 

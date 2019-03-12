@@ -121,10 +121,10 @@ int LMDNewProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector*
 
 bool LMDNewProximityIntersection::testIntersection(Point& e1, Point& e2)
 {
-    OutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), &contacts, -1, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+    DetectionOutput detection;
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), detection, -1, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
 
     return (n > 0);
 }
@@ -134,7 +134,8 @@ int LMDNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outpu
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     std::cout<<"computeIntersection(Point& e1, Point& e2... is called"<<std::endl;
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts
+    DetectionOutput detection;
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), detection
             , (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex()
             , e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
@@ -142,11 +143,9 @@ int LMDNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outpu
     if ( n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }
@@ -165,18 +164,17 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, Point& e2, Output
 
     std::cout<<"computeIntersection(Line& e1, Point& e2... is called"<<std::endl;
     int id = e2.getIndex();
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(), e1.p2(), e2.p(), contacts, id
+    DetectionOutput detection;
+    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(), e1.p2(), e2.p(), detection, id
             , e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
 
     if ( n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }
@@ -196,19 +194,17 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputV
     const double dist2 = alarmDist*alarmDist;
     const int id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
 
-    int n = doIntersectionLineLine(dist2, e1.p1(), e1.p2(), e2.p1(), e2.p2(), contacts, id
+    DetectionOutput detection;
+    int n = doIntersectionLineLine(dist2, e1.p1(), e1.p2(), e2.p1(), e2.p2(), detection, id
             , e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
-
 
     if ( n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }
@@ -258,18 +254,17 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
     const double dist2 = alarmDist*alarmDist;
 
     int id = e2.getIndex();
-    int n = doIntersectionTrianglePoint(dist2, e1.flags(), e1.p1(), e1.p2(), e1.p3(), e1.n(), e2.p(), contacts, id
+    DetectionOutput detection;
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(), e1.p1(), e1.p2(), e1.p3(), e1.n(), e2.p(), detection, id
             , e1, e1_edgesIndex, e2.getIndex() , *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
 
     if ( n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
     }
     return n;
 }
@@ -329,51 +324,92 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
 
     int n = 0;
     int id= e2.getIndex();
+    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+
+    DetectionOutput detection;
 
     if (f1&TriangleModel::FLAG_P1)
     {
-        n += doIntersectionLinePoint(dist2, q1, q2, p1, contacts, id, e1.getIndex(), e2.getIndex() , *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
-
+        if (doIntersectionLinePoint(dist2, q1, q2, p1, detection, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
     }
     if (f1&TriangleModel::FLAG_P2)
     {
-        n += doIntersectionLinePoint(dist2, q1, q2, p2, contacts, id, e1.getIndex(), e2.getIndex() , *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
-
+        if (doIntersectionLinePoint(dist2, q1, q2, p2, detection, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true))
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
     }
     if (f1&TriangleModel::FLAG_P3)
     {
-        n += doIntersectionLinePoint(dist2, q1, q2, p3, contacts, id, e1.getIndex(), e2.getIndex() , *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
-
+        if (doIntersectionLinePoint(dist2, q1, q2, p3, detection, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true))
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
     }
 
-    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id ,e1, e1_edgesIndex, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+    if (doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, detection, id, e1, e1_edgesIndex, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false))
+    {
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
+        ++n;
+    }
 
 
-    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id, e1, e1_edgesIndex, e2.getIndex(),*(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
-
+    if (doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, detection, id, e1, e1_edgesIndex, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false))
+    {
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+        detection.value -= contactDist;
+        contacts->addContact(&detection);
+        ++n;
+    }
 
     if (useLineLine.getValue())
     {
         if (f1&TriangleModel::FLAG_E12)
-            n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-
-        if (f1&TriangleModel::FLAG_E23)
-            n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-
-        if (f1&TriangleModel::FLAG_E31)
-            n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-
-    }
-
-    if ( n > 0)
-    {
-        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
+            if (doIntersectionLineLine(dist2, p1, p2, q1, q2, detection, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())) )
+            {
+                detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                detection.value -= contactDist;
+                contacts->addContact(&detection);
+                ++n;
+            }
+        }
+        if (f1&TriangleModel::FLAG_E23)
+        {
+            if (doIntersectionLineLine(dist2, p2, p3, q1, q2, detection, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())) )
+            {
+                detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                detection.value -= contactDist;
+                contacts->addContact(&detection);
+                ++n;
+            }
+        }
+        if (f1&TriangleModel::FLAG_E31)
+        {
+            if (doIntersectionLineLine(dist2, p3, p1, q1, q2, detection, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())) )
+            {
+                detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                detection.value -= contactDist;
+                contacts->addContact(&detection);
+                ++n;
+            }
         }
     }
+
     return n;
 }
 
@@ -476,23 +512,70 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
     int n = 0;
 
 
-
-
-
+    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    DetectionOutput detection;
 
     if (f1&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, contacts, id1+0, e2, e2_edgesIndex, e1.p1Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true);
+    {
+        if (doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, detection, id1 + 0, e2, e2_edgesIndex, e1.p1Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true))
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }
     if (f1&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, contacts, id1+1, e2, e2_edgesIndex, e1.p2Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true);
+    {
+        if (doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, detection, id1 + 1, e2, e2_edgesIndex, e1.p2Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true))
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }
     if (f1&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, contacts, id1+2, e2, e2_edgesIndex, e1.p3Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true);
+    {
+        if (doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, detection, id1 + 2, e2, e2_edgesIndex, e1.p3Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }
 
     if (f2&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, e1, e1_edgesIndex, e2.p1Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+    {
+        if (doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, detection, id2 + 0, e1, e1_edgesIndex, e2.p1Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }
     if (f2&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id2+1, e1, e1_edgesIndex, e2.p2Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+    {
+        if (doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, detection, id2 + 1, e1, e1_edgesIndex, e2.p2Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }
     if (f2&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, e1, e1_edgesIndex, e2.p3Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+    {
+        if (doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, detection, id2 + 2, e1, e1_edgesIndex, e2.p3Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false) )
+        {
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection.value -= contactDist;
+            contacts->addContact(&detection);
+            ++n;
+        }
+    }
 
     if (useLineLine.getValue())
     {
@@ -506,17 +589,35 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
             {
                 // look for the first edge of the triangle (given by edgesInTriangle1[0] )
                 GetPosOfEdgeVertexOnTriangle(e2_q1,e2_q2,edgesInTriangle2[0],e2);
-                n += doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q1, e2_q2, contacts, id2+3, edgesInTriangle1[0], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q1, e2_q2, detection, id2 + 3, edgesInTriangle1[0], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())) )
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
             if (f2&TriangleModel::FLAG_E23)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q2,e2_q3,edgesInTriangle2[1],e2);
-                n += doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q2, e2_q3, contacts, id2+4, edgesInTriangle1[0], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q2, e2_q3, detection, id2 + 4, edgesInTriangle1[0], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
             if (f2&TriangleModel::FLAG_E31)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q3,e2_q1,edgesInTriangle2[2],e2);
-                n += doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q3, e2_q1, contacts, id2+5, edgesInTriangle1[0], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q3, e2_q1, detection, id2 + 5, edgesInTriangle1[0], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())) )
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
         }
 
@@ -527,17 +628,35 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
             if (f2&TriangleModel::FLAG_E12)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q1,e2_q2,edgesInTriangle2[0],e2);
-                n += doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q1, e2_q2, contacts, id2+6, edgesInTriangle1[1], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q1, e2_q2, detection, id2 + 6, edgesInTriangle1[1], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
             if (f2&TriangleModel::FLAG_E23)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q2,e2_q3,edgesInTriangle2[1],e2);
-                n += doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q2, e2_q3, contacts, id2+7, edgesInTriangle1[1], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q2, e2_q3, detection, id2 + 7, edgesInTriangle1[1], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
             if (f2&TriangleModel::FLAG_E31)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q3,e2_q1,edgesInTriangle2[2],e2);
-                n += doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q3, e2_q1, contacts, id2+8, edgesInTriangle1[1], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q3, e2_q1, detection, id2 + 8, edgesInTriangle1[1], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
         }
 
@@ -547,28 +666,36 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
             if (f2&TriangleModel::FLAG_E12)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q1,e2_q2,edgesInTriangle2[0],e2);
-                n += doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q1, e2_q2, contacts, id2+9, edgesInTriangle1[2], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q1, e2_q2, detection, id2 + 9, edgesInTriangle1[2], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
             if (f2&TriangleModel::FLAG_E23)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q2,e2_q3,edgesInTriangle2[1],e2);
-                n += doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q2, e2_q3, contacts, id2+10, edgesInTriangle1[2], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q2, e2_q3, detection, id2 + 10, edgesInTriangle1[2], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
             if (f2&TriangleModel::FLAG_E31)
             {
                 GetPosOfEdgeVertexOnTriangle(e2_q3,e2_q1,edgesInTriangle2[2],e2);
-                n += doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q3, e2_q1, contacts, id2+11, edgesInTriangle1[2], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+                if (doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q3, e2_q1, detection, id2 + 11, edgesInTriangle1[2], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter())))
+                {
+                    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+                    detection.value -= contactDist;
+                    contacts->addContact(&detection);
+                    ++n;
+                }
             }
-        }
-    }
-
-    if (n > 0)
-    {
-        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (int i = 0; i < n; ++i)
-        {
-            (*contacts)[contacts->size()-n+i].elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            (*contacts)[contacts->size()-n+i].value -= contactDist;
         }
     }
     return n;
@@ -619,19 +746,20 @@ int LMDNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
         return 0;
 
     const double contactDist = alarmDist;
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
-    detection->point[1]=P;
-    detection->point[0]=Q;
+    DetectionOutput detection;
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+    detection.point[1]=P;
+    detection.point[0]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[1] = P;
-    detection->freePoint[0] = Q;
+    detection.freePoint[1] = P;
+    detection.freePoint[0] = Q;
 #endif
-    detection->normal=-t2.n();
-    detection->value = PQ.norm();
-    detection->value -= contactDist;
+    detection.normal=-t2.n();
+    detection.value = PQ.norm();
+    detection.value -= contactDist;
+
+    contacts->addContact(&detection);
     return 1;
 }
 

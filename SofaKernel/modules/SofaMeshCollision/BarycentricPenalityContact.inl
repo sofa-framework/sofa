@@ -65,9 +65,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* outputs)
 {
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     if (ff==NULL)
     {
         MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
@@ -79,7 +78,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 
     }
 
-    int insize = outputs.size();
+    int insize = outputs->size();
 
     // old index for each contact
     // >0 indicate preexisting contact
@@ -88,16 +87,17 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     std::vector<int> oldIndex(insize);
 
     int nbnew = 0;
+    const core::collision::DetectionOutput* contacts = outputs->getContacts();
 
     for (int i=0; i<insize; i++)
     {
-        core::collision::DetectionOutput* o = &outputs[i];
+        const core::collision::DetectionOutput* o = &contacts[i];
         // find this contact in contactIndex, possibly creating a new entry initialized by 0
         int& index = contactIndex[o->id];
         if (index < 0) // duplicate contact
         {
             int i2 = -1-index;
-            core::collision::DetectionOutput* o2 = &outputs[i2];
+            const core::collision::DetectionOutput* o2 = &contacts[i2];
             if (o2->value <= o->value)
             {
                 // current contact is ignored
@@ -163,7 +163,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         int index = oldIndex[i];
         if (index < 0) continue; // this contact is ignored
-        core::collision::DetectionOutput* o = &outputs[i];
+        const core::collision::DetectionOutput* o = &contacts[i];
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();

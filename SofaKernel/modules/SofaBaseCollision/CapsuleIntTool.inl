@@ -197,19 +197,18 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataT
     if (norm2 > contact_exists * contact_exists)
         return 0;
 
-    contacts->resize(contacts->size()+1);
-    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-
     const SReal theory_contactDist = e1.radius() + e2.radius() + contactDist;
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->value = helper::rsqrt( norm2 );
-    detection->normal = PQ / detection->value;
-    detection->point[0] = P + e1.radius() * detection->normal;
-    detection->point[1] = Q - e2.radius() * detection->normal;
+    sofa::core::collision::DetectionOutput detection;
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection.id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    detection.value = helper::rsqrt( norm2 );
+    detection.normal = PQ / detection.value;
+    detection.point[0] = P + e1.radius() * detection.normal;
+    detection.point[1] = Q - e2.radius() * detection.normal;
+    detection.value -= theory_contactDist;
 
-    detection->value -= theory_contactDist;
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -222,23 +221,23 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes> & cap, OBB& obb,SRea
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;
 
-        contacts->resize(contacts->size()+1);
-        sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+        sofa::core::collision::DetectionOutput detection;
 
-        detection->normal = intr.separatingAxis();
-        detection->point[0] = intr.pointOnFirst();
-        detection->point[1] = intr.pointOnSecond();
+        detection.normal = intr.separatingAxis();
+        detection.point[0] = intr.pointOnFirst();
+        detection.point[1] = intr.pointOnSecond();
 
         if(intr.colliding())
-            detection->value = -helper::rsqrt(dist2) - contactDist;
+            detection.value = -helper::rsqrt(dist2) - contactDist;
         else
-            detection->value = helper::rsqrt(dist2) - contactDist;
+            detection.value = helper::rsqrt(dist2) - contactDist;
 
-        detection->elem.first = cap;
-        detection->elem.second = obb;
-        //detection->id = (cap.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? cap.getIndex() : obb.getIndex();
-        detection->id = cap.getIndex();
+        detection.elem.first = cap;
+        detection.elem.second = obb;
+        //detection.id = (cap.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? cap.getIndex() : obb.getIndex();
+        detection.id = cap.getIndex();
 
+        contacts->addContact(&detection);
         return 1;
     }
 
