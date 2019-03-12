@@ -60,7 +60,7 @@ public:
     virtual Real getTangentModulus(const double yieldStress) {
 
         double En1 = pow(_E, _n - 1);
-        Real tangentModulus = (_E*En1) / ( En1 + _K*_n*pow(yieldStress,_n) );
+        Real tangentModulus = (_E*En1) / ( En1 + _K*_n*pow(yieldStress,_n-1) );
         return tangentModulus;
     }
 
