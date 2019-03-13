@@ -70,7 +70,8 @@ void TetrahedronSetTopologyContainer::init()
 {
     d_tetrahedron.updateIfDirty(); // make sure m_tetrahedron is up to date
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
-	TriangleSetTopologyContainer::init();
+
+    // Todo (epernod 2019-03-12): optimise by removing this loop or at least create tetrahedronAV at the same time.
     if (!m_tetrahedron.empty())
     {
         for (size_t i=0; i<m_tetrahedron.size(); ++i)
@@ -83,10 +84,21 @@ void TetrahedronSetTopologyContainer::init()
         }
     }
 
-   
-	// eventually force the creation of triangles
-	if (d_createTriangleArray.getValue())
-		createTriangleSetArray();
+    if (!m_tetrahedron.empty())
+        initTopology();
+}
+
+void TetrahedronSetTopologyContainer::initTopology()
+{
+    TriangleSetTopologyModifier::initTopology();
+
+    // Create tetrahedron cross element buffers.
+    createTrianglesInTetrahedronArray();
+    createEdgesInTetrahedronArray();
+
+    createTetrahedraAroundTriangleArray();
+    createTetrahedraAroundEdgeArray();
+    createTetrahedraAroundVertexArray();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()

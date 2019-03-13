@@ -59,8 +59,36 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
 
 void TriangleSetTopologyContainer::init()
 {
-    EdgeSetTopologyContainer::init();
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
+
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    // Todo (epernod 2019-03-12): optimise by removing this loop or at least create AroundVertex buffer at the same time.
+    if (!m_triangle.empty())
+    {
+        for (size_t i=0; i<m_triangle.size(); ++i)
+        {
+            for(PointID j=0; j<3; ++j)
+            {
+                int a = m_triangle[i][j];
+                if (a >= getNbPoints()) setNbPoints(a+1);
+            }
+        }
+    }
+
+    // only init if triangles are present at init.
+    if (!m_triangle.empty())
+        initTopology();
+}
+
+void TriangleSetTopologyContainer::initTopology()
+{
+    // Force creation of Edge Neighboordhood buffers.
+    EdgeSetTopologyContainer::initTopology();
+
+    // Create triangle cross element buffers.
+    createEdgesInTriangleArray();
+    createTrianglesAroundVertexArray();
+    createTrianglesAroundEdgeArray();
 }
 
 void TriangleSetTopologyContainer::reinit()

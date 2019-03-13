@@ -155,7 +155,8 @@ public:
 
     /// Dynamic Topology API
     /// @{
-
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see EdgeSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
      *
