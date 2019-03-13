@@ -247,7 +247,7 @@ static PyObject * Sofa_hasViewer(PyObject* self, PyObject* args)
         SP_MESSAGE_ERROR( "hasViewer: no GUI!" )
         return Py_BuildValue("i",-1);
     }
-    return Py_BuildValue("i",!!gui->getViewer());
+    return Py_BuildValue("i", gui->getViewer() != nullptr);
 }
 
 
