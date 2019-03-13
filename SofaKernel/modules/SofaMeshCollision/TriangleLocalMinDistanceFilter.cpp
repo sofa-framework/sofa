@@ -98,7 +98,9 @@ void TriangleLocalMinDistanceFilter::init()
 
     if(mstateVec3d == NULL)
     {
-        msg_warning() << "Init failed for TriangleLocalMinDistanceFilter no mstateVec3d found.";
+        msg_error() << "Init failed for TriangleLocalMinDistanceFilter no mstateVec3d found.";
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
     }
 
     if (bmt != nullptr)
