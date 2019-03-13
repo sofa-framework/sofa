@@ -69,10 +69,13 @@ struct DataCallback_test: public BaseTest
             : sofa::core::objectmodel::BaseObject()
             , d_objdata1(initData(&d_objdata1, 0, "objdata1", "objdata1"))
             , d_objdata2(initData(&d_objdata2, 1, "objdata2", "objdata2"))
-            , m_datacallback1(&d_objdata1)
-            , m_datacallback2(&d_objdata2)
-            , m_datacallbackAll( {&d_objdata1, &d_objdata2} )
+            , m_datacallback1()
+            , m_datacallback2()
+            , m_datacallbackAll( )
         {
+            m_datacallback1.addInput(&d_objdata1);
+            m_datacallback2.addInput(&d_objdata2);
+            m_datacallbackAll.addInputs({&d_objdata1, &d_objdata2});
         }
     };
 };
@@ -97,7 +100,7 @@ TEST_F(DataCallback_test, testDataCallbackWithBind_1)
 TEST_F(DataCallback_test, testDataCallbackWithOldSyntax_1)
 {
     TestObject obj;
-    obj.m_datacallback1.addCallback(&obj, &TestObject::printData1);
+    obj.m_datacallback1.addCallback([&obj](){obj.printData1();});
 
     EXPECT_EQ( obj.d_objdata1.getValue(), 0 ) ;
     EXPECT_EQ( obj.d_objdata2.getValue(), 1 ) ;
@@ -148,7 +151,9 @@ TEST_F(DataCallback_test, testDataCallbackExample_1)
 {
     Data<int> a;
     Data<int> b;
-    DataCallback cb({&a,&b});
+    DataCallback cb;
+    cb.addInputs({&a,&b});
+
     std::vector<int> results;
 
     cb.addCallback([&a,&b, &results](){
