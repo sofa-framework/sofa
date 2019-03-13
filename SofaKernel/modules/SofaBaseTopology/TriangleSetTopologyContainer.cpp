@@ -103,7 +103,7 @@ void TriangleSetTopologyContainer::createTriangleSetArray()
         msg_error() << "createTriangleSetArray method must be implemented by a child topology.";
 }
 
-void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
+void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
 {
     // first clear potential previous buffer
     clearTrianglesAroundVertex();

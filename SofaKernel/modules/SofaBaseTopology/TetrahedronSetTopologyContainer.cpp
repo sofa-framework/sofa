@@ -90,7 +90,7 @@ void TetrahedronSetTopologyContainer::init()
 
 void TetrahedronSetTopologyContainer::initTopology()
 {
-    TriangleSetTopologyModifier::initTopology();
+    TriangleSetTopologyContainer::initTopology();
 
     // Create tetrahedron cross element buffers.
     createTrianglesInTetrahedronArray();
@@ -109,12 +109,11 @@ void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 
 void TetrahedronSetTopologyContainer::createEdgeSetArray()
 {
+    if(!hasTetrahedra()) // this method should only be called when tetrahedra exist
+        createTetrahedronSetArray();
+
     if(hasEdges())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Edge array is not empty.";
-
-
         EdgeSetTopologyContainer::clear();
 
         clearEdgesInTriangle();
@@ -154,25 +153,20 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
 
 void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 {
+    // first clear potential previous buffer
+    clearEdgesInTetrahedron();
+
     if(!hasTetrahedra()) // this method should only be called when triangles exist
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Tetra array is empty.";
-
         createTetrahedronSetArray();
-    }
 
-    if(hasEdgesInTetrahedron())
-        clearEdgesInTetrahedron();
+    if (hasEdgesInTetrahedron()) // created by upper topology
+        return;
+
 
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Edge array is empty.";
-
-
         /// create edge array and triangle edge array at the same time
         const size_t numTetra = getNumberOfTetrahedra();
         m_edgesInTetrahedron.resize (numTetra);
@@ -243,10 +237,8 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                     }
                 }
 
-				if (CHECK_TOPOLOGY)
-					if (foundEdge==false)
-						msg_warning() << "[TetrahedronSetTopologyContainer::getTetrahedronArray] cannot find edge for tetrahedron " << i << "and edge "<< j;
-
+                if (CHECK_TOPOLOGY && foundEdge==false)
+                    msg_warning() << "[TetrahedronSetTopologyContainer::getTetrahedronArray] cannot find edge for tetrahedron " << i << "and edge "<< j;
             }
         }
     }
@@ -254,11 +246,13 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 
 void TetrahedronSetTopologyContainer::createTriangleSetArray()
 {
-    d_triangle.beginEdit();
+    if(!hasTetrahedra()) // this method should only be called when tetrahedra exist
+        createTetrahedronSetArray();
+
     if(hasTriangles())
     {
         TriangleSetTopologyContainer::clear();
-        clearTriangles();
+
         clearTrianglesInTetrahedron();
         clearTetrahedraAroundTriangle();
     }
@@ -307,16 +301,18 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
             }
         }
     }
-    d_triangle.endEdit();
 }
 
 void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
 {
+    // first clear potential previous buffer
+    clearTrianglesInTetrahedron();
+
     if(!hasTriangles())
         createTriangleSetArray();
 
-    if(hasTrianglesInTetrahedron())
-        clearTrianglesInTetrahedron();
+    if(hasTrianglesInTetrahedron()) // created by upper topology
+        return;
 
     m_trianglesInTetrahedron.resize( getNumberOfTetrahedra());
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
@@ -334,10 +330,10 @@ void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
     }
 }
 
-void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()
+void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray()
 {
-    if(hasTetrahedraAroundVertex())
-        clearTetrahedraAroundVertex();
+    // first clear potential previous buffer
+    clearTetrahedraAroundVertex();
 
     if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
         this->setNbPoints(d_initPoints.getValue().size());
@@ -357,14 +353,13 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()
 
 void TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 {
+    // first clear potential previous buffer
+    clearTetrahedraAroundEdge();
+
     if(!hasEdgesInTetrahedron())
         createEdgesInTetrahedronArray();
 
-    if(hasTetrahedraAroundEdge())
-        clearTetrahedraAroundEdge();
-
     m_tetrahedraAroundEdge.resize(getNumberOfEdges());
-
     for (size_t i=0; i< getNumberOfTetrahedra(); ++i)
     {
         // adding edge i in the edge shell of both points
@@ -377,11 +372,11 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 
 void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
 {
+    // first clear potential previous buffer
+    clearTetrahedraAroundTriangle();
+
     if(!hasTrianglesInTetrahedron())
         createTrianglesInTetrahedronArray();
-
-    if(hasTetrahedraAroundTriangle())
-        clearTetrahedraAroundTriangle();
 
     m_tetrahedraAroundTriangle.resize( getNumberOfTriangles());
 
@@ -397,13 +392,8 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
 
 const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()
 {
-    if (!hasTetrahedra() && getNbPoints()>0)
-    {
-		if (CHECK_TOPOLOGY)
-			msg_info() << "[TetrahedronSetTopologyContainer::getTetrahedronArray] creating tetrahedron array.";
-
-        createTetrahedronSetArray();
-    }
+    if (CHECK_TOPOLOGY && !hasTetrahedra() && getNbPoints()>0)
+        msg_warning() << "Tetrahedron array is empty with " << getNbPoints() << " vertices.";
 
     return d_tetrahedron.getValue();
 }
@@ -411,11 +401,8 @@ const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> &Tetrah
 
 const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContainer::getTetrahedron (TetraID i)
 {
-    if(!hasTetrahedra())
-        createTetrahedronSetArray();
-
     if ((size_t)i >= getNbTetrahedra())
-        return Tetrahedron(-1, -1, -1, -1);
+        return Tetrahedron(InvalidID, InvalidID, InvalidID, InvalidID);
     else
         return (d_tetrahedron.getValue())[i];
 }
@@ -425,7 +412,12 @@ const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContain
 TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasTetrahedraAroundVertex())
-        createTetrahedraAroundVertexArray();
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "TetrahedraAroundVertex array is empty with " << getNbPoints() << " vertices.";
+
+        return InvalidID;
+    }
 
     sofa::helper::vector<TetrahedronID> set1 = getTetrahedraAroundVertex(v1);
     sofa::helper::vector<TetrahedronID> set2 = getTetrahedraAroundVertex(v2);
@@ -455,7 +447,7 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 
     assert(out3.size()==0 || out3.size()==1);
 
-    if(out3.size() > 1)
+    if(CHECK_TOPOLOGY && out3.size() > 1)
         msg_warning() << "More than one Tetrahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
 
     if (out3.size()==1)
@@ -479,32 +471,32 @@ size_t TetrahedronSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex > &TetrahedronSetTopologyContainer::getTetrahedraAroundVertexArray()
 {
-    if (!hasTetrahedraAroundVertex())
-        createTetrahedraAroundVertexArray();
+    if (CHECK_TOPOLOGY && !hasTetrahedraAroundVertex())
+        msg_warning() << "TetrahedraAroundVertex shell array is empty.";
 
     return m_tetrahedraAroundVertex;
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge > &TetrahedronSetTopologyContainer::getTetrahedraAroundEdgeArray()
 {
-    if (!hasTetrahedraAroundEdge())
-        createTetrahedraAroundEdgeArray();
+    if (CHECK_TOPOLOGY && !hasTetrahedraAroundEdge())
+        msg_warning() << "TetrahedraAroundEdge shell array is empty.";
 
     return m_tetrahedraAroundEdge;
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle > &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangleArray()
 {
-    if (!hasTetrahedraAroundTriangle())
-        createTetrahedraAroundTriangleArray();
+    if (CHECK_TOPOLOGY && !hasTetrahedraAroundTriangle())
+        msg_warning() << "TetrahedraAroundTriangle shell array is empty.";
 
     return m_tetrahedraAroundTriangle;
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
 {
-    if (!hasEdgesInTetrahedron())
-        createEdgesInTetrahedronArray();
+    if (CHECK_TOPOLOGY && !hasEdgesInTetrahedron())
+        msg_warning() << "EdgesInTetrahedron shell array is empty.";
 
     return m_edgesInTetrahedron;
 }
@@ -525,60 +517,60 @@ TetrahedronSetTopologyContainer::Triangle TetrahedronSetTopologyContainer::getLo
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
 {
-    if (!hasTrianglesInTetrahedron())
-        createTrianglesInTetrahedronArray();
+    if (CHECK_TOPOLOGY && !hasTrianglesInTetrahedron())
+        msg_warning() << "TrianglesInTetrahedron shell array is empty.";
 
     return m_trianglesInTetrahedron;
 }
 
-const TetrahedronSetTopologyContainer::TetrahedraAroundVertex &TetrahedronSetTopologyContainer::getTetrahedraAroundVertex(const PointID i)
+const TetrahedronSetTopologyContainer::TetrahedraAroundVertex &TetrahedronSetTopologyContainer::getTetrahedraAroundVertex(const PointID id)
 {
-    if (!hasTetrahedraAroundVertex())
-        createTetrahedraAroundVertexArray();
+    if (id < m_tetrahedraAroundVertex.size())
+        return m_tetrahedraAroundVertex[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "TetrahedraAroundVertexArray array access out of bounds: " << id << " >= " << m_tetrahedraAroundVertex.size();
 
-    assert(i < m_tetrahedraAroundVertex.size());
-
-    return m_tetrahedraAroundVertex[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const TetrahedronSetTopologyContainer::TetrahedraAroundEdge &TetrahedronSetTopologyContainer::getTetrahedraAroundEdge(const EdgeID i)
+const TetrahedronSetTopologyContainer::TetrahedraAroundEdge &TetrahedronSetTopologyContainer::getTetrahedraAroundEdge(const EdgeID id)
 {
-    if (!hasTetrahedraAroundEdge())
-        createTetrahedraAroundEdgeArray();
+    if (id < m_tetrahedraAroundEdge.size())
+        return m_tetrahedraAroundEdge[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "TetrahedraAroundEdge array access out of bounds: " << id << " >= " << m_tetrahedraAroundEdge.size();
 
-    assert(i < m_tetrahedraAroundEdge.size());
-
-    return m_tetrahedraAroundEdge[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangle(const TriangleID i)
+const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangle(const TriangleID id)
 {
-    if (!hasTetrahedraAroundTriangle())
-        createTetrahedraAroundTriangleArray();
+    if (id < m_tetrahedraAroundTriangle.size())
+        return m_tetrahedraAroundTriangle[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "TetrahedraAroundTriangle array access out of bounds: " << id << " >= " << m_tetrahedraAroundTriangle.size();
 
-    assert(i < m_tetrahedraAroundTriangle.size());
-
-    return m_tetrahedraAroundTriangle[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron(const EdgeID i)
+const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron(const EdgeID id)
 {
-    if (!hasEdgesInTetrahedron())
-        createEdgesInTetrahedronArray();
+    if (id < m_edgesInTetrahedron.size())
+        return m_edgesInTetrahedron[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "EdgesInTetrahedron array access out of bounds: " << id << " >= " << m_edgesInTetrahedron.size();
 
-    assert(i < m_edgesInTetrahedron.size());
-
-    return m_edgesInTetrahedron[i];
+    return sofa::core::topology::InvalidArray6;
 }
 
-const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID i)
+const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID id)
 {
-    if (!hasTrianglesInTetrahedron())
-        createTrianglesInTetrahedronArray();
+    if (id < m_trianglesInTetrahedron.size())
+        return m_trianglesInTetrahedron[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "TrianglesInTetrahedron array access out of bounds: " << id << " >= " << m_trianglesInTetrahedron.size();
 
-    assert(i < m_trianglesInTetrahedron.size());
-
-    return m_trianglesInTetrahedron[i];
+    return sofa::core::topology::InvalidTetrahedron;
 }
 
 int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(const Tetrahedron &t,
