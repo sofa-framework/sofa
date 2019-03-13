@@ -101,27 +101,28 @@ void EdgeSetTopologyContainer::addEdge(int a, int b)
 
 void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
-    if(!hasEdges())	// this method should only be called when edges exist
-    {
-		if(CHECK_TOPOLOGY)
-			msg_warning() << "Edge array is empty.";
-		
-        createEdgeSetArray();
-    }
+    // first clear potential previous buffer
+    clearEdgesAroundVertex();
 
-    if(hasEdgesAroundVertex())
-    {
-        clearEdgesAroundVertex();
-    }
+    if(!hasEdges())
+        createEdgeSetArray();
+
+    if (hasEdgesAroundVertex()) // created by upper topology
+        return;
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+
+    if (m_edge.empty())
+    {
+        msg_warning() << "EdgesAroundVertex buffer can't be created as no edges are present in this topology.";
+        return;
+    }
 
     int nbPoints = getNbPoints();
     if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
         this->setNbPoints(d_initPoints.getValue().size());
 
     m_edgesAroundVertex.resize(getNbPoints());
-
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
@@ -137,6 +138,8 @@ void EdgeSetTopologyContainer::reinit()
 {
     PointSetTopologyContainer::reinit();
 
+    createEdgesAroundVertexArray();
+
     if (m_checkConnexity.getValue())
         this->checkConnexity();
 }
@@ -144,7 +147,8 @@ void EdgeSetTopologyContainer::reinit()
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
 	if(CHECK_TOPOLOGY)
-        msg_error() << "createEdgeSetArray method must be implemented by a child topology.";
+        msg_error() << "createEdgeSetArray method must be implemented by an higher level topology.";
+}
 
 }
 

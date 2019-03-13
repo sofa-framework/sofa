@@ -105,17 +105,21 @@ void TriangleSetTopologyContainer::createTriangleSetArray()
 
 void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
 {
+    // first clear potential previous buffer
+    clearTrianglesAroundVertex();
+
     if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle array is empty.";
-
         createTriangleSetArray();
-    }
 
-    if(hasTrianglesAroundVertex())
+    if (hasTrianglesAroundVertex()) // created by upper topology
+        return;
+
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+
+    if (m_triangle.empty())
     {
-        clearTrianglesAroundVertex();
+        msg_warning() << "TrianglesAroundVertex buffer can't be created as no triangles are present in this topology.";
+        return;
     }
 
     int nbPoints = getNbPoints();
@@ -123,9 +127,6 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
         this->setNbPoints(d_initPoints.getValue().size());
 
     m_trianglesAroundVertex.resize(getNbPoints());
-    
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
-
     for (size_t i = 0; i < m_triangle.size(); ++i)
     {
         // adding edge i in the edge shell of both points
@@ -136,35 +137,42 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
 
 void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
 {
-    if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle array is empty.";
+    // first clear potential previous buffer
+    clearTrianglesAroundEdge();
 
+    if(!hasTriangles()) // this method should only be called when triangles exist
         createTriangleSetArray();
+
+    if (hasTrianglesAroundEdge()) // created by upper topology
+        return;
+
+    const size_t numTriangles = getNumberOfTriangles();
+    if (numTriangles == 0)
+    {
+        msg_warning() << "TrianglesAroundEdge buffer can't be created as no triangles are present in this topology.";
+        return;
     }
 
     if(!hasEdges()) // this method should only be called when edges exist
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Edge array is empty.";
-
         createEdgeSetArray();
+
+    const size_t numEdges = getNumberOfEdges();
+    if (numEdges == 0)
+    {
+        msg_warning() << "TrianglesAroundEdge buffer can't be created as no edges are present in this topology.";
+        return;
     }
 
     if(!hasEdgesInTriangle())
         createEdgesInTriangleArray();
 
-    const size_t numTriangles = getNumberOfTriangles();
-    const size_t numEdges = getNumberOfEdges();
-
-    if(hasTrianglesAroundEdge())
+    if (m_edgesInTriangle.empty())
     {
-        clearTrianglesAroundEdge();
+        msg_warning() << "TrianglesAroundEdge buffer can't be created as EdgesInTriangle buffer creation failed.";
+        return;
     }
 
     m_trianglesAroundEdge.resize( numEdges );
-
     for (size_t i = 0; i < numTriangles; ++i)
     {
         const Triangle &t = getTriangle((TriangleID)i);
@@ -181,21 +189,11 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
 
 void TriangleSetTopologyContainer::createEdgeSetArray()
 {
-
     if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle array is empty.";
-
         createTriangleSetArray();
-    }
 
     if(hasEdges())
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Edge array is not empty.";
-
-
         // clear edges and all shells that depend on edges
         EdgeSetTopologyContainer::clear();
 
@@ -232,30 +230,25 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
+
+    EdgeSetTopologyContainer::createEdgesAroundVertexArray();
 }
 
 void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 {
+    // first clear potential previous buffer
+    clearEdgesInTriangle();
+
     if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle array is empty.";
-
         createTriangleSetArray();
-    }
 
-    // this should never be called : remove existing triangle edges
-    if(hasEdgesInTriangle())
-        clearEdgesInTriangle();
+    if (hasEdgesInTriangle()) // created by upper topology
+        return;
 
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Edge array is empty.";
-
-
         /// create edge array and triangle edge array at the same time
         const size_t numTriangles = getNumberOfTriangles();
         m_edgesInTriangle.resize(numTriangles);
@@ -329,10 +322,8 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                     }
                 }
 
-				if (CHECK_TOPOLOGY)
-					if (foundEdge==false)
-						msg_warning() << "Cannot find edge for triangle " << i << "and edge "<< j;
-
+                if (CHECK_TOPOLOGY && !foundEdge)
+                    msg_warning() << "Cannot find edge for triangle " << i << " and edge "<< j;
             }
         }
     }
@@ -345,10 +336,6 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 
     if(!hasTrianglesAroundEdge())	// Use the trianglesAroundEdgeArray. Should check if it is consistent
     {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle edge shell array is empty.";
-
-
         createTrianglesAroundEdgeArray();
     }
 
