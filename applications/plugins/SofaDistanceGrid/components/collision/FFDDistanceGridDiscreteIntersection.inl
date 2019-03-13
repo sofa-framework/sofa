@@ -98,15 +98,18 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad = c1.deformDir(c1.baryCoords(pinit),grad);
                     grad.normalize();
 
-                    contacts->resize(contacts->size()+1);
-                    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-                    detection->normal = defaulttype::Vector3(grad); // normal in global space from p1's surface
-                    detection->value = d - d0;
-                    detection->elem.first = e1;
-                    detection->elem.second = e2;
-                    detection->id = e2.getIndex();
-                    detection->point[0] = defaulttype::Vector3(pinit);
-                    detection->point[1] = e2.getContactPointWithSurfacePoint( pinit );
+                    //contacts->resize(contacts->size()+1);
+                    //sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+                    sofa::core::collision::DetectionOutput detection;
+                    detection.normal = defaulttype::Vector3(grad); // normal in global space from p1's surface
+                    detection.value = d - d0;
+                    detection.elem.first = e1;
+                    detection.elem.second = e2;
+                    detection.id = e2.getIndex();
+                    detection.point[0] = defaulttype::Vector3(pinit);
+                    detection.point[1] = e2.getContactPointWithSurfacePoint( pinit );
+
+                    contacts->addContact(&detection);
                     return 1;
                 }
             }

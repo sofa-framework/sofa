@@ -39,7 +39,12 @@ set(EXTRA_FILES
     examples/DistanceGridForceField-liver.scn
     )
 
-add_subdirectory(SofaDistanceGrid_test)
+if(SOFA_BUILD_TESTS)
+	find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(SofaDistanceGrid_test)
+    endif()
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision ${SOFAADVANCED_DEPENDENCY_LINK})

@@ -82,19 +82,22 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
     //p1 -= grad * d; // push p1 back to the surface
 
-    contacts->resize(contacts->size()+1);
-    core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+    //contacts->resize(contacts->size()+1);
+    //core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+    DetectionOutput detection;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0] = p1;
-    detection->baryCoords[1].clear();
+    detection.baryCoords[0] = p1;
+    detection.baryCoords[1].clear();
 #endif
-    detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-    detection->value = d - d0;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e2.getIndex();
-    detection->point[0] = defaulttype::Vector3(p1) - grad * d;
-    detection->point[1] = e2.getContactPointByNormal( detection->normal );
+    detection.normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+    detection.value = d - d0;
+    detection.elem.first = e1;
+    detection.elem.second = e2;
+    detection.id = e2.getIndex();
+    detection.point[0] = defaulttype::Vector3(p1) - grad * d;
+    detection.point[1] = e2.getContactPointByNormal( detection.normal );
+
+    contacts->addContact(&detection);
     return 1;
 }
 

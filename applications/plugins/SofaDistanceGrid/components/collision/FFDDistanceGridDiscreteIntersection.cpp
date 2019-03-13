@@ -100,47 +100,96 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
             c1.updatePoints();
             const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
             const sofa::helper::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
-            bool first = true;
-            for (unsigned int i=0; i<x1.size(); i++)
+
+            if (singleContact)
             {
-                DistanceGrid::Coord p1 = x1[i] + n1[i]*margin;
-                DistanceGrid::Coord p2 = translation + rotation*p1;
-
-                if (!grid2->inBBox( p2, margin )) continue;
-                if (!grid2->inGrid( p2 ))
+                DetectionOutput detection;
+                bool detected = false;
+                for (unsigned int i = 0; i<x1.size(); i++)
                 {
-                    intersection->serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName()<<intersection->sendl;
-                    continue;
-                }
+                    DistanceGrid::Coord p1 = x1[i] + n1[i] * margin;
+                    DistanceGrid::Coord p2 = translation + rotation * p1;
 
-                SReal d = grid2->interp(p2);
-                if (d >= margin) continue;
+                    if (!grid2->inBBox(p2, margin)) continue;
+                    if (!grid2->inGrid(p2))
+                    {
+                        intersection->serr << "WARNING: margin less than " << margin << " in DistanceGrid " << e2.getCollisionModel()->getName() << intersection->sendl;
+                        continue;
+                    }
 
-                Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
-                grad.normalize();
+                    SReal d = grid2->interp(p2);
+                    if (d >= margin) continue;
 
-                //p2 -= grad * d; // push p2 back to the surface
-                if (!singleContact || first)
-                    contacts->resize(contacts->size()+1);
-                DetectionOutput *detection = &*(contacts->end()-1);
-                double value = d + margin - d0;
-                if (!singleContact || first || (value < detection->value))
-                {
-                    detection->point[0] = grid1->meshPts[c1.points[i].index];
-                    detection->point[1] = Vector3(p2) - grad * d;
+                    detected = true;
+                    Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+                    grad.normalize();
+
+                    //p2 -= grad * d; // push p2 back to the surface
+                    //if (first)
+                    //    contacts->resize(contacts->size() + 1);
+                    //DetectionOutput *detection = &*(contacts->end() - 1);
+                    double value = d + margin - d0;
+                    if ( value < detection.value)
+                    {
+                        detection.point[0] = grid1->meshPts[c1.points[i].index];
+                        detection.point[1] = Vector3(p2) - grad * d;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = detection->point[0];
-                    detection->baryCoords[1] = Vector3(p2);
+                        detection.baryCoords[0] = detection.point[0];
+                        detection.baryCoords[1] = Vector3(p2);
 #endif
-                    detection->normal = r2 * -grad; // normal in global space from p1's surface
-                    detection->value = value;
-                    detection->elem.first = e1;
-                    detection->elem.second = e2;
-                    detection->id = i0 + c1.points[i].index;
+                        detection.normal = r2 * -grad; // normal in global space from p1's surface
+                        detection.value = value;
+                        detection.elem.first = e1;
+                        detection.elem.second = e2;
+                        detection.id = i0 + c1.points[i].index;
+                        ++nc;
+                    }
+                }
+                if (detected)
+                    contacts->addContact(&detection);
+            }
+            else
+            {
+                for (unsigned int i = 0; i<x1.size(); i++)
+                {
+                    DistanceGrid::Coord p1 = x1[i] + n1[i] * margin;
+                    DistanceGrid::Coord p2 = translation + rotation * p1;
+
+                    if (!grid2->inBBox(p2, margin)) continue;
+                    if (!grid2->inGrid(p2))
+                    {
+                        intersection->serr << "WARNING: margin less than " << margin << " in DistanceGrid " << e2.getCollisionModel()->getName() << intersection->sendl;
+                        continue;
+                    }
+
+                    SReal d = grid2->interp(p2);
+                    if (d >= margin) continue;
+
+                    Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+                    grad.normalize();
+
+                    //p2 -= grad * d; // push p2 back to the surface
+                    //contacts->resize(contacts->size() + 1);
+                    //DetectionOutput *detection = &*(contacts->end() - 1);
+                    DetectionOutput detection;
+                    double value = d + margin - d0;
+                    detection.point[0] = grid1->meshPts[c1.points[i].index];
+                    detection.point[1] = Vector3(p2) - grad * d;
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                    detection.baryCoords[0] = detection.point[0];
+                    detection.baryCoords[1] = Vector3(p2);
+#endif
+                    detection.normal = r2 * -grad; // normal in global space from p1's surface
+                    detection.value = value;
+                    detection.elem.first = e1;
+                    detection.elem.second = e2;
+                    detection.id = i0 + c1.points[i].index;
                     ++nc;
-                    first = false;
+
+                    contacts->addContact(&detection);
                 }
             }
+            
         }
     }
 
@@ -150,87 +199,182 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     {
         const SReal cubesize = c1.invDP.norm();
         bool first = true;
-        for (unsigned int i=0; i<x2.size(); i++)
+        
+        if (singleContact)
         {
-            DistanceGrid::Coord p2 = x2[i];
-            if ((p2-center2).norm2() >= radius2) continue;
-            DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
-            // try to find the point in the undeformed cube
+            DetectionOutput detection;
+            bool detected = false;
+            for (unsigned int i = 0; i < x2.size(); i++)
             {
-                c1.updateFaces();
-                // estimate the barycentric coordinates
-                DistanceGrid::Coord b = c1.undeform0(p1);
-
-                // refine the estimate until we are very close to the p1 or we are sure p1 cannot intersect with the object
-                int iter;
-                SReal err1 = 1000.0f;
-                for(iter=0; iter<5; ++iter)
+                DistanceGrid::Coord p2 = x2[i];
+                if ((p2 - center2).norm2() >= radius2) continue;
+                DistanceGrid::Coord p1 = rotation.multTranspose(p2 - translation);
+                // try to find the point in the undeformed cube
                 {
-                    DistanceGrid::Coord pdeform = c1.deform(b);
-                    DistanceGrid::Coord diff = p1-pdeform;
-                    SReal err = diff.norm();
-                    SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
-                    if (b[0] < -berr || b[0] > 1+berr
-                        || b[1] < -berr || b[1] > 1+berr
-                        || b[2] < -berr || b[2] > 1+berr)
-                        break; // far from the cube
-                    if (iter>3)
-                        intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
-                    if (err < 0.005f)
+                    c1.updateFaces();
+                    // estimate the barycentric coordinates
+                    DistanceGrid::Coord b = c1.undeform0(p1);
+
+                    // refine the estimate until we are very close to the p1 or we are sure p1 cannot intersect with the object
+                    int iter;
+                    SReal err1 = 1000.0f;
+                    for (iter = 0; iter < 5; ++iter)
                     {
-                        // we found the corresponding point, but is is only valid if inside the current cube
+                        DistanceGrid::Coord pdeform = c1.deform(b);
+                        DistanceGrid::Coord diff = p1 - pdeform;
+                        SReal err = diff.norm();
+                        SReal berr = err * cubesize; if (berr > 0.5f) berr = 0.5f;
+                        if (b[0] < -berr || b[0] > 1 + berr
+                            || b[1] < -berr || b[1] > 1 + berr
+                            || b[2] < -berr || b[2] > 1 + berr)
+                            break; // far from the cube
+                        if (iter > 3)
+                            intersection->sout << "Iter" << iter << ": " << err1 << " -> " << err << " b = " << b << " diff = " << diff << " d = " << grid1->interp(c1.initpos(b)) << "" << intersection->sendl;
+                        if (err < 0.005f)
+                        {
+                            // we found the corresponding point, but is is only valid if inside the current cube
+                            if (b[0] > 0.001f && b[0] < 0.999f
+                                && b[1] > 0.001f && b[1] < 0.999f
+                                && b[2] > 0.001f && b[2] < 0.999f)
+                            {
+                                DistanceGrid::Coord pinit = c1.initpos(b);
+                                SReal d = grid1->interp(pinit);
+                                if (d < 2 * margin)
+                                {
+                                    DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                                    grad.normalize();
+                                    pinit -= grad * d;
+                                    grad = c1.deformDir(c1.baryCoords(pinit), grad);
+                                    grad.normalize();
+
+                                    detected = true;
+                                    //if (!singleContact || first)
+                                    //    contacts->resize(contacts->size() + 1);
+                                    //DetectionOutput *detection = &*(contacts->end() - 1);
+                                    double value = d - d0;
+                                    if ( value < detection.value )
+                                    {
+                                        detection.point[0] = Vector3(pinit);
+                                        detection.point[1] = Vector3(p2);
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                                        detection.baryCoords[0] = Vector3(pinit);
+                                        detection.baryCoords[1] = Vector3(p2);
+#endif
+                                        detection.normal = Vector3(grad); // normal in global space from p1's surface
+                                        detection.value = value;
+                                        detection.elem.first = e1;
+                                        detection.elem.second = e2;
+                                        detection.id = i;
+                                        ++nc;
+                                        first = false;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        err1 = err;
+                        SReal d = grid1->interp(c1.initpos(b));
+                        if (d*0.5f - err > 2 * margin)
+                            break; // the point is too far from the object
+                                   // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                                   // deform(b+db) ~= deform(b) + J db  -> J db = p1-deform(b) -> db = J^-1 (p1-deform(b))
+                        b += c1.undeformDir(b, diff);
+                    }
+                    if (iter == 5)
+                    {
                         if (b[0] > 0.001f && b[0] < 0.999f
                             && b[1] > 0.001f && b[1] < 0.999f
                             && b[2] > 0.001f && b[2] < 0.999f)
-                        {
-                            DistanceGrid::Coord pinit = c1.initpos(b);
-                            SReal d = grid1->interp(pinit);
-                            if (d < 2*margin)
-                            {
-                                DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
-                                grad.normalize();
-                                pinit -= grad*d;
-                                grad = c1.deformDir(c1.baryCoords(pinit),grad);
-                                grad.normalize();
+                            intersection->serr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = " << p1 << " b = " << b << " c000 = " << c1.corners[0] << " c100 = " << c1.corners[1] << " c010 = " << c1.corners[2] << " c110 = " << c1.corners[3] << " c001 = " << c1.corners[4] << " c101 = " << c1.corners[5] << " c011 = " << c1.corners[6] << " c111 = " << c1.corners[7] << " pinit = " << c1.initpos(b) << " pdeform = " << c1.deform(b) << " err = " << err1 << intersection->sendl;
+                    }
+                }
+            }
+            if (detected)
+                contacts->addContact(&detection);
+        }
+        else
+        {
+            for (unsigned int i = 0; i < x2.size(); i++)
+            {
+                DistanceGrid::Coord p2 = x2[i];
+                if ((p2 - center2).norm2() >= radius2) continue;
+                DistanceGrid::Coord p1 = rotation.multTranspose(p2 - translation);
+                // try to find the point in the undeformed cube
+                {
+                    c1.updateFaces();
+                    // estimate the barycentric coordinates
+                    DistanceGrid::Coord b = c1.undeform0(p1);
 
-                                if (!singleContact || first)
-                                    contacts->resize(contacts->size()+1);
-                                DetectionOutput *detection = &*(contacts->end()-1);
-                                double value = d - d0;
-                                if (!singleContact || first || (value < detection->value))
+                    // refine the estimate until we are very close to the p1 or we are sure p1 cannot intersect with the object
+                    int iter;
+                    SReal err1 = 1000.0f;
+                    for (iter = 0; iter < 5; ++iter)
+                    {
+                        DistanceGrid::Coord pdeform = c1.deform(b);
+                        DistanceGrid::Coord diff = p1 - pdeform;
+                        SReal err = diff.norm();
+                        SReal berr = err * cubesize; if (berr > 0.5f) berr = 0.5f;
+                        if (b[0] < -berr || b[0] > 1 + berr
+                            || b[1] < -berr || b[1] > 1 + berr
+                            || b[2] < -berr || b[2] > 1 + berr)
+                            break; // far from the cube
+                        if (iter > 3)
+                            intersection->sout << "Iter" << iter << ": " << err1 << " -> " << err << " b = " << b << " diff = " << diff << " d = " << grid1->interp(c1.initpos(b)) << "" << intersection->sendl;
+                        if (err < 0.005f)
+                        {
+                            // we found the corresponding point, but is is only valid if inside the current cube
+                            if (b[0] > 0.001f && b[0] < 0.999f
+                                && b[1] > 0.001f && b[1] < 0.999f
+                                && b[2] > 0.001f && b[2] < 0.999f)
+                            {
+                                DistanceGrid::Coord pinit = c1.initpos(b);
+                                SReal d = grid1->interp(pinit);
+                                if (d < 2 * margin)
                                 {
-                                    detection->point[0] = Vector3(pinit);
-                                    detection->point[1] = Vector3(p2);
+                                    DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                                    grad.normalize();
+                                    pinit -= grad * d;
+                                    grad = c1.deformDir(c1.baryCoords(pinit), grad);
+                                    grad.normalize();
+
+                                    //if (!singleContact || first)
+                                    //    contacts->resize(contacts->size() + 1);
+                                    DetectionOutput detection;// = &*(contacts->end() - 1);
+                                    double value = d - d0;
+                                    detection.point[0] = Vector3(pinit);
+                                    detection.point[1] = Vector3(p2);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                    detection->baryCoords[0] = Vector3(pinit);
-                                    detection->baryCoords[1] = Vector3(p2);
+                                    detection.baryCoords[0] = Vector3(pinit);
+                                    detection.baryCoords[1] = Vector3(p2);
 #endif
-                                    detection->normal = Vector3(grad); // normal in global space from p1's surface
-                                    detection->value = value;
-                                    detection->elem.first = e1;
-                                    detection->elem.second = e2;
-                                    detection->id = i;
+                                    detection.normal = Vector3(grad); // normal in global space from p1's surface
+                                    detection.value = value;
+                                    detection.elem.first = e1;
+                                    detection.elem.second = e2;
+                                    detection.id = i;
                                     ++nc;
                                     first = false;
+
+                                    contacts->addContact(&detection);
                                 }
                             }
+                            break;
                         }
-                        break;
+                        err1 = err;
+                        SReal d = grid1->interp(c1.initpos(b));
+                        if (d*0.5f - err > 2 * margin)
+                            break; // the point is too far from the object
+                                   // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                                   // deform(b+db) ~= deform(b) + J db  -> J db = p1-deform(b) -> db = J^-1 (p1-deform(b))
+                        b += c1.undeformDir(b, diff);
                     }
-                    err1 = err;
-                    SReal d = grid1->interp(c1.initpos(b));
-                    if (d*0.5f - err > 2*margin)
-                        break; // the point is too far from the object
-                    // we are solving for deform(b+db)-deform(b) = p1-deform(b)
-                    // deform(b+db) ~= deform(b) + J db  -> J db = p1-deform(b) -> db = J^-1 (p1-deform(b))
-                    b += c1.undeformDir( b, diff );
-                }
-                if (iter == 5)
-                {
-                    if (b[0] > 0.001f && b[0] < 0.999f
-                        && b[1] > 0.001f && b[1] < 0.999f
-                        && b[2] > 0.001f && b[2] < 0.999f)
-                        intersection->serr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+                    if (iter == 5)
+                    {
+                        if (b[0] > 0.001f && b[0] < 0.999f
+                            && b[1] > 0.001f && b[1] < 0.999f
+                            && b[2] > 0.001f && b[2] < 0.999f)
+                            intersection->serr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = " << p1 << " b = " << b << " c000 = " << c1.corners[0] << " c100 = " << c1.corners[1] << " c010 = " << c1.corners[2] << " c110 = " << c1.corners[3] << " c001 = " << c1.corners[4] << " c101 = " << c1.corners[5] << " c011 = " << c1.corners[6] << " c111 = " << c1.corners[7] << " pinit = " << c1.initpos(b) << " pdeform = " << c1.deform(b) << " err = " << err1 << intersection->sendl;
+                    }
                 }
             }
         }
@@ -273,85 +417,177 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
         const sofa::helper::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
         bool first = true;
-        for (unsigned int i=0; i<x1.size(); i++)
+
+        if (singleContact)
         {
-            DistanceGrid::Coord p2 = x1[i] + n1[i]*margin;
-
-            // estimate the barycentric coordinates
-            DistanceGrid::Coord b = c2.undeform0(p2);
-
-            // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
-            int iter;
-            SReal err1 = 1000.0f;
-            for(iter=0; iter<5; ++iter)
+            DetectionOutput detection;
+            bool detected = true;
+            for (unsigned int i = 0; i<x1.size(); i++)
             {
-                DistanceGrid::Coord pdeform = c2.deform(b);
-                DistanceGrid::Coord diff = p2-pdeform;
-                SReal err = diff.norm();
-                SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
-                if (b[0] < -berr || b[0] > 1+berr
-                    || b[1] < -berr || b[1] > 1+berr
-                    || b[2] < -berr || b[2] > 1+berr)
-                    break; // far from the cube
-                if (iter>3)
-                    intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid2->interp(c2.initpos(b))<<""<<intersection->sendl;
-                if (err < 0.005f)
+                DistanceGrid::Coord p2 = x1[i] + n1[i] * margin;
+
+                // estimate the barycentric coordinates
+                DistanceGrid::Coord b = c2.undeform0(p2);
+
+                // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+                int iter;
+                SReal err1 = 1000.0f;
+                for (iter = 0; iter<5; ++iter)
                 {
-                    // we found the corresponding point, but is is only valid if inside the current cube
+                    DistanceGrid::Coord pdeform = c2.deform(b);
+                    DistanceGrid::Coord diff = p2 - pdeform;
+                    SReal err = diff.norm();
+                    SReal berr = err * cubesize; if (berr>0.5f) berr = 0.5f;
+                    if (b[0] < -berr || b[0] > 1 + berr
+                        || b[1] < -berr || b[1] > 1 + berr
+                        || b[2] < -berr || b[2] > 1 + berr)
+                        break; // far from the cube
+                    if (iter>3)
+                        intersection->sout << "Iter" << iter << ": " << err1 << " -> " << err << " b = " << b << " diff = " << diff << " d = " << grid2->interp(c2.initpos(b)) << "" << intersection->sendl;
+                    if (err < 0.005f)
+                    {
+                        // we found the corresponding point, but is is only valid if inside the current cube
+                        if (b[0] > 0.001f && b[0] < 0.999f
+                            && b[1] > 0.001f && b[1] < 0.999f
+                            && b[2] > 0.001f && b[2] < 0.999f)
+                        {
+                            DistanceGrid::Coord pinit = c2.initpos(b);
+                            SReal d = grid2->interp(pinit);
+                            if (d < margin)
+                            {
+                                DistanceGrid::Coord grad = grid2->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                                grad.normalize();
+                                pinit -= grad * d;
+                                grad = c2.deformDir(c2.baryCoords(pinit), grad);
+                                grad.normalize();
+
+                                detected = true;
+                                //if (!singleContact || first)
+                                //    contacts->resize(contacts->size() + 1);
+                                //DetectionOutput *detection = &*(contacts->end() - 1);
+                                double value = d + margin - d0;
+                                if (value < detection.value)
+                                {
+                                    detection.point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
+                                    detection.point[1] = Vector3(pinit);
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                                    detection.baryCoords[0] = detection.point[0];
+                                    detection.baryCoords[1] = Vector3(pinit);
+#endif
+                                    detection.normal = Vector3(-grad); // normal in global space from p1's surface
+                                    detection.value = value;
+                                    detection.elem.first = e1;
+                                    detection.elem.second = e2;
+                                    detection.id = c1.points[i].index;
+                                    ++nc;
+                                    first = false;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    err1 = err;
+                    SReal d = grid2->interp(c2.initpos(b));
+                    if (d*0.5f - err > margin)
+                        break; // the point is too far from the object
+                               // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                               // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
+                    b += c2.undeformDir(b, diff);
+                }
+                if (iter == 5)
+                {
                     if (b[0] > 0.001f && b[0] < 0.999f
                         && b[1] > 0.001f && b[1] < 0.999f
                         && b[2] > 0.001f && b[2] < 0.999f)
-                    {
-                        DistanceGrid::Coord pinit = c2.initpos(b);
-                        SReal d = grid2->interp(pinit);
-                        if (d < margin)
-                        {
-                            DistanceGrid::Coord grad = grid2->grad(pinit); // note that there are some redundant computations between interp() and grad()
-                            grad.normalize();
-                            pinit -= grad*d;
-                            grad = c2.deformDir(c2.baryCoords(pinit),grad);
-                            grad.normalize();
+                        intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = " << p2 << " b = " << b << " c000 = " << c2.corners[0] << " c100 = " << c2.corners[1] << " c010 = " << c2.corners[2] << " c110 = " << c2.corners[3] << " c001 = " << c2.corners[4] << " c101 = " << c2.corners[5] << " c011 = " << c2.corners[6] << " c111 = " << c2.corners[7] << " pinit = " << c2.initpos(b) << " pdeform = " << c2.deform(b) << " err = " << err1 << intersection->sendl;
+                }
+            }
+            if (detected)
+                contacts->addContact(&detection);
+        }
+        else
+        {
+            for (unsigned int i = 0; i<x1.size(); i++)
+            {
+                DistanceGrid::Coord p2 = x1[i] + n1[i] * margin;
 
-                            if (!singleContact || first)
-                                contacts->resize(contacts->size()+1);
-                            DetectionOutput *detection = &*(contacts->end()-1);
-                            double value = d + margin - d0;
-                            if (!singleContact || first || (value < detection->value))
+                // estimate the barycentric coordinates
+                DistanceGrid::Coord b = c2.undeform0(p2);
+
+                // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+                int iter;
+                SReal err1 = 1000.0f;
+                for (iter = 0; iter<5; ++iter)
+                {
+                    DistanceGrid::Coord pdeform = c2.deform(b);
+                    DistanceGrid::Coord diff = p2 - pdeform;
+                    SReal err = diff.norm();
+                    SReal berr = err * cubesize; if (berr>0.5f) berr = 0.5f;
+                    if (b[0] < -berr || b[0] > 1 + berr
+                        || b[1] < -berr || b[1] > 1 + berr
+                        || b[2] < -berr || b[2] > 1 + berr)
+                        break; // far from the cube
+                    if (iter>3)
+                        intersection->sout << "Iter" << iter << ": " << err1 << " -> " << err << " b = " << b << " diff = " << diff << " d = " << grid2->interp(c2.initpos(b)) << "" << intersection->sendl;
+                    if (err < 0.005f)
+                    {
+                        // we found the corresponding point, but is is only valid if inside the current cube
+                        if (b[0] > 0.001f && b[0] < 0.999f
+                            && b[1] > 0.001f && b[1] < 0.999f
+                            && b[2] > 0.001f && b[2] < 0.999f)
+                        {
+                            DistanceGrid::Coord pinit = c2.initpos(b);
+                            SReal d = grid2->interp(pinit);
+                            if (d < margin)
                             {
-                                detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
-                                detection->point[1] = Vector3(pinit);
+                                DistanceGrid::Coord grad = grid2->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                                grad.normalize();
+                                pinit -= grad * d;
+                                grad = c2.deformDir(c2.baryCoords(pinit), grad);
+                                grad.normalize();
+
+                                //if (!singleContact || first)
+                                //    contacts->resize(contacts->size() + 1);
+                                DetectionOutput detection;// = &*(contacts->end() - 1);
+                                double value = d + margin - d0;
+
+                                detection.point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
+                                detection.point[1] = Vector3(pinit);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                detection->baryCoords[0] = detection->point[0];
-                                detection->baryCoords[1] = Vector3(pinit);
+                                detection.baryCoords[0] = detection.point[0];
+                                detection.baryCoords[1] = Vector3(pinit);
 #endif
-                                detection->normal = Vector3(-grad); // normal in global space from p1's surface
-                                detection->value = value;
-                                detection->elem.first = e1;
-                                detection->elem.second = e2;
-                                detection->id = c1.points[i].index;
+                                detection.normal = Vector3(-grad); // normal in global space from p1's surface
+                                detection.value = value;
+                                detection.elem.first = e1;
+                                detection.elem.second = e2;
+                                detection.id = c1.points[i].index;
                                 ++nc;
-                                first = false;
+
+                                contacts->addContact(&detection);
                             }
                         }
+                        break;
                     }
-                    break;
+                    err1 = err;
+                    SReal d = grid2->interp(c2.initpos(b));
+                    if (d*0.5f - err > margin)
+                        break; // the point is too far from the object
+                               // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                               // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
+                    b += c2.undeformDir(b, diff);
                 }
-                err1 = err;
-                SReal d = grid2->interp(c2.initpos(b));
-                if (d*0.5f - err > margin)
-                    break; // the point is too far from the object
-                // we are solving for deform(b+db)-deform(b) = p1-deform(b)
-                // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
-                b += c2.undeformDir( b, diff );
-            }
-            if (iter == 5)
-            {
-                if (b[0] > 0.001f && b[0] < 0.999f
-                    && b[1] > 0.001f && b[1] < 0.999f
-                    && b[2] > 0.001f && b[2] < 0.999f)
-                    intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = "<<p2<<" b = "<<b<<" c000 = "<<c2.corners[0]<<" c100 = "<<c2.corners[1]<<" c010 = "<<c2.corners[2]<<" c110 = "<<c2.corners[3]<<" c001 = "<<c2.corners[4]<<" c101 = "<<c2.corners[5]<<" c011 = "<<c2.corners[6]<<" c111 = "<<c2.corners[7]<<" pinit = "<<c2.initpos(b)<<" pdeform = "<<c2.deform(b)<<" err = "<<err1<<intersection->sendl;
+                if (iter == 5)
+                {
+                    if (b[0] > 0.001f && b[0] < 0.999f
+                        && b[1] > 0.001f && b[1] < 0.999f
+                        && b[2] > 0.001f && b[2] < 0.999f)
+                        intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = " << p2 << " b = " << b << " c000 = " << c2.corners[0] << " c100 = " << c2.corners[1] << " c010 = " << c2.corners[2] << " c110 = " << c2.corners[3] << " c001 = " << c2.corners[4] << " c101 = " << c2.corners[5] << " c011 = " << c2.corners[6] << " c111 = " << c2.corners[7] << " pinit = " << c2.initpos(b) << " pdeform = " << c2.deform(b) << " err = " << err1 << intersection->sendl;
+                }
             }
         }
+
+        
     }
     if (usePoints2)
     {
@@ -361,83 +597,171 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         const sofa::helper::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
         const sofa::helper::vector<DistanceGrid::Coord>& n2 = c2.deformedNormals;
         bool first = true;
-        for (unsigned int i=0; i<x2.size(); i++)
+        if (singleContact)
         {
-            DistanceGrid::Coord p1 = x2[i] + n2[i]*margin;
-
-            // estimate the barycentric coordinates
-            DistanceGrid::Coord b = c1.undeform0(p1);
-
-            // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
-            int iter;
-            SReal err1 = 1000.0f;
-            for(iter=0; iter<5; ++iter)
+            DetectionOutput detection;
+            bool detected = false;
+            for (unsigned int i = 0; i<x2.size(); i++)
             {
-                DistanceGrid::Coord pdeform = c1.deform(b);
-                DistanceGrid::Coord diff = p1-pdeform;
-                SReal err = diff.norm();
-                if (iter>3)
-                    intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
-                SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
-                if (b[0] < -berr || b[0] > 1+berr
-                    || b[1] < -berr || b[1] > 1+berr
-                    || b[2] < -berr || b[2] > 1+berr)
-                    break; // far from the cube
-                if (err < 0.005f)
+                DistanceGrid::Coord p1 = x2[i] + n2[i] * margin;
+
+                // estimate the barycentric coordinates
+                DistanceGrid::Coord b = c1.undeform0(p1);
+
+                // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+                int iter;
+                SReal err1 = 1000.0f;
+                for (iter = 0; iter<5; ++iter)
                 {
-                    // we found the corresponding point, but is is only valid if inside the current cube
+                    DistanceGrid::Coord pdeform = c1.deform(b);
+                    DistanceGrid::Coord diff = p1 - pdeform;
+                    SReal err = diff.norm();
+                    if (iter>3)
+                        intersection->sout << "Iter" << iter << ": " << err1 << " -> " << err << " b = " << b << " diff = " << diff << " d = " << grid1->interp(c1.initpos(b)) << "" << intersection->sendl;
+                    SReal berr = err * cubesize; if (berr>0.5f) berr = 0.5f;
+                    if (b[0] < -berr || b[0] > 1 + berr
+                        || b[1] < -berr || b[1] > 1 + berr
+                        || b[2] < -berr || b[2] > 1 + berr)
+                        break; // far from the cube
+                    if (err < 0.005f)
+                    {
+                        // we found the corresponding point, but is is only valid if inside the current cube
+                        if (b[0] > 0.001f && b[0] < 0.999f
+                            && b[1] > 0.001f && b[1] < 0.999f
+                            && b[2] > 0.001f && b[2] < 0.999f)
+                        {
+                            DistanceGrid::Coord pinit = c1.initpos(b);
+                            SReal d = grid1->interp(pinit);
+                            if (d < margin)
+                            {
+                                DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                                grad.normalize();
+                                pinit -= grad * d;
+                                grad = c1.deformDir(c1.baryCoords(pinit), grad);
+                                grad.normalize();
+
+                                detected = true;
+                                //if (!singleContact || first)
+                                //    contacts->resize(contacts->size() + 1);
+                                //DetectionOutput *detection = &*(contacts->end() - 1);
+                                double value = d + margin - d0;
+                                if (value < detection.value)
+                                {
+                                    detection.point[0] = Vector3(pinit);
+                                    detection.point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                                    detection.baryCoords[0] = Vector3(pinit);
+                                    detection.baryCoords[1] = detection.point[1];
+#endif
+                                    detection.normal = Vector3(grad); // normal in global space from p1's surface
+                                    detection.value = value;
+                                    detection.elem.first = e1;
+                                    detection.elem.second = e2;
+                                    detection.id = i0 + c2.points[i].index;
+                                    ++nc;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    err1 = err;
+                    SReal d = grid1->interp(c1.initpos(b));
+                    if (d*0.5f - err > margin)
+                        break; // the point is too far from the object
+                               // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                               // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
+                    b += c1.undeformDir(b, diff);
+                }
+                if (iter == 5)
+                {
                     if (b[0] > 0.001f && b[0] < 0.999f
                         && b[1] > 0.001f && b[1] < 0.999f
                         && b[2] > 0.001f && b[2] < 0.999f)
-                    {
-                        DistanceGrid::Coord pinit = c1.initpos(b);
-                        SReal d = grid1->interp(pinit);
-                        if (d < margin)
-                        {
-                            DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
-                            grad.normalize();
-                            pinit -= grad*d;
-                            grad = c1.deformDir(c1.baryCoords(pinit),grad);
-                            grad.normalize();
+                        intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = " << p1 << " b = " << b << " c000 = " << c1.corners[0] << " c100 = " << c1.corners[1] << " c010 = " << c1.corners[2] << " c110 = " << c1.corners[3] << " c001 = " << c1.corners[4] << " c101 = " << c1.corners[5] << " c011 = " << c1.corners[6] << " c111 = " << c1.corners[7] << " pinit = " << c1.initpos(b) << " pdeform = " << c1.deform(b) << " err = " << err1 << intersection->sendl;
+                }
+            }
+            if (detected)
+                contacts->addContact(&detection);
+        }
+        else
+        {
+            for (unsigned int i = 0; i<x2.size(); i++)
+            {
+                DistanceGrid::Coord p1 = x2[i] + n2[i] * margin;
 
-                            if (!singleContact || first)
-                                contacts->resize(contacts->size()+1);
-                            DetectionOutput *detection = &*(contacts->end()-1);
-                            double value = d + margin - d0;
-                            if (!singleContact || first || (value < detection->value))
+                // estimate the barycentric coordinates
+                DistanceGrid::Coord b = c1.undeform0(p1);
+
+                // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+                int iter;
+                SReal err1 = 1000.0f;
+                for (iter = 0; iter<5; ++iter)
+                {
+                    DistanceGrid::Coord pdeform = c1.deform(b);
+                    DistanceGrid::Coord diff = p1 - pdeform;
+                    SReal err = diff.norm();
+                    if (iter>3)
+                        intersection->sout << "Iter" << iter << ": " << err1 << " -> " << err << " b = " << b << " diff = " << diff << " d = " << grid1->interp(c1.initpos(b)) << "" << intersection->sendl;
+                    SReal berr = err * cubesize; if (berr>0.5f) berr = 0.5f;
+                    if (b[0] < -berr || b[0] > 1 + berr
+                        || b[1] < -berr || b[1] > 1 + berr
+                        || b[2] < -berr || b[2] > 1 + berr)
+                        break; // far from the cube
+                    if (err < 0.005f)
+                    {
+                        // we found the corresponding point, but is is only valid if inside the current cube
+                        if (b[0] > 0.001f && b[0] < 0.999f
+                            && b[1] > 0.001f && b[1] < 0.999f
+                            && b[2] > 0.001f && b[2] < 0.999f)
+                        {
+                            DistanceGrid::Coord pinit = c1.initpos(b);
+                            SReal d = grid1->interp(pinit);
+                            if (d < margin)
                             {
-                                detection->point[0] = Vector3(pinit);
-                                detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
+                                DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                                grad.normalize();
+                                pinit -= grad * d;
+                                grad = c1.deformDir(c1.baryCoords(pinit), grad);
+                                grad.normalize();
+
+                                //if (!singleContact || first)
+                                //    contacts->resize(contacts->size() + 1);
+                                DetectionOutput detection;// = &*(contacts->end() - 1);
+                                double value = d + margin - d0;
+
+                                detection.point[0] = Vector3(pinit);
+                                detection.point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                detection->baryCoords[0] = Vector3(pinit);
-                                detection->baryCoords[1] = detection->point[1];
+                                detection.baryCoords[0] = Vector3(pinit);
+                                detection.baryCoords[1] = detection.point[1];
 #endif
-                                detection->normal = Vector3(grad); // normal in global space from p1's surface
-                                detection->value = value;
-                                detection->elem.first = e1;
-                                detection->elem.second = e2;
-                                detection->id = i0+c2.points[i].index;
+                                detection.normal = Vector3(grad); // normal in global space from p1's surface
+                                detection.value = value;
+                                detection.elem.first = e1;
+                                detection.elem.second = e2;
+                                detection.id = i0 + c2.points[i].index;
                                 ++nc;
-                                first = false;
+                                
+                                contacts->addContact(&detection);
                             }
                         }
+                        break;
                     }
-                    break;
+                    err1 = err;
+                    SReal d = grid1->interp(c1.initpos(b));
+                    if (d*0.5f - err > margin)
+                        break; // the point is too far from the object
+                               // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                               // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
+                    b += c1.undeformDir(b, diff);
                 }
-                err1 = err;
-                SReal d = grid1->interp(c1.initpos(b));
-                if (d*0.5f - err > margin)
-                    break; // the point is too far from the object
-                // we are solving for deform(b+db)-deform(b) = p1-deform(b)
-                // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
-                b += c1.undeformDir( b, diff );
-            }
-            if (iter == 5)
-            {
-                if (b[0] > 0.001f && b[0] < 0.999f
-                    && b[1] > 0.001f && b[1] < 0.999f
-                    && b[2] > 0.001f && b[2] < 0.999f)
-                    intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+                if (iter == 5)
+                {
+                    if (b[0] > 0.001f && b[0] < 0.999f
+                        && b[1] > 0.001f && b[1] < 0.999f
+                        && b[2] > 0.001f && b[2] < 0.999f)
+                        intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = " << p1 << " b = " << b << " c000 = " << c1.corners[0] << " c100 = " << c1.corners[1] << " c010 = " << c1.corners[2] << " c110 = " << c1.corners[3] << " c001 = " << c1.corners[4] << " c101 = " << c1.corners[5] << " c011 = " << c1.corners[6] << " c111 = " << c1.corners[7] << " pinit = " << c1.initpos(b) << " pdeform = " << c1.deform(b) << " err = " << err1 << intersection->sendl;
+                }
             }
         }
     }
@@ -500,21 +824,23 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad = c1.deformDir(c1.baryCoords(pinit),grad);
                     grad.normalize();
 
-                    contacts->resize(contacts->size()+1);
-                    DetectionOutput *detection = &*(contacts->end()-1);
-
-                    detection->point[0] = Vector3(pinit);
-                    detection->point[1] = Vector3(p2);
+                    //contacts->resize(contacts->size()+1);
+                    //DetectionOutput *detection = &*(contacts->end()-1);
+                    DetectionOutput detection;
+                    detection.point[0] = Vector3(pinit);
+                    detection.point[1] = Vector3(p2);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    detection->baryCoords[0] = Vector3(pinit);
-                    detection->baryCoords[1] = Vector3(0.0,0.0,0.0);
+                    detection.baryCoords[0] = Vector3(pinit);
+                    detection.baryCoords[1] = Vector3(0.0,0.0,0.0);
 #endif
-                    detection->normal = Vector3(grad); // normal in global space from p1's surface
-                    detection->value = d - d0;
-                    detection->elem.first = e1;
-                    detection->elem.second = e2;
-                    detection->id = e2.getIndex();
+                    detection.normal = Vector3(grad); // normal in global space from p1's surface
+                    detection.value = d - d0;
+                    detection.elem.first = e1;
+                    detection.elem.second = e2;
+                    detection.id = e2.getIndex();
                     ++nc;
+
+                    contacts->addContact(&detection);
                 }
             }
             break;
@@ -598,21 +924,23 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                         grad = c1.deformDir(c1.baryCoords(pinit),grad);
                         grad.normalize();
 
-                        contacts->resize(contacts->size()+1);
-                        DetectionOutput *detection = &*(contacts->end()-1);
-
-                        detection->point[0] = Vector3(pinit);
-                        detection->point[1] = Vector3(p2);
+                        //contacts->resize(contacts->size()+1);
+                        //DetectionOutput *detection = &*(contacts->end()-1);
+                        DetectionOutput detection;
+                        detection.point[0] = Vector3(pinit);
+                        detection.point[1] = Vector3(p2);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                        detection->baryCoords[0] = Vector3(pinit);
-                        detection->baryCoords[1] = Vector3((iP == 1)?1.0:0.0,(iP == 2)?1.0:0.0,0.0);
+                        detection.baryCoords[0] = Vector3(pinit);
+                        detection.baryCoords[1] = Vector3((iP == 1)?1.0:0.0,(iP == 2)?1.0:0.0,0.0);
 #endif
-                        detection->normal = Vector3(grad); // normal in global space from p1's surface
-                        detection->value = d - d0;
-                        detection->elem.first = e1;
-                        detection->elem.second = e2;
-                        detection->id = e2.getIndex()*3+iP;
+                        detection.normal = Vector3(grad); // normal in global space from p1's surface
+                        detection.value = d - d0;
+                        detection.elem.first = e1;
+                        detection.elem.second = e2;
+                        detection.id = e2.getIndex()*3+iP;
                         ++nc;
+
+                        contacts->addContact(&detection);
                     }
                 }
                 break;
@@ -715,20 +1043,22 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
             {
                 // intersection found
 
-                contacts->resize(contacts->size()+1);
-                DetectionOutput *detection = &*(contacts->end()-1);
-
-                detection->point[0] = e2.origin() + e2.direction()*rayPos;
-                detection->point[1] = c1.initpos(b);
+                //contacts->resize(contacts->size()+1);
+                //DetectionOutput *detection = &*(contacts->end()-1);
+                DetectionOutput detection;
+                detection.point[0] = e2.origin() + e2.direction()*rayPos;
+                detection.point[1] = c1.initpos(b);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                detection->baryCoords[0] = Vector3(rayPos,0,0);
-                detection->baryCoords[1] = detection->point[1];
+                detection.baryCoords[0] = Vector3(rayPos,0,0);
+                detection.baryCoords[1] = detection.point[1];
 #endif
-                detection->normal = e2.direction(); // normal in global space from p1's surface
-                detection->value = d;
-                detection->elem.first = e2;
-                detection->elem.second = e1;
-                detection->id = e2.getIndex();
+                detection.normal = e2.direction(); // normal in global space from p1's surface
+                detection.value = d;
+                detection.elem.first = e2;
+                detection.elem.second = e1;
+                detection.id = e2.getIndex();
+
+                contacts->addContact(&detection);
                 return 1;
             }
         }
