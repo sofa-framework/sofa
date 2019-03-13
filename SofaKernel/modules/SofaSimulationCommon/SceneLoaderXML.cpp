@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,14 +66,12 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const char *filename)
 {
     sofa::simulation::Node::SPtr root;
 
     if (!canLoadFileName(filename))
         return 0;
-
-    notifyLoadingScene();
 
     xml::BaseElement* xml = xml::loadFromFile ( filename );
     root = processXML(xml, filename);
@@ -142,13 +140,14 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 /// Load from a string in memory
 Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
-    notifyLoadingScene();
+    notifyLoadingSceneBefore();
 
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
     Node::SPtr root = processXML(xml, filename);
 
     delete xml;
+    notifyLoadingSceneAfter(root);
     return root;
 }
 

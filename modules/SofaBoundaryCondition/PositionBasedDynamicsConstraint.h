@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -91,8 +91,8 @@ public:
     virtual ~PositionBasedDynamicsConstraint();
 
     // -- Constraint interface
-    virtual void init() override;
-    virtual void reset() override;
+    void init() override;
+    void reset() override;
 
     void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) override {}
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
@@ -100,7 +100,7 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     // Handle topological changes
-    virtual void handleTopologyChange() override;
+    void handleTopologyChange() override;
 
 protected :
 

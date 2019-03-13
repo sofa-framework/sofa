@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,7 +50,7 @@ public:
 
 protected:
     /// Destructor
-    virtual ~NarrowPhaseDetection() { }
+    ~NarrowPhaseDetection() override { }
 public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase()
@@ -72,6 +72,9 @@ public:
     {
         for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
             addCollisionPair(*it);
+
+        // m_outputsMap should just be filled in addCollisionPair function
+        m_primitiveTestCount = m_outputsMap.size();
     }
 
     virtual void endNarrowPhase()
@@ -99,7 +102,9 @@ public:
 
     //sofa::helper::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
 
-    const DetectionOutputMap& getDetectionOutputs()
+    size_t getPrimitiveTestCount() const { return m_primitiveTestCount; }
+
+    const DetectionOutputMap& getDetectionOutputs() const
     {
         return m_outputsMap;
     }
@@ -127,7 +132,7 @@ public:
 protected:
     bool _zeroCollision;//true if the last narrow phase detected no collision, to use after endNarrowPhase
 
-    virtual void changeInstanceNP(Instance inst) override
+    void changeInstanceNP(Instance inst) override
     {
         m_storedOutputsMap[instance].swap(m_outputsMap);
         m_outputsMap.swap(m_storedOutputsMap[inst]);
@@ -136,7 +141,10 @@ protected:
 private:
     std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
 
+protected:
     DetectionOutputMap m_outputsMap;
+
+    size_t m_primitiveTestCount; // used only for statistics purpose
 };
 
 } // namespace collision

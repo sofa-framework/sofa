@@ -19,23 +19,23 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 
     SOFA_CLASS(Stabilization, BaseConstraintValue);
 
-    Stabilization( mstate_type* mstate = 0 );
+    Stabilization( mstate_type* mstate = nullptr );
 
     /// flagging which constraint blocks must be stabilized (if empty, all constraints are stabilized)
     typedef helper::vector<bool> mask_type;
     Data<mask_type> mask; ///< dofs to be stabilized
 	
 	// value for stabilization
-    virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;
 	
 	// value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    void dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;
 	
     // flag violated constraints
     virtual void filterConstraints( helper::vector<bool>*& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim );
 
     // clear violated mask
-    virtual void clear() { mask.beginWriteOnly()->clear(); mask.endEdit(); }
+    void clear() override { mask.beginWriteOnly()->clear(); mask.endEdit(); }
 };
 
 }

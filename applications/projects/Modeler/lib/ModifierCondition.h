@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -53,10 +53,10 @@ class QNamingModifierCondition: public QWidget, public ModifierCondition
 {
     Q_OBJECT
 public:
-    QNamingModifierCondition(QWidget *parent=0);
+    QNamingModifierCondition(QWidget *parent=nullptr);
 
-    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
-    bool isActive() const {return activated->isChecked();}
+    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const override;
+    bool isActive() const override {return activated->isChecked();}
     std::string getValue() const {return entryName->text().toStdString();}
 protected:
     QCheckBox *activated;
@@ -70,11 +70,11 @@ class QValueModifierCondition: public QWidget, public ModifierCondition
 {
     Q_OBJECT
 public:
-    QValueModifierCondition(QWidget *parent=0);
+    QValueModifierCondition(QWidget *parent=nullptr);
 
-    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
+    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const override;
 
-    bool isActive() const {return activated->isChecked();}
+    bool isActive() const override {return activated->isChecked();}
     std::string getValue() const {return value->text().toStdString();}
 protected:
     QCheckBox *activated;

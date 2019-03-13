@@ -20,7 +20,7 @@ class SOFA_Compliant_API DampingValue : public ConstraintValue
     DampingValue( mstate_type* mstate = NULL );
 
     // value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const override;
 
 };
 

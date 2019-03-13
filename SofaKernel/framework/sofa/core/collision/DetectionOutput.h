@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -128,14 +128,14 @@ class TDetectionOutputVector : public DetectionOutputVector, public sofa::helper
 {
 public:
     typedef sofa::helper::vector<DetectionOutput> Vector;
-    virtual ~TDetectionOutputVector() {}
+    ~TDetectionOutputVector() override {}
     /// Clear the content of this vector
-    virtual void clear()
+    void clear() override
     {
         return this->Vector::clear();
     }
     /// Current size (number of detected contacts)
-    virtual unsigned int size() const
+    unsigned int size() const override
     {
         return (unsigned int)this->Vector::size();
     }

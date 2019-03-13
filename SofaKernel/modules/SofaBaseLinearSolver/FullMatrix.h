@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -103,7 +103,7 @@ public:
     {
     }
 
-    ~FullMatrix()
+    ~FullMatrix() override
     {
         if (allocsize>0)
             delete[] data;
@@ -136,7 +136,7 @@ public:
         return data+i*pitch;
     }
 
-    void resize(Index nbRow, Index nbCol)
+    void resize(Index nbRow, Index nbCol) override
     {
 #ifdef FULLMATRIX_VERBOSE
         if (nbRow != rowSize() || nbCol != colSize())
@@ -170,17 +170,17 @@ public:
     }
 
 
-    Index rowSize(void) const
+    Index rowSize(void) const override
     {
         return nRow;
     }
 
-    Index colSize(void) const
+    Index colSize(void) const override
     {
         return nCol;
     }
 
-    SReal element(Index i, Index j) const
+    SReal element(Index i, Index j) const override
     {
 #ifdef FULLMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -192,7 +192,7 @@ public:
         return (SReal)data[i*pitch+j];
     }
 
-    void set(Index i, Index j, double v)
+    void set(Index i, Index j, double v) override
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -207,7 +207,7 @@ public:
         data[i*pitch+j] = (Real)v;
     }
 
-    void add(Index i, Index j, double v)
+    void add(Index i, Index j, double v) override
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -222,7 +222,7 @@ public:
         data[i*pitch+j] += (Real)v;
     }
 
-    void clear(Index i, Index j)
+    void clear(Index i, Index j) override
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -237,7 +237,7 @@ public:
         data[i*pitch+j] = (Real)0;
     }
 
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
@@ -253,7 +253,7 @@ public:
             data[i*pitch+j] = (Real)0;
     }
 
-    void clearCol(Index j)
+    void clearCol(Index j) override
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout <</* this->Name() << */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
@@ -269,7 +269,7 @@ public:
             data[i*pitch+j] = (Real)0;
     }
 
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
@@ -285,7 +285,7 @@ public:
         clearCol(i);
     }
 
-    void clear()
+    void clear() override
     {
         //if (pitch == nCol)
         //    std::fill(data, data+nRow*pitch, (Real)0);

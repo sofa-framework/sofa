@@ -44,7 +44,7 @@ public:
         m_dataengine = psc ;
     }
 
-    virtual ~MyyFileEventListener(){}
+    ~MyyFileEventListener() override{}
 
     virtual void fileHasChanged(const std::string& filepath){
         PythonEnvironment::gil lock {__func__} ;
@@ -70,8 +70,8 @@ int PythonScriptDataEngineClass = core::RegisterObject("A Sofa DataEngine script
 
 PythonScriptDataEngine::PythonScriptDataEngine()
     :ScriptDataEngine()
-    , m_ScriptDataEngineClass(0)
-    , m_ScriptDataEngineInstance(0)    
+    , m_ScriptDataEngineClass(nullptr)
+    , m_ScriptDataEngineInstance(nullptr)    
     , m_filename(initData(&m_filename, "filename",
                           "Python script filename"))
     , m_classname(initData(&m_classname, "classname",

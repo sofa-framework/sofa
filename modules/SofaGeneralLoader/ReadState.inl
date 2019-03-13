@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
-#include <string.h>
+#include <cstring>
 #include <sstream>
 
 namespace sofa
@@ -45,10 +45,10 @@ ReadState::ReadState()
     , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
-    , mmodel(NULL)
+    , mmodel(nullptr)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
-    , gzfile(NULL)
+    , gzfile(nullptr)
 #endif
     , nextTime(0)
     , lastTime(0)
@@ -84,7 +84,7 @@ void ReadState::reset()
     if (gzfile)
     {
         gzclose(gzfile);
-        gzfile = NULL;
+        gzfile = nullptr;
     }
 #endif
 
@@ -120,11 +120,11 @@ void ReadState::reset()
 
 void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         processReadState();
     }
-    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
+    if (simulation::AnimateEndEvent::checkEventType(event))
     {
 
     }
@@ -172,7 +172,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
             line.clear();
             char buf[4097];
             buf[0] = '\0';
-            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
                 size_t l = strlen(buf);
                 if (buf[l-1] == '\n')

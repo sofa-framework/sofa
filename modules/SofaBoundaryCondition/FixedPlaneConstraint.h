@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,23 +78,23 @@ public:
     SetIndex   d_indices; ///< the set of vertex indices
 
     /// inherited from the BaseObject interface
-    virtual void init() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void draw(const VisualParams* vparams) override;
 
     /// -- Constraint interface
-    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
-    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
-    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
 
     /// Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset) override;
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset) override;
+    void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     /// Implement applyConstraint for direct solvers
-    virtual void applyConstraint(const MechanicalParams* mparams,
+    void applyConstraint(const MechanicalParams* mparams,
                                  const MultiMatrixAccessor* matrix) override;
 
-    virtual void applyConstraint(const MechanicalParams* mparams, BaseVector* vector,
+    void applyConstraint(const MechanicalParams* mparams, BaseVector* vector,
                                  const MultiMatrixAccessor* matrix) override;
 
     void setDirection (Coord dir);

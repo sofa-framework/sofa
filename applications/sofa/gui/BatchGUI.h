@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -49,9 +49,9 @@ public:
 
     void resetScene();
 
-    int mainLoop();
-    void redraw();
-    int closeGUI();
+    int mainLoop() override;
+    void redraw() override;
+    int closeGUI() override;
 
     static void setNumIterations(const std::string& nbIterInp) 
     {
@@ -71,14 +71,14 @@ public:
         }
         
     }
-    sofa::simulation::Node* currentSimulation();
+    sofa::simulation::Node* currentSimulation() override;
 
     /// @}
 
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 
@@ -87,7 +87,7 @@ public:
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~BatchGUI();
+    ~BatchGUI() override;
 
     void startDumpVisitor();
     void stopDumpVisitor();

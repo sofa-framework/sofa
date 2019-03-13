@@ -34,7 +34,7 @@ SP_CLASS_ATTR_GET(PointAncestorElem,type)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     return PyLong_FromLong( obj->index );
@@ -59,7 +59,7 @@ SP_CLASS_ATTR_GET(PointAncestorElem,index)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     return PyLong_FromLong( obj->index );
@@ -83,7 +83,7 @@ SP_CLASS_ATTR_GET(PointAncestorElem, localCoords)( PyObject *self, void* )
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     PyObject* pyLocalCoords = PyTuple_New( PointAncestorElem::LocalCoords::size() );

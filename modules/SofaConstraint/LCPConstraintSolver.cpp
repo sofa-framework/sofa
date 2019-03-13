@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #include <sofa/core/ObjectFactory.h>
@@ -251,7 +251,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
     , _mu(0.6)
     , lcp(&lcp1)
-    , last_lcp(0)
+    , last_lcp(nullptr)
     , _W(&lcp1.W)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
@@ -271,7 +271,7 @@ LCPConstraintSolver::LCPConstraintSolver()
 
 LCPConstraintSolver::~LCPConstraintSolver()
 {
-    if (_Wdiag != 0)
+    if (_Wdiag != nullptr)
         delete _Wdiag;
 }
 

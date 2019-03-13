@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,16 +45,16 @@ public:
 
 public:
     SphericalField() ;
-    ~SphericalField() { }
+    ~SphericalField() override { }
 
     /// Inherited from BaseObject
-    virtual void init() override ;
-    virtual void reinit() override ;
+    void init() override ;
+    void reinit() override ;
 
     /// Inherited from ScalarField.
-    virtual double getValue(Vec3d& Pos, int &domain) override ;
-    virtual Vec3d getGradient(Vec3d &Pos, int& domain) override ;
-    virtual void getValueAndGradient(Vec3d& pos, double& val, Vec3d& grad, int& domain) override ;
+    double getValue(Vec3d& Pos, int &domain) override ;
+    Vec3d getGradient(Vec3d &Pos, int& domain) override ;
+    void getValueAndGradient(Vec3d& pos, double& val, Vec3d& grad, int& domain) override ;
 
     using ScalarField::getValue ;
     using ScalarField::getGradient ;

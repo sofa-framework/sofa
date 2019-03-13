@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>
@@ -73,12 +73,12 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
 
 
 template <class DataTypes>
-class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
+class SpringForceField<DataTypes>::Loader : public helper::io::XspLoaderDataHook
 {
 public:
     SpringForceField<DataTypes>* dest;
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos)
+    void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
@@ -93,7 +93,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        ret &= loader.load(filename);
+        ret &= helper::io::XspLoader::Load(filename, loader);
     }
     else ret = false;
     return ret;
@@ -218,8 +218,6 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     std::vector< Vector3 > points[4];
     bool external = (this->mstate1!=this->mstate2);
-    //if (!external)
-    //	glColor4f(1,1,1,1);
     const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
