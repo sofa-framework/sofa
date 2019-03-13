@@ -165,6 +165,15 @@ static const Topology::Pyramid InvalidPyramid;
 static const Topology::Pentahedron InvalidPentahedron;
 static const Topology::Hexahedron InvalidHexahedron;
 
+static const sofa::helper::fixed_array<Topology::index_type,2> InvalidArray2;
+static const sofa::helper::fixed_array<Topology::index_type,3> InvalidArray3;
+static const sofa::helper::fixed_array<Topology::index_type,4> InvalidArray4;
+static const sofa::helper::fixed_array<Topology::index_type,5> InvalidArray5;
+static const sofa::helper::fixed_array<Topology::index_type,6> InvalidArray6;
+static const sofa::helper::fixed_array<Topology::index_type,7> InvalidArray7;
+static const sofa::helper::fixed_array<Topology::index_type,8> InvalidArray8;
+static const sofa::helper::fixed_array<Topology::index_type,12> InvalidArray12;
+
 template<class TopologyElement>
 struct TopologyElementInfo;
 
