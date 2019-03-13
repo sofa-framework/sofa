@@ -437,13 +437,8 @@ void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 
 const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
-    if(!hasTriangles() && getNbPoints()>0)
-    {
-		if (CHECK_TOPOLOGY)
-			msg_info() << "Creating triangle array.";
-
-        createTriangleSetArray();
-    }
+    if(CHECK_TOPOLOGY && !hasTriangles() && getNbPoints()>0)
+        msg_warning() << "Triangle array is empty with " << getNbPoints() << " vertices.";
 
     return d_triangle.getValue();
 }
@@ -451,11 +446,8 @@ const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSet
 
 const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
 {
-    if(!hasTriangles())
-        createTriangleSetArray();
-
     if ((size_t)i >= getNbTriangles())
-        return Triangle(-1, -1, -1);
+        return Triangle(InvalidID, InvalidID, InvalidID);
     else
         return (d_triangle.getValue())[i];
 }
@@ -465,7 +457,12 @@ const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTr
 TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 {
     if(!hasTrianglesAroundVertex())
-        createTrianglesAroundVertexArray();
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "TrianglesAroundVertex array is empty with " << getNbPoints() << " vertices.";
+
+        return InvalidID;
+    }
 
     sofa::helper::vector<TriangleID> set1 = getTrianglesAroundVertex(v1);
     sofa::helper::vector<TriangleID> set2 = getTrianglesAroundVertex(v2);
@@ -486,9 +483,8 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
 
-	if (CHECK_TOPOLOGY)
-		if(out2.size() > 1)
-            msg_warning() << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
+    if (CHECK_TOPOLOGY && out2.size() > 1)
+        msg_warning() << "More than one triangle found for indices: [" << v1 << "; " << v2 << "; " << v3 << "]";
 
 
     if (out2.size()==1)
@@ -511,92 +507,56 @@ size_t TriangleSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
 {
-    if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle vertex shell array is empty.";
-
-        createTrianglesAroundVertexArray();
-    }
+    if(CHECK_TOPOLOGY && !hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
+        msg_warning() << "TrianglesAroundVertex shell array is empty.";
 
     return m_trianglesAroundVertex;
 }
 
 const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge > &TriangleSetTopologyContainer::getTrianglesAroundEdgeArray()
 {
-    if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle edge shell array is empty.";
-
-        createTrianglesAroundEdgeArray();
-    }
+    if(CHECK_TOPOLOGY && !hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
+        msg_warning() << "TrianglesAroundEdge shell array is empty.";
 
     return m_trianglesAroundEdge;
 }
 
 const sofa::helper::vector<TriangleSetTopologyContainer::EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
 {
-    if(m_edgesInTriangle.empty())
-        createEdgesInTriangleArray();
+    if(CHECK_TOPOLOGY && m_edgesInTriangle.empty()) // this method should only be called when the shell array exists
+        msg_warning() << "EdgesInTriangle shell array is empty.";
 
     return m_edgesInTriangle;
 }
 
-const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVertex(PointID i)
+const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVertex(PointID id)
 {
-    if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle vertex shell array is empty.";
+    if (id < m_trianglesAroundVertex.size())
+        return m_trianglesAroundVertex[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "TrianglesAroundVertex array access out of bounds: " << id << " >= " << m_trianglesAroundVertex.size();
 
-        createTrianglesAroundVertexArray();
-    }
-    else if( i >= m_trianglesAroundVertex.size())
-    {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Index out of bounds.";
-
-        createTrianglesAroundVertexArray();
-    }
-
-    return m_trianglesAroundVertex[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID i)
+const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID id)
 {
-    if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Triangle edge shell array is empty.";
+    if (id < m_trianglesAroundEdge.size())
+        return m_trianglesAroundEdge[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "TrianglesAroundEdge array access out of bounds: " << id << " >= " << m_trianglesAroundEdge.size();
 
-        createTrianglesAroundEdgeArray();
-    }
-    else if( i >= m_trianglesAroundEdge.size())
-    {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Index out of bounds.";
-
-        createTrianglesAroundEdgeArray();
-    }
-
-    return m_trianglesAroundEdge[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const TriangleID i)
+const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const TriangleID id)
 {
-    if(m_edgesInTriangle.empty())
-        createEdgesInTriangleArray();
+    if (id < m_edgesInTriangle.size())
+        return m_edgesInTriangle[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "EdgesInTriangle array access out of bounds: " << id << " >= " << m_edgesInTriangle.size();
 
-    if( i >= m_edgesInTriangle.size())
-    {
-		if (CHECK_TOPOLOGY)
-			msg_error() << "Index out of bounds.";
-
-        createEdgesInTriangleArray();
-    }
-
-    return m_edgesInTriangle[i];
+    return sofa::core::topology::InvalidTriangle;
 }
 
 int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const
