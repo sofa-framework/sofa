@@ -126,6 +126,10 @@ void Triangle2EdgeTopologicalMapping::init()
     }
 
     Loc2GlobDataVec.endEdit();
+
+    // Need to fully init the target topology
+    toModel->init();
+
     this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
 }
 

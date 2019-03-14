@@ -130,9 +130,13 @@ void Hexa2QuadTopologicalMapping::init()
             to_tstm->notifyEndingEvent();
             //to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
+
+            // Need to fully init the target topology
+            toModel->init();
         }
 
     }
+
 }
 
 unsigned int Hexa2QuadTopologicalMapping::getFromIndex(unsigned int ind)

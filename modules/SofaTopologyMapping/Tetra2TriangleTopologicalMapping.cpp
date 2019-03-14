@@ -138,6 +138,8 @@ void Tetra2TriangleTopologicalMapping::init()
             Glob2LocMap[triId]= Loc2GlobVec.size() - 1;
         }
     }
+    // Need to fully init the target topology
+    toModel->init();
 
     Loc2GlobDataVec.endEdit();
     this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
