@@ -36,7 +36,6 @@ set(SOFAGENERAL_TARGETS
     SofaConstraint
     SofaGeneralEngine
     SofaGraphComponent
-    SofaHaptics
     SofaTopologyMapping
     SofaUserInteraction
     SofaValidation

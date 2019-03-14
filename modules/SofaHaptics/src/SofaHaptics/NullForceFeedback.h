@@ -19,15 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HAPTICS_HAPTICS_H
-#define SOFA_HAPTICS_HAPTICS_H
+#ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACK_H
+#define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACK_H
+#include "config.h"
 
-#include <sofa/helper/system/config.h>
+#include <SofaHaptics/ForceFeedback.h>
 
-#ifdef SOFA_BUILD_HAPTICS
-#  define SOFA_HAPTICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_HAPTICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
+
+namespace component
+{
+
+namespace controller
+{
+
+
+/// @brief Null force feedback for haptic feedback device
+class SOFA_SOFAHAPTICS_API NullForceFeedback : public sofa::component::controller::ForceFeedback
+{
+public:
+    SOFA_CLASS(NullForceFeedback,sofa::component::controller::ForceFeedback);
+    void init() override;
+
+    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
+};
+
+} // namespace controller
+
+} // namespace component
+
+} // namespace sofa
 
 #endif
