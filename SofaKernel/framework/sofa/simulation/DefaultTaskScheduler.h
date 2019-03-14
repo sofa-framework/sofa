@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -170,14 +170,14 @@ namespace sofa  {
         public:
 
             // interface
-            virtual void init(const unsigned int nbThread = 0) final;
-            virtual void stop(void) final;
-            virtual unsigned int getThreadCount(void)  const final { return _threadCount; }
-            virtual const char* getCurrentThreadName() final;
+            void init(const unsigned int nbThread = 0) final;
+            void stop(void) final;
+            unsigned int getThreadCount(void)  const final { return _threadCount; }
+            const char* getCurrentThreadName() final;
             // queue task if there is space, and run it otherwise
-            virtual bool addTask(Task* task) final;
-            virtual void workUntilDone(Task::Status* status) final;
-            virtual Task::Allocator* getTaskAllocator() final;
+            bool addTask(Task* task) final;
+            void workUntilDone(Task::Status* status) final;
+            Task::Allocator* getTaskAllocator() final;
 
         public:
 
@@ -225,7 +225,7 @@ namespace sofa  {
 
             DefaultTaskScheduler(const DefaultTaskScheduler&) {}
 
-            virtual ~DefaultTaskScheduler();
+            ~DefaultTaskScheduler() override;
 
             void start(unsigned int NbThread);
 

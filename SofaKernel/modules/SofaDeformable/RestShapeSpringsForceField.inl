@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,10 +29,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/defaulttype/RGBAColor.h>
-
-#include <assert.h>
-#include <iostream>
-
 
 namespace sofa
 {
@@ -76,11 +72,17 @@ void RestShapeSpringsForceField<DataTypes>::parse(core::objectmodel::BaseObjectD
     const char* attr = arg->getAttribute("external_rest_shape") ;
     if( attr != nullptr && attr[0] != '@')
     {
-            msg_error() << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
+        msg_error() << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
     }
 
     Inherit::parse(arg) ;
 }
+
+template<class Type>
+inline bool needAngularStiffness() { return false; }
+
+template<>
+inline bool needAngularStiffness<sofa::defaulttype::Rigid3Types>(){ return true; }
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::bwdInit()
@@ -124,8 +126,32 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         assert(state);
         matS.resize(state->getMatrixSize(),state->getMatrixSize());
     }
+
+    /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
+    /// need the Angular Stiffness parameters.
+    if(needAngularStiffness<DataTypes>())
+    {
+        sofa::helper::ReadAccessor<Data<VecReal>> s = stiffness;
+        sofa::helper::WriteOnlyAccessor<Data<VecReal>> as = angularStiffness;
+
+        if (as.size() < s.size())
+        {
+            msg_info() << "'stiffness' is larger than 'angularStiffness', add the default value (100.0) to the missing entries.";
+
+            for(size_t i = as.size();i<s.size();i++)
+            {
+                as.push_back(100.0);
+            }
+        }else if (as.size() > s.size())
+        {
+            msg_info() << "'stiffness' is smaller than 'angularStiffness', clamp the extra values in angularStiffness.";
+            as.resize(s.size());
+        }
+    }
+
     lastUpdatedStep = -1.0;
 }
+
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::reinit()

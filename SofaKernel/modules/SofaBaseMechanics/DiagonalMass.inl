@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
@@ -1319,12 +1319,12 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
 }
 
 template <class DataTypes, class MassType>
-class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::MassSpringLoader
+class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::XspLoaderDataHook
 {
 public:
     DiagonalMass<DataTypes, MassType>* dest;
     Loader(DiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) override
     {
         dest->addMass(MassType((Real)mass));
     }
@@ -1337,7 +1337,7 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
     if (filename!=NULL && filename[0]!='\0')
     {
         Loader loader(this);
-        return loader.load(filename);
+        return helper::io::XspLoader::Load(filename, loader);
     }
     return false;
 }

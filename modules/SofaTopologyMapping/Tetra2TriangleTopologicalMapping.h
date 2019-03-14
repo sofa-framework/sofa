@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,11 +64,11 @@ protected:
      *
      * Does nothing.
      */
-    virtual ~Tetra2TriangleTopologicalMapping();
+    ~Tetra2TriangleTopologicalMapping() override;
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init() override;
+    void init() override;
 
 
     /** \brief Translates the TopologyChange objects from the source to the target.
@@ -77,9 +77,9 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown() override;
+    void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getFromIndex(unsigned int ind) override;
+    unsigned int getFromIndex(unsigned int ind) override;
 protected:
     Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
     Data<bool> noNewTriangles; ///< If true no new triangles are being created

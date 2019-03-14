@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -96,7 +96,7 @@ public:
 
 protected:
     Light();
-    virtual ~Light();
+    ~Light() override;
 public:
     Data<helper::vector<float> > d_modelViewMatrix; ///< [Shadowing] ModelView Matrix
     Data<helper::vector<float> > d_projectionMatrix; ///< [Shadowing] Projection Matrix
@@ -104,11 +104,11 @@ public:
     void setID(const GLint& id);
 
     //VisualModel
-    virtual void initVisual() override;
+    void initVisual() override;
     void init() override;
     virtual void drawLight();
-    virtual void reinit() override;
-    virtual void updateVisual() override;
+    void reinit() override;
+    void updateVisual() override;
 
     /// Draw the light source from an external point of view.
     virtual void drawSource(const sofa::core::visual::VisualParams*) = 0;
@@ -146,14 +146,14 @@ public:
     Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
 
     DirectionalLight();
-    virtual ~DirectionalLight();
-    virtual void preDrawShadow(core::visual::VisualParams* vp) override;
-    virtual void drawLight() override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void drawSource(const core::visual::VisualParams* vparams) override;
-    virtual GLuint getDepthTexture() override;
-    virtual GLuint getColorTexture() override;
-    virtual defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
+    ~DirectionalLight() override;
+    void preDrawShadow(core::visual::VisualParams* vp) override;
+    void drawLight() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void drawSource(const core::visual::VisualParams* vparams) override;
+    GLuint getDepthTexture() override;
+    GLuint getColorTexture() override;
+    defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
     LightType getLightType() override { return LightType::DIRECTIONAL; }
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
@@ -172,11 +172,11 @@ public:
     Data<float> d_attenuation; ///< Set the attenuation of the light
 
     PositionalLight();
-    virtual ~PositionalLight();
-    virtual void drawLight() override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void drawSource(const core::visual::VisualParams*) override;
-    virtual const sofa::defaulttype::Vector3 getPosition() override { return d_position.getValue(); }
+    ~PositionalLight() override;
+    void drawLight() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void drawSource(const core::visual::VisualParams*) override;
+    const sofa::defaulttype::Vector3 getPosition() override { return d_position.getValue(); }
     LightType getLightType() override { return LightType::POSITIONAL; }
 };
 
@@ -191,10 +191,10 @@ public:
     Data<bool> d_lookat; ///< If true, direction specify the point at which the spotlight should be pointed to
 
     SpotLight();
-    virtual ~SpotLight();
-    virtual void drawLight() override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-    virtual void drawSource(const core::visual::VisualParams* vparams) override;
+    ~SpotLight() override;
+    void drawLight() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void drawSource(const core::visual::VisualParams* vparams) override;
 
     void preDrawShadow(core::visual::VisualParams*  vp) override;
     GLuint getDepthTexture() override;

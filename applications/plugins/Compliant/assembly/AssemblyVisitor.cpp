@@ -25,8 +25,8 @@ using namespace core::behavior;
 AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams)
 	: base( mparams ),
       mparams( mparams ),
-	  start_node(0),
-	  _processed(0)
+	  start_node(nullptr),
+	  _processed(nullptr)
 {
     mparamsWithoutStiffness = *mparams;
     mparamsWithoutStiffness.setKFactor(0);
@@ -920,7 +920,7 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 		// non-mechanical nodes in the graph, in order to avoid unneeded
 		// mapping concatenations, then rebuild the prefix order
 
-		start_node = 0;
+		start_node = nullptr;
 	}
 }
 

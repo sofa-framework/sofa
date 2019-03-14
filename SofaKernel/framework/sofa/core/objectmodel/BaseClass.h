@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -344,7 +344,7 @@ public:
     }
     static const BaseClass* get(int)
     {
-        return NULL;
+        return nullptr;
     }
 };
 
@@ -383,16 +383,16 @@ protected:
         for (int i=0; i<TClassParents<Parents>::nb(); ++i)
             parents[i] = TClassParents<Parents>::get(i);
     }
-    virtual ~TClass() {}
+    ~TClass() override {}
 
-    virtual void* dynamicCast(Base* obj) const
+    void* dynamicCast(Base* obj) const override
     {
         T* ptr = NULL;
         T::dynamicCast(ptr, obj);
         return ptr;
     }
 
-    virtual bool isInstance(Base* obj) const
+    bool isInstance(Base* obj) const override
     {
         return dynamicCast(obj) != NULL;
     }

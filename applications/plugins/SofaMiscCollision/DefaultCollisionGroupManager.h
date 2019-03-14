@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,17 +47,17 @@ public:
     GroupSet groupSet;
 
 public:
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
-    virtual void clearGroups(core::objectmodel::BaseContext* scene) override;
+    void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
+    void clearGroups(core::objectmodel::BaseContext* scene) override;
 
 protected:
     DefaultCollisionGroupManager();
-    virtual ~DefaultCollisionGroupManager();
+    ~DefaultCollisionGroupManager() override;
 
     //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
     virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
-    virtual void changeInstance(Instance inst) override;
+    void changeInstance(Instance inst) override;
 
     template <typename Container>
     void clearGroup(const Container &inNodes, simulation::Node::SPtr group);

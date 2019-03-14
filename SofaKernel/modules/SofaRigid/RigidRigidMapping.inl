@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,11 +28,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 
 namespace sofa
@@ -64,23 +64,27 @@ RigidRigidMapping<TIn,TOut>::RigidRigidMapping()
 
 
 template <class TIn, class TOut>
-class RigidRigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
+class RigidRigidMapping<TIn, TOut>::Loader :
+        public helper::io::XspLoaderDataHook,
+        public helper::io::SphereLoaderDataHook
 {
 public:
     RigidRigidMapping<TIn, TOut>* dest;
     Loader(RigidRigidMapping<TIn, TOut>* dest) : dest(dest) {}
-    virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal, SReal, SReal, bool, bool)
+
+    void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal, SReal, SReal, bool, bool) override
     {
         OutCoord c;
         Out::set(c,px,py,pz);
-        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.beginEdit()->push_back(c);
         dest->points.endEdit();
     }
-    virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
+
+    void addSphere(SReal px, SReal py, SReal pz, SReal) override
     {
         OutCoord c;
         Out::set(c,px,py,pz);
-        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.beginEdit()->push_back(c);
         dest->points.endEdit();
     }
 };
@@ -94,12 +98,12 @@ void RigidRigidMapping<TIn, TOut>::load(const char *filename)
     if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
     {
         Loader loader(this);
-        loader.helper::io::MassSpringLoader::load(filename);
+        sofa::helper::io::XspLoader::Load(filename, loader);
     }
     else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".sph"))
     {
         Loader loader(this);
-        loader.helper::io::SphereLoader::load(filename);
+        sofa::helper::io::SphereLoader::Load(filename, loader);
     }
     else if (strlen(filename)>0)
     {

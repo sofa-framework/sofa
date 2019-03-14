@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,7 +33,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <queue>
@@ -128,7 +128,7 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
 
 
 template<typename T,typename F>
-CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, F *const translation=0, F *const affine=0, F *const offsetT=0, F *const scaleT=0, int *const isPerspective=0)
+CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, F *const translation=0, F *const affine=0, F *const offsetT=0, F *const scaleT=0, int *const isPerspective=nullptr)
 {
     CImgList<T> ret;
 
@@ -328,7 +328,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
 
 #ifdef SOFA_HAVE_ZLIB
 
-static inline void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=0, float *const rotation=0)
+static inline void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=nullptr, float *const rotation=nullptr)
 {
 	char item[1024] = {0}, tmp1[64]={0}, tmp2[64]={0};
 	gzgets(file, item, 63);
@@ -404,7 +404,7 @@ inline int fread_gz(T *const ptr, const unsigned int nmemb, gzFile stream)
 }
 
 template<typename T>
-CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxsize, float *const translation=0, float *const rotation=0)
+CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxsize, float *const translation=nullptr, float *const rotation=nullptr)
 {
 #define _cimg_load_gz_inr_case(Tf,sign,pixsize,Ts) \
      if (!loaded && fopt[6]==pixsize && fopt[4]==Tf && fopt[5]==sign) { \

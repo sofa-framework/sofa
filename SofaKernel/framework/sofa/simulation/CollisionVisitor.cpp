@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,7 +74,9 @@ void CollisionVisitor::processCollisionPipeline(simulation::Node*
     t0=begin(node, obj);
 #endif
     obj->computeCollisionDetection();
-    m_primitiveTestCount += obj->getNarrowPhaseDetection()->getPrimitiveTestCount();
+
+    if (obj->getNarrowPhaseDetection())
+        m_primitiveTestCount += obj->getNarrowPhaseDetection()->getPrimitiveTestCount();
 #ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -48,10 +48,10 @@
 
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
 
 namespace sofa
@@ -88,11 +88,11 @@ public:
 
     MultithreadGUI();
 
-    int mainLoop();
-    void redraw();
-    int closeGUI();
+    int mainLoop() override;
+    void redraw() override;
+    int closeGUI() override;
 
-    sofa::simulation::Node* currentSimulation()
+    sofa::simulation::Node* currentSimulation() override
     {
         return getScene();
     }
@@ -102,14 +102,14 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = nullptr);
 
     /// @}
     static int InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
-    ~MultithreadGUI();
+    ~MultithreadGUI() override;
 
 public:
 
@@ -251,7 +251,7 @@ protected:
     void calcProjection();
 
 public:
-    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=nullptr, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
         return groot.get();

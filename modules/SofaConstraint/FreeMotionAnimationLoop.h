@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,9 +41,9 @@ public:
     SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 
 public:
-    virtual void step (const sofa::core::ExecParams* params, SReal dt) override;
-    virtual void init() override;
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
+    void init() override;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Construction method called by ObjectFactory. An animation loop can only
     /// be created if
@@ -63,7 +63,7 @@ public:
 
 protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
-    virtual ~FreeMotionAnimationLoop() override ;
+    ~FreeMotionAnimationLoop() override ;
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;
     component::constraintset::LCPConstraintSolver::SPtr defaultSolver;

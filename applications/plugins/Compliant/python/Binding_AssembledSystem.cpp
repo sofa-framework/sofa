@@ -39,7 +39,7 @@ static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
     if (!sys)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     return getMatrice( sys->H );
@@ -51,7 +51,7 @@ static PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
     if (!sys)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     return getMatrice( sys->P );
@@ -63,7 +63,7 @@ static PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
     if (!sys)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     return getMatrice( sys->J );
@@ -75,7 +75,7 @@ static PyObject* AssembledSystem_getC(PyObject * self, PyObject * /*args*/)
     if (!sys)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     return getMatrice( sys->C );

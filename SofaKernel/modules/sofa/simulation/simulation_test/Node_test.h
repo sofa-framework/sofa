@@ -1,7 +1,7 @@
 
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,7 @@ public:
 
     Dummy(const std::string& name): m_destroyed(nullptr) {this->setName(name);}
     Dummy(bool *destroyed): m_destroyed(destroyed) {}
-    ~Dummy() { if(m_destroyed) *m_destroyed = true; }
+    ~Dummy() override { if(m_destroyed) *m_destroyed = true; }
 };
 
 template<class Node>

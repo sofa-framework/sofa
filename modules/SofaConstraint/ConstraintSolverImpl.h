@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,7 +76,7 @@ public:
 
     /// Do not use the following LCPs until the next call to this function.
     /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
-    virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=NULL) = 0;
+    virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) = 0;
 };
 
 
@@ -96,7 +96,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override
     {
         ctime_t t0 = begin(node, c);
         c->getConstraintViolation(cparams, m_v);
@@ -105,14 +105,14 @@ public:
     }
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetConstraintViolationVisitor";}
+    const char* getClassName() const override { return "MechanicalGetConstraintViolationVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()

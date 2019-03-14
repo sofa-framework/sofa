@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,7 @@
 #include <vector>
 #include <sofa/defaulttype/Vec.h>
 #include <sstream>
-#include <string.h>
+#include <cstring>
 
 /// This register the TriangleLoader object to the logging system so that we can use msg_*(this)
 MSG_REGISTER_CLASS(sofa::helper::io::TriangleLoader, "TriangleLoader")

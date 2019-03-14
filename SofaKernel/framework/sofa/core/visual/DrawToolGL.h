@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,17 +48,17 @@ public:
     typedef sofa::defaulttype::Quaternion Quaternion;
 
     DrawToolGL();
-    ~DrawToolGL();
+    ~DrawToolGL() override;
 
-    virtual void init();
+    void init() override;
 
-    virtual void drawPoint(const Vector3 &p, const Vec4f &c);
+    void drawPoint(const Vector3 &p, const Vec4f &c) override;
     //normal on a point is useless
-    virtual void drawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
+    void drawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c) override;
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& color);
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& color);
 
-    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& color);
+    void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& color) override;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& color);
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colors);
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f& color);
@@ -66,16 +66,16 @@ public:
     virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& color);
     virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& color);
 
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
-            const Vector3 &normal);
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
-            const Vector3 &normal, const Vec4f &c);
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+    void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+            const Vector3 &normal) override;
+    void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+            const Vector3 &normal, const Vec4f &c) override;
+    void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal,
-            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3);
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3) override;
+    void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
-            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3);
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3) override;
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& color);
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector< Vec4f > &color);
@@ -96,92 +96,96 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& color);
 
-    virtual void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size);
-    virtual void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size, const Vec4f &color);
+    void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size) override;
+    void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size, const Vec4f &color) override;
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& color);
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& color);
     virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& color);
     virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& color);
 
-    virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& color, int subd=16);
+    void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& color, int subd=16) override;
 
-    virtual void drawCube    (const float& radius, const Vec4f& color, const int& subd=16);
+    void drawCube    (const float& radius, const Vec4f& color, const int& subd=16) override;
 
-    virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16);
+    void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16) override;
 
-    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16);
+    void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16) override;
 
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16);
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& color,  int subd=16);
+    void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& color,  int subd=16) override;
+    void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& color,  int subd=16) override;
 
-    virtual void drawCross(const Vector3&p, float length, const Vec4f& color);
+    void drawCross(const Vector3&p, float length, const Vec4f& color) override;
 
-    virtual void drawPlus    (const float& radius, const Vec4f& color, const int& subd=16);
+    void drawPlus    (const float& radius, const Vec4f& color, const int& subd=16) override;
 
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
-            const Vector3 &normal);
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
-            const Vector3 &normal, const Vec4f &c);
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+    void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal) override;
+    void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal, const Vec4f &c) override;
+    void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal,
-            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4);
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) override;
+    void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
-            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4);
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) override;
     virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& color) ;
     virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<Vec4f>& colors);
 
 
-    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &color);
+    void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &color) override;
     virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& color);
     virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const Vec4f& color, const float scale);
 
-    virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
-        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &color);
+    void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
+        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &color) override;
     virtual void drawHexahedra(const std::vector<Vector3> &points, const Vec4f& color);
     virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& color, const float scale);
 
-    virtual void drawSphere( const Vector3 &p, float radius);
-    virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
+    void drawSphere( const Vector3 &p, float radius) override;
+    void drawEllipsoid(const Vector3 &p, const Vector3 &radii) override;
 
-    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0);
+    void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0) override;
 
-    virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text);
+    void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text) override;
 
     virtual void draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const Vec4f &color);
 
-    virtual void clear();
+    void clear() override;
 
-    virtual void setMaterial(const Vec4f &color);
+    void setMaterial(const Vec4f &color) override;
 
-    virtual void resetMaterial(const Vec4f &color);
-    virtual void resetMaterial();
+    void resetMaterial(const Vec4f &color) override;
+    void resetMaterial() override;
 
-    virtual void pushMatrix();
-    virtual void popMatrix();
-    virtual void multMatrix(float* glTransform );
-    virtual void scale( float s );
-    virtual void translate(float x, float y, float z);
+    void pushMatrix() override;
+    void popMatrix() override;
+    void multMatrix(float* glTransform ) override;
+    void scale( float s ) override;
+    void translate(float x, float y, float z) override;
 
-    virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text );
+    void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text ) override;
 
-    virtual void enablePolygonOffset(float factor, float units);
-    virtual void disablePolygonOffset();
+    /** Set the scale and units used to add depth values
+    * @param factor : Specifies a scale factor that is used to create a variable depth offset for each polygon. The initial value is 0.
+    * @param units : Is multiplied by an implementation-specific value to create a constant depth offset. The initial value is 0.
+    */
+    void enablePolygonOffset(float factor, float units) override;
+    void disablePolygonOffset() override;
 
-    virtual void enableBlending();
-    virtual void disableBlending();
+    void enableBlending() override;
+    void disableBlending() override;
 
-    virtual void enableLighting();
-    virtual void disableLighting();
+    void enableLighting() override;
+    void disableLighting() override;
 
-    virtual void enableDepthTest();
-    virtual void disableDepthTest();
+    void enableDepthTest() override;
+    void disableDepthTest() override;
 
-    virtual void saveLastState();
-    virtual void restoreLastState();
+    void saveLastState() override;
+    void restoreLastState() override;
 
-    virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL);
+    void readPixels(int x, int y, int w, int h, float* rgb, float* z = nullptr) override;
 
     void internalDrawSpheres(const helper::vector<Vector3>& centers, const float& radius, const unsigned int rings, const unsigned int sectors);
     void internalDrawSphere(const Vector3& center, const float& radius, const unsigned int rings, const unsigned int sectors);
@@ -225,11 +229,11 @@ protected:
 
 public:
     // getter & setter
-    virtual void setLightingEnabled(bool _isAnabled);
+    void setLightingEnabled(bool _isAnabled) override;
 
     bool getLightEnabled() {return mLightEnabled;}
 
-    virtual void setPolygonMode(int _mode, bool _wireframe);
+    void setPolygonMode(int _mode, bool _wireframe) override;
 
     int getPolygonMode() {return mPolygonMode;}
     bool getWireFrameEnabled() {return mWireFrameEnabled;}

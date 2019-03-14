@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,7 +66,7 @@ protected:
     DataEngine();
 
     /// Destructor. Do nothing
-    virtual ~DataEngine();
+    ~DataEngine() override;
 
 private:
 	DataEngine(const DataEngine& n) ;
@@ -83,7 +83,7 @@ protected:
 public:
     /// Updates your inputs and calls cleanDirty() for you.
     /// User implementation moved to doUpdate()
-    virtual void update() final;
+    void update() final;
 
     /// Add a new input to this engine
     /// Automatically adds the input fields to the datatracker
@@ -172,7 +172,7 @@ public:
     /// This method is needed by DDGNode
     objectmodel::BaseData* getData() const override
     {
-        return NULL;
+        return nullptr;
     }
 
     /// Add a link.

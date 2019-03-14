@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -64,7 +64,7 @@ class SOFA_SOFAGUIQT_API SofaViewer : public sofa::gui::BaseViewer
 
 public:
     SofaViewer();
-    virtual ~SofaViewer();
+    ~SofaViewer() override;
 
     /// Optional QTabWidget GUI for a concreate viewer.
     virtual void removeViewerTab(QTabWidget *) {}
@@ -78,7 +78,7 @@ public:
     // QT
     //*************************************************************
     //SLOTS
-    virtual void captureEvent();
+    void captureEvent() override;
 
     // ---------------------- Here are the Keyboard controls   ----------------------
     virtual void keyPressEvent(QKeyEvent * e);
@@ -92,7 +92,7 @@ public:
     virtual bool mouseEvent(QMouseEvent *e);
 
 protected:
-    virtual void redraw();
+    void redraw() override;
 
     QTimer captureTimer;
 
@@ -113,7 +113,7 @@ public:
     using VisualModelPolicyType::load;
     using VisualModelPolicyType::unload;
     CustomPolicySofaViewer() { load(); }
-    virtual ~CustomPolicySofaViewer() { unload(); }
+    ~CustomPolicySofaViewer() override { unload(); }
 protected:
 };
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,15 +63,15 @@ private:
 protected:
     std::map< std::string, std::string > replaceAttribute;
 public:
-    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
+    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=nullptr);
 
-    virtual ~BaseElement();
+    ~BaseElement() override;
 
     /// Get the node class (Scene, Mapping, ...)
     virtual const char* getClass() const = 0;
 
     /// Get the associated object
-    virtual core::objectmodel::Base* getObject() = 0;
+    core::objectmodel::Base* getObject() override = 0;
 
     /// Get the node instance name
     std::string getName()
@@ -88,7 +88,7 @@ public:
     { attributes["type"] = newType; }
 
     /// Get the parent node
-    sofa::core::objectmodel::BaseObjectDescription* getParent() const
+    sofa::core::objectmodel::BaseObjectDescription* getParent() const override
     { return parent; }
 
     /// Get the parent node
@@ -137,7 +137,7 @@ public:
     virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
 
     /// Find a node given its name
-    virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false)
+    BaseObjectDescription* find(const char* nodeName, bool absolute=false) override
     {
         return findNode(nodeName, absolute);
     }
