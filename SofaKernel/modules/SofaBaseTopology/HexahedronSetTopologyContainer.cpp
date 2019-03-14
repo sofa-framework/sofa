@@ -69,14 +69,39 @@ void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e,
 
 void HexahedronSetTopologyContainer::init()
 {
-    QuadSetTopologyContainer::init();
     d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
-    // eventually force the creation of quads
-    if (d_createQuadArray.getValue())
-        createQuadSetArray();
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+
+
+    // Todo (epernod 2019-03-12): optimise by removing this loop or at least create tetrahedronAV at the same time.
+    if (!m_hexahedron.empty())
+    {
+        for (size_t i=0; i<m_hexahedron.size(); ++i)
+        {
+            for(PointID j=0; j<8; ++j)
+            {
+                int a = m_hexahedron[i][j];
+                if (a >= getNbPoints()) setNbPoints(a+1);
+            }
+        }
+    }
+
+    if (!m_hexahedron.empty())
+        initTopology();
 }
 
+void HexahedronSetTopologyContainer::initTopology()
+{
+    QuadSetTopologyContainer::initTopology();
 
+    // Create tetrahedron cross element buffers.
+    createQuadsInHexahedronArray();
+    createEdgesInHexahedronArray();
+
+    createHexahedraAroundQuadArray();
+    createHexahedraAroundEdgeArray();
+    createHexahedraAroundVertexArray();
+}
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {

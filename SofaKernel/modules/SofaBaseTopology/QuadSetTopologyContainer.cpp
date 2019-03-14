@@ -59,10 +59,36 @@ void QuadSetTopologyContainer::addQuad( int a, int b, int c, int d )
 
 void QuadSetTopologyContainer::init()
 {
-    EdgeSetTopologyContainer::init();
     d_quad.updateIfDirty(); // make sure m_quad is up to date
+
+    helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quads = d_quad;
+    if (!m_quads.empty())
+    {
+        for (size_t i=0; i<m_quads.size(); ++i)
+        {
+            for(PointID j=0; j<4; ++j)
+            {
+                int a = m_quads[i][j];
+                if (a >= getNbPoints()) setNbPoints(a+1);
+            }
+        }
+    }
+
+    // only init if triangles are present at init.
+    if (!m_quads.empty())
+        initTopology();
 }
 
+void QuadSetTopologyContainer::initTopology()
+{
+    // Force creation of Edge Neighboordhood buffers.
+    EdgeSetTopologyContainer::initTopology();
+
+    // Create triangle cross element buffers.
+    createEdgesInQuadArray();
+    createQuadsAroundVertexArray();
+    createQuadsAroundEdgeArray();
+}
 
 void QuadSetTopologyContainer::createQuadSetArray()
 {
