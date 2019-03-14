@@ -471,13 +471,8 @@ void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
 
 const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
 {
-    if(!hasHexahedra() && getNbPoints()>0)
-    {
-		if (CHECK_TOPOLOGY)
-			msg_warning() << "Creating hexahedron array.";
-
-        createHexahedronSetArray();
-    }
+    if(CHECK_TOPOLOGY && !hasHexahedra() && getNbPoints()>0)
+        msg_warning() << "Hexahedron array is empty with " << getNbPoints() << " vertices.";
 
     return d_hexahedron.getValue ();
 }
@@ -486,7 +481,12 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
         PointID v5, PointID v6, PointID v7, PointID v8)
 {
     if(!hasHexahedraAroundVertex())
-        createHexahedraAroundVertexArray();
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "HexahedraAroundVertex array is empty with " << getNbPoints() << " vertices.";
+
+        return InvalidID;
+    }
 
     sofa::helper::vector<HexahedronID> set1 = getHexahedraAroundVertex(v1);
     sofa::helper::vector<HexahedronID> set2 = getHexahedraAroundVertex(v2);
@@ -558,11 +558,8 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
 
 const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
 {
-    if(!hasHexahedra())
-        createHexahedronSetArray();
-
     if ((size_t)i >= getNbHexahedra())
-        return Hexahedron(-1, -1, -1, -1, -1, -1, -1, -1);
+        return Hexahedron(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID);
     else
         return (d_hexahedron.getValue())[i];
 }
@@ -581,32 +578,32 @@ size_t HexahedronSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex > &HexahedronSetTopologyContainer::getHexahedraAroundVertexArray()
 {
-    if(!hasHexahedraAroundVertex())
-        createHexahedraAroundVertexArray();
+    if(CHECK_TOPOLOGY && !hasHexahedraAroundVertex())
+        msg_warning() << "HexahedraAroundVertex shell array is empty.";
 
     return m_hexahedraAroundVertex;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge > &HexahedronSetTopologyContainer::getHexahedraAroundEdgeArray()
 {
-    if(!hasHexahedraAroundEdge())
-        createHexahedraAroundEdgeArray();
+    if(CHECK_TOPOLOGY && !hasHexahedraAroundEdge())
+        msg_warning() << "HexahedraAroundEdge shell array is empty.";
 
     return m_hexahedraAroundEdge;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad > &HexahedronSetTopologyContainer::getHexahedraAroundQuadArray()
 {
-    if(!hasHexahedraAroundQuad())
-        createHexahedraAroundQuadArray();
+    if(CHECK_TOPOLOGY && !hasHexahedraAroundQuad())
+        msg_warning() << "HexahedraAroundQuad shell array is empty.";
 
     return m_hexahedraAroundQuad;
 }
 
 const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
 {
-    if(!hasEdgesInHexahedron())
-        createEdgesInHexahedronArray();
+    if(CHECK_TOPOLOGY && !hasEdgesInHexahedron())
+        msg_warning() << "EdgesInHexahedron shell array is empty.";
 
     return m_edgesInHexahedron;
 }
@@ -685,60 +682,60 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
 {
-    if(!hasQuadsInHexahedron())
-        createQuadsInHexahedronArray();
+    if(CHECK_TOPOLOGY && !hasQuadsInHexahedron())
+        msg_warning() << "QuadsInHexahedron shell array is empty.";
 
     return m_quadsInHexahedron;
 }
 
-const HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertex(const unsigned int i)
+const HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertex(PointID id)
 {
-    if(!hasHexahedraAroundVertex())
-        createHexahedraAroundVertexArray();
+    if (id < m_hexahedraAroundVertex.size())
+        return m_hexahedraAroundVertex[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "HexahedraAroundVertex array access out of bounds: " << id << " >= " << m_hexahedraAroundVertex.size();
 
-    assert(i < m_hexahedraAroundVertex.size());
-
-    return m_hexahedraAroundVertex[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdge(const unsigned int i)
+const HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdge(EdgeID id)
 {
-    if(!hasHexahedraAroundEdge())
-        createHexahedraAroundEdgeArray();
+    if (id < m_hexahedraAroundEdge.size())
+        return m_hexahedraAroundEdge[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "HexahedraAroundEdge array access out of bounds: " << id << " >= " << m_hexahedraAroundEdge.size();
 
-    assert(i < m_hexahedraAroundEdge.size());
-
-    return m_hexahedraAroundEdge[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuad(const unsigned int i)
+const HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuad(QuadID id)
 {
-    if(!hasHexahedraAroundQuad())
-        createHexahedraAroundQuadArray();
+    if (id < m_hexahedraAroundQuad.size())
+        return m_hexahedraAroundQuad[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "HexahedraAroundQuad array access out of bounds: " << id << " >= " << m_hexahedraAroundQuad.size();
 
-    assert(i < m_hexahedraAroundQuad.size());
-
-    return m_hexahedraAroundQuad[i];
+    return sofa::core::topology::InvalidSet;
 }
 
-const QuadSetTopologyContainer::EdgesInHexahedron &HexahedronSetTopologyContainer::getEdgesInHexahedron(const QuadID i)
+const QuadSetTopologyContainer::EdgesInHexahedron &HexahedronSetTopologyContainer::getEdgesInHexahedron(HexaID id)
 {
-    if(!hasEdgesInHexahedron())
-        createEdgesInHexahedronArray();
+    if (id < m_edgesInHexahedron.size())
+        return m_edgesInHexahedron[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "EdgesInHexahedron array access out of bounds: " << id << " >= " << m_edgesInHexahedron.size();
 
-    assert(i < m_edgesInHexahedron.size());
-
-    return m_edgesInHexahedron[i];
+    return sofa::core::topology::InvalidArray12;
 }
 
-const QuadSetTopologyContainer::QuadsInHexahedron &HexahedronSetTopologyContainer::getQuadsInHexahedron(const QuadID i)
+const QuadSetTopologyContainer::QuadsInHexahedron &HexahedronSetTopologyContainer::getQuadsInHexahedron(HexaID id)
 {
-    if(!hasQuadsInHexahedron())
-        createQuadsInHexahedronArray();
+    if (id < m_quadsInHexahedron.size())
+        return m_quadsInHexahedron[id];
+    else if (CHECK_TOPOLOGY)
+        msg_error() << "QuadsInHexahedron array access out of bounds: " << id << " >= " << m_quadsInHexahedron.size();
 
-    assert(i < m_quadsInHexahedron.size());
-
-    return m_quadsInHexahedron[i];
+    return sofa::core::topology::InvalidArray6;
 }
 
 int HexahedronSetTopologyContainer::getVertexIndexInHexahedron(const Hexahedron &t,PointID vertexIndex) const
@@ -815,7 +812,7 @@ int HexahedronSetTopologyContainer::getQuadIndexInHexahedron(const QuadsInHexahe
 
 HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdgeForModification(const EdgeID i)
 {
-    if(!hasHexahedraAroundEdge())
+    if(CHECK_TOPOLOGY && !hasHexahedraAroundEdge())
         createHexahedraAroundEdgeArray();
 
     assert( i < m_hexahedraAroundEdge.size());
@@ -825,7 +822,7 @@ HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContai
 
 HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertexForModification(const PointID i)
 {
-    if(!hasHexahedraAroundVertex())
+    if(CHECK_TOPOLOGY && !hasHexahedraAroundVertex())
         createHexahedraAroundVertexArray();
 
     assert( i < m_hexahedraAroundVertex.size());
@@ -835,7 +832,7 @@ HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyCont
 
 HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuadForModification(const QuadID i)
 {
-    if(!hasHexahedraAroundQuad())
+    if(CHECK_TOPOLOGY && !hasHexahedraAroundQuad())
         createHexahedraAroundQuadArray();
 
     assert( i < m_hexahedraAroundQuad.size());
