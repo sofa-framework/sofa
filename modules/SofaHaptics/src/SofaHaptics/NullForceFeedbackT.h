@@ -19,26 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaHaptics/initHaptics.h>
-
-
+#ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
+#define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
+#include <SofaHaptics/MechanicalStateForceFeedback.h>
+#include <SofaHaptics/config.h>
 namespace sofa
 {
 
 namespace component
 {
 
-
-void initHaptics()
+namespace controller
 {
-    static bool first = true;
-    if (first)
+
+/// @brief Null force feedback for haptic feedback device
+template<class TDataTypes>
+class SOFA_SOFAHAPTICS_API NullForceFeedbackT : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+{
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
+    void init() override {this->ForceFeedback::init();}
+
+    void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
     {
-        first = false;
+        fx = fy = fz = 0.0;
     }
-}
+    void computeForce(const  VecCoord &,  VecDeriv &) override {}
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();}
+};
+
+} // namespace controller
 
 } // namespace component
 
 } // namespace sofa
+
+#endif

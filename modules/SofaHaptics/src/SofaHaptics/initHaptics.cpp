@@ -19,14 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#include "config.h"
-
-#include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/system/config.h>
+#include <SofaHaptics/initHaptics.h>
 
 namespace sofa
 {
@@ -34,41 +28,50 @@ namespace sofa
 namespace component
 {
 
-namespace controller
+
+extern "C" {
+SOFA_SOFAHAPTICS_API void initExternalModule();
+SOFA_SOFAHAPTICS_API const char* getModuleName();
+SOFA_SOFAHAPTICS_API const char* getModuleVersion();
+SOFA_SOFAHAPTICS_API const char* getModuleLicense();
+SOFA_SOFAHAPTICS_API const char* getModuleDescription();
+SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-
-
-/**
-* Device driver force field
-*/
-class SOFA_HAPTICS_API ForceFeedback : public core::behavior::BaseController
-{
-
-public:
-    SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
-    Data<bool> f_activate; ///< boolean to activate or deactivate the forcefeedback
-    Data<int> indice; ///< Tool indice in the OmniDriver
-
-
-    simulation::Node *context;
-protected:
-    ForceFeedback():
-        f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-        , indice(initData(&indice, 0, "indice", "Tool indice in the OmniDriver"))
+    static bool first = true;
+    if (first)
     {
+        first = false;
     }
-public:
-    void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
-    virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
-    virtual bool isEnabled() { return this->getContext()->isActive(); }
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) {};
-};
+}
 
-} // namespace controller
+const char* getModuleName()
+{
+    return "SofaHaptics";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This module contains the base infrastructure for haptics rendering in Sofa.";
+}
+
+const char* getModuleComponentList()
+{
+    return "NullForceFeedback LCPForceFeedback";
+}
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
