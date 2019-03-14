@@ -170,7 +170,7 @@ namespace core
         void update() override { m_updateCallback( this ); }
 
         /// This method is needed by DDGNode
-        const std::string& getName() const
+        const std::string& getName() const override
         {
             static const std::string emptyName ="";
             return emptyName;
