@@ -111,6 +111,8 @@ void HexahedronSetTopologyContainer::createHexahedronSetArray()
 
 void HexahedronSetTopologyContainer::createEdgeSetArray()
 {
+    if(!hasHexahedra()) // this method should only be called when hexa exist
+        createHexahedronSetArray();
 
     if(hasEdges())
     {
@@ -151,11 +153,14 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
 
 void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
 {
-    if(!hasEdges())
-        createEdgeSetArray();
+    // first clear potential previous buffer
+    clearEdgesInHexahedron();
 
-    if(hasEdgesInHexahedron())
-        clearEdgesInHexahedron();
+    if(!hasHexahedra()) // this method should only be called when Hexa exist
+        createHexahedronSetArray();
+
+    if (hasEdgesInHexahedron()) // created by upper topology
+        return;
 
     m_edgesInHexahedron.resize( getNumberOfHexahedra());
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
@@ -176,11 +181,13 @@ void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
 
 void HexahedronSetTopologyContainer::createQuadSetArray()
 {
-    d_quad.beginEdit();
+    if(!hasHexahedra()) // this method should only be called when hexa exist
+        createHexahedronSetArray();
+
     if(hasQuads())
     {
         QuadSetTopologyContainer::clear();
-        clearQuads();
+
         clearQuadsInHexahedron();
         clearHexahedraAroundQuad();
     }
@@ -355,16 +362,18 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             m_quad.push_back(qu);
         }
     }
-    d_quad.endEdit();
 }
 
 void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
 {
+    // first clear potential previous buffer
+    clearQuadsInHexahedron();
+
     if(!hasQuads())
         createQuadSetArray();
 
-    if(hasQuadsInHexahedron())
-        clearQuadsInHexahedron();
+    if(hasQuadsInHexahedron())// created by upper topology
+        return;
 
     m_quadsInHexahedron.resize( getNumberOfHexahedra());
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
@@ -404,8 +413,8 @@ void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
 
 void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
 {
-    if(hasHexahedraAroundVertex())
-        clearHexahedraAroundVertex();
+    // first clear potential previous buffer
+    clearHexahedraAroundVertex();
 
     if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
         this->setNbPoints(d_initPoints.getValue().size());
@@ -424,14 +433,12 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
 
 void HexahedronSetTopologyContainer::createHexahedraAroundEdgeArray ()
 {
+    clearHexahedraAroundEdge();
+
     if(!hasEdgesInHexahedron())
         createEdgesInHexahedronArray();
 
-    if(hasHexahedraAroundEdge())
-        clearHexahedraAroundEdge();
-
     m_hexahedraAroundEdge.resize(getNumberOfEdges());
-
     for(size_t i=0; i<getNumberOfHexahedra(); ++i)
     {
         HexahedronID hexaID = (HexahedronID)i;
@@ -445,14 +452,12 @@ void HexahedronSetTopologyContainer::createHexahedraAroundEdgeArray ()
 
 void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
 {
+    clearHexahedraAroundQuad();
+
     if(!hasQuadsInHexahedron())
         createQuadsInHexahedronArray();
 
-    if(hasHexahedraAroundQuad())
-        clearHexahedraAroundQuad();
-
     m_hexahedraAroundQuad.resize( getNumberOfQuads());
-
     for(size_t i=0; i<getNumberOfHexahedra(); ++i)
     {
         HexahedronID hexaID = (HexahedronID)i;
