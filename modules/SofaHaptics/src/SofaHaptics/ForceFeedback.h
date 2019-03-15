@@ -19,11 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
-#define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
+#ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
+#define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
 #include "config.h"
 
-#include <SofaHaptics/MechanicalStateForceFeedback.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseController.h>
+#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -34,28 +37,32 @@ namespace component
 namespace controller
 {
 
-/**
-* Device driver force field
-*/
-template<class TDataTypes>
-class SOFA_HAPTICS_API NullForceFeedbackT : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+/// Base class implementing forcefeedback as a force field
+class SOFA_SOFAHAPTICS_API ForceFeedback : public core::behavior::BaseController
 {
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
 
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
-    void init() override {this->ForceFeedback::init();};
+    SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
+    Data<bool> f_activate; ///< boolean to activate or deactivate the forcefeedback
+    Data<int> indice; ///< Tool indice in the OmniDriver
 
-    void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
-    {
-        fx = fy = fz = 0.0;
-    };
-    void computeForce(const  VecCoord &,  VecDeriv &) override {};
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();};
+    simulation::Node *context;
 
+    void init() override;
 
+    virtual void computeForce(SReal x, SReal y, SReal z,
+                              SReal u, SReal v, SReal w,
+                              SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
+
+    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
+                               const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
+                               sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
+
+    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
+    virtual bool isEnabled();
+
+protected:
+    ForceFeedback();
 };
 
 } // namespace controller
