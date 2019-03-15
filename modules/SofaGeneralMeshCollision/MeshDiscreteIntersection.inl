@@ -136,15 +136,16 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
 #define SAMESIDE(ap1,ap2,ap3,ap4) (((cross((ap4-ap3),(ap1-ap3))) * (cross((ap4-ap3),(ap2-ap3)))) >= 0)
     if ( (SAMESIDE(projPoint,p0,p1,p2) && SAMESIDE(projPoint,p1,p0,p2) && SAMESIDE(projPoint,p2,p0,p1)))
     {
-        contacts->resize(contacts->size()+1);
-        core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-        detection->normal = -normal;
-        detection->point[1] = projPoint;
-        detection->point[0] = sph.getContactPointByNormal( detection->normal );
-        detection->value = -distance;
-        detection->elem.first = sph;
-        detection->elem.second = triangle;
-        detection->id = sph.getIndex();
+        core::collision::DetectionOutput detection;
+        detection.normal = -normal;
+        detection.point[1] = projPoint;
+        detection.point[0] = sph.getContactPointByNormal( detection.normal );
+        detection.value = -distance;
+        detection.elem.first = sph;
+        detection.elem.second = triangle;
+        detection.id = sph.getIndex();
+        
+        contacts->addContact(&detection);
         return 1;
     }
 #undef SAMESIDE

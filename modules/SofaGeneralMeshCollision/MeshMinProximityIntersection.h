@@ -45,7 +45,9 @@ namespace collision
 
 class SOFA_GENERAL_MESH_COLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
 {
-    typedef MinProximityIntersection::OutputVector OutputVector;
+    typedef BaseIntersector::OutputVector OutputVector;
+    
+    typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
 public:
     MeshMinProximityIntersection(MinProximityIntersection* object, bool addSelf=true);

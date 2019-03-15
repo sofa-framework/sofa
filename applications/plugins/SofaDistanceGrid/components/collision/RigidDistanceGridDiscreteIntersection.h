@@ -47,7 +47,9 @@ class SOFA_SOFADISTANCEGRID_API RigidDistanceGridDiscreteIntersection : public c
 {
 
     typedef DiscreteIntersection::OutputVector OutputVector;
-
+    
+    typedef sofa::core::collision::DetectionOutput DetectionOutput;
+    
 public:
     RigidDistanceGridDiscreteIntersection(DiscreteIntersection* object);
 
