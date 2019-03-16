@@ -34,8 +34,6 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SRea
     DetectionOutput detection;
     if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist, detection))
     {
-        //DetectionOutput *detection = &*(contacts->end()-1);        
-        //detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
         detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
         contacts->addContact(&detection);
         return 1;
@@ -71,8 +69,6 @@ int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vect
         return 0;
 
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    //contacts->resize(contacts->size()+1);
-    //DetectionOutput *detection = &*(contacts->end()-1);
 
     detection.point[0]=p;
     detection.point[1]=q;

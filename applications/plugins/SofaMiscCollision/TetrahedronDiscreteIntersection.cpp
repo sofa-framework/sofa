@@ -99,8 +99,6 @@ int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point&
     double l = l1;
     Vector3 X = P-n*l;
 
-    //contacts->resize(contacts->size()+1);
-    //DetectionOutput *detection = &*(contacts->end()-1);
     DetectionOutput detection;
     detection.point[0] = X;
     detection.point[1] = P;
@@ -165,8 +163,6 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
     //sout << "l0 = "<<l0<<" \tl1 = "<<l1<<" \tX = "<<X<<" \tbX = "<<e2.getBary(X)<<" \t?=? "<<(b0+bdir*l)<<sendl;
     //sout << "b1 = "<<e2.getBary(e2.p1())<<" \nb2 = "<<e2.getBary(e2.p2())<<" \nb3 = "<<e2.getBary(e2.p3())<<" \nb4 = "<<e2.getBary(e2.p4())<<sendl;
 
-    //contacts->resize(contacts->size()+1);
-    //DetectionOutput *detection = &*(contacts->end()-1);
     DetectionOutput detection;
 
     detection.point[0] = X;

@@ -98,8 +98,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad = c1.deformDir(c1.baryCoords(pinit),grad);
                     grad.normalize();
 
-                    //contacts->resize(contacts->size()+1);
-                    //sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
                     sofa::core::collision::DetectionOutput detection;
                     detection.normal = defaulttype::Vector3(grad); // normal in global space from p1's surface
                     detection.value = d - d0;

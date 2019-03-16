@@ -69,7 +69,6 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::c
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
-//    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
@@ -166,9 +165,6 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
     //int i = 0;
     const double d0= 0;//intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];

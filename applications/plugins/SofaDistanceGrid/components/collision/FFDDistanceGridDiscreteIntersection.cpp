@@ -125,9 +125,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad.normalize();
 
                     //p2 -= grad * d; // push p2 back to the surface
-                    //if (first)
-                    //    contacts->resize(contacts->size() + 1);
-                    //DetectionOutput *detection = &*(contacts->end() - 1);
+
                     double value = d + margin - d0;
                     if ( value < detection.value)
                     {
@@ -169,8 +167,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad.normalize();
 
                     //p2 -= grad * d; // push p2 back to the surface
-                    //contacts->resize(contacts->size() + 1);
-                    //DetectionOutput *detection = &*(contacts->end() - 1);
                     DetectionOutput detection;
                     double value = d + margin - d0;
                     detection.point[0] = grid1->meshPts[c1.points[i].index];
@@ -248,9 +244,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                                     grad.normalize();
 
                                     detected = true;
-                                    //if (!singleContact || first)
-                                    //    contacts->resize(contacts->size() + 1);
-                                    //DetectionOutput *detection = &*(contacts->end() - 1);
                                     double value = d - d0;
                                     if ( value < detection.value )
                                     {
@@ -462,9 +455,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                                 grad.normalize();
 
                                 detected = true;
-                                //if (!singleContact || first)
-                                //    contacts->resize(contacts->size() + 1);
-                                //DetectionOutput *detection = &*(contacts->end() - 1);
                                 double value = d + margin - d0;
                                 if (value < detection.value)
                                 {
@@ -641,9 +631,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                                 grad.normalize();
 
                                 detected = true;
-                                //if (!singleContact || first)
-                                //    contacts->resize(contacts->size() + 1);
-                                //DetectionOutput *detection = &*(contacts->end() - 1);
                                 double value = d + margin - d0;
                                 if (value < detection.value)
                                 {
@@ -824,8 +811,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad = c1.deformDir(c1.baryCoords(pinit),grad);
                     grad.normalize();
 
-                    //contacts->resize(contacts->size()+1);
-                    //DetectionOutput *detection = &*(contacts->end()-1);
                     DetectionOutput detection;
                     detection.point[0] = Vector3(pinit);
                     detection.point[1] = Vector3(p2);
@@ -924,8 +909,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                         grad = c1.deformDir(c1.baryCoords(pinit),grad);
                         grad.normalize();
 
-                        //contacts->resize(contacts->size()+1);
-                        //DetectionOutput *detection = &*(contacts->end()-1);
                         DetectionOutput detection;
                         detection.point[0] = Vector3(pinit);
                         detection.point[1] = Vector3(p2);
@@ -1043,8 +1026,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
             {
                 // intersection found
 
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = e2.origin() + e2.direction()*rayPos;
                 detection.point[1] = c1.initpos(b);

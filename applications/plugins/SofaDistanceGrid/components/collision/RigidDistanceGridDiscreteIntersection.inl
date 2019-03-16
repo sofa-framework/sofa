@@ -82,8 +82,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
     //p1 -= grad * d; // push p1 back to the surface
 
-    //contacts->resize(contacts->size()+1);
-    //core::collision::DetectionOutput *detection = &*(contacts->end()-1);
     DetectionOutput detection;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     detection.baryCoords[0] = p1;

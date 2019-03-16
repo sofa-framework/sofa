@@ -194,8 +194,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     p2 -= normal * d; // push p2 to the surface
 
-                    //contacts->resize(contacts->size()+1);
-                    //DetectionOutput *detection = &*(contacts->end()-1);
                     DetectionOutput detection;
                     detection.point[0] = Vector3(p1);
                     detection.point[1] = Vector3(p2);
@@ -247,8 +245,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     //p2 -= normal * d; // push p2 to the surface
 
-                    //contacts->resize(contacts->size()+1);
-                    //DetectionOutput *detection = &*(contacts->end()-1);
                     DetectionOutput detection;
                     detection.point[0] = Vector3(p1);
                     detection.point[1] = Vector3(p2);
@@ -300,8 +296,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 //p2 -= grad * d; // push p2 back to the surface
 
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = Vector3(p1);
                 detection.point[1] = Vector3(p2) - grad * d;
@@ -356,8 +350,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                     p1 -= normal * d; // push p2 to the surface
 
-                    //contacts->resize(contacts->size()+1);
-                    //DetectionOutput *detection = &*(contacts->end()-1);
                     DetectionOutput detection;
                     detection.point[0] = Vector3(p1);
                     detection.point[1] = Vector3(p2);
@@ -406,8 +398,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                     p1[axis] = sign*cubeDim1;
                     Vector3 gnormal = r1.col(axis) * sign;
 
-                    //contacts->resize(contacts->size()+1);
-                    //DetectionOutput *detection = &*(contacts->end()-1);
                     DetectionOutput detection;
                     detection.point[0] = Vector3(p1);
                     detection.point[1] = Vector3(p2);
@@ -513,9 +503,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                     normal = gnormal[axis];
                 }
 
-
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = Vector3(p1); // - normal * d;
                 detection.point[1] = Vector3(p2);
@@ -568,8 +555,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = Vector3(p1) - grad * d;
                 detection.point[1] = Vector3(p2);
@@ -641,8 +626,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
     //p1 -= grad * d; // push p1 back to the surface
 
-    //contacts->resize(contacts->size()+1);
-    //DetectionOutput *detection = &*(contacts->end()-1);
     DetectionOutput detection;
     detection.point[0] = Vector3(p1) - grad * d;
     detection.point[1] = Vector3(p2);
@@ -706,8 +689,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = Vector3(p1) - grad * d;
                 detection.point[1] = Vector3(p2);
@@ -757,8 +738,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = Vector3(p1) - grad * d;
                 detection.point[1] = Vector3(p2);
@@ -829,8 +808,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                //contacts->resize(contacts->size()+1);
-                //DetectionOutput *detection = &*(contacts->end()-1);
                 DetectionOutput detection;
                 detection.point[0] = Vector3(p1) - grad * d;
                 detection.point[1] = Vector3(p2);
@@ -957,9 +934,6 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, RigidDis
         if (dist < epsilon)
         {
             // intersection found
-
-            //contacts->resize(contacts->size()+1);
-            //DetectionOutput *detection = &*(contacts->end()-1);
             DetectionOutput detection;
             detection.point[0] = e2.origin() + e2.direction()*l0;
             detection.point[1] = p;

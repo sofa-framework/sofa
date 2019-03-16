@@ -176,8 +176,6 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
     if (pq.norm2() >= enough_to_touch*enough_to_touch)
         return 0;
 
-    //contacts->resize(contacts->size()+1);
-    //DetectionOutput *detection = &*(contacts->end()-1);
     detection.point[0]=p;
     detection.point[1]=q;
     detection.normal=pq;
@@ -299,8 +297,6 @@ int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,SReal ala
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;
 
-        //contacts->resize(contacts->size()+1);
-        //DetectionOutput *detection = &*(contacts->end()-1);
         DetectionOutput detection;
 
         detection.normal = intr.separatingAxis();
