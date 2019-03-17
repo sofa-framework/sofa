@@ -171,30 +171,30 @@ namespace sofa
 
 
 
-//        // This task is called once by each thread used by the TasScheduler
-//        // this is useful to initialize the thread specific variables
-//        class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public Task
-//        {
-//
-//        public:
-//
-//            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const Task::Status* status);
-//
-//            ~ThreadSpecificTask() override;
-//
-//            MemoryAlloc run() final;
-//
-//
-//        private:
-//
-//            virtual bool runThreadSpecific() { return true; }
-//
-//            virtual bool runCriticalThreadSpecific() { return true; }
-//
-//
-//            std::atomic<int>* _atomicCounter;
-//            std::mutex*     _threadSpecificMutex;
-//        };
+        // This task is called once by each thread used by the TasScheduler
+        // this is useful to initialize the thread specific variables
+        class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public CpuTask
+        {
+
+        public:
+
+            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const CpuTask::Status* status);
+
+            ~ThreadSpecificTask() override;
+
+            MemoryAlloc run() final;
+
+
+        private:
+
+            virtual bool runThreadSpecific() { return true; }
+
+            virtual bool runCriticalThreadSpecific() { return true; }
+
+
+            std::atomic<int>* _atomicCounter;
+            std::mutex*     _threadSpecificMutex;
+        };
 
 
 	} // namespace simulation
