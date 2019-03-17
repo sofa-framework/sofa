@@ -103,7 +103,7 @@ private:
 
 	// all tasks here
 
-	class applyTask : public simulation::Task
+	class applyTask : public simulation::CpuTask
 	{
 	
 		typedef typename BeamLinearMapping<TIn,TOut>::Out::VecCoord  VecCoord;
@@ -115,7 +115,7 @@ private:
 
 	protected:
 
-		applyTask( const simulation::Task::Status* status );
+		applyTask( const simulation::CpuTask::Status* status );
 
 	private:
 
@@ -131,7 +131,7 @@ private:
 	};
 
 	
-	class applyJTask : public simulation::Task
+	class applyJTask : public simulation::CpuTask
 	{
 	
 		typedef typename BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
@@ -139,7 +139,7 @@ private:
 
 	public:
 	
-		applyJTask( const simulation::Task::Status* status );
+		applyJTask( const simulation::CpuTask::Status* status );
 
 		MemoryAlloc run() final;
 
@@ -157,14 +157,14 @@ private:
 	};
 
 
-	class applyJTmechTask : public simulation::Task
+	class applyJTmechTask : public simulation::CpuTask
 	{
 		typedef typename BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
 		typedef typename BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
 
 	public:
 		
-		applyJTmechTask( const simulation::Task::Status* status );
+		applyJTmechTask( const simulation::CpuTask::Status* status );
 	
 		MemoryAlloc run() final;
 
@@ -182,10 +182,10 @@ private:
 	};
 
 
-	//class applyJTconstrTask : public simulation::Task
+	//class applyJTconstrTask : public simulation::CpuTask
 	//{
 	//public:
-	//	applyJTconstrTask( const simulation::Task::Status* status );
+	//	applyJTconstrTask( const simulation::CpuTask::Status* status );
 
 	//	virtual bool run( simulation::WorkerThread* );
 

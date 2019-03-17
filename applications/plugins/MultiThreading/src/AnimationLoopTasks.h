@@ -45,10 +45,10 @@ namespace sofa
         using namespace sofa;
         
         
-        class StepTask : public Task
+        class StepTask : public CpuTask
         {
         public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
+            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, CpuTask::Status* pStatus);
             
             ~StepTask() override;
             

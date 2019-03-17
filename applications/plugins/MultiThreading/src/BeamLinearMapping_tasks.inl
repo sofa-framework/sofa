@@ -38,8 +38,8 @@ namespace mapping
 
 
 		template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( const Task::Status* status ) 
-		: Task( status )
+	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( const simulation::CpuTask::Status* status )
+		: CpuTask( status )
 		, _mapping(0)	
 		, _in(0)
 		, _out(0)
@@ -84,8 +84,8 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( const Task::Status* status ) 
-		: Task( status )
+	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( const simulation::CpuTask::Status* status )
+		: CpuTask( status )
 		, _mapping(0)	
 		, _in(0)
 		, _out(0)
@@ -133,8 +133,8 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( const Task::Status* status ) 
-		: Task( status )
+	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( const simulation::CpuTask::Status* status )
+		: CpuTask( status )
 		, _mapping(0)	
 		, _in(0)
 		, _out(0)
@@ -189,7 +189,7 @@ namespace mapping
 
 	//template <class TIn, class TOut>
 	//BeamLinearMapping_mt< TIn, TOut>::applyJTconstrTask::applyJTconstrTask( const simulation::Task::Status* status ) 
-	//	: Task( status )
+	//	: CpuTask( status )
 	//	, _mapping(0)	
 	//	, _in(0)
 	//	, _out(0)

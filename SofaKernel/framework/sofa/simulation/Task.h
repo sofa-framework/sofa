@@ -34,19 +34,21 @@ namespace sofa
     {
 
 
+        /** Task class interface    */
         class SOFA_SIMULATION_CORE_API Task
         {
         public:
             
-            // Task Status class definition
+            // Task Status class interface used to synchronize tasks
             class Status
             {
             public:
-                
+                virtual ~Status() {}
                 virtual bool isBusy() const = 0;
                 virtual int setBusy(bool busy) = 0;
             };
             
+            // Task Allocator class interface used to allocate tasks
             class Allocator
             {
             public:
@@ -56,7 +58,7 @@ namespace sofa
             };
             
             
-            Task(const Task::Status* status = nullptr, int scheduledThread = 0);
+            Task(const Task::Status* status, int scheduledThread);
             
             virtual ~Task();
             
@@ -121,11 +123,15 @@ namespace sofa
         
         
 
+        /**  Base class to implement a CPU task
+         *   all the tasks running on the CPU should inherits from this class
+         */
         class SOFA_SIMULATION_CORE_API CpuTask : public Task
         {
         public:
 
-            // Task Status class definition
+            /** CPU Task Status class definition:
+             *  used to synchronize CPU tasks  */
             class Status : public Task::Status
             {
             public:
@@ -154,7 +160,9 @@ namespace sofa
 
 
 
-            CpuTask(const CpuTask::Status* status = nullptr, int scheduledThread = 0);
+        public:
+            
+            CpuTask(const CpuTask::Status* status, int scheduledThread = -1);
 
             virtual ~CpuTask();
 

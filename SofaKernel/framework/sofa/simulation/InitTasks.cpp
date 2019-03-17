@@ -14,8 +14,8 @@ namespace sofa
     namespace simulation
     {
 
-        InitPerThreadDataTask::InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus)
-            : Task(pStatus), IdFactorygetIDMutex(mutex), _atomicCounter(atomicCounter)
+        InitPerThreadDataTask::InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status)
+            : CpuTask(status), IdFactorygetIDMutex(mutex), _atomicCounter(atomicCounter)
         {}
 
         InitPerThreadDataTask::~InitPerThreadDataTask()

@@ -33,12 +33,12 @@ namespace sofa
 
 
 
-        class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public Task
+        class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
         {
 
         public:
 
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
+            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
 
             ~InitPerThreadDataTask() override;
 
