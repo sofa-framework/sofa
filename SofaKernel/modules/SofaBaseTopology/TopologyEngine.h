@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,11 +73,11 @@ protected:
 
 public:
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
-    virtual void doUpdate() override;
+    void doUpdate() override;
 
     void ApplyTopologyChanges();
 
@@ -89,12 +89,12 @@ public:
 
 
     /// Function to link DataEngine with Data array from topology
-    virtual void linkToPointDataArray() override;
-    virtual void linkToEdgeDataArray() override;
-    virtual void linkToTriangleDataArray() override;
-    virtual void linkToQuadDataArray() override;
-    virtual void linkToTetrahedronDataArray() override;
-    virtual void linkToHexahedronDataArray() override;
+    void linkToPointDataArray() override;
+    void linkToEdgeDataArray() override;
+    void linkToTriangleDataArray() override;
+    void linkToQuadDataArray() override;
+    void linkToTetrahedronDataArray() override;
+    void linkToHexahedronDataArray() override;
 
 protected:
     t_topologicalData* m_topologicalData;

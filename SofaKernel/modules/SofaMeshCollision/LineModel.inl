@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,7 +47,7 @@ using core::topology::BaseMeshTopology;
 
 template<class DataTypes>
 TLineModel<DataTypes>::TLineModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
+    : d_bothSide(initData(&d_bothSide, false, "d_bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
     , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
@@ -72,7 +72,7 @@ void TLineModel<DataTypes>::init()
 
     if (mstate==NULL)
     {
-        serr << "LineModel requires a Vec3 Mechanical Model" << sendl;
+        msg_error() << "LineModel requires a Vec3 Mechanical Model";
         return;
     }
 
@@ -85,7 +85,7 @@ void TLineModel<DataTypes>::init()
     core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (!bmt)
     {
-        serr <<"LineModel requires a MeshTopology" << sendl;
+        msg_error() <<"LineModel requires a MeshTopology";
         return;
     }
     this->topology = bmt;
@@ -116,7 +116,7 @@ void TLineModel<DataTypes>::init()
         if (activer != NULL)
             sout<<" Activer named"<<activer->getName()<<" found"<<sendl;
         else
-            serr<<"wrong path for Line Activer"<<sendl;
+            msg_error()<<"wrong path for Line Activer";
 
 
         myActiver = dynamic_cast<LineActiver *> (activer);
@@ -128,7 +128,7 @@ void TLineModel<DataTypes>::init()
             myActiver = LineActiver::getDefaultActiver();
 
 
-            serr<<"wrong path for Line Activer for LineModel "<< this->getName() <<sendl;
+            msg_error()<<"wrong path for Line Activer for LineModel "<< this->getName();
         }
         else
         {
@@ -152,7 +152,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
             elems[i].p[1] = bmt->getEdge(i)[1];
         }
 
-        needsUpdate = true;
+        m_needsUpdate = true;
     }
     if (bmt)
     {
@@ -167,7 +167,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
             {
             case core::topology::ENDING_EVENT :
             {
-                needsUpdate = true;
+                m_needsUpdate = true;
                 break;
             }
 
@@ -183,7 +183,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                 }
 
                 resize( elems.size() );
-                needsUpdate = true;
+                m_needsUpdate = true;
 
                 break;
             }
@@ -226,7 +226,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     --last;
                 }
 
-                needsUpdate=true;
+                m_needsUpdate=true;
                 break;
             }
 
@@ -280,7 +280,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     }
                 }
 
-                needsUpdate=true;
+                m_needsUpdate=true;
 
                 break;
             }
@@ -325,7 +325,7 @@ void TLineModel<DataTypes>::updateFromTopology()
         if (revision == meshRevision)
             return;
 
-        needsUpdate = true;
+        m_needsUpdate = true;
 
         const unsigned int nbPoints = mstate->getSize();
         const unsigned int nbLines = bmt->getNbEdges();
@@ -339,7 +339,7 @@ void TLineModel<DataTypes>::updateFromTopology()
 
             if (idx[0] >= nbPoints || idx[1] >= nbPoints)
             {
-                serr << "ERROR: Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " : total points (size of the MState) = " << nbPoints <<sendl;
+                msg_error() << "Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " : total points (size of the MState) = " << nbPoints;
                 continue;
             }
 
@@ -411,7 +411,7 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
 
     if (!topology)
     {
-        serr<<"no topology found"<<sendl;
+        msg_error()<<"no topology found";
         return true;
     }
     const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
@@ -505,10 +505,10 @@ void TLineModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
-    if (needsUpdate) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
+    if (m_needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile
 
-    needsUpdate = false;
+    m_needsUpdate = false;
     defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
@@ -548,10 +548,10 @@ void TLineModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDept
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
-    if (needsUpdate) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
+    if (m_needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile
 
-    needsUpdate=false;
+    m_needsUpdate=false;
     defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);

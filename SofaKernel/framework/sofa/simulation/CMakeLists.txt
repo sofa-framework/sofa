@@ -129,7 +129,6 @@ set(SOURCE_FILES
     DefaultTaskScheduler.cpp
     Task.cpp
     InitTasks.cpp
-    Locks.cpp
 )
 
 # is this a compiler/linker version specific problem?

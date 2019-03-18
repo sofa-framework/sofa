@@ -18,7 +18,7 @@ public:
     SOFA_CLASS(PythonTestAllocationCounter, core::objectmodel::BaseObject);
 protected:
     PythonTestAllocationCounter() { s_nbAlloc++; }
-    ~PythonTestAllocationCounter() { s_nbAlloc--; }
+    ~PythonTestAllocationCounter() override { s_nbAlloc--; }
 };
 
 int PythonTestAllocationCounterClass = core::RegisterObject("A test component counting allocations")
@@ -48,30 +48,30 @@ struct MemoryTest : public ::testing::Test
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionREMOVESUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "removeSub"), false);
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionDETACHSUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "detachSub"), false);
 
-        pythonScriptFunctionADD(NULL, NULL);
+        pythonScriptFunctionADD(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 10u ) << "ADD";
 
-        pythonScriptFunctionADD(NULL, NULL);
+        pythonScriptFunctionADD(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 20u ) << "ADD";
 
-        pythonScriptFunctionADDSUB(NULL, NULL);
+        pythonScriptFunctionADDSUB(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 30u ) << "ADDSUB";
 
-        pythonScriptFunctionREMOVESUB(NULL, NULL);
+        pythonScriptFunctionREMOVESUB(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 20u ) << "RMSUB";
 
-        pythonScriptFunctionREMOVE(NULL, NULL);
+        pythonScriptFunctionREMOVE(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 0u ) << "RM";
 
 
-        pythonScriptFunctionADDSUB(NULL, NULL);
+        pythonScriptFunctionADDSUB(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 10u ) << "ADDSUB";
-        pythonScriptFunctionDETACHSUB(NULL, NULL);
+        pythonScriptFunctionDETACHSUB(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 0u ) << "DETACHSUB";
 
 
 
-        pythonScriptFunctionADD(NULL, NULL);
+        pythonScriptFunctionADD(nullptr, nullptr);
         EXPECT_EQ( s_nbAlloc, 10u ) << "ADD";
         simulation::getSimulation()->unload(root);
         EXPECT_EQ( s_nbAlloc, 0u ) << "UNLOAD";

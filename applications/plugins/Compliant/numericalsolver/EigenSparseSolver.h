@@ -32,18 +32,18 @@ class EigenSparseSolver : public KKTSolver {
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseSolver,LinearSolver,symmetric), KKTSolver);
 
-    virtual void solve(vec& x,
+    void solve(vec& x,
                        const AssembledSystem& system,
-                       const vec& rhs) const;
+                       const vec& rhs) const override;
 
     // performs factorization
-    virtual void factor(const AssembledSystem& system);
+    void factor(const AssembledSystem& system) override;
 
-    virtual void init();
-    virtual void reinit();
+    void init() override;
+    void reinit() override;
 
     EigenSparseSolver();
-    ~EigenSparseSolver();
+    ~EigenSparseSolver() override;
 
 
     Data<bool> d_schur;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -1294,9 +1294,9 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
     if (nMean.norm()> 0.0000000001)
     {
-        /// validity test with nMean, except if bothSide
+        /// validity test with nMean, except if d_bothSide
         PointModel *pM = p.getCollisionModel();
-        bool bothSide_computation = pM->bothSide.getValue();
+        bool bothSide_computation = pM->d_bothSide.getValue();
         nMean.normalize();
         if (dot(nMean, PQ) < -angleCone.getValue()*PQ.norm() && !bothSide_computation)
         {
@@ -1329,7 +1329,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
         return true;
 
     LineModel *lM = l.getCollisionModel();
-    bool bothSide_computation = lM->bothSide.getValue();
+    bool bothSide_computation = lM->d_bothSide.getValue();
 
     Vector3 nMean;
     Vector3 n1, n2;
@@ -1429,7 +1429,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ)
 {
     TriangleModel *tM = t.getCollisionModel();
-    bool bothSide_computation = tM->bothSide.getValue();
+    bool bothSide_computation = tM->d_bothSide.getValue();
 
     if (!filterIntersection.getValue()  || bothSide_computation)
         return true;

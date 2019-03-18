@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,7 +92,7 @@ namespace mapping
 
 
 			// create tasks
-            simulation::Task::Status status;
+            simulation::CpuTask::Status status;
             simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
@@ -186,7 +186,7 @@ namespace mapping
 
             out.resize(this->points.size());
 
-            simulation::Task::Status status;
+            simulation::CpuTask::Status status;
             simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
@@ -273,7 +273,7 @@ namespace mapping
 			helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
 
 
-            simulation::Task::Status status;
+            simulation::CpuTask::Status status;
             simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();

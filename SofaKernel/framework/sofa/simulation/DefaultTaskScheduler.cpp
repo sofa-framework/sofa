@@ -2,7 +2,7 @@
 
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 
-#include <assert.h>
+#include <cassert>
 
 
 namespace sofa
@@ -19,12 +19,12 @@ namespace sofa
         {
         public:
 
-            virtual void* allocate(std::size_t sz) override final
+            void* allocate(std::size_t sz) final
             {
                 return ::operator new(sz);
             }
 
-            virtual void free(void* ptr, std::size_t sz) override final
+            void free(void* ptr, std::size_t sz) final
             {
                 ::operator delete(ptr);
             }
@@ -185,7 +185,7 @@ namespace sofa
             return thread->getName();
         }
 
-        Thread DefaultTaskScheduler::GetCurrentThreadType()
+        int DefaultTaskScheduler::GetCurrentThreadType()
         {
             WorkerThread* thread = WorkerThread::getCurrent();
             return thread->getType();
@@ -226,7 +226,7 @@ namespace sofa
 
 
         WorkerThread::WorkerThread(DefaultTaskScheduler* const& pScheduler, const int index, const std::string& name)
-            : _type(Thread::Worker)
+            : _type(0)
             , _name(name + std::to_string(index))
             , _tasks()
             , _taskScheduler(pScheduler)
@@ -292,7 +292,7 @@ namespace sofa
                 while ( _taskScheduler->_mainTaskStatus != nullptr)
 				{
 				
-					doWork(0);
+					doWork(nullptr);
 
 				
 					if (_taskScheduler->isClosing() )

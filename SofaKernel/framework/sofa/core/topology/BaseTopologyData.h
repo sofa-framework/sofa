@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,14 +79,14 @@ public:
 
 
     /** \copydoc Data(const char*, bool, bool) */
-    BaseTopologyData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    BaseTopologyData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
 
     }
 
     /** \copydoc Data(const T&, const char*, bool, bool) */
-    BaseTopologyData( const T& /*value*/, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    BaseTopologyData( const T& /*value*/, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
     }

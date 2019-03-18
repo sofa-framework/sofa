@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,16 +50,16 @@ public:
     SOFA_CLASS(OglShaderMacro, OglShaderElement);
 protected:
     OglShaderMacro();
-    virtual ~OglShaderMacro();
+    ~OglShaderMacro() override;
 public:
-    virtual void init() override;
+    void init() override;
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_MACRO; }
+    ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_MACRO; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const override { return NULL; }
+    const core::objectmodel::BaseData* getSEValue() const override { return NULL; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() override { return NULL; }
+    core::objectmodel::BaseData* getSEValue() override { return NULL; }
 };
 
 
@@ -71,12 +71,12 @@ protected:
     Data<std::string> value; ///< Set a value for define macro
 public:
     OglShaderDefineMacro();
-    virtual ~OglShaderDefineMacro();
-    virtual void init() override;
+    ~OglShaderDefineMacro() override;
+    void init() override;
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const override { return &value; }
+    const core::objectmodel::BaseData* getSEValue() const override { return &value; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() override { return &value; }
+    core::objectmodel::BaseData* getSEValue() override { return &value; }
 };
 
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,8 +22,6 @@
 #ifndef MultiThreadingLocks_h__
 #define MultiThreadingLocks_h__
 
-#include <sofa/config.h>
-
 #include <thread>
 #include <atomic>
 
@@ -34,7 +32,7 @@ namespace sofa
 	{
 
 
-        class SOFA_SIMULATION_CORE_API SpinLock
+        class SpinLock
         {
             enum
             {
@@ -43,15 +41,33 @@ namespace sofa
             
         public:
             
-            SpinLock();
+            SpinLock()
+            :_flag()
+            {}
             
-            ~SpinLock();
+            ~SpinLock()
+            {
+                unlock();
+            }
             
-            bool try_lock();
+            bool try_lock()
+            {
+                return !_flag.test_and_set( std::memory_order_acquire );
+            }
             
-            void lock();
+            void lock()
+            {
+                while( _flag.test_and_set(std::memory_order_acquire) )
+                {
+                    // cpu busy wait
+                    //std::this_thread::yield();
+                }
+            }
             
-            void unlock();
+            void unlock()
+            {
+                _flag.clear( std::memory_order_release );
+            }
             
         private:
             

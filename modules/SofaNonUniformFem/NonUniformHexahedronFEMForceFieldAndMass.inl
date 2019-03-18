@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,22 +51,22 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     if( this->getContext()->getMeshTopology()==NULL )
     {
-        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a Topology."<<sendl;
+        msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a Topology.";
         return;
     }
 
     this->_mesh = this->getContext()->getMeshTopology();
     if ( this->_mesh==NULL)
     {
-        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology."<<sendl;
+        msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a MeshTopology.";
         return;
     }
     else if( this->_mesh->getNbHexahedra()<=0 )
     {
-        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology."<<sendl;
-        serr << this->_mesh->getName()<<sendl;
-        serr << this->_mesh->getTypeName()<<sendl;
-        serr<<this->_mesh->getNbPoints()<<sendl;
+        msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a hexahedric MeshTopology.\n"
+                    << this->_mesh->getName() << "\n"
+                    << this->_mesh->getTypeName() << "\n"
+                    <<this->_mesh->getNbPoints() << "\n";
         return;
     }
 
@@ -88,17 +88,17 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     // verify if it is wanted and possible to compute non-uniform stiffness
     if( !this->_nbVirtualFinerLevels.getValue() )
     {
-        serr<<"ForceField "<<this->getName()<<" need 0 VirtualFinerLevels -> classical uniform properties are used." << sendl;
+        msg_error()<<"ForceField "<<this->getName()<<" need 0 VirtualFinerLevels -> classical uniform properties are used." ;
     }
     else if( !this->_sparseGrid )
     {
         this->_nbVirtualFinerLevels.setValue(0);
-        serr<<"ForceField "<<this->getName()<<" must be used with a SparseGrid in order to handle VirtualFinerLevels -> classical uniform properties are used.." << sendl;
+        msg_error()<<"ForceField "<<this->getName()<<" must be used with a SparseGrid in order to handle VirtualFinerLevels -> classical uniform properties are used..";
     }
     else if( this->_sparseGrid->getNbVirtualFinerLevels() < this->_nbVirtualFinerLevels.getValue()  )
     {
         this->_nbVirtualFinerLevels.setValue(0);
-        serr<<"Conflict in nb of virtual levels between ForceField "<<this->getName()<<" and SparseGrid "<<this->_sparseGrid->getName()<<" -> classical uniform properties are used" << sendl;
+        msg_error()<<"Conflict in nb of virtual levels between ForceField "<<this->getName()<<" and SparseGrid "<<this->_sparseGrid->getName()<<" -> classical uniform properties are used";
     }
 
 
@@ -215,7 +215,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 for(int k=0; k<3; ++k)
                     if( this->_lumpedMasses[j][k] < 0 )
                     {
-                        // 					  serr<<"WARNING lumped mass"<<sendl;
+                        // 					  msg_warning<<" lumped mass";
                         this->_lumpedMasses[ j ][k] = -this->_lumpedMasses[ j ][k];
                     }
             }

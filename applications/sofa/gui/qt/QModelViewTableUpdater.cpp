@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -80,7 +80,7 @@ void QTableModelUpdater::resizeTableV( int number )
 {
     QSpinBox *spinBox = (QSpinBox *) sender();
     QString header;
-    if( spinBox == NULL)
+    if( spinBox == nullptr)
     {
         return;
     }
@@ -104,7 +104,7 @@ void QTableModelUpdater::resizeTableH( int number )
 {
     QSpinBox *spinBox = (QSpinBox *) sender();
     QString header;
-    if( spinBox == NULL)
+    if( spinBox == nullptr)
     {
         return;
     }

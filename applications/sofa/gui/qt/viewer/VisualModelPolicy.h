@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -57,7 +57,7 @@ protected:
     sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
     sofa::core::visual::DrawToolGL drawTool;
 public:
-    void load()
+    void load() override
     {
         // Replace generic visual models with OglModel
         sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
@@ -65,10 +65,10 @@ public:
         vparams->drawTool() = &drawTool;
         vparams->setSupported(sofa::core::visual::API_OpenGL);
     }
-    void unload()
+    void unload() override
     {
         sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
-        vparams->drawTool() = NULL;
+        vparams->drawTool() = nullptr;
     }
 };
 

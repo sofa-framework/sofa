@@ -49,7 +49,7 @@ protected:
 
     
 public:
-    explicit LabelImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent = 0);
+    explicit LabelImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent = nullptr);
     
     QLayout * layout(){return mainlayout;}
 

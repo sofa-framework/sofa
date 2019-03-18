@@ -3,7 +3,7 @@
 
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -357,7 +357,7 @@ public:
 
     }
 
-    void handleSliderPolicies()
+    void handleSliderPolicies() override
     {
         if(graphXY && graphXZ && graphZY)
         {
@@ -376,25 +376,25 @@ public:
         }
     }
     
-    void setVisibleXY(bool v)
+    void setVisibleXY(bool v) override
     {
         this->graphXY->setVisible(v);
         this->optionsXY->setVisible(v);
     }
 
-    void setVisibleXZ(bool v)
+    void setVisibleXZ(bool v) override
     {
         this->graphXZ->setVisible(v);
         this->optionsXZ->setVisible(v);
     }
     
-    void setVisibleZY(bool v)
+    void setVisibleZY(bool v) override
     {
         this->graphZY->setVisible(v);
         this->optionsZY->setVisible(v);
     }
     
-    void setVisualModel(bool v)
+    void setVisualModel(bool v) override
     {
         int val = (v)?2:0;
         
@@ -403,14 +403,14 @@ public:
         this->graphXZ->togglemodels(val);
     }
     
-    void setSliders(sofa::defaulttype::Vec3i v)
+    void setSliders(sofa::defaulttype::Vec3i v) override
     {
         this->optionsXY->setSlider(v.z());
         this->optionsXZ->setSlider(v.y());
         this->optionsZY->setSlider(v.x());
     }
 
-    void changeSlider()
+    void changeSlider() override
     {
         sofa::defaulttype::Vec3i v;
 

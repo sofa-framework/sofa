@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -330,7 +330,7 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
 {
     if (!currentCamera) return;
     //<CAMERA API>
-    sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+    sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
     if (e->button() == Qt::LeftButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, e->x(), e->y());
     else if (e->button() == Qt::RightButton)
@@ -352,7 +352,7 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
 {
     if (!currentCamera) return;
     //<CAMERA API>
-    sofa::core::objectmodel::MouseEvent* mEvent = NULL;
+    sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
     if (e->button() == Qt::LeftButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, e->x(), e->y());
     else if (e->button() == Qt::RightButton)

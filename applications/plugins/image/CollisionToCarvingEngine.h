@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -115,7 +115,7 @@ public:
 		outT=NULL;
     }
 
-    virtual ~CollisionToCarvingEngine()
+    ~CollisionToCarvingEngine() override
     {
 		delete in;
 		delete inT;
@@ -123,7 +123,7 @@ public:
 		delete outT;
     }
 
-    virtual void init() override
+    void init() override
     {
 		//cout<<"init"<<endl;
 		addInput(&inputImage);
@@ -133,11 +133,11 @@ public:
 		setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 	
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         bool updateImage = m_dataTracker.hasChanged(this->inputImage);	// change of input image -> update output image
         bool updateTransform = m_dataTracker.hasChanged(this->inputTransform);	// change of input transform -> update output transform
@@ -192,7 +192,7 @@ protected:
 		}
     }
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
 
     }

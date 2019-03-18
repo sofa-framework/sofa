@@ -3,7 +3,7 @@
 
 	<OglModel name="VisualModel" fileMesh="data/mesh/add_repo_cube.obj" />
 
-	<AddResourceRepository path="./data/mesh" />
+	<AddDataRepository path="./data/mesh" />
     <OglModel name="VisualModel" fileMesh="add_repo_cube.obj" translation="5 0 0"/>
   
 </Node>

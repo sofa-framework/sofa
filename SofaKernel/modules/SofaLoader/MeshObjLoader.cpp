@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -418,7 +418,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     else
     { // handleSeam mode : vertices are duplicated in case they have different texcoords and/or normals
         // This code was initially in VisualModelImpl::setMesh()
-        
+
         int nbVIn = (int)my_positions.size();
         // First we compute for each point how many pair of normal/texcoord indices are used
         // The map store the final index of each combinaison
@@ -453,7 +453,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             vsplit = true;
 
         // Then we can create the final arrays
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vertices2 = d_positions;
+        helper::vector<sofa::defaulttype::Vector3> vertices2;
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vnormals = d_normals;
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2> > > vtexcoords = texCoords;
         helper::WriteAccessor<Data<helper::vector<int> > > vertPosIdx = d_vertPosIdx;
@@ -497,6 +497,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 it->second = j++;
             }
         }
+
+        // replace the original (non duplicated) vector with the new one
+        my_positions.clear();
+        for(const sofa::defaulttype::Vector3& c : vertices2)
+            my_positions.push_back(c);
 
         if( vsplit && nbNOut == nbVOut )
             vertNormIdx.resize(0);

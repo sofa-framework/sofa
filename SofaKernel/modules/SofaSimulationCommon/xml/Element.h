@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,16 +41,16 @@ class Element : public BaseElement
 private:
     typename Object::SPtr object;
 public:
-    Element(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
+    Element(const std::string& name, const std::string& type, BaseElement* newParent=nullptr);
 
-    virtual ~Element();
+    ~Element() override;
 
     Object* getTypedObject();
 
     virtual void setObject(typename Object::SPtr newObject);
 
     /// Get the associated object
-    virtual core::objectmodel::Base* getObject();
+    core::objectmodel::Base* getObject() override;
 
     typedef helper::Factory< std::string, Object, Element<Object>*, typename Object::SPtr > Factory;
 };

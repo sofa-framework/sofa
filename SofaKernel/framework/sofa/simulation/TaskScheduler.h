@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,7 +70,7 @@ namespace sofa
 
             virtual const char* getCurrentThreadName() = 0;
 
-            virtual Thread GetCurrentThreadType() = 0;
+            virtual int GetCurrentThreadType() = 0;
 
             // queue task if there is space, and run it otherwise
             virtual bool addTask(Task* task) = 0;
@@ -78,6 +78,7 @@ namespace sofa
             virtual void workUntilDone(Task::Status* status) = 0;
 
             virtual Task::Allocator* getTaskAllocator() = 0;
+
 
         protected:
 

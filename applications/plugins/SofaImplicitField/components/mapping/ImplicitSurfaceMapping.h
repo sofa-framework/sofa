@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,13 +77,13 @@ protected:
     {
     }
 
-    virtual ~ImplicitSurfaceMapping()
+    ~ImplicitSurfaceMapping() override
     {
     }
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     double getStep() const { return mStep.getValue(); }
     void setStep(double val) { mStep.setValue(val); }
@@ -180,8 +180,8 @@ protected:
     }
 
 public:
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

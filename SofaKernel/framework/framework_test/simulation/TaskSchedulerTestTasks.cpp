@@ -16,7 +16,7 @@ namespace sofa
 			return MemoryAlloc::Stack;
 		}
 
-		Task::Status status;
+        simulation::CpuTask::Status status;
 
 		int64_t x, y;
 
@@ -48,7 +48,7 @@ namespace sofa
 
 		const int64_t mid = _first + (count / 2);
 
-		Task::Status status;
+        simulation::CpuTask::Status status;
 
 		int64_t x, y;
 

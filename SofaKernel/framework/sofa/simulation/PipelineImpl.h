@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,18 +39,18 @@ class SOFA_SIMULATION_CORE_API PipelineImpl : public sofa::core::collision::Pipe
 protected:
     PipelineImpl();
 
-    virtual ~PipelineImpl();
+    ~PipelineImpl() override;
 public:
-    virtual void init();
+    void init() override;
 
-    virtual void reset();
+    void reset() override;
 
     /// Remove collision response from last step
-    virtual void computeCollisionReset();
+    void computeCollisionReset() override;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void computeCollisionDetection();
+    void computeCollisionDetection() override;
     /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse();
+    void computeCollisionResponse() override;
 };
 
 

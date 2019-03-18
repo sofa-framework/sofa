@@ -740,7 +740,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
     // Draw edges
-    if (_draw.getValue() && this->m_topology->getNbEdges() != 0)
+    if (d_drawEdges.getValue() && this->m_topology->getNbEdges() != 0)
     {
         const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
 

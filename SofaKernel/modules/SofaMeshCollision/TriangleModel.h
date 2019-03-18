@@ -138,7 +138,7 @@ public:
 
 	enum { NBARY = 2 };
 
-    Data<bool> bothSide; ///< to activate collision on both side of the triangle model
+    Data<bool> d_bothSide; ///< to activate collision on both side of the triangle model
     Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
 
 protected:
@@ -156,7 +156,7 @@ protected:
 
     sofa::core::topology::BaseMeshTopology::SeqTriangles my_triangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.
 
-    bool needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
+    bool m_needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
 
     PointModel* m_pointModels;

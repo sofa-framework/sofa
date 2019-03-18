@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,9 +58,9 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    virtual void doInit(Node* node) override;
-    virtual void doCheckOn(Node* node) override;
-    virtual void doPrintSummary() override;
+    void doInit(Node* node) override;
+    void doCheckOn(Node* node) override;
+    void doPrintSummary() override;
 
     void installDefaultChangeSets();
     void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);

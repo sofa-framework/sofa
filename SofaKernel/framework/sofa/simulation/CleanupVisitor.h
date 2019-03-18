@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,9 +36,9 @@ class SOFA_SIMULATION_CORE_API CleanupVisitor : public Visitor
 public:
     CleanupVisitor(const core::ExecParams* params ) :Visitor(params) {}
 
-    virtual Result processNodeTopDown(Node* node);
-    virtual void processNodeBottomUp(Node* node);
-    virtual const char* getClassName() const { return "CleanupVisitor"; }
+    Result processNodeTopDown(Node* node) override;
+    void processNodeBottomUp(Node* node) override;
+    const char* getClassName() const override { return "CleanupVisitor"; }
 };
 
 
