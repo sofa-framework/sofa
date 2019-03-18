@@ -45,7 +45,7 @@ namespace sofa
             public:
                 virtual ~Status() {}
                 virtual bool isBusy() const = 0;
-                virtual int setBusy(bool busy) = 0;
+                virtual int setBusy(bool busy) const = 0;
             };
             
             // Task Allocator class interface used to allocate tasks
@@ -99,7 +99,7 @@ namespace sofa
             // no problem with other sompilers included visual studio 2017
             //static void operator delete[](void* ptr) = delete;
             
-            inline Task::Status* getStatus(void) const  { return const_cast<Task::Status*>(_status); }
+            virtual const Task::Status* getStatus(void) const = 0;
             
             int getScheduledThread() const { return _scheduledThread; }
             
@@ -142,7 +142,7 @@ namespace sofa
                     return (_busy.load(std::memory_order_relaxed) > 0);
                 }
 
-                virtual int setBusy(bool busy) override final
+                virtual int setBusy(bool busy) const override final
                 {
                     if (busy)
                     {
@@ -155,9 +155,12 @@ namespace sofa
                 }
 
             private:
-                std::atomic<int> _busy;
+                mutable std::atomic<int> _busy;
             };
 
+
+            virtual const CpuTask::Status* getStatus(void) const override final 
+                { return dynamic_cast<const CpuTask::Status*>(_status); }
 
 
         public:

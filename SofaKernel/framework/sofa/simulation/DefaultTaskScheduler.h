@@ -84,7 +84,7 @@ namespace sofa  {
 
             void workUntilDone(Task::Status* status);
 
-            Task::Status* getCurrentStatus() const { return _currentStatus; }
+            const Task::Status* getCurrentStatus() const { return _currentStatus; }
 
             const char* getName() const { return _name.c_str(); }
 
@@ -147,7 +147,7 @@ namespace sofa  {
 
             std::thread  _stdThread;
 
-            Task::Status*	_currentStatus;
+            const Task::Status*	_currentStatus;
 
             DefaultTaskScheduler*     _taskScheduler;
 
@@ -216,7 +216,7 @@ namespace sofa  {
             //static thread_local WorkerThread* _workerThreadIndex;
             static std::map< std::thread::id, WorkerThread*> _threads;
 
-            Task::Status*	_mainTaskStatus;
+            const Task::Status*	_mainTaskStatus;
 
             std::mutex  _wakeUpMutex;
 

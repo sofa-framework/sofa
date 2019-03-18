@@ -361,7 +361,7 @@ namespace sofa
 
         void WorkerThread::runTask(Task* task)
         {
-            Task::Status* prevStatus = _currentStatus;
+            const Task::Status* prevStatus = _currentStatus;
             _currentStatus = task->getStatus();
 
             {
