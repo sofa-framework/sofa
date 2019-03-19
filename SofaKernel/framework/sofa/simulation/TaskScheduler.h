@@ -70,7 +70,7 @@ namespace sofa
 
             virtual const char* getCurrentThreadName() = 0;
 
-            virtual int GetCurrentThreadType() = 0;
+            virtual int getCurrentThreadType() = 0;
 
             // queue task if there is space, and run it otherwise
             virtual bool addTask(Task* task) = 0;
@@ -92,10 +92,6 @@ namespace sofa
             friend class Task;
         };
 
-
-
-
-        SOFA_SIMULATION_CORE_API bool runThreadSpecificTask(const Task *pTask);
 
 
 	} // namespace simulation

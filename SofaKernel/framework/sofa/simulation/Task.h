@@ -58,9 +58,11 @@ namespace sofa
             };
             
             
+            
             Task(const Task::Status* status, int scheduledThread);
             
             virtual ~Task();
+            
             
             enum MemoryAlloc
             {
@@ -101,7 +103,7 @@ namespace sofa
             
             virtual const Task::Status* getStatus(void) const = 0;
             
-            int getScheduledThread() const { return _scheduledThread; }
+            int getScheduledThread() const { return m_scheduledThread; }
             
             static Task::Allocator* getAllocator() { return _allocator; }
             
@@ -109,12 +111,12 @@ namespace sofa
             
         protected:
             
-            const Task::Status*    _status;
+            const Task::Status*    m_status;
             
-            int _scheduledThread;
+            int m_scheduledThread;
             
         public:
-            int _id;
+            int m_id;
             
         private:
             
@@ -135,32 +137,32 @@ namespace sofa
             class Status : public Task::Status
             {
             public:
-                Status() : _busy(0) {}
+                Status() : m_busy(0) {}
 
                 virtual bool isBusy() const override final
                 {
-                    return (_busy.load(std::memory_order_relaxed) > 0);
+                    return (m_busy.load(std::memory_order_relaxed) > 0);
                 }
 
                 virtual int setBusy(bool busy) const override final
                 {
                     if (busy)
                     {
-                        return _busy.fetch_add(1, std::memory_order_relaxed);
+                        return m_busy.fetch_add(1, std::memory_order_relaxed);
                     }
                     else
                     {
-                        return _busy.fetch_sub(1, std::memory_order_relaxed);
+                        return m_busy.fetch_sub(1, std::memory_order_relaxed);
                     }
                 }
 
             private:
-                mutable std::atomic<int> _busy;
+                mutable std::atomic<int> m_busy;
             };
 
 
             virtual const CpuTask::Status* getStatus(void) const override final 
-                { return dynamic_cast<const CpuTask::Status*>(_status); }
+                { return dynamic_cast<const CpuTask::Status*>(m_status); }
 
 
         public:
@@ -195,8 +197,8 @@ namespace sofa
             virtual bool runCriticalThreadSpecific() { return true; }
 
 
-            std::atomic<int>* _atomicCounter;
-            std::mutex*     _threadSpecificMutex;
+            std::atomic<int>* m_atomicCounter;
+            std::mutex*     m_threadSpecificMutex;
         };
 
 

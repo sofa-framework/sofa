@@ -14,9 +14,9 @@ namespace sofa
 
 
 		Task::Task(const Task::Status* status, int scheduledThread)
-			: _scheduledThread(scheduledThread)
-            , _status(status)
-            , _id(0)
+			: m_scheduledThread(scheduledThread)
+            , m_status(status)
+            , m_id(0)
 		{            
 		}
 
@@ -39,8 +39,8 @@ namespace sofa
         
         ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const CpuTask::Status* status )
             : CpuTask(status)
-            , _atomicCounter(atomicCounter)
-            , _threadSpecificMutex(mutex)
+            , m_atomicCounter(atomicCounter)
+            , m_threadSpecificMutex(mutex)
         {}
 
         ThreadSpecificTask::~ThreadSpecificTask()
@@ -53,13 +53,13 @@ namespace sofa
             runThreadSpecific();
 
             {
-                std::lock_guard<std::mutex> lock(*_threadSpecificMutex);
+                std::lock_guard<std::mutex> lock(*m_threadSpecificMutex);
                 runCriticalThreadSpecific();
             }
 
-            _atomicCounter->fetch_sub(1, std::memory_order_acq_rel);
+            m_atomicCounter->fetch_sub(1, std::memory_order_acq_rel);
 
-            while(_atomicCounter->load(std::memory_order_relaxed) > 0)
+            while(m_atomicCounter->load(std::memory_order_relaxed) > 0)
             {
                 // yield while waiting
                 std::this_thread::yield();

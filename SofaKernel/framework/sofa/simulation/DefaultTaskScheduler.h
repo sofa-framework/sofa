@@ -84,17 +84,17 @@ namespace sofa  {
 
             void workUntilDone(Task::Status* status);
 
-            const Task::Status* getCurrentStatus() const { return _currentStatus; }
+            const Task::Status* getCurrentStatus() const { return m_currentStatus; }
 
-            const char* getName() const { return _name.c_str(); }
+            const char* getName() const { return m_name.c_str(); }
 
-            int getType() const { return _type; }
+            int getType() const { return m_type; }
 
             const std::thread::id getId();
 
-            const std::deque<Task*>* getTasksQueue() { return &_tasks; }
+            const std::deque<Task*>* getTasksQueue() { return &m_tasks; }
 
-            std::uint64_t getTaskCount() { return _tasks.size(); }
+            std::uint64_t getTaskCount() { return m_tasks.size(); }
 
             int GetWorkerIndex();
 
@@ -137,22 +137,22 @@ namespace sofa  {
                 Max_TasksPerThread = 256
             };
 
-            const std::string _name;
+            const std::string m_name;
 
-            const int _type;
+            const int m_type;
 
-            simulation::SpinLock _taskMutex;
+            simulation::SpinLock m_taskMutex;
 
-            std::deque<Task*> _tasks;
+            std::deque<Task*> m_tasks;
 
-            std::thread  _stdThread;
+            std::thread  m_stdThread;
 
-            const Task::Status*	_currentStatus;
+            const Task::Status*	m_currentStatus;
 
-            DefaultTaskScheduler*     _taskScheduler;
+            DefaultTaskScheduler*     m_taskScheduler;
 
             // The following members may be accessed by _multiple_ threads at the same time:
-            volatile bool	_finished;
+            std::atomic<bool>	m_finished;
 
             friend class DefaultTaskScheduler;
         };
@@ -173,9 +173,9 @@ namespace sofa  {
 
             virtual void init(const unsigned int nbThread = 0) final;
             virtual void stop(void) final;
-            virtual unsigned int getThreadCount(void)  const final { return _threadCount; }
+            virtual unsigned int getThreadCount(void)  const final { return m_threadCount; }
             virtual const char* getCurrentThreadName() override final;
-            virtual int GetCurrentThreadType() override final;
+            virtual int getCurrentThreadType() override final;
             
             // queue task if there is space, and run it otherwise
             bool addTask(Task* task) override final;
@@ -193,9 +193,9 @@ namespace sofa  {
 
         private:
 
-            bool isInitialized() { return _isInitialized; }
+            bool isInitialized() { return m_isInitialized; }
 
-            bool isClosing(void) const { return _isClosing; }
+            bool isClosing(void) const { return m_isClosing; }
 
             void	WaitForWorkersToBeReady();
 
@@ -216,11 +216,11 @@ namespace sofa  {
             //static thread_local WorkerThread* _workerThreadIndex;
             static std::map< std::thread::id, WorkerThread*> _threads;
 
-            const Task::Status*	_mainTaskStatus;
+            const Task::Status*	m_mainTaskStatus;
 
-            std::mutex  _wakeUpMutex;
+            std::mutex  m_wakeUpMutex;
 
-            std::condition_variable _wakeUpEvent;
+            std::condition_variable m_wakeUpEvent;
 
         private:
 
@@ -232,15 +232,15 @@ namespace sofa  {
 
             void start(unsigned int NbThread);
 
-            bool _isInitialized;
+            bool m_isInitialized;
 
-            unsigned _workerThreadCount;
+            unsigned m_workerThreadCount;
 
-            bool _workerThreadsIdle;
+            bool m_workerThreadsIdle;
 
-            bool _isClosing;
+            bool m_isClosing;
 
-            unsigned _threadCount;
+            unsigned m_threadCount;
 
 
             friend class WorkerThread;
