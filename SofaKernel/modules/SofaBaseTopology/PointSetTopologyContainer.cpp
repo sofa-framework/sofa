@@ -363,10 +363,9 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
     std::string name;
     std::stringstream tmpmsg;
     name = my_Data.getName();
-    tmpmsg << name << msgendl << msgendl;
+    tmpmsg << msgendl << "Data Name: " << name << msgendl;
 
     unsigned int cpt_engine = 0;
-
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
     {
@@ -396,8 +395,8 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
             cpt_engine++;
         }
         tmpmsg << msgendl ;
-        msg_info() << tmpmsg.str() ;
     }
+    msg_info() << tmpmsg.str() ;
 }
 
 
