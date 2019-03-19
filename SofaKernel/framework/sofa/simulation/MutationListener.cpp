@@ -31,9 +31,6 @@ namespace simulation
 
 MutationListener::~MutationListener() {}
 
-void MutationListener::onStepBegin(Node *node) { SOFA_UNUSED(node); }
-void MutationListener::onStepEnd(Node *node) { SOFA_UNUSED(node); }
-
 void MutationListener::sleepChanged(Node *node) { SOFA_UNUSED(node); }
 
 void MutationListener::onAddChildBegin(Node *parent, Node *child)
