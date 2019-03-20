@@ -41,36 +41,36 @@ class SOFA_SIMULATION_CORE_API MutationListener
 
     virtual void sleepChanged(Node *node);
 
-    virtual void onAddChildBegin(Node *parent, Node *child);
+    virtual void onBeginAddChild(Node *parent, Node *child);
 
-    virtual void onRemoveChildBegin(Node *parent, Node *child);
+    virtual void onBeginRemoveChild(Node *parent, Node *child);
 
-    virtual void onAddObjectBegin(Node *parent,
+    virtual void onBeginAddObject(Node *parent,
                              core::objectmodel::BaseObject *object);
 
-    virtual void onRemoveObjectBegin(Node *parent,
+    virtual void onBeginRemoveObject(Node *parent,
                                 core::objectmodel::BaseObject *object);
 
-    virtual void onAddSlaveBegin(core::objectmodel::BaseObject *master,
+    virtual void onBeginAddSlave(core::objectmodel::BaseObject *master,
                             core::objectmodel::BaseObject *slave);
 
-    virtual void onRemoveSlaveBegin(core::objectmodel::BaseObject *master,
+    virtual void onBeginRemoveSlave(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave);
 
-    virtual void onAddChildEnd(Node *parent, Node *child);
+    virtual void onEndAddChild(Node *parent, Node *child);
 
-    virtual void onRemoveChildEnd(Node *parent, Node *child);
+    virtual void onEndRemoveChild(Node *parent, Node *child);
 
-    virtual void onAddObjectEnd(Node *parent,
+    virtual void onEndAddObject(Node *parent,
                              core::objectmodel::BaseObject *object);
 
-    virtual void onRemoveObjectEnd(Node *parent,
+    virtual void onEndRemoveObject(Node *parent,
                                 core::objectmodel::BaseObject *object);
 
-    virtual void onAddSlaveEnd(core::objectmodel::BaseObject *master,
+    virtual void onEndAddSlave(core::objectmodel::BaseObject *master,
                             core::objectmodel::BaseObject *slave);
 
-    virtual void onRemoveSlaveEnd(core::objectmodel::BaseObject *master,
+    virtual void onEndRemoveSlave(core::objectmodel::BaseObject *master,
                                core::objectmodel::BaseObject *slave);
 };
 

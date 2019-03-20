@@ -249,84 +249,84 @@ void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onAddChildBegin(parent.get(), child.get());
+        listener->onBeginAddChild(parent.get(), child.get());
 }
 
 void Node::notifyEndAddChild(Node::SPtr parent, Node::SPtr child)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onAddChildEnd(parent.get(), child.get());
+        listener->onEndAddChild(parent.get(), child.get());
 }
 
 void Node::notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onRemoveChildBegin(parent.get(), child.get());
+        listener->onBeginRemoveChild(parent.get(), child.get());
 }
 
 void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onRemoveChildEnd(parent.get(), child.get());
+        listener->onEndRemoveChild(parent.get(), child.get());
 }
 
 void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onAddObjectBegin(parent.get(), obj.get());
+        listener->onBeginAddObject(parent.get(), obj.get());
 }
 
 void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onAddObjectEnd(parent.get(), obj.get());
+        listener->onEndAddObject(parent.get(), obj.get());
 }
 
 void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onRemoveObjectBegin(parent.get(), obj.get());
+        listener->onBeginRemoveObject(parent.get(), obj.get());
 }
 
 void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onRemoveObjectEnd(parent.get(), obj.get());
+        listener->onEndRemoveObject(parent.get(), obj.get());
 }
 
 void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onAddSlaveBegin(master, slave);
+        listener->onBeginAddSlave(master, slave);
 }
 
 void Node::notifyEndAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onAddSlaveEnd(master, slave);
+        listener->onEndAddSlave(master, slave);
 }
 
 void Node::notifyBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onRemoveSlaveBegin(master, slave);
+        listener->onBeginRemoveSlave(master, slave);
 }
 
 void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (auto& listener : root->listener)
-        listener->onRemoveSlaveEnd(master, slave);
+        listener->onEndRemoveSlave(master, slave);
 }
 
 void Node::notifySleepChanged(Node* node)

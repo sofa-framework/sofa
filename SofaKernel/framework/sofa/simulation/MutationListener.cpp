@@ -33,72 +33,71 @@ MutationListener::~MutationListener() {}
 
 void MutationListener::sleepChanged(Node *node) { SOFA_UNUSED(node); }
 
-void MutationListener::onAddChildBegin(Node *parent, Node *child)
+void MutationListener::onBeginAddChild(Node *parent, Node *child)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(child);
 }
-void MutationListener::onRemoveChildBegin(Node *parent, Node *child)
+void MutationListener::onBeginRemoveChild(Node *parent, Node *child)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(child);
 }
 
-void MutationListener::onAddObjectBegin(Node *parent,
+void MutationListener::onBeginAddObject(Node *parent,
                                       core::objectmodel::BaseObject *object)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(object);
 }
-void MutationListener::onRemoveObjectBegin(Node *parent,
+void MutationListener::onBeginRemoveObject(Node *parent,
                                          core::objectmodel::BaseObject *object)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(object);
 }
-void MutationListener::onAddSlaveBegin(core::objectmodel::BaseObject *master,
+void MutationListener::onBeginAddSlave(core::objectmodel::BaseObject *master,
                                      core::objectmodel::BaseObject *slave)
 {
     SOFA_UNUSED(master);
     SOFA_UNUSED(slave);
 }
-void MutationListener::onRemoveSlaveBegin(core::objectmodel::BaseObject *master,
+void MutationListener::onBeginRemoveSlave(core::objectmodel::BaseObject *master,
                                         core::objectmodel::BaseObject *slave)
 {
     SOFA_UNUSED(master);
     SOFA_UNUSED(slave);
 }
 
-void MutationListener::onAddChildEnd(Node *parent, Node *child)
+void MutationListener::onEndAddChild(Node *parent, Node *child)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(child);
 }
-void MutationListener::onRemoveChildEnd(Node *parent, Node *child)
+void MutationListener::onEndRemoveChild(Node *parent, Node *child)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(child);
 }
-
-void MutationListener::onAddObjectEnd(Node *parent,
+void MutationListener::onEndAddObject(Node *parent,
                                     core::objectmodel::BaseObject *object)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(object);
 }
-void MutationListener::onRemoveObjectEnd(Node *parent,
+void MutationListener::onEndRemoveObject(Node *parent,
                                        core::objectmodel::BaseObject *object)
 {
     SOFA_UNUSED(parent);
     SOFA_UNUSED(object);
 }
-void MutationListener::onAddSlaveEnd(core::objectmodel::BaseObject *master,
+void MutationListener::onEndAddSlave(core::objectmodel::BaseObject *master,
                                    core::objectmodel::BaseObject *slave)
 {
     SOFA_UNUSED(master);
     SOFA_UNUSED(slave);
 }
-void MutationListener::onRemoveSlaveEnd(core::objectmodel::BaseObject *master,
+void MutationListener::onEndRemoveSlave(core::objectmodel::BaseObject *master,
                                       core::objectmodel::BaseObject *slave)
 {
     SOFA_UNUSED(master);

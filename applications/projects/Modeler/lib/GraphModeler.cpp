@@ -142,7 +142,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     }
     else
     {
-        graphListener->onAddChildBegin(nullptr, child.get());
+        graphListener->onBeginAddChild(nullptr, child.get());
         //Set up the root
         this->topLevelItem(0)->setExpanded(true);
 
@@ -980,7 +980,7 @@ void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
             emit operationPerformed(removal);
         }
         if (!parent)
-            graphListener->onRemoveChildBegin(parent, node);
+            graphListener->onBeginRemoveChild(parent, node);
         else
             parent->removeChild(dynamic_cast<Node*>(node));
         if (!parent && this->children().size() == 0) addNode(nullptr);
