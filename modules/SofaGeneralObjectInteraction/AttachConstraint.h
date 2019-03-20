@@ -107,7 +107,6 @@ public:
     static std::string templateName(const T* ptr= nullptr) {
         return core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::templateName(ptr);
     }
-    void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
     const Real getConstraintFactor(const int index);
