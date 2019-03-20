@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -392,15 +392,15 @@ public:
         const char* idStr;
         const IdObj obj;
         const char* objStr;
-        StepVar(IdStep id) : id(id), idStr(NULL), objStr(NULL)
+        StepVar(IdStep id) : id(id), idStr(nullptr), objStr(nullptr)
         {
             stepBegin(id);
         }
-        StepVar(const char* idStr) : idStr(idStr), objStr(NULL)
+        StepVar(const char* idStr) : idStr(idStr), objStr(nullptr)
         {
             stepBegin(idStr);
         }
-        StepVar(IdStep id, IdObj obj) : id(id), idStr(NULL), obj(obj), objStr(NULL)
+        StepVar(IdStep id, IdObj obj) : id(id), idStr(nullptr), obj(obj), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
@@ -439,7 +439,7 @@ public:
 
 
     typedef void (*SyncCallBack)(void* userData);
-    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
+    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = nullptr);
 
 };
 

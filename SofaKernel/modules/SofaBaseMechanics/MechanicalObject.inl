@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,7 @@
 #include <sofa/simulation/Visitor.h>
 #endif
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -79,11 +79,11 @@ MechanicalObject<DataTypes>::MechanicalObject()
     : x(initData(&x, "position", "position coordinates of the degrees of freedom"))
     , v(initData(&v, "velocity", "velocity coordinates of the degrees of freedom"))
     , f(initData(&f, "force", "force vector of the degrees of freedom"))
+    , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
     , externalForces(initData(&externalForces, "externalForce", "externalForces vector of the degrees of freedom"))
     , dx(initData(&dx, "derivX", "dx vector of the degrees of freedom"))
     , xfree(initData(&xfree, "free_position", "free position coordinates of the degrees of freedom"))
-    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
-    , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
+    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))    
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
     , m(initData(&m, "mappingJacobian", "mappingJacobian applied to the degrees of freedom"))
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))

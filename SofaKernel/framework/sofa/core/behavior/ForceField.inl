@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -83,7 +83,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
-            serr << "WARNING " << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce" << sendl;
+            msg_warning()  << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce";
 #endif
     }
 }
@@ -101,7 +101,7 @@ void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVec
 template<class DataTypes>
 void ForceField<DataTypes>::addClambda(const MechanicalParams* /*mparams*/, DataVecDeriv& /*df*/, const DataVecDeriv& /*lambda*/, SReal /*cFactor*/ )
 {
-    serr<<"function 'addClambda' is not implemented"<<sendl;
+    msg_error()<<"function 'addClambda' is not implemented";
 }
 
 
@@ -120,7 +120,7 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
         addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r.offset);
-    else serr<<"addKToMatrix found no valid matrix accessor." << sendl;
+    else msg_error()<<"addKToMatrix found no valid matrix accessor.";
 }
 
 template<class DataTypes>
@@ -128,7 +128,7 @@ void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 {
     static int i=0;
     if (i < 10) {
-        serr << "addKToMatrix not implemented." << sendl;
+        msg_error() << "addKToMatrix not implemented.";
         i++;
     }
 }
@@ -138,7 +138,7 @@ void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, con
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r) addSubKToMatrix(r.matrix, subMatrixIndex, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r.offset);
-    else serr<<"addKToMatrix found no valid matrix accessor." << sendl;
+    else msg_error()<<"addKToMatrix found no valid matrix accessor.";
 }
 
 template<class DataTypes>

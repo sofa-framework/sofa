@@ -102,7 +102,7 @@ static PyObject * PythonScriptDataEngine_new(PyTypeObject * cls, PyObject * args
     } catch (error e) {
         PyErr_SetString(PyExc_TypeError,
                         "PythonScriptDataEngine.__new__ needs a Sofa.BaseContext as first argument");
-        return NULL;
+        return nullptr;
     };
 }
 

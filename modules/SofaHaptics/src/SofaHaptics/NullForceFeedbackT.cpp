@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,22 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICS_INIT_H
-#define SOFA_COMPONENT_HAPTICS_INIT_H
-#include "config.h"
+#include <SofaHaptics/NullForceFeedbackT.h>
+#include <sofa/core/ObjectFactory.h>
+
+using namespace std;
 
 namespace sofa
 {
-
 namespace component
 {
+namespace controller
+{
 
+static int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >();
 
-void SOFA_HAPTICS_API initHaptics();
-
+} // namespace controller
 } // namespace component
-
 } // namespace sofa
-
-#endif
-

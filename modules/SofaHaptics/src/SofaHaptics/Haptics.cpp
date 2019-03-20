@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,26 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaHaptics/initHaptics.h>
+#include <SofaHaptics/Haptics.h>
+#include <sofa/core/Plugin.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-
-void initHaptics()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+class HapticsPlugin: public sofa::core::Plugin {
+public:
+    HapticsPlugin(): Plugin("Haptics") {
+        setDescription("");
+        setVersion("");
+        setLicense("LGPL");
+        setAuthors("The SOFA Team");
     }
-}
+};
 
-} // namespace component
-
-} // namespace sofa
+SOFA_PLUGIN(HapticsPlugin);

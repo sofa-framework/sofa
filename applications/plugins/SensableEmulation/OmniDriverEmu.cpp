@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-
 ////force feedback
 #include <SofaHaptics/ForceFeedback.h>
 #include <SofaHaptics/NullForceFeedback.h>
@@ -45,13 +44,11 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
-
 #ifndef WIN32
 #  include <pthread.h>
 #else
 #  include <boost/thread/thread.hpp>
 #endif
-
 
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -60,7 +57,9 @@
 #  include <windows.h>
 #endif
 
-double prevTime;
+#include <sofa/helper/rmath.h>
+
+static double prevTime = -1.0;
 
 namespace sofa
 {
@@ -95,9 +94,7 @@ OmniDriverEmu::OmniDriverEmu()
     , currentToolIndex(0)
     , isToolControlled(true)
 {
-
     this->f_listening.setValue(true);
-    //data.forceFeedback = new NullForceFeedback();
     noDevice = false;
     moveOmniBase = false;
     executeAsynchro = false;
@@ -123,7 +120,7 @@ void OmniDriverEmu::setForceFeedbacks(vector<ForceFeedback*> ffs)
 
 void OmniDriverEmu::cleanup()
 {
-    sout << "OmniDriverEmu::cleanup()" << sendl;
+    msg_info() << "cleanup()" ;
 
     // If the thread is still running stop it
     if (omniSimThreadCreated)
@@ -134,14 +131,13 @@ void OmniDriverEmu::cleanup()
         // no error: thread cancel
         if(err==0)
         {
-            std::cout << "OmniDriverEmu: thread haptic cancel in cleanup" << std::endl;
-
+            msg_error() << "Thread haptic cancel in cleanup.";
         }
 
         // error
         else
         {
-            std::cout << "OmniDriverEmu: thread not cancel in cleanup = "  << err  << std::endl;
+            msg_error() << "Thread not cancel in cleanup = "  << err  ;
         }
 #endif
     }
@@ -149,12 +145,14 @@ void OmniDriverEmu::cleanup()
 
 void OmniDriverEmu::init()
 {
-    std::cout << "[OmniEmu] init" << std::endl;
+    msg_info() << "[OmniEmu] init" ;
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
-    if (!mState) serr << "OmniDriverEmu has no binding MechanicalState" << sendl;
-    else std::cout << "[Omni] init" << std::endl;
+    if (!mState)
+        msg_warning() << "OmniDriverEmu has no binding MechanicalState.";
+    else
+        msg_info() << "[Omni] init" ;
 
-    if(mState->getSize()<(size_t)toolCount.getValue())
+    if(mState->getSize()<toolCount.getValue())
         mState->resize(toolCount.getValue());
 }
 
@@ -164,14 +162,10 @@ void OmniDriverEmu::init()
 */
 void *hapticSimuExecute( void *ptr )
 {
+    assert(ptr!=nullptr);
 
     // Initialization
-    OmniDriverEmu *omniDrv = (OmniDriverEmu*)ptr;
-    //double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
-    //double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
-    //double requiredTime = 1.0/double(omniDrv->simuFreq.getValue()) * 1.0/timeScale; // [us]
-    //double timeCorrection = 0.1 * requiredTime;
-    //int timeToSleep;
+    OmniDriverEmu *omniDrv = static_cast<OmniDriverEmu*>(ptr);
 
     // Init the "trajectory" data
     OmniDriverEmu::VecCoord pts = omniDrv->trajPts.getValue(); //sets of points use for interpolation
@@ -179,26 +173,25 @@ void *hapticSimuExecute( void *ptr )
 
     if (pts.empty())
     {
-        std::cerr << "Bad trajectory specification : there are no points for interpolation. " << std::endl;
-        return 0;
+        msg_error(omniDrv) << "Bad trajectory specification : there are no points for interpolation. ";
+        return nullptr;
     }
 
-
     // Add a first point ( 0 0 0 0 0 0 1 ) if the first "key time" is not 0
-    if (tmg[0] != 0)
+    if (sofa::helper::isEqual(tmg[0], 0.0))
     {
         pts.insert(pts.begin(), OmniDriverEmu::Coord());
         tmg.insert(tmg.begin(), 0);
     }
 
-    unsigned int numPts = pts.size();
-    unsigned int numSegs = tmg.size();
+    size_t numPts = pts.size();
+    size_t numSegs = tmg.size();
 
     // test if "trajectory" data are correct
     if (numSegs != numPts)
     {
-        std::cerr << "Bad trajectory specification : the number of trajectory timing does not match the number of trajectory points. " << std::endl;
-        return 0;
+        msg_error(omniDrv) << "Bad trajectory specification : the number of trajectory timing does not match the number of trajectory points. ";
+        return nullptr;
     }
 
     helper::vector< unsigned int > stepNum;
@@ -208,50 +201,6 @@ void *hapticSimuExecute( void *ptr )
         stepNum.push_back(tmg[i] * omniDrv->simuFreq.getValue());
     }
 
-    /* //Igor version
-
-    std::cout << "numSegs " << numSegs << "  --- " << numPts << std::endl;
-
-    std::cout << pts[0].getCenter() << "///  " << pts[0].getOrientation() << std::endl;
-
-
-    if (numSegs != (2*numPts - 1))  {
-        std::cerr << "Bad trajectory specification " << std::endl;
-        return(0);
-    }
-    OmniDriverEmu::VecCoord stepDiff;
-    helper::vector<int> stepNum;
-
-    unsigned int seg = 0;
-    for (unsigned int np = 0; np < numPts; np++) {
-        //for the point
-        unsigned int n = tmg[seg]*omniDrv->simuFreq.getValue();
-        stepNum.push_back(n);
-        cout << "N pts = " << n << std::endl;
-        OmniDriverEmu::Coord crd;
-        cout << " adding  " << crd << std::endl;
-        stepDiff.push_back(crd);
-
-        //for the line
-        if (np < numPts-1) {
-            seg++;
-            n = tmg[seg]*omniDrv->simuFreq.getValue();
-            cout << "N lin = " << n << std::endl;
-            stepNum.push_back(n);
-            Vec3d dx = (pts[np+1].getCenter() - pts[np].getCenter())/double(n);
-            helper::Quater<double> dor;  ///TODO difference for rotations!!!
-            OmniDriverEmu::Coord crd(dx, dor);
-            cout << "adding " << crd << std::endl;
-            stepDiff.push_back(crd);
-        }
-        seg++;
-    }
-
-    std::cout << " stepNum = " << stepNum << std::endl;
-    std::cout << " stepDiff = " << stepDiff << std::endl;
-    */
-
-
     // Init data for interpolation.
     SolidTypes<double>::SpatialVector temp1, temp2;
     long long unsigned asynchroStep=0;
@@ -260,7 +209,6 @@ void *hapticSimuExecute( void *ptr )
     unsigned int actStep = 0;
     sofa::helper::Quater<double> actualRot;
     sofa::defaulttype::Vec3d actualPos = pts[0].getCenter();
-
 
     double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
     double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
@@ -279,9 +227,7 @@ void *hapticSimuExecute( void *ptr )
                 oneTimeMessage = 0;
             }
 
-
             startTime = double(omniDrv->thTimer->getTime());
-
 
             // compute the new position and orientataion
             if (actSeg < numSegs)
@@ -303,17 +249,14 @@ void *hapticSimuExecute( void *ptr )
                 }
                 else
                 {
-
                     actualPos = pts[actSeg].getCenter();
                     actualRot = pts[actSeg].getOrientation();
                     actSeg++;
-
                 }
             }
             else
             {
-
-                std::cout << "OmniDriverEmu : End of the movement!" << std::endl;
+                msg_info(omniDrv) << "End of the movement!" ;
                 omniDrv->setOmniSimThreadCreated(false);
 #ifndef WIN32
                 pthread_exit(0);
@@ -322,16 +265,11 @@ void *hapticSimuExecute( void *ptr )
 #endif
             }
 
-
-
-
-
             // Update the position of the tool
             omniDrv->data.servoDeviceData.pos = actualPos;
             omniDrv->data.servoDeviceData.quat = actualRot;
             SolidTypes<double>::Transform baseOmni_H_endOmni(actualPos * omniDrv->data.scale, actualRot);
             SolidTypes<double>::Transform world_H_virtualTool = omniDrv->data.world_H_baseOmni * baseOmni_H_endOmni * omniDrv->data.endOmni_H_virtualTool;
-
 
             // transmit the position of the tool to the force feedback
             omniDrv->data.forceFeedbackIndice= omniDrv->getCurrentToolIndex();
@@ -350,14 +288,13 @@ void *hapticSimuExecute( void *ptr )
             {
                 double realFreq = 1.0/( (realTimeAct - realTimePrev)*timeScale );
                 averageFreq += realFreq;
-                //std::cout << "actual frequency = " << realFreq << std::endl;
                 if (realFreq < minimalFreq)
                     minimalFreq = realFreq;
 
                 if ( ((asynchroStep+1) % 1000) == 0)
                 {
-                    std::cout << "Average frequency of the loop = " << averageFreq/double(asynchroStep) << " Hz " << std::endl;
-                    std::cout << "Minimal frequency of the loop = " << minimalFreq << " Hz " << std::endl;
+                    msg_info(omniDrv) << "Average frequency of the loop = " << averageFreq/double(asynchroStep) << " Hz "
+                                      << "Minimal frequency of the loop = " << minimalFreq << " Hz " ;
                 }
             }
 
@@ -377,19 +314,17 @@ void *hapticSimuExecute( void *ptr )
                 // Milliseconds sleep
                 Sleep(static_cast<DWORD>(1000.0 * timeScale * timeToSleep));
 #endif
-                //std::cout << "Frequency OK, computation time: " << totalTime << std::endl;
             }
             else
             {
-                std::cout << "Cannot achieve desired frequency, computation too slow : " << totalTime * timeScale << " seconds for last iteration." << std::endl;
+                msg_info(omniDrv) << "Cannot achieve desired frequency, computation too slow : " << totalTime * timeScale << " seconds for last iteration.";
             }
-
         }
         else
         {
             if (oneTimeMessage == 0)
             {
-                std::cout << "Running Asynchro without action" << std::endl;
+                msg_info(omniDrv) << "Running Asynchro without action" ;
                 oneTimeMessage = 1;
             }
 #ifndef WIN32
@@ -398,14 +333,12 @@ void *hapticSimuExecute( void *ptr )
             Sleep(static_cast<DWORD>(10000));
 #endif
         }
-
-
     }
 }
 
 void OmniDriverEmu::bwdInit()
 {
-    sout<<"OmniDriverEmu::bwdInit() is called"<<sendl;
+    msg_info()<<"OmniDriverEmu::bwdInit() is called";
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 
     // depending on toolCount, search either the first force feedback, or the feedback with indice "0"
@@ -413,7 +346,7 @@ void OmniDriverEmu::bwdInit()
 
     vector<ForceFeedback*> ffs;
     groot->getTreeObjects<ForceFeedback>(&ffs);
-    std::cout << "OmniDriver: "<<ffs.size()<<" ForceFeedback objects found"<<std::endl;
+    msg_info() << "OmniDriver: "<<ffs.size()<<" ForceFeedback objects found";
     setForceFeedbacks(ffs);
 
     setDataValue();
@@ -422,7 +355,7 @@ void OmniDriverEmu::bwdInit()
 
     if (omniSimThreadCreated)
     {
-        serr << "Emulating thread already running" << sendl;
+        msg_warning() << "Emulating thread already running" ;
 
 #ifndef WIN32
         int err = pthread_cancel(hapSimuThread);
@@ -430,33 +363,24 @@ void OmniDriverEmu::bwdInit()
         // no error: thread cancel
         if(err==0)
         {
-            std::cout << "OmniDriverEmu: thread haptic cancel" << std::endl;
-
+            msg_info() << "OmniDriverEmu: thread haptic cancel";
         }
-
-        // error
         else
         {
-            std::cout << "thread not cancel = "  << err  << std::endl;
+            msg_warning() << "thread not cancel = "  << err ;
         }
 #endif
     }
-    //sout << "Not initializing phantom, starting emulating thread..." << sendl;
-    //pthread_t hapSimuThread;
 
-    if (thTimer == NULL)
+    if (thTimer == nullptr)
         thTimer = new(helper::system::thread::CTime);
 
 #ifndef WIN32
     if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
     {
-        std::cout << "OmniDriver : Thread created for Omni simulation" << std::endl;
+        msg_info() << "OmniDriver : Thread created for Omni simulation." ;
         omniSimThreadCreated=true;
     }
-
-    /* } else
-        sout << "Emulating thread already running" << sendl;
-        */
 #else
     boost::thread hapSimuThread(hapticSimuExecute, this);
     setOmniSimThreadCreated(true);
@@ -466,8 +390,6 @@ void OmniDriverEmu::bwdInit()
 
 void OmniDriverEmu::setDataValue()
 {
-
-    //ajout
     data.forceFeedbackIndice=0;
     data.scale = scale.getValue();
     data.forceScale = forceScale.getValue();
@@ -483,40 +405,26 @@ void OmniDriverEmu::setDataValue()
 
 void OmniDriverEmu::reset()
 {
-    std::cout<<"OmniDriverEmu::reset() is called" <<std::endl;
+    msg_info()<<"OmniDriverEmu::reset() is called.";
     this->reinit();
-}
-
-void OmniDriverEmu::reinitVisual()
-{
 }
 
 
 void OmniDriverEmu::reinit()
 {
-    std::cout<<"OmniDriverEmu::reinit() is called" <<std::endl;
+    msg_info()<<"OmniDriverEmu::reinit() is called";
     this->cleanup();
     this->bwdInit();
-    this->reinitVisual();
-    std::cout<<"OmniDriverEmu::reinit() done" <<std::endl;
-
-
-    //////////////// visu_base: place the visual model of the OmniDriver
-
-
-    //sofa::component::visualmodel::RigidMappedModel::VecCoord* x_rigid = visu_base->getRigidX();
-    // x_rigid->resize(1);
-    //(*x_rigid)[0].getOrientation() = q;
-    //(*x_rigid)[0].getCenter() =  positionBase.getValue();
-    //double s =
-    //this->scale=Vector3(this->)
-
+    msg_info()<<"OmniDriverEmu::reinit() done";
 }
 
 void OmniDriverEmu::draw(const core::visual::VisualParams *)
 {
     if(omniVisu.getValue())
     {
+        static bool isInited=false;
+        if(!isInited)
+        {
         // compute position of the endOmni in worldframe
         defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
         defaulttype::SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
@@ -540,79 +448,47 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         visu_end->updateVisual();
         visu_end->applyRotation(world_H_endOmni.getOrientation());
         visu_end->applyTranslation(world_H_endOmni.getOrigin()[0],world_H_endOmni.getOrigin()[1],world_H_endOmni.getOrigin()[2]);
+        isInited=true;
+        }
 
         // draw the 2 visual models
         visu_base->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
         visu_end->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
     }
-
-
 }
 
 void OmniDriverEmu::copyDeviceDataCallback(OmniData *pUserData)
 {
-    OmniData *data = pUserData; // static_cast<OmniData*>(pUserData);
+    OmniData *data = pUserData;
     memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
     data->servoDeviceData.ready = true;
     data->servoDeviceData.nupdates = 0;
 }
 
-
 void OmniDriverEmu::stopCallback(OmniData *pUserData)
 {
-    OmniData *data = pUserData; // static_cast<OmniData*>(pUserData);
+    OmniData *data = pUserData;
     data->servoDeviceData.stop = true;
-}
-
-void OmniDriverEmu::onKeyPressedEvent(core::objectmodel::KeypressedEvent * /*kpe*/)
-{
-
-
-
-}
-
-void OmniDriverEmu::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * /*kre*/)
-{
-
-
-
 }
 
 void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
 {
-
-
-    //std::cout<<"NewEvent detected !!"<<std::endl;
-
-
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        if (this->f_printLog.getValue())
-        {
-            std::cout << "Test handle event "<< std::endl;
-        }
+        msg_info() << "Test handle event ";
 
-        //getData(); // copy data->servoDeviceData to gDeviceData
-        //if (!simulateTranslation.getValue()) {
         copyDeviceDataCallback(&data);
 
-        if (this->f_printLog.getValue())
-        {
-            std::cout << data.deviceData.ready<< std::endl;
-        }
+        msg_info() << data.deviceData.ready;
 
         if (data.deviceData.ready)
         {
-            if (this->f_printLog.getValue())
-            {
-                std::cout << "Data ready, event 2"<< std::endl;
-            }
+            msg_info() << "Data ready, event 2";
 
             data.deviceData.quat.normalize();
 
             if (isToolControlled) // ignore haptic device if tool is unselected
             {
-
                 /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
                 SolidTypes< double >::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
                 SolidTypes< double >::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
@@ -624,17 +500,14 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 for (unsigned int i=0; i<data.forceFeedbacks.size(); i++)
                     if (data.forceFeedbacks[i]->indice==data.forceFeedbackIndice)
                         data.forceFeedbacks[i]->setReferencePosition(world_H_virtualTool);
+
                 //-----------------------------
-
-
-                /// TODO : SHOULD INCLUDE VELOCITY !!
+                //TODO : SHOULD INCLUDE VELOCITY !!
                 //sofa::core::objectmodel::HapticDeviceEvent omniEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
                 //this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &omniEvent);
-
                 helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
                 this->getContext()->getMechanicalState()->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
                 helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
-
 
                 /// FIX : check if the mechanical state is empty, if true, resize it
                 /// otherwise: crash when accessing xfree[] and x[]
@@ -644,20 +517,18 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                     x.resize(1);
 
                 if((size_t)currentToolIndex >= xfree.size() || (size_t)currentToolIndex >= x.size())
-                    serr<<"currentToolIndex exceed the size of xfree/x vectors"<<std::endl;
+                    msg_warning()<<"currentToolIndex exceed the size of xfree/x vectors";
                 else
                 {
                     xfree[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
                     x[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
 
-
                     xfree[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
                     x[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
                 }
 
-
                 sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
-                if (node != NULL)
+                if (node != nullptr)
                 {
                     sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
                     sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
@@ -668,24 +539,20 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 data.forceFeedbackIndice = -1;
             }
 
-
             if (moveOmniBase)
             {
-
-                std::cout<<" new positionBase = "<<positionBase_buf[0]<<std::endl;
+                msg_info()<<" new positionBase = "<<positionBase_buf[0];
                 visu_base->applyTranslation(positionBase_buf[0]-positionBase.getValue()[0],
                         positionBase_buf[1]-positionBase.getValue()[1],
                         positionBase_buf[2]-positionBase.getValue()[2]);
                 positionBase.setValue(positionBase_buf);
                 setDataValue();
-                //this->reinitVisual();
             }
-
 
             executeAsynchro = true;
         }
         else
-            std::cout<<"data not ready"<<std::endl;
+            msg_info()<<"data not ready";
     }
 
     if (dynamic_cast<core::objectmodel::KeypressedEvent *>(event))
@@ -694,15 +561,13 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         if (kpe->getKey()=='Z' ||kpe->getKey()=='z' )
         {
             moveOmniBase = !moveOmniBase;
-            std::cout<<"key z detected "<<std::endl;
+            msg_info()<<"key z detected ";
             omniVisu.setValue(moveOmniBase);
-
 
             if(moveOmniBase)
             {
                 this->cleanup();
                 positionBase_buf = positionBase.getValue();
-
             }
             else
             {
@@ -734,11 +599,11 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         // emulated haptic buttons B=btn1, N=btn2
         if (kpe->getKey()=='H' || kpe->getKey()=='h')
         {
-            std::cout << "emulated button 1 pressed" << std::endl;
+            msg_info() << "emulated button 1 pressed";
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
-                    sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
+                                                             sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
@@ -748,7 +613,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
-                    sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
+                                                             sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
@@ -759,9 +624,9 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         core::objectmodel::KeyreleasedEvent *kre = dynamic_cast<core::objectmodel::KeyreleasedEvent *>(event);
         // emulated haptic buttons B=btn1, N=btn2
         if (kre->getKey()=='H' || kre->getKey()=='h'
-            || kre->getKey()=='J' || kre->getKey()=='j')
+                || kre->getKey()=='J' || kre->getKey()=='j')
         {
-            std::cout << "emulated button released" << std::endl;
+            msg_info() << "emulated button released" ;
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);

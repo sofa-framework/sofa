@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,14 +82,14 @@ private:
 
 protected:
     OglTetrahedralModel();
-    virtual ~OglTetrahedralModel();
+    ~OglTetrahedralModel() override;
 public:
-    void init();
-    void initVisual();
-    void drawTransparent(const core::visual::VisualParams* vparams);
-    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
+    void init() override;
+    void initVisual() override;
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
-    virtual void updateVisual();
+    void updateVisual() override;
     virtual void computeMesh();
 
     virtual std::string getTemplateName() const

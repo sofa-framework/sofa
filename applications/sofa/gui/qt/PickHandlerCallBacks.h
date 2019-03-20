@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -51,7 +51,7 @@ class InformationOnPickCallBack: public CallBackPicker
 public:
     InformationOnPickCallBack();
     InformationOnPickCallBack(RealGUI *g);
-    void execute(const sofa::component::collision::BodyPicked &body);
+    void execute(const sofa::component::collision::BodyPicked &body) override;
 protected:
     RealGUI *gui;
 };
@@ -62,7 +62,7 @@ class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
 public:
     ColourPickingRenderCallBack();
     ColourPickingRenderCallBack(viewer::SofaViewer* viewer);
-    void render(ColourPickingVisitor::ColourCode code);
+    void render(ColourPickingVisitor::ColourCode code) override;
 protected:
     viewer::SofaViewer* _viewer;
 

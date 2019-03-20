@@ -19,18 +19,18 @@ class SOFA_Compliant_API BenchmarkSolver : public KKTSolver {
 	 
 	BenchmarkSolver();
 	
-	virtual void init();
+	void init() override;
 
-	virtual void factor(const system_type& system);
+	void factor(const system_type& system) override;
 	
-	virtual void solve(vec& x,
+	void solve(vec& x,
 	                   const system_type& system,
-	                   const vec& rhs) const;
+	                   const vec& rhs) const override;
 
-	virtual void correct(vec& x,
+	void correct(vec& x,
 						 const system_type& system,
                          const vec& rhs,
-                         real damping = 0) const;
+                         real damping = 0) const override;
 
   protected:
     std::vector< KKTSolver::SPtr > solvers;

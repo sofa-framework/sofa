@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/XspLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/system/config.h>
@@ -80,7 +80,7 @@ void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(uns
 }
 
 template <class DataTypes>
-class VectorSpringForceField<DataTypes>::Loader : public sofa::helper::io::MassSpringLoader
+class VectorSpringForceField<DataTypes>::Loader : public sofa::helper::io::XspLoaderDataHook
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -91,11 +91,6 @@ public:
     {
         dest->addSpring(m1,m2,ks,kd,Coord((Real)restx,(Real)resty,(Real)restz));
     }
-    virtual void setNumSprings(int /*n*/)
-    {
-        //dest->resizeArray((unsigned int )n);
-    }
-
 };
 
 template <class DataTypes>
@@ -104,7 +99,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
     if (filename && filename[0])
     {
         Loader loader(this);
-        return loader.load(filename);
+        return helper::io::XspLoader::Load(filename, loader);
     }
     else return false;
 }
