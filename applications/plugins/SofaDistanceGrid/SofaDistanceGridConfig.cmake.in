@@ -3,8 +3,11 @@
 @PACKAGE_INIT@
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaMisc REQUIRED)
-find_package(SofaPython QUIET)
+find_package(SofaMiscCollision REQUIRED)
+
+if(@SOFADISTANCEGRID_WITH_MINIFLOWVR@)
+    find_package(MiniFlowVR REQUIRED)
+endif()
 
 if(NOT TARGET SofaDistanceGrid)
         include("${CMAKE_CURRENT_LIST_DIR}/SofaDistanceGridTargets.cmake")
