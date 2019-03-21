@@ -483,11 +483,18 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
     endforeach()
 
     ## Default install rules for resources
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples/ DESTINATION share/sofa/${package_name}/examples COMPONENT resources)
+    set(example_install_dir "share/sofa/${package_name}/examples")
+    set(optional_argv4 "${ARGV4}")
+    if(optional_argv4)
+        # ARGV3 is a non-breaking additional argument to handle EXAMPLE_INSTALL_DIR (see sofa_generate_package)
+        # TODO: add a real argument "example_install_dir" to this macro
+        set(example_install_dir "${optional_argv4}")
     endif()
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes")
-        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scenes/ DESTINATION share/sofa/${package_name}/examples COMPONENT resources)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples/ DESTINATION ${example_install_dir} COMPONENT resources)
+    endif()
+    if(INSTALL_EXAMPLES_IN_SHARE AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes")
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scenes/ DESTINATION ${example_install_dir} COMPONENT resources)
     endif()
 endmacro()
 
@@ -564,7 +571,7 @@ endmacro()
 # sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "sofa/custom/install/dir" INCLUDE_SOURCE_DIR src/${PROJECT_NAME} )
 #
 function(sofa_generate_package)
-    set(oneValueArgs NAME VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR)
+    set(oneValueArgs NAME VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR)
     set(multiValueArgs TARGETS)
     cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     set(include_install_dir "${_INCLUDE_INSTALL_DIR}")
@@ -572,7 +579,7 @@ function(sofa_generate_package)
         set(include_install_dir "${_INCLUDE_ROOT_DIR}")
         message(WARNING "sofa_generate_package(${_NAME}): INCLUDE_ROOT_DIR is deprecated. Please use INCLUDE_INSTALL_DIR instead.")
     endif()
-    sofa_install_targets("${_NAME}" "${_TARGETS}" "${include_install_dir}" "${_INCLUDE_SOURCE_DIR}")
+    sofa_install_targets("${_NAME}" "${_TARGETS}" "${include_install_dir}" "${_INCLUDE_SOURCE_DIR}" "${_EXAMPLE_INSTALL_DIR}")
     sofa_write_package_config_files("${_NAME}" "${_VERSION}")
 endfunction()
 
@@ -580,7 +587,12 @@ macro(sofa_create_package package_name version the_targets include_install_dir)
     message(WARNING "Deprecated macro. Use the keyword argument function 'sofa_generate_package' instead")
     # ARGV4 is a non-breaking additional argument to handle INCLUDE_SOURCE_DIR (see sofa_generate_package)
     # TODO: add a real argument "include_source_dir" to this macro
-    sofa_generate_package(NAME "${package_name}" VERSION "${version}" TARGETS "${the_targets}" INCLUDE_INSTALL_DIR "${include_install_dir}" INCLUDE_SOURCE_DIR "${ARGV4}")
+    sofa_generate_package(
+        NAME "${package_name}" VERSION "${version}"
+        TARGETS "${the_targets}"
+        INCLUDE_INSTALL_DIR "${include_install_dir}" INCLUDE_SOURCE_DIR "${ARGV4}"
+        EXAMPLE_INSTALL_DIR "${ARGV5}"
+        )
 endmacro()
 
 
