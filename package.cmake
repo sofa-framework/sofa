@@ -1,7 +1,9 @@
 ######################
 # Wrapper macro to set boolean value to a variable
 macro(setSofaOption name value)
-    set(${name} "${value}" CACHE BOOL "" FORCE)
+    if(NOT ${name})
+        set(${name} "${value}" CACHE BOOL "" FORCE)
+    endif()
     message("${name} ${value}")
 endmacro()
 
@@ -28,7 +30,7 @@ setSofaOption(APPLICATION_MODELER OFF)
 
 setSofaOption(SOFA_USE_MASK OFF)
 
-setSofaOption(SOFA_BUILD_TESTS OFF)
+setSofaOption(SOFA_BUILD_TESTS ON)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 setSofaOption(SOFA_BUILD_METIS ON)
 
@@ -44,6 +46,8 @@ endforeach()
 # Set some plugins/modules ON
 setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
+setSofaOption(PLUGIN_SOFADISTANCEGRID ON)
+setSofaOption(PLUGIN_SOFAIMPLICITFIELD ON)
 setSofaOption(PLUGIN_SOFAPYTHON ON)
 setSofaOption(PLUGIN_SOFAMISCCOLLISION ON)
 setSofaOption(MODULE_SOFASPARSESOLVER ON)
@@ -53,4 +57,4 @@ setSofaOption(MODULE_SOFAPRECONDITIONER ON)
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
 
 # install GTest even if SOFA_BUILD_TESTS=OFF
-add_subdirectory(extlibs/gtest)
+#add_subdirectory(extlibs/gtest)
