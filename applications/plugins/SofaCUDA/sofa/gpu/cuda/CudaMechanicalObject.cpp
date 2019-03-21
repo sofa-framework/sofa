@@ -38,7 +38,7 @@ namespace component
 namespace container
 {
 // template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class SOFA_GPU_CUDA_API .
+// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec1fTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec2fTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3fTypes>;

@@ -189,7 +189,7 @@ using sofa::gpu::cuda::CudaRigid3fTypes;
 
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class SOFA_GPU_CUDA_API .
+// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 extern template class SOFA_GPU_CUDA_API sofa::component::container::MechanicalObject<CudaVec1fTypes>;
 extern template class SOFA_GPU_CUDA_API sofa::component::container::MechanicalObject<CudaVec2fTypes>;
 extern template class SOFA_GPU_CUDA_API sofa::component::container::MechanicalObject<CudaVec3fTypes>;
