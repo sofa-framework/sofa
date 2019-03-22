@@ -53,7 +53,7 @@ DDGNode::~DDGNode()
 template<>
 TClass<DDGNode,void>::TClass()
 {
-    DDGNode* ptr = NULL;
+    DDGNode* ptr = nullptr;
     namespaceName = Base::namespaceName(ptr);
     className = Base::className(ptr);
     templateName = Base::templateName(ptr);
@@ -62,7 +62,7 @@ TClass<DDGNode,void>::TClass()
 
 void DDGNode::setDirtyValue(const core::ExecParams* params)
 {
-    bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
+    bool& dirtyValue = dirtyFlags[size_t(currentAspect(params))].dirtyValue;
     if (!dirtyValue)
     {
         dirtyValue = true;
@@ -79,7 +79,7 @@ void DDGNode::setDirtyValue(const core::ExecParams* params)
 
 void DDGNode::setDirtyOutputs(const core::ExecParams* params)
 {
-    bool& dirtyOutputs = dirtyFlags[currentAspect(params)].dirtyOutputs;
+    bool& dirtyOutputs = dirtyFlags[size_t(currentAspect(params))].dirtyOutputs;
     if (!dirtyOutputs)
     {
         dirtyOutputs = true;
@@ -92,7 +92,7 @@ void DDGNode::setDirtyOutputs(const core::ExecParams* params)
 
 void DDGNode::cleanDirty(const core::ExecParams* params)
 {
-    bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
+    bool& dirtyValue = dirtyFlags[size_t(currentAspect(params))].dirtyValue;
     if (dirtyValue)
     {
         dirtyValue = false;
@@ -111,13 +111,13 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
 void DDGNode::cleanDirtyOutputsOfInputs(const core::ExecParams* params)
 {
     for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
-        (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
+        (*it)->dirtyFlags[size_t(currentAspect(params))].dirtyOutputs = false;
 }
 
 
 void DDGNode::copyAspect(int destAspect, int srcAspect)
 {
-    dirtyFlags[destAspect] = dirtyFlags[srcAspect];
+    dirtyFlags[size_t(destAspect)] = dirtyFlags[size_t(srcAspect)];
 }
 
 void DDGNode::addInput(DDGNode* n)
@@ -158,7 +158,7 @@ const DDGNode::DDGLinkContainer& DDGNode::getOutputs()
 
 sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGNode>::getBase(sofa::core::objectmodel::DDGNode* n)
 {
-    if (!n) return NULL;
+    if (!n) return nullptr;
     return n->getOwner();
     //sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
     //if (d) return d->getOwner();
@@ -167,7 +167,7 @@ sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGNode>::getBase(sofa::core::
 
 sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::core::objectmodel::DDGNode* n)
 {
-    if (!n) return NULL;
+    if (!n) return nullptr;
     return n->getData();
     //return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
 }
@@ -196,7 +196,7 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
         else
         {
             Base* owner = this->getOwner();
-            DataEngine* obj = NULL;
+            DataEngine* obj = nullptr;
             if (!owner)
                 return false;
             if (!owner->findLinkDest(obj, path, link))
@@ -211,19 +211,18 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
     if (self)
     {
         ptr = owner->findData(dataStr);
-        return (ptr != NULL);
+        return (ptr != nullptr);
     }
     else
     {
-        Base* obj = NULL;
+        Base* obj = nullptr;
         if (!owner->findLinkDest(obj, BaseLink::CreateString(pathStr), link))
             return false;
         if (!obj)
             return false;
         ptr = obj->findData(dataStr);
-        return (ptr != NULL);
+        return (ptr != nullptr);
     }
-    return false;
 }
 
 void DDGNode::addLink(BaseLink* /*l*/)

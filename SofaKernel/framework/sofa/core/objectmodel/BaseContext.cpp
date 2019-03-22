@@ -69,7 +69,7 @@ bool BaseContext::canChangeSleepingState() const { return false; }
 /// Gravity in the world coordinate system
 const BaseContext::Vec3& BaseContext::getGravity() const
 {
-    static const Vec3 G((SReal)0,(SReal)-9.81,(SReal)0);
+    static const Vec3 G(SReal(0),SReal(-9.81), SReal(0));
     return G;
 }
 
@@ -107,7 +107,7 @@ BaseContext* BaseContext::getRootContext() const
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*dir*/) const
 {
     serr << "calling unimplemented getObject method" << sendl;
-    return NULL;
+    return nullptr;
 }
 
 /// Generic object access, given a set of required tags, possibly searching up or down from the current context
@@ -116,7 +116,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
     serr << "calling unimplemented getObject method" << sendl;
-    return NULL;
+    return nullptr;
 }
 
 /// Generic object access, given a path from the current context
@@ -125,7 +125,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*ta
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string& /*path*/) const
 {
     serr << "calling unimplemented getObject method" << sendl;
-    return NULL;
+    return nullptr;
 }
 
 /// Generic list of objects access, possibly searching up or down from the current context
@@ -203,12 +203,9 @@ void BaseContext::propagateEvent( const core::ExecParams*, Event* )
 void BaseContext::executeVisitor(simulation::Visitor*, bool)
 {
     serr<<"executeVisitor not overloaded, does nothing"<<sendl;
-    //assert(false);
 }
 
-std::ostream& operator << (std::ostream& out, const BaseContext&
-                          )
-
+std::ostream& operator << (std::ostream& out, const BaseContext&)
 {
     return out;
 }
@@ -224,6 +221,9 @@ void BaseContext::notifyRemoveSlave(core::objectmodel::BaseObject* /*master*/, c
 void BaseContext::notifyMoveSlave(core::objectmodel::BaseObject* /*previousMaster*/, core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* /*slave*/)
 {
 }
+
+BaseContext::GetObjectsCallBack::~GetObjectsCallBack() {}
+
 
 } // namespace objectmodel
 

@@ -154,7 +154,7 @@ const JoystickEvent::AxisEvent *JoystickEvent::getAxisEvent(const int index) con
             return axisEvents[i];
     }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -168,7 +168,7 @@ const std::vector<JoystickEvent::AxisEvent*> &JoystickEvent::getAxisEvents(void)
 
 unsigned int JoystickEvent::getAxisEventsSize(void) const
 {
-    return (unsigned int) axisEvents.size();
+    return unsigned(axisEvents.size());
 }
 
 
@@ -190,7 +190,7 @@ JoystickEvent::ButtonEvent *JoystickEvent::getButtonEvent(void) const
 bool JoystickEvent::getButton(unsigned int buttonIndex) const
 {
     if (getButtonEvent())
-        return getButtonEvent()->getButton(buttonIndex);
+        return getButtonEvent()->getButton(int(buttonIndex));
 
     return false;
 }
@@ -228,7 +228,7 @@ const std::vector<JoystickEvent::HatEvent *> &JoystickEvent::getHatEvents(void) 
 
 unsigned int JoystickEvent::getHatEventsSize(void) const
 {
-    return (unsigned int) hatEvents.size();
+    return unsigned(hatEvents.size());
 }
 
 
@@ -237,6 +237,11 @@ void JoystickEvent::addHatEvent( JoystickEvent::HatEvent * hEvent)
 {
     hatEvents.push_back(hEvent);
 }
+
+JoystickEvent::AxisEvent::~AxisEvent() {}
+JoystickEvent::ButtonEvent::~ButtonEvent() {}
+JoystickEvent::HatEvent::~HatEvent() {}
+
 
 } // namespace tree
 

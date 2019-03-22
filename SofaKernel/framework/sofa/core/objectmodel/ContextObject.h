@@ -44,7 +44,6 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(ContextObject)
 protected:
     ContextObject()
-        : BaseObject()
     {}
 
     ~ContextObject() override
