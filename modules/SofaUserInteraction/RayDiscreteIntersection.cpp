@@ -99,15 +99,16 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
 
     Vector3 X = P+PQ*baryCoords[2];
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->point[0] = X;
-    detection->point[1] = X;
-    detection->normal = -e2.n();
-    detection->value = 0;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e1.getIndex();
+    DetectionOutput detection;
+    detection.point[0] = X;
+    detection.point[1] = X;
+    detection.normal = -e2.n();
+    detection.value = 0;
+    detection.elem.first = e1;
+    detection.elem.second = e2;
+    detection.id = e1.getIndex();
+
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -268,16 +269,15 @@ int  RayDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, OutputVe
     if (bHit)
     {
 //		const SReal contactDist = fHitFraction;
-        contacts->resize(contacts->size()+1);
-        DetectionOutput *detection = &*(contacts->end()-1);
+        DetectionOutput detection;
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rObb);
+        detection.point[1] = v3HitLocation;
+        detection.point[0] = v3HitLocation;
+        detection.normal = v3Normal;
+        detection.value = fHitFraction;
+        detection.value -= fHitFraction;
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rObb);
-        detection->point[1] = v3HitLocation;
-        detection->point[0] = v3HitLocation;
-        detection->normal = v3Normal;
-        detection->value = fHitFraction;
-        detection->value -= fHitFraction;
-
+        contacts->addContact(&detection);
         return 1;
     }
 

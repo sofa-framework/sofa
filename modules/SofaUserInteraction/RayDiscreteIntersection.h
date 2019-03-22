@@ -46,6 +46,8 @@ class SOFA_USER_INTERACTION_API RayDiscreteIntersection : public core::collision
 {
 
     typedef DiscreteIntersection::OutputVector OutputVector;
+    
+    typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
 public:
     RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);

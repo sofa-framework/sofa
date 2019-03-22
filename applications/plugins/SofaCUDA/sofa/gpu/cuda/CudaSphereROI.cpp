@@ -34,11 +34,11 @@ namespace component
 namespace engine
 {
 
-template class SphereROI<gpu::cuda::CudaVec3fTypes>;
-template class SphereROI<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SphereROI<gpu::cuda::CudaVec3dTypes>;
-template class SphereROI<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace engine

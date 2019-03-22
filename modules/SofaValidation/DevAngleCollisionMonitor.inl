@@ -103,58 +103,60 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
     while (it != itend)
     {
 
-        const ContactVector* contacts = dynamic_cast<const ContactVector*>(it->second);
+        ContactVector* contactVec = dynamic_cast<ContactVector*>(it->second);
 
-        if (contacts != NULL)
+        if (contactVec != NULL)
         {
+            const core::collision::DetectionOutput* contacts = contactVec->getContacts();
+
             core::collision::DetectionOutput c;
 
-            double minNorm = ((*contacts)[0].point[0] - (*contacts)[0].point[1]).norm();
+            double minNorm = (contacts[0].point[0] - contacts[0].point[1]).norm();
 
-            sout << contacts->size() << " contacts detected." << sendl;
-            for (unsigned int i=0; i<contacts->size(); i++)
+            sout << contactVec->size() << " contacts detected." << sendl;
+            for (unsigned int i=0; i<contactVec->size(); i++)
             {
-                if ((*contacts)[i].elem.first.getCollisionModel() == surfaceCM)
+                if (contacts[i].elem.first.getCollisionModel() == surfaceCM)
                 {
-                    if ((*contacts)[i].elem.second.getCollisionModel() == pointsCM)
+                    if (contacts[i].elem.second.getCollisionModel() == pointsCM)
                     {
-                        if ((*contacts)[i].elem.second.getIndex() == ((int)x.size()-1))
+                        if (contacts[i].elem.second.getIndex() == ((int)x.size()-1))
                         {
-                            double norm = ((*contacts)[i].point[0] - (*contacts)[i].point[1]).norm();
+                            double norm = (contacts[i].point[0] - contacts[i].point[1]).norm();
                             if (norm < minNorm)
                             {
-                                c = (*contacts)[i];
+                                c = contacts[i];
                                 minNorm = norm;
                             }
                         }
-                        /*			int pi = (*contacts)[i].elem.second.getIndex();
-                        			if ((*contacts)[i].value < dmin[pi])
+                        /*			int pi = contacts[i].elem.second.getIndex();
+                        			if (contacts[i].value < dmin[pi])
                         			{
-                        			    dmin[pi] = (Real)((*contacts)[i].value);
-                        			    xproj[pi] = (*contacts)[i].point[0];
+                        			    dmin[pi] = (Real)(contacts[i].value);
+                        			    xproj[pi] = contacts[i].point[0];
                         			}*/
                     }
                 }
-                else if ((*contacts)[i].elem.second.getCollisionModel() == surfaceCM)
+                else if (contacts[i].elem.second.getCollisionModel() == surfaceCM)
                 {
-                    if ((*contacts)[i].elem.first.getCollisionModel() == pointsCM)
+                    if (contacts[i].elem.first.getCollisionModel() == pointsCM)
                     {
-                        if ((*contacts)[i].elem.first.getIndex() == ((int)x.size()-1))
+                        if (contacts[i].elem.first.getIndex() == ((int)x.size()-1))
                         {
-                            double norm = ((*contacts)[i].point[0] - (*contacts)[i].point[1]).norm();
+                            double norm = (contacts[i].point[0] - contacts[i].point[1]).norm();
 
                             if (norm < minNorm)
                             {
-                                c = (*contacts)[i];
+                                c = contacts[i];
                                 minNorm = norm;
                             }
                         }
 
-// 			int pi = (*contacts)[i].elem.first.getIndex();
-// 			if ((*contacts)[i].value < dmin[pi])
+// 			int pi = contacts[i].elem.first.getIndex();
+// 			if (contacts[i].value < dmin[pi])
 // 			{
-// 			    dmin[pi] = (Real)((*contacts)[i].value);
-// 			    xproj[pi] = (*contacts)[i].point[1];
+// 			    dmin[pi] = (Real)(contacts[i].value);
+// 			    xproj[pi] = contacts[i].point[1];
 // 			}
                     }
                 }

@@ -118,33 +118,36 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
 
     while (it != itend)
     {
-        const ContactVector* contacts = dynamic_cast<const ContactVector*>(it->second);
-        if (contacts != NULL)
+        ContactVector* contactVec = dynamic_cast<ContactVector*>(it->second);
+        if (contactVec != NULL)
         {
-            msg_info() << contacts->size() << " contacts detected.";
-            for (unsigned int i=0; i<contacts->size(); i++)
+            msg_info() << contactVec->size() << " contacts detected.";
+
+            const core::collision::DetectionOutput* contacts = contactVec->getContacts();
+
+            for (unsigned int i=0; i<contactVec->size(); i++)
             {
-                if ((*contacts)[i].elem.first.getCollisionModel() == surfaceCM)
+                if (contacts[i].elem.first.getCollisionModel() == surfaceCM)
                 {
-                    if ((*contacts)[i].elem.second.getCollisionModel() == pointsCM)
+                    if (contacts[i].elem.second.getCollisionModel() == pointsCM)
                     {
-                        int pi = (*contacts)[i].elem.second.getIndex();
-                        if ((*contacts)[i].value < dmin[pi])
+                        int pi = contacts[i].elem.second.getIndex();
+                        if (contacts[i].value < dmin[pi])
                         {
-                            dmin[pi] = (Real)((*contacts)[i].value);
-                            xproj[pi] = (*contacts)[i].point[0];
+                            dmin[pi] = (Real)(contacts[i].value);
+                            xproj[pi] = contacts[i].point[0];
                         }
                     }
                 }
-                else if ((*contacts)[i].elem.second.getCollisionModel() == surfaceCM)
+                else if (contacts[i].elem.second.getCollisionModel() == surfaceCM)
                 {
-                    if ((*contacts)[i].elem.first.getCollisionModel() == pointsCM)
+                    if (contacts[i].elem.first.getCollisionModel() == pointsCM)
                     {
-                        int pi = (*contacts)[i].elem.first.getIndex();
-                        if ((*contacts)[i].value < dmin[pi])
+                        int pi = contacts[i].elem.first.getIndex();
+                        if (contacts[i].value < dmin[pi])
                         {
-                            dmin[pi] = (Real)((*contacts)[i].value);
-                            xproj[pi] = (*contacts)[i].point[1];
+                            dmin[pi] = (Real)(contacts[i].value);
+                            xproj[pi] = contacts[i].point[1];
                         }
                     }
                 }

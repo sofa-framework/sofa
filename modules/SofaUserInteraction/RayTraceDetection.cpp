@@ -219,25 +219,23 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
                 (triang2.p1 () * (1.0 - res.u - res.v)) +
                 (triang2.p2 () * res.u) + (triang2.p3 () * res.v);
 
-            outputs->resize (outputs->size () + 1);
-            DetectionOutput *detection = &*(outputs->end () - 1);
-
-
-            detection->elem =
+            DetectionOutput detection;
+            detection.elem =
                 std::pair <
                 core::CollisionElementIterator,
                 core::CollisionElementIterator > (tri1, triang2);
-            detection->point[0] = point;
+            detection.point[0] = point;
 
-            detection->point[1] = Q;
+            detection.point[1] = Q;
 
-            detection->normal = normau[t];
+            detection.normal = normau[t];
 
-            detection->value = -(res.t);
+            detection.value = -(res.t);
 
-            detection->id = tri1.getIndex()*3+t;
+            detection.id = tri1.getIndex()*3+t;
             //found = true;
 
+            outputs->addContact(&detection);
         }
 
     }
@@ -313,22 +311,19 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
     for (DetectionOutputMap::const_iterator it = outputsMap.begin ();
             it != outputsMap.end (); ++it)
     {
-        TDetectionOutputVector < TriangleOctreeModel,
-                               TriangleOctreeModel > *outputs =
-                                       static_cast <
-                                       sofa::core::collision::TDetectionOutputVector <
-                                       TriangleOctreeModel, TriangleOctreeModel > *>(it->second);
-        for (TDetectionOutputVector < TriangleOctreeModel,
-                TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
-                it2 != outputs->end (); ++it2)
+
+        const DetectionOutput* outputs = it->second->getContacts();
+
+        for (size_t i=0; i<it->second->size(); ++i)
         {
+            const DetectionOutput* it2 = &outputs[i];
             vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
             vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 
-            it2->elem.first.draw(vparams);
-            it2->elem.second.draw(vparams);
+            const_cast<DetectionOutput*>(it2)->elem.first.draw(vparams);
+            const_cast<DetectionOutput*>(it2)->elem.second.draw(vparams);
         }
     }
     vparams->drawTool()->drawLines(vertices,3,color);

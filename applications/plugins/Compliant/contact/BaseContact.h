@@ -149,7 +149,7 @@ public:
        
 
         // resize mappers
-        unsigned size = contacts->size();
+        const unsigned size = contacts->size();
 
         if ( this->selfCollision )
         {
@@ -167,10 +167,11 @@ public:
 //        const double d0 = this->intersectionMethod->getContactDistance() + this->model1->getProximity() + this->model2->getProximity();
 
         mappedContacts.resize( size );
-
-        for( unsigned i=0 ; i<contacts->size() ; ++i )
+        const core::collision::DetectionOutput* detection = contacts->getContacts();
+        
+        for( unsigned i=0 ; i<size ; ++i )
         {
-            const core::collision::DetectionOutput& o = (*contacts)[i];
+            const core::collision::DetectionOutput& o = detection[i];
 
             CollisionElement1 elem1(o.elem.first);
             CollisionElement2 elem2(o.elem.second);
@@ -366,8 +367,10 @@ protected:
             // don't activate non-penetrating contacts
             odesolver::Restitution::mask_type& mask = *constraintValue->mask.beginWriteOnly();
             mask.resize( this->mappedContacts.size() );
+            const core::collision::DetectionOutput* detection = contacts->getContacts();
+            
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                mask[i] = ( (*this->contacts)[i].value <= 0 );
+                mask[i] = ( detection[i].value <= 0 );
             }
             constraintValue->mask.endEdit();
 
@@ -393,8 +396,10 @@ protected:
             // don't stabilize non-penetrating contacts (normal component only)
             odesolver::HolonomicConstraintValue::mask_type& mask = *stab->mask.beginWriteOnly();
             mask.resize(  this->mappedContacts.size() );
+            const core::collision::DetectionOutput* detection = contacts->getContacts();
+            
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                mask[i] = ( (*this->contacts)[i].value <= 0 );
+                mask[i] = ( detection[i].value <= 0 );
             }
             stab->mask.endEdit();
 
@@ -411,9 +416,11 @@ protected:
 
             // don't stabilize non-penetrating contacts (normal component only)
             odesolver::Stabilization::mask_type& mask = *stab->mask.beginWriteOnly();
+            const core::collision::DetectionOutput* detection = contacts->getContacts();
+            
             mask.resize( this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                mask[i] = ( (*this->contacts)[i].value <= 0 );
+                mask[i] = ( detection[i].value <= 0 );
             }
             stab->mask.endEdit();
 
@@ -446,9 +453,10 @@ protected:
         assert( size == contacts->size() );
 
         res.resize(size);
-
+        const core::collision::DetectionOutput* detection = contacts->getContacts();
+        
         for(unsigned i = 0; i < size; ++i) {
-            res[i] = (*contacts)[i].normal;
+            res[i] = detection[i].normal;
         }
     }
 
@@ -459,9 +467,11 @@ protected:
         assert( size );
         assert( size == contacts->size() );
         assert( size == res.size() );
-
+        
+        const core::collision::DetectionOutput* detection = contacts->getContacts();
+        
         for(unsigned i = 0; i < size; ++i) {
-            res[i][0] = (*contacts)[i].value;
+            res[i][0] = detection[i].value;
         }
     }
 

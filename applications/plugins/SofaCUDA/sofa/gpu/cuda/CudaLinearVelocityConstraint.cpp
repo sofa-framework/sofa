@@ -32,11 +32,11 @@ namespace component
 
 namespace projectiveconstraintset
 {
-template class LinearVelocityConstraint<gpu::cuda::CudaVec6fTypes>;
-template class LinearVelocityConstraint<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class LinearVelocityConstraint<gpu::cuda::CudaVec6dTypes>;
-template class LinearVelocityConstraint<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 }// namespace projectiveconstraintset
 

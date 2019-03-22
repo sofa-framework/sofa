@@ -45,9 +45,9 @@ int TetrahedralTensorMassForceFieldCudaClass = core::RegisterObject("Supports GP
 } // namespace gpu
 
 
-template class sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 } // namespace sofa

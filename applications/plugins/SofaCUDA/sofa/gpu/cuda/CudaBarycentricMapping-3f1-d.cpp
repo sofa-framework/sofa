@@ -44,8 +44,8 @@ using namespace sofa::gpu::cuda;
 
 
 
-template class BarycentricMapping< Vec3Types, CudaVec3f1Types>;
-template class BarycentricMapping< CudaVec3f1Types, Vec3Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, Vec3Types>;
 
 
 } // namespace mapping

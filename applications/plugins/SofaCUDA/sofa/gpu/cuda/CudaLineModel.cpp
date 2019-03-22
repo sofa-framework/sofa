@@ -33,12 +33,12 @@ namespace component
 namespace collision
 {
 
-template class TLineModel<sofa::gpu::cuda::CudaVec3fTypes>;
-template class TLineModel<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API TLineModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API TLineModel<sofa::gpu::cuda::CudaVec3f1Types>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class TLineModel<sofa::gpu::cuda::CudaVec3dTypes>;
-template class TLineModel<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API TLineModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API TLineModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace collision

@@ -69,7 +69,6 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::c
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
@@ -82,7 +81,7 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
 
     }
 
-    int insize = outputs.size();
+    int insize = o->size();
 
     // old index for each contact
     // >0 indicate preexisting contact
@@ -91,16 +90,17 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
     std::vector<int> oldIndex(insize);
 
     int nbnew = 0;
+    const core::collision::DetectionOutput* outputs = o->getContacts();
 
     for (int i=0; i<insize; i++)
     {
-        DetectionOutput* o = &outputs[i];
+        const DetectionOutput* o = &outputs[i];
         // find this contact in contactIndex, possibly creating a new entry initialized by 0
         int& index = contactIndex[o->id];
         if (index < 0) // duplicate contact
         {
             int i2 = -1-index;
-            DetectionOutput* o2 = &outputs[i2];
+            const DetectionOutput* o2 = &outputs[i2];
             if (o2->value <= o->value)
             {
                 // current contact is ignored
@@ -165,14 +165,11 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
     //int i = 0;
     const double d0= 0;//intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];
         if (index < 0) continue; // this contact is ignored
-        DetectionOutput* o = &outputs[i];
+        const DetectionOutput* o = &outputs[i];
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();

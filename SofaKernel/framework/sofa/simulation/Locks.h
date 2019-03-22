@@ -42,6 +42,7 @@ namespace sofa
         public:
             
             SpinLock()
+            :_flag()
             {}
             
             ~SpinLock()
@@ -70,7 +71,7 @@ namespace sofa
             
         private:
             
-            std::atomic_flag _flag = ATOMIC_FLAG_INIT;
+            std::atomic_flag _flag;
             
             char _pad [CACHE_LINE - sizeof(std::atomic_flag)];
         };

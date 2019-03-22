@@ -36,7 +36,7 @@ namespace collision
 
 class SOFA_BASE_COLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool{
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::core::collision::DetectionOutputVector OutputVector;
 
     template <class Elem1,class Elem2>
     static bool testIntersection(Elem1&,Elem2&,SReal){
@@ -69,18 +69,18 @@ public:
         if (norm2 > myAlarmDist*myAlarmDist)
             return 0;
 
-        contacts->resize(contacts->size()+1);
-        DetectionOutput *detection = &*(contacts->end()-1);
+        sofa::core::collision::DetectionOutput detection;
         SReal distSph1Sph2 = helper::rsqrt(norm2);
-        detection->normal = dist / distSph1Sph2;
-        detection->point[0] = sph1.getContactPointByNormal( -detection->normal );
-        detection->point[1] = sph2.getContactPointByNormal( detection->normal );
+        detection.normal = dist / distSph1Sph2;
+        detection.point[0] = sph1.getContactPointByNormal( -detection.normal );
+        detection.point[1] = sph2.getContactPointByNormal( detection.normal );
 
-        detection->value = distSph1Sph2 - r - contactDist;
-        detection->elem.first = sph1;
-        detection->elem.second = sph2;
-        detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
+        detection.value = distSph1Sph2 - r - contactDist;
+        detection.elem.first = sph1;
+        detection.elem.second = sph2;
+        detection.id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
 
+        contacts->addContact(&detection);
         return 1;
     }
 

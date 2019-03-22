@@ -77,7 +77,7 @@ protected:
 
     Data<double> mu; ///< friction coefficient (0 for frictionless contacts)
     Data<double> tol; ///< tolerance for the constraints resolution (0 for default tolerance)
-    std::vector< sofa::core::collision::DetectionOutput* > contacts;
+    std::vector< const sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
 
     void activateMappers();

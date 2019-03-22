@@ -427,7 +427,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
     for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
     {
 
-        const sofa::helper::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
+        const sofa::helper::vector<const core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
         sofa::core::CollisionModel *modelInCollision;
         for (unsigned int i=0; i<output.size(); ++i)
         {

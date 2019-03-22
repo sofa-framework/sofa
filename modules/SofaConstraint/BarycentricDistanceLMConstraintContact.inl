@@ -70,7 +70,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     if (ff==NULL)
     {
 
@@ -82,7 +81,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         ff->init();
     }
 
-    int insize = outputs.size();
+    int insize = o->size();
 
     // old index for each contact
     // >0 indicate preexisting contact
@@ -91,16 +90,17 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     std::vector<int> oldIndex(insize);
 
     int nbnew = 0;
+    const core::collision::DetectionOutput* outputs = o->getContacts();
 
     for (int i=0; i<insize; i++)
     {
-        core::collision::DetectionOutput* o = &outputs[i];
+        const core::collision::DetectionOutput* o = &outputs[i];
         // find this contact in contactIndex, possibly creating a new entry initialized by 0
         int& index = contactIndex[o->id];
         if (index < 0) // duplicate contact
         {
             int i2 = -1-index;
-            core::collision::DetectionOutput* o2 = &outputs[i2];
+            const core::collision::DetectionOutput* o2 = &outputs[i2];
             if (o2->value <= o->value)
             {
                 // current contact is ignored
@@ -165,7 +165,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         int index = oldIndex[i];
         if (index < 0) continue; // this contact is ignored
-        core::collision::DetectionOutput* o = &outputs[i];
+        const core::collision::DetectionOutput* o = &outputs[i];
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();

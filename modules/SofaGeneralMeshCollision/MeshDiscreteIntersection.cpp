@@ -94,15 +94,16 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
 
     Vector3 X = P+PQ*baryCoords[2];
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->point[0] = X;
-    detection->point[1] = X;
-    detection->normal = e1.n();
-    detection->value = 0;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e2.getIndex();
+    DetectionOutput detection;
+    detection.point[0] = X;
+    detection.point[1] = X;
+    detection.normal = e1.n();
+    detection.value = 0;
+    detection.elem.first = e1;
+    detection.elem.second = e2;
+    detection.id = e2.getIndex();
+
+    contacts->addContact(&detection);
     return 1;
 }
 

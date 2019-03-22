@@ -35,11 +35,11 @@ namespace component
 namespace forcefield
 {
 
-template class RestShapeSpringsForceField<gpu::cuda::CudaVec3fTypes>;
-template class RestShapeSpringsForceField<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class RestShapeSpringsForceField<gpu::cuda::CudaVec3dTypes>;
-template class RestShapeSpringsForceField<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace engine

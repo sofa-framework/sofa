@@ -86,30 +86,31 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
     this->f_printLog.setValue(true);
-    sout << "setDetectionOutputs(" << (o == NULL ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")" << sendl;
+    sout << "setDetectionOutputs(" << (o == NULL ? -1 : (int)o->size()) << ")" << sendl;
     contacts.clear();
     if (!o) return;
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
+    //TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
     const double minDist2 = 0.00000001f;
 
 
-    int SIZE = outputs.size();
+    int SIZE = o->size();
     msg_info() << SIZE << " contacts" ;
 
     contacts.reserve(SIZE);
 
     int OUTSIZE = 0;
+    const core::collision::DetectionOutput* outputs = o->getContacts();
 
     // the following procedure cancels the duplicated detection outputs
     for (int cpt=0; cpt<SIZE; cpt++)
     {
-        sofa::core::collision::DetectionOutput* o = &outputs[cpt];
+        const sofa::core::collision::DetectionOutput* o = &outputs[cpt];
 
         bool found = false;
         for (int i=0; i<cpt && !found; i++)
         {
-            sofa::core::collision::DetectionOutput* p = &outputs[i];
+            const sofa::core::collision::DetectionOutput* p = &outputs[i];
             if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
@@ -147,9 +148,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
     mappedContacts.resize(contacts.size());
-    for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+    for (std::vector<const sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
-        sofa::core::collision::DetectionOutput* o = *it;
+        const sofa::core::collision::DetectionOutput* o = *it;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
@@ -197,9 +198,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
     {
         activateMappers();
         int i = 0;
-        for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+        for (std::vector<const sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
-            sofa::core::collision::DetectionOutput* o = *it;
+            const sofa::core::collision::DetectionOutput* o = *it;
             int index1 = mappedContacts[i].first.first;
             int index2 = mappedContacts[i].first.second;
             double distance = mappedContacts[i].second;

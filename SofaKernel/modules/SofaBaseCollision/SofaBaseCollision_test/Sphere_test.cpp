@@ -93,6 +93,20 @@ struct TestSphere : public Sofa_test<>{
     bool softTriangle(Intersector & bi);
 };
 
+class CollisionTestResult : public core::collision::DetectionOutputVector
+{
+public:
+    virtual ~CollisionTestResult() {}
+    /// Clear the content of this vector
+    virtual void clear() override final { m_contacts.clear(); }
+    virtual unsigned int size() const override final { return (unsigned int)m_contacts.size(); }
+    virtual void addContact(core::collision::DetectionOutput* detectionOutput) override final { m_contacts.push_back(*detectionOutput); }
+    virtual bool isThreadSafe() override final { return false; }
+    virtual const core::collision::DetectionOutput* getContacts() override final { return m_contacts.data(); }
+
+protected:
+    sofa::helper::vector<core::collision::DetectionOutput> m_contacts;
+};
 
 bool TestSphere::rigidRigid1(){
     double angles[3];
@@ -119,22 +133,22 @@ bool TestSphere::rigidRigid1(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -175,22 +189,22 @@ bool TestSphere::rigidRigid2(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -222,22 +236,22 @@ bool TestSphere::rigidSoft2(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,-2)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,-2)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -269,22 +283,22 @@ bool TestSphere::rigidSoft1(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,-2)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,-2)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -317,22 +331,22 @@ bool TestSphere::rigidSoft3(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,-2)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,-2)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -364,22 +378,22 @@ bool TestSphere::rigidSoft4(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,-2)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,-2)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -411,22 +425,22 @@ bool TestSphere::rigidTriangle(Intersector &bi){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!bi.computeIntersection(tri,sph,&detectionOUTPUT))
+    if(!bi.computeIntersection(tri,sph,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6 || detectionOUTPUT[0].normal * Vec3d(0,0,1) < 0)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6 || detectionOUTPUT->getContacts()->normal * Vec3d(0,0,1) < 0)
         return false;
 
     return true;
@@ -450,22 +464,22 @@ bool TestSphere::softTriangle(Intersector &bi){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!bi.computeIntersection(tri,sph,&detectionOUTPUT))
+    if(!bi.computeIntersection(tri,sph,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,2.01)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,2.01)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6 || detectionOUTPUT[0].normal * Vec3d(0,0,1) < 0)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6 || detectionOUTPUT->getContacts()->normal * Vec3d(0,0,1) < 0)
         return false;
 
     return true;
@@ -486,22 +500,22 @@ bool TestSphere::softSoft1(){
     Sphere sph2(sphmodel2.get(),0);
 
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    std::shared_ptr<core::collision::DetectionOutputVector> detectionOUTPUT = std::make_shared<CollisionTestResult>();
 
     //loooking for an intersection
-    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
+    if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,detectionOUTPUT.get()))
         return false;
 
-    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,2.01)).norm() > 1e-6)
+    //the intersection point of cap (detectionOUTPUT->getContacts()->point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT->getContacts()->point[0] - Vec3d(0,0,2.01)).norm() > 1e-6)
         return false;
 
-    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,-2)).norm() > 1e-6)
+    //the intersection point of obb (detectionOUTPUT->getContacts()->point[0]) should be (0,0,0)
+    if((detectionOUTPUT->getContacts()->point[1] - Vec3d(0,0,-2)).norm() > 1e-6)
         return false;
 
-    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6|| detectionOUTPUT[0].normal * Vec3d(0,0,1) > 0)
+    //the contact response direction (detectionOUTPUT->getContacts()->normal) should be (0,0,1)
+    if((detectionOUTPUT->getContacts()->normal.cross(Vec3d(0,0,1))).norm() > 1e-6|| detectionOUTPUT->getContacts()->normal * Vec3d(0,0,1) > 0)
         return false;
 
     return true;

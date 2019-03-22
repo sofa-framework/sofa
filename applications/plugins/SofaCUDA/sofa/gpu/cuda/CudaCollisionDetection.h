@@ -84,14 +84,14 @@ struct GPUDetectionOutput
     Vec3f normal;
 };
 */
-
+    
 /**
  *  \brief Abstract description of a set of contact point using GPU.
  */
 class GPUDetectionOutputVector : public DetectionOutputVector
 {
 public:
-    ~GPUDetectionOutputVector()
+    virtual ~GPUDetectionOutputVector()
     {
     }
 
@@ -108,7 +108,7 @@ public:
     };
     sofa::gpu::cuda::CudaVector< TestEntry > tests;
 
-    unsigned int size() const
+    virtual unsigned int size() const final
     {
         if (results.empty()) return 0;
         int s = 0;
@@ -117,7 +117,7 @@ public:
         return s;
     }
 
-    void clear()
+    virtual void clear() final
     {
         results1.clear();
         results2.clear();
@@ -125,11 +125,15 @@ public:
         tests.clear();
     }
 
-    void release()
+    virtual void release() final
     {
         // GPU vectors are stored in other data structures, they should not be deleted by the pipeline
     }
 
+    virtual void addContact(DetectionOutput* detectionOutput) final {}
+    virtual bool isThreadSafe() final { return false; }
+    virtual const DetectionOutput* getContacts() final { nullptr; }
+    
     unsigned int nbTests() { return tests.size(); }
 
     const TestEntry& rtest(int i) { return tests[i]; }

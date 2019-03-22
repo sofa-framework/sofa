@@ -59,16 +59,16 @@ namespace collision
 using namespace sofa::gpu::cuda;
 
 
-template class MouseInteractor<CudaVec3fTypes>;
-template class TComponentMouseInteraction< CudaVec3fTypes >;
-template class AttachBodyPerformer< CudaVec3fTypes >;
-template class FixParticlePerformer< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class MouseInteractor<CudaVec3dTypes>;
-template class TComponentMouseInteraction< CudaVec3dTypes >;
-template class AttachBodyPerformer< CudaVec3dTypes >;
-template class FixParticlePerformer< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 #endif
 
 ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);

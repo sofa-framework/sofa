@@ -100,14 +100,15 @@ protected:
         contact_node->addObject( forcefield.get() );
         forcefield->d_damping.setValue( this->damping_ratio.getValue() );
         forcefield->d_stiffness.setValue( this->stiffness.getValue() );
-
+        const core::collision::DetectionOutput* detection = this->contacts->getContacts();
+        
         for( unsigned i = 0 ; i < size ; ++i )
         {
             // no stiffness for non-violated penetration (alarm distance)
             // TODO add a kind of projector to perform an unilateral stiffness (to add stiffness only one way).
             // This would prevent sticky contacts and would allow to add small stiffness in alarm distance to slow-down object trying to go closer.
 
-            if( (*this->contacts)[i].value < 0 )
+            if( detection[i].value < 0 )
             {
                 // only violated penetrations will propagate forces
                 this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
@@ -145,11 +146,12 @@ protected:
 
         forcefield->d_damping.setValue( this->damping_ratio.getValue() );
         forcefield->d_stiffness.setValue( this->stiffness.getValue() );
-
+        const core::collision::DetectionOutput* detection = this->contacts->getContacts();
+        
         // every violated contact points must propagate constraint forces
         for( unsigned i = 0 ; i < size ; ++i )
         {
-            if( (*this->contacts)[i].value < 0 )
+            if( detection[i].value < 0 )
             {
                 // only violated penetrations will propagate forces
                 this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );

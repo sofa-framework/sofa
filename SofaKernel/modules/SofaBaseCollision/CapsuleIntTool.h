@@ -37,7 +37,7 @@ namespace collision
 {
 class SOFA_BASE_COLLISION_API CapsuleIntTool{
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::core::collision::DetectionOutputVector OutputVector;
 
     template <class DataTypes1,class DataTypes2>
     static int computeIntersection(TCapsule<DataTypes1>&, TCapsule<DataTypes2>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -84,20 +84,20 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
         if(PQ.norm2() > contact_exists * contact_exists)
             return 0;
 
-        contacts->resize(contacts->size()+1);
-        sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+        sofa::core::collision::DetectionOutput detection;
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
-        //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
-        detection->id = cap.getIndex();
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
+        //detection.id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        detection.id = cap.getIndex();
 
-        detection->normal = PQ;
-        detection->value = detection->normal.norm();
-        detection->normal /= detection->value;
-        detection->point[0] = cap_p1 + cap_rad * detection->normal;
-        detection->point[1] = sph.getContactPointByNormal( detection->normal );
-        detection->value -= theory_contactDist;
+        detection.normal = PQ;
+        detection.value = detection.normal.norm();
+        detection.normal /= detection.value;
+        detection.point[0] = cap_p1 + cap_rad * detection.normal;
+        detection.point[1] = sph.getContactPointByNormal( detection.normal );
+        detection.value -= theory_contactDist;
 
+        contacts->addContact(&detection);
         return 1;
     }
     else if(alpha > 0.999999){//the case :
@@ -108,20 +108,20 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
         if(PQ.norm2() > contact_exists * contact_exists)
             return 0;
 
-        contacts->resize(contacts->size()+1);
-        sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+        sofa::core::collision::DetectionOutput detection;
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
-        //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
-        detection->id = cap.getIndex();
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
+        //detection.id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        detection.id = cap.getIndex();
 
-        detection->normal = PQ;
-        detection->value = detection->normal.norm();
-        detection->normal /= detection->value;
-        detection->point[0] = cap_p2 + cap_rad * detection->normal;
-        detection->point[1] = sph.getContactPointByNormal( detection->normal );
-        detection->value -= theory_contactDist;
+        detection.normal = PQ;
+        detection.value = detection.normal.norm();
+        detection.normal /= detection.value;
+        detection.point[0] = cap_p2 + cap_rad * detection.normal;
+        detection.point[1] = sph.getContactPointByNormal( detection.normal );
+        detection.value -= theory_contactDist;
 
+        contacts->addContact(&detection);
         return 1;
     }
     else{//the case :
@@ -133,20 +133,20 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
         if(PQ.norm2() > contact_exists * contact_exists)
             return 0;
 
-        contacts->resize(contacts->size()+1);
-        sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+        sofa::core::collision::DetectionOutput detection;
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
-        //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
-        detection->id = cap.getIndex();
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
+        //detection.id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        detection.id = cap.getIndex();
 
-        detection->normal = PQ;
-        detection->value = detection->normal.norm();
-        detection->normal /= detection->value;
-        detection->point[0] = P + cap_rad * detection->normal;
-        detection->point[1] = sph.getContactPointByNormal( detection->normal );
-        detection->value -= theory_contactDist;
+        detection.normal = PQ;
+        detection.value = detection.normal.norm();
+        detection.normal /= detection.value;
+        detection.point[0] = P + cap_rad * detection.normal;
+        detection.point[1] = sph.getContactPointByNormal( detection.normal );
+        detection.value -= theory_contactDist;
 
+        contacts->addContact(&detection);
         return 1;
     }
 }

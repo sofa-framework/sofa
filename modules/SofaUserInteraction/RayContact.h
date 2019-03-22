@@ -44,14 +44,14 @@ public:
 
 protected:
     CollisionModel1* model1;
-    sofa::helper::vector<core::collision::DetectionOutput*> collisions;
+    sofa::helper::vector<const core::collision::DetectionOutput*> collisions;
 
 
     BaseRayContact(CollisionModel1* model1, core::collision::Intersection* instersectionMethod);
 
     ~BaseRayContact() override;
 public:
-    const sofa::helper::vector<core::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
+    const sofa::helper::vector<const core::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
     void createResponse(core::objectmodel::BaseContext* /*group*/) override
     {
@@ -82,11 +82,11 @@ public:
 
     void setDetectionOutputs(core::collision::DetectionOutputVector* outputs) override
     {
-        OutputVector* o = static_cast<OutputVector*>(outputs);
+        const core::collision::DetectionOutput* o = outputs->getContacts();
         //collisions = outputs;
-        collisions.resize(o->size());
-        for (unsigned int i=0; i< o->size(); ++i)
-            collisions[i] = &(*o)[i];
+        collisions.resize(outputs->size());
+        for (unsigned int i=0; i< outputs->size(); ++i)
+            collisions[i] = &o[i];
     }
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }

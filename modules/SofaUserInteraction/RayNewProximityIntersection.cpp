@@ -106,19 +106,20 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
         return 0;
 
     const SReal contactDist = alarmDist;
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
-    detection->point[1]=P;
-    detection->point[0]=Q;
+    DetectionOutput detection;
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+    detection.point[1]=P;
+    detection.point[0]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[1] = P;
-    detection->freePoint[0] = Q;
+    detection.freePoint[1] = P;
+    detection.freePoint[0] = Q;
 #endif
-    detection->normal=-t2.n();
-    detection->value = PQ.norm();
-    detection->value -= contactDist;
+    detection.normal=-t2.n();
+    detection.value = PQ.norm();
+    detection.value -= contactDist;
+
+    contacts->addContact(&detection);
     return 1;
 }
 
@@ -175,17 +176,17 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
         Vector3 v3Normal = (v3ContactPoint - v3SphereCenter)/ fSphereRadii;
 
 //		const SReal contactDist = fHitFraction;
-        contacts->resize(contacts->size()+1);
-        DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
-        detection->point[1] = v3ContactPoint;
-        detection->point[0] = v3ContactPoint;
-        detection->normal = v3Normal;
-        detection->value = fHitFraction;
-        detection->value -= fHitFraction;
+        DetectionOutput detection;
 
+        detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+        detection.point[1] = v3ContactPoint;
+        detection.point[0] = v3ContactPoint;
+        detection.normal = v3Normal;
+        detection.value = fHitFraction;
+        detection.value -= fHitFraction;
 
+        contacts->addContact(&detection);
 
         iHit = 1;
     }
@@ -206,17 +207,17 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
             Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii;
 
 //			const SReal contactDist = fHitFraction;
-            contacts->resize(contacts->size()+1);
-            DetectionOutput *detection = &*(contacts->end()-1);
 
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
-            detection->point[1] = v3ContactPoint;
-            detection->point[0] = v3ContactPoint;
-            detection->normal = v3Normal;
-            detection->value = fHitFraction;
-            detection->value -= fHitFraction;
+            DetectionOutput detection;
 
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+            detection.point[1] = v3ContactPoint;
+            detection.point[0] = v3ContactPoint;
+            detection.normal = v3Normal;
+            detection.value = fHitFraction;
+            detection.value -= fHitFraction;
 
+            contacts->addContact(&detection);
         }
 
 
@@ -231,17 +232,16 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 
 
 //			const SReal contactDist = fHitFraction;
-            contacts->resize(contacts->size()+1);
-            DetectionOutput *detection = &*(contacts->end()-1);
 
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
-            detection->point[1] = v3ContactPoint;
-            detection->point[0] = v3ContactPoint;
-            detection->normal = v3Normal;
-            detection->value = fHitFraction;
-            detection->value -= fHitFraction;
+            DetectionOutput detection;
+            detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+            detection.point[1] = v3ContactPoint;
+            detection.point[0] = v3ContactPoint;
+            detection.normal = v3Normal;
+            detection.value = fHitFraction;
+            detection.value -= fHitFraction;
 
-
+            contacts->addContact(&detection);
         }
     }
 
