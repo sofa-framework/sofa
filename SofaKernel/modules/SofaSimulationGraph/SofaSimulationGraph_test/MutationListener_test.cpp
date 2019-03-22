@@ -16,38 +16,38 @@ using sofa::modeling::addNew;
 
 class TestMutationListener : public MutationListener
 {
-    void onAddChildBegin(Node* parent, Node* child)
+    void onBeginAddChild(Node* parent, Node* child) override
     {
         log += "Begin Add " + child->getName() + " to " + parent->getName() + "\n";
     }
-    void onAddChildEnd(Node* parent, Node* child)
+    void onEndAddChild(Node* parent, Node* child) override
     {
         log += "End Add " + child->getName() + " to " + parent->getName() + "\n";
     }
 
-    void onRemoveChildBegin(Node* parent, Node* child)
+    void onBeginRemoveChild(Node* parent, Node* child) override
     {
         log += "Begin Remove " + child->getName() + " from " + parent->getName() + "\n";
     }
-    void onRemoveChildEnd(Node* parent, Node* child)
+    void onEndRemoveChild(Node* parent, Node* child) override
     {
         log += "End Remove " + child->getName() + " from " + parent->getName() + "\n";
     }
 
-    void onAddObjectBegin(Node* parent, BaseObject* obj)
+    void onBeginAddObject(Node* parent, BaseObject* obj) override
     {
         log += "Begin Add " + obj->getName() + " to " + parent->getName() + "\n";
     }
-    void onAddObjectEnd(Node* parent, BaseObject* obj)
+    void onEndAddObject(Node* parent, BaseObject* obj) override
     {
         log += "End Add " + obj->getName() + " to " + parent->getName() + "\n";
     }
 
-    void onRemoveObjectBegin(Node* parent, BaseObject* obj)
+    void onBeginRemoveObject(Node* parent, BaseObject* obj) override
     {
         log += "Begin Remove " + obj->getName() + " from " + parent->getName() + "\n";
     }
-    void onRemoveObjectEnd(Node* parent, BaseObject* obj)
+    void onEndRemoveObject(Node* parent, BaseObject* obj) override
     {
         log += "End Remove " + obj->getName() + " from " + parent->getName() + "\n";
     }
