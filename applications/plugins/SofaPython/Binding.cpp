@@ -56,6 +56,7 @@
 #include "Binding_TriangleSetTopologyModifier.h"
 #include "Binding_PointSetTopologyModifier.h"
 #include "Binding_BaseMapping.h"
+#include "Binding_SparseGridTopology.h"
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 #include "Binding_OBJExporter.h"
@@ -120,6 +121,7 @@ void bindSofaPythonModule(PyObject * module)
     SP_ADD_CLASS_IN_FACTORY(MeshLoader,sofa::core::loader::MeshLoader)
     SP_ADD_CLASS_IN_FACTORY(MeshTopology,sofa::component::topology::MeshTopology)
     SP_ADD_CLASS_IN_FACTORY(GridTopology,sofa::component::topology::GridTopology)
+    SP_ADD_CLASS_IN_FACTORY(SparseGridTopology,sofa::component::topology::SparseGridTopology)
     SP_ADD_CLASS_IN_FACTORY(RegularGridTopology,sofa::component::topology::RegularGridTopology)
     SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
     SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)

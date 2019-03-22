@@ -52,6 +52,7 @@ set(HEADER_FILES
     Binding_Simulation.h
     Binding_SofaModule.h
 #    Binding_SubsetMultiMapping.h
+    Binding_SparseGridTopology.h
     Binding_Topology.h
     Binding_Vector.h
     Binding_VectorLinearSpringData.h
@@ -115,6 +116,7 @@ set(SOURCE_FILES
     Binding_Simulation.cpp
     Binding_SofaModule.cpp
 #    Binding_SubsetMultiMapping.cpp
+    Binding_SparseGridTopology.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
     Binding_VectorLinearSpringData.cpp
