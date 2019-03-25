@@ -76,10 +76,20 @@ if(UNIX)
     # the need to play with LD_LIBRARY_PATH to get applications to run.
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
+    set(CMAKE_INSTALL_RPATH
+        "$ORIGIN/../lib"
+        "$$ORIGIN/../lib"
+        )
 
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
+        list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path"
+            "@loader_path/../lib"
+            "@executable_path"
+            "@executable_path/../lib"
+            )
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
 
@@ -303,7 +313,7 @@ install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applicat
 set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
     set(SHARE_DIR "share/sofa")
     set(EXAMPLES_DIR "share/sofa/examples")
 else()
@@ -498,9 +508,10 @@ if(CPACK_BINARY_NSIS)
 endif()
 #######################
 
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE)
     find_package(ICU COMPONENTS data i18n uc)
     sofa_install_libraries(${ICU_LIBRARIES})
+    message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
 endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)

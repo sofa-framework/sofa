@@ -141,6 +141,7 @@ ____________________________________________________________
 
 **Modules**
 - [All] ISSofa bugfix, lot of fixes [#756](https://github.com/sofa-framework/sofa/pull/756)
+- [All] FIX Windows linkage [#910](https://github.com/sofa-framework/sofa/pull/910)
 - [SofaGuiQt] Change method to allow antialiased screenshots in QtViewer [#728](https://github.com/sofa-framework/sofa/pull/728)
 - **[SofaBaseMechanics]** Fix warning scene mass [#779](https://github.com/sofa-framework/sofa/pull/779)
 - **[SofaBaseMechanics]** FIX DiagonalMass_test [#832](https://github.com/sofa-framework/sofa/pull/832)
@@ -151,6 +152,7 @@ ____________________________________________________________
 - [SofaDeformable] Fix MeshSpring ForceField and Loader [#815](https://github.com/sofa-framework/sofa/pull/815)
 - **[SofaFramework]** Keep SOFA_EXTERN_TEMPLATE macro definition [#870](https://github.com/sofa-framework/sofa/pull/870)
 - [SofaGui] ADD option to enable VSync (default: OFF) [#722](https://github.com/sofa-framework/sofa/pull/722)
+- [SofaOpenglVisual] Rollback removal of Ogl components [#905](https://github.com/sofa-framework/sofa/pull/905)
 - **[SofaKernel]** FIX bug in toEulerVector [#399](https://github.com/sofa-framework/sofa/pull/399)
 - **[SofaKernel]** FIX segfault created by static initialisers on OSX/clang compiler [#642](https://github.com/sofa-framework/sofa/pull/642)
 - **[SofaKernel]** Fix: correct path writing in sofa_set_python_directory macro [#763](https://github.com/sofa-framework/sofa/pull/763)
@@ -175,7 +177,7 @@ ____________________________________________________________
 - [examples] Fix scenes having issue with CollisionGroup [#821](https://github.com/sofa-framework/sofa/pull/821)
 
 
-### Cleaningss
+### Cleanings
 
 **Modules**
 - [All] Fix some recent compilation warnings [#726](https://github.com/sofa-framework/sofa/pull/726)
@@ -192,6 +194,7 @@ ____________________________________________________________
 - **[SofaFramework]** CLEAN: removing unused PS3 files [#851](https://github.com/sofa-framework/sofa/pull/851)
 - [SofaGeneralSimpleFEM] Clean BeamFemForceField [#846](https://github.com/sofa-framework/sofa/pull/846)
 - **[SofaHelper]** Change drawTriangle and drawQuad with internal functions [#813](https://github.com/sofa-framework/sofa/pull/813)
+- **[SofaHelper]** Update ComponentChange with removed Components [#905](https://github.com/sofa-framework/sofa/pull/905)
 - **[SofaKernel]** Remove commented code since years in SofaBaseMechanics [#733](https://github.com/sofa-framework/sofa/pull/733)
 - **[SofaKernel]** Move ScriptEvent class from SofaPython to core/objectModel [#764](https://github.com/sofa-framework/sofa/pull/764)
 - [SofaMiscFem] Clean BaseMaterial::handleTopologyChange [#817](https://github.com/sofa-framework/sofa/pull/817)
@@ -200,6 +203,9 @@ ____________________________________________________________
 
 **Plugins / Projects**
 - [Multithreading] Move TaskScheduler files from MultiThreading plugin to SofaKernel [#805](https://github.com/sofa-framework/sofa/pull/805)
+
+**Scenes / Examples**
+- [examples] Remove scenes about deprecated components [#922](https://github.com/sofa-framework/sofa/pull/922)
 
 
 ____________________________________________________________

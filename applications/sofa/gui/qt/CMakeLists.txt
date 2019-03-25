@@ -233,7 +233,7 @@ sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
     set(RESOURCES_DIR "share/sofa/gui/qt")
 else()
     set(RESOURCES_DIR "../share/sofa/gui/qt")
