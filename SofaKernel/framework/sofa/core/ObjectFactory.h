@@ -199,15 +199,15 @@ class ObjectCreator : public ObjectFactory::Creator
 public:
     bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::canCreate(instance, context, arg);
     }
-    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::create(instance, context, arg);
     }
-    const std::type_info& type()
+    const std::type_info& type() override
     {
         return typeid(RealObject);
     }
@@ -230,9 +230,9 @@ public:
         return RealObject::HeaderFileLocation();
     }
 
-    virtual std::string shortName(objectmodel::BaseObjectDescription* arg)
+    virtual std::string shortName(objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::shortName(instance,arg);
     }
 
@@ -289,7 +289,7 @@ public:
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
-        RealObject* p = NULL;
+        RealObject* p = nullptr;
         std::string classname = RealObject::className(p);
         std::string templatename = RealObject::templateName(p);
 

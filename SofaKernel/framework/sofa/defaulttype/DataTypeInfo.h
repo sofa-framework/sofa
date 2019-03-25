@@ -321,7 +321,7 @@ public:
     const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
     const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
 
-    virtual std::string name() const { return DataTypeName<DataType>::name(); }
+    virtual std::string name() const override { return DataTypeName<DataType>::name(); }
 
     bool ValidInfo() const override       { return Info::ValidInfo; }
     bool FixedSize() const override       { return Info::FixedSize; }
@@ -365,7 +365,7 @@ public:
         return v;
     }
 
-    virtual std::string getTextValue   (const void* data, size_t index) const
+    virtual std::string getTextValue   (const void* data, size_t index) const override
     {
         std::string v;
         Info::getValueString(*(const DataType*)data, index, v);
@@ -382,7 +382,7 @@ public:
         Info::setValue(*(DataType*)data, index, value);
     }
 
-    virtual void setTextValue(void* data, size_t index, const std::string& value) const
+    virtual void setTextValue(void* data, size_t index, const std::string& value) const override
     {
         Info::setValueString(*(DataType*)data, index, value);
     }
@@ -395,7 +395,7 @@ public:
         return Info::getValuePtr(*(DataType*)data);
     }
 
-    virtual const std::type_info* type_info() const { return &typeid(DataType); }
+    virtual const std::type_info* type_info() const override { return &typeid(DataType); }
 
 
 protected: // only derived types can instantiate this class

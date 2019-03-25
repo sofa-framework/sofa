@@ -78,7 +78,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setReadWriteVectors()
+    virtual void setReadWriteVectors() override
     {
     }
 #endif

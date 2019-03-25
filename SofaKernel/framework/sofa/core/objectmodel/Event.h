@@ -39,7 +39,7 @@ namespace objectmodel
     protected:\
     static const size_t s_eventTypeIndex; \
     public:\
-    virtual size_t getEventTypeIndex() const { return T::s_eventTypeIndex; } \
+    virtual size_t getEventTypeIndex() const override { return T::s_eventTypeIndex; } \
     static bool checkEventType( const Event* event ) { return event->getEventTypeIndex() == T::s_eventTypeIndex; }
 
 
