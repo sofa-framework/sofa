@@ -50,6 +50,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 find_package(MiniFlowVR QUIET)
 if(MiniFlowVR_FOUND)
+    set(SOFADISTANCEGRID_WITH_MINIFLOWVR TRUE)
     add_definitions("-DSOFA_HAVE_MINIFLOWVR")
     target_link_libraries(${PROJECT_NAME} PUBLIC miniFlowVR)
     message(STATUS "SofaDistanceGrid: MiniFlowVR enabled.")
