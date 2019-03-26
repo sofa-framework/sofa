@@ -138,7 +138,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 
 # is this a compiler/linker version specific problem?
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    target_link_options(${PROJECT_NAME} PUBLIC "-pthread")
+    # target_link_options is  available from CMake 3.13
+    # target_link_options(${PROJECT_NAME} PUBLIC "-pthread")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
 endif()
 
 sofa_install_targets(SofaSimulation ${PROJECT_NAME} "sofa/simulation")
