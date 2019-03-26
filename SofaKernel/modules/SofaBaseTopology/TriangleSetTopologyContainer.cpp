@@ -230,8 +230,6 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
-
-    EdgeSetTopologyContainer::createEdgesAroundVertexArray();
 }
 
 void TriangleSetTopologyContainer::createEdgesInTriangleArray()
