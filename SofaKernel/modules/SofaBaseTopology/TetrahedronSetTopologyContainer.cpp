@@ -951,6 +951,47 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
     return elemAll;
 }
 
+
+const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getOppositeElement(TetraID elemID)
+{
+    VecTetraID elems;
+    if (!hasTetrahedraAroundTriangle())
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "In getOppositeElement: TetrahedraAroundTriangle shell array is empty.";
+        return elems;
+    }
+
+    if (!hasTrianglesInTetrahedron())
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "In getOppositeElement: TrianglesInTetrahedron shell array is empty.";
+        return elems;
+    }
+
+    if (elemID > m_trianglesInTetrahedron.size())
+        return elems;
+
+    const TrianglesInTetrahedron& triInTetra = m_trianglesInTetrahedron[elemID];
+    elems.reserve(4);
+    for (auto triID: triInTetra) // loop on the 4 triangles
+    {
+        const TetrahedraAroundTriangle& tetraATri = m_tetrahedraAroundTriangle[triID];
+        if (tetraATri.size() > 2 )
+            msg_warning() << "In getOppositeElement: more than 2 tetrahedron around triangle: " << triID << " -> " << tetraATri;
+
+        if (tetraATri.size() == 1) // triangle on border
+            continue;
+
+        if (tetraATri[0] == elemID)
+            elems.push_back(tetraATri[1]);
+        else
+            elems.push_back(tetraATri[0]);
+    }
+
+    return elems;
+}
+
 /// @}
 
 
