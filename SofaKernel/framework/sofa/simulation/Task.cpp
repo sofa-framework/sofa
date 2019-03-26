@@ -13,9 +13,8 @@ namespace sofa
         Task::Allocator* Task::_allocator = nullptr;
 
 
-		Task::Task(Task::Status* status, int scheduledThread)
-			: m_scheduledThread(scheduledThread)
-//            , m_status(status)
+		Task::Task(int scheduledThread)
+            : m_scheduledThread(scheduledThread)
             , m_id(0)
 		{            
 		}
@@ -26,8 +25,8 @@ namespace sofa
         
         
         CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-        : Task(status, scheduledThread)
-        , m_status(status)
+            : Task(scheduledThread)
+            , m_status(status)
         {
         }
         

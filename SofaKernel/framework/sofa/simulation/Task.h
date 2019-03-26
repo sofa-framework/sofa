@@ -59,7 +59,7 @@ namespace sofa
             
             
             
-            Task(Task::Status* status, int scheduledThread);
+            Task(int scheduledThread);
             
             virtual ~Task();
             
