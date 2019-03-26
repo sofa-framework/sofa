@@ -131,14 +131,14 @@ set(SOURCE_FILES
     InitTasks.cpp
 )
 
-# is this a compiler/linker version specific problem?
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMULATION_CORE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+
+# is this a compiler/linker version specific problem?
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    target_link_options(${PROJECT_NAME} PUBLIC "-pthread")
+endif()
 
 sofa_install_targets(SofaSimulation ${PROJECT_NAME} "sofa/simulation")
