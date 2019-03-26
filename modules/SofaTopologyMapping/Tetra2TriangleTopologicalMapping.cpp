@@ -382,7 +382,18 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     if (is_present) // already done, continue.
                         continue;
 
-                    core::topology::BaseMeshTopology::Triangle tri = fromModel->getTriangle(triangleId);
+                    core::topology::BaseMeshTopology::Triangle tri;
+                    const core::topology::BaseMeshTopology::Tetrahedron& otherTetra = tetrahedronArray[idOtherTetra];
+                    const BaseMeshTopology::TrianglesInTetrahedron& triInOtherTetra = fromModel->getTrianglesInTetrahedron(idOtherTetra);
+
+                    int posInTetra = fromModel->getTriangleIndexInTetrahedron(triInOtherTetra, triangleId);
+
+                    for (int i=0; i<3; i++)
+                    {
+                        unsigned int vIdInTetra = trianglesInTetrahedronArray[posInTetra][i];
+                        tri[i] = otherTetra[vIdInTetra];
+                    }
+
                     if(flipN)
                     {
                         unsigned int temp=tri[2];
