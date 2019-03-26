@@ -115,7 +115,7 @@ private:
 
 	protected:
 
-		applyTask( const simulation::CpuTask::Status* status );
+		applyTask( simulation::CpuTask::Status* status );
 
 	private:
 
@@ -139,7 +139,7 @@ private:
 
 	public:
 	
-		applyJTask( const simulation::CpuTask::Status* status );
+		applyJTask( simulation::CpuTask::Status* status );
 
 		MemoryAlloc run() final;
 
@@ -164,7 +164,7 @@ private:
 
 	public:
 		
-		applyJTmechTask( const simulation::CpuTask::Status* status );
+		applyJTmechTask( simulation::CpuTask::Status* status );
 	
 		MemoryAlloc run() final;
 

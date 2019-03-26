@@ -147,7 +147,7 @@ namespace sofa  {
 
             std::thread  m_stdThread;
 
-            const Task::Status*	m_currentStatus;
+            Task::Status*	m_currentStatus;
 
             DefaultTaskScheduler*     m_taskScheduler;
 

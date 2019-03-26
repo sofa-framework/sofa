@@ -13,9 +13,9 @@ namespace sofa
         Task::Allocator* Task::_allocator = nullptr;
 
 
-		Task::Task(const Task::Status* status, int scheduledThread)
+		Task::Task(Task::Status* status, int scheduledThread)
 			: m_scheduledThread(scheduledThread)
-            , m_status(status)
+//            , m_status(status)
             , m_id(0)
 		{            
 		}
@@ -25,8 +25,9 @@ namespace sofa
 		}
         
         
-        CpuTask::CpuTask(const CpuTask::Status* status, int scheduledThread)
+        CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
         : Task(status, scheduledThread)
+        , m_status(status)
         {
         }
         
@@ -37,7 +38,7 @@ namespace sofa
         
         
         
-        ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const CpuTask::Status* status )
+        ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status )
             : CpuTask(status)
             , m_atomicCounter(atomicCounter)
             , m_threadSpecificMutex(mutex)

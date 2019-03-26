@@ -37,8 +37,8 @@ namespace mapping
 	using namespace sofa::defaulttype;
 
 
-		template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( const simulation::CpuTask::Status* status )
+    template <class TIn, class TOut>
+	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( simulation::CpuTask::Status* status )
 		: CpuTask( status )
 		, _mapping(0)	
 		, _in(0)
@@ -84,7 +84,7 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( const simulation::CpuTask::Status* status )
+	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( simulation::CpuTask::Status* status )
 		: CpuTask( status )
 		, _mapping(0)	
 		, _in(0)
@@ -133,7 +133,7 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( const simulation::CpuTask::Status* status )
+	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( simulation::CpuTask::Status* status )
 		: CpuTask( status )
 		, _mapping(0)	
 		, _in(0)

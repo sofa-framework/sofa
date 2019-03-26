@@ -45,7 +45,7 @@ namespace sofa
             public:
                 virtual ~Status() {}
                 virtual bool isBusy() const = 0;
-                virtual int setBusy(bool busy) const = 0;
+                virtual int setBusy(bool busy) = 0;
             };
             
             // Task Allocator class interface used to allocate tasks
@@ -59,7 +59,7 @@ namespace sofa
             
             
             
-            Task(const Task::Status* status, int scheduledThread);
+            Task(Task::Status* status, int scheduledThread);
             
             virtual ~Task();
             
@@ -101,7 +101,7 @@ namespace sofa
             // no problem with other sompilers included visual studio 2017
             //static void operator delete[](void* ptr) = delete;
             
-            virtual const Task::Status* getStatus(void) const = 0;
+            virtual Task::Status* getStatus(void) const = 0;
             
             int getScheduledThread() const { return m_scheduledThread; }
             
@@ -111,7 +111,7 @@ namespace sofa
             
         protected:
             
-            const Task::Status*    m_status;
+//            Task::Status*    m_status;
             
             int m_scheduledThread;
             
@@ -144,7 +144,7 @@ namespace sofa
                     return (m_busy.load(std::memory_order_relaxed) > 0);
                 }
 
-                virtual int setBusy(bool busy) const override final
+                virtual int setBusy(bool busy) override final
                 {
                     if (busy)
                     {
@@ -157,20 +157,21 @@ namespace sofa
                 }
 
             private:
-                mutable std::atomic<int> m_busy;
+                std::atomic<int> m_busy;
             };
 
 
-            virtual const CpuTask::Status* getStatus(void) const override final 
-                { return dynamic_cast<const CpuTask::Status*>(m_status); }
+            virtual CpuTask::Status* getStatus(void) const override final { return m_status; }
 
 
         public:
             
-            CpuTask(const CpuTask::Status* status, int scheduledThread = -1);
+            CpuTask(CpuTask::Status* status, int scheduledThread = -1);
 
             virtual ~CpuTask();
 
+        private:
+            CpuTask::Status*    m_status;
         };
 
 
@@ -183,7 +184,7 @@ namespace sofa
 
         public:
 
-            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const CpuTask::Status* status);
+            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
 
             ~ThreadSpecificTask() override;
 
