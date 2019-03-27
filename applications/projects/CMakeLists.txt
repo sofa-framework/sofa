@@ -7,9 +7,7 @@ if(NOT Qt5Core_FOUND)
     set(SOFA_HAVE_QT_LIBRARIES 0)
 endif()
 
-if(SOFA_HAVE_QT_LIBRARIES)
-    sofa_add_application(Modeler Modeler OFF)
-endif()
+sofa_add_application(Modeler Modeler OFF)
 
 sofa_add_application(getDeprecatedComponents getDeprecatedComponents OFF)
 
