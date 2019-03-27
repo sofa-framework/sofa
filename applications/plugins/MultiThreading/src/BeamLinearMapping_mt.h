@@ -182,33 +182,9 @@ private:
 	};
 
 
-	//class applyJTconstrTask : public simulation::CpuTask
-	//{
-	//public:
-	//	applyJTconstrTask( const simulation::CpuTask::Status* status );
-
-	//	virtual bool run( simulation::WorkerThread* );
-
-	//private:
-
-	//	BeamLinearMapping_mt<TIn,TOut>* _mapping;
-
-	//	helper::WriteAccessor< Data< typename In::MatrixDeriv > >* _out;
-	//	const helper::ReadAccessor< Data< typename Out::MatrixDeriv > >* _in;
-
-	//	size_t _firstPoint;
-	//	size_t _lastPoint;
-
-	//	friend class BeamLinearMapping_mt<TIn,TOut>;
-	//};
-
-
 	friend class applyTask;
 	friend class applyJTask;
 	friend class applyJTmechTask;
-	//friend class applyJTconstrTask;
-
-
 };
 
 } // namespace mapping

@@ -32,8 +32,8 @@ namespace sofa
 {
 	namespace simulation
     {
-
-
+        
+        
         /** Task class interface    */
         class SOFA_SIMULATION_CORE_API Task
         {
@@ -111,7 +111,7 @@ namespace sofa
             
         protected:
             
-//            Task::Status*    m_status;
+            //            Task::Status*    m_status;
             
             int m_scheduledThread;
             
@@ -124,26 +124,26 @@ namespace sofa
         };
         
         
-
+        
         /**  Base class to implement a CPU task
          *   all the tasks running on the CPU should inherits from this class
          */
         class SOFA_SIMULATION_CORE_API CpuTask : public Task
         {
         public:
-
+            
             /** CPU Task Status class definition:
              *  used to synchronize CPU tasks  */
             class Status : public Task::Status
             {
             public:
                 Status() : m_busy(0) {}
-
+                
                 virtual bool isBusy() const override final
                 {
                     return (m_busy.load(std::memory_order_relaxed) > 0);
                 }
-
+                
                 virtual int setBusy(bool busy) override final
                 {
                     if (busy)
@@ -155,49 +155,49 @@ namespace sofa
                         return m_busy.fetch_sub(1, std::memory_order_relaxed);
                     }
                 }
-
+                
             private:
                 std::atomic<int> m_busy;
             };
-
-
+            
+            
             virtual CpuTask::Status* getStatus(void) const override final { return m_status; }
-
-
+            
+            
         public:
             
             CpuTask(CpuTask::Status* status, int scheduledThread = -1);
-
+            
             virtual ~CpuTask();
-
+            
         private:
             CpuTask::Status*    m_status;
         };
-
-
-
-
+        
+        
+        
+        
         // This task is called once by each thread used by the TasScheduler
         // this is useful to initialize the thread specific variables
         class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public CpuTask
         {
-
+            
         public:
-
+            
             ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-
+            
             ~ThreadSpecificTask() override;
-
+            
             MemoryAlloc run() final;
-
-
+            
+            
         private:
-
+            
             virtual bool runThreadSpecific() { return true; }
-
+            
             virtual bool runCriticalThreadSpecific() { return true; }
-
-
+            
+            
             std::atomic<int>* m_atomicCounter;
             std::mutex*     m_threadSpecificMutex;
         };
