@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,36 +25,35 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace misc
 {
 
-int AddResourceRepositoryClass = core::RegisterObject("Add a repository to the pool of resources")
-.add< AddResourceRepository >();
-
-AddResourceRepository::AddResourceRepository()
-    : Inherit()
+BaseAddResourceRepository::BaseAddResourceRepository()
+    : Inherit1()
+    , m_repository(nullptr)
     , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
     , m_currentAddedPath()
 {
-
 }
 
-AddResourceRepository::~AddResourceRepository()
+BaseAddResourceRepository::~BaseAddResourceRepository()
 {
 
 }
 
-void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit::parse(arg);
+    Inherit1::parse(arg);
+
+    m_repository = getFileRepository();
+
     std::string tmpAddedPath;
     tmpAddedPath = d_repositoryPath.getValue();
 
@@ -78,22 +77,30 @@ void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription
         return;
     }
 
-    m_currentAddedPath = tmpAddedPath;
-    sofa::helper::system::DataRepository.addLastPath(m_currentAddedPath);
+    m_currentAddedPath = FileSystem::cleanPath(tmpAddedPath);
+    m_repository->addLastPath(m_currentAddedPath);
+    msg_info(this) << "Added path: " << m_currentAddedPath;
 
     if(this->f_printLog.getValue())
-        sofa::helper::system::DataRepository.print();
+        m_repository->print();
 }
 
-void AddResourceRepository::cleanup()
+void BaseAddResourceRepository::cleanup()
 {
-    Inherit::cleanup();
-    sofa::helper::system::DataRepository.removePath(m_currentAddedPath);
-
+    Inherit1::cleanup();
+    m_repository->removePath(m_currentAddedPath);
 }
+
+
+int AddDataRepositoryClass = core::RegisterObject("Add a path to DataRepository")
+    .add< AddDataRepository >()
+    .addAlias("AddResourceRepository") // Backward compatibility
+    ;
+
+int AddPluginRepositoryClass = core::RegisterObject("Add a path to PluginRepository")
+    .add< AddPluginRepository >();
+
 
 } // namespace misc
-
 } // namespace component
-
 } // namespace sofa

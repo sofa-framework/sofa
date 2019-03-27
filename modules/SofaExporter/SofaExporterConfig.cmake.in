@@ -1,0 +1,11 @@
+# CMake package configuration file for the SofaExporter module
+
+@PACKAGE_INIT@
+
+### Is the target existing ?
+if(NOT TARGET SofaExporter)
+        ### If not we are building out of tree.
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaExporterTargets.cmake")
+endif()
+
+check_required_components(SofaExporter)

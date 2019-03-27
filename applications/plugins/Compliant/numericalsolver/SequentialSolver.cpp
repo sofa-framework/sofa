@@ -20,7 +20,7 @@ BaseSequentialSolver::BaseSequentialSolver()
 {}
 
 
-BaseSequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
+BaseSequentialSolver::block::block() : offset(0), size(0), projector(nullptr), activated(false) { }
 
 void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 

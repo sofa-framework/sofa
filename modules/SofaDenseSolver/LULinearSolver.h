@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -55,10 +55,10 @@ protected:
 
 public:
     /// Invert M
-    virtual void invert (Matrix& M) override;
+    void invert (Matrix& M) override;
 
     /// Solve Mx=b
-    virtual void solve (Matrix& M, Vector& x, Vector& b) override;
+    void solve (Matrix& M, Vector& x, Vector& b) override;
 
     void computeMinv();
     double getMinvElement(int i, int j);
@@ -71,7 +71,7 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
 };
 

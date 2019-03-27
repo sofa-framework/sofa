@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,12 +74,12 @@ public:
     /**
      * @brief Default destructor.
      */
-    virtual ~LineInfo() {}
+    ~LineInfo() override {}
 
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    virtual bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ);
+    bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ) override;
 
     /**
      * @brief Output stream.
@@ -101,7 +101,7 @@ public:
     /**
      * @brief Computes the region of interest cone of the Line primitive.
      */
-    virtual void buildFilter(unsigned int /*e*/);
+    void buildFilter(unsigned int /*e*/) override;
 
 protected:
 
@@ -126,7 +126,7 @@ public:
 
 protected:
     LineLocalMinDistanceFilter();
-    virtual ~LineLocalMinDistanceFilter();
+    ~LineLocalMinDistanceFilter() override;
 
 public:
 

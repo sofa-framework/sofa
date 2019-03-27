@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,20 +68,20 @@ public:
         this->addAlias(&dimxyzct, "dimensions");
     }
 
-    virtual ~GenerateImage() {}
+    ~GenerateImage() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&dimxyzct);
         addOutput(&image);
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate() override
+    void doUpdate() override
     {
         const imCoord& dim = this->dimxyzct.getValue();
         helper::WriteOnlyAccessor<Data< ImageTypes > > out(this->image);

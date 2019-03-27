@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,9 +45,9 @@ int TetrahedralTensorMassForceFieldCudaClass = core::RegisterObject("Supports GP
 } // namespace gpu
 
 
-template class sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API sofa::component::forcefield::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 } // namespace sofa

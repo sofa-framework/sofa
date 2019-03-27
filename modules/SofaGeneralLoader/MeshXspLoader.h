@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,29 +34,23 @@ namespace component
 namespace loader
 {
 
-//TODO(dmarchal 2017-05-06): Seems there is two version of this code... one is in SpringMassLoader.
 class SOFA_GENERAL_LOADER_API MeshXspLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshXspLoader,sofa::core::loader::MeshLoader);
-protected:
-    MeshXspLoader();
-public:
-    virtual bool load() override;
+
+    /// Inherited from MeshLoader
+    bool load() override;
 
     template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context,
+                                     core::objectmodel::BaseObjectDescription* arg )
     {
         return BaseLoader::canCreate (obj, context, arg);
     }
 
 protected:
-
-    bool readXsp (std::ifstream &file, bool vector_spring);
-
-    Data <helper::vector <defaulttype::Vector3> > gravity; ///< Gravity coordinates loaded in this mesh.
-    Data <helper::vector <double> > viscosity; ///< viscosity values loaded in this mesh.
-
+    MeshXspLoader();
 };
 
 

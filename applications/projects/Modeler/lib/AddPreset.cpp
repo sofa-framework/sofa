@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -128,7 +128,7 @@ AddPreset::AddPreset(QWidget* parent):
 
 void AddPreset::setElementPresent(bool *elementPresent)
 {
-    if (elementPresent != NULL)
+    if (elementPresent != nullptr)
     {
         if (!elementPresent[0])
         {
@@ -183,9 +183,9 @@ void AddPreset::clear()
     scaleY->setText("1.0");
     scaleZ->setText("1.0");
 
-    openFilePath0->setText(NULL);
-    openFilePath1->setText(NULL);
-    openFilePath2->setText(NULL);
+    openFilePath0->setText(nullptr);
+    openFilePath1->setText(nullptr);
+    openFilePath2->setText(nullptr);
 }
 
 // When the Ok Button is clicked, this method is called: we just have

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -300,21 +300,21 @@ unsigned char *Image::getPixels()
 unsigned char *Image::getMipmapPixels(unsigned mipmap)
 {
     if (getTextureType() == TEXTURE_CUBE)
-        return 0;
+        return nullptr;
     return data + getMipmapRangeSize(0, mipmap);
 }
 
 unsigned char *Image::getCubeMipmapPixels(unsigned cubeside, unsigned mipmap)
 {
     if (getTextureType() != TEXTURE_CUBE)
-        return 0;
+        return nullptr;
     return data + (cubeside * getImageSize() + getMipmapRangeSize(0, mipmap)) / 6;
 }
 
 unsigned char *Image::get3DSliceMipmapPixels(unsigned slice, unsigned mipmap)
 {
     if (getTextureType() != TEXTURE_3D)
-        return 0;
+        return nullptr;
     return getMipmapPixels(mipmap) + getWidth(mipmap) * getHeight(mipmap) * slice;
 }
 

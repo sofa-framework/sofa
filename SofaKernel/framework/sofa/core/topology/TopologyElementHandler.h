@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,19 +62,19 @@ public:
 
     TopologyElementHandler() : TopologyHandler() {}
 
-    virtual ~TopologyElementHandler() {}
+    ~TopologyElementHandler() override {}
 
 
     using TopologyHandler::ApplyTopologyChange;
 
     /// Apply swap between indices elements.
-    virtual void ApplyTopologyChange(const EIndicesSwap* event);
+    virtual void ApplyTopologyChange(const EIndicesSwap* event) override;
     /// Apply adding elements.
-    virtual void ApplyTopologyChange(const EAdded* event);
+    virtual void ApplyTopologyChange(const EAdded* event) override;
     /// Apply removing elements.
-    virtual void ApplyTopologyChange(const ERemoved* event);
+    virtual void ApplyTopologyChange(const ERemoved* event) override;
     /// Apply renumbering on elements.
-    virtual void ApplyTopologyChange(const ERenumbering* event);
+    virtual void ApplyTopologyChange(const ERenumbering* event) override;
     /// Apply moving elements.
     virtual void ApplyTopologyChange(const EMoved* event);
     /// Apply adding function on moved elements.
@@ -84,10 +84,10 @@ public:
 
 protected:
     /// Swaps values at indices i1 and i2.
-    virtual void swap( Topology::ElemID /*i1*/, Topology::ElemID /*i2*/ ) {}
+    void swap( Topology::ElemID /*i1*/, Topology::ElemID /*i2*/ ) override {}
 
     /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<Topology::ElemID> &/*index*/ ) {}
+    virtual void renumber( const sofa::helper::vector<Topology::ElemID> &/*index*/ ) override {}
 
     /// Add some values. Values are added at the end of the vector.
     /// This is the (old) version, to be deprecated in favor of the next method
@@ -106,7 +106,7 @@ protected:
             )
     {
         // call old method by default
-        add((Topology::ElemID)index.size(), elems, ancestors, coefs);
+        add( static_cast<Topology::ElemID>(index.size()), elems, ancestors, coefs);
     }
 
     /// Remove the values corresponding to the ELement removed.

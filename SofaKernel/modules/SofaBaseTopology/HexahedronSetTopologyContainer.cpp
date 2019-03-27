@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -519,11 +519,8 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
     assert(out7.size()==0 || out7.size()==1);
     if(out7.size()==1)
         return (int) (out7[0]);
-    else {
-        msg_warning() << "Hexahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
-                         << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)

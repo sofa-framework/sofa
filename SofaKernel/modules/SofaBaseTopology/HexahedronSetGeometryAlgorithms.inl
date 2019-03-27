@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -836,9 +836,8 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Hexa indices
-    if (d_showHexaIndices.getValue())
+    if (d_showHexaIndices.getValue() && this->m_topology->getNbHexahedra() != 0)
     {
-
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         float scale = this->getIndicesScale();
 
@@ -869,7 +868,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
 
     //Draw hexahedra
-    if (d_drawHexahedra.getValue())
+    if (d_drawHexahedra.getValue() && this->m_topology->getNbHexahedra() != 0)
     {
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, true);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,7 +79,7 @@ public:
 
     Data< helper::vector<Real> > f_fineVolumes; ///< input cell volumes (typically computed from a fine model)
 
-    virtual void init()
+    void init() override
     {
         Inherited::init();
 
@@ -97,22 +97,22 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
     TopologyGaussPointSampler()    :   Inherited()
       , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
-      , parentTopology( 0 )
+      , parentTopology( nullptr )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
       , f_indices(initData(&f_indices,"indices","list of cells where sampling is performed (all by default)"))
-      , tetraGeoAlgo( 0 )
+      , tetraGeoAlgo( nullptr )
       , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
       , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
       , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))
     {
     }
 
-    virtual ~TopologyGaussPointSampler()
+    ~TopologyGaussPointSampler() override
     {
 
     }
@@ -123,7 +123,7 @@ protected:
         if(indices.find(index)!=indices.end()) return true; else return false;
     }
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         if( !parentTopology ) return;
 

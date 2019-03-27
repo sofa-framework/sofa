@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaExporter)
+project(SofaExporter VERSION 1.0 LANGUAGES CXX)
+
+find_package(SofaSimulation REQUIRED) # SofaGeneralLinearSolver
 
 set(HEADER_FILES
-    config.h
-    initExporter.h
+    src/SofaExporter/config.h
+    src/SofaExporter/initExporter.h
     )
 
 set(SOURCE_FILES
-    initExporter.cpp
+    src/SofaExporter/initExporter.cpp
     )
 
 set(EXTRA_FILES
@@ -18,31 +20,33 @@ set(EXTRA_FILES
     )
 
 list(APPEND HEADER_FILES
-    BlenderExporter.h
-    BlenderExporter.inl
-    MeshExporter.h
-    OBJExporter.h
-    STLExporter.h
-    VTKExporter.h
-    WriteState.h
-    WriteState.inl
-    WriteTopology.h
-    WriteTopology.inl
+    src/SofaExporter/BlenderExporter.h
+    src/SofaExporter/BlenderExporter.inl
+    src/SofaExporter/MeshExporter.h
+    src/SofaExporter/OBJExporter.h
+    src/SofaExporter/STLExporter.h
+    src/SofaExporter/VTKExporter.h
+    src/SofaExporter/WriteState.h
+    src/SofaExporter/WriteState.inl
+    src/SofaExporter/WriteTopology.h
+    src/SofaExporter/WriteTopology.inl
     )
 
 list(APPEND SOURCE_FILES
-    BlenderExporter.cpp
-    MeshExporter.cpp
-    OBJExporter.cpp
-    STLExporter.cpp
-    VTKExporter.cpp
-    WriteState.cpp
-    WriteTopology.cpp
+    src/SofaExporter/BlenderExporter.cpp
+    src/SofaExporter/MeshExporter.cpp
+    src/SofaExporter/OBJExporter.cpp
+    src/SofaExporter/STLExporter.cpp
+    src/SofaExporter/VTKExporter.cpp
+    src/SofaExporter/WriteState.cpp
+    src/SofaExporter/WriteTopology.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_EXPORTER")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_compile_definitions(${PROJECT_NAME} PRIVATE COMPILE_FLAGS "-DSOFA_BUILD_EXPORTER")
+target_compile_definitions(${PROJECT_NAME} PUBLIC COMPILE_FLAGS "-DSOFA_HAVE_SOFAEXPORTER")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+
+sofa_create_package(SofaExporter ${PROJECT_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})

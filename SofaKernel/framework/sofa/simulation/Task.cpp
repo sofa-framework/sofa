@@ -1,6 +1,6 @@
 #include <sofa/simulation/Task.h>
 
-#include <assert.h>
+#include <cassert>
 #include <thread>
 
 

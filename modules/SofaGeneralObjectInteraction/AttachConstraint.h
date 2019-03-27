@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,17 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <set>
-#include <sofa/core/DataEngine.h>
 
 namespace sofa
 {
@@ -87,20 +77,26 @@ public:
     helper::vector<defaulttype::Quat> restRotations;
 
 protected:
-    bool dynamicConstraintFactor;
     AttachConstraint();
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
-    virtual ~AttachConstraint();
+    ~AttachConstraint() override;
+
 public:
+
+    /// Inherited from Base
     void init() override;
     void reinit() override;
-    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/) override;
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    /// Inherited from Constraint
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId) override;
     void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
     void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
     void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2) override;
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams *mparams,
+                         const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
@@ -112,68 +108,15 @@ public:
         return core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::templateName(ptr);
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
-
 protected :
-
-    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition;
-    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity;
-    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse;
-
-    inline Real getConstraintFactor(int index) {
-        return d_constraintFactor.isSet() ? d_constraintFactor.getValue()[index] : 1;
-    }
-
-    void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned index)
-    {
-        // do nothing if distance between x2 & x1 is bigger than f_minDistance
-        if (f_minDistance.getValue() != -1 &&
-            (x2 - x1).norm() > f_minDistance.getValue())
-        {
-            constraintReleased[index] = true;
-            return;
-        }
-        constraintReleased[index] = false;
-
-        Deriv corr = (x2-x1)*(0.5*d_positionFactor.getValue()*getConstraintFactor(index));
-
-        x1 += corr;
-        x2 -= corr;
-    }
-
-    void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned index)
-    {
-        // do nothing if distance between x2 & x1 is bigger than f_minDistance
-        if (constraintReleased[index]) return;
-
-        Deriv corr = (x2-x1)*(0.5*d_velocityFactor.getValue()*getConstraintFactor(index));
-
-        x1 += corr;
-        x2 -= corr;
-    }
-
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned index)
-    {
-        // do nothing if distance between x2 & x1 is bigger than f_minDistance
-        if (constraintReleased[index]) return;
-
-        if (!twoway)
-        {
-            dx2 = Deriv();
-        }
-        else
-        {
-            Deriv in1 = dx1;
-            Deriv in2 = dx2;
-            Real constraintFactor = getConstraintFactor(index);
-            dx1 += in2*(d_responseFactor.getValue()*constraintFactor);
-            dx2 += in1*(d_responseFactor.getValue()*constraintFactor);
-        }
-    }
-
-    static unsigned int DerivConstrainedSize(bool freeRotations);
+    const Real getConstraintFactor(const int index);
+    void projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor);
+    void projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor);
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index, Real responseFactor);
 
     void calcRestRotations();
+    static unsigned int DerivConstrainedSize(bool freeRotations);
+
 };
 
 
@@ -183,7 +126,6 @@ extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defau
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec1Types>;
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid3Types>;
 extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace projectiveconstraintset

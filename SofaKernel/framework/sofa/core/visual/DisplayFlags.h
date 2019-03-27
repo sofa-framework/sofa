@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -124,7 +124,7 @@ protected:
     typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
 
 public:
-    FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = NULL);
+    FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = nullptr);
 
     const tristate& state( ) const {return m_state;}
     tristate& state() {return m_state;}

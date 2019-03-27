@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,7 @@ void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 
 void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
 {
-    if (vparams->pass() == core::visual::VisualParams::Std || vparams->pass() == core::visual::VisualParams::Shadow)
+    if (vparams->pass() == core::visual::VisualParams::Transparent || vparams->pass() == core::visual::VisualParams::Shadow)
     {
         msg_info_when(DO_DEBUG_DRAW, o) << " entering VisualVisitor::draw()" ;
 

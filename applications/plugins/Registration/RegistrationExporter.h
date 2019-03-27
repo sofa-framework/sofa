@@ -43,15 +43,15 @@ public:
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
 	RegistrationExporter();
-	virtual ~RegistrationExporter();
+	~RegistrationExporter() override;
 
     void writeMesh();
 
-	void init();
-	void cleanup();
-	void bwdInit();
+	void init() override;
+	void cleanup() override;
+	void bwdInit() override;
 
-	void handleEvent(sofa::core::objectmodel::Event *);
+	void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
 } // namespace misc

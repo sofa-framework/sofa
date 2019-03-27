@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,7 +66,7 @@ public:
 
 protected:
     BaseNode() ;
-    virtual ~BaseNode();
+    ~BaseNode() override;
 
 private:
     BaseNode(const BaseNode& n) ;
@@ -134,7 +134,7 @@ public:
     /// Return the path from this node to the root node
     virtual std::string getRootPath() const;
 
-    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override = 0;
+    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override = 0;
 
     /// @}
 

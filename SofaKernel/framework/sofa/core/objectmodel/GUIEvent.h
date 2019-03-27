@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~GUIEvent();
+    ~GUIEvent() override;
 
     /**
      * @brief Get the emitter control ID
@@ -70,7 +70,7 @@ public:
     const std::string getValue(void) const {return m_value;}
 
 
-    virtual const char* getClassName() const { return "GUIEvent"; }
+    const char* getClassName() const override { return "GUIEvent"; }
 private:
 
     std::string     m_controlID;

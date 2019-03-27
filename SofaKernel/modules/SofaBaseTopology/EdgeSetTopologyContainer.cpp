@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -174,9 +174,6 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
         if ((e[0] == v2) || (e[1] == v2))
             result = es1[i];
     }
-
-    if (result == InvalidID)
-        msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
 
     return result;
 }

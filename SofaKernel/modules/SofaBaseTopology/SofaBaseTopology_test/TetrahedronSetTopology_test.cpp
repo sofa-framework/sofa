@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,9 +77,9 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -139,7 +139,7 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
         EXPECT_EQ(elem2[i], -1);
 
 
-    if(scene != NULL)
+    if(scene != nullptr)
         delete scene;
 
     return true;
@@ -151,9 +151,9 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -248,9 +248,9 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -345,9 +345,9 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
@@ -394,16 +394,16 @@ bool TetrahedronSetTopology_test::checkTopology()
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    if (topoCon == NULL)
+    if (topoCon == nullptr)
     {
-        if (scene != NULL)
+        if (scene != nullptr)
             delete scene;
         return false;
     }
 
     bool res = topoCon->checkTopology();
     
-    if (scene != NULL)
+    if (scene != nullptr)
         delete scene;
     
     return res;

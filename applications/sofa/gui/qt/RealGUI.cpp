@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -116,17 +116,6 @@ using sofa::helper::system::FileMonitor;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
-
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -174,7 +163,7 @@ public:
 #endif
 
 protected:
-    bool event(QEvent *event)
+    bool event(QEvent *event) override
     {
         switch (event->type())
         {
@@ -190,8 +179,8 @@ protected:
     }
 };
 
-RealGUI* gui = NULL;
-QApplication* application = NULL;
+RealGUI* gui = nullptr;
+QApplication* application = nullptr;
 
 const char* progname="";
 
@@ -203,9 +192,9 @@ public:
     RealGUIFileListener(RealGUI* realgui){
         m_realgui = realgui;
     }
-    virtual ~RealGUIFileListener(){}
+    ~RealGUIFileListener() override{}
 
-    virtual void fileHasChanged(const std::string& filename) override
+    void fileHasChanged(const std::string& filename) override
     {
         m_realgui->fileOpen(filename, false, true);
     }
@@ -250,7 +239,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     char **argv=new char*[2];
     *argc = 1;
     argv[0] = strdup ( BaseGUI::GetProgramName() );
-    argv[1]=NULL;
+    argv[1]=nullptr;
     application = new QSOFAApplication ( *argc,argv );
 
     // Add resources dir to GuiDataRepository
@@ -322,7 +311,7 @@ RealGUI::RealGUI ( const char* viewername)
       handleTraceVisitor(NULL),
       #endif
 
-      simulationGraph(NULL),
+      simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
       m_dumpState(false),
@@ -332,18 +321,18 @@ RealGUI::RealGUI ( const char* viewername)
       _animationOBJcounter(0),
       m_displayComputationTime(false),
       m_fullScreen(false),
-      mViewer(NULL),
+      mViewer(nullptr),
       m_clockBeforeLastStep(0),
-      propertyWidget(NULL),
-      currentTab ( NULL ),
-      statWidget(NULL),
-      timerStep(NULL),
-      backgroundImage(NULL),
-      pluginManager_dialog(NULL),
+      propertyWidget(nullptr),
+      currentTab ( nullptr ),
+      statWidget(nullptr),
+      timerStep(nullptr),
+      backgroundImage(nullptr),
+      pluginManager_dialog(nullptr),
       recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
       saveReloadFile(false),
-      displayFlag(NULL),
-      m_docbrowser(NULL),
+      displayFlag(nullptr),
+      m_docbrowser(nullptr),
       animationState(false),
       frameCounter(0),
       m_viewerMSAANbSampling(1)
@@ -495,7 +484,7 @@ RealGUI::~RealGUI()
     }
 #endif
 
-    if( displayFlag != NULL )
+    if( displayFlag != nullptr )
         delete displayFlag;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -756,7 +745,6 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
-    SceneCheckerVisitor checker(ExecParams::defaultInstance());
     std::vector<std::string> expandedNodes;
 
     if(reload)
@@ -765,13 +753,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
         if(simulationGraph)
             simulationGraph->getExpandedNodes(expandedNodes);
-    }
-    else
-    {
-        checker.addCheck(SceneCheckAPIChange::newSPtr());
-        checker.addCheck(SceneCheckDuplicatedName::newSPtr());
-        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-        checker.addCheck(SceneCheckUsingAlias::newSPtr());
     }
 
     const std::string &extension=SetDirectory::GetExtension(filename.c_str());
@@ -974,15 +955,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
 
     if (root)
     {
-        /// We want to warn user that there is component that are implemented in specific plugin
-        /// and that there is no RequiredPlugin in their scene.
-//        SceneCheckerVisitor checker(ExecParams::defaultInstance());
-//        checker.addCheck(SceneCheckAPIChange::newSPtr());
-//        checker.addCheck(SceneCheckDuplicatedName::newSPtr());
-//        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-//        checker.addCheck(SceneCheckUsingAlias::newSPtr());
-//        checker.validate(root.get());
-
         //Check the validity of the BBox
         const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
         if(nodeBBox.isNegligeable())
@@ -1397,7 +1369,7 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
     // Change our viewer
     sofa::gui::BaseViewer* old = mViewer;
     mViewer = _viewer;
-    if(mViewer != NULL)
+    if(mViewer != nullptr)
         delete old;
     else
         msg_error("RealGUI")<<"when registerViewer, the viewer is NULL";
@@ -1407,7 +1379,7 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
 
 BaseViewer* RealGUI::getViewer()
 {
-    return mViewer!=NULL ? mViewer : NULL;
+    return mViewer!=nullptr ? mViewer : nullptr;
 }
 
 //------------------------------------
@@ -1415,7 +1387,7 @@ BaseViewer* RealGUI::getViewer()
 sofa::gui::qt::viewer::SofaViewer* RealGUI::getQtViewer()
 {
     sofa::gui::qt::viewer::SofaViewer* qtViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
-    return qtViewer ? qtViewer : NULL;
+    return qtViewer ? qtViewer : nullptr;
 }
 
 //------------------------------------
@@ -1429,14 +1401,14 @@ bool RealGUI::isEmbeddedViewer()
 
 void RealGUI::removeViewer()
 {
-    if(mViewer != NULL)
+    if(mViewer != nullptr)
     {
         if(isEmbeddedViewer())
         {
             getQtViewer()->removeViewerTab(tabs);
         }
         delete mViewer;
-        mViewer = NULL;
+        mViewer = nullptr;
     }
 }
 
@@ -1493,14 +1465,14 @@ void RealGUI::init()
 
 void RealGUI::createDisplayFlags(Node::SPtr root)
 {
-    if( displayFlag != NULL)
+    if( displayFlag != nullptr)
     {
         gridLayout1->removeWidget(displayFlag);
         delete displayFlag;
-        displayFlag = NULL;
+        displayFlag = nullptr;
     }
 
-    component::visualmodel::VisualStyle* visualStyle = NULL;
+    component::visualmodel::VisualStyle* visualStyle = nullptr;
 
     if( root )
     {
@@ -1545,7 +1517,7 @@ void RealGUI::eventNewStep()
         beginTime[i] = curtime;
     }
 
-    if ( m_displayComputationTime && ( frameCounter%100 ) == 0 && root!=NULL )
+    if ( m_displayComputationTime && ( frameCounter%100 ) == 0 && root!=nullptr )
     {
         /// @TODO: use AdvancedTimer in GUI to display time statistics
     }
@@ -1693,7 +1665,7 @@ void RealGUI::stopDumpVisitor()
 
 void RealGUI::initViewer(BaseViewer* _viewer)
 {
-    if(_viewer == NULL)
+    if(_viewer == nullptr)
     {
         msg_error("RealGUI")<<"when initViewer, the viewer is NULL";
         return;
@@ -1702,7 +1674,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
     // Is our viewer embedded or not ?
     sofa::gui::qt::viewer::SofaViewer* qtViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(_viewer);
-    if( qtViewer == NULL )
+    if( qtViewer == nullptr )
     {
         isEmbeddedViewer(false);
         std::cout<<"initViewer: The viewer isn't embedded in the GUI"<<std::endl;
@@ -1902,7 +1874,7 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
     if ( QMessageBox::warning ( this, "New root node: ",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
         return;
 
-    if(path != NULL && root != NULL)
+    if(path != nullptr && root != nullptr)
     {
         getViewer()->setScene(root , path);
         getViewer()->load();
@@ -1966,7 +1938,7 @@ void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
 
 void RealGUI::fileSaveAs(Node *node)
 {
-    if (node == NULL) node = currentSimulation();
+    if (node == nullptr) node = currentSimulation();
     std::string filename(this->windowFilePath().toStdString());
 
 
@@ -2065,7 +2037,7 @@ void RealGUI::step()
     sofa::helper::AdvancedTimer::begin("Animate");
 
     Node* root = currentSimulation();
-    if ( root == NULL ) return;
+    if ( root == nullptr ) return;
 
     startDumpVisitor();
 
@@ -2374,7 +2346,7 @@ void RealGUI::currentTabChanged ( int index )
 
     if ( widget == currentTab ) return;
 
-    if ( currentTab == NULL )
+    if ( currentTab == nullptr )
         currentTab = widget;
 
     if ( widget == TabGraph )

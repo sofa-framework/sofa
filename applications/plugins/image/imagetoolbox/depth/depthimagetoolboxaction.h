@@ -72,7 +72,7 @@ public:
         connectChange();
     }
 
-    ~DepthRowImageToolBoxAction()
+    ~DepthRowImageToolBoxAction() override
     {
         delete w0;
         delete w1;
@@ -196,7 +196,7 @@ public:
 
 public:
     DepthImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~DepthImageToolBoxAction();
+    ~DepthImageToolBoxAction() override;
     
     sofa::component::engine::DepthImageToolBox* DITB();
 
@@ -212,9 +212,9 @@ private:
 
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor();
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override;
 
 
 

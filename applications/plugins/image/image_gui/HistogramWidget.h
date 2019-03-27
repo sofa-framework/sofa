@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ class HistogramSetting: public QObject
     Q_OBJECT;
 
 public:
-    virtual ~HistogramSetting() {};
+    ~HistogramSetting() override {};
     virtual void fromOption(const unsigned int i)=0;
     virtual void fromGraph(const QPointF &pt,const bool clicked)=0;
     QImage *getImage() {return &img;}
@@ -96,7 +96,7 @@ public:
         widget->setLayout(layout);
     }
 
-    virtual ~THistogramSetting() {}
+    ~THistogramSetting() override {}
 
     void readFromData(const Histotype& d0)
     {
@@ -115,7 +115,7 @@ public:
         d.setClamp(this->clamp);
     }
 
-    void fromGraph(const QPointF &pt,const bool clicked)
+    void fromGraph(const QPointF &pt,const bool clicked) override
     {
         if(!this->histo) return;
         const T pos=this->histo->fromHistogram((unsigned int)sofa::helper::round( pt.x()));
@@ -130,7 +130,7 @@ public:
         draw();
     }
 
-    void fromOption(const unsigned int i)
+    void fromOption(const unsigned int i) override
     {
         if(!this->histo) return;
         this->channel=i;
@@ -187,11 +187,11 @@ class HistogramGraphScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    HistogramGraphScene(QImage* im,QObject *parent=0) : QGraphicsScene(parent)	,image(im)	{ this->setSceneRect(0,0,image->width(),image->height()); }
+    HistogramGraphScene(QImage* im,QObject *parent=nullptr) : QGraphicsScene(parent)	,image(im)	{ this->setSceneRect(0,0,image->width(),image->height()); }
 
 private:
     QImage *image;
-    void drawBackground(QPainter *painter, const QRectF &rect)
+    void drawBackground(QPainter *painter, const QRectF &rect) override
     {
         QGraphicsScene::drawBackground(painter,rect);
         if(image) painter->drawImage(this->sceneRect(),*image);
@@ -218,16 +218,16 @@ public:
     }
 
 protected:
-    void resizeEvent ( QResizeEvent * /*event*/ )  { FitInView(); }
+    void resizeEvent ( QResizeEvent * /*event*/ ) override  { FitInView(); }
 
-    void mousePressEvent(QMouseEvent *mouseEvent)
+    void mousePressEvent(QMouseEvent *mouseEvent) override
     {
         QGraphicsView::mousePressEvent(mouseEvent);
         S->fromGraph(this->mapToScene ( mouseEvent->pos() ),true );
         Render ();
     }
 
-    void mouseMoveEvent(QMouseEvent *mouseEvent)
+    void mouseMoveEvent(QMouseEvent *mouseEvent) override
     {
         QGraphicsView::mouseMoveEvent(mouseEvent);
         S->fromGraph(this->mapToScene ( mouseEvent->pos() ),false );
