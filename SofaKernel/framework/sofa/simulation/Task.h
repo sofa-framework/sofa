@@ -201,7 +201,7 @@ namespace sofa
             std::atomic<int>* m_atomicCounter;
             std::mutex*     m_threadSpecificMutex;
         };
-
+        
 
 	} // namespace simulation
 

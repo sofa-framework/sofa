@@ -7,46 +7,46 @@
 namespace sofa
 {
 
-	// compute the Fibonacci number for input N
-	static int64_t Fibonacci(int64_t N, int nbThread = 0)
-	{
+    // compute the Fibonacci number for input N
+    static int64_t Fibonacci(int64_t N, int nbThread = 0)
+    {
         simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
-
+        
         simulation::CpuTask::Status status;
-		int64_t result = 0;
-
-		FibonacciTask task(N, &result, &status);
+        int64_t result = 0;
+        
+        FibonacciTask task(N, &result, &status);
         scheduler->addTask(&task);
         scheduler->workUntilDone(&status);
-
+        
         scheduler->stop();
-		return result;
-	}
-
-
-	// compute the sum of integers from 1 to N
-	static int64_t IntSum1ToN(const int64_t N, int nbThread = 0)
-	{
+        return result;
+    }
+    
+    
+    // compute the sum of integers from 1 to N
+    static int64_t IntSum1ToN(const int64_t N, int nbThread = 0)
+    {
         simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
-
+        
         simulation::CpuTask::Status status;
-		int64_t result = 0;
-
-		IntSumTask task(1, N, &result, &status);
+        int64_t result = 0;
+        
+        IntSumTask task(1, N, &result, &status);
         scheduler->addTask(&task);
         scheduler->workUntilDone(&status);
-
+        
         scheduler->stop();
-		return result;
-	}
-
-
-
-	// compute the Fibonacci single thread
-	TEST(TaskSchedulerTests, FibonacciSingle )
-	{ 
+        return result;
+    }
+    
+    
+    
+    // compute the Fibonacci single thread
+    TEST(TaskSchedulerTests, FibonacciSingle )
+    { 
         // tested with
         //  3 : 2
         //  6 : 8
@@ -59,12 +59,12 @@ namespace sofa
         // 47 : 2971215073
         const int64_t res = Fibonacci(27, 1);
         EXPECT_EQ(res, 196418);
-		return;
-	}
-
-	// compute the Fibonacci multi thread
-	TEST(TaskSchedulerTests, FibonacciMulti)
-	{
+        return;
+    }
+    
+    // compute the Fibonacci multi thread
+    TEST(TaskSchedulerTests, FibonacciMulti)
+    {
         // tested with
         //  3 : 2
         //  6 : 8
@@ -77,26 +77,26 @@ namespace sofa
         // 47 : 2971215073
         const int64_t res = Fibonacci(27);
         EXPECT_EQ(res, 196418);
-		return;
-	}
-
-	// compute the sum of integers from 1 to N single thread
-	TEST(TaskSchedulerTests, IntSumSingle)
-	{
+        return;
+    }
+    
+    // compute the sum of integers from 1 to N single thread
+    TEST(TaskSchedulerTests, IntSumSingle)
+    {
         const int64_t N = 1 << 20;
         int64_t res = IntSum1ToN(N, 1);
-		EXPECT_EQ(res, (N)*(N+1)/2);
-		return;
-	}
-
-	// compute the sum of integers from 1 to N multi thread
-	TEST(TaskSchedulerTests, IntSumMulti)
-	{
+        EXPECT_EQ(res, (N)*(N+1)/2);
+        return;
+    }
+    
+    // compute the sum of integers from 1 to N multi thread
+    TEST(TaskSchedulerTests, IntSumMulti)
+    {
         const int64_t N = 1 << 20;
         int64_t res = IntSum1ToN(N);
-		EXPECT_EQ(res, (N)*(N + 1) / 2);
-		return;
-	}
-
+        EXPECT_EQ(res, (N)*(N + 1) / 2);
+        return;
+    }
+    
 
 } // namespace sofa
