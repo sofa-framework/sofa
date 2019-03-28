@@ -49,6 +49,17 @@
 #include "WDoubleLineEdit.h"
 #include "QSofaStatWidget.h"
 #include "viewer/SofaViewer.h"
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
 
 #include <sofa/gui/BaseViewer.h>
 #include <SofaSimulationCommon/xml/XML.h>
