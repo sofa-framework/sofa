@@ -31,12 +31,12 @@ namespace sofa
 
 namespace core {
 namespace behavior {
-    template class ProjectiveConstraintSet<gpu::cuda::CudaVec6fTypes>;
-    template class ProjectiveConstraintSet<gpu::cuda::CudaRigid3fTypes>;
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6fTypes>;
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    template class ProjectiveConstraintSet<gpu::cuda::CudaVec6dTypes>;
-    template class ProjectiveConstraintSet<gpu::cuda::CudaRigid3dTypes>;
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6dTypes>;
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3dTypes>;
 #endif
 }
 
@@ -48,7 +48,7 @@ namespace behavior {
 // namespace projectiveconstraintset
 // {
 //
-// template class LinearMovementConstraint<gpu::cuda::CudaRigid3fTypes>;
+// template class SOFA_GPU_CUDA_API LinearMovementConstraint<gpu::cuda::CudaRigid3fTypes>;
 //
 // }// namespace projectiveconstraintset
 //

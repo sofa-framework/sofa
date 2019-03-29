@@ -22,6 +22,10 @@
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/helper/logging/Messaging.h>
 
+#ifdef __GNUC__
+#include <cxxabi.h>
+#endif // __GNUC__
+
 namespace sofa
 {
 

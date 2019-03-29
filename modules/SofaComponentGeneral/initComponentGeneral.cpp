@@ -41,7 +41,6 @@
 #include <SofaBoundaryCondition/initBoundaryCondition.h>
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <SofaConstraint/initConstraint.h>
-#include <SofaHaptics/initHaptics.h>
 
 #ifdef SOFA_HAVE_NEWMAT
 #include <SofaDenseSolver/initDenseSolver.h>
@@ -86,7 +85,6 @@ void initComponentGeneral()
     initBoundaryCondition();
     initUserInteraction();
     initConstraint();
-    initHaptics();
 #ifdef SOFA_HAVE_NEWMAT
     initDenseSolver();
 #endif

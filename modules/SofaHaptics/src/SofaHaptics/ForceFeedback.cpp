@@ -19,13 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
-#include "config.h"
-
 #include <SofaHaptics/ForceFeedback.h>
-
-
 
 namespace sofa
 {
@@ -36,34 +30,28 @@ namespace component
 namespace controller
 {
 
-template<class TDataTypes>
-class SOFA_HAPTICS_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback
+ForceFeedback::ForceFeedback():
+    f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , indice(initData(&indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
+}
 
-public:
+void ForceFeedback::init()
+{
+    context = dynamic_cast<simulation::Node *>(this->getContext());
+}
 
-    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),sofa::component::controller::ForceFeedback);
+void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
+{
+    SOFA_UNUSED(referencePosition);
+}
 
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
-    simulation::Node *context;
-protected:
-    MechanicalStateForceFeedback(void) {};
-public:
-    void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
-    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
-    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
-
-    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {};
-};
+bool ForceFeedback::isEnabled() {
+    return this->getContext()->isActive();
+}
 
 } // namespace controller
 
 } // namespace component
 
 } // namespace sofa
-
-#endif

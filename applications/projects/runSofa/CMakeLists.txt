@@ -70,6 +70,6 @@ if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
     set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
     include(cmake/bundle.cmake)
 else()
-    sofa_install_targets(SofaGui runSofa "")
+    sofa_install_targets(SofaGui runSofa runSofa)
 endif()
 

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(Haption)
 
+find_package(SofaHaptics REQUIRED)
 
 set(HEADER_FILES
     HaptionDriver.h
@@ -16,11 +17,9 @@ set(README_FILES
     PluginHaption.txt
 )
 
-find_package(SofaGeneral REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HAPTIONPLUGIN")
-target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} SofaHaptics)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}

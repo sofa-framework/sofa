@@ -478,10 +478,8 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
 
     if (out2.size()==1)
         return (int) (out2[0]);
-    else {
-        msg_warning() << "Triangle with indices: [" << v1 << "; " << v2 << "; " << v3 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 size_t TriangleSetTopologyContainer::getNumberOfTriangles() const

@@ -19,50 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaLinearForceField.inl"
+#ifndef SOFA_HAPTICS_HAPTICS_H
+#define SOFA_HAPTICS_HAPTICS_H
 
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
+#include <sofa/helper/system/config.h>
 
-namespace component
-{
+#ifdef SOFA_BUILD_HAPTICS
+#  define SOFA_SOFAHAPTICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAHAPTICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace forcefield
-{
-
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}// namespace forcefield
-
-}// namespace component
-
-namespace gpu
-{
-
-namespace cuda
-{
-
-int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
-        .add< component::forcefield::LinearForceField<CudaVec6fTypes> >()
-		.add< component::forcefield::LinearForceField<CudaVec3fTypes> >()
-		.add< component::forcefield::LinearForceField<CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::LinearForceField<CudaVec6dTypes> >()
-		.add< component::forcefield::LinearForceField<CudaRigid3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
-}// namespace cuda
-
-}// namespace gpu
-
-}// namespace sofa
+#endif
