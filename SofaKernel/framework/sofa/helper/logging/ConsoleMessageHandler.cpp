@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,7 +39,7 @@ namespace logging
 
 ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
 {
-    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
+    m_formatter = (formatter==nullptr?&DefaultStyleMessageFormatter::getInstance():formatter);
 }
 
 void ConsoleMessageHandler::process(Message &m) {

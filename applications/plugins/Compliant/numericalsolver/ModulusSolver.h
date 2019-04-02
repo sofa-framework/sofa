@@ -17,14 +17,14 @@ class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
 	
 	SOFA_CLASS(ModulusSolver, IterativeSolver);
 	
-	virtual void solve(vec& x,
+	void solve(vec& x,
 	                   const system_type& sys,
-	                   const vec& rhs) const;
+	                   const vec& rhs) const override;
 
-	virtual void factor(const system_type& sys);
+	void factor(const system_type& sys) override;
 
 	ModulusSolver();
-	~ModulusSolver();
+	~ModulusSolver() override;
     
   protected:
 

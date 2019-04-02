@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,7 +49,7 @@ public:
         {
             if (func) return func();
         }
-        InitExternalModule():func(0) {}
+        InitExternalModule():func(nullptr) {}
     } InitExternalModule;
 
     typedef struct GetModuleName
@@ -60,9 +60,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleName():func(0) {}
+        GetModuleName():func(nullptr) {}
     } GetModuleName;
 
     typedef struct GetModuleDescription
@@ -73,9 +73,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleDescription():func(0) {}
+        GetModuleDescription():func(nullptr) {}
     } GetModuleDescription;
 
     typedef struct GetModuleLicense
@@ -86,10 +86,10 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
 
-        GetModuleLicense():func(0) {}
+        GetModuleLicense():func(nullptr) {}
     } GetModuleLicense;
 
     typedef struct GetModuleComponentList
@@ -100,9 +100,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleComponentList():func(0) {}
+        GetModuleComponentList():func(nullptr) {}
     } GetModuleComponentList;
 
     typedef struct GetModuleVersion
@@ -113,9 +113,9 @@ public:
         const char* operator() () const
         {
             if (func) return func();
-            else return NULL;
+            else return nullptr;
         }
-        GetModuleVersion():func(0) {}
+        GetModuleVersion():func(nullptr) {}
     } GetModuleVersion;
 
     InitExternalModule     initExternalModule;
@@ -184,8 +184,6 @@ public:
 
     Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
 
-    std::vector<std::string>& getSearchPaths() { return m_searchPaths; }
-
     void readFromIniFile(const std::string& path);
     void writeToIniFile(const std::string& path);
 
@@ -199,7 +197,6 @@ private:
     std::istream& readFromStream( std::istream& );
 private:
     PluginMap m_pluginMap;
-    std::vector<std::string> m_searchPaths;
 };
 
 

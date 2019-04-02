@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,7 @@ public:
     typedef typename Elem2::Model Model2;
     MemberElementIntersector(T* ptr) : impl(ptr) {}
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
@@ -51,11 +51,11 @@ public:
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     /// If the given contacts vector is NULL, then this method should allocate it.
-    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts)
+    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts) override
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);
-        if (contacts == NULL)
+        if (contacts == nullptr)
         {
             contacts = impl->createOutputVector(m1,m2);
         }
@@ -63,20 +63,20 @@ public:
     }
 
     /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts)
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts) override
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
         return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
     }
 
-    std::string name() const
+    std::string name() const override
     {
         return sofa::helper::gettypename(typeid(Elem1))+std::string("-")+sofa::helper::gettypename(typeid(Elem2));
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts)
+    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts) override
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);

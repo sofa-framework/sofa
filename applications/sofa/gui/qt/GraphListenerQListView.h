@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -70,16 +70,16 @@ public:
     /*****************************************************************************************************************/
     QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
 
-    virtual void addChild(Node* parent, Node* child);
-    virtual void removeChild(Node* parent, Node* child);
-    virtual void moveChild(Node* previous, Node* parent, Node* child);
-    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
-    virtual void removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object);
-    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
-    virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void sleepChanged(Node* node);
+    void addChild(Node* parent, Node* child) override;
+    void removeChild(Node* parent, Node* child) override;
+    void moveChild(Node* previous, Node* parent, Node* child) override;
+    void addObject(Node* parent, core::objectmodel::BaseObject* object) override;
+    void removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
+    void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) override;
+    void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    void sleepChanged(Node* node) override;
     virtual void addDatas(core::objectmodel::BaseObject* parent);
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);

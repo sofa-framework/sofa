@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,7 +90,7 @@ protected:
     /// Constructor
     Multi2Mapping();
     /// Destructor
-    virtual ~Multi2Mapping() {}
+    ~Multi2Mapping() override {}
 public:
 
     virtual void addInputModel1(State<In1>*, const std::string& path = "");
@@ -120,7 +120,7 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
+    void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
@@ -135,7 +135,7 @@ public:
     /// This method computes
     /// $ out = J in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+    void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -175,7 +175,7 @@ public:
 
     /// ApplyJT (Force)///
     /// Apply the mapping to Force vectors.
-    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
+    void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -187,7 +187,7 @@ public:
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
+    void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
 
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT(
@@ -199,7 +199,7 @@ public:
     }
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
+    void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
 
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
@@ -211,12 +211,12 @@ public:
     {
     }
 
-    virtual void init() override;
+    void init() override;
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    virtual void disable() override;
+    void disable() override;
 
     virtual std::string getTemplateName() const override
     {
@@ -309,7 +309,7 @@ protected:
     ///
     /// That way, we can optimize Jacobian sparsity.
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
 
     /// keep pointers on the masks
     helper::vector<helper::StateMask*> maskFrom1, maskFrom2, maskTo;

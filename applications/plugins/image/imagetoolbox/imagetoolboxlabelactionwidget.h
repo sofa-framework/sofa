@@ -46,7 +46,7 @@ Q_OBJECT
 
 public:
     ImageToolBoxLabelActionWidget():QWidget(),
-        /*currentLabel(0),*/GraphXY(NULL),GraphXZ(NULL),GraphZY(NULL)
+        /*currentLabel(0),*/GraphXY(nullptr),GraphXZ(nullptr),GraphZY(nullptr)
     {
         this->setToolTip("LabelAction");
 

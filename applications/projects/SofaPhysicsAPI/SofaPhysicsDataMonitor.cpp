@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -76,6 +76,6 @@ ID SofaPhysicsDataMonitor::Impl::getID() ///< unique ID of this object
 
 const char* SofaPhysicsDataMonitor::Impl::getValue() ///< Get the value of the associated variable
 {
-    if (!sObj) return 0;
+    if (!sObj) return nullptr;
     return sObj->getValue();
 }

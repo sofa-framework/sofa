@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,6 +68,10 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
 
+    /// SofaHaptics pluginzed in #945
+    {"NullForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
+    {"LCPForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
+
     /***********************/
     // REMOVED SINCE v18.12
 
@@ -100,7 +104,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolationController", Removed("v17.12", "v18.12")},
     {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
     {"NodeToggleController", Removed("v17.12", "v18.12")},
-
 };
 
 

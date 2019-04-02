@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,9 +40,9 @@ public:
     ParallelVisitorScheduler(bool propagate=false);
 
     /// Specify whether this scheduler is multi-threaded.
-    virtual bool isMultiThreaded() const { return true; }
+    bool isMultiThreaded() const override { return true; }
 
-    virtual void executeVisitor(Node* node, Visitor* action);
+    void executeVisitor(Node* node, Visitor* action) override;
 
 protected:
     bool propagate;

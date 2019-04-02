@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,9 +57,9 @@ public:
         nbLines=3;
     }
 
-    virtual void init(int line, double** w, double* force);
-    virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
-    virtual void store(int line, double* force, bool /*convergence*/);
+    void init(int line, double** w, double* force) override;
+    void resolution(int line, double** w, double* d, double* force, double *dFree) override;
+    void store(int line, double* force, bool /*convergence*/) override;
 
     void setConstraint(PersistentUnilateralInteractionConstraint<DataTypes> *c)
     {

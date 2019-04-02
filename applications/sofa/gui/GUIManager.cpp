@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -44,10 +44,10 @@ namespace gui
 {
 
 /*STATIC FIELD DEFINITIONS */
-BaseGUI* GUIManager::currentGUI = NULL;
+BaseGUI* GUIManager::currentGUI = nullptr;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
-const char* GUIManager::valid_guiname = NULL;
-ArgumentParser* GUIManager::currentArgumentParser = NULL;
+const char* GUIManager::valid_guiname = nullptr;
+ArgumentParser* GUIManager::currentArgumentParser = nullptr;
 
 
 BaseGUI* GUIManager::getGUI()
@@ -124,7 +124,7 @@ const char* GUIManager::GetValidGUIName()
     {
 
         msg_error("GUIManager") << "ERROR(SofaGUI): No GUI registered.";
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -182,7 +182,7 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
     {
         msg_error("GUIManager") << "GUI '"<<name<<"' creation failed."<< msgendl
                                 << "Available GUIs: {" << ListSupportedGUI(' ') <<  "}";
-        return NULL;
+        return nullptr;
     }
     else
         return &(*it);
@@ -269,7 +269,7 @@ sofa::simulation::Node* GUIManager::CurrentSimulation()
     if (currentGUI)
         return currentGUI->currentSimulation();
     else
-        return NULL;
+        return nullptr;
 }
 
 void GUIManager::SetScene(sofa::simulation::Node::SPtr groot, const char* filename /*=NULL*/, bool temporaryFile /*=false*/ )

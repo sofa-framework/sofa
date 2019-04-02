@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -183,7 +183,7 @@ void PythonEnvironment::Init()
     // Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
     // variable (colon-separated) to sys.path
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
-    if (pathVar != NULL)
+    if (pathVar != nullptr)
     {
         std::istringstream ss(pathVar);
         std::string path;
@@ -338,7 +338,7 @@ bool PythonEnvironment::runString(const std::string& script)
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyObject* result = PyRun_String(script.data(), Py_file_input, pDict, pDict);
 
-    if(0 == result)
+    if(nullptr == result)
     {
         SP_MESSAGE_ERROR("Script (string) import error")
         PyErr_Print();
@@ -450,7 +450,7 @@ bool PythonEnvironment::runFile(const std::string& filename, const std::vector<s
     const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename.c_str(), 0);
 
     // don't wait for gc to close the file
-    PyObject_CallMethod(script, (char*) "close", NULL);
+    PyObject_CallMethod(script, (char*) "close", nullptr);
     Py_XDECREF(script);
 
     // restore backup if needed

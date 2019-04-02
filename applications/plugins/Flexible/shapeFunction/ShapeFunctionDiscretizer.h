@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -104,9 +104,9 @@ public:
         f_transform.setReadOnly(true);
     }
 
-    virtual ~ShapeFunctionDiscretizer() {}
+    ~ShapeFunctionDiscretizer() override {}
 
-    virtual void init()
+    void init() override
     {
         if( !_shapeFunction ) this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);
         if ( !_shapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
@@ -118,11 +118,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void doUpdate()
+    void doUpdate() override
     {
         if( !_shapeFunction ) return;
 

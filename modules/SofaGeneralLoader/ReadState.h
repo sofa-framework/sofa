@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,15 +67,15 @@ protected:
 
     ReadState();
 
-    virtual ~ReadState();
+    ~ReadState() override;
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void reset() override;
+    void reset() override;
 
     void setTime(double time);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadState();
     void processReadState(double time);
@@ -103,12 +103,12 @@ class SOFA_GENERAL_LOADER_API ReadStateCreator: public simulation::Visitor
 public:
     ReadStateCreator(const core::ExecParams* params);
     ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i=true, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadState = c;}
     void setCreateInMapping(bool b) {createInMapping=b;}
-    virtual const char* getClassName() const { return "ReadStateCreator"; }
+    const char* getClassName() const override { return "ReadStateCreator"; }
 protected:
     void addReadState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
@@ -122,11 +122,11 @@ class SOFA_GENERAL_LOADER_API ReadStateActivator: public simulation::Visitor
 {
 public:
     ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getState() const {return state;}
     void setState(bool active) {state=active;}
-    virtual const char* getClassName() const { return "ReadStateActivator"; }
+    const char* getClassName() const override { return "ReadStateActivator"; }
 protected:
     void changeStateReader(sofa::component::misc::ReadState *ws);
 
@@ -137,11 +137,11 @@ class SOFA_GENERAL_LOADER_API ReadStateModifier: public simulation::Visitor
 {
 public:
     ReadStateModifier(const core::ExecParams* params, double _time) : Visitor(params), time(_time) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     double getTime() const { return time; }
     void setTime(double _time) { time=_time; }
-    virtual const char* getClassName() const { return "ReadStateModifier"; }
+    const char* getClassName() const override { return "ReadStateModifier"; }
 protected:
     void changeTimeReader(sofa::component::misc::ReadState *rs) { rs->processReadState(time); }
 

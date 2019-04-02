@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,20 +76,20 @@ struct DAG_test : public BaseTest
             bottomup.clear();
         }
 
-        Result processNodeTopDown(simulation::Node* node)
+        Result processNodeTopDown(simulation::Node* node) override
         {
             visited += node->getName();
             topdown += node->getName();
             return RESULT_CONTINUE;
         }
 
-        void processNodeBottomUp(simulation::Node* node)
+        void processNodeBottomUp(simulation::Node* node) override
         {
             visited += node->getName();
             bottomup += node->getName();
         }
 
-        bool treeTraversal(TreeTraversalRepetition& r) { r=repeat; return tree; }
+        bool treeTraversal(TreeTraversalRepetition& r) override { r=repeat; return tree; }
 
     };
 
