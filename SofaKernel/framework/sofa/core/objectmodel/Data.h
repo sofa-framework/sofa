@@ -68,9 +68,9 @@ public:
     ~TData() override
     {}
 
-    inline void printValue(std::ostream& out) const;
-    inline std::string getValueString() const;
-    inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
+    inline void printValue(std::ostream& out) const override;
+    inline std::string getValueString() const override;
+    inline std::string getValueTypeString() const override; // { return std::string(typeid(m_value).name()); }
 
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
@@ -105,7 +105,7 @@ public:
     /** Try to read argument value from an input stream.
     Return false if failed
      */
-    virtual bool read( const std::string& s )
+    virtual bool read( const std::string& s ) override
     {
         if (s.empty())
         {
@@ -382,7 +382,7 @@ public:
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
-        , shared(NULL)
+        , shared(nullptr)
     {
     }
 
@@ -390,7 +390,7 @@ public:
     explicit Data(const InitData& init)
         : TData<T>(init)
         , m_values()
-        , shared(NULL)
+        , shared(nullptr)
     {
         m_values[DDGNode::currentAspect()] = ValueType(init.value);
     }
@@ -399,7 +399,7 @@ public:
     Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
-        , shared(NULL)
+        , shared(nullptr)
     {
         ValueType val;
         m_values.assign(val);
@@ -411,7 +411,7 @@ public:
     Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
-        , shared(NULL)
+        , shared(nullptr)
     {
         m_values[DDGNode::currentAspect()] = ValueType(value);
     }
@@ -427,7 +427,7 @@ public:
 
     inline T* beginEdit(const core::ExecParams* params = nullptr)
     {
-        size_t aspect = DDGNode::currentAspect(params);
+        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
         this->updateIfDirty(params);
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
@@ -438,7 +438,7 @@ public:
     /// BeginEdit method if it is only to write the value
     inline T* beginWriteOnly(const core::ExecParams* params = nullptr)
     {
-        size_t aspect = DDGNode::currentAspect(params);
+        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
         BaseData::setDirtyOutputs(params);
@@ -493,7 +493,7 @@ public:
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
         {
-            size_t aspect = DDGNode::currentAspect();
+            size_t aspect = static_cast<size_t>(DDGNode::currentAspect());
             this->m_values[aspect] = d->m_values[aspect];
             //FIX: update counter
             ++this->m_counters[aspect];
@@ -648,8 +648,8 @@ protected:
     WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=nullptr ) : Inherit(*c), data(d), dparams(params) {}
 
 public:
-    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(NULL) {}
-    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(NULL) {}
+    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(nullptr) {}
+    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(nullptr) {}
     WriteAccessor(const core::ExecParams* params, data_container_type& d) : Inherit(*d.beginEdit(params)), data(d), dparams(params) {}
     WriteAccessor(const core::ExecParams* params, data_container_type* d) : Inherit(*d->beginEdit(params)), data(*d), dparams(params) {}
     ~WriteAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
