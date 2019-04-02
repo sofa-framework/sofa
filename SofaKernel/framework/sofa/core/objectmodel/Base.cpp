@@ -70,7 +70,6 @@ Base::Base()
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
 
-
 }
 
 Base::~Base()
@@ -677,6 +676,59 @@ void Base::clearOutputs()
                               " To remove this warning you need to use clearLoggedMessages() instead. ";
     clearLoggedMessages();
 }
+
+/// Set the source filename (where the component is implemented)
+void Base::setSourceFileName(const std::string& sourceFileName)
+{
+    m_sourceFileName = sourceFileName;
+}
+
+/// Get the source filename (where the component is implemented)
+const std::string& Base::getSourceFileName() const
+{
+    return m_sourceFileName;
+}
+
+/// Set the source location (where the component is implemented)
+void Base::setSourceFilePos(const int linenum)
+{
+    m_sourceFileLoc = linenum;
+}
+
+/// Get the source location (where the component is implemented)
+int Base::getSourceFilePos() const
+{
+    return m_sourceFileLoc;
+}
+
+/// Set the file where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationFileName(const std::string& filename)
+{
+    m_instanciationFileName = filename;
+}
+
+/// Get the file where the instance has been created
+/// This is useful to store where the component was emitted from
+const std::string& Base::getInstanciationFileName() const
+{
+    return m_instanciationFileName;
+}
+
+/// Set the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationFilePos(const int lineco)
+{
+    m_instanciationFileLoc = lineco;
+}
+
+/// Get the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+int Base::getInstanciationFilePos() const
+{
+    return m_instanciationFileLoc;
+}
+
 
 
 

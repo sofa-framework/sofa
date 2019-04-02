@@ -192,6 +192,34 @@ public:
     /// Get the template type names (if any) used to instantiate this object
     virtual std::string getTemplateName() const;
 
+    /// Set the source filename (where the component is implemented)
+    void setSourceFileName(const std::string& sourceFileName);
+
+    /// Get the source filename (where the component is implemented)
+    const std::string& getSourceFileName() const;
+
+    /// Set the source location (where the component is implemented)
+    void setSourceFilePos(const int);
+
+    /// Get the source location (where the component is implemented)
+    int getSourceFilePos() const;
+
+    /// Set the file where the instance has been created
+    /// This is useful to store where the component was emitted from
+    void setInstanciationFileName(const std::string& sourceFileName);
+
+    /// Get the file where the instance has been created
+    /// This is useful to store where the component was emitted from
+    const std::string& getInstanciationFileName() const;
+
+    /// Set the file location (line number) where the instance has been created
+    /// This is useful to store where the component was emitted from
+    void setInstanciationFilePos(const int);
+
+    /// Get the file location (line number) where the instance has been created
+    /// This is useful to store where the component was emitted from
+    int getInstanciationFilePos() const;
+
     /// @name fields
     ///   Data fields management
     /// @{
@@ -458,6 +486,11 @@ public:
     Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
+
+    std::string m_sourceFileName        {""};
+    int         m_sourceFileLoc         {-1};
+    std::string m_instanciationFileName {""};
+    int         m_instanciationFileLoc  {-1};
 
     /// @name casting
     ///   trivial cast to a few base components

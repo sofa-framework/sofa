@@ -49,6 +49,8 @@ BaseObject::BaseObject()
     l_context.set(BaseContext::getDefault());
     l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
+    setSourceFilePos(0);
+    setSourceFileName( HeaderFileLocation() );
 }
 
 BaseObject::~BaseObject()
