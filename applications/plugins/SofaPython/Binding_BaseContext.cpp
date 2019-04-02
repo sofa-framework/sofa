@@ -163,7 +163,9 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
         if (node && node->isInitialized())
             msg_warning(node) << "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized";
     }
-
+    auto fileinfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    obj->setInstanciationFilePos(fileinfo->line);
+    obj->setInstanciationFileName(fileinfo->filename);
     return sofa::PythonFactory::toPython(obj.get());
 }
 
