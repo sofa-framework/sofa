@@ -120,6 +120,8 @@ public:
             return vect[outputDerivative];
     }
 
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+
 protected:
 
     /// the solution vector is stored for warm-start

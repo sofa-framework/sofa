@@ -60,6 +60,46 @@ StaticSolver::StaticSolver()
             "Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration."))
 {}
 
+void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    /// Now handling backward compatibility with old scenes.
+    /// point is deprecated since '19.06'
+    /// massCoef, dampingCoef, stiffnessCoef, threadSafeVisitor
+    const char* val=arg->getAttribute("massCoef",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'massCoef' is deprecated since Sofa 19.06'" << msgendl
+                         << "This data was previously used for stabilization purposes but it was preventing" << msgendl
+                         << "from computing a strictly-static system (Use the forum for any question)";
+
+    }
+    val=arg->getAttribute("dampingCoef",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'dampingCoef' is deprecated since Sofa 19.06'" << msgendl
+                         << "This data was previously used for stabilization purposes but it was preventing" << msgendl
+                         << "from computing a strictly-static system (Use the forum for any question)";
+
+    }
+    val=arg->getAttribute("stiffnessCoef",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'stiffnessCoef' is deprecated since Sofa 19.06'" << msgendl
+                         << "This data was previously used for stabilization purposes but it was preventing" << msgendl
+                         << "from computing a strictly-static system (Use the forum for any question)";
+
+    }
+    val=arg->getAttribute("applyIncrementFactor",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'applyIncrementFactor' is deprecated since Sofa 19.06'" << msgendl
+                         << "The incremental loading is now supposed to be done within the desired ForceField." << msgendl
+                         << "(Use the forum for any question)";
+
+    }
+    sofa::core::behavior::OdeSolver::parse(arg) ;
+}
+
 void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/) {
 
     SOFA_UNUSED(dt);
@@ -169,8 +209,6 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     sofa::helper::AdvancedTimer::stepEnd("StaticSolver::Solve");
 }
 
-
-SOFA_DECL_CLASS(StaticSolver)
 
 int StaticSolverClass = sofa::core::RegisterObject("Static ODE Solver")
     .add< StaticSolver >()
