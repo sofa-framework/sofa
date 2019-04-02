@@ -66,6 +66,7 @@ int initStaticStructures()
     BaseMeshTopology::InvalidEdgesInTetrahedron.assign(InvalidID);
     BaseMeshTopology::InvalidQuadsInHexahedron.assign(InvalidID);
     BaseMeshTopology::InvalidEdgesInHexahedron.assign(InvalidID);
+    return 0;
 }
 
 static int _init_  = initStaticStructures();
