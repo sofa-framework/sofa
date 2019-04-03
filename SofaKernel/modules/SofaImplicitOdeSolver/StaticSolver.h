@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
+#ifndef SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 
 #include "config.h"
 #include <sofa/core/behavior/OdeSolver.h>
@@ -138,3 +139,5 @@ protected:
 } // namespace component
 
 } // namespace sofa
+
+#endif
