@@ -159,14 +159,14 @@ public:
 
         std::string inPath, outPath;
 
-        if (arg->getAttribute("input"))
+        if (!arg->getAttribute("input").empty())
             inPath = arg->getAttribute("input");
         else
             inPath = "@../";
 
         context->findLinkDest(stin, inPath, nullptr);
 
-        if (arg->getAttribute("output"))
+        if (!arg->getAttribute("output").empty())
             outPath = arg->getAttribute("output");
         else
             outPath = "@./";
@@ -210,12 +210,12 @@ public:
         if (arg)
         {
             std::string inPath, outPath;
-            if (arg->getAttribute("input"))
+            if (!arg->getAttribute("input").empty())
                 inPath = arg->getAttribute("input");
             else
                 inPath = "@../";
 
-            if (arg->getAttribute("output"))
+            if (!arg->getAttribute("output").empty())
                 outPath = arg->getAttribute("output");
             else
                 outPath = "@./";

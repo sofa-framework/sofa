@@ -81,8 +81,8 @@ void MergeMeshes<DataTypes>::createInputMeshesData(int nb)
 template <class DataTypes>
 void MergeMeshes<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    const char* p = arg->getAttribute(f_nbMeshes.getName().c_str());
-    if (p)
+    const std::string p = arg->getAttribute(f_nbMeshes.getName().c_str());
+    if (!p.empty())
     {
         std::string nbStr = p;
         msg_info() << "parse: setting nbMeshes="<<nbStr;

@@ -157,34 +157,36 @@ BaseElement* BaseElement::Create(const std::string& nodeClass, const std::string
 }
 
 /// Find a node given its name
-BaseElement* BaseElement::findNode(const char* nodeName, bool absolute)
+BaseElement* BaseElement::findNode(const std::string nodeName, bool absolute)
 {
-    if (nodeName == nullptr) return nullptr;
-    if (nodeName[0]=='\\' || nodeName[0]=='/')
+    int i = 0;
+    if (nodeName.empty() ) return NULL;
+    if (nodeName[i]=='\\' || nodeName[i]=='/')
     {
         if (!absolute && getParentElement()!=nullptr)
             return getParentElement()->findNode(nodeName);
         else
-        { ++nodeName; absolute = true; }
+        { ++i; absolute = true; }
     }
-    if (nodeName[0]=='\0')
+    if (nodeName[i]=='\0')
     {
         if (absolute) return this;
         else return nullptr;
     }
-    const char* sep = nodeName;
-    while (*sep!='\0' && *sep!='\\' && *sep!='/')
-        ++sep;
-    if (!strncmp(nodeName,".",sep-nodeName))
+    const std::string sep = nodeName;
+    int k = 0;
+    while (!sep.empty() && sep[k]!='\\' && sep[k]!='/')
+        k++;
+    if (!strncmp(nodeName.c_str(),".",sep.size()-nodeName.size()))
         return findNode(sep, true);
-    if (!strncmp(nodeName,"..",sep-nodeName))
+    if (!strncmp(nodeName.c_str(),"..",sep.size()-nodeName.size()))
     {
         if (getParentElement()==nullptr) return nullptr;
         else return getParentElement()->findNode(sep,true);
     }
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
-        if (it->getName().length() == (unsigned)(sep-nodeName) && !strncmp(it->getName().c_str(), nodeName, sep-nodeName))
+        if (it->getName().length() == (unsigned)(sep.size()-nodeName.size()) && !strncmp(it->getName().c_str(), nodeName.c_str(), sep.size()-nodeName.size()))
         {
             BaseElement* res = it->findNode(sep,true);
             if (res!=nullptr) return res;

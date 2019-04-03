@@ -134,10 +134,11 @@ public:
     /// List of parameters to be replaced
     virtual void addReplaceAttribute(const std::string &attr, const char* val);
     /// Find a node given its name
-    virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
+    virtual BaseElement* findNode(const std::string nodeName, bool absolute=false);
+
 
     /// Find a node given its name
-    BaseObjectDescription* find(const char* nodeName, bool absolute=false) override
+    BaseObjectDescription* find(const std::string& nodeName, bool absolute=false) override
     {
         return findNode(nodeName, absolute);
     }

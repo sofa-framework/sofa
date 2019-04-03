@@ -142,8 +142,8 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
 
 void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    const char* v = arg->getAttribute(d_variables.getName().c_str());
-    if (v)
+    const std::string v = arg->getAttribute(d_variables.getName().c_str());
+    if (!v.empty())
     {
         std::istringstream variablesStr(v);
         std::string var;

@@ -63,8 +63,8 @@ OglLabel::OglLabel():
 void OglLabel::parse(BaseObjectDescription *arg)
 {
     // BACKWARD COMPATIBILITY April 2017
-    const char* value = arg->getAttribute("color") ;
-    if(value==nullptr || strcmp(value, "contrast")){
+    const std::string value = arg->getAttribute("color") ;
+    if(!value.empty() || value== "contrast"){
         VisualModel::parse(arg);
         return ;
     }

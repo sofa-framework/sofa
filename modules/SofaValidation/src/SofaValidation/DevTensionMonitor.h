@@ -53,7 +53,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object"))
+        if (!arg->getAttribute("object").empty())
         {
             if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object",".."))) == nullptr) {
                 arg->logError(std::string("Data attribute 'object' must point to a valid mechanical state of data type '") + DataTypes::Name() + "'.");
@@ -77,7 +77,7 @@ public:
     {
         typename T::SPtr obj = core::objectmodel::BaseObject::create(tObj, context, arg);
 
-        if (arg && (arg->getAttribute("object")))
+        if (arg && (!arg->getAttribute("object").empty()))
         {
             obj->mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object","..")));
         }

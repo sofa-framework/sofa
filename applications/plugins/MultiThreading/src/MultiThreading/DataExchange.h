@@ -99,7 +99,7 @@ namespace sofa
 			{
 				std::string dataTypeName = defaulttype::DataTypeName<DataTypes>::name();
 				// check for the right template
-                if ( std::strcmp( dataTypeName.c_str(), arg->getAttribute("template") ) != 0 )
+                if ( dataTypeName.c_str() == arg->getAttribute("template"))
 				{
 					return false;
 					// try to guess from the "from" and "to" data types

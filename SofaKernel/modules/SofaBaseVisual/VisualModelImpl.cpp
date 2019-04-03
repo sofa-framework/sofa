@@ -132,43 +132,43 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     VisualModelImpl* obj = this;
 
-    if (arg->getAttribute("normals")!=nullptr)
+    if (!arg->getAttribute("normals").empty())
         obj->setUseNormals(arg->getAttributeAsInt("normals", 1)!=0);
 
-    if (arg->getAttribute("castshadow")!=nullptr)
+    if (!arg->getAttribute("castshadow").empty())
         obj->setCastShadow(arg->getAttributeAsInt("castshadow", 1)!=0);
 
-    if (arg->getAttribute("flip")!=nullptr)
+    if (!arg->getAttribute("flip").empty())
         obj->flipFaces();
 
-    if (arg->getAttribute("color"))
+    if (!arg->getAttribute("color").empty())
         obj->setColor(arg->getAttribute("color"));
 
-    if (arg->getAttribute("su")!=nullptr || arg->getAttribute("sv")!=nullptr)
+    if (!arg->getAttribute("su").empty() || !arg->getAttribute("sv").empty())
         m_scaleTex = TexCoord(arg->getAttributeAsFloat("su",1.0),
                               arg->getAttributeAsFloat("sv",1.0));
 
-    if (arg->getAttribute("du")!=nullptr || arg->getAttribute("dv")!=nullptr)
+    if (!arg->getAttribute("du").empty() || !arg->getAttribute("dv").empty())
         m_translationTex = TexCoord(arg->getAttributeAsFloat("du",0.0),
                                     arg->getAttributeAsFloat("dv",0.0));
 
-    if (arg->getAttribute("rx")!=nullptr || arg->getAttribute("ry")!=nullptr || arg->getAttribute("rz")!=nullptr)
+    if (!arg->getAttribute("rx").empty() || !arg->getAttribute("ry").empty() || !arg->getAttribute("rz").empty())
         m_rotation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("rx",0.0),
                                      (Real)arg->getAttributeAsFloat("ry",0.0),
                                      (Real)arg->getAttributeAsFloat("rz",0.0)));
 
-    if (arg->getAttribute("dx")!=nullptr || arg->getAttribute("dy")!=nullptr || arg->getAttribute("dz")!=nullptr)
+    if (!arg->getAttribute("dx").empty() || !arg->getAttribute("dy").empty() || !arg->getAttribute("dz").empty())
         m_translation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("dx",0.0),
                                         (Real)arg->getAttributeAsFloat("dy",0.0),
                                         (Real)arg->getAttributeAsFloat("dz",0.0)));
 
-    if (arg->getAttribute("scale")!=nullptr)
+    if (!arg->getAttribute("scale").empty())
     {
         m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("scale",1.0),
                                   (Real)arg->getAttributeAsFloat("scale",1.0),
                                   (Real)arg->getAttributeAsFloat("scale",1.0)));
     }
-    else if (arg->getAttribute("sx")!=nullptr || arg->getAttribute("sy")!=nullptr || arg->getAttribute("sz")!=nullptr)
+    else if (!arg->getAttribute("sx").empty() || !arg->getAttribute("sy").empty() || !arg->getAttribute("sz").empty())
     {
         m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("sx",1.0),
                                   (Real)arg->getAttributeAsFloat("sy",1.0),

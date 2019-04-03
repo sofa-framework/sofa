@@ -173,12 +173,12 @@ public:
 
         if ( arg )
         {
-            if ( arg->getAttribute ( "hexaContainerPath" ) )
+            if ( !arg->getAttribute ( "hexaContainerPath" ).empty() )
             {
                 obj->hexaContainerPath.setValue ( arg->getAttribute ( "hexaContainerPath" ) );
                 arg->removeAttribute ( "hexaContainerPath" );
             }
-            if ( arg->getAttribute ( "targetPath" ) )
+            if ( !arg->getAttribute ( "targetPath" ).empty() )
             {
                 obj->targetPath.setValue ( arg->getAttribute ( "targetPath" ) );
                 arg->removeAttribute ( "targetPath" );

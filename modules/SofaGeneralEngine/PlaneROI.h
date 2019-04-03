@@ -84,7 +84,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (!arg->getAttribute("template"))
+        if (arg->getAttribute("template").empty())
         {
             // only check if this template is correct if no template was given
             if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)

@@ -102,7 +102,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, BaseContext* context, BaseObjectDescription* arg)
     {
-        if (!arg->getAttribute("template"))
+        if (arg->getAttribute("template").empty())
         {
             // only check if this template is correct if no template was given
             if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)

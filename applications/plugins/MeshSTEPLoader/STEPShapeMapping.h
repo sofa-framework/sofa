@@ -51,12 +51,12 @@ public:
 
         std::string inPath, outPath;
 
-        if (arg->getAttribute("input"))
+        if (!arg->getAttribute("input").empty())
             inPath = arg->getAttribute("input");
 
         context->findLinkDest(loader, inPath, NULL);
 
-        if (arg->getAttribute("output"))
+        if (!arg->getAttribute("output").empty())
             outPath = arg->getAttribute("output");
 
         context->findLinkDest(topology, outPath, NULL);
@@ -91,10 +91,10 @@ public:
         if (arg)
         {
             std::string inPath, outPath;
-            if (arg->getAttribute("input"))
+            if (!arg->getAttribute("input").empty())
                 inPath = arg->getAttribute("input");
 
-            if (arg->getAttribute("output"))
+            if (!arg->getAttribute("output").empty())
                 outPath = arg->getAttribute("output");
 
             obj->loader.setPath( inPath );

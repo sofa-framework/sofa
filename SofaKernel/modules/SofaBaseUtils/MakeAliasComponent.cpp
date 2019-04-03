@@ -48,8 +48,8 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
     BaseObject::parse(arg) ;
 
-    const char* target=arg->getAttribute("targetcomponent") ;
-    if(target==nullptr)
+    const std::string target=arg->getAttribute("targetcomponent") ;
+    if(target.empty())
     {
         msg_error(this) << "The mandatory 'targetcomponent' attribute is missing.  "
                            "The component is disabled.  "
@@ -58,8 +58,8 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     }
     string starget(target) ;
 
-    const char* alias=arg->getAttribute("alias") ;
-    if(alias==nullptr)
+    const std::string alias=arg->getAttribute("alias") ;
+    if(alias.empty())
     {
         msg_error(this) << "The mandatory 'alias' attribute is missing.  "
                            "The component is disabled.  "

@@ -126,15 +126,15 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
     std::string oldFlags;
     for (unsigned int i=0; oldVisualFlags[i]; ++i)
     {
-        const char* str = arg->getAttribute(oldVisualFlags[i], nullptr);
-        if (str == nullptr || !*str) continue;
+        const std::string str = arg->getAttribute(oldVisualFlags[i], nullptr);
+        if (str.empty() || str.c_str() == nullptr) continue;
         bool val;
         if (str[0] == 'T' || str[0] == 't')
             val = true;
         else if (str[0] == 'F' || str[0] == 'f')
             val = false;
         else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-            val = (atoi(str) != 0);
+            val = (atoi(str.c_str()) != 0);
         else continue;
         if (!oldFlags.empty()) oldFlags += ' ';
         if (val) oldFlags += oldVisualFlags[i];

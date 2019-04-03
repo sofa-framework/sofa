@@ -415,8 +415,8 @@ void MathOp<VecT>::createInputs(int nb)
 template <class VecT>
 void MathOp<VecT>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    const char* p = arg->getAttribute(f_nbInputs.getName().c_str());
-    if (p)
+    const std::string p = arg->getAttribute(f_nbInputs.getName().c_str());
+    if (!p.empty())
     {
         std::string nbStr = p;
         sout << "parse: setting nbInputs="<<nbStr<<sendl;

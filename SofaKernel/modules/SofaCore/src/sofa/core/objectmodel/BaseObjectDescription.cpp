@@ -36,11 +36,11 @@ namespace core
 namespace objectmodel
 {
 
-BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
+BaseObjectDescription::BaseObjectDescription(const std::string name, const std::string type)
 {
-    if (name)
+    if (!name.empty())
         attributes["name"] = name;
-    if (type)
+    if (!type.empty())
         attributes["type"] = type;
 }
 
@@ -85,7 +85,7 @@ const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMa
 }
 
 /// Find an object description given its name (relative to this object)
-BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)
+BaseObjectDescription* BaseObjectDescription::find(const std::string& /*nodeName*/, bool /*absolute*/)
 {
     return nullptr;
 }
@@ -102,7 +102,7 @@ bool BaseObjectDescription::removeAttribute(const std::string& attr)
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
-const char* BaseObjectDescription::getAttribute(const std::string& attr, const char* defaultVal)
+const std::string BaseObjectDescription::getAttribute(const std::string& attr, const std::string& defaultVal)
 {
     AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
@@ -163,7 +163,7 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
 }
 
 /// Set an attribute. Override any existing value
-void BaseObjectDescription::setAttribute(const std::string& attr, const std::string &val)
+void BaseObjectDescription::setAttribute(const std::string& attr, const std::string& val)
 {
     attributes[attr] = val;
 }
@@ -179,7 +179,7 @@ std::string BaseObjectDescription::getFullName()
 }
 
 /// Find an object given its name
-Base* BaseObjectDescription::findObject(const char* nodeName)
+Base* BaseObjectDescription::findObject(const std::string& nodeName)
 {
     BaseObjectDescription* node = find(nodeName);
     if (node!=nullptr)

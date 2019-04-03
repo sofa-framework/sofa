@@ -95,7 +95,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        if (!arg->getAttribute("object1").empty() || !arg->getAttribute("object2").empty())
         {
             if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr) {
                 arg->logError("Data attribute 'object1' must point the a valid mechanical state of datatype '" + std::string(DataTypes1::Name()) + "'.");
@@ -123,7 +123,7 @@ public:
     {
         typename T::SPtr obj = sofa::core::objectmodel::BaseObject::create(p0, context, arg);
 
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        if (arg && (!arg->getAttribute("object1").empty() || !arg->getAttribute("object2").empty()))
         {
             obj->constrainedObject1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
             obj->constrainedObject2 = dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2","..")));

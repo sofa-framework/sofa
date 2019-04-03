@@ -70,8 +70,8 @@ public:
 
     void parseSizeLinks(sofa::core::objectmodel::BaseObjectDescription* arg, Data<unsigned int>& size)
     {
-        const char* p = arg->getAttribute(size.getName().c_str());
-        if (p) {
+        const std::string p = arg->getAttribute(size.getName().c_str());
+        if (!p.empty()) {
             std::string nbStr = p;
             size.read(nbStr);
             resize(size.getValue());

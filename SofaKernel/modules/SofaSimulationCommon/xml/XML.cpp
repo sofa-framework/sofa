@@ -419,9 +419,9 @@ void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
     {
         std::string aname = *it;
         if (aname == "name") continue;
-        const char* aval = srcNode->getAttribute(aname);
-        if (!aval) continue;
-        destNode->setAttribute(aname, std::string(aval));
+        const std::string aval = srcNode->getAttribute(aname);
+        if (aval.empty()) continue;
+        destNode->setAttribute(aname, aval);
     }
     BaseElement::child_iterator<> itS(srcNode->begin());
     for(; itS!=srcNode->end(); ++itS)

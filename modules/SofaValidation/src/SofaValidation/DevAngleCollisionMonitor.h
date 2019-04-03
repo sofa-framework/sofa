@@ -69,7 +69,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        if (!arg->getAttribute("object1").empty() || !arg->getAttribute("object2").empty())
         {
             if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr)
                 return false;
@@ -90,7 +90,7 @@ public:
     {
         typename T::SPtr obj = core::objectmodel::BaseObject::create(tObj, context, arg);
 
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        if (arg && (!arg->getAttribute("object1").empty() || !arg->getAttribute("object2").empty()))
         {
             obj->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
             obj->mstate2 = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2","..")));

@@ -127,7 +127,7 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::parse(arg);
 
-    if (arg->getAttribute("scale"))
+    if (!arg->getAttribute("scale").empty())
     {
         SReal s = (SReal) arg->getAttributeAsFloat("scale", 1.0);
         d_scale.setValue(d_scale.getValue()*s);

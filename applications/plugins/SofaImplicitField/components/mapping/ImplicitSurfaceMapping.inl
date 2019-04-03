@@ -50,11 +50,11 @@ template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->Inherit::parse(arg);
-    if ( arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
+    if ( !arg->getAttribute("minx").empty() || !arg->getAttribute("miny").empty() || !arg->getAttribute("minz").empty())
         this->setGridMin(arg->getAttributeAsFloat("minx",-100.0),
                          arg->getAttributeAsFloat("miny",-100.0),
                          arg->getAttributeAsFloat("minz",-100.0));
-    if (arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
+    if (!arg->getAttribute("maxx").empty() || !arg->getAttribute("maxy").empty() || !arg->getAttribute("maxz").empty())
         this->setGridMax(arg->getAttributeAsFloat("maxx",100.0),
                          arg->getAttributeAsFloat("maxy",100.0),
                          arg->getAttributeAsFloat("maxz",100.0));

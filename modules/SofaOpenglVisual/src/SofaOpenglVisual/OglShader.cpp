@@ -196,38 +196,38 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
 
 
     // BACKWARD COMPATIBILITY oct 2016
-    const char* fileVertexShader = arg->getAttribute("fileVertexShader");
-    const char* fileVertexShaderAlias = arg->getAttribute("vertFilename");
-    if( fileVertexShader || fileVertexShaderAlias )
+    const std::string fileVertexShader = arg->getAttribute("fileVertexShader");
+    const std::string fileVertexShaderAlias = arg->getAttribute("vertFilename");
+    if( !fileVertexShader.empty() || !fileVertexShaderAlias.empty() )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileVertexShader' or 'vertFilename', please use the new Data<SVector<string>>'fileVertexShaders'";
         helper::vector<std::string> simplevector;
-        std::istringstream( fileVertexShader ? fileVertexShader : fileVertexShaderAlias ) >> simplevector;
+        std::istringstream( !fileVertexShader.empty() ? fileVertexShader : fileVertexShaderAlias ) >> simplevector;
         vertFilename.setValue( simplevector );
     }
-    const char* fileFragmentShader = arg->getAttribute("fileFragmentShader");
-    const char* fileFragmentShaderAlias = arg->getAttribute("fragFilename");
-    if( fileFragmentShader || fileFragmentShaderAlias )
+    const std::string fileFragmentShader = arg->getAttribute("fileFragmentShader");
+    const std::string fileFragmentShaderAlias = arg->getAttribute("fragFilename");
+    if( !fileFragmentShader.empty() || !fileFragmentShaderAlias.empty() )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileFragmentShader' or 'fragFilename', please use the new Data<SVector<string>>'fileFragmentShaders'";
         helper::vector<std::string> simplevector;
-        std::istringstream( fileFragmentShader ? fileFragmentShader : fileFragmentShaderAlias ) >> simplevector;
+        std::istringstream( !fileFragmentShader.empty() ? fileFragmentShader : fileFragmentShaderAlias ) >> simplevector;
         fragFilename.setValue( simplevector );
     }
 #ifdef GL_GEOMETRY_SHADER_EXT
-    const char* fileGeometryShader = arg->getAttribute("fileGeometryShader");
-    const char* fileGeometryShaderAlias = arg->getAttribute("geoFilename");
-    if( fileGeometryShader || fileGeometryShaderAlias )
+    const std::string fileGeometryShader = arg->getAttribute("fileGeometryShader");
+    const std::string fileGeometryShaderAlias = arg->getAttribute("geoFilename");
+    if( !fileGeometryShader.empty() || !fileGeometryShaderAlias.empty() )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileGeometryShader' or 'geoFilename', please use the new Data<SVector<string>>'fileGeometryShaders'";
         helper::vector<std::string> simplevector;
-        std::istringstream( fileGeometryShader ? fileGeometryShader : fileGeometryShaderAlias ) >> simplevector;
+        std::istringstream( !fileGeometryShader.empty() ? fileGeometryShader : fileGeometryShaderAlias ) >> simplevector;
         geoFilename.setValue( simplevector );
     }
 #endif
 #ifdef GL_TESS_CONTROL_SHADER
-    const char* fileTessellationControlShader = arg->getAttribute("fileTessellationControlShader");
-    if( fileTessellationControlShader )
+    const std::string fileTessellationControlShader = arg->getAttribute("fileTessellationControlShader");
+    if( !fileTessellationControlShader.empty() )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileTessellationControlShader', please use the new Data<SVector<string>>'fileTessellationControlShaders'";
         helper::vector<std::string> simplevector;
@@ -236,8 +236,8 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
     }
 #endif
 #ifdef GL_TESS_EVALUATION_SHADER
-    const char* fileTessellationEvaluationShader = arg->getAttribute("fileTessellationEvaluationShader");
-    if( fileTessellationEvaluationShader )
+    const std::string fileTessellationEvaluationShader = arg->getAttribute("fileTessellationEvaluationShader");
+    if( !fileTessellationEvaluationShader.empty() )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileTessellationEvaluationShader', please use the new Data<SVector<string>>'fileTessellationEvaluationShaders'";
         helper::vector<std::string> simplevector;

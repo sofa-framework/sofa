@@ -282,7 +282,7 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 {
     Inherited::parse(arg);
 
-    if (arg->getAttribute("size") != nullptr)
+    if (!arg->getAttribute("size").empty())
     {
         int newsize = arg->getAttributeAsInt("size", 1) ;
         if(newsize>=0)
@@ -297,41 +297,41 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
         }
     }
 
-    if (arg->getAttribute("scale") != nullptr)
+    if (!arg->getAttribute("scale").empty())
     {
         SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
         scale.setValue(Vector3(s, s, s));
     }
 
-    if (arg->getAttribute("sx") != nullptr || arg->getAttribute("sy") != nullptr || arg->getAttribute("sz") != nullptr)
+    if (!arg->getAttribute("sx").empty() || !arg->getAttribute("sy").empty() || !arg->getAttribute("sz").empty())
     {
         scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
                                (SReal)arg->getAttributeAsFloat("sy",1.0),
                                (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
-    if (arg->getAttribute("rx") != nullptr || arg->getAttribute("ry") != nullptr || arg->getAttribute("rz") != nullptr)
+    if (!arg->getAttribute("rx").empty() || !arg->getAttribute("ry").empty() || !arg->getAttribute("rz").empty())
     {
         rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
                                   (SReal)arg->getAttributeAsFloat("ry",0.0),
                                   (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
-    if (arg->getAttribute("dx") != nullptr || arg->getAttribute("dy") != nullptr || arg->getAttribute("dz") != nullptr)
+    if (!arg->getAttribute("dx").empty() || !arg->getAttribute("dy").empty() || !arg->getAttribute("dz").empty() )
     {
         translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
                                      (Real)arg->getAttributeAsFloat("dy",0.0),
                                      (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
-    if (arg->getAttribute("rx2") != nullptr || arg->getAttribute("ry2") != nullptr || arg->getAttribute("rz2") != nullptr)
+    if (!arg->getAttribute("rx2").empty() || !arg->getAttribute("ry2").empty() || !arg->getAttribute("rz2").empty())
     {
         rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
                                    (SReal)arg->getAttributeAsFloat("ry2",0.0),
                                    (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
-    if (arg->getAttribute("dx2") != nullptr || arg->getAttribute("dy2") != nullptr || arg->getAttribute("dz2") != nullptr)
+    if (!arg->getAttribute("dx2").empty() || !arg->getAttribute("dy2").empty() || !arg->getAttribute("dz2").empty())
     {
         translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
                                       (Real)arg->getAttributeAsFloat("dy2",0.0),

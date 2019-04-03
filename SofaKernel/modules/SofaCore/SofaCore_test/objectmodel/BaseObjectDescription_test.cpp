@@ -42,8 +42,8 @@ struct BaseObjectDescription_test: public BaseTest
         BaseObjectDescription objectDescription("theName", "theType");
 
         EXPECT_EQ( objectDescription.getName(), "theName");
-        EXPECT_STREQ( objectDescription.getAttribute("name"), "theName");
-        EXPECT_STREQ( objectDescription.getAttribute("type"), "theType");
+        EXPECT_EQ( objectDescription.getAttribute("name"), "theName");
+        EXPECT_EQ( objectDescription.getAttribute("type"), "theType");
 
         EXPECT_EQ( objectDescription.getBaseFile(), "") ;
 
@@ -69,8 +69,8 @@ struct BaseObjectDescription_test: public BaseTest
         objectDescription.setAttribute("anAttribute", "true") ;
         EXPECT_EQ( (objectDescription.getAttributeMap().size()), numattr+1) ;
 
-        const char* res = objectDescription.getAttribute("anAttribute", "notFound") ;
-        EXPECT_STREQ(res, "true");
+        const std::string res = objectDescription.getAttribute("anAttribute", "notFound") ;
+        EXPECT_EQ(res, "true");
     }
 
     void checkRemoveAnAttribute()
@@ -88,8 +88,8 @@ struct BaseObjectDescription_test: public BaseTest
         ASSERT_TRUE( objectDescription.removeAttribute("anAttribute") ) ;
         EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr) ;
 
-        const char* res = objectDescription.getAttribute("anAttribute", "notFound") ;
-        EXPECT_STREQ(res, "notFound");
+        const std::string res = objectDescription.getAttribute("anAttribute", "notFound") ;
+        EXPECT_EQ(res, "notFound");
     }
 
 

@@ -129,7 +129,7 @@ public:
     //Temporary function to warn the user when old attribute names are used
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
-        if (arg->getAttribute("color"))
+        if (!arg->getAttribute("color").empty())
         {
             msg_warning() << "input data 'color' changed for 'planeColor'";
         }

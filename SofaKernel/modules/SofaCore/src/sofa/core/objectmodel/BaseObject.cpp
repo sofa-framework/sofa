@@ -84,7 +84,7 @@ void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, 
 
 void BaseObject::parse( BaseObjectDescription* arg )
 {
-    if (arg->getAttribute("src"))
+    if (!arg->getAttribute("src").empty())
     {
         std::string valueString(arg->getAttribute("src"));
 

@@ -498,7 +498,7 @@ public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
-        const char* p = arg->getAttribute(nbBoundaryConditions.getName().c_str());
+        const std::string p = arg->getAttribute(nbBoundaryConditions.getName().c_str());
         if (p)
         {
             std::string nbStr = p;

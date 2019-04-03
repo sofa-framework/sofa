@@ -68,8 +68,8 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription *arg)
 {
-    const char* attr = arg->getAttribute("external_rest_shape") ;
-    if( attr != nullptr && attr[0] != '@')
+    const std::string attr = arg->getAttribute("external_rest_shape") ;
+    if( !attr.empty() && attr[0] != '@')
     {
         msg_error() << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
     }

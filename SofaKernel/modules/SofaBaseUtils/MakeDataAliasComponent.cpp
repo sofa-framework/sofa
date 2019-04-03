@@ -48,8 +48,8 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
 {
     BaseObject::parse(arg) ;
 
-    const char* component=arg->getAttribute("componentname") ;
-    if(component==nullptr)
+    const std::string component=arg->getAttribute("componentname") ;
+    if(component.empty())
     {
         msg_error(this) << "The mandatory 'componentname' attribute is missing.  "
                            "The component is disabled.  "
@@ -59,8 +59,8 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     string scomponent(component) ;
 
 
-    const char* dataname=arg->getAttribute("dataname") ;
-    if(dataname==nullptr)
+    const std::string dataname=arg->getAttribute("dataname") ;
+    if(dataname.empty())
     {
         msg_error(this) << "The mandatory 'dataname' attribute is missing.  "
                            "The component is disabled.  "
@@ -70,8 +70,8 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     string sdataname(dataname) ;
 
 
-    const char* alias=arg->getAttribute("alias") ;
-    if(alias==nullptr)
+    const std::string alias=arg->getAttribute("alias") ;
+    if(alias.empty())
     {
         msg_error(this) << "The mandatory 'alias' attribute is missing.  "
                            "The component is disabled.  "

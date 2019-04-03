@@ -151,11 +151,11 @@ public:
     //Temporary function to warn the user when old attribute names are used until v19.12
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
-        if (arg->getAttribute("mass"))
+        if (!arg->getAttribute("mass").empty())
         {
             msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";
         }
-        if (arg->getAttribute("totalmass"))
+        if (!arg->getAttribute("totalmass").empty())
         {
             msg_warning() << "input data 'totalmass' changed for 'totalMass', please update your scene (see PR#637)";
         }

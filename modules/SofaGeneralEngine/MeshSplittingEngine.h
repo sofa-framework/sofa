@@ -112,8 +112,8 @@ public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
-        const char* p = arg->getAttribute(nbInputs.getName().c_str());
-        if (p) {
+        const std::string p = arg->getAttribute(nbInputs.getName().c_str());
+        if (!p.empty()) {
             std::string nbStr = p;
             nbInputs.read(nbStr);
             resizeData();

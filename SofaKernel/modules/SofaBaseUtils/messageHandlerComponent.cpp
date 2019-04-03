@@ -74,8 +74,8 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
 {
     BaseObject::parse(arg) ;
 
-    const char* type=arg->getAttribute("handler") ;
-    if(type==nullptr){
+    const std::string type=arg->getAttribute("handler") ;
+    if(type.empty()){
         msg_info(this) << "The 'handler' attribute is missing. The default sofa style will be used. "
                           "To suppress this message you need to specify the 'handler' attribute. "
                           "eg: handler='silent' ";
@@ -132,8 +132,8 @@ void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescripti
 {
     BaseObject::parse(arg) ;
 
-    const char* type=arg->getAttribute("filename") ;
-    if(type==nullptr){
+    const std::string type=arg->getAttribute("filename") ;
+    if(type.empty()){
         msg_warning(this) << "Name of the log file is missing. "
                              "To suppress this message you need to add the specify the filename eg:"
                              "  filename='nameOfTheLogFile.log' ";
