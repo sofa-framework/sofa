@@ -55,7 +55,7 @@ public:
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);
-        if (contacts == NULL)
+        if (contacts == nullptr)
         {
             contacts = impl->createOutputVector(m1,m2);
         }
@@ -70,7 +70,7 @@ public:
         return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
     }
 
-    std::string name() const
+    std::string name() const override
     {
         return sofa::helper::gettypename(typeid(Elem1))+std::string("-")+sofa::helper::gettypename(typeid(Elem2));
     }

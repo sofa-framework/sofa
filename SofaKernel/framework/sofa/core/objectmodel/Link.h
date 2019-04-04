@@ -345,7 +345,7 @@ public:
 
     size_t size(const core::ExecParams* params = nullptr) const
     {
-        return size_t(m_value[core::ExecParams::currentAspect(params)].size());
+        return static_cast<size_t>(m_value[core::ExecParams::currentAspect(params)].size());
     }
 
     bool empty(const core::ExecParams* params = nullptr) const
@@ -493,7 +493,7 @@ public:
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
-    std::string getLinkedPath(unsigned int index=0) const
+    std::string getLinkedPath(unsigned int index=0) const override
     {
         return getPath(index);
     }
@@ -502,7 +502,7 @@ public:
     /// @{
 
     /// Read the command line
-    virtual bool read( const std::string& str )
+    virtual bool read( const std::string& str ) override
     {
         if (str.empty())
             return true;
@@ -566,7 +566,7 @@ public:
             // Remove the objects from the container that are not in the new list
             // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
             // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
-            unsigned int csize = unsigned(container.size());
+            unsigned int csize = static_cast<unsigned int>(container.size());
             for (unsigned int i = 0; i != csize; i++)
             {
                 DestPtr dest(container[i]);
@@ -719,7 +719,7 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        unsigned int n = unsigned(this->getSize());
+        unsigned int n = static_cast<unsigned int>(this->getSize());
         for (unsigned int i = 0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];

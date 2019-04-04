@@ -370,7 +370,7 @@ public:
 
     inline T* beginEdit(const core::ExecParams* params = nullptr)
     {
-        size_t aspect = size_t(DDGNode::currentAspect(params));
+        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
         this->updateIfDirty(params);
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
@@ -381,7 +381,7 @@ public:
     /// BeginEdit method if it is only to write the value
     inline T* beginWriteOnly(const core::ExecParams* params = nullptr)
     {
-        size_t aspect = size_t(DDGNode::currentAspect(params));
+        size_t aspect = static_cast<size_t>(DDGNode::currentAspect(params));
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
         BaseData::setDirtyOutputs(params);
@@ -436,7 +436,7 @@ public:
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
         {
-            size_t aspect = size_t(DDGNode::currentAspect());
+            size_t aspect = static_cast<size_t>(DDGNode::currentAspect());
             this->m_values[aspect] = d->m_values[aspect];
             //FIX: update counter
             ++this->m_counters[aspect];

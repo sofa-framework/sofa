@@ -16,25 +16,28 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawTetrahedra="0" showTetrahedraIndices="0"/>
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <DiagonalMass massDensity="1.0" />
         <FixedConstraint name="fix" indices="7 8 14 15" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
-        
-        <Node name="T">
-            <TriangleSetTopologyContainer name="Triangle_topo" />
-            <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
-            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" printLog="1"/>
 
+	<Node name="T_out">
+            <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Container" noNewTriangles="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
-            
             <Node name="Visu">
-                <OglModel name="Visual" color="yellow" />
-                <IdentityMapping input="@../" output="@Visual" />
+                <OglModel name="Visual" color="blue" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+        <Node name="T_in">
+            <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Container" noInitialTriangles="1" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
 
@@ -42,7 +45,7 @@
     </Node>
 
 
-    <Node name="TT_2">
+    <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" />
 
@@ -50,25 +53,28 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawTetrahedra="0" showTetrahedraIndices="0"/>
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <DiagonalMass massDensity="1.0" />
         <FixedConstraint name="fix" indices="7 8 14 15" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         
-        <Node name="T_2">
-            <TriangleSetTopologyContainer name="Triangle_topo" />
-            <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
-            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" printLog="1"/>
-
+	<Node name="T_out">
+            <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Container" noNewTriangles="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
-                
-            <Node name="Visu_2">
-                <OglModel name="Visual" color="yellow" />
-                <IdentityMapping input="@../" output="@Visual" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="blue" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+        <Node name="T_in">
+            <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Container" noInitialTriangles="1" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
 
