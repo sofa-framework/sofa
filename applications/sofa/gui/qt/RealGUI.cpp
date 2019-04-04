@@ -811,8 +811,10 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     }
     if(reload)
         setSceneWithoutMonitor(mSimulation, filename.c_str(), temporaryFile);
-    else
+    else{
         setScene(mSimulation, filename.c_str(), temporaryFile);
+        m_docbrowser->loadHtml( filename ) ;
+    }
 
     configureGUI(mSimulation.get());
 
@@ -1015,7 +1017,8 @@ void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile
         FileMonitor::removeListener(m_filelistener);
         FileMonitor::addFile(filename, m_filelistener);
     }
-    setSceneWithoutMonitor(root, filename, temporaryFile);
+    setSceneWithoutMonitor(root, filename, temporaryFile) ;
+    m_docbrowser->loadHtml( filename ) ;
 }
 
 //------------------------------------
