@@ -144,6 +144,8 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
     serr << "calling unimplemented getObject method" << sendl;
 }
 
+BaseContext::GetObjectsCallBack::~GetObjectsCallBack() {}
+
 /// Degrees-of-Freedom
 core::BaseState* BaseContext::getState() const
 {
