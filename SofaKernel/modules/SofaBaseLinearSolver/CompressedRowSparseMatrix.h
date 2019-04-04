@@ -886,7 +886,7 @@ public:
     ElementType getElementType() const override { return traits::getElementType(); }
 
     /// @return size of elements stored in this matrix
-    virtual std::size_t getElementSize() const { return sizeof(Real); }
+    virtual std::size_t getElementSize() const override { return sizeof(Real); }
 
     /// @return the category of this matrix
     MatrixCategory getCategory() const override { return MATRIX_SPARSE; }

@@ -53,7 +53,7 @@ namespace collision
 
 /// Base class for all mappers using SubsetMapping
 template < class TCollisionModel, class DataTypes >
-class SOFA_MESH_COLLISION_API SubsetContactMapper : public BaseContactMapper<DataTypes>
+class SubsetContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
