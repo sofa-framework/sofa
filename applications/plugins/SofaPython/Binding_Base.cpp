@@ -28,7 +28,6 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-
 #include <sofa/helper/logging/Messaging.h>
 
 #include "PythonFactory.h"
@@ -227,7 +226,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 
     char* dataRawType = new char;
     char* dataClass = new char;
-    char* dataHelp = new char;
+    char* dataHelp = "missing help";
     char * dataName = new char;
     std::string val = "";
     
@@ -260,8 +259,10 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     else
     {
         return nullptr;
-    }    
+    }
+
     BaseData* bd = nullptr;
+
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
@@ -347,7 +348,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             {
                 if(!bd->setParent(tmp.str()))
                 {
-                    msg_warning(obj) << "Could not setup link for Data, initialzing empty.";
+                    msg_warning(obj) << "Could not setup link for Data, initializing empty " << tmp.str() ;
                 }
             }
             else

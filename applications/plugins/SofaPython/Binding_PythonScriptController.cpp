@@ -411,7 +411,7 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
         return instance;
         
     } catch (error e) {
-        PyErr_SetString(PyExc_TypeError, 
+        PyErr_SetString(PyExc_TypeError,
                         "PythonScriptController.__new__ needs a Sofa.BaseContext as first argument");
         return nullptr;
     };

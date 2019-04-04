@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -22,6 +22,9 @@
 #include <QDesktopServices>
 #include <QTextBrowser>
 #include <QLineEdit>
+#include <QFileInfo>
+#include <QUrlQuery>
+#include <QDir>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory ;
@@ -36,6 +39,8 @@ using sofa::helper::system::FileSystem ;
 #include "../RealGUI.h"
 #include <sofa/gui/GuiDataRepository.h>
 
+#include <iostream>
+
 namespace sofa
 {
 namespace gui
@@ -45,6 +50,38 @@ namespace qt
 
 ///////////////////////////// PRIVATE OBJECTS //////////////////////////////////
 /// May be moved to their own .cpp/.hh if one day someone needs them.
+
+SofaEnrichedPage::SofaEnrichedPage(QObject* parent) : QWebEnginePage(parent)
+{
+}
+
+bool SofaEnrichedPage::isSofaTarget(const QUrl& u)
+{
+    if( u.fileName() == QString("sofa") && u.hasQuery() )
+    {
+        return true ;
+    }else if( u.isLocalFile() && ! u.hasQuery() )
+    {
+        return true ;
+    }
+    return false;
+}
+
+bool SofaEnrichedPage::acceptNavigationRequest(const QUrl & url,
+                                               QWebEnginePage::NavigationType type,
+                                               bool )
+{
+    if (type == QWebEnginePage::NavigationTypeLinkClicked)
+    {
+        if( isSofaTarget(url) )
+        {
+            emit linkClicked(url);
+            return false;
+        }
+    }
+    return true;
+}
+
 
 
 //////////////////////////////// BrowserHistory ////////////////////////////////
@@ -162,14 +199,16 @@ DocBrowser::DocBrowser(RealGUI* g) : QWidget()
     bgl->addWidget(home) ;
 
     /// Add the html browser to visualize the documentation
-    m_htmlPage = new QTextBrowser(this);
+    m_htmlPage = new QWebEngineView(this);
+    SofaEnrichedPage* pp = new SofaEnrichedPage();
+    m_htmlPage->setPage(pp);
+
     verticalLayout->addWidget(m_htmlPage);
 
     /// We want click on internal links (file://) to be routed to the the goTo function to
     /// load the sofa file.
-    m_htmlPage->setOpenLinks(false) ;
-    connect(m_htmlPage, SIGNAL(anchorClicked(const QUrl&)),
-            this, SLOT(goTo(const QUrl&)));
+    connect(m_htmlPage, SIGNAL(urlChanged(const QUrl&)), this, SLOT(goTo(const QUrl&)));
+    connect(pp, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onLinkClicked(const QUrl&)));
 }
 
 void DocBrowser::loadHtml(const std::string& filename)
@@ -178,87 +217,92 @@ void DocBrowser::loadHtml(const std::string& filename)
     std::string htmlfile = filename ;
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
+    QUrl currenturl = m_htmlPage->page()->url() ;
+
+    if(currenturl.isLocalFile() && currenturl.path() == asQStr(htmlfile))
+    {
+        return ;
+    }
+
     std::string extension=FileSystem::getExtension(filename);
     htmlfile.resize(htmlfile.size()-extension.size()-1);
     htmlfile+=".html";
 
     /// Check if there exists an .html  file associated with the provided file.
     /// If nor and the history is empty we load a default document from the share repository.
-    if (!DataRepository.findFile(htmlfile, "", NULL))
-    {
-        if( m_browserhistory->size() == 0 )
-        {
-            htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
-        }
-        showView = false ;
-    }
+    ///if (! DataRepository.findFile(htmlfile, "", NULL))
+    ///{
+    ///    htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
+    ///   showView = false ;
+    /// }
 
-    /// Check if the page we want to load is already loaded on the top of the history
-    /// If this is the case there is no need to reload it.
-    if(m_browserhistory->size() != 0)
-    {
-        if(m_browserhistory->current().m_htmlfile == htmlfile )
-            return ;
-    }
 
     /// Check if either the scene specific html or default provided can be loaded.
     /// If so...load the page and add the entry into the history.
-    if (DataRepository.findFile(htmlfile, "", NULL))
-    {
-        m_htmlPage->setSearchPaths(QStringList(QString(rootdir.c_str())));
-        m_htmlPage->setSource(QUrl::fromLocalFile(QString(htmlfile.c_str())) );
-        m_browserhistory->push(htmlfile, filename, rootdir) ;
-    }
+    if (!DataRepository.findFile(htmlfile, "", NULL))
+        return;
 
+    m_htmlPage->load( QUrl::fromLocalFile(QString(htmlfile.c_str())) );
     setVisible(showView);
 }
 
 void DocBrowser::goToPrev()
 {
-    /// Drop the old entry.
-    BrowserHistoryEntry entry = m_browserhistory->pop() ;
+    m_htmlPage->pageAction(QWebEnginePage::Back)->trigger() ;
+}
 
-    /// Get the previous one
-    entry = m_browserhistory->current() ;
-    m_htmlPage->setSearchPaths({asQStr(entry.m_rootdir)});
-    m_htmlPage->setSource(asQStr(entry.m_htmlfile)) ;
+void DocBrowser::onLinkClicked(const QUrl& u)
+{
+    msg_info("DocBrowser") << " query to load " << asStr(u.path()) ;
+    if( u.fileName() == QString("sofa") && u.hasQuery() )
+    {
+        m_realgui->playpauseGUI(true) ;
+        return ;
+    }
+
+    if( u.isLocalFile() && ! u.hasQuery() )
+    {
+        QFileInfo theFile = u.toLocalFile() ;
+        std::string sofafile = asStr( theFile.absoluteDir().absoluteFilePath(u.toLocalFile()) );
+        std::string extension = FileSystem::getExtension(sofafile) ;
+
+        /// Check if the path is pointing to a sofa scene. If so
+        /// open the scene
+        const auto exts = SceneLoaderFactory::getInstance()->extensions() ;
+        if ( std::find(exts.begin(), exts.end(), extension) != exts.end() )
+        {
+            m_realgui->fileOpen(sofafile, false, false) ;
+            return ;
+        }
+    }
+    m_htmlPage->load(u) ;
 }
 
 void DocBrowser::goTo(const QUrl& u)
 {
-    BrowserHistoryEntry entry = m_browserhistory->current() ;
-
-    if(!u.isLocalFile())
+    msg_info("DocBrowser") << "Go to " << asStr(u.path()) ;
+    if( u.isLocalFile() && u.hasQuery() )
     {
-        QDesktopServices::openUrl(u) ;
-        return;
-    }
+        QUrlQuery q { u.query() } ;
+        if( !q.hasQueryItem("sofafile") ) {
+            msg_info("DocBrowser") << "Does not have associated sofa file. " ;
+            return ;
+        }
 
-    std::string path=FileSystem::cleanPath(u.toLocalFile().toStdString());
-    std::string extension=FileSystem::getExtension(path);
+        QFileInfo htmlfile = u.toLocalFile() ;
+        std::string sofafile = asStr( htmlfile.absoluteDir().absoluteFilePath(q.queryItemValue("sofafile")) );
+        std::string extension = FileSystem::getExtension(sofafile) ;
 
-    if(path.empty())
-    {
+        /// Check if the path is pointing to a sofa scene. If so
+        /// open the scene
+        const auto exts = SceneLoaderFactory::getInstance()->extensions() ;
+        if ( std::find(exts.begin(), exts.end(), extension) == exts.end() ){
+            msg_warning("DocBrowser") << "Unsupported sofa file format. " ;
+            return ;
+        }
+        m_realgui->fileOpen(sofafile, false, false) ;
         return ;
     }
-
-    /// Check if the path is pointing to an html file.
-    if ( extension == "html" )
-    {
-        loadHtml(path.c_str()) ;
-        return ;
-    }
-
-    /// Check if the path is pointing to a sofa scene. If so
-    /// open the scene
-    const auto exts = SceneLoaderFactory::getInstance()->extensions() ;
-    if ( std::find(exts.begin(), exts.end(), extension) != exts.end() )
-    {
-        m_realgui->fileOpen(path) ;
-        return ;
-    }
-
-    QDesktopServices::openUrl(u) ;
 }
 
 void DocBrowser::goToHome()

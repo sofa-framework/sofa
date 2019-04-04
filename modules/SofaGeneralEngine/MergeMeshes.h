@@ -114,6 +114,7 @@ protected:
             std::string help_i = ohelp.str();
             Data<T>* d = new Data<T>(sofa::helper::getAStringCopy(help_i.c_str()), true, false);
             d->setName(name_i);
+            d->setHelp(nullptr);
             vf.push_back(d);
             this->addData(d);
             this->addInput(d);

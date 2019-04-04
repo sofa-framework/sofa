@@ -49,6 +49,17 @@
 #include "WDoubleLineEdit.h"
 #include "QSofaStatWidget.h"
 #include "viewer/SofaViewer.h"
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
 
 #include <sofa/gui/BaseViewer.h>
 #include <SofaSimulationCommon/xml/XML.h>
@@ -785,8 +796,10 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     }
     if(reload)
         setSceneWithoutMonitor(mSimulation, filename.c_str(), temporaryFile);
-    else
+    else{
         setScene(mSimulation, filename.c_str(), temporaryFile);
+        m_docbrowser->loadHtml( filename ) ;
+    }
 
     configureGUI(mSimulation.get());
 
@@ -797,6 +810,27 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if(!expandedNodes.empty())
     {
         simulationGraph->expandPathFrom(expandedNodes);
+    }
+
+    /// We want to warn user that there is component that are implemented in specific plugin
+    /// and that there is no RequiredPlugin in their scene.
+    /// But we don't want that to happen each reload in interactive mode.
+    if(!reload)
+    {
+        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+        checker.addCheck(simulation::scenechecking::SceneCheckAPIChange::newSPtr());
+        checker.addCheck(simulation::scenechecking::SceneCheckDuplicatedName::newSPtr());
+        checker.addCheck(simulation::scenechecking::SceneCheckMissingRequiredPlugin::newSPtr());
+        checker.validate(mSimulation.get()) ;
+
+        //Check the validity of the BBox
+        const sofa::defaulttype::BoundingBox& nodeBBox = mSimulation.get()->getContext()->f_bbox.getValue();
+        if(nodeBBox.isNegligeable())
+        {
+            msg_error("RealGUI") << "Global Bounding Box seems invalid ; please implement updateBBox in your components "
+                                    << "or force a value by adding the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
+            msg_error("RealGUI") << "Your viewer settings (based on the bbox) are likely invalid.";
+        }
     }
 }
 
@@ -979,7 +1013,8 @@ void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile
         FileMonitor::removeListener(m_filelistener);
         FileMonitor::addFile(filename, m_filelistener);
     }
-    setSceneWithoutMonitor(root, filename, temporaryFile);
+    setSceneWithoutMonitor(root, filename, temporaryFile) ;
+    m_docbrowser->loadHtml( filename ) ;
 }
 
 //------------------------------------

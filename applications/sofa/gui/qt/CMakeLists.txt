@@ -151,7 +151,7 @@ endif()
 
 set(QT_USE_IMPORTED_TARGETS 1)
 
-find_package(Qt5 COMPONENTS Core QUIET)
+find_package(Qt5 COMPONENTS Core WebEngine WebEngineWidgets QUIET)
 
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
@@ -159,8 +159,8 @@ if(Qt5Core_FOUND)
     find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
 
     set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL)
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5WebEngine_INCLUDE_DIRS} ${Qt5WebEngineWidgets_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5WebEngine_LIBRARIES} ${Qt5WebEngineWidgets_LIBRARIES})
     # target_include_directories(${EXT_QT_INCLUDES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
