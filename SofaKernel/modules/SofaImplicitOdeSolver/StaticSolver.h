@@ -39,7 +39,7 @@ namespace odesolver
 
 using sofa::core::objectmodel::Data;
 
-class StaticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_IMPLICIT_ODE_SOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);
