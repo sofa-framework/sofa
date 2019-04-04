@@ -18,8 +18,8 @@ namespace sofa
         
         
         
-        StepTask::StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* status)
-        : Task(status)
+        StepTask::StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, CpuTask::Status* status)
+        : CpuTask(status)
         , animationloop(aloop)
         , dt(t)
         {

@@ -368,8 +368,8 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info=std::string("type"));
-    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info=std::string("type")) override;
+    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0) override;
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -426,7 +426,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -455,14 +455,14 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVAvailVisitor"; }
-    virtual std::string getInfos() const;
+    virtual std::string getInfos() const override;
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
     {
         return false;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         MyMultiVecId mv(v);
         addReadWriteVector( mv );
@@ -518,7 +518,7 @@ public:
         return "MechanicalVInitVisitor";
     }
 
-    virtual std::string getInfos() const;
+    virtual std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -527,7 +527,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(vSrc);
         addWriteVector(vDest);
@@ -558,14 +558,14 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVAllocVisitor"; }
-    virtual std::string getInfos() const;
+    virtual std::string getInfos() const override;
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
     {
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(v);
     }
@@ -622,7 +622,7 @@ public:
         return "MechanicalVReallocVisitor";
     }
 
-    virtual std::string getInfos() const;
+    virtual std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -631,7 +631,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addWriteVector(*v);
     }
@@ -668,14 +668,14 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVFreeVisitor"; }
-    virtual std::string getInfos() const;
+    virtual std::string getInfos() const override;
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
     {
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -718,7 +718,7 @@ public:
     Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     const char* getClassName() const override { return "MechanicalVOpVisitor";}
-    virtual std::string getInfos() const ;
+    virtual std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -730,7 +730,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(a);
         addReadVector(b);
@@ -763,7 +763,7 @@ public:
     Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     const char* getClassName() const override { return "MechanicalVMultiOpVisitor"; }
-    virtual std::string getInfos() const ;
+    virtual std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -775,7 +775,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         for (unsigned int i=0; i<ops.size(); ++i)
         {
@@ -818,7 +818,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVDotVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name("v= a*b with a[");
         name += a.getName() + "] and b[" + b.getName() + "]";
@@ -835,7 +835,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(a);
         addReadVector(b);
@@ -868,7 +868,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVNormVisitor";}
-    virtual std::string getInfos() const ;
+    virtual std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -881,7 +881,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(a);
     }
@@ -924,7 +924,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateDxVisitor"; }
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="["+dx.getName()+"]";
         return name;
@@ -935,7 +935,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(dx);
     }
@@ -966,7 +966,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateDxAndResetForceVisitor";}
-    virtual std::string getInfos() const { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name;}
+    virtual std::string getInfos() const override { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name;}
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -974,7 +974,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(dx);
         addWriteVector(f);
@@ -1017,7 +1017,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(x);
         addWriteVector(f);
@@ -1050,7 +1050,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddMDxVisitor"; }
-    virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
@@ -1061,7 +1061,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(res);
     }
@@ -1088,7 +1088,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAccFromFVisitor"; }
-    virtual std::string getInfos() const { std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1096,7 +1096,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addWriteVector(a);
         addReadVector(mparams->f());
@@ -1131,7 +1131,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -1158,7 +1158,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalProjectVelocityVisitor"; }
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="["+vel.getName()+"]"; return name;
     }
@@ -1168,7 +1168,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(vel);
     }
@@ -1196,7 +1196,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalProjectPositionVisitor"; }
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="["+pos.getName()+"]"; return name;
     }
@@ -1206,7 +1206,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(pos);
     }
@@ -1236,7 +1236,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalProjectPositionAndVelocityVisitor"; }
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="x["+pos.getName()+"] v["+vel.getName()+"]";
         return name;
@@ -1247,7 +1247,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(pos);
         addReadWriteVector(vel);
@@ -1287,7 +1287,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateOnlyPositionVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="x["+x.getName()+"]";
         if (ignoreMask) name += " Mask DISABLED";
@@ -1301,7 +1301,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(x);
     }
@@ -1343,7 +1343,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateOnlyPositionAndVelocityVisitor";}
-    virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1351,7 +1351,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(x);
         addReadWriteVector(v);
@@ -1392,7 +1392,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateOnlyVelocityVisitor";}
-    virtual std::string getInfos() const { std::string name="v["+v.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name="v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1400,7 +1400,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(v);
     }
@@ -1426,7 +1426,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalSetPositionAndVelocityVisitor";}
-    virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1434,7 +1434,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(x);
         addReadVector(v);
@@ -1467,7 +1467,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {  return "MechanicalResetForceVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="["+res.getName()+"]";
         if (onlyMapped) name+= " Only Mapped";
@@ -1480,7 +1480,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addWriteVector(res);
     }
@@ -1515,7 +1515,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "MechanicalComputeForceVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name=std::string("[")+res.getName()+std::string("]");
         if (accumulate) name+= " Accumulating";
@@ -1529,7 +1529,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addWriteVector(res);
     }
@@ -1568,7 +1568,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "MechanicalComputeDfVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="["+res.getName()+"]";
         if (accumulate) name+= " Accumulating";
@@ -1582,7 +1582,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addWriteVector(res);
     }
@@ -1611,7 +1611,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "MechanicalComputeGeometricStiffness";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name="["+childForce.getName()+"]";
         return name;
@@ -1623,7 +1623,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
 //        addWriteVector(res);
     }
@@ -1662,7 +1662,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddMBKdxVisitor"; }
-    virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name= "["+res.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1670,7 +1670,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(res);
     }
@@ -1712,7 +1712,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -1744,11 +1744,11 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalWriteLMConstraint"; }
-    virtual std::string getInfos() const ;
+    virtual std::string getInfos() const override ;
 
     virtual void clear() {datasC.clear(); offset=0;}
     virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
-    virtual unsigned int numConstraint() {return (unsigned int)datasC.size();}
+    virtual unsigned int numConstraint() {return static_cast<unsigned int>(datasC.size());}
 
     virtual void setMultiVecId(core::MultiVecId i) {id=i;}
     core::MultiVecId getMultiVecId() const { return id; }
@@ -1762,7 +1762,7 @@ public:
         return false;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -1815,7 +1815,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -1862,7 +1862,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -1912,7 +1912,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -1952,7 +1952,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalApplyConstraintsVisitor"; }
-    virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name= "["+res.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1960,7 +1960,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(res);
     }
@@ -1998,7 +1998,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -2036,7 +2036,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -2071,7 +2071,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -2108,7 +2108,7 @@ public:
         return true;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(res);
     }
@@ -2137,9 +2137,9 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddSeparateGravityVisitor"; }
-    virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
+    virtual std::string getInfos() const override { std::string name= "["+res.getName()+"]"; return name; }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadWriteVector(res);
     }
@@ -2173,7 +2173,7 @@ public:
     const char* getClassName() const override { return "MechanicalPickParticles"; }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
@@ -2212,7 +2212,7 @@ public:
 	const char* getClassName() const override { return "MechanicalPickParticlesWithTags"; }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-	void setReadWriteVectors()
+    void setReadWriteVectors() override
 	{
 	}
 #endif
@@ -2250,7 +2250,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVSizeVisitor";}
-    virtual std::string getInfos() const
+    virtual std::string getInfos() const override
     {
         std::string name = "[" + v.getName() + "]";
         return name;
@@ -2262,7 +2262,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
         addReadVector(v);
     }
