@@ -1830,7 +1830,8 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
     {
         (void)a;
         (void)f;
-        msg_error() << "WARNING: the methode 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. \nPlease proceed to mass lumping.";
+        msg_error() << "WARNING: the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
+                    << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
         return;
     }
 }
