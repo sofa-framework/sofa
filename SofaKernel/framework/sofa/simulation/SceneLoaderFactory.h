@@ -66,11 +66,20 @@ public:
     virtual bool canWriteFileExtension(const char * /*extension*/) { return false; }
 
     /// load the file
-    sofa::simulation::Node::SPtr load(const char *filename)
+    sofa::simulation::Node::SPtr load(const char *filename, bool reload = false)
     {
-        notifyLoadingSceneBefore();
+        if(reload)
+            notifyReloadingSceneBefore();
+        else
+            notifyLoadingSceneBefore();
+
         sofa::simulation::Node::SPtr root = doLoad(filename);
-        notifyLoadingSceneAfter(root);
+
+        if(reload)
+            notifyReloadingSceneAfter(root);
+        else
+            notifyLoadingSceneAfter(root);
+
         return root;
     }
     virtual sofa::simulation::Node::SPtr doLoad(const char *filename) = 0;
@@ -91,6 +100,9 @@ public:
     {
         virtual void rightBeforeLoadingScene() {} ///< callback called just before loading the scene file
         virtual void rightAfterLoadingScene(sofa::simulation::Node::SPtr) {} ///< callback called just after loading the scene file
+
+        virtual void rightBeforeReloadingScene() { this->rightBeforeLoadingScene(); } ///< callback called just before reloading the scene file
+        virtual void rightAfterReloadingScene(sofa::simulation::Node::SPtr root) { this->rightAfterLoadingScene(root); } ///< callback called just after reloading the scene file
     };
 
     /// adding a listener
@@ -105,7 +117,9 @@ protected:
     typedef std::set<Listener*> Listeners;
     static Listeners s_listeners;
     static void notifyLoadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeLoadingScene(); }
+    static void notifyReloadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeReloadingScene(); }
     static void notifyLoadingSceneAfter(sofa::simulation::Node::SPtr node) { for( auto* l : s_listeners ) l->rightAfterLoadingScene(node); }
+    static void notifyReloadingSceneAfter(sofa::simulation::Node::SPtr node) { for( auto* l : s_listeners ) l->rightAfterReloadingScene(node); }
 
 };
 
