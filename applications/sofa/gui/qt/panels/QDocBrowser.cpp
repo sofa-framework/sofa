@@ -203,7 +203,7 @@ DocBrowser::DocBrowser(RealGUI* g) : QWidget()
     SofaEnrichedPage* pp = new SofaEnrichedPage();
     m_htmlPage->setPage(pp);
 
-    verticalLayout->addWidget(m_htmlPage);
+    verticalLayout->addWidget(m_htmlPage, 1);
 
     /// We want click on internal links (file://) to be routed to the the goTo function to
     /// load the sofa file.
