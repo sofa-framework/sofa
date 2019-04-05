@@ -233,7 +233,7 @@ void *hapticSimuExecute( void *ptr )
             if (actSeg < numSegs)
             {
 
-                if (actStep < stepNum[actSeg])
+                if (actSeg > 0 && actStep < stepNum[actSeg])
                 {
 
                     //compute the coeff for interpolation
