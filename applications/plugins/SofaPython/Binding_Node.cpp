@@ -211,6 +211,13 @@ static PyObject * Node_createChild(PyObject *self, PyObject * args) {
         return nullptr;
     }
     Node* child = obj->createChild(nodeName).get();
+
+    /// retrieve the creation location from python and pass it to Sofa so we
+    /// can locate easily where the node has been instantiated.
+    auto fileinfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    child->setInstanciationFilePos(fileinfo->line);
+    child->setInstanciationFileName(fileinfo->filename);
+
     return sofa::PythonFactory::toPython(child);
 }
 
