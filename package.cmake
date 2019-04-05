@@ -35,10 +35,13 @@ setSofaOption(APPLICATION_MODELER OFF)
 
 setSofaOption(SOFA_USE_MASK OFF)
 
-setSofaOption(SOFA_BUILD_TESTS ON)
+setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 setSofaOption(SOFA_BUILD_METIS ON)
 
+
+# Set all modules/plugins OFF
+message("----------------------")
 get_cmake_property(_variableNames VARIABLES)
 list (SORT _variableNames)
 foreach (_variableName ${_variableNames})
@@ -46,11 +49,16 @@ foreach (_variableName ${_variableNames})
         setSofaOption(${_variableName} OFF TRUE)
     endif()
 endforeach()
-message("All plugins/modules are OFF")
+message("----------------------")
 
-message("Setting some plugins/modules ON")
+# Set some modules ON
+setSofaOption(MODULE_SOFAEXPORTER ON)
+setSofaOption(MODULE_SOFAHAPTICS ON)
+setSofaOption(MODULE_SOFASPARSESOLVER ON)
+setSofaOption(MODULE_SOFAPRECONDITIONER ON)
+message("----------------------")
+# Set some plugins ON
 setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
-
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_COMPLIANT ON)
 setSofaOption(PLUGIN_EXTERNALBEHAVIORMODEL ON)
@@ -74,9 +82,7 @@ setSofaOption(PLUGIN_THMPGSPATIALHASHING ON)
 
 #setSofaOption(PLUGIN_VOLUMETRICRENDERING ON)
 
-setSofaOption(MODULE_SOFAEXPORTER ON)
-setSofaOption(MODULE_SOFASPARSESOLVER ON)
-setSofaOption(MODULE_SOFAPRECONDITIONER ON)
+message("----------------------")
 
 # Copy resources files (etc/, share/, examples/) when installing 
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
