@@ -49,17 +49,6 @@
 #include "WDoubleLineEdit.h"
 #include "QSofaStatWidget.h"
 #include "viewer/SofaViewer.h"
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
-
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
-
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
-
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
 
 #include <sofa/gui/BaseViewer.h>
 #include <SofaSimulationCommon/xml/XML.h>
@@ -787,7 +776,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
+    mSimulation = simulation::getSimulation()->load ( filename.c_str(), reload );
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
     {
@@ -817,12 +806,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     /// But we don't want that to happen each reload in interactive mode.
     if(!reload)
     {
-        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-        checker.addCheck(simulation::scenechecking::SceneCheckAPIChange::newSPtr());
-        checker.addCheck(simulation::scenechecking::SceneCheckDuplicatedName::newSPtr());
-        checker.addCheck(simulation::scenechecking::SceneCheckMissingRequiredPlugin::newSPtr());
-        checker.validate(mSimulation.get()) ;
-
         //Check the validity of the BBox
         const sofa::defaulttype::BoundingBox& nodeBBox = mSimulation.get()->getContext()->f_bbox.getValue();
         if(nodeBBox.isNegligeable())
