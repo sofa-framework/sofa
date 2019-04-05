@@ -40,7 +40,10 @@ set(EXTRA_FILES
     examples/README.md
     )
 
-add_subdirectory(SofaImplicitField_test)
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(SofaImplicitField_test)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFAIMPLICITFIELD")
