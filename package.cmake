@@ -1,25 +1,23 @@
 ######################
 # Wrapper macro to set boolean value to a variable
 macro(setSofaOption name value)
-    if(NOT ${name})
-        set(${name} "${value}" CACHE BOOL "" FORCE)
-    endif()
-    message("${name} ${value}")
+    set(${name} "${value}" CACHE BOOL "" FORCE)
+    message("${name} ${${name}}")
 endmacro()
 
 macro(setSofaPath name value)
     set(${name} "${value}" CACHE PATH "" FORCE)
-    message("${name} ${value}")
+    message("${name} ${${name}}")
 endmacro()
 
 macro(setSofaString name value)
     set(${name} "${value}" CACHE STRING "" FORCE)
-    message("${name} ${value}")
+    message("${name} ${${name}}")
 endmacro()
 
 macro(setSofaFilePath name value)
     set(${name} "${value}" CACHE FILEPATH "" FORCE)
-    message("${name} ${value}")
+    message("${name} ${${name}}")
 endmacro()
 ######################
 
@@ -30,11 +28,13 @@ setSofaOption(APPLICATION_MODELER OFF)
 
 setSofaOption(SOFA_USE_MASK OFF)
 
-setSofaOption(SOFA_BUILD_TESTS ON)
+setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 setSofaOption(SOFA_BUILD_METIS ON)
 
-# Set all plugins/modules OFF
+
+# Set all modules/plugins OFF
+message("----------------------")
 get_cmake_property(_variableNames VARIABLES)
 list (SORT _variableNames)
 foreach (_variableName ${_variableNames})
@@ -42,16 +42,23 @@ foreach (_variableName ${_variableNames})
         setSofaOption(${_variableName} OFF)
     endif()
 endforeach()
+message("----------------------")
 
-# Set some plugins/modules ON
+# Set some modules ON
+setSofaOption(MODULE_SOFAEXPORTER ON)
+setSofaOption(MODULE_SOFAHAPTICS ON)
+setSofaOption(MODULE_SOFASPARSESOLVER ON)
+setSofaOption(MODULE_SOFAPRECONDITIONER ON)
+message("----------------------")
+# Set some plugins ON
 setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_SOFADISTANCEGRID ON)
 setSofaOption(PLUGIN_SOFAIMPLICITFIELD ON)
 setSofaOption(PLUGIN_SOFAPYTHON ON)
 setSofaOption(PLUGIN_SOFAMISCCOLLISION ON)
-setSofaOption(MODULE_SOFASPARSESOLVER ON)
-setSofaOption(MODULE_SOFAPRECONDITIONER ON)
+
+message("----------------------")
 
 # Copy resources files (etc/, share/, examples/) when installing 
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
