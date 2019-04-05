@@ -255,7 +255,6 @@ void MeshTopology::TriangleUpdate::doUpdate()
     Triangle tr;
     unsigned int triangleIndex;
     unsigned int v[3],val;
-    const unsigned int trianglesInTetrahedronArray[4][3]= {{0,2,1}, {0,1,3}, {1,2,3}, {0,3,2}};
     /// create the m_edge array at the same time than it fills the m_trianglesInTetrahedron array
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
@@ -263,7 +262,7 @@ void MeshTopology::TriangleUpdate::doUpdate()
         for (TriangleID j=0; j<4; ++j)
         {
             for (PointID k=0; k<3; ++k)
-                v[k] = t[trianglesInTetrahedronArray[j][k]];
+                v[k] = t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][k]];
 
             // sort v such that v[0] is the smallest one
             while ((v[0]>v[1]) || (v[0]>v[2]))
