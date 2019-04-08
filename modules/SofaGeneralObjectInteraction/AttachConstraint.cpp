@@ -23,8 +23,6 @@
 #include <SofaGeneralObjectInteraction/AttachConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/Node.h>
-
 namespace sofa
 {
 
@@ -45,13 +43,6 @@ int AttachConstraintClass = core::RegisterObject("Attach given pair of particles
         .add< AttachConstraint<Rigid2Types> >()
         ;
 
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec2Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec1Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid2Types>;
-
-
 template <> SOFA_GENERAL_OBJECT_INTERACTION_API
 void AttachConstraint<Rigid3Types>::calcRestRotations()
 {
@@ -69,11 +60,18 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
             y.normalize();
             double alpha = acos(dp0[0]);
             q = Quat(y,alpha);
-            sout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0))<<sendl;
+            msg_info() << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0));
         }
         restRotations[i] = q;
     }
 }
+
+template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec3Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec2Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec1Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid3Types>;
+template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid2Types>;
+
 
 
 } // namespace projectiveconstraintset

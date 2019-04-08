@@ -316,10 +316,8 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
 
     if(out3.size()==1)
         return (int) (out3[0]);
-    else {
-        msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 size_t QuadSetTopologyContainer::getNumberOfQuads() const

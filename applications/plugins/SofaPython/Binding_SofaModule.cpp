@@ -236,6 +236,21 @@ static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * 
     return Py_BuildValue("i",0);
 }
 
+/// Check if a viewer is available
+static PyObject * Sofa_hasViewer(PyObject* self, PyObject* args)
+{
+    SOFA_UNUSED(self);
+    SOFA_UNUSED(args);
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        SP_MESSAGE_ERROR( "hasViewer: no GUI!" )
+        return Py_BuildValue("i",-1);
+    }
+    return Py_BuildValue("i", gui->getViewer() != nullptr);
+}
+
+
 /// set the viewer camera
 static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 {
@@ -904,6 +919,7 @@ SP_MODULE_METHOD(Sofa,sendGUIMessage)
 SP_MODULE_METHOD(Sofa,saveScreenshot)
 SP_MODULE_METHOD(Sofa,setViewerResolution)
 SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
+SP_MODULE_METHOD(Sofa,hasViewer)
 SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)

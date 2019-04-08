@@ -37,11 +37,11 @@ namespace component
 namespace misc
 {
 
-template class ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
-template class ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
-template class ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace misc

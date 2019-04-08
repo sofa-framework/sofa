@@ -188,9 +188,6 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
             result = es1[i];
     }
 
-    if (result == InvalidID)
-        msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
-
     return result;
 }
 

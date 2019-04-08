@@ -19,52 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#ifndef SOFA_HAPTICS_HAPTICS_H
+#define SOFA_HAPTICS_HAPTICS_H
 
-#include <sofa/simulation/Task.h>
+#include <sofa/helper/system/config.h>
 
+#ifdef SOFA_BUILD_HAPTICS
+#  define SOFA_SOFAHAPTICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAHAPTICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
-    namespace simulation
-    {
-        
-        using namespace sofa;
-        
-        
-        class StepTask : public CpuTask
-        {
-        public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, CpuTask::Status* pStatus);
-            
-            ~StepTask() override;
-            
-            MemoryAlloc run() final;
-            
-            
-        private:
-            
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
-            
-        };
-        
-        
-    } // namespace simulation
-    
-} // namespace sofa
-
-#endif // AnimationLoopTasks_h__
+#endif

@@ -94,7 +94,7 @@ public:
     virtual void bwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
     const char* getClassName() const override { return "VisualDrawVisitor"; }
 #ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void printInfo(const core::objectmodel::BaseContext*,bool )  {return;}
+    virtual void printInfo(const core::objectmodel::BaseContext*,bool ) override {return;}
 #endif
 };
 

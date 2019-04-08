@@ -96,19 +96,11 @@ protected:
 public:
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES    
     PointData< VecCoord > x; ///< position coordinates of the degrees of freedom
     PointData< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
     PointData< VecDeriv > f; ///< force vector of the degrees of freedom
-    Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
-    Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
-    Data< VecCoord > xfree; ///< free position coordinates of the degrees of freedom
-    Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
     PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
-    Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
-    Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
-    Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
-
 
     class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
     {
@@ -127,10 +119,6 @@ public:
         MechanicalObject<DataTypes>* obj;
     };
 
-
-
-
-
     //static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
 
     //static void PointDestroyFunction (int, void*, Coord&);
@@ -139,16 +127,18 @@ public:
     Data< VecCoord > x; ///< position coordinates of the degrees of freedom
     Data< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
     Data< VecDeriv > f; ///< force vector of the degrees of freedom
+    Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
+#endif
+
     Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
     Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
     Data< VecCoord > xfree; ///< free position coordinates of the degrees of freedom
     Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
-    Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
     Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
     Data< MatrixDeriv > m; ///< mappingJacobian applied to the degrees of freedom
     Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
     Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
-#endif
+
 
     defaulttype::MapMapSparseMatrix< Deriv > c2;
 
