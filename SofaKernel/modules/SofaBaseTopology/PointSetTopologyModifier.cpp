@@ -444,7 +444,6 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            std::cout << "PointSetTopologyModifier:update " << topoEngine->name << std::endl;
             topoEngine->update();
         }
     }

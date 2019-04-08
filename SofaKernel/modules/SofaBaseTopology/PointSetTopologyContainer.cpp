@@ -277,7 +277,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
             }
 
             sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-            if (data)
+            if (CHECK_TOPOLOGY && data)
             {
                 msg_warning() << "Data alone linked: " << data->getName();
             }

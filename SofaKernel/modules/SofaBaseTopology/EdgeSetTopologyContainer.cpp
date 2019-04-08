@@ -176,12 +176,7 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
 
     const sofa::helper::vector< EdgeID >& es1 = getEdgesAroundVertex(v1);
     if (es1.empty())
-    {
-        if(CHECK_TOPOLOGY)
-            msg_warning() << "Edge: " << v1 << " - " << v2 << " not found in EdgesAroundVertex. InvalidID returned;";
-
         return InvalidID;
-    }
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
