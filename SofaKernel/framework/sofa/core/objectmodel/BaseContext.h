@@ -168,7 +168,7 @@ public:
     class GetObjectsCallBack
     {
     public:
-        virtual ~GetObjectsCallBack();
+        ~GetObjectsCallBack();
         virtual void operator()(void* ptr) = 0;
     };
 
