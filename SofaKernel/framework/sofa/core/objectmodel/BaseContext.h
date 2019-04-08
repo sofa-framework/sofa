@@ -168,8 +168,7 @@ public:
     class GetObjectsCallBack
     {
     public:
-        GetObjectsCallBack();
-        virtual ~GetObjectsCallBack();
+      virtual ~GetObjectsCallBack() {}
         virtual void operator()(void* ptr) = 0;
     };
 
@@ -310,9 +309,12 @@ public:
     {
     public:
         Container* dest;
-        GetObjectsCallBackT(Container* d);
-        virtual ~GetObjectsCallBackT() override;
-        void operator()(void* ptr) override;
+        GetObjectsCallBackT(Container* d) : dest(d) {}
+        virtual ~GetObjectsCallBackT() override {}
+        void operator()(void* ptr) override
+	{
+	    dest->push_back(reinterpret_cast<T*>(ptr));
+	}
     };
 
     /// Generic list of objects access template wrapper, possibly searching up or down from the current context
@@ -432,29 +434,6 @@ public:
 } // namespace core
 
 } // namespace sofa
-
-namespace sofa
-{
-namespace core
-{
-namespace objectmodel
-{
-
-template<class T, class Container>
-BaseContext::GetObjectsCallBackT<T, Container>::GetObjectsCallBackT(Container* d) : dest(d) {}
-
-template<class T, class Container>
-BaseContext::GetObjectsCallBackT<T, Container>::~GetObjectsCallBackT() {}
-
-template<class T, class Container>
-void BaseContext::GetObjectsCallBackT<T, Container>::operator()(void* ptr)
-{
-    dest->push_back(reinterpret_cast<T*>(ptr));
-}
-
-}  // namespace sofa
-}  // namespace core
-}  // namespace objectmodel
 
 #endif
 

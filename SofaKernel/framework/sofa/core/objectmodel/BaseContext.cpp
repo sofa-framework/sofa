@@ -222,9 +222,6 @@ void BaseContext::notifyMoveSlave(core::objectmodel::BaseObject* /*previousMaste
 {
 }
 
-BaseContext::GetObjectsCallBack::GetObjectsCallBack() {}
-BaseContext::GetObjectsCallBack::~GetObjectsCallBack() {}
-
 } // namespace objectmodel
 
 } // namespace core
