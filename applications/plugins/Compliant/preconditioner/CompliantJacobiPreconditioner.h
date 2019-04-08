@@ -26,8 +26,8 @@ class SOFA_Compliant_API CompliantJacobiPreconditioner : public BasePrecondition
 
     CompliantJacobiPreconditioner();
 
-    virtual void compute( const AssembledSystem::rmat& H );
-    virtual void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v );
+    void compute( const AssembledSystem::rmat& H ) override;
+    void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v ) override;
 
   protected:
 

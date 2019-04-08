@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,15 +54,15 @@ public:
 protected:
     PointSetTopologyContainer(int nPoints = 0);
 
-    virtual ~PointSetTopologyContainer() {}
+    ~PointSetTopologyContainer() override {}
 public:
 
-    virtual void init() override;
+    void init() override;
 
     /// Procedural creation methods
     /// @{
-    virtual void clear() override;
-    virtual void addPoint(double px, double py, double pz) override;
+    void clear() override;
+    void addPoint(double px, double py, double pz) override;
     /// @}
 
 
@@ -86,19 +86,19 @@ public:
 
 
     /** \brief check if vertices in this topology have positions. */
-    virtual bool hasPos() const override;
+    bool hasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    virtual SReal getPX(int i) const override;
+    SReal getPX(int i) const override;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    virtual SReal getPY(int i) const override;
+    SReal getPY(int i) const override;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    virtual SReal getPZ(int i) const override;
+    SReal getPZ(int i) const override;
 
    	/** \brief Returns the type of the topology */
-   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
+   	sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
     
     /// @}
 
@@ -153,7 +153,7 @@ public:
 
 protected:
     /// \brief Function creating the data graph linked to d_point
-    virtual void updateTopologyEngineGraph() override;
+    void updateTopologyEngineGraph() override;
 
     /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyEngine *>& my_enginesList);
@@ -161,8 +161,8 @@ protected:
 
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setPointTopologyToDirty() {m_pointTopologyDirty = true;}
-    void cleanPointTopologyFromDirty() {m_pointTopologyDirty = false;}
+    void setPointTopologyToDirty();
+    void cleanPointTopologyFromDirty();
     const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
 
     /// \brief function to add a topologyEngine to the current list of engines.

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,7 +89,7 @@ public:
     //@}
 
 
-    virtual void resize()
+    void resize() override
     {
         if(!(this->mstate)) return;
 
@@ -110,7 +110,7 @@ public:
 
     /** @name forceField functions */
     //@{
-    virtual void init()
+    void init() override
     {
         if(!(this->mstate))
         {
@@ -123,7 +123,7 @@ public:
         Inherit::init();
     }
 
-    virtual void reinit()
+    void reinit() override
     {
 
         addForce(NULL, *this->mstate->write(core::VecDerivId::force()), *this->mstate->read(core::ConstVecCoordId::position()), *this->mstate->read(core::ConstVecDerivId::velocity()));
@@ -234,7 +234,7 @@ public:
         B.addToBaseMatrix( matrix, bFact, offset );
     }
 
-    void draw(const core::visual::VisualParams* /*vparams*/)
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
     //@}
@@ -254,7 +254,7 @@ public:
         return e;
     }
 
-    virtual SReal getPotentialEnergy( const unsigned int index ) const
+    SReal getPotentialEnergy( const unsigned int index ) const override
     {
         if(!this->mstate) return 0;
         helper::ReadAccessor<Data< VecCoord > >  x(*this->mstate->read(core::ConstVecCoordId::position()));
@@ -278,7 +278,7 @@ protected:
 
     }
 
-    virtual ~BaseMaterialForceFieldT()    {     }
+    ~BaseMaterialForceFieldT() override    {     }
 
     SparseMatrix material;
 

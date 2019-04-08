@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,7 +60,7 @@ class SOFA_HELPER_API RoutingMessageHandler : public MessageHandler
 {
 public:
     RoutingMessageHandler() ;
-    virtual ~RoutingMessageHandler() {}
+    ~RoutingMessageHandler() override {}
 
     /// All the message of the given class will be routed to this handler
     void setAFilter(FilterFunction,
@@ -70,7 +70,7 @@ public:
     void removeAllFilters() ;
 
     /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
+    void process(Message& m) override ;
 
 private:
     std::vector<std::pair<FilterFunction, MessageHandler*> > m_filters;

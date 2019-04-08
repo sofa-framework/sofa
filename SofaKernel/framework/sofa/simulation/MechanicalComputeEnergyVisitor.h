@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,30 +55,30 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeEnergyVisitor : public sofa::sim
 public:
     MechanicalComputeEnergyVisitor(const core::MechanicalParams* mparams);
 
-    ~MechanicalComputeEnergyVisitor();
+    ~MechanicalComputeEnergyVisitor() override;
 
     SReal getKineticEnergy();
 
     SReal getPotentialEnergy();
 
     /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
+    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Process the BaseForceField
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f);
+    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalComputeEnergyVisitor"; }
+    const char* getClassName() const override { return "MechanicalComputeEnergyVisitor"; }
 
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false )
+    void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false ) override
     {
         m_kineticEnergy = m_potentialEnergy = 0;
         sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setReadWriteVectors()
+    virtual void setReadWriteVectors() override
     {
     }
 #endif

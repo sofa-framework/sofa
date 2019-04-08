@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,7 +53,7 @@ namespace collision
 
 /// Base class for all mappers using SubsetMapping
 template < class TCollisionModel, class DataTypes >
-class SOFA_MESH_COLLISION_API SubsetContactMapper : public BaseContactMapper<DataTypes>
+class SubsetContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -72,82 +72,17 @@ public:
     int nbp;
     bool needInit;
 
-    SubsetContactMapper()
-        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0), needInit(false)
-    {
-    }
+    SubsetContactMapper();
 
-    void setCollisionModel(MCollisionModel* model)
-    {
-        this->model = model;
-    }
-
-    void cleanup();
+    void setCollisionModel(MCollisionModel* model);
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(int size)
-    {
-        if (mapping!=NULL)
-            mapping->clear(size);
-        if (outmodel!=NULL)
-            outmodel->resize(size);
-        nbp = 0;
-    }
-
-    int addPoint(const Coord& P, int index, Real&)
-    {
-        int i = nbp++;
-        if ((int)outmodel->getSize() <= i)
-            outmodel->resize(i+1);
-        if (mapping)
-        {
-            i = mapping->addPoint(index);
-            needInit = true;
-        }
-        else
-        {
-            helper::WriteAccessor<Data<VecCoord> > d_x = *outmodel->write(core::VecCoordId::position());
-            VecCoord& x = d_x.wref();
-            x[i] = P;
-        }
-        return i;
-    }
-
-    void update()
-    {
-        if (mapping!=NULL)
-        {
-            if (needInit)
-            {
-                mapping->init();
-                needInit = false;
-            }
-            core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
-        }
-    }
-
-    void updateXfree()
-    {
-        if (mapping!=NULL)
-        {
-            if (needInit)
-            {
-                mapping->init();
-                needInit = false;
-            }
-
-            core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
-        }
-    }
-
-    //double radius(const typename TCollisionModel::Element& /*e*/)
-    //{
-    //    return 0.0;
-    //}
+    void cleanup();
+    void resize(int size);
+    int addPoint(const Coord& P, int index, Real&);
+    void update();
+    void updateXfree();
 };
 
 } // namespace collision

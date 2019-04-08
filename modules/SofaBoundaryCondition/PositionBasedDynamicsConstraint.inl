@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,7 +67,7 @@ template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    if ((int)position.getValue().size() != (int)this->mstate->getSize())    serr << "Invalid target position vector size." << sendl;
+    if ((int)position.getValue().size() != (int)this->mstate->getSize())    msg_error() << "Invalid target position vector size." ;
 }
 
 
@@ -101,7 +101,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::Mec
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 	helper::ReadAccessor<DataVecDeriv> vel ( mparams, velocity );
 
-    if (vel.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
+    if (vel.size() != res.size()) 	{ msg_error() << "Invalid target position vector size." ;		return; }
     std::copy(vel.begin(),vel.end(),res.begin());
 }
 
@@ -112,7 +112,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
 	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
-    if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
+    if (tpos.size() != res.size()) 	{ msg_error() << "Invalid target position vector size." ;		return; }
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;

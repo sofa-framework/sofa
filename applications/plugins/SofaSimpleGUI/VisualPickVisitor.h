@@ -23,13 +23,13 @@ class VisualPickVisitor : public  ::sofa::simulation::VisualVisitor
 public:
     bool hasShader;
     VisualPickVisitor(core::visual::VisualParams* params);
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
     virtual void fwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
-    virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
-    virtual void processObject(simulation::Node* node, core::objectmodel::BaseObject* o);
+    void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) override;
+    void processObject(simulation::Node* node, core::objectmodel::BaseObject* o) override;
     virtual void bwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
-    virtual const char* getClassName() const { return "VisualPickVisitor"; }
+    const char* getClassName() const override { return "VisualPickVisitor"; }
 
     sofa::helper::vector<std::string> names; // names of the object displayed
 

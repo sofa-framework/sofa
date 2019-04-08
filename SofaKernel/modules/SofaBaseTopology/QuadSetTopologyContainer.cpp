@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -297,10 +297,8 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
 
     if(out3.size()==1)
         return (int) (out3[0]);
-    else {
-        msg_warning() << "Quad with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 size_t QuadSetTopologyContainer::getNumberOfQuads() const
@@ -815,6 +813,39 @@ void QuadSetTopologyContainer::clear()
     clearQuads();
 
     EdgeSetTopologyContainer::clear();
+}
+
+void QuadSetTopologyContainer::setQuadTopologyToDirty()
+{
+    // set this container to dirty
+    m_quadTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Quad Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
+{
+    m_quadTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Quad Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
 }
 
 void QuadSetTopologyContainer::updateTopologyEngineGraph()

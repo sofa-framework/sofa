@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,9 +69,7 @@ void AddFramePerformer<DataTypes>::start()
 
 template <class DataTypes>
 void AddFramePerformer<DataTypes>::execute()
-{
-    std::cout << "Frame2" << std::endl;
-};
+{};
 
 template <class DataTypes>
 AddFramePerformer<DataTypes>::AddFramePerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i)

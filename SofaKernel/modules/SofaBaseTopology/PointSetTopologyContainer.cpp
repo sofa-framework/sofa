@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -205,6 +205,39 @@ const sofa::helper::vector< PointSetTopologyContainer::PointID >& PointSetTopolo
     return points.getValue();
 }
 
+void PointSetTopologyContainer::setPointTopologyToDirty()
+{
+    // set this container to dirty
+    m_pointTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Point Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void PointSetTopologyContainer::cleanPointTopologyFromDirty()
+{
+    m_pointTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Point Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
+
 
 void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
 {
@@ -330,10 +363,9 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
     std::string name;
     std::stringstream tmpmsg;
     name = my_Data.getName();
-    tmpmsg << name << msgendl << msgendl;
+    tmpmsg << msgendl << "Data Name: " << name << msgendl;
 
     unsigned int cpt_engine = 0;
-
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
     {
@@ -363,8 +395,8 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
             cpt_engine++;
         }
         tmpmsg << msgendl ;
-        msg_info() << tmpmsg.str() ;
     }
+    msg_info() << tmpmsg.str() ;
 }
 
 

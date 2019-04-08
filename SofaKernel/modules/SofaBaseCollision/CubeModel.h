@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,7 @@ class CubeModel;
 class Cube : public core::TCollisionElementIterator<CubeModel>
 {
 public:
-    Cube(CubeModel* model=NULL, int index=0);
+    Cube(CubeModel* model=nullptr, int index=0);
 
     explicit Cube(const core::CollisionElementIterator& i);
 
@@ -93,9 +93,6 @@ public:
     };
 
 protected:
-
-    //class CubeSortPredicate;
-
     sofa::helper::vector<CubeData> elems;
     sofa::helper::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
 
@@ -107,7 +104,7 @@ public:
 protected:
     CubeModel();
 public:
-    virtual void resize(int size) override;
+    void resize(int size) override;
 
     void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
     void setLeafCube(int cubeIndex, int childIndex);
@@ -148,13 +145,13 @@ public:
       *the max depth. The division is made along an axis. This axis corresponds to the biggest dimension of the current bounding box.
       *Note : a bounding box is a Cube here.
       */
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const override;
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const override;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const override;
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const override;
 
-    virtual bool isLeaf( int index ) const override;
+    bool isLeaf( int index ) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

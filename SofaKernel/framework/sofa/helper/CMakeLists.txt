@@ -55,7 +55,7 @@ set(HEADER_FILES
     io/Image.h
     io/ImageDDS.h
     io/ImageRAW.h
-    io/MassSpringLoader.h
+    io/XspLoader.h
     io/Mesh.h
     io/MeshOBJ.h
     io/MeshGmsh.h
@@ -145,6 +145,7 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
+    StringUtils.cpp
     TagFactory.cpp
     UnitTest.cpp
     Utils.cpp
@@ -158,13 +159,13 @@ set(SOURCE_FILES
     io/Image.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
-    io/MassSpringLoader.cpp
     io/Mesh.cpp
     io/MeshOBJ.cpp
     io/MeshGmsh.cpp
     io/MeshTopologyLoader.cpp
     io/SphereLoader.cpp
     io/TriangleLoader.cpp
+    io/XspLoader.cpp
     io/bvh/BVHJoint.cpp
     io/bvh/BVHLoader.cpp
     io/bvh/BVHMotion.cpp
@@ -335,23 +336,24 @@ if(SOFA-EXTERNAL_FFMPEG)
                         "libswresample.a"
                         "/usr/lib/libiconv.dylib"
                         )
-                                                find_library(FOUNDATION CoreFoundation)
-                        find_library(VIDEO CoreVideo)
-                        find_library(VIDEO_DECOD_ACC VideoDecodeAcceleration)
-                        find_library(ICONV iconv)
-                        target_link_libraries(${PROJECT_NAME}  ${FFMPEG_LIBS} ${FOUNDATION} ${VIDEO} ${VIDEO_DECOD_ACC})
+                find_library(FOUNDATION CoreFoundation)
+                ind_library(VIDEO CoreVideo)
+                find_library(VIDEO_DECOD_ACC VideoDecodeAcceleration)
+                target_link_libraries(${PROJECT_NAME}  ${FFMPEG_LIBS} ${FOUNDATION} ${VIDEO} ${VIDEO_DECOD_ACC})
         elseif (UNIX)
             AddLinkerDependencies(avcodec)
-                    AddLinkerDependencies(avformat)
-                        AddLinkerDependencies(avutil)
-                        AddLinkerDependencies(swscale)
-                        AddLinkerDependencies(avdevice)
-                        AddLinkerDependencies(avfilter)
-                        AddLinkerDependencies(swresample)
-                endif()
+            AddLinkerDependencies(avformat)
+            AddLinkerDependencies(avutil)
+            AddLinkerDependencies(swscale)
+            AddLinkerDependencies(avdevice)
+            AddLinkerDependencies(avfilter)
+            AddLinkerDependencies(swresample)
+        endif()
 
 endif()
 if(APPLE)
+    find_library(ICONV iconv)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${ICONV})
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,26 +30,8 @@ namespace lifecycle
 {
 
 std::map<std::string, Deprecated> deprecatedComponents = {
-    // SofaBoundaryCondition
-    {"BuoyantForceField", Deprecated("v17.12", "v18.12")},
-    {"VaccumSphereForceField", Deprecated("v17.12", "v18.12")},
-
     // SofaMiscForceField
-    {"ForceMaskOff", Deprecated("v17.12", "v18.12")},
-    {"LineBendingSprings", Deprecated("v17.12", "v18.12")},
-    {"WashingMachineForceField", Deprecated("v17.12", "v18.12")},
     {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
-
-    // SofaMiscMapping
-    {"CatmullRomSplineMapping", Deprecated("v17.12", "v18.12")},
-    {"CenterPointMechanicalMapping", Deprecated("v17.12", "v18.12")},
-    {"CurveMapping", Deprecated("v17.12", "v18.12")},
-    {"ExternalInterpolationMapping", Deprecated("v17.12", "v18.12")},
-    {"ProjectionToLineMapping", Deprecated("v17.12", "v18.12")},
-    {"ProjectionToPlaneMapping", Deprecated("v17.12", "v18.12")},
-
-    // SofaMisc
-    {"ParallelCGLinearSolver", Deprecated("v17.12", "v18.12")},
 
     // SofaOpenglVisual
     {"OglCylinderModel", Deprecated("v17.12", "v18.12")},
@@ -57,16 +39,6 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     {"OglRenderingSRGB", Deprecated("v17.12", "v18.12")},
     {"OglLineAxis", Deprecated("v17.12", "v18.12")},
     {"OglSceneFrame", Deprecated("v17.12", "v18.12")},
-
-    // SofaUserInteraction
-    {"ArticulatedHierarchyBVHController", Deprecated("v17.12", "v18.12")},
-    {"ArticulatedHierarchyController", Deprecated("v17.12", "v18.12")},
-    {"DisabledContact", Deprecated("v17.12", "v18.12")},
-    {"EdgeSetController", Deprecated("v17.12", "v18.12")},
-    {"GraspingManager", Deprecated("v17.12", "v18.12")},
-    {"InterpolationController", Deprecated("v17.12", "v18.12")},
-    {"MechanicalStateControllerOmni", Deprecated("v17.12", "v18.12")},
-    {"NodeToggleController", Deprecated("v17.12", "v18.12")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
@@ -82,7 +54,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
 
-    /// Pluginized in #663
+    // Pluginized in #663
     {"ShewchukPCGLinearSolver", Pluginized("v18.06", "SofaPreconditioner")},
     {"JacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
     {"BlockJacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
@@ -90,11 +62,48 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"WarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
     {"PrecomputedWarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
 
-    /// Pluginized in #663
+    // Pluginized in #663
     {"PrecomputedLinearSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseCholeskySolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
+
+    /// SofaHaptics pluginzed in #945
+    {"NullForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
+    {"LCPForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
+
+    /***********************/
+    // REMOVED SINCE v18.12
+
+    // SofaBoundaryCondition
+    {"BuoyantForceField", Removed("v17.12", "v18.12")},
+    {"VaccumSphereForceField", Removed("v17.12", "v18.12")},
+
+    // SofaMiscForceField
+    {"ForceMaskOff", Removed("v17.12", "v18.12")},
+    {"LineBendingSprings", Removed("v17.12", "v18.12")},
+    {"WashingMachineForceField", Removed("v17.12", "v18.12")},
+
+    // SofaMiscMapping
+    {"CatmullRomSplineMapping", Removed("v17.12", "v18.12")},
+    {"CenterPointMechanicalMapping", Removed("v17.12", "v18.12")},
+    {"CurveMapping", Removed("v17.12", "v18.12")},
+    {"ExternalInterpolationMapping", Removed("v17.12", "v18.12")},
+    {"ProjectionToLineMapping", Removed("v17.12", "v18.12")},
+    {"ProjectionToPlaneMapping", Removed("v17.12", "v18.12")},
+
+    // SofaMisc
+    {"ParallelCGLinearSolver", Removed("v17.12", "v18.12")},
+
+    // SofaUserInteraction
+    {"ArticulatedHierarchyBVHController", Removed("v17.12", "v18.12")},
+    {"ArticulatedHierarchyController", Removed("v17.12", "v18.12")},
+    {"DisabledContact", Removed("v17.12", "v18.12")},
+    {"EdgeSetController", Removed("v17.12", "v18.12")},
+    {"GraspingManager", Removed("v17.12", "v18.12")},
+    {"InterpolationController", Removed("v17.12", "v18.12")},
+    {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
+    {"NodeToggleController", Removed("v17.12", "v18.12")},
 };
 
 

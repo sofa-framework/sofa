@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,14 +38,10 @@ using namespace sofa::defaulttype;
 
 
 int FixedRotationConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
-
         .add< FixedRotationConstraint<Rigid3Types> >()
-
         ;
 
 template class FixedRotationConstraint<Rigid3Types>;
-
-
 
 } // namespace projectiveconstraintset
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,8 +38,6 @@ namespace component
 
 namespace forcefield
 {
-
-
 
 template<class DataTypes>
 class OscillatingTorsionPressureForceField : public core::behavior::ForceField<DataTypes>
@@ -98,28 +96,11 @@ public:
     Data<Real> dmax;     ///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
 
-protected:
+    void init() override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
 
-    std::vector<Real> relMomentToApply;   // estimated share of moment to apply to each point
-    std::vector<bool> pointActive;        // true if moment is applied to specific point (surface)
-    std::vector<Coord> vecFromCenter;     // vector from rotation axis for all points
-    std::vector<Real> distFromCenter;     // norm of vecFromCenter
-    std::vector<Coord> momentDir;         // direction in which to apply a moment
-    std::vector<Coord> origVecFromCenter; // vector from rotation axis for all points in original state
-    std::vector<Coord> origCenter;        // center of rotation for original points
-    SReal rotationAngle;
-
-
-    OscillatingTorsionPressureForceField();
-    virtual ~OscillatingTorsionPressureForceField();
-
-public:
-    virtual void init() override;
-
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
-
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -135,46 +116,28 @@ public:
     SReal getRotationAngle() { return rotationAngle; }
 
 protected :
+    OscillatingTorsionPressureForceField();
+    ~OscillatingTorsionPressureForceField() override;
 
     void selectTrianglesAlongPlane();
-
     void selectTrianglesFromString();
-
     void initTriangleInformation();
+    bool isPointInPlane(Coord p);
+    Coord getVecFromRotAxis( const Coord &x );
+    Real getAngle( const Coord &v1, const Coord &v2 );
 
-    bool isPointInPlane(Coord p)
-    {
-        Real d=dot(p,axis.getValue());
-        if ((d>dmin.getValue())&& (d<dmax.getValue()))
-            return true;
-        else
-            return false;
-    }
-
-    Coord getVecFromRotAxis( const Coord &x )
-    {
-        Coord vecFromCenter = x - center.getValue();
-        Coord axisProj = axis.getValue() * dot( vecFromCenter, axis.getValue() ) + center.getValue();
-        return (x - axisProj);
-    }
-
-    Real getAngle( const Coord &v1, const Coord &v2 )
-    {
-        Real dp = dot( v1, v2 ) / (v1.norm()*v2.norm());
-        if (dp>1.0) dp=1.0; else if (dp<-1.0) dp=-1.0;
-        Real angle = acos( dp );
-        // check direction!
-        if (dot( axis.getValue(), v1.cross( v2 ) ) > 0) angle *= -1;
-        return angle;
-    }
-
+    std::vector<Real> relMomentToApply;   // estimated share of moment to apply to each point
+    std::vector<bool> pointActive;        // true if moment is applied to specific point (surface)
+    std::vector<Coord> vecFromCenter;     // vector from rotation axis for all points
+    std::vector<Real> distFromCenter;     // norm of vecFromCenter
+    std::vector<Coord> momentDir;         // direction in which to apply a moment
+    std::vector<Coord> origVecFromCenter; // vector from rotation axis for all points in original state
+    std::vector<Coord> origCenter;        // center of rotation for original points
+    SReal rotationAngle;
 };
-
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 extern template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3Types>;
-
-
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 
 } // namespace forcefield

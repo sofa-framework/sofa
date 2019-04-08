@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -174,9 +174,6 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
         if ((e[0] == v2) || (e[1] == v2))
             result = es1[i];
     }
-
-    if (result == InvalidID)
-        msg_warning() << "Edge with indices: [" << v1 << "; " << v2 << "] not found.";
 
     return result;
 }
@@ -577,7 +574,37 @@ void EdgeSetTopologyContainer::clear()
 //    PointSetTopologyContainer::clear();
 }
 
+void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
+{
+    // set this container to dirty
+    m_edgeTopologyDirty = true;
 
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Edge Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
+{
+    m_edgeTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Edge Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 {

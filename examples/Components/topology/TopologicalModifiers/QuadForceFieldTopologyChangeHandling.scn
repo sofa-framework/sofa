@@ -1,63 +1,61 @@
+<?xml version="1.0" ?>
 <!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
 <Node name="root" gravity="0 -9 1" dt="0.01">
-    <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline name="default0" verbose="0" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual showForceFields" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="default1" response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <TreeCollisionGroupManager name="default2" />
-
-    <Node name="QuadularSprings">
+    
+    <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+    <Node name="QuadularBendingSprings">
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <MechanicalObject src="@grid" topology="@grid"/>
-	<include href="Objects/QuadSetTopology.xml" src="@grid" />
-        <UniformMass totalMass="100" />
-<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
+        
+        <MechanicalObject src="@../grid"/>
+        <include href="Objects/QuadSetTopology.xml" src="@../grid" />
+        <DiagonalMass massDensity="1.0" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <FixedConstraint name="FixedConstraint" indices="0 19" />
-
+        
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-            <TriangleSet />
-
-	    <Node name="Visu">
-		<OglModel name="Visual" color="green" />
-		<IdentityMapping input="@.." output="@Visual" />
-	    </Node>
         </Node>
 
-	<TopologicalChangeProcessor listening="1" filename="RemovingQuadProcess.txt" />
+        <Node name="Visu">
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+
+        <TopologicalChangeProcessor listening="1" filename="RemovingQuadProcess.txt" />
     </Node>
 
 
-    <Node name="QuadularSprings">
+    <Node name="RegularGridSprings">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="14" xmax="38" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <MechanicalObject src="@grid" topology="@grid"/>
-	<include href="Objects/QuadSetTopology.xml" src="@grid" />
-        <UniformMass totalMass="100" />
-	<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
+        <MechanicalObject src="@../grid" translation="30 0 0"/>
+        <include href="Objects/QuadSetTopology.xml" src="@../grid" />
+        <DiagonalMass massDensity="1.0" />
+        
+        <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
         <FixedConstraint name="FixedConstraint" indices="0 19" />
 
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-            <TriangleSet />
+            
 
-	    <Node name="Visu">
-		<OglModel name="Visual" color="green" />
-		<IdentityMapping input="@.." output="@Visual" />
-	    </Node>
+            <Node name="Visu">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@.." output="@Visual" />
+            </Node>
         </Node>
 
-	<TopologicalChangeProcessor listening="1" filename="RemovingQuadProcess.txt" />
+        <TopologicalChangeProcessor listening="1" filename="RemovingQuadProcess.txt" />
     </Node>
-
 
 </Node>

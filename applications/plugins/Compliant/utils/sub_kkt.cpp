@@ -154,7 +154,7 @@ struct sub_kkt::helper {
             }
             
             // C
-            real* diag = 0;
+            real* diag = nullptr;
             for(iterator itC(sys.C, i); itC; ++itC) {
 
                 const unsigned sub_col = primal_sub + itC.col();

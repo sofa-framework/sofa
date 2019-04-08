@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,24 +43,12 @@ class SOFA_BASE_COLLISION_API DefaultContactManager : public core::collision::Co
 public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
 
-protected:
-    typedef sofa::helper::map_ptr_stable_compare<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
-    ContactMap contactMap;
-
-public:
     Data<sofa::helper::OptionsGroup> response; ///< contact response class
     Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
-protected:
-    DefaultContactManager();
-    ~DefaultContactManager();
-    void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact);
-
-public:
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
     void createContacts(const DetectionOutputMap& outputs) override;
-
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -93,38 +81,28 @@ public:
      * Contacts can be attached to a deleted node and their deletion is a problem for the pipeline.
      * @param c is the list of deleted contacts.
      */
-    virtual void removeContacts(const ContactVector &/*c*/) override;
-    void setDefaultResponseType(const std::string &responseT)
-    {
-        if (response.getValue().size() == 0)
-        {
-            helper::vector<std::string> listResponse(1,responseT);
+    void removeContacts(const ContactVector &/*c*/) override;
 
-            sofa::helper::OptionsGroup responseOptions(listResponse);
-            response.setValue(responseOptions);
-        }
-        else
-        {
-            sofa::helper::OptionsGroup* options = response.beginEdit();
-
-            options->setSelectedItem(responseT);
-            response.endEdit();
-        }
-    }
+    void setDefaultResponseType(const std::string &responseT);
 
     std::string getDefaultResponseType() const { return response.getValue().getSelectedItem(); }
 
 protected:
-    static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);
+    typedef sofa::helper::map_ptr_stable_compare<std::pair<core::CollisionModel*,
+    core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
 
+    DefaultContactManager();
+    ~DefaultContactManager() override;
+
+    void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2,
+                        core::collision::Contact::SPtr contact);
+
+    ContactMap contactMap;
     std::map<Instance,ContactMap> storedContactMap;
 
-    virtual void changeInstance(Instance inst) override
-    {
-        core::collision::ContactManager::changeInstance(inst);
-        storedContactMap[instance].swap(contactMap);
-        contactMap.swap(storedContactMap[inst]);
-    }
+    void changeInstance(Instance inst) override ;
+
+    static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);
 
     // count failure messages, so we don't continuously repeat them
     std::map<std::pair<std::string,std::pair<std::string,std::string> >, int> errorMsgCount;

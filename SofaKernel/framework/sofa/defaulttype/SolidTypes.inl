@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,15 +42,6 @@ template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector( const Vec& l, const Vec& f ):lineVec(l),freeVec(f)
 {}
 
-/*
-template<class R>
-SolidTypes<R>::SpatialVector::SpatialVector(const SolidTypes<R>::Transform &DTrans)
-{
-    freeVec = DTrans.getOrigin();
-    lineVec = DTrans.getOrientation().toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
-}
-*/
-
 template<class R>
 void SolidTypes<R>::SpatialVector::clear()
 {
@@ -64,20 +55,7 @@ typename SolidTypes<R>::SpatialVector& SolidTypes<R>::SpatialVector::operator +=
     freeVec += v.freeVec;
     return *this;
 }
-/*
-template<class R>
-typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator * ( Real a ) const
-{
-        return SpatialVector( lineVec *a, freeVec * a);
-}
 
-template<class R>
-typename SolidTypes<R>::SpatialVector& SolidTypes<R>::SpatialVector::operator *= ( Real a )
-{
-   lineVec *=a; freeVec *= a;
-        return *this;
-}
-*/
 template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator + ( const SpatialVector& v ) const
 {
@@ -100,7 +78,6 @@ typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator - (
 template<class R>
 typename SolidTypes<R>::Real SolidTypes<R>::SpatialVector::operator * ( const SpatialVector& v ) const
 {
-    //msg_info()<<" SolidTypes<R>::SpatialVector: "<<*this<<" * "<<v<<" = "<< lineVec * v.freeVec + freeVec * v.lineVec<<std::endl;
     return lineVec * v.freeVec + freeVec * v.lineVec;
 }
 
@@ -158,14 +135,6 @@ void SolidTypes<R>::Transform::set
 }
 
 /// Define given the origin of the child wrt the parent and the orientation of the child wrt the parent (i.e. standard way)
-// template<class R>
-//         typename SolidTypes<R>::Transform  SolidTypes<R>::Transform::inParent( const Vec& t, const Rot& q )
-// {
-//     Transform f;
-//     f.setInParent( t, q );
-//     return f;
-// }
-
 template<class R>
 typename SolidTypes<R>::Transform SolidTypes<R>::Transform::identity()
 {
@@ -176,10 +145,8 @@ typename SolidTypes<R>::Transform SolidTypes<R>::Transform::identity()
 template<class R>
 SolidTypes<R>::Transform::Transform( const SpatialVector& v )
 {
-    //origin_ = v.freeVec;
     orientation_ = Rot::createFromRotationVector( v.lineVec );
     origin_ = - orientation_.inverseRotate( v.freeVec );
-    //msg_info()<<"SolidTypes<R>::Transform::Transform( const SpatialVector& v ), v = "<<v<<", this = "<<*this<<std::endl;
 }
 
 template<class R>
@@ -306,7 +273,6 @@ void SolidTypes<R>::Transform::clear()
 template<class R>
 typename SolidTypes<R>::Transform SolidTypes<R>::Transform::operator * (const Transform& f2) const
 {
-    //msg_info()<<"SolidTypes<R>::Transform::operator *, orientation = "<<orientation_<<", f2.orientation = "<<f2.getOrientation()<<", product = "<<orientation_ * f2.getOrientation()<<std::endl;
     return Transform(  orientation_ * f2.getOrientation(), f2.getOriginOfParentInChild() + f2.getOrientation().inverseRotate(origin_)) ;
 }
 
@@ -551,7 +517,6 @@ typename SolidTypes<R>::Mat3x3 SolidTypes<R>::crossM( const typename SolidTypes<
 template<class R>
 typename SolidTypes<R>::ArticulatedInertia  SolidTypes<R>::dyad( const SpatialVector& u, const SpatialVector& v )
 {
-    //return ArticulatedInertia(dyad(u.lineVec, v.freeVec), dyad(u.freeVec, v.freeVec),  dyad(u.freeVec, v.lineVec));
     return ArticulatedInertia(dyad(u.lineVec, v.lineVec), dyad(u.freeVec, v.lineVec),  dyad(u.freeVec, v.freeVec));
 }
 

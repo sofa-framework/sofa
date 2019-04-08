@@ -26,7 +26,7 @@ find_package(TIFF QUIET)
 find_package(PNG QUIET)
 
 ### Configure Paths according to detected packages
-if(TIFF_FOUND)
+if(TIFF_FOUND AND NOT SOFA_BUILD_RELEASE_PACKAGE)
     message(STATUS "CImgPlugin: TIFF Image Format enabled")
     get_filename_component(TIFF_LIB_DIRS ${TIFF_LIBRARIES} PATH)
     list(APPEND CIMG_CFLAGS ${CIMG_TIFF_CCFLAGS} -DCIMGPLUGIN_HAVE_TIFF -Dcimg_use_tiff)
@@ -102,7 +102,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${${PROJECT_NAME}_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR ${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

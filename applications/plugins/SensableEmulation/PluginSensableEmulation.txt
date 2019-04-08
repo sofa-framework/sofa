@@ -1,19 +1,10 @@
-
 ************************************
-*         PluginSensable.txt        *
+*         SensableEmulation.txt    *
 ************************************
-
-
-
 AUTHOR :
  - C.Duriez
 
-
-
-
 LICENCE :
  - None
-
-
 
 OTHER COMMENTS :

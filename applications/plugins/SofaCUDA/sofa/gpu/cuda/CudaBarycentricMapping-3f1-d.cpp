@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,8 +44,8 @@ using namespace sofa::gpu::cuda;
 
 
 
-template class BarycentricMapping< Vec3Types, CudaVec3f1Types>;
-template class BarycentricMapping< CudaVec3f1Types, Vec3Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, Vec3Types>;
 
 
 } // namespace mapping

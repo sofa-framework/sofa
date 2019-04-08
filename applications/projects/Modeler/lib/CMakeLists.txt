@@ -37,7 +37,7 @@ set(SOURCE_FILES
 
 set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
 
-find_package(Qt5 COMPONENTS Core QUIET)
+find_package(Qt5 COMPONENTS Core REQUIRED)
 
 if(Qt5Core_FOUND)
     message("Modeler library: Using Qt5")

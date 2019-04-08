@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,13 +59,13 @@ protected:
 
     ExtrudeEdgesAndGenerateQuads();
 
-    virtual ~ExtrudeEdgesAndGenerateQuads() {}
+    ~ExtrudeEdgesAndGenerateQuads() override {}
 public:
 
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void doUpdate() override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void doUpdate() override;
 
     virtual std::string getTemplateName() const override
     {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,11 +37,11 @@ namespace component
 namespace misc
 {
 
-template class ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
-template class ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
-template class ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace misc

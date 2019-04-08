@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,10 +65,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
     using Inherit::d_map;
 
     using Inherit::computeHashTable;
-    using Inherit::getHashIndexFromCoord;
-    using Inherit::getHashIndexFromIndices;
     using Inherit::getGridIndices;
-    using Inherit::addToHashTable;
     using Inherit::initHashing;
     using Inherit::init;
 
@@ -76,7 +73,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
     typename Out::VecCoord m_out;
     TriangleSetTopologyContainer::SPtr m_topology;
 
-    void SetUp()
+    void SetUp() override
     {
         m_in.push_back(Vector3(0.5, 1.5, 0.0));
         m_in.push_back(Vector3(1.5, 0.0, 2.5));
@@ -130,25 +127,6 @@ struct BarycentricMapperTriangleSetTopologyTest :  public Test, public Barycentr
 
         EXPECT_EQ(m_convFactor,1./m_gridCellSize);
     }
-
-    void addToHashTable_test()
-    {
-        m_hashTableSize = 1;
-        m_hashTable.resize(m_hashTableSize);
-        m_hashTable[0].resize(2);
-
-        addToHashTable(0, 12);
-        EXPECT_EQ(m_hashTable[0].size(), 3);
-        EXPECT_EQ(m_hashTable[0][1], 0);
-        EXPECT_EQ(m_hashTable[0][2], 12);
-
-        addToHashTable(1, 12);
-        EXPECT_EQ(m_hashTable[0].size(), 3);
-
-        addToHashTable(-1, 12);
-        EXPECT_EQ(m_hashTable[0].size(), 3);
-    }
-
 };
 
 
@@ -164,15 +142,5 @@ TEST_F(BarycentricMapperTriangleSetTopologyTest_d, initHashing)
 {
     initHashing_test();
 }
-
-TEST_F(BarycentricMapperTriangleSetTopologyTest_d, addToHashTable)
-{
-    addToHashTable_test();
-}
-
-/*TEST_F(BarycentricMapperTriangleSetTopologyTest_d, scene)
-{
-    EXPECT_NO_THROW(scene_test());
-}*/
 
 

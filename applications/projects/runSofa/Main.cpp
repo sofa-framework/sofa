@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -43,6 +43,9 @@ using std::vector;
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <SofaGraphComponent/SceneCheckerListener.h>
+using sofa::simulation::scenechecking::SceneCheckerListener;
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
@@ -151,16 +154,20 @@ void addGUIParameters(ArgumentParser* argumentParser)
 int main(int argc, char** argv)
 {
     // Add resources dir to GuiDataRepository
-    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
-    const std::string sofaIniFilePath = etcDir + "/runSofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    const std::string runSofaIniFilePath = Utils::getSofaPathTo("/etc/runSofa.ini");
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(runSofaIniFilePath);
     if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
     {
-        std::string iniFileValue = iniFileValues["RESOURCES_DIR"];
-        if (!FileSystem::isAbsolute(iniFileValue))
-            iniFileValue = etcDir + "/" + iniFileValue;
-        sofa::gui::GuiDataRepository.addFirstPath(iniFileValue);
+        std::string dir = iniFileValues["RESOURCES_DIR"];
+        dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
+        if(FileSystem::isDirectory(dir))
+        {
+            sofa::gui::GuiDataRepository.addFirstPath(dir);
+        }
     }
+
+    // Force add plugins dir to PluginRepository (even if not existing)
+    PluginRepository.addFirstPath( Utils::getSofaPathPrefix()+"/plugins" );
 
     sofa::helper::BackTrace::autodump();
 
@@ -197,6 +204,7 @@ int main(int argc, char** argv)
     bool        temporaryFile = false;
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
+    bool        noSceneCheck = false;
     unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
@@ -237,6 +245,7 @@ int main(int argc, char** argv)
     argParser->addArgument(po::value<std::string>(&gui)->default_value(""),                                         "gui,g", gui_help.c_str());
     argParser->addArgument(po::value<std::vector<std::string>>(&plugins),                                           "load,l", "load given plugins");
     argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true),         "noautoload", "disable plugins autoloading");
+    argParser->addArgument(po::value<bool>(&noSceneCheck)->default_value(false)->implicit_value(true),              "noscenecheck", "disable scene checking for each scene loading");
 
     // example of an option using lambda function which ensure the value passed is > 0
     argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1)->notifier([](unsigned int value)
@@ -344,10 +353,9 @@ int main(int argc, char** argv)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     // Output FileRepositories
-    msg_info("runSofa") << "PluginRepository paths:";
-    PluginRepository.print();
-    msg_info("runSofa") << "DataRepository paths:";
-    DataRepository.print();
+    msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
+    msg_info("runSofa") << "DataRepository paths = " << DataRepository.getPathsJoined();
+    msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
@@ -359,18 +367,17 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    const std::string& pluginDir = Utils::getPluginDirectory();
-    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
-        if (PluginRepository.findFile(configPluginPath))
+        if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
-        else if (PluginRepository.findFile(defaultConfigPluginPath))
+        else if (PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
@@ -402,11 +409,17 @@ int main(int argc, char** argv)
     }
 
 
-    if (int err=GUIManager::createGUI(NULL))
+    if (int err=GUIManager::createGUI(nullptr))
         return err;
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     GUIManager::SetDimension(width, height);
+
+    // Create and register the SceneCheckerListener before scene loading
+    if(!noSceneCheck)
+    {
+        sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
+    }
 
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
     if( !groot )

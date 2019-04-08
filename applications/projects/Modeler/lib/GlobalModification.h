@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -52,7 +52,7 @@ class GlobalModification : public QWidget
 public:
     typedef helper::vector< sofa::core::objectmodel::Base* > InternalStorage;
     GlobalModification(const InternalStorage &c, GraphHistoryManager* historyManager);
-    ~GlobalModification();
+    ~GlobalModification() override;
 public slots:
     void applyGlobalModification();
     void useAliases(bool);

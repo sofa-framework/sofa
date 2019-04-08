@@ -18,17 +18,17 @@ class SOFA_Compliant_API PreconditionedCgSolver : public CgSolver, public Precon
   public:
     SOFA_CLASS(PreconditionedCgSolver, CgSolver);
 
-    virtual void init();
+    void init() override;
 
   protected:
 
 	
-	virtual void solve_kkt(vec& x,
+	void solve_kkt(vec& x,
 	                       const system_type& system,
 	                       const vec& rhs,
-						   real damping) const;
+						   real damping) const override;
 
-    const char* method() const;
+    const char* method() const override;
 };
 
 

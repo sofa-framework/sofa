@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,48 +26,66 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::FileRepository;
 
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace misc
 {
 
-/** Add a new repository path at startup
-*/
-class AddResourceRepository: public sofa::core::objectmodel::BaseObject
+
+class SOFA_MISC_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
 {
-
 public:
-    SOFA_CLASS(AddResourceRepository, sofa::core::objectmodel::BaseObject);
-
-    typedef sofa::core::objectmodel::BaseObject Inherit;
+    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
 
 protected:
-    /** Default constructor
-    */
-    AddResourceRepository();
-    virtual ~AddResourceRepository();
+    BaseAddResourceRepository();
+    ~BaseAddResourceRepository() override;
+
+    FileRepository* m_repository;
+
 public:
     //cannot be a DataFilename
     Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
     void cleanup() override;
+
 private:
     std::string m_currentAddedPath;
 
-
+    virtual FileRepository* getFileRepository() = 0;
 };
 
+
+/// Add a new path to DataRepository
+class AddDataRepository: public BaseAddResourceRepository
+{
+public:
+    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
+
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
+};
+
+
+/// Add a new path to PluginRepository
+class AddPluginRepository: public BaseAddResourceRepository
+{
+public:
+    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
+
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
+};
+
+
 } // namespace misc
-
 } // namespace component
-
 } // namespace sofa
 
 #endif // SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_H

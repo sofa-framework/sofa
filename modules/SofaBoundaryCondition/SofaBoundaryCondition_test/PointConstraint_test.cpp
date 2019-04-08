@@ -1,7 +1,7 @@
 
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,21 +44,6 @@ void createUniformMass(simulation::Node::SPtr node, component::container::Mechan
 {
     node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<DataTypes, typename DataTypes::Real> >());
 }
-
-//template<>
-//void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid3Types>& /*dofs*/)
-//{
-//    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> >());
-//}
-
-//template<>
-//void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid2Types>& /*dofs*/)
-//{
-//    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass> >());
-//}
-
-
-
 
 template <typename _DataTypes>
 struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>

@@ -56,31 +56,6 @@ list(APPEND SOURCE_FILES
     VoidMapping.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        CatmullRomSplineMapping.h
-        CatmullRomSplineMapping.inl
-        CenterPointMechanicalMapping.h
-        CenterPointMechanicalMapping.inl
-        CurveMapping.h
-        CurveMapping.inl
-        ExternalInterpolationMapping.h
-        ExternalInterpolationMapping.inl
-        ProjectionToLineMapping.h
-        ProjectionToLineMapping.inl
-        ProjectionToPlaneMapping.h
-        ProjectionToPlaneMapping.inl
-        )
-    list(APPEND SOURCE_FILES
-        CatmullRomSplineMapping.cpp
-        CenterPointMechanicalMapping.cpp
-        CurveMapping.cpp
-        ExternalInterpolationMapping.cpp
-        ProjectionToLineMapping.cpp
-        ProjectionToPlaneMapping.cpp
-        )
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid)
 

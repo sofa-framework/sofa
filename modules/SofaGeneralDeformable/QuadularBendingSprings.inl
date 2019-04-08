@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -803,28 +803,16 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
             if (external)
             {
                 if (d1<edgeInf[i].restlength2*0.9999)
-                {
                     colors.push_back(red_color);
-                    colors.push_back(red_color);
-                }
                 else
-                {
                     colors.push_back(green_color);
-                    colors.push_back(green_color);
-                }
             }
             else
             {
                 if (d1<edgeInf[i].restlength1*0.9999)
-                {
                     colors.push_back(color1);
-                    colors.push_back(color1);
-                }
                 else
-                {
                     colors.push_back(color2);
-                    colors.push_back(color2);
-                }
             }
 
             vertices.push_back( x[edgeInf[i].m1] );
@@ -834,28 +822,16 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
             if (external)
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
-                {
                     colors.push_back(red_color);
-                    colors.push_back(red_color);
-                }
                 else
-                {
                     colors.push_back(green_color);
-                    colors.push_back(green_color);
-                }
             }
             else
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
-                {
                     colors.push_back(color1);
-                    colors.push_back(color1);
-                }
                 else
-                {
                     colors.push_back(color2);
-                    colors.push_back(color2);
-                }
             }
 
             vertices.push_back( x[edgeInf[i].m3] );

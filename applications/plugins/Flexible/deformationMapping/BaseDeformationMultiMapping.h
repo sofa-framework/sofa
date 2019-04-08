@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -215,9 +215,9 @@ public:
 
     //@}
 
-    virtual size_t getFromSize1() const { return this->fromModels1[0]->getSize(); }
-    virtual size_t getFromSize2() const { return this->fromModels2[0]->getSize(); }
-    virtual size_t getToSize()  const { return this->toModel->getSize(); }
+    size_t getFromSize1() const override { return this->fromModels1[0]->getSize(); }
+    size_t getFromSize2() const override { return this->fromModels2[0]->getSize(); }
+    size_t getToSize()  const override { return this->toModel->getSize(); }
 
 
     /** @name PointMapper functions */
@@ -246,7 +246,7 @@ public:
 
 protected:
     BaseDeformationMultiMappingT ();
-    virtual ~BaseDeformationMultiMappingT()     { }
+    ~BaseDeformationMultiMappingT() override     { }
 
     Data<VecCoord >    f_pos0; ///< initial spatial positions of children
 

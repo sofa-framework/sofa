@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,14 +21,14 @@
 ******************************************************************************/
 #include <string>
 #include <typeinfo>
-#include <stdlib.h>
+#include <cstdlib>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <SofaSimulationCommon/xml/ElementNameHelper.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
-#include <string.h>
+#include <cstring>
 
 #include <sofa/helper/logging/Message.h>
 

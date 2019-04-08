@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,12 +21,10 @@
 ******************************************************************************/
 // Author: François Faure, INRIA-UJF, (C) 2006
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
+
 #include <SofaRigid/JointSpringForceField.inl>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
 
 
 namespace sofa

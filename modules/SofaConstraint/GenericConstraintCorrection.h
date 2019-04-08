@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,48 +37,37 @@ namespace component
 namespace constraintset
 {
 
-class GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
+class SOFA_CONSTRAINT_API GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
 {
 public:
     SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
 
-protected:
-    GenericConstraintCorrection();
-    virtual ~GenericConstraintCorrection();
+    void bwdInit() override;
+    void cleanup() override;
+    void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 
-public:
-    virtual void bwdInit() override;
+    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
 
-    virtual void cleanup() override;
+    void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
-    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
-    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
-private:
-    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
+    void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
 
-public:
+    void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
-    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
+    void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
-    virtual void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
+    void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
-    virtual void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void rebuildSystem(double massFactor, double forceFactor) override;
 
-    virtual void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void applyContactForce(const defaulttype::BaseVector *f) override;
 
-    virtual void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
+    void resetContactForce() override;
 
-    virtual void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
-
-    virtual void rebuildSystem(double massFactor, double forceFactor) override;
-
-    virtual void applyContactForce(const defaulttype::BaseVector *f) override;
-
-    virtual void resetContactForce() override;
-
-    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
+    void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
     Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver
@@ -92,6 +81,10 @@ public:
     }
 
 protected:
+    GenericConstraintCorrection();
+    ~GenericConstraintCorrection() override;
+
+    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
     void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
                                core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 
@@ -108,14 +108,14 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
-
     this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
 
-    if (_topology->getNbTetrahedra()==0)
+    if (_topology == NULL)
     {
-        serr << "ERROR(TetrahedralCorotationalFEMForceField): object must have a Tetrahedral Set Topology."<<sendl;
+        msg_error() << "No topology component found. This FEM needs to rely on a Tetrahedral Topology.";
+        this->m_componentstate = core::objectmodel::ComponentState::Invalid;
         return;
     }
 

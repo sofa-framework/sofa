@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,6 +44,7 @@
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/Mapping.inl>
 #include <fstream>
 
 namespace sofa
@@ -58,16 +59,16 @@ namespace collision
 using namespace sofa::gpu::cuda;
 
 
-template class MouseInteractor<CudaVec3fTypes>;
-template class TComponentMouseInteraction< CudaVec3fTypes >;
-template class AttachBodyPerformer< CudaVec3fTypes >;
-template class FixParticlePerformer< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class MouseInteractor<CudaVec3dTypes>;
-template class TComponentMouseInteraction< CudaVec3dTypes >;
-template class AttachBodyPerformer< CudaVec3dTypes >;
-template class FixParticlePerformer< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 #endif
 
 ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);

@@ -7,7 +7,7 @@ else()
     set(RC_FILES "sofa.rc")
 endif()
 
-find_package(Qt5 COMPONENTS Core QUIET)
+find_package(Qt5 COMPONENTS Core REQUIRED)
 
 if(Qt5Core_FOUND)
     message("Modeler executable: Using Qt5")

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,11 +46,11 @@ public:
     /// Constructor
     KeypressedEvent( char );
     /// Destructor
-    ~KeypressedEvent();
+    ~KeypressedEvent() override;
     /// Return the key pressed
     char getKey() const;
 
-    virtual const char* getClassName() const { return "KeypressedEvent"; }
+    const char* getClassName() const override { return "KeypressedEvent"; }
 protected:
     /// Store the key
     char m_char;

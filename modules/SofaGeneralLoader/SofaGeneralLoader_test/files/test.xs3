@@ -1,0 +1,14 @@
+Xsp 3.0
+numm 6
+nums 5
+mass 1 s 0 0 0 0 0 0 0.1 0
+mass 2 s 1 0 0 0 0 0 0.1 0
+mass 3 s 2 0 0 0 0 0 0.1 0
+mass 4 s 3 0 0 0 0 0 0.1 0
+mass 5 s 4 0 0 0 0 0 0.1 0
+mass 6 s 5 0 0 0 0 0 0.1 0
+lspg 1 1 2 100 1 1
+lspg 2 2 3 100 1 1
+lspg 3 3 4 100 1 1
+lspg 4 4 5 100 1 1
+lspg 5 5 6 100 1 1

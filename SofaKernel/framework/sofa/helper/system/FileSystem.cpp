@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -303,13 +303,15 @@ bool FileSystem::isFile(const std::string &path)
 
 std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
 {
-    std::string str = path;
-    size_t backSlashPos = str.find('\\');
-    while(backSlashPos != std::string::npos)
-    {
-        str[backSlashPos] = '/';
-        backSlashPos = str.find("\\");
-    }
+    std::string str(path);
+    std::replace(str.begin(), str.end(), '\\', '/');
+    return str;
+}
+
+std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
+{
+    std::string str(path);
+    std::replace(str.begin(), str.end(), '/', '\\');
     return str;
 }
 
@@ -328,6 +330,31 @@ std::string FileSystem::removeExtraSlashes(const std::string& path)
         str.replace(pos, 2, "/");
         pos = str.find("//");
     }
+
+    pos = str.find("/./");
+    while(pos != std::string::npos) {
+        str.replace(pos, 3, "/");
+        pos = str.find("/./");
+    }
+
+    return str;
+}
+
+std::string FileSystem::removeExtraBackSlashes(const std::string& path)
+{
+    std::string str = path;
+    size_t pos = str.find("\\\\");
+    while(pos != std::string::npos) {
+        str.replace(pos, 2, "\\");
+        pos = str.find("\\\\");
+    }
+
+    pos = str.find("\\.\\");
+    while(pos != std::string::npos) {
+        str.replace(pos, 3, "\\");
+        pos = str.find("\\.\\");
+    }
+
     return str;
 }
 
@@ -345,9 +372,12 @@ std::string FileSystem::findOrCreateAValidPath(const std::string path)
 
 
 
-std::string FileSystem::cleanPath(const std::string& path)
+std::string FileSystem::cleanPath(const std::string& path, separator s)
 {
-    return removeExtraSlashes(convertBackSlashesToSlashes(path));
+    if(s == SLASH)
+        return removeExtraSlashes(convertBackSlashesToSlashes(path));
+    else
+        return removeExtraBackSlashes(convertSlashesToBackSlashes(path));
 }
 
 static std::string computeParentDirectory(const std::string& path)
