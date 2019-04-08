@@ -11,10 +11,12 @@
 	<VisualStyle displayFlags="showBehavior" />
 	
 	<Node name="Omni" >
-		<OmniDriverEmu trajPoints="0.5 0.5 0.5 0 0 0 1 0 0 0 4 3 6 1 0.5 0.5 0.5 2 3 2 1 0 0 0 0 0 0 1 -0.5 -0.5 0.1 1 2 3 1"  trajTiming="1 2 3 4 5"  scale="1" positionBase="-0.0 -0 -0" orientationBase="0 -0.7071 0 0.7071" orientationTool="0 0.7071 0 0.7071" permanent="1" forceScale="1.0" omniVisu="0" listening="true" handleEventTriggersUpdate="true"/>
-		<MechanicalObject template="Rigid" name="OmniPosition" position="0.5 0.5 0.5 0 0 1"/>			
-		<MechanicalStateController template="Rigid" listening="true" mainDirection="1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
-		<UniformMass name="mass" totalmass="0.00001" showAxisSizeFactor="0.025" />	
+		<OmniDriverEmu listening="true" trajPoints="0.5 0.5 0.5 0 0 0 1 0 0 0 4 3 6 1 0.5 0.5 0.5 2 3 2 1 0 0 0 0 0 0 1 -0.5 -0.5 0.1 1 2 3 1"  
+		trajTiming="1 2 3 4 5"  scale="1" positionBase="-0.0 -0 -0" orientationBase="0 -0.7071 0 0.7071" orientationTool="0 0.7071 0 0.7071" 
+		permanent="1" forceScale="1.0" omniVisu="0" handleEventTriggersUpdate="true"/>
+		<MechanicalObject template="Rigid3" name="OmniPosition" position="0.5 0.5 0.5 0 0 0 1"/>
+		<MechanicalStateController template="Rigid3" listening="true" mainDirection="1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+		<UniformMass name="mass" totalMass="0.00001" showAxisSizeFactor="0.025" />	
 	</Node>
 
 		
