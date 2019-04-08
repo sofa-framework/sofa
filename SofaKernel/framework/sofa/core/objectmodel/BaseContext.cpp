@@ -106,7 +106,7 @@ BaseContext* BaseContext::getRootContext() const
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
+    msg_warning("calling unimplemented getObject method");
     return nullptr;
 }
 
@@ -115,7 +115,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
+    msg_warning("calling unimplemented getObject method");
     return nullptr;
 }
 
@@ -124,7 +124,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*ta
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string& /*path*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
+    msg_warning("calling unimplemented getObject method");
     return nullptr;
 }
 
@@ -133,7 +133,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string&
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObjects method" << sendl;
+    msg_warning("calling unimplemented getObject method");
 }
 
 /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
@@ -141,7 +141,7 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
+    msg_error("calling unimplemented getObject method");
 }
 
 /// Degrees-of-Freedom
@@ -197,12 +197,12 @@ core::visual::Shader* BaseContext::getShader() const
 /// Propagate an event
 void BaseContext::propagateEvent( const core::ExecParams*, Event* )
 {
-    serr<<"propagateEvent not overloaded, does nothing"<<sendl;
+    msg_warning("propagateEvent not overloaded, does nothing");
 }
 
 void BaseContext::executeVisitor(simulation::Visitor*, bool)
 {
-    serr<<"executeVisitor not overloaded, does nothing"<<sendl;
+    msg_warning("executeVisitor not overloaded, does nothing");
 }
 
 std::ostream& operator << (std::ostream& out, const BaseContext&)
