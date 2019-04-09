@@ -364,7 +364,7 @@ const QuadSetTopologyContainer::QuadsAroundVertex& QuadSetTopologyContainer::get
     else if (CHECK_TOPOLOGY)
         msg_error() << "QuadsAroundVertex array access out of bounds: " << id << " >= " << m_quadsAroundVertex.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const QuadSetTopologyContainer::QuadsAroundEdge& QuadSetTopologyContainer::getQuadsAroundEdge(EdgeID id)
@@ -374,7 +374,7 @@ const QuadSetTopologyContainer::QuadsAroundEdge& QuadSetTopologyContainer::getQu
     else if (CHECK_TOPOLOGY)
         msg_error() << "QuadsAroundEdge array access out of bounds: " << id << " >= " << m_quadsAroundEdge.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesInQuad(QuadID id)
@@ -384,7 +384,7 @@ const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesI
     else if (CHECK_TOPOLOGY)
         msg_error() << "EdgesInQuad array access out of bounds: " << id << " >= " << m_edgesInQuad.size();
 
-    return sofa::core::topology::InvalidQuad;
+    return InvalidQuad;
 }
 
 int QuadSetTopologyContainer::getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const

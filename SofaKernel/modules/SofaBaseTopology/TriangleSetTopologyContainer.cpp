@@ -532,7 +532,7 @@ const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyCo
     else if (CHECK_TOPOLOGY)
         msg_error() << "TrianglesAroundVertex array access out of bounds: " << id << " >= " << m_trianglesAroundVertex.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID id)
@@ -542,7 +542,7 @@ const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyCont
     else if (CHECK_TOPOLOGY)
         msg_error() << "TrianglesAroundEdge array access out of bounds: " << id << " >= " << m_trianglesAroundEdge.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const TriangleID id)
@@ -552,7 +552,7 @@ const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContaine
     else if (CHECK_TOPOLOGY)
         msg_error() << "EdgesInTriangle array access out of bounds: " << id << " >= " << m_edgesInTriangle.size();
 
-    return sofa::core::topology::InvalidTriangle;
+    return InvalidTriangle;
 }
 
 int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const

@@ -194,7 +194,7 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
 const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i)
 {
     if ((size_t)i >= getNbEdges())
-        return sofa::core::topology::InvalidEdge;
+        return InvalidEdge;
     else
         return (d_edge.getValue())[i];
 }
@@ -526,7 +526,7 @@ const EdgeSetTopologyContainer::EdgesAroundVertex& EdgeSetTopologyContainer::get
     else if(CHECK_TOPOLOGY)
         msg_error() << "EdgesAroundVertex array access out of bounds: " << id << " >= " << m_edgesAroundVertex.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 sofa::helper::vector< EdgeSetTopologyContainer::EdgeID > &EdgeSetTopologyContainer::getEdgesAroundVertexForModification(const PointID i)

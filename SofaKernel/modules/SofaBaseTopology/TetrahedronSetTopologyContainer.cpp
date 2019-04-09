@@ -528,7 +528,7 @@ const TetrahedronSetTopologyContainer::TetrahedraAroundVertex &TetrahedronSetTop
     else if (CHECK_TOPOLOGY)
         msg_error() << "TetrahedraAroundVertexArray array access out of bounds: " << id << " >= " << m_tetrahedraAroundVertex.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const TetrahedronSetTopologyContainer::TetrahedraAroundEdge &TetrahedronSetTopologyContainer::getTetrahedraAroundEdge(const EdgeID id)
@@ -538,7 +538,7 @@ const TetrahedronSetTopologyContainer::TetrahedraAroundEdge &TetrahedronSetTopol
     else if (CHECK_TOPOLOGY)
         msg_error() << "TetrahedraAroundEdge array access out of bounds: " << id << " >= " << m_tetrahedraAroundEdge.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangle(const TriangleID id)
@@ -548,7 +548,7 @@ const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle &TetrahedronSetT
     else if (CHECK_TOPOLOGY)
         msg_error() << "TetrahedraAroundTriangle array access out of bounds: " << id << " >= " << m_tetrahedraAroundTriangle.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron(const EdgeID id)
@@ -568,7 +568,7 @@ const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTop
     else if (CHECK_TOPOLOGY)
         msg_error() << "TrianglesInTetrahedron array access out of bounds: " << id << " >= " << m_trianglesInTetrahedron.size();
 
-    return sofa::core::topology::InvalidTetrahedron;
+    return InvalidTetrahedron;
 }
 
 int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(const Tetrahedron &t,

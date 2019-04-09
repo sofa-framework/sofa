@@ -45,6 +45,15 @@ bool Topology::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
+const sofa::helper::vector<Topology::index_type> Topology::InvalidSet;
+const Topology::Edge Topology::InvalidEdge;
+const Topology::Triangle Topology::InvalidTriangle;
+const Topology::Quad Topology::InvalidQuad;
+const Topology::Tetrahedron Topology::InvalidTetrahedron;
+const Topology::Pyramid Topology::InvalidPyramid;
+const Topology::Pentahedron Topology::InvalidPentahedron;
+const Topology::Hexahedron Topology::InvalidHexahedron;
+
 
 } // namespace topology
 

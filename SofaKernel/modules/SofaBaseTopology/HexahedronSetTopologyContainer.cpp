@@ -692,7 +692,7 @@ const HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopolo
     else if (CHECK_TOPOLOGY)
         msg_error() << "HexahedraAroundVertex array access out of bounds: " << id << " >= " << m_hexahedraAroundVertex.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdge(EdgeID id)
@@ -702,7 +702,7 @@ const HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopology
     else if (CHECK_TOPOLOGY)
         msg_error() << "HexahedraAroundEdge array access out of bounds: " << id << " >= " << m_hexahedraAroundEdge.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuad(QuadID id)
@@ -712,7 +712,7 @@ const HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopology
     else if (CHECK_TOPOLOGY)
         msg_error() << "HexahedraAroundQuad array access out of bounds: " << id << " >= " << m_hexahedraAroundQuad.size();
 
-    return sofa::core::topology::InvalidSet;
+    return InvalidSet;
 }
 
 const QuadSetTopologyContainer::EdgesInHexahedron &HexahedronSetTopologyContainer::getEdgesInHexahedron(HexaID id)

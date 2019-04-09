@@ -154,16 +154,18 @@ public:
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
+
+    // Declare invalid topology structures filled with Topology::InvalidID
+    static const sofa::helper::vector<Topology::index_type> InvalidSet;
+    static const Edge                                       InvalidEdge;
+    static const Triangle                                   InvalidTriangle;
+    static const Quad                                       InvalidQuad;
+    static const Tetrahedron                                InvalidTetrahedron;
+    static const Pyramid                                    InvalidPyramid;
+    static const Pentahedron                                InvalidPentahedron;
+    static const Hexahedron                                 InvalidHexahedron;
 };
 
-static const sofa::helper::vector<Topology::index_type>             InvalidSet;
-static const Topology::Edge InvalidEdge;
-static const Topology::Triangle InvalidTriangle;
-static const Topology::Quad InvalidQuad;
-static const Topology::Tetrahedron InvalidTetrahedron;
-static const Topology::Pyramid InvalidPyramid;
-static const Topology::Pentahedron InvalidPentahedron;
-static const Topology::Hexahedron InvalidHexahedron;
 
 static const sofa::helper::fixed_array<Topology::index_type,2> InvalidArray2;
 static const sofa::helper::fixed_array<Topology::index_type,3> InvalidArray3;
