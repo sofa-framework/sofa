@@ -260,8 +260,8 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
 
 const sofa::helper::vector<QuadSetTopologyContainer::Quad> &QuadSetTopologyContainer::getQuadArray()
 {
-    if(CHECK_TOPOLOGY && !hasQuads() && getNbPoints()>0)
-        msg_warning() << "Quad array is empty with " << getNbPoints() << " vertices.";
+    if(CHECK_TOPOLOGY)
+        msg_warning_when(!hasQuads() && getNbPoints()>0) << "Quad array is empty with " << getNbPoints() << " vertices.";
 
     return d_quad.getValue();
 }
@@ -311,8 +311,8 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
     result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
     out3.erase(result3,out3.end());
 
-    if (CHECK_TOPOLOGY && out3.size() > 1)
-        msg_warning() << "More than one Quad found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(out3.size() > 1) << "More than one Quad found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
 
     if(out3.size()==1)
         return (int) (out3[0]);
@@ -335,24 +335,24 @@ size_t QuadSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundVertex > &QuadSetTopologyContainer::getQuadsAroundVertexArray()
 {
-    if(CHECK_TOPOLOGY && !hasQuadsAroundVertex())	// this method should only be called when the shell array exists
-        msg_warning() << "QuadsAroundVertex shell array is empty.";
+    if(CHECK_TOPOLOGY)	// this method should only be called when the shell array exists
+        msg_warning_when(!hasQuadsAroundVertex()) << "QuadsAroundVertex shell array is empty.";
 
     return m_quadsAroundVertex;
 }
 
 const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundEdge > &QuadSetTopologyContainer::getQuadsAroundEdgeArray()
 {
-    if(CHECK_TOPOLOGY && !hasQuadsAroundEdge())	// this method should only be called when the shell array exists
-        msg_warning() << "QuadsAroundEdge shell array is empty.";
+    if(CHECK_TOPOLOGY)	// this method should only be called when the shell array exists
+        msg_warning_when(!hasQuadsAroundEdge()) << "QuadsAroundEdge shell array is empty.";
 
     return m_quadsAroundEdge;
 }
 
 const sofa::helper::vector< QuadSetTopologyContainer::EdgesInQuad> &QuadSetTopologyContainer::getEdgesInQuadArray()
 {
-    if(CHECK_TOPOLOGY && m_edgesInQuad.empty())
-        msg_warning() << "EdgesInQuad shell array is empty.";
+    if(CHECK_TOPOLOGY)
+        msg_warning_when(m_edgesInQuad.empty()) << "EdgesInQuad shell array is empty.";
 
     return m_edgesInQuad;
 }

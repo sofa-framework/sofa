@@ -1517,8 +1517,6 @@ const MeshTopology::EdgesInHexahedron& MeshTopology::getEdgesInHexahedron(HexaID
 
 const MeshTopology::TrianglesAroundVertex& MeshTopology::getTrianglesAroundVertex(PointID i)
 {
-    std::cout << "YYO LO MESHTOPO:" << i  << std::endl;
-
     if (!m_trianglesAroundVertex.size() || i > m_trianglesAroundVertex.size()-1)
         createTrianglesAroundVertexArray();
 

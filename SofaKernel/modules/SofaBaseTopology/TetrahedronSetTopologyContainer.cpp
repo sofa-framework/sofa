@@ -237,8 +237,8 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                     }
                 }
 
-                if (CHECK_TOPOLOGY && foundEdge==false)
-                    msg_warning() << "[TetrahedronSetTopologyContainer::getTetrahedronArray] cannot find edge for tetrahedron " << i << "and edge "<< j;
+                if (CHECK_TOPOLOGY)
+                    msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
             }
         }
     }
@@ -392,8 +392,8 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
 
 const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()
 {
-    if (CHECK_TOPOLOGY && !hasTetrahedra() && getNbPoints()>0)
-        msg_warning() << "Tetrahedron array is empty with " << getNbPoints() << " vertices.";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(!hasTetrahedra() && getNbPoints()>0) << "Tetrahedron array is empty with " << getNbPoints() << " vertices.";
 
     return d_tetrahedron.getValue();
 }
@@ -447,8 +447,8 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 
     assert(out3.size()==0 || out3.size()==1);
 
-    if(CHECK_TOPOLOGY && out3.size() > 1)
-        msg_warning() << "More than one Tetrahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
+    if(CHECK_TOPOLOGY)
+        msg_warning_when(out3.size() > 1) << "More than one Tetrahedron found for indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "]";
 
     if (out3.size()==1)
         return (int) (out3[0]);
@@ -469,32 +469,32 @@ size_t TetrahedronSetTopologyContainer::getNumberOfElements() const
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex > &TetrahedronSetTopologyContainer::getTetrahedraAroundVertexArray()
 {
-    if (CHECK_TOPOLOGY && !hasTetrahedraAroundVertex())
-        msg_warning() << "TetrahedraAroundVertex shell array is empty.";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(!hasTetrahedraAroundVertex()) << "TetrahedraAroundVertex shell array is empty.";
 
     return m_tetrahedraAroundVertex;
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge > &TetrahedronSetTopologyContainer::getTetrahedraAroundEdgeArray()
 {
-    if (CHECK_TOPOLOGY && !hasTetrahedraAroundEdge())
-        msg_warning() << "TetrahedraAroundEdge shell array is empty.";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(!hasTetrahedraAroundEdge()) << "TetrahedraAroundEdge shell array is empty.";
 
     return m_tetrahedraAroundEdge;
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle > &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangleArray()
 {
-    if (CHECK_TOPOLOGY && !hasTetrahedraAroundTriangle())
-        msg_warning() << "TetrahedraAroundTriangle shell array is empty.";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(!hasTetrahedraAroundTriangle()) << "TetrahedraAroundTriangle shell array is empty.";
 
     return m_tetrahedraAroundTriangle;
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
 {
-    if (CHECK_TOPOLOGY && !hasEdgesInTetrahedron())
-        msg_warning() << "EdgesInTetrahedron shell array is empty.";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(!hasEdgesInTetrahedron()) << "EdgesInTetrahedron shell array is empty.";
 
     return m_edgesInTetrahedron;
 }
@@ -515,8 +515,8 @@ TetrahedronSetTopologyContainer::Triangle TetrahedronSetTopologyContainer::getLo
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
 {
-    if (CHECK_TOPOLOGY && !hasTrianglesInTetrahedron())
-        msg_warning() << "TrianglesInTetrahedron shell array is empty.";
+    if (CHECK_TOPOLOGY)
+        msg_warning_when(!hasTrianglesInTetrahedron()) << "TrianglesInTetrahedron shell array is empty.";
 
     return m_trianglesInTetrahedron;
 }
