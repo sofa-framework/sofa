@@ -69,12 +69,12 @@ public:
     typedef sofa::helper::fixed_array<QuadID,6>		QuadsInHexahedron;
     typedef sofa::helper::fixed_array<EdgeID,12>    EdgesInHexahedron;
 
-    static EdgesInTriangle InvalidEdgesInTriangles;
-    static EdgesInQuad     InvalidEdgesInQuad;
+    static EdgesInTriangle        InvalidEdgesInTriangles;
+    static EdgesInQuad            InvalidEdgesInQuad;
     static TrianglesInTetrahedron InvalidTrianglesInTetrahedron;
-    static EdgesInTetrahedron InvalidEdgesInTetrahedron;
-    static QuadsInHexahedron InvalidQuadsInHexahedron;
-    static EdgesInHexahedron InvalidEdgesInHexahedron;
+    static EdgesInTetrahedron     InvalidEdgesInTetrahedron;
+    static QuadsInHexahedron      InvalidQuadsInHexahedron;
+    static EdgesInHexahedron      InvalidEdgesInHexahedron;
 
     /// @}
 
@@ -92,21 +92,6 @@ public:
     typedef sofa::helper::vector<HexaID>			HexahedraAroundEdge;
     typedef sofa::helper::vector<TetraID>		    TetrahedraAroundTriangle;
     typedef sofa::helper::vector<HexaID>			HexahedraAroundQuad;
-
-    static VerticesAroundVertex  EmptyVerticesAroundVertx;
-    static EdgesAroundVertex     EmptyEdgesAroundVertex;
-    static TrianglesAroundVertex EmptyTrianglesAroundVertex;
-    static QuadsAroundVertex     EmptyQuadsAroundVertex;
-    static TetrahedraAroundVertex EmptyTetrahedraAroundVertex;
-    static HexahedraAroundVertex  EmptyHexahedraAroundVertex;
-    static TrianglesAroundEdge    EmptyTrianglesAroundEdge;
-    static QuadsAroundEdge        EmptyQuadsAroundEdge;
-    static TetrahedraAroundEdge   EmptyTetrahedraAroundEdge;
-    static HexahedraAroundEdge    EmptyHexahedraAroundEdge;
-    static TetrahedraAroundTriangle        EmptyTetrahedraAroundTriangle;
-    static HexahedraAroundQuad   EmptyHexahedraAroundQuad;
-
-
     /// @}
 protected:
     BaseMeshTopology()	;

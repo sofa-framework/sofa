@@ -558,7 +558,7 @@ const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopolog
     else if (CHECK_TOPOLOGY)
         msg_error() << "EdgesInTetrahedron array access out of bounds: " << id << " >= " << m_edgesInTetrahedron.size();
 
-    return sofa::core::topology::InvalidArray6;
+    return InvalidEdgesInTetrahedron;
 }
 
 const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID id)
