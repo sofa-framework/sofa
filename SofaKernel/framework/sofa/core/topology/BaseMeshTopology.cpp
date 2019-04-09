@@ -119,9 +119,7 @@ const BaseMeshTopology::TrianglesAroundEdge& BaseMeshTopology::getTrianglesAroun
 const BaseMeshTopology::TrianglesInTetrahedron& BaseMeshTopology::getTrianglesInTetrahedron(TetraID)
 {
     if (getNbTriangles()) msg_error() << "getTrianglesInTetrahedron unsupported.";
-    static TrianglesInTetrahedron empty;
-    empty.assign(InvalidID);
-    return empty;
+    return InvalidTrianglesInTetrahedron;
 }
 
 /// Returns the set of quad adjacent to a given vertex.
@@ -211,23 +209,20 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
 const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElement(index_type)
 {
-    static vector<index_type> empty;
-    return empty;
+    return InvalidSet;
 }
 
 
 /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
 const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
 {
-    static vector<index_type> empty;
-    return empty;
+    return InvalidSet;
 }
 
 /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
 const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement(index_type)
 {
-    static vector<index_type> empty;
-    return empty;
+    return InvalidSet;
 }
 
 
@@ -235,24 +230,21 @@ const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement
 const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {
     msg_error() << "getTrianglesOnBorder unsupported.";
-    static sofa::helper::vector <BaseMeshTopology::TriangleID> empty;
-    return empty;
+    return InvalidSet;
 }
 
 /// Returns the set of edges on the border of the triangulation
 const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
 {
     msg_error() << "getEdgesOnBorder unsupported.";
-    static sofa::helper::vector <BaseMeshTopology::EdgeID> empty;
-    return empty;
+    return InvalidSet;
 }
 
 /// Returns the set of points on the border of the triangulation
 const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
 {
     msg_error() << "getPointsOnBorder unsupported.";
-    static sofa::helper::vector <BaseMeshTopology::PointID> empty;
-    return empty;
+    return InvalidSet;
 }
 
 
@@ -497,30 +489,26 @@ int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, QuadID
 
 BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
 {
-    static BaseMeshTopology::Edge empty;
     msg_error() << "getLocalEdgesInTetrahedron() not supported.";
-    return empty;
+    return InvalidEdge;
 }
 
 BaseMeshTopology::Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
 {
-    static BaseMeshTopology::Triangle empty;
     msg_error() << "getLocalTrianglesInTetrahedron() not supported.";
-    return empty;
+    return InvalidTriangle;
 }
 
 BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
 {
-    static BaseMeshTopology::Edge empty;
     msg_error() << "getLocalEdgesInHexahedron() not supported.";
-    return empty;
+    return InvalidEdge;
 }
 
 BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
 {
-    static BaseMeshTopology::Quad empty;
     msg_error() << "getLocalQuadsInHexahedron() not supported.";
-    return empty;
+    return InvalidQuad;
 }
 
 bool BaseMeshTopology::insertInNode( objectmodel::BaseNode* node )
