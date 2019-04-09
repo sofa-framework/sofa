@@ -92,7 +92,7 @@ static PyObject * Node_reset(PyObject * self, PyObject * /*args*/) {
 static PyObject * Node_init(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
 
-    getSimulation()->init(node);
+    node->init(ExecParams::defaultInstance());
 
     Py_RETURN_NONE;
 }
