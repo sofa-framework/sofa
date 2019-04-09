@@ -152,14 +152,14 @@ endif()
 
 set(QT_USE_IMPORTED_TARGETS 1)
 
-find_package(Qt5 COMPONENTS Core WebEngine WebEngineWidgets QUIET)
+find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
-    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
+    find_package(Qt5 COMPONENTS Gui OpenGL WebEngine WebEngineWidgets REQUIRED)
 
-    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL)
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::WebEngine Qt5::WebEngineWidgets)
     set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5WebEngine_INCLUDE_DIRS} ${Qt5WebEngineWidgets_INCLUDE_DIRS})
     set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5WebEngine_LIBRARIES} ${Qt5WebEngineWidgets_LIBRARIES})
     # target_include_directories(${EXT_QT_INCLUDES})
@@ -192,6 +192,21 @@ if(Qt5Core_FOUND)
     endif()
     # Install Qt plugins
     install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
+    # Install Qt WebEngine deps 
+    file(GLOB QT_WEBENGINE_DEPS
+        "${QT_LIBRARIES_DIR}/libQt5Network${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5OpenGL${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5Positioning${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5PrintSupport${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5Qml${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5Quick${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5QuickWidgets${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5WebChannel${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5WebEngineCore${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5Xml${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/libQt5XmlPatterns${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_WEBENGINE_DEPS})
     # Install Qt XCB libraries
     file(GLOB QT_XCB_LIBRARIES
         "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
