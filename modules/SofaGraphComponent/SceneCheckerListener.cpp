@@ -40,7 +40,7 @@ namespace _scenechecking_
 
 SceneCheckerListener::SceneCheckerListener()
 {
-    m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
+    //m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
     m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
     m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
     m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
