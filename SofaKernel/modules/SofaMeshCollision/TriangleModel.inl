@@ -459,6 +459,10 @@ void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool
 {
     if( !onlyVisible ) return;
 
+    // check first that topology didn't changed
+    if (m_topology->getRevision() != m_topologyRevision)
+        updateFromTopology();
+
     static const Real max_real = std::numeric_limits<Real>::max();
     static const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};

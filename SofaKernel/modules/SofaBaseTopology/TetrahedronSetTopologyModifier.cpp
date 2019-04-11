@@ -46,7 +46,6 @@ using namespace sofa::core::topology;
 
 //const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
-
 void TetrahedronSetTopologyModifier::init()
 {
     TriangleSetTopologyModifier::init();
@@ -125,18 +124,17 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
     {
         for (PointID j=0; j<4; ++j)
         {
-            TriangleID triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
+            Triangle e1 (t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][0]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][1]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][2]]);
+            TriangleID triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
 
             if(triangleIndex == InvalidID)
             {
                 // first create the traingle
                 sofa::helper::vector< Triangle > v;
-                Triangle e1 (t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
                 v.push_back(e1);
-
                 addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
 
-                triangleIndex = m_container->getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
+                triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
                 assert(triangleIndex != InvalidID);
 
                 sofa::helper::vector< TriangleID > triangleIndexList;

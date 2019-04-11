@@ -80,7 +80,6 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
 bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    //sout<<"constraintCorrections is called"<<sendl;
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
@@ -92,7 +91,7 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
         if ( displayTime.getValue() )
         {
-            sout<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
+            dmsg_info()<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms";
             time = (double) timer.getTime();
         }
     }
@@ -101,7 +100,7 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
         build_problem_info();
         if ( displayTime.getValue() )
         {
-            sout<<" build_problem " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
+            dmsg_info()<<" build_problem " << ( (double) timer.getTime() - time)*timeScale<<" ms";
             time = (double) timer.getTime();
         }
     }
@@ -475,7 +474,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     int nLevels = multi_grid_levels.getValue();
     if (nLevels < 2) nLevels = 2;
 
-    sout << "Multigrid merge from " << numContacts << " contacts." << sendl;
+    msg_info() << "Multigrid merge from " << numContacts << " contacts.";
 
     hierarchy_contact_group.resize(nLevels-1);
     hierarchy_constraint_group.resize(nLevels-1);
@@ -522,8 +521,8 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
         {
             const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-            sout << "MultigridConstraintsMerge_Spatial level " << level-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
-                    << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea << sendl;
+            msg_info() << "MultigridConstraintsMerge_Spatial level " << level-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
+                    << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
             if (!info.hasPosition)
             {
                 serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
@@ -621,7 +620,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
             }
         }
         // Finalize
-        sout << "Multigrid merge level " << level << ": " << num_group << " groups." << sendl;
+        msg_info() << "Multigrid merge level " << level << ": " << num_group << " groups.";
 
         // Normalize and orthogonalize constraint directions
         for (unsigned int g=0; g<num_group; ++g)
@@ -685,8 +684,8 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
     {
         const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-        sout << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
-                << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea << sendl;
+        msg_info() << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
+                << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
     }
 }
 
@@ -938,7 +937,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     if ( displayTime.getValue() )
     {
-        sout<<" link_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
+        msg_info()<<" link_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms";
         time = (double) timer.getTime();
     }
 

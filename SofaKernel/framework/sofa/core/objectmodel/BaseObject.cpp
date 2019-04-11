@@ -94,9 +94,17 @@ void BaseObject::parse( BaseObjectDescription* arg )
         }
         else
         {
-            std::vector< std::string > attributeList;
-            arg->getAttributeList(attributeList);
-            setSrc(valueString, &attributeList);
+            if(valueString.size() == 1) // ignore '@' alone
+            {
+                msg_warning() << "'src=@' does nothing.";
+            }
+            else
+            {
+                std::vector< std::string > attributeList;
+                arg->getAttributeList(attributeList);
+                setSrc(valueString, &attributeList);
+            }
+
         }
         arg->removeAttribute("src");
     }
