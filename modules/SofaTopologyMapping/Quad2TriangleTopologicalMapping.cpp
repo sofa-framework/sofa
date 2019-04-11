@@ -141,13 +141,13 @@ void Quad2TriangleTopologicalMapping::init()
                 unsigned int p3 = quadArray[i][3];
                 if (((i%scale) ^ (i/scale)) & 1)
                 {
-                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p3));
-                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p2, (unsigned int) p3, (unsigned int) p1));
+                    to_tstc->addTriangle(p0, p1, p3);
+                    to_tstc->addTriangle(p2, p3, p1);
                 }
                 else
                 {
-                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p1, (unsigned int) p2, (unsigned int) p0));
-                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p3, (unsigned int) p0, (unsigned int) p2));
+                    to_tstc->addTriangle(p1, p2, p0);
+                    to_tstc->addTriangle(p3, p0, p2);
                 }
 
                 Loc2GlobVec.push_back(i);
@@ -158,8 +158,9 @@ void Quad2TriangleTopologicalMapping::init()
                 In2OutMap[i]=out_info;
             }
 
-            //to_tstm->propagateTopologicalChanges();
-            to_tstm->notifyEndingEvent();
+            // Need to fully init the target topology
+            to_tstc->init();
+
             //to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
 
