@@ -44,6 +44,7 @@ set(HEADER_FILES
     TableDataWidget.h
     viewer/SofaViewer.h
     viewer/VisualModelPolicy.h
+    GenericWidget.h
 )
 
 set(SOURCE_FILES

@@ -39,8 +39,6 @@ set(EXTRA_FILES
     examples/DistanceGridForceField-liver.scn
     )
 
-add_subdirectory(SofaDistanceGrid_test)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision ${SOFAADVANCED_DEPENDENCY_LINK})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
@@ -61,6 +59,12 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(SofaDistanceGrid_test)
+    endif()
+endif()
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaDistanceGrid ${SOFADISTANCEGRID_VERSION} ${PROJECT_NAME} SofaDistanceGrid)

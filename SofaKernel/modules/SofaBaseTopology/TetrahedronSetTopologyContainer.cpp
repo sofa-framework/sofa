@@ -43,8 +43,6 @@ int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 ///convention triangles in tetra (orientation interior)
-const unsigned int trianglesInTetrahedronArray[4][3]= {{0,2,1}, {0,1,3}, {1,2,3}, {0,3,2}};
-
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
@@ -265,7 +263,7 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
         {
             PointID v[3];
             for (PointID k=0; k<3; ++k)
-                v[k] = t[trianglesInTetrahedronArray[j][k]];
+                v[k] = t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][k]];
 
             // sort v such that v[0] is the smallest one
             while ((v[0]>v[1]) || (v[0]>v[2]))
@@ -448,10 +446,8 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 
     if (out3.size()==1)
         return (int) (out3[0]);
-    else {
-        msg_warning() << "Tetrahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 size_t TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
@@ -506,9 +502,9 @@ TetrahedronSetTopologyContainer::Edge TetrahedronSetTopologyContainer::getLocalE
 TetrahedronSetTopologyContainer::Triangle TetrahedronSetTopologyContainer::getLocalTrianglesInTetrahedron (const TriangleID i) const
 {
     assert(i<4);
-    return Triangle (trianglesInTetrahedronArray[i][0],
-            trianglesInTetrahedronArray[i][1],
-            trianglesInTetrahedronArray[i][2]);
+    return Triangle (sofa::core::topology::trianglesOrientationInTetrahedronArray[i][0],
+            sofa::core::topology::trianglesOrientationInTetrahedronArray[i][1],
+            sofa::core::topology::trianglesOrientationInTetrahedronArray[i][2]);
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()

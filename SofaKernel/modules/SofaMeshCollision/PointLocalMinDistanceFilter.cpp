@@ -244,7 +244,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 {
     if(this->isRigid())
     {
-        msg_error() << "WARNING: filters optimization needed for topological change on rigid collision model";
+        msg_error() << "Filters optimization needed for topological change on rigid collision model";
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
 
@@ -262,8 +262,6 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
 void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned int /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
-
-    std::cout<<" LMDFilterPointCreationFunction is called"<<std::endl;
     const PointLocalMinDistanceFilter *pLMDFilter = this->f;
     pInfo.setLMDFilters(pLMDFilter);
 

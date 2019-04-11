@@ -42,7 +42,7 @@ namespace sofa
         public:
             
             SpinLock()
-            :_flag()
+            :m_flag()
             {}
             
             ~SpinLock()
@@ -52,12 +52,12 @@ namespace sofa
             
             bool try_lock()
             {
-                return !_flag.test_and_set( std::memory_order_acquire );
+                return !m_flag.test_and_set( std::memory_order_acquire );
             }
             
             void lock()
             {
-                while( _flag.test_and_set(std::memory_order_acquire) )
+                while( m_flag.test_and_set(std::memory_order_acquire) )
                 {
                     // cpu busy wait
                     //std::this_thread::yield();
@@ -66,12 +66,12 @@ namespace sofa
             
             void unlock()
             {
-                _flag.clear( std::memory_order_release );
+                m_flag.clear( std::memory_order_release );
             }
             
         private:
             
-            std::atomic_flag _flag;
+            std::atomic_flag m_flag;
             
             char _pad [CACHE_LINE - sizeof(std::atomic_flag)];
         };
@@ -82,14 +82,14 @@ namespace sofa
         {
         public:
             
-            explicit ScopedLock( SpinLock & lock ): _spinlock( lock )
+            explicit ScopedLock( SpinLock & lock ): m_spinlock( lock )
             {
-                _spinlock.lock();
+                m_spinlock.lock();
             }
             
             ~ScopedLock()
             {
-                _spinlock.unlock();
+                m_spinlock.unlock();
             }
             
             ScopedLock( ScopedLock const & ) = delete;
@@ -97,7 +97,7 @@ namespace sofa
             
         private:
             
-            SpinLock& _spinlock;
+            SpinLock& m_spinlock;
         };
 
 	} // namespace simulation

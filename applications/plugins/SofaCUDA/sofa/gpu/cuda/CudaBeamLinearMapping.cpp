@@ -66,13 +66,13 @@ using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;
 
-template class BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3fTypes>;
-template class BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3dTypes>;
-template class BeamLinearMapping< Rigid3dTypes, sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3dTypes, sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 

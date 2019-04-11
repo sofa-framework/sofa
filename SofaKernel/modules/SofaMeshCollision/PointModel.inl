@@ -148,9 +148,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         // Check topological modifications
         const int npoints = mstate->getSize();
         if (npoints != size)
-        {
-            resize(npoints);
-        }
+            return;
 
         std::vector< defaulttype::Vector3 > pointsP;
         std::vector< defaulttype::Vector3 > pointsL;
@@ -504,6 +502,10 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if( !onlyVisible ) return;
+
+    const int npoints = mstate->getSize();
+    if (npoints != size)
+        return;
 
     static const Real max_real = std::numeric_limits<Real>::max();
     static const Real min_real = std::numeric_limits<Real>::lowest();

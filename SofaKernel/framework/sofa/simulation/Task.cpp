@@ -9,24 +9,24 @@ namespace sofa
 	namespace simulation
 	{
         
-
+        
         Task::Allocator* Task::_allocator = nullptr;
-
-
-		Task::Task(const Task::Status* status, int scheduledThread)
-			: _scheduledThread(scheduledThread)
-            , _status(status)
-            , _id(0)
-		{            
-		}
-
-		Task::~Task()
-		{
-		}
         
         
-        CpuTask::CpuTask(const CpuTask::Status* status, int scheduledThread)
-        : Task(status, scheduledThread)
+        Task::Task(int scheduledThread)
+        : m_scheduledThread(scheduledThread)
+        , m_id(0)
+        {            
+        }
+        
+        Task::~Task()
+        {
+        }
+        
+        
+        CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
+        : Task(scheduledThread)
+        , m_status(status)
         {
         }
         
@@ -37,29 +37,29 @@ namespace sofa
         
         
         
-        ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, const CpuTask::Status* status )
-            : CpuTask(status)
-            , _atomicCounter(atomicCounter)
-            , _threadSpecificMutex(mutex)
+        ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status )
+        : CpuTask(status)
+        , m_atomicCounter(atomicCounter)
+        , m_threadSpecificMutex(mutex)
         {}
-
+        
         ThreadSpecificTask::~ThreadSpecificTask()
         {
         }
-
+        
         Task::MemoryAlloc ThreadSpecificTask::run()
         {
-
+            
             runThreadSpecific();
-
+            
             {
-                std::lock_guard<std::mutex> lock(*_threadSpecificMutex);
+                std::lock_guard<std::mutex> lock(*m_threadSpecificMutex);
                 runCriticalThreadSpecific();
             }
-
-            _atomicCounter->fetch_sub(1, std::memory_order_acq_rel);
-
-            while(_atomicCounter->load(std::memory_order_relaxed) > 0)
+            
+            m_atomicCounter->fetch_sub(1, std::memory_order_acq_rel);
+            
+            while(m_atomicCounter->load(std::memory_order_relaxed) > 0)
             {
                 // yield while waiting
                 std::this_thread::yield();

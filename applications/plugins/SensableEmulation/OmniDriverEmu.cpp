@@ -131,13 +131,13 @@ void OmniDriverEmu::cleanup()
         // no error: thread cancel
         if(err==0)
         {
-            msg_error() << "Thread haptic cancel in cleanup.";
+            msg_info() << "Haptic thread has been cancelled in cleanup without error.";
         }
 
         // error
         else
         {
-            msg_error() << "Thread not cancel in cleanup = "  << err  ;
+            msg_error() << "Haptic thread cancel in cleanup failed with error code = "  << err  ;
         }
 #endif
     }
@@ -233,7 +233,7 @@ void *hapticSimuExecute( void *ptr )
             if (actSeg < numSegs)
             {
 
-                if (actStep < stepNum[actSeg])
+                if (actSeg > 0 && actStep < stepNum[actSeg])
                 {
 
                     //compute the coeff for interpolation
@@ -363,11 +363,11 @@ void OmniDriverEmu::bwdInit()
         // no error: thread cancel
         if(err==0)
         {
-            msg_info() << "OmniDriverEmu: thread haptic cancel";
+            msg_info() << "OmniDriverEmu: Haptic thread has been cancelled without error.";
         }
         else
         {
-            msg_warning() << "thread not cancel = "  << err ;
+            msg_warning() << "thread cancel failed with error code = "  << err ;
         }
 #endif
     }

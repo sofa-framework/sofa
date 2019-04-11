@@ -285,7 +285,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     if(m_componentstate != ComponentState::Valid)
         return ;
 
-    sofa::helper::system::thread::CTime *timer;
+    sofa::helper::system::thread::CTime *timer = new sofa::helper::system::thread::CTime();
     double timeScale, time, totime ;
     timeScale = time = totime = 0;
 
@@ -499,6 +499,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     core::objectmodel::BaseContext* context = this->getContext();
     simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
+
+    delete timer;
 
 }
 

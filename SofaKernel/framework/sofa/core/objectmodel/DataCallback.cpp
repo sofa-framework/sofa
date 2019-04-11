@@ -19,50 +19,72 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaLinearForceField.inl"
+#include <sofa/core/objectmodel/DataCallback.h>
 
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace forcefield
+namespace objectmodel
 {
 
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
+void DataCallback::addInputs(std::initializer_list<BaseData*> data)
+{
+    for(BaseData* d : data)
+    {
+        addInput(d);
+    }
+}
 
-}// namespace forcefield
+void DataCallback::addCallback(std::function<void(void)> f)
+{
+    m_callbacks.push_back(f);
+}
 
-}// namespace component
+void DataCallback::notifyEndEdit(const core::ExecParams* params)
+{
+    if (!m_updating)
+    {
+        m_updating = true;
+        for (auto& callback : m_callbacks)
+            callback();
 
-namespace gpu
+        sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
+        m_updating = false;
+    }
+    else
+    {
+        msg_warning("DataCallback") << "A DataCallback seems to have a circular dependency, please fix it to remove this warning.";
+    }
+}
+
+const std::string& DataCallback::getName() const
+{
+    static std::string s="";
+    return s;
+}
+
+sofa::core::objectmodel::Base* DataCallback::getOwner() const
+{
+    return nullptr;
+}
+
+sofa::core::objectmodel::BaseData* DataCallback::getData() const
+{
+    return nullptr;
+}
+
+void DataCallback::update()
 {
 
-namespace cuda
-{
+}
 
-int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
-        .add< component::forcefield::LinearForceField<CudaVec6fTypes> >()
-		.add< component::forcefield::LinearForceField<CudaVec3fTypes> >()
-		.add< component::forcefield::LinearForceField<CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::LinearForceField<CudaVec6dTypes> >()
-		.add< component::forcefield::LinearForceField<CudaRigid3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+} /// namespace objectmodel
 
-}// namespace cuda
+} /// namespace core
 
-}// namespace gpu
+} /// namespace sofa
 
-}// namespace sofa
+
