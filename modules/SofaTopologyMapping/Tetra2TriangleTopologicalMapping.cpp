@@ -87,12 +87,14 @@ void Tetra2TriangleTopologicalMapping::init()
         msg_error() << "Pointer to output topology is invalid.";
         modelsOk = false;
     }
-
-    toModel->getContext()->get(m_outTopoModifier);
-    if (!m_outTopoModifier)
+    else
     {
-        msg_error() << "No TriangleSetTopologyModifier found in the Edge topology Node.";
-        modelsOk = false;
+        toModel->getContext()->get(m_outTopoModifier);
+        if (!m_outTopoModifier)
+        {
+            msg_error() << "No TriangleSetTopologyModifier found in the Triangle topology Node.";
+            modelsOk = false;
+        }
     }
 
     if (!modelsOk)
