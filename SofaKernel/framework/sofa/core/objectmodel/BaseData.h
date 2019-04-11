@@ -292,7 +292,7 @@ public:
         BaseData* base = nullptr;
         if (!findDataLinkDest(base, path, link)) return false;
         ptr = dynamic_cast<DataT*>(base);
-        return (ptr != NULL);
+        return (ptr != nullptr);
     }
 
     /// Add a link.

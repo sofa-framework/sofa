@@ -82,7 +82,7 @@ public:
 
     Result processNodeTopDown(simulation::Node* node) override
     {
-        const DAGNode* dagnode = (const DAGNode*)node;
+        const DAGNode* dagnode = dynamic_cast<const DAGNode*>(node);
         if( dagnode->_descendancy.find(_searchNode)!=dagnode->_descendancy.end() ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
         {
             dagnode->getLocalObjects( _class_info, _container, _tags );
@@ -119,7 +119,7 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
     if( parent )
-        parent->addChild((Node*)this);
+        parent->addChild(dynamic_cast<Node*>(this));
 }
 
 DAGNode::~DAGNode()
@@ -136,7 +136,7 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 {
     DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
-    return newchild;
+    return std::move(newchild);
 }
 
 /// Add a child node
@@ -402,7 +402,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         case SearchParents:
         {
             // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups
-            GetUpObjectsVisitor vis( (DAGNode*)this, class_info, container, tags);
+            GetUpObjectsVisitor vis( const_cast<DAGNode*>(this), class_info, container, tags);
             getRootContext()->executeVisitor(&vis);
         }
         break;
@@ -411,7 +411,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         {
             // a regular visitor is enforcing the selected object unicity
             GetDownObjectsVisitor vis(class_info, container, tags);
-            ((DAGNode*)(this))->executeVisitor(&vis);
+            (const_cast<DAGNode*>(this))->executeVisitor(&vis);
             break;
         }
         default:

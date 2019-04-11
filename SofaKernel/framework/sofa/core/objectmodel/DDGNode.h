@@ -77,7 +77,7 @@ public:
     template<class T>
     static void dynamicCast(T*& ptr, Base* /*b*/)
     {
-        ptr = NULL; // DDGNode does not derive from Base
+        ptr = nullptr; // DDGNode does not derive from Base
     }
 
     /// Helper method to get the type name of a type derived from this class
@@ -86,7 +86,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    static std::string typeName(const T* ptr= NULL)
+    static std::string typeName(const T* ptr= nullptr)
     {
         return BaseClass::defaultTypeName(ptr);
     }
@@ -97,7 +97,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    static std::string className(const T* ptr= NULL)
+    static std::string className(const T* ptr= nullptr)
     {
         return BaseClass::defaultClassName(ptr);
     }
@@ -108,7 +108,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    static std::string namespaceName(const T* ptr= NULL)
+    static std::string namespaceName(const T* ptr= nullptr)
     {
         return BaseClass::defaultNamespaceName(ptr);
     }
@@ -119,7 +119,7 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    static std::string templateName(const T* ptr= NULL)
+    static std::string templateName(const T* ptr= nullptr)
     {
         return BaseClass::defaultTemplateName(ptr);
     }
@@ -131,12 +131,12 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
-    static std::string shortName( const T* ptr = NULL, BaseObjectDescription* = NULL )
+    static std::string shortName( const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
         std::string shortname = T::className(ptr);
         if( !shortname.empty() )
         {
-            *shortname.begin() = ::tolower(*shortname.begin());
+            *shortname.begin() = char(::tolower(*shortname.begin()));
         }
         return shortname;
     }
@@ -166,7 +166,7 @@ public:
     /// Returns true if the DDGNode needs to be updated
     bool isDirty(const core::ExecParams* params = nullptr) const
     {
-        return dirtyFlags[currentAspect(params)].dirtyValue;
+        return dirtyFlags[size_t(currentAspect(params))].dirtyValue;
     }
 
     /// Indicate the value needs to be updated

@@ -65,7 +65,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream& o, const Tag& t)
     {
-        return o << (std::string)t;
+        return o << std::string(t);
     }
 
     friend std::istream& operator>>(std::istream& i, Tag& t)

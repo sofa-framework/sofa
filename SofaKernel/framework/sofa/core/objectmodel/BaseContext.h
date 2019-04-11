@@ -168,7 +168,7 @@ public:
     class GetObjectsCallBack
     {
     public:
-        virtual ~GetObjectsCallBack() {}
+      virtual ~GetObjectsCallBack() {}
         virtual void operator()(void* ptr) = 0;
     };
 
@@ -310,10 +310,11 @@ public:
     public:
         Container* dest;
         GetObjectsCallBackT(Container* d) : dest(d) {}
+        virtual ~GetObjectsCallBackT() override {}
         void operator()(void* ptr) override
-        {
-            dest->push_back(reinterpret_cast<T*>(ptr));
-        }
+	{
+	    dest->push_back(reinterpret_cast<T*>(ptr));
+	}
     };
 
     /// Generic list of objects access template wrapper, possibly searching up or down from the current context

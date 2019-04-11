@@ -32,6 +32,17 @@ namespace objectmodel
 
 std::map<sofa::helper::TypeInfo, ClassInfo*> ClassInfo::classes;
 
+ClassInfo::ClassInfo(const std::type_info* ti)
+    : pt(ti)
+{
+    classes[sofa::helper::TypeInfo(*ti)] = this;
+}
+
+ClassInfo::~ClassInfo()
+{
+}
+
+
 } // namespace objectmodel
 
 } // namespace core
