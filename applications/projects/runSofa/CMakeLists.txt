@@ -61,6 +61,7 @@ install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION
 
 install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/qt.conf" DESTINATION bin COMPONENT applications)
 
 if(APPLE AND SOFA_BUILD_APP_BUNDLE)
     find_package(CImgPlugin REQUIRED)

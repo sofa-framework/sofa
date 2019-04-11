@@ -178,6 +178,7 @@ if(Qt5Core_FOUND)
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
+    get_filename_component(QT_DIR ${QT_LIBRARIES_DIR} DIRECTORY)
     # Get Qt plugins dir
     list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
     if(TARGET ${QT_PLUGIN_ANY})
@@ -194,19 +195,27 @@ if(Qt5Core_FOUND)
     install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
     # Install Qt WebEngine deps 
     file(GLOB QT_WEBENGINE_DEPS
-        "${QT_LIBRARIES_DIR}/libQt5Network${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5OpenGL${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5Positioning${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5PrintSupport${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5Qml${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5Quick${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5QuickWidgets${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5WebChannel${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5WebEngineCore${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5Xml${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5XmlPatterns${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5Network${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5OpenGL${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5Positioning${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5PrintSupport${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5Qml${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5Quick${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5QuickWidgets${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5WebChannel${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5WebEngineCore${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5Xml${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5XmlPatterns${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
     sofa_install_libraries(${QT_WEBENGINE_DEPS})
+    if(WIN32)
+        install(FILES "${QT_DIR}/bin/QtWebEngineProcess.exe" DESTINATION bin COMPONENT applications)
+    else()
+        # Copy in bin too, see qt.conf in runSofa
+        install(FILES "${QT_DIR}/libexec/QtWebEngineProcess" DESTINATION bin COMPONENT applications)
+    endif()
+    install(DIRECTORY "${QT_DIR}/resources/" DESTINATION resources COMPONENT resources)
+    install(DIRECTORY "${QT_DIR}/translations/qtwebengine_locales/" DESTINATION translations/qtwebengine_locales COMPONENT resources)
     # Install Qt XCB libraries
     file(GLOB QT_XCB_LIBRARIES
         "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
