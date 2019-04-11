@@ -170,9 +170,8 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     // check triangle created element
     TetrahedronSetTopologyContainer::Triangle triangle = topoCon->getTriangle(0);
     EXPECT_EQ(triangle[0], 2);
-    EXPECT_EQ(triangle[1], 22);
-    EXPECT_EQ(triangle[2], 11);
-
+    EXPECT_EQ(triangle[1], 11);
+    EXPECT_EQ(triangle[2], 25);    
 
     // check TetrahedraAroundTriangle buffer access
     EXPECT_EQ(elemAroundTriangles.size(), nbrTriangle);
@@ -185,7 +184,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
     // check TetrahedraAroundTriangle buffer element for this file
     EXPECT_EQ(elemATriangle[0], 0);
-    EXPECT_EQ(elemATriangle[1], 1);
+    EXPECT_EQ(elemATriangle[1], 3);
 
 
     // check TrianglesInTetrahedron buffer acces
@@ -199,7 +198,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     for (size_t i = 0; i < triangleInElem.size(); i++)
         EXPECT_EQ(triangleInElem[i], triangleInElemM[i]);
 
-    sofa::helper::fixed_array<int, 4> triangleInElemTruth(2, 3, 1, 0);
+    sofa::helper::fixed_array<int, 4> triangleInElemTruth(0, 1, 2, 3);
     for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(triangleInElem[i], triangleInElemTruth[i]);
 

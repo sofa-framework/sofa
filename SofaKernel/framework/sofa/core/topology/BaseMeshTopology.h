@@ -334,6 +334,9 @@ public:
 
 };
 
+// map of triangles orientation inside a tetrahedron.
+static const unsigned int trianglesOrientationInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0},{0,2,1}};
+
 } // namespace topology
 
 } // namespace core
