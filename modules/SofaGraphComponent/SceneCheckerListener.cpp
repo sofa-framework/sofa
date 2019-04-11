@@ -40,7 +40,7 @@ namespace _scenechecking_
 
 SceneCheckerListener::SceneCheckerListener()
 {
-    m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
+    //m_sceneChecker.addCheck(SceneCheckAPIChange::newSPtr());
     m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
     m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
     m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
@@ -54,7 +54,8 @@ SceneCheckerListener* SceneCheckerListener::getInstance()
 
 void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
 {
-    m_sceneChecker.validate(node.get());
+    if(node.get())
+        m_sceneChecker.validate(node.get());
 }
 
 

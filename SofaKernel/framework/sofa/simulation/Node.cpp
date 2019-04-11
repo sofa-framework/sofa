@@ -661,6 +661,34 @@ Node* Node::getTreeNode(const std::string& name) const
     return result;
 }
 
+Node* Node::getNodeInGraph(const std::string& absolutePath) const
+{
+    if (absolutePath[0] != '/')
+        return nullptr;
+
+    std::string p = absolutePath.substr(1);
+    if (p == "")
+        return dynamic_cast<Node*>(this->getRootContext());
+
+    Node* ret = nullptr;
+    Node* parent = dynamic_cast<Node*>(this->getRootContext());
+    while (p != "")
+    {
+        std::string nodeName = p.substr(0, p.find('/'));
+        ret = parent->getChild(nodeName);
+        if (!ret)
+            return nullptr;
+        if (p.find('/') == std::string::npos)
+            p = "";
+        else
+            p = p.substr(p.find('/') +1);
+        parent = ret;
+    }
+    if (!ret)
+        return nullptr;
+    return ret;
+}
+
 /// Get parent node (or NULL if no hierarchy or for root node)
 sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
 {
