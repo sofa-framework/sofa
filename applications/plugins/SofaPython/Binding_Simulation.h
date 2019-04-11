@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BINDING_H
-#define BINDING_H
+#ifndef BINDING_SIMULATION_H
+#define BINDING_SIMULATION_H
 
-#include <SofaPython/config.h>
+#include "PythonMacros.h"
+#include <sofa/simulation/Simulation.h>
 
-/// registers "Sofa" python module with sofa types & methods into python framework
-SOFA_SOFAPYTHON_API void bindSofaPythonModule(PyObject * module = nullptr);
+SP_DECLARE_CLASS_TYPE(Simulation)
 
-#endif // BINDING_H
+#endif // BINDING_SIMULATION_H

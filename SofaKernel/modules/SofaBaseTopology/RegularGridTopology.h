@@ -76,6 +76,7 @@ public:
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
      * */
     Vector3 getPointInGrid(int i, int j, int k) const override;
+    virtual int findPoint(const Vector3& pos);
 
 
     /// set the spatial extent

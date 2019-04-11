@@ -31,6 +31,7 @@ set(HEADER_FILES
     Binding_OptionsGroupData.h
     Binding_BoundingBoxData.h
     Binding_GridTopology.h
+    Binding_GUIManager.h
     Binding_LinearSpring.h
     Binding_Link.h
     Binding_Mapping.h
@@ -48,8 +49,10 @@ set(HEADER_FILES
     Binding_PythonScriptDataEngine.h
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
+    Binding_Simulation.h
     Binding_SofaModule.h
 #    Binding_SubsetMultiMapping.h
+    Binding_SparseGridTopology.h
     Binding_Topology.h
     Binding_Vector.h
     Binding_VectorLinearSpringData.h
@@ -92,6 +95,7 @@ set(SOURCE_FILES
     Binding_OptionsGroupData.cpp
     Binding_BoundingBoxData.cpp
     Binding_GridTopology.cpp
+    Binding_GUIManager.cpp
     Binding_LinearSpring.cpp
     Binding_Link.cpp
     Binding_Mapping.cpp
@@ -109,8 +113,10 @@ set(SOURCE_FILES
     Binding_PythonScriptDataEngine.cpp
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
+    Binding_Simulation.cpp
     Binding_SofaModule.cpp
 #    Binding_SubsetMultiMapping.cpp
+    Binding_SparseGridTopology.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
     Binding_VectorLinearSpringData.cpp
@@ -167,6 +173,11 @@ list(APPEND HEADER_FILES
     )
 endif()
 
+GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(LIBRARY_NAME ${LIBRARY_NAME}_d)
+endif()
+add_definitions("-DLIBRARY_NAME=${LIBRARY_NAME}")
 # TODO: Get rid of absolute paths in SofaPython
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
@@ -194,7 +205,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC "$<INSTALL_INTERFACE:include>"
     )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaGuiMain SofaComponentMisc SofaComponentGeneral SofaSimulationGraph ${PYTHON_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE SofaExporter)
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)

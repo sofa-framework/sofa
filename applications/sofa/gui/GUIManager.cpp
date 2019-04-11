@@ -48,7 +48,7 @@ BaseGUI* GUIManager::currentGUI = nullptr;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
 const char* GUIManager::valid_guiname = nullptr;
 ArgumentParser* GUIManager::currentArgumentParser = nullptr;
-
+std::string  GUIManager::sofa_prefix;
 
 BaseGUI* GUIManager::getGUI()
 {
@@ -206,6 +206,30 @@ int GUIManager::Init(const char* argv0, const char* name)
         first = false;
     }
 
+    if (sofa_prefix.empty())
+        sofa_prefix = Utils::getSofaPathPrefix();
+
+    // Read the paths to the share/ and examples/ directories from etc/sofa.ini,
+    const std::string etcDir = sofa_prefix + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+
+    // and add them to DataRepository
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        std::string shareDir = iniFileValues["SHARE_DIR"];
+        if (!FileSystem::isAbsolute(shareDir))
+            shareDir = etcDir + "/" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!FileSystem::isAbsolute(examplesDir))
+            examplesDir = etcDir + "/" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
+
     if (currentGUI)
         return 0; // already initialized
 
@@ -280,6 +304,14 @@ void GUIManager::SetScene(sofa::simulation::Node::SPtr groot, const char* filena
         currentGUI->configureGUI(groot);
     }
 
+}
+
+void GUIManager::SetSofaPrefix(const char* path) {
+    sofa_prefix = path;
+}
+
+const char * GUIManager::GetSofaPrefix() {
+    return sofa_prefix.c_str();
 }
 
 int GUIManager::MainLoop(sofa::simulation::Node::SPtr groot, const char* filename)

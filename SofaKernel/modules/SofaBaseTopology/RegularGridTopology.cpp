@@ -171,6 +171,24 @@ Vector3 RegularGridTopology::getPointInGrid(int i, int j, int k) const
     return d_p0.getValue()+dx*i+dy*j+dz*k;
 }
 
+int RegularGridTopology::findPoint(const Vector3& pos)
+{
+    Vector3 p = pos-d_p0.getValue();
+    SReal x = p*dx*inv_dx2;
+    SReal y = p*dy*inv_dy2;
+    SReal z = p*dz*inv_dz2;
+    int ix = int(x+1000000)-1000000; // Do not round toward 0...
+    int iy = int(y+1000000)-1000000;
+    int iz = int(z+1000000)-1000000;
+
+    if (ix < 0 || iy < 0 || iz < 0)
+        return -1;
+
+    if (ix > d_n.getValue()[0] || iy > d_n.getValue()[1]|| iz > d_n.getValue()[2])
+        return -1;
+
+    return getIndex(ix, iy, iz);
+}
 
 /// return the cube containing the given point (or -1 if not found).
 int RegularGridTopology::findCube(const Vector3& pos)

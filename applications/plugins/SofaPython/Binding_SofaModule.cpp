@@ -57,6 +57,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::component;
 
 #include <sofa/simulation/Node.h>
+#ifdef SOFA_HAVE_DAG
+#include <SofaSimulationGraph/DAGSimulation.h>
+#endif
+#include <SofaSimulationTree/TreeSimulation.h>
+
 using namespace sofa::simulation;
 
 using sofa::helper::Utils ;
@@ -906,7 +911,113 @@ static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static constexpr const char* addPluginRepository_DOC =
+R"DOC(
+Adds a plugin repository path.
 
+:param path: The repository's directory path
+:type path: str
+)DOC";
+static PyObject * Sofa_addPluginRepository(PyObject *, PyObject *arg)
+{
+    const char *path;
+    if (!PyArg_ParseTuple(arg, "s", &path))
+        return NULL;
+    sofa::helper::system::PluginRepository.addFirstPath(path);
+
+    return Py_None;
+}
+
+static constexpr const char* createSimulation_DOC =
+R"DOC(
+Creates a new simulation
+
+:param type: (optional) The simulation's type (DAG or TREE, default DAG if supported, TREE otherwise)
+:param name: (optional) The simulation's name
+:type type: str
+:type name: str
+:return: The simulation
+:rtype: sofa::simulation::Simulation
+)DOC";
+static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
+{
+    const char * type_ptr = nullptr;
+    const char * name_ptr = nullptr;
+    sofa::simulation::Simulation * obj = nullptr;
+    std::string type, name;
+
+#ifdef SOFA_HAVE_DAG
+    const char * error_msg = "Sofa::createSimulation needs either 'DAG' or 'TREE' as first argument.";
+#else
+    const char * error_msg = "Sofa::createSimulation only supports 'TREE' as first argument.";
+#endif
+
+
+    if (!PyArg_ParseTuple(arg, "|ss", &type_ptr, &name_ptr)) {
+        SP_MESSAGE_ERROR(error_msg);
+        return nullptr;
+    }
+
+    if (type_ptr and strlen(type_ptr))
+        type = std::string(type_ptr);
+#ifdef SOFA_HAVE_DAG
+    else
+        type = std::string("DAG");
+#else
+    else
+        type = std::string("TREE");
+#endif
+
+    if (name_ptr and strlen(name_ptr))
+        name = std::string(name_ptr);
+
+#ifdef SOFA_HAVE_DAG
+    if (type == "DAG")
+        obj = new sofa::simulation::graph::DAGSimulation();
+    else
+#endif
+    if(type == "TREE")
+        obj = new sofa::simulation::tree::TreeSimulation();
+
+    if (obj == nullptr) {
+        SP_MESSAGE_ERROR(error_msg);
+        return nullptr;
+    }
+
+    if (!name.empty())
+        obj->setName(name);
+
+    return sofa::PythonFactory::toPython(obj);
+}
+
+static constexpr const char* setSimulation_DOC =
+R"DOC(
+Set a simulation as the main simulation
+
+:param simulation: The simulation
+:type simulation: sofa::simulation::Simulation
+)DOC";
+static PyObject * Sofa_setSimulation(PyObject *, PyObject *arg)
+{
+    PyObject * simulation;
+    sofa::simulation::Simulation * obj;
+
+    if (!PyArg_ParseTuple(arg, "O", &simulation)) {
+        SP_MESSAGE_ERROR("Sofa::setSimulation needs a Simulation object.");
+        return NULL;
+    }
+
+    obj = sofa::py::unwrap<sofa::simulation::Simulation>(simulation);
+    if (obj == nullptr) {
+        SP_MESSAGE_ERROR("Sofa::setSimulation needs a valid Simulation object.");
+        return NULL;
+    }
+
+    sofa::simulation::setSimulation(obj);
+
+
+    return Py_None;
+}
 
 /// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
@@ -939,6 +1050,9 @@ SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (cla
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
+SP_MODULE_METHOD_DOC(Sofa,addPluginRepository, addPluginRepository_DOC)
+SP_MODULE_METHOD_DOC(Sofa,createSimulation, createSimulation_DOC)
+SP_MODULE_METHOD_DOC(Sofa,setSimulation, setSimulation_DOC)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
