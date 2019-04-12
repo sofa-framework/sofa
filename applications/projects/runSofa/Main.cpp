@@ -423,7 +423,8 @@ int main(int argc, char** argv)
         sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
     }
 
-    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
+    const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str(), &sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 

@@ -54,7 +54,7 @@ public:
     bool canWriteFileExtension(const char *extension) override ;
 
     /// load the file
-    virtual Node::SPtr load(const char *filename) override ;
+    virtual Node::SPtr doLoad(const char *filename, const std::vector<std::string>* sceneArgs) override ;
 
     /// write the file
     void write(Node* node, const char *filename) override ;

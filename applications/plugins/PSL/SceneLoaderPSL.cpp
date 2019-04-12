@@ -104,8 +104,9 @@ void SceneLoaderPSL::write(sofa::simulation::Node* n, const char *filename)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPSL::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPSL::doLoad(const char *filename, const std::vector<std::string>* sceneArgs)
 {
+    SOFA_UNUSED(sceneArgs);
     PythonEnvironment::gil lock(__func__);
 
     std::stringstream s ;

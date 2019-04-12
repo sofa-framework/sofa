@@ -796,7 +796,10 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-    mSimulation = simulation::getSimulation()->load ( filename.c_str(), reload );
+
+    const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+    mSimulation = simulation::getSimulation()->load ( filename.c_str(), reload, &sceneArgs);
+
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
     {

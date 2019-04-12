@@ -37,6 +37,7 @@
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/helper/ArgumentParser.h>
 #include <sofa/core/CategoryLibrary.h>
 
 #include <sofa/helper/AdvancedTimer.h>
@@ -71,7 +72,8 @@ using sofa::gui::BaseViewer ;
 
 using sofa::PythonFactory ;
 
-
+#include <string>
+#include <vector>
 
 /// set the viewer resolution
 static PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
@@ -487,7 +489,8 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
     if (loader)
     {
-        Node::SPtr node = loader->load(filename);
+        const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+        Node::SPtr node = loader->load(filename, &sceneArgs);
         return PythonFactory::toPython(node.get());
     }
 
