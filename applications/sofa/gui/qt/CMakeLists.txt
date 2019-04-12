@@ -160,9 +160,6 @@ if(Qt5Core_FOUND)
     find_package(Qt5 COMPONENTS Gui OpenGL WebEngine WebEngineWidgets REQUIRED)
 
     set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::WebEngine Qt5::WebEngineWidgets)
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5WebEngine_INCLUDE_DIRS} ${Qt5WebEngineWidgets_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5WebEngine_LIBRARIES} ${Qt5WebEngineWidgets_LIBRARIES})
-    # target_include_directories(${EXT_QT_INCLUDES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
@@ -178,7 +175,6 @@ if(Qt5Core_FOUND)
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
-    get_filename_component(QT_DIR ${QT_LIBRARIES_DIR} DIRECTORY)
     # Get Qt plugins dir
     list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
     if(TARGET ${QT_PLUGIN_ANY})
@@ -191,6 +187,8 @@ if(Qt5Core_FOUND)
             set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
         endif()
     endif()
+    # Get Qt dir
+    get_filename_component(QT_DIR ${QT_PLUGINS_DIR} DIRECTORY)
     # Install Qt plugins
     install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
     # Install Qt WebEngine deps 
@@ -202,20 +200,26 @@ if(Qt5Core_FOUND)
         "${QT_LIBRARIES_DIR}/*Qt5Qml${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/*Qt5Quick${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/*Qt5QuickWidgets${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QT_LIBRARIES_DIR}/*Qt5Svg${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/*Qt5WebChannel${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/*Qt5WebEngineCore${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/*Qt5Xml${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/*Qt5XmlPatterns${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-    sofa_install_libraries(${QT_WEBENGINE_DEPS})
     if(WIN32)
-        install(FILES "${QT_DIR}/bin/QtWebEngineProcess.exe" DESTINATION bin COMPONENT applications)
-    else()
-        # Copy in bin too, see qt.conf in runSofa
-        install(FILES "${QT_DIR}/libexec/QtWebEngineProcess" DESTINATION bin COMPONENT applications)
+        sofa_copy_libraries(${QT_WEBENGINE_DEPS})
     endif()
-    install(DIRECTORY "${QT_DIR}/resources/" DESTINATION resources COMPONENT resources)
-    install(DIRECTORY "${QT_DIR}/translations/qtwebengine_locales/" DESTINATION translations/qtwebengine_locales COMPONENT resources)
+    sofa_install_libraries(${QT_WEBENGINE_DEPS})
+    if(NOT APPLE)
+        if(WIN32)
+            install(PROGRAMS "${QT_DIR}/bin/QtWebEngineProcess.exe" DESTINATION bin COMPONENT applications)
+        else()
+            # Copy in bin too, see qt.conf in runSofa
+            install(PROGRAMS "${QT_DIR}/libexec/QtWebEngineProcess" DESTINATION bin COMPONENT applications)
+        endif()
+        install(DIRECTORY "${QT_DIR}/resources/" DESTINATION resources COMPONENT resources)
+        install(DIRECTORY "${QT_DIR}/translations/qtwebengine_locales/" DESTINATION translations/qtwebengine_locales COMPONENT resources)
+    endif()
     # Install Qt XCB libraries
     file(GLOB QT_XCB_LIBRARIES
         "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
@@ -236,7 +240,7 @@ add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FIL
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLoader SofaOpenglVisual SofaMiscForceField)
-target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
 target_link_libraries(${PROJECT_NAME} PRIVATE SofaExporter)
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
