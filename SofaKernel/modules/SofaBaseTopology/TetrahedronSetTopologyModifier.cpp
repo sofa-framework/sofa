@@ -120,102 +120,120 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
     const TetrahedronID tetrahedronIndex = (TetrahedronID)m_tetrahedron.size();
 
-    if (m_container->hasTrianglesInTetrahedron())
-    {
-        for (PointID j=0; j<4; ++j)
+    // update nbr point if needed
+    unsigned int nbrP = m_container->getNbPoints();
+    for(unsigned int i=0; i<4; ++i)
+        if (t[i] + 1 > nbrP) // point not well init
         {
-            Triangle e1 (t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][0]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][1]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][2]]);
-            TriangleID triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
-
-            if(triangleIndex == InvalidID)
-            {
-                // first create the traingle
-                sofa::helper::vector< Triangle > v;
-                v.push_back(e1);
-                addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
-
-                triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
-                assert(triangleIndex != InvalidID);
-
-                sofa::helper::vector< TriangleID > triangleIndexList;
-                triangleIndexList.push_back(triangleIndex);
-                addTrianglesWarning(v.size(), v, triangleIndexList);
-            }
-
-            //m_container->m_trianglesInTetrahedron.resize(triangleIndex+1);
-            m_container->m_trianglesInTetrahedron.resize(tetrahedronIndex+1);
-            m_container->m_trianglesInTetrahedron[tetrahedronIndex][j]= triangleIndex;
+            nbrP = t[i] + 1;
+            m_container->setNbPoints(nbrP);
         }
+
+    // update m_tetrahedraAroundVertex
+    if (m_container->m_tetrahedraAroundVertex.size() < nbrP)
+        m_container->m_tetrahedraAroundVertex.resize(nbrP);
+
+    for (PointID j=0; j<4; ++j)
+    {
+        sofa::helper::vector< TetrahedronID > &shell = m_container->m_tetrahedraAroundVertex[t[j]];
+        shell.push_back( tetrahedronIndex );
     }
 
-    if (m_container->hasEdgesInTetrahedron())
+    // update triangle-tetrahedron cross buffers
+    if (m_container->m_trianglesInTetrahedron.size() < tetrahedronIndex+1)
+        m_container->m_trianglesInTetrahedron.resize(tetrahedronIndex+1);
+
+    for (PointID j=0; j<4; ++j)
     {
-        for (EdgeID j=0; j<6; ++j)
+        Triangle e1 (t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][0]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][1]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][2]]);
+        TriangleID triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
+
+        if(triangleIndex == InvalidID)
         {
-            int p0=-1,p1=-1;
+            // first create the traingle
+            sofa::helper::vector< Triangle > v;
+            v.push_back(e1);
+            addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
 
-            // compute the index of edges in tetra
-            if (j<3)
+            triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
+            assert(triangleIndex != InvalidID);
+            if (triangleIndex == InvalidID)
             {
-                p0=0; p1=j+1;
-            }
-            else if (j<5)
-            {
-                p0=1; p1=j-1;
-            }
-            else
-            {
-                p0=2; p1=3;
+                msg_error() << "Triangle creation: " << e1 << " failed in addTetrahedronProcess. Triangle will not be added in buffers.";
+                continue;
             }
 
-            EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
-            // we must create the edge
+            sofa::helper::vector< TriangleID > triangleIndexList;
+            triangleIndexList.push_back(triangleIndex);
+            addTrianglesWarning(v.size(), v, triangleIndexList);
+        }
+
+        // update m_trianglesInTetrahedron
+        m_container->m_trianglesInTetrahedron[tetrahedronIndex][j]= triangleIndex;
+
+        // update m_tetrahedraAroundTriangle
+        if (m_container->m_tetrahedraAroundTriangle.size() < m_container->getNbTriangles())
+            m_container->m_tetrahedraAroundTriangle.resize(m_container->getNbTriangles());
+
+        sofa::helper::vector< TetrahedronID > &shell = m_container->m_tetrahedraAroundTriangle[triangleIndex];
+        shell.push_back( tetrahedronIndex );
+    }
+
+
+    // update edge-tetrahedron cross buffers
+    if (m_container->m_edgesInTetrahedron.size() < tetrahedronIndex+1)
+        m_container->m_edgesInTetrahedron.resize(tetrahedronIndex+1);
+
+    for (EdgeID j=0; j<6; ++j)
+    {
+        int p0=-1,p1=-1;
+
+        // compute the index of edges in tetra
+        if (j<3)
+        {
+            p0=0; p1=j+1;
+        }
+        else if (j<5)
+        {
+            p0=1; p1=j-1;
+        }
+        else
+        {
+            p0=2; p1=3;
+        }
+
+        EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+        // we must create the edge
+        if (edgeIndex == InvalidID)
+        {
+            sofa::helper::vector< Edge > v;
+            Edge e1(t[p0],t[p1]);
+            v.push_back(e1);
+
+            addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+
+            edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+            assert(edgeIndex != InvalidID);
             if (edgeIndex == InvalidID)
             {
-                sofa::helper::vector< Edge > v;
-                Edge e1(t[p0],t[p1]);
-                v.push_back(e1);
-
-                addEdgesProcess((const sofa::helper::vector< Edge > &) v);
-
-                edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
-                assert(edgeIndex != InvalidID);
-
-                sofa::helper::vector< EdgeID > edgeIndexList;
-                edgeIndexList.push_back(edgeIndex);
-                addEdgesWarning(v.size(), v, edgeIndexList);
+                msg_error() << "Edge creation: " << e1 << " failed in addTetrahedronProcess. Edge will not be added in buffers.";
+                continue;
             }
 
-            m_container->m_edgesInTetrahedron.resize(tetrahedronIndex+1);
-            m_container->m_edgesInTetrahedron[tetrahedronIndex][j]= edgeIndex;
+            sofa::helper::vector< EdgeID > edgeIndexList;
+            edgeIndexList.push_back(edgeIndex);
+            addEdgesWarning(v.size(), v, edgeIndexList);
         }
-    }
 
-    if (m_container->hasTetrahedraAroundVertex())
-    {
-        for (PointID j=0; j<4; ++j)
-        {
-            sofa::helper::vector< TetrahedronID > &shell = m_container->getTetrahedraAroundVertexForModification( t[j] );
-            shell.push_back( tetrahedronIndex );
-        }
-    }
+        // udpate m_edgesInTetrahedron
+        m_container->m_edgesInTetrahedron[tetrahedronIndex][j]= edgeIndex;
 
-    if (m_container->hasTetrahedraAroundEdge())
-    {
-        for (EdgeID j=0; j<6; ++j)
-        {
-            sofa::helper::vector< TetrahedronID > &shell = m_container->m_tetrahedraAroundEdge[m_container->m_edgesInTetrahedron[tetrahedronIndex][j]];
-            shell.push_back( tetrahedronIndex );
-        }
-    }
+        // update m_tetrahedraAroundEdge
+        if (m_container->m_tetrahedraAroundEdge.size() < m_container->getNbEdges())
+            m_container->m_tetrahedraAroundEdge.resize(m_container->getNbEdges());
 
-    if (m_container->hasTetrahedraAroundTriangle())
-    {
-        for (TriangleID j=0; j<4; ++j)
-        {
-            sofa::helper::vector< TetrahedronID > &shell = m_container->m_tetrahedraAroundTriangle[m_container->m_trianglesInTetrahedron[tetrahedronIndex][j]];
-            shell.push_back( tetrahedronIndex );
-        }
+        sofa::helper::vector< TetrahedronID > &shell = m_container->m_tetrahedraAroundEdge[edgeIndex];
+        shell.push_back( tetrahedronIndex );
     }
 
     m_tetrahedron.push_back(t);

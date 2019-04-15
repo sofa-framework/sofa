@@ -121,53 +121,67 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
 	}
 
     const QuadID quadIndex = (QuadID)m_container->getNumberOfQuads();
-
-    if(m_container->hasQuadsAroundVertex())
-    {
-        for(PointID j=0; j<4; ++j)
-        {
-            sofa::helper::vector< QuadID > &shell = m_container->getQuadsAroundVertexForModification( t[j] );
-            shell.push_back( quadIndex );
-        }
-    }
-
     helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
 
-    if(m_container->hasEdges())
-    {
-        for(PointID j=0; j<4; ++j)
+    // update nbr point if needed
+    unsigned int nbrP = m_container->getNbPoints();
+    for(unsigned int i=0; i<4; ++i)
+        if (t[i] + 1 > nbrP) // point not well init
         {
-            EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%4], t[(j+2)%4]);
-
-            if(edgeIndex == InvalidID)
-            {
-                // first create the edges
-                sofa::helper::vector< Edge > v(1);
-                Edge e1 (t[(j+1)%4], t[(j+2)%4]);
-                v[0] = e1;
-
-                addEdgesProcess((const sofa::helper::vector< Edge > &) v);
-
-                edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
-                assert(edgeIndex != InvalidID);
-
-                sofa::helper::vector< EdgeID > edgeIndexList;
-                edgeIndexList.push_back((EdgeID) edgeIndex);
-                addEdgesWarning(v.size(), v, edgeIndexList);
-            }
-
-            if(m_container->hasEdgesInQuad())
-            {
-                m_container->m_edgesInQuad.resize(quadIndex+1);
-                m_container->m_edgesInQuad[quadIndex][j]= edgeIndex;
-            }
-
-            if(m_container->hasQuadsAroundEdge())
-            {
-                sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundEdge[m_container->m_edgesInQuad[quadIndex][j]];
-                shell.push_back( quadIndex );
-            }
+            nbrP = t[i] + 1;
+            m_container->setNbPoints(nbrP);
         }
+
+    // update m_quadsAroundVertex
+    if (m_container->m_quadsAroundVertex.size() < nbrP)
+        m_container->m_quadsAroundVertex.resize(nbrP);
+
+    for(PointID j=0; j<4; ++j)
+    {
+        sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundVertex[t[j]];
+        shell.push_back( quadIndex );
+    }
+
+
+    // update edge-quad cross buffers
+    if (m_container->m_edgesInQuad.size() < quadIndex+1)
+        m_container->m_edgesInQuad.resize(quadIndex+1);
+
+    for(PointID j=0; j<4; ++j)
+    {
+        EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%4], t[(j+2)%4]);
+
+        if(edgeIndex == InvalidID)
+        {
+            // first create the edges
+            sofa::helper::vector< Edge > v(1);
+            Edge e1 (t[(j+1)%4], t[(j+2)%4]);
+            v[0] = e1;
+
+            addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+
+            edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+            assert(edgeIndex != InvalidID);
+            if (edgeIndex == InvalidID)
+            {
+                msg_error() << "Edge creation: " << e1 << " failed in addQuadProcess. Edge will not be added in buffers.";
+                continue;
+            }
+
+            sofa::helper::vector< EdgeID > edgeIndexList;
+            edgeIndexList.push_back((EdgeID) edgeIndex);
+            addEdgesWarning(v.size(), v, edgeIndexList);
+        }
+
+        // update m_edgesInQuad
+        m_container->m_edgesInQuad[quadIndex][j]= edgeIndex;
+
+        // update m_quadsAroundEdge
+        if(m_container->m_quadsAroundEdge.size() < m_container->getNbEdges())
+            m_container->m_quadsAroundEdge.resize(m_container->getNbEdges());
+
+        sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundEdge[edgeIndex];
+        shell.push_back( quadIndex );
     }
 
     m_quad.push_back(t);
