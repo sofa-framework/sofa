@@ -86,23 +86,20 @@ void Hexa2QuadTopologicalMapping::init()
 
             QuadSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
+            // Clear output topology
             to_tstc->clear();
 
+            // Set the same number of points
             toModel->setNbPoints(fromModel->getNbPoints());
-
-            for (int i=0; i<fromModel->getNbPoints(); i++)
-            {
-                toModel->addPoint(fromModel->getPX(i), fromModel->getPY(i), fromModel->getPZ(i));
-            }
 
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
             const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
-
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
+
             const bool flipN = flipNormals.getValue();
 
             for (unsigned int i=0; i<quadArray.size(); ++i)
@@ -110,24 +107,17 @@ void Hexa2QuadTopologicalMapping::init()
                 if (fromModel->getHexahedraAroundQuad(i).size()==1)
                 {
                     core::topology::BaseMeshTopology::Quad q = quadArray[i];
+
                     if(flipN)
-                    {
-                        unsigned int tmp3 = q[3];
-                        unsigned int tmp2 = q[2];
-                        q[3] = q[0];
-                        q[2] = q[1];
-                        q[1] = tmp2;
-                        q[0] = tmp3;
-                    }
-                    to_tstm->addQuadProcess(q);
+                        to_tstc->addQuad(q[3], q[2], q[1], q[0]);
+                    else
+                        to_tstc->addQuad(q[0], q[1], q[2], q[3]);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]= (unsigned int)Loc2GlobVec.size()-1;
                 }
             }
 
-            //to_tstm->propagateTopologicalChanges();
-            to_tstm->notifyEndingEvent();
             //to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
 
