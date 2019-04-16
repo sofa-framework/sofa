@@ -299,9 +299,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             }
 
             // add new elements to output topology
-            m_outTopoModifier->addTrianglesProcess(triangles_to_create);
-            m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, triangleId_to_create);
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addTriangles(triangles_to_create);
 
             // remove elements not anymore on part of the border
             sofa::helper::vector< BaseMeshTopology::TriangleID > local_triangleId_to_remove;
@@ -424,11 +422,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
-
-            m_outTopoModifier->addTrianglesProcess(triangles_to_create) ;
-            m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-            m_outTopoModifier->propagateTopologicalChanges();
-
+            m_outTopoModifier->addTriangles(triangles_to_create);
             break;
         }
 
