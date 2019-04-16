@@ -44,6 +44,7 @@ VideoRecorderFFMPEG::VideoRecorderFFMPEG()
     , m_counter(-1)
     , m_ffmpeg(nullptr)
     , m_buffer(nullptr)
+    , m_invalidParam(false)
 {
 
 }
@@ -57,6 +58,17 @@ VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
 bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec )
 {
     msg_error_when(codec.empty(), "VideoRecorderFFMPEG") << "No codec specified";
+    msg_error_when(width & 1, "VideoRecorderFFMPEG")  << "Width  not divisible by 2 ("  << width << "x" << height << ").  Resize the viewport";
+    msg_error_when(height & 1, "VideoRecorderFFMPEG") << "Height not divisible by 2 ("  << width << "x" << height << ").  Resize the viewport";
+    
+    if ( codec.empty() || (width & 1) || ( height & 1) )
+    {
+        m_invalidParam = true;        
+        return false;
+    }
+
+    m_invalidParam = false;
+    
     //std::string filename = findFilename();
     m_filename = filename;
     m_framerate = framerate;
@@ -102,6 +114,11 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 
 void VideoRecorderFFMPEG::addFrame()
 {
+    if (m_invalidParam)
+    {
+        return;
+    }
+        
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
    
@@ -121,6 +138,11 @@ void VideoRecorderFFMPEG::addFrame()
 
 void VideoRecorderFFMPEG::finishVideo()
 {    
+    if (m_invalidParam)
+    {
+        return;
+    } 
+    
 #ifdef WIN32
     _pclose(m_ffmpeg);
 #else

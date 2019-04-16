@@ -57,6 +57,8 @@ protected:
     FILE* m_ffmpeg;
     unsigned char* m_buffer;
 
+    bool m_invalidParam;
+    
 public:
 
     VideoRecorderFFMPEG();
