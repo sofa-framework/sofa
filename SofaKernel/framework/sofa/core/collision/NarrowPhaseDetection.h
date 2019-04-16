@@ -144,7 +144,7 @@ protected:
 protected:
     DetectionOutputMap m_outputsMap;
 
-    size_t m_primitiveTestCount;
+    size_t m_primitiveTestCount; // used only for statistics purpose
 };
 
 } // namespace collision

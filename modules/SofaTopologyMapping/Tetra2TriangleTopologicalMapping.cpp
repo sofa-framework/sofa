@@ -422,6 +422,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
+
             m_outTopoModifier->addTrianglesProcess(triangles_to_create) ;
             m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
             m_outTopoModifier->propagateTopologicalChanges();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -2422,6 +2422,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
     if (_draw.getValue() && this->m_topology->getNbTriangles() != 0)
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
         // Draw triangle surfaces
@@ -2451,6 +2454,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             vparams->drawTool()->drawTriangles(pos,_drawColor.getValue());
         }
 
+        if (!vparams->displayFlags().getShowWireFrame())
         {//   Draw triangle edges for better display
             const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
             std::vector<defaulttype::Vector3> pos;
@@ -2462,26 +2466,16 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                     pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
                     pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
                 }
-            }
-            else
-            {
+            } else {
                 for (size_t i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
-
-                    defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
-                    std::vector<defaulttype::Vector3> tmpPos;
-                    tmpPos.resize(3);
 
                     for (unsigned int j = 0; j<3; j++)
                     {
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
                         pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
                     }
-                    bary /= 3;
-
-                    for (unsigned int j = 0; j<3; j++)
-                        pos.push_back(bary*0.1 + tmpPos[j]*0.9);
                 }
             }
 
@@ -2490,6 +2484,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
                 c /= 2;
             vparams->drawTool()->drawLines(pos, 1.0f, colorL);
         }
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
     }
 
 

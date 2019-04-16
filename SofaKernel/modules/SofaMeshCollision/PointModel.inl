@@ -52,7 +52,7 @@ namespace collision
 
 template<class DataTypes>
 TPointModel<DataTypes>::TPointModel()
-    : d_bothSide(initData(&d_bothSide, false, "d_bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
+    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(NULL)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
