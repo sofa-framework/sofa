@@ -67,7 +67,6 @@ if(Qt5Core_FOUND)
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
-    message("QT_LIBRARIES_DIR = ${QT_LIBRARIES_DIR}")
     # Get Qt plugins dir
     list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
     if(TARGET ${QT_PLUGIN_ANY})
@@ -80,7 +79,6 @@ if(Qt5Core_FOUND)
             set(QT_PLUGINS_DIR "${QT_LIBRARIES_DIR}/qt5/plugins")
         endif()
     endif()
-    message("QT_PLUGINS_DIR = ${QT_PLUGINS_DIR}")
     # Install Qt plugins
     install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
     # Install Qt XCB libraries
@@ -144,4 +142,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QGLVIEWER_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(${PROJECT_NAME} ${QGLVIEWER_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${QGLVIEWER_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR ${PROJECT_NAME})

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -519,11 +519,8 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
     assert(out7.size()==0 || out7.size()==1);
     if(out7.size()==1)
         return (int) (out7[0]);
-    else {
-        msg_warning() << "Hexahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "; "
-                         << v5 << "; " << v6 << "; " << v7 << "; " << v8 << "]";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
@@ -1205,7 +1202,38 @@ void HexahedronSetTopologyContainer::clear()
     QuadSetTopologyContainer::clear();
 }
 
+void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
+{
+    // set this container to dirty
+    m_hexahedronTopologyDirty = true;
 
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
+{
+    m_hexahedronTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
 {

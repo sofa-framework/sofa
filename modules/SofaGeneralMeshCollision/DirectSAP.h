@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,7 @@ class EndPoint;
   */
 class SOFA_GENERAL_MESH_COLLISION_API DSAPBox{
 public:
-    DSAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
+    DSAPBox(Cube c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
 
     void update(int axis,double alarmDist);
 
@@ -69,11 +69,7 @@ public:
 
     double squaredDistance(const DSAPBox & other,int axis)const;
 
-
-    inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
-    }
+    void show() const;
 
     Cube cube;
     EndPoint * min;
@@ -134,7 +130,7 @@ private:
 protected:
     DirectSAP();
 
-    ~DirectSAP();
+    ~DirectSAP() override;
 
     std::vector<EndPoint*> _to_del;//EndPoint arrays to delete when deleting DirectSAP
 public:
@@ -148,17 +144,17 @@ public:
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
-    virtual void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
+    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
-    virtual void endBroadPhase() override;
-    virtual void beginNarrowPhase() override;
+    void endBroadPhase() override;
+    void beginNarrowPhase() override;
 
 
     /* for debugging */
-    virtual void draw(const core::visual::VisualParams*) override {}
+    void draw(const core::visual::VisualParams*) override {}
 
-    inline virtual bool needsDeepBoundingTree()const override {return false;}
+    inline bool needsDeepBoundingTree()const override {return false;}
 };
 
 

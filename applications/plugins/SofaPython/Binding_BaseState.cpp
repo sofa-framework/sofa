@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,7 @@ static PyObject * BaseState_resize(PyObject *self, PyObject * args)
     BaseState* obj = get_basestate( self );
     int newSize;
     if (!PyArg_ParseTuple(args, "i", &newSize)) {
-        return NULL;
+        return nullptr;
     }
 
     obj->resize(newSize);
@@ -49,7 +49,7 @@ static PyObject * BaseState_getSize(PyObject *self, PyObject * args)
     BaseState* obj = get_basestate( self );
 
     if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
+        return nullptr;
     }
 
     return PyInt_FromSize_t(obj->getSize());

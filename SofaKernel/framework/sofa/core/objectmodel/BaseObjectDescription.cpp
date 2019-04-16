@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,7 @@ BaseObjectDescription::~BaseObjectDescription()
 /// Get the associated object (or NULL if it is not created yet)
 Base* BaseObjectDescription::getObject()
 {
-    return NULL;
+    return nullptr;
 }
 
 /// Get the object instance name
@@ -69,7 +69,7 @@ void BaseObjectDescription::setName(const std::string& name)
 /// Get the parent node
 BaseObjectDescription* BaseObjectDescription::getParent() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /// Get the file where this description was read from. Useful to resolve relative file paths.

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,8 +29,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 namespace sofa
 {
@@ -48,39 +48,31 @@ using sofa::core::objectmodel::BaseContext;
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem()
 {
-//    serr << "resetSystem()" << sendl;
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    if (!currentGroup->systemMatrix)
     {
-        setGroup(g);
-        if (!currentGroup->systemMatrix)
-        {
-//            serr << "new systemMatrix" << sendl;
-            currentGroup->systemMatrix = new GraphScatteredMatrix();
-        }
-        if (!currentGroup->systemRHVector)
-        {
-//            serr << "new systemRHVector" << sendl;
-            currentGroup->systemRHVector = new GraphScatteredVector(NULL,core::VecDerivId::null());
-        }
-        if (!currentGroup->systemLHVector)
-        {
-//            serr << "new systemLHVector" << sendl;
-            currentGroup->systemLHVector = new GraphScatteredVector(NULL,core::VecDerivId::null());
-        }
-        currentGroup->systemRHVector->reset();
-        currentGroup->systemLHVector->reset();
-        currentGroup->solutionVecId = core::MultiVecDerivId::null();
-        currentGroup->needInvert = true;
+        currentGroup->systemMatrix = new GraphScatteredMatrix();
     }
+    if (!currentGroup->systemRHVector)
+    {
+        currentGroup->systemRHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());
+    }
+    if (!currentGroup->systemLHVector)
+    {
+        currentGroup->systemLHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());
+    }
+    currentGroup->systemRHVector->reset();
+    currentGroup->systemLHVector->reset();
+    currentGroup->solutionVecId = core::MultiVecDerivId::null();
+    currentGroup->needInvert = true;
+
 }
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(int)
 {
-//    serr << "resizeSystem()" << sendl;
     if (!currentGroup->systemMatrix) currentGroup->systemMatrix = new GraphScatteredMatrix();
-    if (!currentGroup->systemRHVector) currentGroup->systemRHVector = new GraphScatteredVector(NULL,core::VecDerivId::null());
-    if (!currentGroup->systemLHVector) currentGroup->systemLHVector = new GraphScatteredVector(NULL,core::VecDerivId::null());
+    if (!currentGroup->systemRHVector) currentGroup->systemRHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());
+    if (!currentGroup->systemLHVector) currentGroup->systemLHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());
     currentGroup->systemRHVector->reset();
     currentGroup->systemLHVector->reset();
     currentGroup->solutionVecId = core::MultiVecDerivId::null();
@@ -90,10 +82,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMatrix(GraphScatteredMatrix* matrix)
 {
-//    serr << "resizeSystem()" << sendl;
     currentGroup->systemMatrix = matrix;
-    if (!currentGroup->systemRHVector) currentGroup->systemRHVector = new GraphScatteredVector(NULL,core::VecDerivId::null());
-    if (!currentGroup->systemLHVector) currentGroup->systemLHVector = new GraphScatteredVector(NULL,core::VecDerivId::null());
+    if (!currentGroup->systemRHVector) currentGroup->systemRHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());
+    if (!currentGroup->systemLHVector) currentGroup->systemLHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());
     currentGroup->systemRHVector->reset();
     currentGroup->systemLHVector->reset();
     currentGroup->solutionVecId = core::MultiVecDerivId::null();
@@ -103,14 +94,8 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
-//    serr << "setSystemMBKMatrix(" << mparams->mFactor() << ", " << mparams->bFactor() << ", " << mparams->kFactor() << ")" << sendl;
-    createGroups(mparams);
     resetSystem();
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
-    {
-        setGroup(g);
-        currentGroup->systemMatrix->setMBKFacts(mparams);
-    }
+    currentGroup->systemMatrix->setMBKFacts(mparams);
 }
 
 template<>
@@ -121,44 +106,27 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemRHVector(core::MultiVecDerivId v)
 {
-//    serr << "setSystemRHVector(" << v << ")" << sendl;
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
-    {
-        setGroup(g);
-        currentGroup->systemRHVector->set(v);
-    }
+    currentGroup->systemRHVector->set(v);
 }
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemLHVector(core::MultiVecDerivId v)
 {
-//    serr << "setSystemLHVector(" << v << ")" << sendl;
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
-    {
-        setGroup(g);
-        currentGroup->solutionVecId = v;
-        currentGroup->systemLHVector->set(v);
-    }
+    currentGroup->solutionVecId = v;
+    currentGroup->systemLHVector->set(v);
+
 }
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::solveSystem()
 {
-//    serr << "solveSystem()" << sendl;
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    if (currentGroup->needInvert)
     {
-        setGroup(g);
-        if (currentGroup->needInvert)
-        {
-//            serr << "->invert(M)" << sendl;
-            this->invert(*currentGroup->systemMatrix);
-//            serr << "<<invert(M)" << sendl;
-            currentGroup->needInvert = false;
-        }
-//        serr << "->solve(M, " << currentGroup->systemLHVector->id()  << ", " << currentGroup->systemRHVector->id() << ")" << sendl;
-        this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
-//        serr << "<<solve(M, " << currentGroup->systemLHVector->id()  << ", " << currentGroup->systemRHVector->id() << ")" << sendl;
+        this->invert(*currentGroup->systemMatrix);
+        currentGroup->needInvert = false;
     }
+    this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
+
 }
 
 template<>
@@ -170,26 +138,11 @@ GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVect
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const defaulttype::BaseVector* /*f*/)
 {
-//    FullVector<Real> temporaryVector;
-//    temporaryVector.resize(currentGroup->systemMatrix->rowSize());
-//    internalData.projectForceInConstraintSpace(&temporaryVector,f);
-
-//    std::cout << "temporaryVector1 = " << temporaryVector << std::endl;
-
-//    executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->systemRHVector->id(), &temporaryVector, &(currentGroup->matrixAccessor)) );
-
-//    this->solve(*currentGroup->systemMatrix,*currentGroup->systemLHVector,*currentGroup->systemRHVector);
-
-//    executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->systemLHVector->id(), &temporaryVector, &(currentGroup->matrixAccessor)) );
-
-//    std::cout << "temporaryVector2 = " << temporaryVector << std::endl;
-
-//    executeVisitor(simulation::MechanicalIntegrateConstraintsVisitor(core::ExecParams::defaultInstance(),&temporaryVector,positionFactor,velocityFactor,&(currentGroup->matrixAccessor)));
 }
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* /*params*/,defaulttype::BaseVector* /*f*/) {
-//todo
+    //todo
 }
 
 template<>
@@ -201,7 +154,7 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 template<>
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector()
 {
-    return new GraphScatteredVector(NULL,core::VecDerivId::null());
+    return new GraphScatteredVector(nullptr,core::VecDerivId::null());
 }
 
 template<>
@@ -211,7 +164,7 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 }
 
 template<>
-defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix() { return NULL; }
+defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix() { return nullptr; }
 
 template<>
 const core::behavior::MultiMatrixAccessor* 
@@ -221,10 +174,10 @@ MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>:
 }
 
 template<>
-defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector() { return NULL; }
+defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector() { return nullptr; }
 
 template<>
-defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector() { return NULL; }
+defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector() { return nullptr; }
 
 // Force template instantiation
 template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;

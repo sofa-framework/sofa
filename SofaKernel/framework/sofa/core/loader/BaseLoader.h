@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,7 +45,7 @@ public:
     virtual bool load() = 0;
     virtual bool canLoad() ;
 
-    virtual void parse(objectmodel::BaseObjectDescription *arg) override ;
+    void parse(objectmodel::BaseObjectDescription *arg) override ;
 
     void setFilename(std::string f)  ;
     const std::string &getFilename() ;
@@ -54,7 +54,7 @@ public:
 
 protected:
     BaseLoader() ;
-    virtual ~BaseLoader() ;
+    ~BaseLoader() override ;
 
     static void skipToEOL(FILE* f) ;
     static bool readLine(char* buf, int size, FILE* f) ;

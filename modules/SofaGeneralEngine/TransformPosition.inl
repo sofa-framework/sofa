@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <math.h>
+#include <cmath>
 #include <sofa/helper/RandomGenerator.h>
 
 #include <vector>
@@ -126,17 +126,17 @@ void TransformPosition<DataTypes>::selectTransformationMethod()
             else if (fname.size()>=4 && fname.substr(fname.size()-4)==".tfm")
                 getTransfoFromTfm();
             else
-                serr << "Unknown extension. Will use affine instead." << sendl;
+                msg_error() << "Unknown extension. Will use affine instead.";
         }
         else
         {
-            serr << "Filename not set. Will use affine instead" <<sendl;
+            msg_error() << "Filename not set. Will use affine instead";
         }
     }
     else
     {
         transformationMethod=TRANSLATION;
-        serr << "Error : Method " << f_method.getValue().getSelectedItem() << " is unknown. Wil use translation instead." <<sendl;
+        msg_error() << "Error : Method " << f_method.getValue().getSelectedItem() << " is unknown. Wil use translation instead.";
     }
 }
 
@@ -179,7 +179,7 @@ template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTfm()
 {
     std::string fname(this->f_filename.getFullPath());
-    sout << "Loading .tfm file " << fname << sendl;
+    msg_info() << "Loading .tfm file " << fname;
 
     std::ifstream stream(fname.c_str());
     if (stream)
@@ -213,7 +213,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 }
 
                 if (values.size() != 12)
-                    serr << "Error in file " << fname << sendl;
+                    msg_error() << "Error in file " << fname ;
                 else
                 {
                     for(unsigned int i = 0 ; i < 3; i++)
@@ -228,12 +228,12 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
             }
         }
 
-        if (!found) serr << "Transformation not found in " << fname << sendl;
+        if (!found) msg_error() << "Transformation not found in " << fname ;
         f_affineMatrix.setValue(mat);
     }
     else
     {
-        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
+        msg_error() << "Could not open file " << fname << sendl << "Matrix set to identity";
     }
 }
 
@@ -246,7 +246,7 @@ template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTrm()
 {
     std::string fname(this->f_filename.getFullPath());
-    sout << "Loading .trm file " << fname << sendl;
+    msg_info() << "Loading .trm file " << fname ;
 
     std::ifstream stream(fname.c_str());
     if (stream)
@@ -262,7 +262,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
 
             if (nbLines > 4)
             {
-                serr << "File with more than 4 lines" << sendl;
+                msg_error() << "File with more than 4 lines";
                 break;
             }
 
@@ -281,12 +281,12 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 {
                     if (vLine[i]!="")
                     {
-                        serr << "Should be a line of 3 values" << sendl;
+                        msg_error() << "Should be a line of 3 values";
                         break;
                     }
                 }
             }
-            else if (vLine.size()<3) {serr << "Should be a line of 3 values" << sendl;continue;}
+            else if (vLine.size()<3) {msg_error() << "Should be a line of 3 values";continue;}
 
             if (nbLines == 1)
             {
@@ -311,7 +311,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
     }
     else
     {
-        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
+        msg_error() << "Could not open file " << fname << sendl << "Matrix set to identity";
     }
 
 }
@@ -324,7 +324,7 @@ template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTxt()
 {
     std::string fname(this->f_filename.getFullPath());
-    sout << "Loading matrix file " << fname << sendl;
+    msg_info() << "Loading matrix file " << fname ;
 
     std::ifstream stream(fname.c_str());
     if (stream)
@@ -340,7 +340,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 
             if (nbLines > 4)
             {
-                serr << "Matrix is not 4x4" << sendl;
+                msg_error() << "Matrix is not 4x4";
                 break;
             }
 
@@ -359,12 +359,12 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
                 {
                     if (vLine[i]!="")
                     {
-                        serr << "Matrix is not 4x4." << sendl;
+                        msg_error() << "Matrix is not 4x4.";
                         break;
                     }
                 }
             }
-            else if (vLine.size()<4) {serr << "Matrix is not 4x4." << sendl;continue;}
+            else if (vLine.size()<4) {msg_error() << "Matrix is not 4x4.";continue;}
 
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
                 mat[nbLines-1][i] = (Real)atof(vLine[i].c_str());
@@ -374,7 +374,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
     }
     else
     {
-        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
+        msg_error() << "Could not open file " << fname << sendl << "Matrix set to identity";
     }
 }
 

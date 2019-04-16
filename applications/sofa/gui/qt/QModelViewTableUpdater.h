@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -44,7 +44,7 @@ class QTableViewUpdater : public QTableView
     Q_OBJECT
 
 public:
-    QTableViewUpdater (QWidget * parent = 0);
+    QTableViewUpdater (QWidget * parent = nullptr);
 
 public slots:
     void setDisplayed(bool b);
@@ -56,10 +56,10 @@ class QTableModelUpdater : public QStandardItemModel
     Q_OBJECT
     bool m_isReadOnly ;
 public:
-    QTableModelUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * /*name*/ = 0 );
+    QTableModelUpdater ( int numRows, int numCols, QWidget * parent = nullptr, const char * /*name*/ = nullptr );
 
-    virtual Qt::ItemFlags flags(const QModelIndex&) const override ;
-    virtual QVariant data(const QModelIndex &index, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex&) const override ;
+    QVariant data(const QModelIndex &index, int role) const override;
 
     void setReadOnly(const bool isReadOnly) ;
 

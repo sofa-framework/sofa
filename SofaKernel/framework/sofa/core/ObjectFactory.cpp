@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -113,7 +113,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     std::stringstream availabletemplate;
-    objectmodel::BaseObject::SPtr object = NULL;
+    objectmodel::BaseObject::SPtr object = nullptr;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
@@ -130,6 +130,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     ///      type precision into a different one.
     ///  (4) rebuild the template string by joining them all with ','.
     std::vector<std::string> usertemplatenames = sofa::helper::split(usertemplatename, ',');
+    std::vector<std::string> deprecatedTemplates;
     for(auto& name : usertemplatenames)
     {
         const sofa::defaulttype::TemplateAlias* alias;
@@ -139,7 +140,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                arg->logError("The deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to remove the use templates.");
+                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to use the generic 'Vec3' templates or one of 'Vec3f/Vec3d' that match your the precision of your Sofa binary.");
             }
 
             name = alias->first;
@@ -238,8 +239,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     {
         if(object->findData(kv.first)==nullptr)
         {
-            msg_warning("ObjectFactoy") << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
-                                        << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
+            msg_warning(object.get()) << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
+                                      << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
 
             todelete.push_back(kv.first);
         }
@@ -257,8 +258,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             object->addAlias(object->findData(kv.first), alias.c_str()) ;
 
             /// The Alias is used in the argument
-            const char* val = arg->getAttribute(alias) ;
-            if( val ){
+            const std::string val(arg->getAttribute(alias));
+            if( !val.empty() ){
                 newdesc.setAttribute( alias, val );
             }
         }
@@ -267,13 +268,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
     /// We managed to create an object but there is error message in the log. Thus we emit them
     /// as warning to this object.
-    if(!arg->getErrors().empty())
+    if(!deprecatedTemplates.empty())
     {
-        std::stringstream msg;
-        for (std::vector< std::string >::const_iterator it = arg->getErrors().begin(); it != arg->getErrors().end(); ++it)
-            msg << " " << *it << msgendl ;
-
-        msg_deprecated(object.get()) << msg.str() ;
+        msg_deprecated(object.get()) << sofa::helper::join(deprecatedTemplates, msgendl) ;
     }
 
     return object;

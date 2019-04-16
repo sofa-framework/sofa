@@ -9,6 +9,7 @@ set(SOURCE_FILES
     core/objectmodel/BaseLink_test.cpp
     core/objectmodel/BaseObjectDescription_test.cpp
     core/objectmodel/DataFileName_test.cpp
+    core/objectmodel/DataCallback_test.cpp
     core/DataEngine_test.cpp
     defaulttype/MapMapSparseMatrixEigenUtils_test.cpp
     defaulttype/MatTypes_test.cpp
@@ -22,6 +23,7 @@ set(SOURCE_FILES
     helper/vector_test.cpp
     helper/gl/GLSLShader_test.cpp
     helper/io/MeshOBJ_test.cpp
+    helper/io/XspLoader_test.cpp
     helper/system/FileMonitor_test.cpp
     helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp

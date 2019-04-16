@@ -64,7 +64,7 @@ target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURC
 target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include>")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(GTest 2.6.2 "gtest" "")
+sofa_generate_package(NAME GTest VERSION 2.6.2 TARGETS "gtest" INCLUDE_INSTALL_DIR "gtest" INCLUDE_SOURCE_DIR "include/gtest")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/gtest
         COMPONENT GTest_headers

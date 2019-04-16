@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include "HeadlessRecorder.h"
 #include "VideoRecorderFFMpeg.h"
+#include <sofa/helper/AdvancedTimer.h>
+
 namespace sofa
 {
 
@@ -480,13 +482,16 @@ void HeadlessRecorder::paintGL()
 
 void HeadlessRecorder::step()
 {
+    sofa::helper::AdvancedTimer::begin("Animate");
 #ifdef SOFA_SMP
     mg->step();
 #else
     getSimulation()->animate(groot.get());
 #endif
+    sofa::helper::AdvancedTimer::end("Animate");
     getSimulation()->updateVisual(groot.get());
     redraw();
+
 }
 
 void HeadlessRecorder::resetView()

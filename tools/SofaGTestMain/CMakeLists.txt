@@ -14,4 +14,4 @@ add_library(SofaGTestMain SofaGTestMain.cpp)
 target_link_libraries(SofaGTestMain SofaHelper SofaSimulationTree SofaSimulationGraph)
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} ${SOFAGTESTMAIN_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${SOFAGTESTMAIN_VERSION} TARGETS ${PROJECT_NAME})

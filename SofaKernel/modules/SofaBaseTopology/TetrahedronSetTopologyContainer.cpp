@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,8 +43,6 @@ int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 ///convention triangles in tetra (orientation interior)
-const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0},{0,2,1}};
-
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
@@ -261,22 +259,11 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
     {
         const Tetrahedron &t = m_tetrahedron[i];
 
-        for (PointID j=0; j<4; ++j)
+        for (TriangleID j=0; j<4; ++j)
         {
             PointID v[3];
-
-            if (j%2)
-            {
-                v[0]=t[(j+1)%4];
-                v[1]=t[(j+2)%4];
-                v[2]=t[(j+3)%4];
-            }
-            else
-            {
-                v[0]=t[(j+1)%4];
-                v[2]=t[(j+2)%4];
-                v[1]=t[(j+3)%4];
-            }
+            for (PointID k=0; k<3; ++k)
+                v[k] = t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][k]];
 
             // sort v such that v[0] is the smallest one
             while ((v[0]>v[1]) || (v[0]>v[2]))
@@ -459,10 +446,8 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 
     if (out3.size()==1)
         return (int) (out3[0]);
-    else {
-        msg_warning() << "Tetrahedron with indices: [" << v1 << "; " << v2 << "; " << v3 << "; " << v4 << "] not found.";
-        return InvalidID;
-    }
+
+    return InvalidID;
 }
 
 size_t TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
@@ -517,9 +502,9 @@ TetrahedronSetTopologyContainer::Edge TetrahedronSetTopologyContainer::getLocalE
 TetrahedronSetTopologyContainer::Triangle TetrahedronSetTopologyContainer::getLocalTrianglesInTetrahedron (const TriangleID i) const
 {
     assert(i<4);
-    return Triangle (trianglesInTetrahedronArray[i][0],
-            trianglesInTetrahedronArray[i][1],
-            trianglesInTetrahedronArray[i][2]);
+    return Triangle (sofa::core::topology::trianglesOrientationInTetrahedronArray[i][0],
+            sofa::core::topology::trianglesOrientationInTetrahedronArray[i][1],
+            sofa::core::topology::trianglesOrientationInTetrahedronArray[i][2]);
 }
 
 const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
@@ -1052,6 +1037,38 @@ sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedronID >& Tetrahed
     return m_removedTetraIndex;
 }
 
+void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
+{
+    // set this container to dirty
+    m_tetrahedronTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        if (CHECK_TOPOLOGY)
+            msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
+{
+    m_tetrahedronTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            if (CHECK_TOPOLOGY)
+                msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
+}
 
 void TetrahedronSetTopologyContainer::updateTopologyEngineGraph()
 {

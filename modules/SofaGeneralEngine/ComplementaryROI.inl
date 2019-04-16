@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -132,7 +132,7 @@ void ComplementaryROI<DataTypes>::doUpdate()
     for (unsigned int i=0;i<indices.size();++i)
         pointsInROI.push_back(position[indices[i]]);
 
-    sout << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" << sendl;
+    msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" ;
 }
 
 template <class DataTypes>

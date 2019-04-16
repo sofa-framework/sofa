@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,20 +38,15 @@ namespace animationloop
 class SOFA_CONSTRAINT_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    typedef sofa::simulation::CollisionAnimationLoop Inherit;
-
     SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
-protected:
-    FreeMotionAnimationLoop(simulation::Node* gnode);
-    virtual ~FreeMotionAnimationLoop();
+
 public:
-    virtual void step (const sofa::core::ExecParams* params, SReal dt) override;
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
+    void init() override;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    virtual void init() override;
-
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
-
-    /// Construction method called by ObjectFactory.
+    /// Construction method called by ObjectFactory. An animation loop can only
+    /// be created if
     template<class T>
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
@@ -62,14 +57,13 @@ public:
         return obj;
     }
 
-
     Data<bool> displayTime;
-
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
-
     Data<bool> d_threadSafeVisitor;
 
-protected :
+protected:
+    FreeMotionAnimationLoop(simulation::Node* gnode);
+    ~FreeMotionAnimationLoop() override ;
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;
     component::constraintset::LCPConstraintSolver::SPtr defaultSolver;

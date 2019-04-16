@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,6 +23,7 @@
 #include <sofa/simulation/StateChangeVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
@@ -31,13 +32,13 @@ namespace simulation
 {
 
 StateChangeVisitor::StateChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source)
-    : Visitor(params), root(true), source(source)
+    : Visitor(params), root(true), m_source(source)
 {
 }
 
 void StateChangeVisitor::processStateChange(core::behavior::BaseMechanicalState* obj)
 {
-    obj->handleStateChange(source);
+    obj->handleStateChange(m_source);
 }
 
 Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
@@ -50,9 +51,23 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
             return RESULT_PRUNE;
         }
     }
+
     if (node->mechanicalState && testTags(node->mechanicalState))
     {
         this->processStateChange(node->mechanicalState);
+    }
+
+    // TODO 2019-01-04: epernod remove this hack when mechanicalMapping could be updated directly form MechanicalObject through Data link
+    // search for mechanical mapping,
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        sofa::core::BaseMapping* obj = dynamic_cast<sofa::core::BaseMapping*>(it->get());
+        if (obj != NULL)
+        {
+            ctime_t t0=begin(node,obj);
+            obj->handleTopologyChange(); // update the specific TopologicalMapping
+            end(node,obj,t0);
+        }
     }
 
     root = false; // now we process child nodes

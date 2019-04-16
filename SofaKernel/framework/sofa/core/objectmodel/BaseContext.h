@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,7 +73,7 @@ public:
 
 protected:
     BaseContext();
-    virtual ~BaseContext();
+    ~BaseContext() override;
 
 private:
     BaseContext(const BaseContext&);
@@ -168,7 +168,7 @@ public:
     class GetObjectsCallBack
     {
     public:
-        virtual ~GetObjectsCallBack() {}
+      virtual ~GetObjectsCallBack() {}
         virtual void operator()(void* ptr) = 0;
     };
 
@@ -310,10 +310,11 @@ public:
     public:
         Container* dest;
         GetObjectsCallBackT(Container* d) : dest(d) {}
-        virtual void operator()(void* ptr)
-        {
-            dest->push_back(reinterpret_cast<T*>(ptr));
-        }
+        virtual ~GetObjectsCallBackT() override {}
+        void operator()(void* ptr) override
+	{
+	    dest->push_back(reinterpret_cast<T*>(ptr));
+	}
     };
 
     /// Generic list of objects access template wrapper, possibly searching up or down from the current context

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -53,10 +53,10 @@ Q_OBJECT
 
 public:
     DocBrowser(RealGUI* g) ;
-    ~DocBrowser() ;
+    ~DocBrowser() override ;
 
     void loadHtml(const std::string& filename) ;
-    virtual void showEvent(QShowEvent*) override ;
+    void showEvent(QShowEvent*) override ;
 
 public slots:
     void goToPrev() ;

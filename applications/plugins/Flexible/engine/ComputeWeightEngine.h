@@ -50,10 +50,10 @@ public:
 
 
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
     // Update the engine
-    void doUpdate();
+    void doUpdate() override;
 
 protected:
 

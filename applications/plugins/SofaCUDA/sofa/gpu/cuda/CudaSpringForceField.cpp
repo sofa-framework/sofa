@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,12 +32,12 @@ namespace core
 {
 namespace behavior {
 
-template class PairInteractionForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-template class PairInteractionForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3f1Types>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class PairInteractionForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-template class PairInteractionForceField<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }
@@ -49,27 +49,27 @@ namespace component
 namespace interactionforcefield
 {
 
-template class SpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-template class StiffSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-template class MeshSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-template class BoxStiffSpringForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3fTypes>;
 
-template class SpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
-template class StiffSpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
-template class MeshSpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
-template class BoxStiffSpringForceField<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3f1Types>;
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-template class StiffSpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-template class MeshSpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-template class BoxStiffSpringForceField<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3dTypes>;
 
-template class SpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
-template class StiffSpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
-template class MeshSpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
-template class BoxStiffSpringForceField<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace forcefield

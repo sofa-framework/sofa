@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,7 +40,7 @@ static PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject 
         int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            return NULL;
+            return nullptr;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -59,7 +59,7 @@ static PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args
         int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            return NULL;
+            return nullptr;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -78,7 +78,7 @@ static PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * a
         int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            return NULL;
+            return nullptr;
         }
         dx = (double)ix;
         dy = (double)iy;

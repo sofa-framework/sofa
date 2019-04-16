@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,7 +47,7 @@ public:
     SOFA_CLASS(DAGSimulation, Simulation);
 
     DAGSimulation();
-    ~DAGSimulation(); // this is a terminal class
+    ~DAGSimulation() override; // this is a terminal class
 
     /// create a new graph(or tree) and return its root node.
     virtual Node::SPtr createNewGraph(const std::string& name) override;
@@ -56,7 +56,7 @@ public:
     virtual Node::SPtr createNewNode(const std::string& name) override;
 
     /// Can the simulation handle a directed acyclic graph?
-    virtual bool isDirectedAcyclicGraph() override { return true; }
+    bool isDirectedAcyclicGraph() override { return true; }
 };
 
 /** Get the (unique) simulation which controls the scene.

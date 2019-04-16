@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -134,7 +134,7 @@ public:
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
     bool addAlias(std::string name, std::string target, bool force=false,
-          ClassEntry::SPtr* previous = NULL);
+          ClassEntry::SPtr* previous = nullptr);
 
     /// Reset an alias to a previous state
     ///
@@ -156,7 +156,7 @@ public:
 
     /// \copydoc addAlias
     static bool AddAlias(std::string name, std::string result, bool force=false,
-                         ClassEntry::SPtr* previous = NULL)
+                         ClassEntry::SPtr* previous = nullptr)
     {
         return getInstance()->addAlias(name, result, force, previous);
     }
@@ -197,26 +197,26 @@ template<class RealObject>
 class ObjectCreator : public ObjectFactory::Creator
 {
 public:
-    bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::canCreate(instance, context, arg);
     }
-    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::create(instance, context, arg);
     }
-    const std::type_info& type()
+    const std::type_info& type() override
     {
         return typeid(RealObject);
     }
-    virtual const objectmodel::BaseClass* getClass()
+    const objectmodel::BaseClass* getClass() override
     {
         return RealObject::GetClass();
     }
     /// The name of the library or executable containing the binary code for this component
-    virtual const char* getTarget()
+    const char* getTarget() override
     {
 #ifdef SOFA_TARGET
         return sofa_tostring(SOFA_TARGET);
@@ -225,14 +225,14 @@ public:
 #endif
     }
 
-    virtual const char* getHeaderFileLocation()
+    const char* getHeaderFileLocation() override
     {
         return RealObject::HeaderFileLocation();
     }
 
-    virtual std::string shortName(objectmodel::BaseObjectDescription* arg)
+    virtual std::string shortName(objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = NULL;
+        RealObject* instance = nullptr;
         return RealObject::shortName(instance,arg);
     }
 
@@ -289,7 +289,7 @@ public:
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
-        RealObject* p = NULL;
+        RealObject* p = nullptr;
         std::string classname = RealObject::className(p);
         std::string templatename = RealObject::templateName(p);
 

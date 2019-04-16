@@ -33,16 +33,16 @@ Q_OBJECT
 
 public:
     LabelPointImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~LabelPointImageToolBoxAction();
+    ~LabelPointImageToolBoxAction() override;
     
     sofa::component::engine::LabelPointImageToolBox* LPITB();
 
 private:
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor();
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override;
     
 private slots:
     void selectionPointButtonClick(bool);

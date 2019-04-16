@@ -41,8 +41,8 @@
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <algorithm>
 
 
@@ -139,7 +139,7 @@ namespace simulation
 			dt = this->gnode->getDt();
 
 
-		Task::Status status;
+		simulation::CpuTask::Status status;
 
 		typedef Node::Sequence<simulation::Node,true>::iterator ChildIterator;
 		for (ChildIterator it = gnode->child.begin(), itend = gnode->child.end(); it != itend; ++it)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -111,14 +111,14 @@ protected:
         resizeData();
     }
 
-    virtual ~MeshSplittingEngine()
+    ~MeshSplittingEngine() override
     {
 
     }
 
 
 public:
-    virtual void init() override
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -133,7 +133,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    override { resizeData(); update();  }
+    void reinit()    override { resizeData(); update();  }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override

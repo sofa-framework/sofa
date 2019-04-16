@@ -55,7 +55,7 @@ set(HEADER_FILES
     io/Image.h
     io/ImageDDS.h
     io/ImageRAW.h
-    io/MassSpringLoader.h
+    io/XspLoader.h
     io/Mesh.h
     io/MeshOBJ.h
     io/MeshGmsh.h
@@ -145,6 +145,7 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
+    StringUtils.cpp
     TagFactory.cpp
     UnitTest.cpp
     Utils.cpp
@@ -158,13 +159,13 @@ set(SOURCE_FILES
     io/Image.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
-    io/MassSpringLoader.cpp
     io/Mesh.cpp
     io/MeshOBJ.cpp
     io/MeshGmsh.cpp
     io/MeshTopologyLoader.cpp
     io/SphereLoader.cpp
     io/TriangleLoader.cpp
+    io/XspLoader.cpp
     io/bvh/BVHJoint.cpp
     io/bvh/BVHLoader.cpp
     io/bvh/BVHMotion.cpp
@@ -314,6 +315,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif()
 
 if(APPLE)
+    find_library(ICONV iconv)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${ICONV})
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,12 +42,6 @@ namespace component
 
 namespace forcefield
 {
-
-
-//#define PLOT_CURVE //lose some FPS
-
-
-//using sofa::helper::vector;
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -105,19 +99,17 @@ protected:
 
 protected:
     /// ForceField API
-    //{
     TriangularFEMForceField();
 
-    virtual ~TriangularFEMForceField();
+    ~TriangularFEMForceField() override;
 public:
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+    void init() override;
+    void reinit() override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
-    //}
 
     /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInformation
@@ -232,12 +224,6 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    //const VecElement *_indexedElements;
-    //Data< VecCoord > _initialPoints; ///< the intial positions of the points
-    //const VecCoord* _initialPoints; //previously stored the mechanical state initial points but use it directly now
-    //     int _method; ///< the computation method of the displacements
-
-
     /// Get/Set methods
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val)
@@ -255,17 +241,7 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
-    void setMethod(std::string methodName) {
-        if (methodName == "small")
-            this->setMethod(SMALL);
-        else
-        {
-            if (methodName != "large")
-                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
-            this->setMethod(LARGE);
-        }
-    }
-
+    void setMethod(const std::string& methodName);
 
 public:
 
@@ -310,8 +286,6 @@ protected :
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     ////////////// large displacements method
-    //sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
-    //sofa::helper::vector< Transformation > _rotations;
     void initLarge(int i, Index&a, Index&b, Index&c);
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);

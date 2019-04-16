@@ -28,7 +28,7 @@ template <class DataTypes>
 class ComplianceTester : public BaseComplianceTester
 {
 public:
-	virtual bool canConvert(core::objectmodel::BaseObject* o);
+	bool canConvert(core::objectmodel::BaseObject* o) override;
 };
 
 /**
@@ -41,7 +41,7 @@ public:
 
 protected:
     CompliantSleepController();
-    virtual ~CompliantSleepController();
+    ~CompliantSleepController() override;
 
 	virtual void collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs);
 
@@ -62,7 +62,7 @@ class SOFA_Compliant_API GetConstrainedContextPairs : public simulation::Visitor
 public:
 	GetConstrainedContextPairs(const core::ExecParams* params, CompliantSleepController* sleepController, std::vector<CompliantSleepController::BaseContexts>& wakeupPairs);
 
-	virtual void processNodeBottomUp(simulation::Node* node);
+	void processNodeBottomUp(simulation::Node* node) override;
 
 protected:
 	void processObject(simulation::Node* node, core::objectmodel::BaseObject* o);

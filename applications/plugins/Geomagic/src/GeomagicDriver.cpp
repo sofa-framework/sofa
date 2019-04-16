@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -201,6 +201,7 @@ GeomagicDriver::GeomagicDriver()
     , m_simulationStarted(false)
     , m_errorDevice(0)
     , m_isInContact(false)
+    , m_hHD(UINT_MAX)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -208,27 +209,32 @@ GeomagicDriver::GeomagicDriver()
 
 GeomagicDriver::~GeomagicDriver()
 {
-    hdMakeCurrentDevice(m_hHD);
-    
-    if (!m_hStateHandles.empty()) {
-        hdStopScheduler();
-    }
-
-
-    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
-            i != m_hStateHandles.end(); ++i)
-    {
-            hdUnschedule(*i);
-    }
-    m_hStateHandles.clear();
-
-    hdDisableDevice(m_hHD);
+    clearDevice();
 }
 
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void GeomagicDriver::init()
 {
     
+}
+
+void GeomagicDriver::clearDevice()
+{
+    hdMakeCurrentDevice(m_hHD);
+
+    if (!m_hStateHandles.empty()) {
+        hdStopScheduler();
+    }
+
+
+    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
+        i != m_hStateHandles.end(); ++i)
+    {
+        hdUnschedule(*i);
+    }
+    m_hStateHandles.clear();
+
+    hdDisableDevice(m_hHD);
 }
 
 void GeomagicDriver::bwdInit()
@@ -244,7 +250,7 @@ void GeomagicDriver::bwdInit()
 }
 
 
-void GeomagicDriver::initDevice()
+void GeomagicDriver::initDevice(int cptInitPass)
 {
     m_initVisuDone = false;
     m_errorDevice = 0;
@@ -254,10 +260,22 @@ void GeomagicDriver::initDevice()
     m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        msg_error() << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
-        d_omniVisu.setValue(false);
+    {        
         m_errorDevice = error.errorCode;
+        if (m_errorDevice == 769) // double initialisation, will try to close and reinit device
+        {
+            msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
+            m_hHD = hdGetCurrentDevice();
+            if (m_hHD != UINT_MAX && cptInitPass < 10) // Try clear and reinit device (10 times max)
+            {
+                clearDevice();
+                return initDevice(cptInitPass++);
+            }
+        }
+
+        msg_error() << "Failed to initialize the device ID: " << m_hHD << " | Name: '" << d_deviceName.getValue().c_str() << "' | Error code returned: " << m_errorDevice;
+        d_omniVisu.setValue(false);
+
         //init the positionDevice data to avoid any crash in the scene
         m_posDeviceVisu.clear();
         m_posDeviceVisu.resize(1);
@@ -325,7 +343,7 @@ void GeomagicDriver::initDevice()
     m_omniVisualNode = rootContext->createChild("omniVisu " + d_deviceName.getValue());
     m_omniVisualNode->updateContext();
 
-    rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
+    rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> >();
     m_omniVisualNode->addObject(rigidDOF);
     rigidDOF->name.setValue("rigidDOF");
 
@@ -356,7 +374,7 @@ void GeomagicDriver::initDevice()
             visualNode[i].visu->updateVisual();
 
             // create the visual mapping and at it to the graph //
-            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
+            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, ExtVec3Types > >();
             visualNode[i].node->addObject(visualNode[i].mapping);
             visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
             visualNode[i].mapping->name.setValue("RigidMapping");
@@ -381,7 +399,7 @@ void GeomagicDriver::initDevice()
 
     for (int j = 0; j<NVISUALNODE; j++)
     {
-        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3, float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec3 > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
         for (size_t i = 0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(d_scale.getValue());
         visualNode[j].mapping->points.endEdit();

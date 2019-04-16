@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -48,7 +48,7 @@ namespace qt
 
 GenGraphForm::GenGraphForm(QWidget *parent)
     : QDialog(parent)
-    , currentTask(NULL)
+    , currentTask(nullptr)
     , settingFilter(false)
 {
     setupUi(this);
@@ -375,7 +375,7 @@ void GenGraphForm::killAllTasks()
     {
         currentTask->kill();
         delete currentTask;
-        currentTask = NULL;
+        currentTask = nullptr;
     }
     tasks.clear();
 }
@@ -383,17 +383,17 @@ void GenGraphForm::killAllTasks()
 void GenGraphForm::addTask(QStringList argv)
 {
     tasks.push_back(argv);
-    if (currentTask == NULL)
+    if (currentTask == nullptr)
         runTask();
 }
 
 void GenGraphForm::taskFinished()
 {
     std::cout << "TASK FINISHED" << std::endl;
-    if (currentTask == NULL) return;
+    if (currentTask == nullptr) return;
 
     delete currentTask;
-    currentTask = NULL;
+    currentTask = nullptr;
     if (tasks.empty())
     {
         displayButton->setEnabled(true);

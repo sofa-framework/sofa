@@ -1,4 +1,4 @@
-#include "InitTasks.h"
+#include <sofa/simulation/InitTasks.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
@@ -13,46 +13,46 @@ namespace sofa
 
     namespace simulation
     {
-
-        InitPerThreadDataTask::InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus)
-            : Task(pStatus), IdFactorygetIDMutex(mutex), _atomicCounter(atomicCounter)
+        
+        InitPerThreadDataTask::InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status)
+        : CpuTask(status), IdFactorygetIDMutex(mutex), _atomicCounter(atomicCounter)
         {}
-
+        
         InitPerThreadDataTask::~InitPerThreadDataTask()
         {
         }
-
-        bool InitPerThreadDataTask::run()
+        
+        Task::MemoryAlloc InitPerThreadDataTask::run()
         {
-
+            
             core::ExecParams::defaultInstance();
-
+            
             core::ConstraintParams::defaultInstance();
-
+            
             core::MechanicalParams::defaultInstance();
-
+            
             core::visual::VisualParams::defaultInstance();
-
+            
             {
                 // to solve IdFactory<Base>::getID() problem in AdvancedTimer functions
                 std::lock_guard<std::mutex> lock(*IdFactorygetIDMutex);
-
+                
                 //spinMutexLock lock( IdFactorygetIDMutex );
-
+                
                 helper::AdvancedTimer::begin("Animate");
                 helper::AdvancedTimer::end("Animate");
             }
-
+            
             _atomicCounter->fetch_sub(1, std::memory_order_acq_rel);
-
+            
             while (_atomicCounter->load(std::memory_order_relaxed) > 0)
             {
                 // yield while waiting  
                 std::this_thread::yield();
             }
-            return true;
+            return Task::MemoryAlloc::Dynamic;
         }
-
+        
         
         // temp remove this function to use the global one
         void initThreadLocalData()
@@ -63,7 +63,7 @@ namespace sofa
             
             std::mutex  InitThreadSpecificMutex;
             
-            Task::Status status;
+            CpuTask::Status status;
             const int nbThread = scheduler->getThreadCount();
             
             for (int i = 0; i<nbThread; ++i)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,7 @@ static PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        return NULL;
+        return nullptr;
     }
     obj->setNbPoints(nb);
     Py_RETURN_NONE;
@@ -64,7 +64,7 @@ static PyObject * Topology_getPX(PyObject *self, PyObject * args)
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->getPX(i));
 }
@@ -75,7 +75,7 @@ static PyObject * Topology_getPY(PyObject *self, PyObject * args)
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->getPY(i));
 }
@@ -86,7 +86,7 @@ static PyObject * Topology_getPZ(PyObject *self, PyObject * args)
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->getPZ(i));
 }

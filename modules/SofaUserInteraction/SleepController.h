@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,8 +62,8 @@ class StateTester : public BaseStateTester
 {
 public:
     virtual ~StateTester();
-	virtual bool canConvert(core::behavior::BaseMechanicalState* baseState);
-	virtual bool wantsToSleep(core::behavior::BaseMechanicalState* baseState, SReal speedThreshold, SReal rotationThreshold);
+	bool canConvert(core::behavior::BaseMechanicalState* baseState) override;
+	bool wantsToSleep(core::behavior::BaseMechanicalState* baseState, SReal speedThreshold, SReal rotationThreshold) override;
 };
 
 /**
@@ -79,9 +79,9 @@ class SOFA_USER_INTERACTION_API SleepController : public core::objectmodel::Base
 public:
     SOFA_CLASS(SleepController, core::objectmodel::BaseObject);
 
-	virtual void init() override;
-	virtual void reset() override;
-	virtual void handleEvent(core::objectmodel::Event*) override;
+	void init() override;
+	void reset() override;
+	void handleEvent(core::objectmodel::Event*) override;
 
 	Data<double> d_minTimeSinceWakeUp; ///< Do not do anything before objects have been moving for this duration
 	Data<SReal> d_speedThreshold; ///< Speed value under which we consider a particule to be immobile
@@ -89,7 +89,7 @@ public:
 
 protected:
     SleepController();
-    virtual ~SleepController();
+    ~SleepController() override;
 
 	void putNodesToSleep();
 	void wakeUpNodes();
@@ -128,7 +128,7 @@ class SOFA_USER_INTERACTION_API GetStatesThatCanSleep : public simulation::Visit
 public:
 	GetStatesThatCanSleep(const core::ExecParams* params, std::vector<core::behavior::BaseMechanicalState*>& states);
 
-	virtual void processNodeBottomUp(simulation::Node* node);
+	void processNodeBottomUp(simulation::Node* node) override;
 
 protected:
 	std::vector<core::behavior::BaseMechanicalState*>& m_states;
@@ -142,7 +142,7 @@ class SOFA_USER_INTERACTION_API UpdateAllSleepStates : public simulation::Visito
 public:
 	UpdateAllSleepStates(const core::ExecParams* params);
 
-	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
+	Visitor::Result processNodeTopDown(simulation::Node* node) override;
 };
 
 } // namespace controller

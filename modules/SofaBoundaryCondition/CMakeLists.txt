@@ -121,19 +121,6 @@ list(APPEND SOURCE_FILES
     ProjectDirectionConstraint.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        BuoyantForceField.h
-        BuoyantForceField.inl
-        VaccumSphereForceField.h
-        VaccumSphereForceField.inl
-        )
-    list(APPEND SOURCE_FILES
-        BuoyantForceField.cpp
-        VaccumSphereForceField.cpp
-        )
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaEigen2Solver)

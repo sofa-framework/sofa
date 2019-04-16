@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ protected:
     ContactIndexMap contactIndex;
 
     BarycentricDistanceLMConstraintContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-    ~BarycentricDistanceLMConstraintContact();
+    ~BarycentricDistanceLMConstraintContact() override;
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 

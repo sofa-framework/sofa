@@ -63,7 +63,7 @@ class SOFA_Compliant_API SimpleAnimateVisitor : public Visitor {
     // (de)enabled through a boolean data in the animation loop,
     // possibly true by default, with a comment stating why this is
     // useful
-    virtual Result processNodeTopDown(simulation::Node* node) {
+    Result processNodeTopDown(simulation::Node* node) override {
 
         // early stop
         if(!node->isActive()) return Visitor::RESULT_PRUNE;

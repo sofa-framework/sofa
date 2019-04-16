@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/RGBAColor.h>
 
@@ -355,8 +354,8 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
 
-            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
-            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
             
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
@@ -364,8 +363,8 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
 
-            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
-            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
@@ -373,8 +372,8 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
 
-            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
-            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }

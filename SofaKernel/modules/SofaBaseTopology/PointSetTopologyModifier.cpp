@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -364,6 +364,7 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<Po
         propagateStateChanges();
     }
     m_container->removePoints(indices.size());
+
     sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
 }
 
@@ -398,19 +399,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    // Declare all engines to dirty:
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
-    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-    {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
-        topoEngine->setDirtyValue();
-    }
-
     this->propagateTopologicalEngineChanges();
-
-    // security to avoid loops
-    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-        (*it)->cleanDirty();
     
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
@@ -453,6 +442,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
+            std::cout << "PointSetTopologyModifier:update " << topoEngine->name << std::endl;
             topoEngine->update();
         }
     }

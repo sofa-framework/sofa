@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -119,7 +119,6 @@ void DirectSAP::reinit()
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }
 }
-
 
 inline bool DirectSAP::added(core::CollisionModel *cm) const
 {
@@ -323,6 +322,12 @@ void DirectSAP::beginNarrowPhase()
         }
     }
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+}
+
+inline void DSAPBox::show()const
+{
+    msg_info("DSAPBox") <<"MIN "<<cube.minVect()<< msgendl
+                        <<"MAX "<<cube.maxVect() ;
 }
 
 bool DSAPBox::overlaps(const DSAPBox &other,double alarmDist) const{

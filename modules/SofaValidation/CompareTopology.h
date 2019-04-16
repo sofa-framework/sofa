@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,12 +92,12 @@ class SOFA_VALIDATION_API CompareTopologyCreator: public simulation::Visitor
 public:
     CompareTopologyCreator(const core::ExecParams* params);
     CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i=true, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n; }
     void setCounter(int c) { counterCompareTopology = c; }
     void setCreateInMapping(bool b) { createInMapping=b; }
-    virtual const char* getClassName() const { return "CompareTopologyCreator"; }
+    const char* getClassName() const override { return "CompareTopologyCreator"; }
 
 protected:
     void addCompareTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode);
@@ -113,12 +113,12 @@ class SOFA_VALIDATION_API CompareTopologyResult: public simulation::Visitor
 {
 public:
     CompareTopologyResult(const core::ExecParams* params);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     unsigned int getTotalError() {return TotalError;}
     const std::vector <unsigned int>& getErrors() {return listError;}
     unsigned int getNumCompareTopology() { return numCompareTopology; }
-    virtual const char* getClassName() const { return "CompareTopologyResult"; }
+    const char* getClassName() const override { return "CompareTopologyResult"; }
 protected:
     unsigned int TotalError;
     std::vector <unsigned int> listError;

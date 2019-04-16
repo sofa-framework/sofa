@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -214,13 +214,6 @@ const std::string& Utils::getExecutablePath()
 const std::string& Utils::getExecutableDirectory()
 {
     static const std::string path = FileSystem::getParentDirectory(getExecutablePath());
-    return path;
-}
-
-
-const std::string& Utils::getPluginDirectory()
-{
-    static const std::string path = system::PluginRepository.getFirstPath();
     return path;
 }
 

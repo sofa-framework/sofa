@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,7 +69,7 @@ bool BaseContext::canChangeSleepingState() const { return false; }
 /// Gravity in the world coordinate system
 const BaseContext::Vec3& BaseContext::getGravity() const
 {
-    static const Vec3 G((SReal)0,(SReal)-9.81,(SReal)0);
+    static const Vec3 G(SReal(0),SReal(-9.81), SReal(0));
     return G;
 }
 
@@ -106,8 +106,8 @@ BaseContext* BaseContext::getRootContext() const
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
-    return NULL;
+    msg_warning("calling unimplemented getObject method");
+    return nullptr;
 }
 
 /// Generic object access, given a set of required tags, possibly searching up or down from the current context
@@ -115,8 +115,8 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
-    return NULL;
+    msg_warning("calling unimplemented getObject method");
+    return nullptr;
 }
 
 /// Generic object access, given a path from the current context
@@ -124,8 +124,8 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*ta
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string& /*path*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
-    return NULL;
+    msg_warning("calling unimplemented getObject method");
+    return nullptr;
 }
 
 /// Generic list of objects access, possibly searching up or down from the current context
@@ -133,7 +133,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string&
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObjects method" << sendl;
+    msg_warning("calling unimplemented getObject method");
 }
 
 /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
@@ -141,7 +141,7 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
-    serr << "calling unimplemented getObject method" << sendl;
+    msg_error("calling unimplemented getObject method");
 }
 
 /// Degrees-of-Freedom
@@ -197,18 +197,15 @@ core::visual::Shader* BaseContext::getShader() const
 /// Propagate an event
 void BaseContext::propagateEvent( const core::ExecParams*, Event* )
 {
-    serr<<"propagateEvent not overloaded, does nothing"<<sendl;
+    msg_warning("propagateEvent not overloaded, does nothing");
 }
 
 void BaseContext::executeVisitor(simulation::Visitor*, bool)
 {
-    serr<<"executeVisitor not overloaded, does nothing"<<sendl;
-    //assert(false);
+    msg_warning("executeVisitor not overloaded, does nothing");
 }
 
-std::ostream& operator << (std::ostream& out, const BaseContext&
-                          )
-
+std::ostream& operator << (std::ostream& out, const BaseContext&)
 {
     return out;
 }

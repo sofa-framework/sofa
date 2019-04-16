@@ -66,32 +66,6 @@ list(APPEND SOURCE_FILES
     SuturePointPerformer.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        ArticulatedHierarchyBVHController.h
-        ArticulatedHierarchyController.h
-        DisabledContact.h
-        EdgeSetController.h
-        EdgeSetController.inl
-        GraspingManager.h
-        InterpolationController.h
-        InterpolationController.inl
-        MechanicalStateControllerOmni.h
-        MechanicalStateControllerOmni.inl
-        NodeToggleController.h
-        )
-    list(APPEND SOURCE_FILES
-        ArticulatedHierarchyBVHController.cpp
-        ArticulatedHierarchyController.cpp
-        DisabledContact.cpp
-        EdgeSetController.cpp
-        GraspingManager.cpp
-        InterpolationController.cpp
-        MechanicalStateControllerOmni.cpp
-        NodeToggleController.cpp
-        )
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralRigid SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent SofaBaseVisual)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_USER_INTERACTION")

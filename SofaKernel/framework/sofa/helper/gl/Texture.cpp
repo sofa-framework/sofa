@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -293,13 +293,13 @@ void Texture::update()
                 for (unsigned i = 0; i < mipmaps; i++)
                     glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
                             image->getWidth(i), image->getHeight(i), 0, image->getMipmapSize(i) / 6,
-                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
+                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : nullptr);
         else
             for (unsigned j = 0; j < 6; j++)
                 for (unsigned i = 0; i < mipmaps; i++)
                     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
                             image->getWidth(i), image->getHeight(i), 0, format, type,
-                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
+                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : nullptr);
 #endif
         break;
 
@@ -545,7 +545,7 @@ io::Image* Texture::getImage(void)
 Texture::~Texture(void)
 {
     if (id) glDeleteTextures(1, &id);
-    delete image; image=0;
+    delete image; image=nullptr;
 }
 } // namespace gl
 } // namespace helper

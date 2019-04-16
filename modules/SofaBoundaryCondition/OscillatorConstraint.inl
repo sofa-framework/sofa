@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <SofaBoundaryCondition/OscillatorConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -34,15 +34,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
-
-template <class TDataTypes>
-OscillatorConstraint<TDataTypes>::OscillatorConstraint()
-    : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
-    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, mean, amplitude, pulsation, phase]"))
-{
-}
-
 
 template <class TDataTypes>
 OscillatorConstraint<TDataTypes>::OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate)
@@ -130,6 +121,18 @@ void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::Mechani
         projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
+}
+
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator()
+{
+}
+
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator(unsigned int i, const Coord& m, const Deriv& a,
+        const Real& w, const Real& p) :
+    index(i), mean(m), amplitude(a), pulsation(w), phase(p)
+{
 }
 
 } // namespace constraint

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -119,12 +119,24 @@ public:
     void activateSparseData() {m_isConcerned = true;}
     void desactivateSparseData() {m_isConcerned = false;}
 
+    size_t size() {return m_map2Elements.size();}
+
+    unsigned int indexOfElement(unsigned int index)
+    {
+        for (unsigned int i=0; i<m_map2Elements.size(); ++i)
+            if (index == m_map2Elements[i])
+                return i;
+
+        return sofa::core::topology::Topology::InvalidID;
+    }
+
 
 protected:
 
     virtual void createTopologyHandler() {}
 
-    sofa::helper::vector<unsigned int> m_map2Elements; // same size as SparseData but contain id of Triangle link to each data[]
+    // same size as SparseData but contain id of element link to each data[]
+    sofa::helper::vector<unsigned int> m_map2Elements;
 
     typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,16 +65,16 @@ protected:
     };
 
     /// Default Destructor
-    virtual ~ConstraintCorrection()
+    ~ConstraintCorrection() override
     {
     };
 public:
     void init() override;
 
-    virtual void cleanup() override;
+    void cleanup() override;
 
-    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
-    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 private:
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
@@ -95,7 +95,7 @@ public:
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
-    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
+    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
 
 
     /// Compute the corrective motion coming from the motion space force
@@ -113,7 +113,7 @@ public:
     /// @param v is the velocity result VecId
     /// @param dx if the corrective motion result VecId
     /// @param f is the motion space force vector
-    virtual void applyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void applyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
     virtual void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > & correction) = 0;
 
@@ -123,7 +123,7 @@ public:
     /// @param x is the position result VecId
     /// @param dx id the corrective position result VecId
     /// @param f is the motion space force vector
-    virtual void applyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void applyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
     virtual void applyPositionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data<VecDeriv>& dx,  const Data< VecDeriv > &correction)  = 0;
 
@@ -133,7 +133,7 @@ public:
     /// @param v is the velocity result VecId
     /// @param dv is the corrective velocity result VecId
     /// @param f is the motion space force vector
-    virtual void applyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
+    void applyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
     virtual void applyVelocityCorrection(const core::ConstraintParams * cparams, Data< VecDeriv > &v, Data<VecDeriv>& dv , const Data< VecDeriv > &correction) = 0;
 
@@ -142,7 +142,7 @@ public:
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
+    void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
  
     /// Pre-construction check method called by ObjectFactory.
@@ -194,7 +194,6 @@ extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec2Types >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1Types >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3Types >;
-
 
 #endif
 

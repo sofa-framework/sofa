@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,11 +44,11 @@ class SOFA_CORE_API ComponentLibrary
 {
 public:
     ComponentLibrary(const std::string& componentName, const std::string& categoryName, ClassEntry::SPtr entry, const std::vector< std::string >& exampleFiles);
-    virtual ~ComponentLibrary() {};
+    virtual ~ComponentLibrary() {}
 
     virtual void addTemplate( const std::string& templateName);
     virtual void endConstruction();
-    virtual void setDisplayed(bool ) {};
+    virtual void setDisplayed(bool ) {}
 
     const std::string& getName()                     const { return name;}
     const std::string& getDescription()              const { return description;}

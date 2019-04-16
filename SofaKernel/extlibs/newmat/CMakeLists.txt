@@ -56,4 +56,4 @@ endif()
 
 
 include(../../SofaFramework/SofaMacros.cmake)
-sofa_create_package(Newmat 0 ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(NAME Newmat VERSION 0 TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR ${PROJECT_NAME})

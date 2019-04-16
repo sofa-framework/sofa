@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,6 @@ namespace behavior
 using namespace sofa::defaulttype;
 template class SOFA_CORE_API MixedInteractionForceField<Vec1Types, Vec3Types>;
 template class SOFA_CORE_API MixedInteractionForceField<Vec1Types, Rigid3Types>;
-
 template class SOFA_CORE_API MixedInteractionForceField<Vec3Types, Vec3Types>;
 template class SOFA_CORE_API MixedInteractionForceField<Vec2Types, Vec2Types>;
 template class SOFA_CORE_API MixedInteractionForceField<Vec1Types, Vec1Types>;
@@ -45,8 +44,8 @@ template class SOFA_CORE_API MixedInteractionForceField<Rigid2Types, Rigid2Types
 template class SOFA_CORE_API MixedInteractionForceField<Vec3Types, Rigid3Types> ;
 template class SOFA_CORE_API MixedInteractionForceField<Vec2Types, Rigid2Types> ;
 template class SOFA_CORE_API MixedInteractionForceField<Rigid3Types, Vec3Types> ;
+template class SOFA_CORE_API MixedInteractionForceField<Rigid3Types, Vec1Types> ;
 template class SOFA_CORE_API MixedInteractionForceField<Rigid2Types, Vec2Types> ;
-
 
 
 

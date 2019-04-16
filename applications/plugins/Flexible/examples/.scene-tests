@@ -39,3 +39,6 @@ timeout "deformation/linearHexaFEM-comparison.scn" "200"
 
 # This scene depend on plugin.HighOrder 
 ignore "shapeFunction/BezierTetrahedron.scn"
+
+# CatmullRomSplineMapping was removed in v18.12 (deprecated since v17.12)
+ignore "deformation/edgeDeformationMapping.scn"
