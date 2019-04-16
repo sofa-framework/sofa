@@ -537,7 +537,23 @@ bool Tetra2TriangleTopologicalMapping::checkTopologies()
 
         itM = Glob2LocMap.find(i);
         if (itM == Glob2LocMap.end()){
-            msg_error() << "Top triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " NOT FOUND";
+            msg_error() << "Top triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " NOT FOUND in Glob2LocMap";
+            for (unsigned int k=0; k<triangleArray_bot.size(); k++)
+            {
+                const BaseMeshTopology::Triangle& triBot = triangleArray_bot[k];
+                int cptFound = 0;
+                for (unsigned int j=0; j<3; j++)
+                {
+                    if (triBot[j] == tri[0] || triBot[j] == tri[1] || triBot[j] == tri[2])
+                        cptFound++;
+                }
+
+                if (cptFound == 3){
+                    msg_error() << "Top triangle: " << i << " -> " << tri << " found at bottom id: " << k << " -> " << triBot << " | Loc2GlobDataVec: " << buffer[k];
+                    break;
+                }
+            }
+
             allOk = false;
             continue;
         }
