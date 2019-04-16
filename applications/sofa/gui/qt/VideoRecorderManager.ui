@@ -147,7 +147,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>RecordingTypeButtonGroup</sender>
+   <sender>ScreenshotsRecordingTypeRadioButton</sender>
    <signal>clicked(bool)</signal>
    <receiver>VideoRecorderManager</receiver>
    <slot>onChangeRecordingType()</slot>
@@ -159,6 +159,22 @@
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MovieRecordingTypeRadioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>VideoRecorderManager</receiver>
+   <slot>onChangeRecordingType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+      <x>20</x>
+      <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+      <x>20</x>
+      <y>20</y>
     </hint>
    </hints>
   </connection>

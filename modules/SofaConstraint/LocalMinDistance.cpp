@@ -1294,9 +1294,9 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
     if (nMean.norm()> 0.0000000001)
     {
-        /// validity test with nMean, except if bothSide
+        /// validity test with nMean, except if d_bothSide
         PointModel *pM = p.getCollisionModel();
-        bool bothSide_computation = pM->bothSide.getValue();
+        bool bothSide_computation = pM->d_bothSide.getValue();
         nMean.normalize();
         if (dot(nMean, PQ) < -angleCone.getValue()*PQ.norm() && !bothSide_computation)
         {
@@ -1329,7 +1329,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
         return true;
 
     LineModel *lM = l.getCollisionModel();
-    bool bothSide_computation = lM->bothSide.getValue();
+    bool bothSide_computation = lM->d_bothSide.getValue();
 
     Vector3 nMean;
     Vector3 n1, n2;

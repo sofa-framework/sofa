@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,26 +78,28 @@ protected:
 
     virtual ~PrecomputedConstraintCorrection();
 public:
-    void bwdInit() override;
+    virtual void bwdInit() override;
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W) override;
+    virtual void computeComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override {}
 
-    void getComplianceMatrix(defaulttype::BaseMatrix* m) const override;
+    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W) override;
 
-    void computeMotionCorrection(const core::ConstraintParams*, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const override;
 
-    void applyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dx , const sofa::Data< VecDeriv > & correction) override;
+    virtual void computeMotionCorrection(const core::ConstraintParams*, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &dx, const sofa::Data< VecDeriv > & correction) override;
+    virtual void applyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dx , const sofa::Data< VecDeriv > & correction) override;
 
-    void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dv, const sofa::Data< VecDeriv > & correction) override;
+    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &dx, const sofa::Data< VecDeriv > & correction) override;
+
+    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dv, const sofa::Data< VecDeriv > & correction) override;
 
     /// @name Deprecated API
     /// @{
 
-    void applyContactForce(const defaulttype::BaseVector *f) override;
+    virtual void applyContactForce(const defaulttype::BaseVector *f) override;
 
-    void resetContactForce() override;
+    virtual void resetContactForce() override;
 
     /// @}
 
@@ -105,20 +107,20 @@ public:
 
     virtual void rotateResponse();
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     /// @name Unbuilt constraint system during resolution
     /// @{
 
-    void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/) override;
+    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/) override;
 
-    bool hasConstraintNumber(int index) override;  // virtual ???
+    virtual bool hasConstraintNumber(int index) override;  // virtual ???
 
-    void addConstraintDisplacement(double *d, int begin,int end) override;
+    virtual void addConstraintDisplacement(double *d, int begin,int end) override;
 
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    virtual void setConstraintDForce(double *df, int begin, int end, bool update) override;
 
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
+    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
 
     /// @}
 

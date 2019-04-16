@@ -47,7 +47,7 @@ using core::topology::BaseMeshTopology;
 
 template<class DataTypes>
 TLineModel<DataTypes>::TLineModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
+    : d_bothSide(initData(&d_bothSide, false, "d_bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
     , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
@@ -152,7 +152,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
             elems[i].p[1] = bmt->getEdge(i)[1];
         }
 
-        needsUpdate = true;
+        m_needsUpdate = true;
     }
     if (bmt)
     {
@@ -167,7 +167,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
             {
             case core::topology::ENDING_EVENT :
             {
-                needsUpdate = true;
+                m_needsUpdate = true;
                 break;
             }
 
@@ -183,7 +183,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                 }
 
                 resize( elems.size() );
-                needsUpdate = true;
+                m_needsUpdate = true;
 
                 break;
             }
@@ -226,7 +226,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     --last;
                 }
 
-                needsUpdate=true;
+                m_needsUpdate=true;
                 break;
             }
 
@@ -280,7 +280,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     }
                 }
 
-                needsUpdate=true;
+                m_needsUpdate=true;
 
                 break;
             }
@@ -325,7 +325,7 @@ void TLineModel<DataTypes>::updateFromTopology()
         if (revision == meshRevision)
             return;
 
-        needsUpdate = true;
+        m_needsUpdate = true;
 
         const unsigned int nbPoints = mstate->getSize();
         const unsigned int nbLines = bmt->getNbEdges();
@@ -505,10 +505,10 @@ void TLineModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
-    if (needsUpdate) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
+    if (m_needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile
 
-    needsUpdate = false;
+    m_needsUpdate = false;
     defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
@@ -548,10 +548,10 @@ void TLineModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDept
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
-    if (needsUpdate) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
+    if (m_needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile
 
-    needsUpdate=false;
+    m_needsUpdate=false;
     defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);

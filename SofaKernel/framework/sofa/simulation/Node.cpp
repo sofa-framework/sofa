@@ -776,10 +776,10 @@ void Node::executeVisitor(Visitor* action, bool precomputedOrder)
     // if the current node is sleeping and the visitor can't access it, don't do anything
     if (this->isSleeping() && !action->canAccessSleepingNode) return;
 
-    if (!action->execParams()->checkValidStorage())
-    {
-        dmsg_info() << "IN " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " at " << this->getPathName() ;
-    }
+    //if (!action->execParams()->checkValidStorage())
+    //{
+    //    dmsg_info() << "IN " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " at " << this->getPathName() ;
+    //}
 
 
     static int level = 0;

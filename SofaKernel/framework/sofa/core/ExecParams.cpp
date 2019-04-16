@@ -41,7 +41,7 @@ ExecParams::ExecParamsThreadStorage::ExecParamsThreadStorage(int tid)
 /// Get the default ExecParams, to be used to provide a default values for method parameters
 ExecParams* ExecParams::defaultInstance()
 {
-    SOFA_THREAD_SPECIFIC_PTR(ExecParams, threadParams);
+    static ExecParams* threadParams;
     ExecParams* ptr = threadParams;
     if (!ptr)
     {

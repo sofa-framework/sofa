@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -387,9 +387,6 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     // Draw Quads
     if (_drawQuads.getValue() && this->m_topology->getNbQuads() != 0)
     {
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0, true);
-
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
         // Draw Quad surfaces
@@ -418,7 +415,6 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             vparams->drawTool()->drawQuads(pos, _drawColor.getValue());
         }
 
-        if (!vparams->displayFlags().getShowWireFrame())
         { // drawing edges
             const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
             sofa::helper::types::RGBAColor edge_color = _drawColor.getValue();
@@ -450,9 +446,6 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             }
             vparams->drawTool()->drawLines(pos,1.0f, edge_color );
         }
-
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0, false);
     }
 }
 

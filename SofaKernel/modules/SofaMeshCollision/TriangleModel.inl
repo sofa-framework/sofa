@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2019 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,8 +49,8 @@ namespace collision
 
 template<class DataTypes>
 TTriangleModel<DataTypes>::TTriangleModel()
-    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
-    , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    : d_bothSide(initData(&d_bothSide, false, "d_bothSide", "activate collision on both side of the triangle model") )
+    , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , m_mstate(NULL)
     , m_topology(NULL)
     , m_needsUpdate(true)
@@ -58,7 +58,7 @@ TTriangleModel<DataTypes>::TTriangleModel()
     , m_pointModels(NULL)
     , m_lmdFilter(NULL)
 {
-    m_triangles = &m_internalTriangles;
+    p_triangles = &my_triangles;
     enum_type = TRIANGLE_TYPE;
 }
 
@@ -66,7 +66,7 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
-    m_normals.resize(size);
+    normals.resize(size);
 }
 
 template<class DataTypes>
@@ -115,7 +115,7 @@ void TTriangleModel<DataTypes>::init()
     else
     {
         // just redirect to the topology buffer.
-        m_triangles = &m_topology->getTriangles();
+        p_triangles = &m_topology->getTriangles();
         resize(m_topology->getNbTriangles());
         updateNormals();
     }
@@ -150,18 +150,24 @@ void TTriangleModel<DataTypes>::updateFromTopology()
 
     if (nquads == 0) // only triangles
     {
+        if (ntris == (unsigned)size) // revision changed but no changes on the triangulation.
+            return;
+
         resize(ntris);
-        m_triangles = & m_topology->getTriangles();
+        p_triangles = & m_topology->getTriangles();
     }
     else
     {
         const unsigned newsize = ntris+2*nquads;
+
+        if (newsize==(unsigned)size) // revision changed but no changes on the triangulation/quads.
+            return;
+
         const unsigned npoints = m_mstate->getSize();
 
-        m_triangles = &m_internalTriangles;
-        m_internalTriangles.resize(newsize);
+        p_triangles = &my_triangles;
+        my_triangles.resize(newsize);
         resize(newsize);
-
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
@@ -173,7 +179,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
             }
-            m_internalTriangles[index] = idx;
+            my_triangles[index] = idx;
             ++index;
         }
         for (unsigned i=0; i<nquads; i++)
@@ -187,13 +193,13 @@ void TTriangleModel<DataTypes>::updateFromTopology()
                 if (idx[2] >= npoints) idx[2] = npoints-1;
                 if (idx[3] >= npoints) idx[3] = npoints-1;
             }
-            m_internalTriangles[index][0] = idx[1];
-            m_internalTriangles[index][1] = idx[2];
-            m_internalTriangles[index][2] = idx[0];
+            my_triangles[index][0] = idx[1];
+            my_triangles[index][1] = idx[2];
+            my_triangles[index][2] = idx[0];
             ++index;
-            m_internalTriangles[index][0] = idx[3];
-            m_internalTriangles[index][1] = idx[0];
-            m_internalTriangles[index][2] = idx[2];
+            my_triangles[index][0] = idx[3];
+            my_triangles[index][1] = idx[0];
+            my_triangles[index][2] = idx[2];
             ++index;
         }
     }
@@ -208,15 +214,15 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
 {
 #if 0
-    if (ntri < 0) ntri = m_triangles->size();
+    if (ntri < 0) ntri = p_triangles->size();
     //VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
     //VecDeriv& v = m_mstate->read(core::ConstVecDerivId::velocity())->getValue();
     vector<bool> pflags(m_mstate->getSize());
     std::set<std::pair<int,int> > eflags;
-    for (unsigned i=0; i<m_triangles->size(); i++)
+    for (unsigned i=0; i<p_triangles->size(); i++)
     {
         int f = 0;
-        topology::Triangle t = (*m_triangles)[i];
+        topology::Triangle t = (*p_triangles)[i];
         if (!pflags[t[0]])
         {
             f |= FLAG_P1;
@@ -306,7 +312,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
     defaulttype::Vector3 minElem, maxElem;
     const VecCoord& x = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    const bool calcNormals = d_computeNormals.getValue();
+    const bool calcNormals = computeNormals.getValue();
 
     cubeModel->resize(size);  // size = number of triangles
     if (!empty())
@@ -425,7 +431,7 @@ template<class DataTypes>
 int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
-    sofa::core::topology::BaseMeshTopology::Triangle t = (*m_triangles)[i];
+    sofa::core::topology::BaseMeshTopology::Triangle t = (*p_triangles)[i];
 
     if (i < m_topology->getNbTriangles())
     {

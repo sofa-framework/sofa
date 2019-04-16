@@ -60,6 +60,7 @@ public :
 
     void solve (Matrix& M, Vector& x, Vector& b) override ;
     void invert(Matrix& M) override;
+    bool computeJMInvJtLocal(TMatrix * M, const JMatrixType * J, double fact) override;
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
     int numStep;
 
@@ -76,6 +77,7 @@ protected :
 
     FullMatrix<Real> Jminv,Jdense;
     sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
+    FullMatrix<Real> m_JMinvJT; ///< store JMinvJT computation
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
