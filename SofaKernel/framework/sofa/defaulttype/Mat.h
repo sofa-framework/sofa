@@ -1022,11 +1022,13 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
         }
         in >> m[i];
     }
+    if(in.eof()) return in;
     c = in.peek();
     while (c==' ' || c=='\n' || c==']')
     {
         in.get();
         if( c==']' ) break;
+        if(in.eof()) break;
         c = in.peek();
     }
     return in;
