@@ -1,5 +1,4 @@
-<Node dt="0.005" name="root">
-    <!-- <VisualStyle displayFlags="showInteractionForceFields hideVisual showCollisionModels" /> -->
+<Node dt="0.01" name="root">
     <CollisionPipeline depth="6" draw="0" verbose="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />
@@ -82,7 +81,7 @@
         <EulerImplicit rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
         <MechanicalObject dx="14.4679" dy="0.0000" dz="4.7604" rx="25.0000" ry="-35.0000" rz="0.0000" template="Rigid3d" />
-        <UniformMass totalMass="5"/>
+        <UniformMass totalMass="10"/>
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus2.obj" name="Visual" />
             <RigidMapping input="@.." output="@Visual" />
@@ -371,7 +370,7 @@
         <EulerImplicit rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
         <MechanicalObject dx="2.5428" dy="0.0000" dz="23.9805" rx="-0.0000" ry="5.0000" rz="-0.0000" template="Rigid3d" />
-        <UniformMass totalMass="5" />
+        <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus.obj" name="Visual" />
             <RigidMapping input="@.." output="@Visual" />
@@ -409,7 +408,7 @@
         <EulerImplicit rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
         <MechanicalObject dx="7.5617" dy="0.0000" dz="23.1296" rx="-10.0000" ry="15.0000" rz="0.0000" template="Rigid3d" />
-        <UniformMass totalMass="15" />
+        <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus.obj" name="Visual" />
             <RigidMapping input="@.." output="@Visual" />
@@ -428,7 +427,7 @@
         <EulerImplicit rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
         <MechanicalObject dx="9.9491" dy="0.0000" dz="22.1146" rx="-15.0000" ry="25.0000" rz="0.0000" template="Rigid3d" />
-        <UniformMass totalMass="20" />
+        <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus2.obj" name="Visual" />
             <RigidMapping input="@.." output="@Visual" />
