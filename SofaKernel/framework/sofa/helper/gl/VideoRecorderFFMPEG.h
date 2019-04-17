@@ -40,44 +40,48 @@ namespace helper
 namespace gl
 {
 
-class SOFA_HELPER_API VideoRecorderFFMPEG
-{
-protected:
+    class SOFA_HELPER_API VideoRecorderFFMPEG
+    {
+    protected:
     
-    FILE* m_File;
-    int m_Width, m_Height;
-    int m_FrameCount;
+        FILE* m_File;
+        int m_viewportWidth, m_viewportHeight;
+        int m_ffmpegWidth, m_ffmpegHeight;
+        int m_FrameCount;
 
-    std::string m_filename;
-    unsigned int m_framerate;
+        std::string m_filename;
+        unsigned int m_framerate;
 
-    std::string m_prefix;
-    int m_counter;    
+        std::string m_prefix;
+        int m_counter;    
 
-    FILE* m_ffmpeg;
-    unsigned char* m_buffer;
+        FILE* m_ffmpeg;
 
-    bool m_invalidParam;
-    
-public:
+        unsigned char* m_viewportBuffer;
+        size_t m_viewportBufferSize; // size in bytes
 
-    VideoRecorderFFMPEG();
-    ~VideoRecorderFFMPEG();
-    bool init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
+        unsigned char* m_ffmpegBuffer;
+        size_t m_ffmpegBufferSize; // size in bytes
+
+        int m_pixelFormatSize; // size in bytes
+
+    public:
+
+        VideoRecorderFFMPEG();
+        ~VideoRecorderFFMPEG();
+
+        bool init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
    
-    void addFrame();
-    void saveVideo();
-    void finishVideo();
+        void addFrame();
+        void saveVideo();
+        void finishVideo();
 
     
-    void setPrefix(const std::string v) { m_prefix = v; }
+        void setPrefix(const std::string v) { m_prefix = v; }
 
-    std::string findFilename(const unsigned int bitrate, const unsigned int framerate, const std::string& extension);
+        std::string findFilename(const unsigned int bitrate, const unsigned int framerate, const std::string& extension);
 
-protected:
-
-
-};
+    };
 
 } // namespace gl
 
