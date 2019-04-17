@@ -801,17 +801,17 @@ public:
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
 
     SingleLink()
-        : m_validator(NULL)
+        : m_validator(nullptr)
     {
     }
 
     SingleLink(const BaseLink::InitLink<OwnerType>& init)
-        : Inherit(init), m_validator(NULL)
+        : Inherit(init), m_validator(nullptr)
     {
     }
 
     SingleLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
-        : Inherit(init), m_validator(NULL)
+        : Inherit(init), m_validator(nullptr)
     {
         if (val) this->add(val);
     }
@@ -842,9 +842,9 @@ public:
         ValueType& value = this->m_value[aspect].get();
         const DestPtr before = TraitsValueType::get(value);
         if (!before) return;
-        TraitsValueType::set(value, NULL);
+        TraitsValueType::set(value, nullptr);
         this->updateCounter(aspect);
-        changed(before, NULL);
+        changed(before, nullptr);
     }
 
     void set(DestPtr v)
@@ -874,7 +874,7 @@ public:
     void setPath(const std::string& path)
     {
         if (path.empty()) { reset(); return; }
-        DestType* ptr = NULL;
+        DestType* ptr = nullptr;
         if (this->m_owner)
             TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
         set(ptr, path);
@@ -939,7 +939,7 @@ protected:
         if (m_validator)
         {
             DestPtr after = val;
-            (this->m_owner->*m_validator)(NULL, after);
+            (this->m_owner->*m_validator)(nullptr, after);
             if (after != val)
                 TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
         }
@@ -949,7 +949,7 @@ protected:
     {
         if (m_validator)
         {
-            DestPtr after = NULL;
+            DestPtr after = nullptr;
             (this->m_owner->*m_validator)(val, after);
             if (after)
                 TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);

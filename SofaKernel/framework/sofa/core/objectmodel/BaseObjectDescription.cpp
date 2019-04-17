@@ -52,7 +52,7 @@ BaseObjectDescription::~BaseObjectDescription()
 /// Get the associated object (or NULL if it is not created yet)
 Base* BaseObjectDescription::getObject()
 {
-    return NULL;
+    return nullptr;
 }
 
 /// Get the object instance name
@@ -69,7 +69,7 @@ void BaseObjectDescription::setName(const std::string& name)
 /// Get the parent node
 BaseObjectDescription* BaseObjectDescription::getParent() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /// Get the file where this description was read from. Useful to resolve relative file paths.

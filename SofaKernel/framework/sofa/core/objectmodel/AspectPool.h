@@ -104,8 +104,8 @@ public:
 
     AspectRef getAspect(int id);
 
-    int nbAspects() const { return (int) aspects.size(); }
-    int getAspectCounter(int id) const { return aspects[id]->counter; }
+    int nbAspects() const { return int(aspects.size()); }
+    int getAspectCounter(int id) const { return aspects[size_t(id)]->counter; }
 
     friend class Aspect;
 

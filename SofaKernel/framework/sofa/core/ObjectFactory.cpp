@@ -258,8 +258,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             object->addAlias(object->findData(kv.first), alias.c_str()) ;
 
             /// The Alias is used in the argument
-            const char* val = arg->getAttribute(alias) ;
-            if( val ){
+            const std::string val(arg->getAttribute(alias));
+            if( !val.empty() ){
                 newdesc.setAttribute( alias, val );
             }
         }

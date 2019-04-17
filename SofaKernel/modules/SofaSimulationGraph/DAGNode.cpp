@@ -82,7 +82,7 @@ public:
 
     Result processNodeTopDown(simulation::Node* node) override
     {
-        const DAGNode* dagnode = (const DAGNode*)node;
+        const DAGNode* dagnode = dynamic_cast<const DAGNode*>(node);
         if( dagnode->_descendancy.find(_searchNode)!=dagnode->_descendancy.end() ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
         {
             dagnode->getLocalObjects( _class_info, _container, _tags );
@@ -376,7 +376,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         {
             // a regular visitor is enforcing the selected object unicity
             GetDownObjectsVisitor vis(class_info, container, tags);
-            const_cast<DAGNode*>(this)->executeVisitor(&vis);
+            (const_cast<DAGNode*>(this))->executeVisitor(&vis);
             break;
         }
         default:

@@ -121,6 +121,7 @@ set(HEADER_FILES
     objectmodel/ScriptEvent.h
     objectmodel/SPtr.h
     objectmodel/Tag.h
+    objectmodel/DataCallback.h
     topology/BaseMeshTopology.h
     topology/BaseTopology.h
     topology/BaseTopologyData.h
@@ -212,6 +213,7 @@ set(SOURCE_FILES
     objectmodel/Context.cpp
     objectmodel/DDGNode.cpp
     objectmodel/Data.cpp
+    objectmodel/DataCallback.cpp
     objectmodel/DataFileName.cpp
     objectmodel/DetachNodeEvent.cpp
     objectmodel/Event.cpp

@@ -58,7 +58,7 @@ BaseLink::~BaseLink()
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {
-    unsigned int size = (unsigned int)getSize();
+    unsigned int size = unsigned(getSize());
     bool first = true;
     for (unsigned int i = 0; i<size; ++i)
     {
@@ -96,13 +96,13 @@ std::string BaseLink::getValueTypeString() const
 /// Copy the value of an aspect into another one.
 void BaseLink::copyAspect(int destAspect, int srcAspect)
 {
-    m_counters[destAspect] = m_counters[srcAspect];
+    m_counters[size_t(destAspect)] = m_counters[size_t(srcAspect)];
 }
 
 /// Release memory allocated for the specified aspect.
 void BaseLink::releaseAspect(int aspect)
 {
-    m_counters[aspect] = -1;
+    m_counters[size_t(aspect)] = -1;
 }
 
 bool BaseLink::ParseString(const std::string& text, std::string* path, std::string* data, Base* owner)

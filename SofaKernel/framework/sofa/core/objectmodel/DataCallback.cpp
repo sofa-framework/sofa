@@ -19,10 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_CONTEXTOBJECT_H
-#define SOFA_CORE_OBJECTMODEL_CONTEXTOBJECT_H
-
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/DataCallback.h>
 
 namespace sofa
 {
@@ -33,37 +30,61 @@ namespace core
 namespace objectmodel
 {
 
-/**
- *  \brief Base class for simulation objects that modify the shared context (such as gravity, local coordinate system, ...).
- *
- */
-class SOFA_CORE_API ContextObject : public virtual BaseObject
+void DataCallback::addInputs(std::initializer_list<BaseData*> data)
 {
-public:
-    SOFA_ABSTRACT_CLASS(ContextObject, BaseObject);
-    SOFA_BASE_CAST_IMPLEMENTATION(ContextObject)
-protected:
-    ContextObject()
-    {}
+    for(BaseData* d : data)
+    {
+        addInput(d);
+    }
+}
 
-    ~ContextObject() override
-    {}
-public:
-    /// modify the Context
-    virtual void apply()=0;
+void DataCallback::addCallback(std::function<void(void)> f)
+{
+    m_callbacks.push_back(f);
+}
 
+void DataCallback::notifyEndEdit(const core::ExecParams* params)
+{
+    if (!m_updating)
+    {
+        m_updating = true;
+        for (auto& callback : m_callbacks)
+            callback();
 
-    bool insertInNode( objectmodel::BaseNode* node ) override;
-    bool removeInNode( objectmodel::BaseNode* node ) override;
+        sofa::core::objectmodel::DDGNode::notifyEndEdit(params);
+        m_updating = false;
+    }
+    else
+    {
+        msg_warning("DataCallback") << "A DataCallback seems to have a circular dependency, please fix it to remove this warning.";
+    }
+}
 
-};
+const std::string& DataCallback::getName() const
+{
+    static std::string s="";
+    return s;
+}
 
+sofa::core::objectmodel::Base* DataCallback::getOwner() const
+{
+    return nullptr;
+}
 
-} // namespace objectmodel
+sofa::core::objectmodel::BaseData* DataCallback::getData() const
+{
+    return nullptr;
+}
 
-} // namespace core
+void DataCallback::update()
+{
 
-} // namespace sofa
+}
 
-#endif
+} /// namespace objectmodel
+
+} /// namespace core
+
+} /// namespace sofa
+
 

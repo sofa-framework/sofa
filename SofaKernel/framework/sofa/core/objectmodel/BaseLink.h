@@ -97,12 +97,12 @@ public:
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
     {
-        if(b) m_flags |= (LinkFlags)flag;
-        else m_flags &= ~(LinkFlags)flag;
+        if(b) m_flags |= LinkFlags(flag);
+        else m_flags &= ~LinkFlags(flag);
     }
 
     /// Get one flag
-    bool getFlag(LinkFlagsEnum flag) const { return (m_flags&(LinkFlags)flag)!=0; }
+    bool getFlag(LinkFlagsEnum flag) const { return (m_flags&LinkFlags(flag))!=0; }
 
     bool isMultiLink() const { return getFlag(FLAG_MULTILINK); }
     bool isDataLink() const { return getFlag(FLAG_DATALINK); }
@@ -123,11 +123,11 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter() const { return m_counters[core::ExecParams::currentAspect()]; }
+    int getCounter() const { return m_counters[size_t(core::ExecParams::currentAspect())]; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params) const { return m_counters[core::ExecParams::currentAspect(params)]; }
+    int getCounter(const core::ExecParams* params) const { return m_counters[size_t(core::ExecParams::currentAspect(params))]; }
 
     virtual size_t getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;

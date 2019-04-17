@@ -157,8 +157,6 @@ unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
     }
 }
 
-const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0},{0,2,1}};
-
 void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if (this->m_componentstate != sofa::core::objectmodel::ComponentState::Valid)
@@ -390,7 +388,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                     for (int i=0; i<3; i++)
                     {
-                        unsigned int vIdInTetra = trianglesInTetrahedronArray[posInTetra][i];
+                        unsigned int vIdInTetra = trianglesOrientationInTetrahedronArray[posInTetra][i];
                         tri[i] = otherTetra[vIdInTetra];
                     }
 

@@ -48,9 +48,9 @@ public:
     const BaseClass* getClass() const override
     { return GetClass(); }
 
-    static std::string templateName(const TData<T>* = NULL)
+    static std::string templateName(const TData<T>* = nullptr)
     {
-        T* ptr = NULL;
+        T* ptr = nullptr;
         return BaseData::typeName(ptr);
     }
     /// @}
@@ -70,7 +70,7 @@ public:
 
     inline void printValue(std::ostream& out) const override;
     inline std::string getValueString() const override;
-    inline std::string getValueTypeString() const override; // { return std::string(typeid(m_value).name()); }
+    inline std::string getValueTypeString() const override;
 
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
@@ -105,80 +105,23 @@ public:
     /** Try to read argument value from an input stream.
     Return false if failed
      */
-    virtual bool read( const std::string& s ) override
-    {
-        if (s.empty())
-        {
-            bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
-            virtualEndEdit();
-            return resized;
-        }
-        //serr<<"Field::read "<<s.c_str()<<sendl;
-        std::istringstream istr( s.c_str() );
-        istr >> *virtualBeginEdit();
-        virtualEndEdit();
-        if( istr.fail() )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
+    virtual bool read( const std::string& s ) override;
 
     bool isCounterValid() const override {return true;}
 
-    bool copyValue(const TData<T>* parent)
-    {
-        virtualSetValue(parent->virtualGetValue());
-        return true;
-    }
+    bool copyValue(const TData<T>* parent);
 
-    bool copyValue(const BaseData* parent) override
-    {
-        const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
-        if (p)
-        {
-            virtualSetValue(p->virtualGetValue());
-            return true;
-        }
-        return BaseData::copyValue(parent);
-    }
+    bool copyValue(const BaseData* parent) override;
 
-
-    bool validParent(BaseData* parent) override
-    {
-        if (dynamic_cast<TData<T>*>(parent))
-            return true;
-        return BaseData::validParent(parent);
-    }
+    bool validParent(BaseData* parent) override;
 
 protected:
 
-    BaseLink::InitLink<TData<T> >
-    initLink(const char* name, const char* help)
-    {
-        return BaseLink::InitLink<TData<T> >(this, name, help);
-    }
+    BaseLink::InitLink<TData<T> > initLink(const char* name, const char* help);
 
-    void doSetParent(BaseData* parent) override
-    {
-        parentData.set(dynamic_cast<TData<T>*>(parent));
-        BaseData::doSetParent(parent);
-    }
+    void doSetParent(BaseData* parent) override;
 
-    bool updateFromParentValue(const BaseData* parent) override
-    {
-        if (parent == parentData.get())
-        {
-            //virtualSetValue(parentData->virtualGetValue());
-            virtualSetLink(*parentData.get());
-            return true;
-        }
-        else
-            return BaseData::updateFromParentValue(parent);
-    }
+    bool updateFromParentValue(const BaseData* parent) override;
 
     SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 };
@@ -448,6 +391,7 @@ public:
     inline void endEdit(const core::ExecParams* params = nullptr)
     {
         m_values[DDGNode::currentAspect(params)].endEdit();
+        BaseData::notifyEndEdit(params);
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
@@ -581,6 +525,81 @@ std::string TData<T>::getValueTypeString() const
     return BaseData::typeName(&virtualGetValue());
 }
 
+template <class T>
+bool TData<T>::read(const std::string& s)
+{
+    if (s.empty())
+    {
+        bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
+        virtualEndEdit();
+        return resized;
+    }
+    //serr<<"Field::read "<<s.c_str()<<sendl;
+    std::istringstream istr( s.c_str() );
+    istr >> *virtualBeginEdit();
+    virtualEndEdit();
+    if( istr.fail() )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+template <class T>
+bool TData<T>::copyValue(const TData<T>* parent)
+{
+    virtualSetValue(parent->virtualGetValue());
+    return true;
+}
+
+template <class T>
+bool TData<T>::copyValue(const BaseData* parent)
+{
+    const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
+    if (p)
+    {
+        virtualSetValue(p->virtualGetValue());
+        return true;
+    }
+    return BaseData::copyValue(parent);
+}
+
+template <class T>
+bool TData<T>::validParent(BaseData* parent)
+{
+    if (dynamic_cast<TData<T>*>(parent))
+        return true;
+    return BaseData::validParent(parent);
+}
+
+template <class T>
+BaseLink::InitLink<TData<T> > TData<T>::initLink(const char* name, const char* help)
+{
+    return BaseLink::InitLink<TData<T> >(this, name, help);
+}
+
+template <class T>
+void TData<T>::doSetParent(BaseData* parent)
+{
+    parentData.set(dynamic_cast<TData<T>*>(parent));
+    BaseData::doSetParent(parent);
+}
+
+template <class T>
+bool TData<T>::updateFromParentValue(const BaseData* parent)
+{
+    if (parent == parentData.get())
+    {
+        //virtualSetValue(parentData->virtualGetValue());
+        virtualSetLink(*parentData.get());
+        return true;
+    }
+    else
+        return BaseData::updateFromParentValue(parent);
+}
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 
@@ -721,5 +740,5 @@ using core::objectmodel::Data;
 
 } // namespace sofa
 
-#endif
+#endif  // SOFA_CORE_OBJECTMODEL_DATA_H
 

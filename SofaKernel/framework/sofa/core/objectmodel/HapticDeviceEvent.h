@@ -98,7 +98,7 @@ public:
      */
     unsigned char getButtonState() const {return m_buttonState;}
 
-    bool getButton(const int id = 0) const {return (bool) ((m_buttonState >> id) & 1);}
+    bool getButton(const int id = 0) const {return bool(((m_buttonState >> id) & 1));}
 
     /**
      * @brief Get the device Id.
