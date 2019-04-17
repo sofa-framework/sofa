@@ -132,13 +132,13 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
         "showInteractionForceFields",
         "showWireFrame",
         "showNormals",
-        NULL
+        nullptr
     };
     std::string oldFlags;
     for (unsigned int i=0; oldVisualFlags[i]; ++i)
     {
-        const char* str = arg->getAttribute(oldVisualFlags[i], NULL);
-        if (str == NULL || !*str) continue;
+        const char* str = arg->getAttribute(oldVisualFlags[i], nullptr);
+        if (str == nullptr || !*str) continue;
         bool val;
         if (str[0] == 'T' || str[0] == 't')
             val = true;
@@ -181,105 +181,163 @@ void Node::draw(core::visual::VisualParams* vparams)
     execute<simulation::VisualDrawVisitor>(vparams);
 }
 
+void Node::addChild(core::objectmodel::BaseNode::SPtr node)
+{
+    notifyBeginAddChild(this, dynamic_cast<Node*>(node.get()));
+    doAddChild(node);
+    notifyEndAddChild(this, dynamic_cast<Node*>(node.get()));
+}
 
+/// Remove a child
+void Node::removeChild(core::objectmodel::BaseNode::SPtr node)
+{
+    // If node has no parent
+    if (node->getFirstParent() == nullptr)
+        return;
+    notifyBeginRemoveChild(this, static_cast<Node*>(node.get()));
+    doRemoveChild(node);
+    notifyEndRemoveChild(this, static_cast<Node*>(node.get()));
+}
+
+
+/// Move a node from another node
+void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
+{
+    if (!prev_parent.get())
+    {
+        msg_error(this->getName()) << "Node::moveChild(BaseNode::SPtr node)\n" << node->getName() << " has no parent. Use addChild instead!";
+        addChild(node);
+        return;
+    }
+    doMoveChild(node, prev_parent);
+}
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject::SPtr obj)
 {
-    notifyAddObject(obj);
-    doAddObject(obj);
-    return true;
+    notifyBeginAddObject(this, obj);
+    bool ret = doAddObject(obj);
+    notifyEndAddObject(this, obj);
+    return ret;
 }
 
 /// Remove an object
 bool Node::removeObject(BaseObject::SPtr obj)
 {
-    notifyRemoveObject(obj);
-    doRemoveObject(obj);
-    return true;
+    notifyBeginRemoveObject(this, obj);
+    bool ret = doRemoveObject(obj);
+    notifyEndRemoveObject(this, obj);
+    return ret;
 }
 
 /// Move an object from another node
 void Node::moveObject(BaseObject::SPtr obj)
 {
-    BaseNode* baseprev = obj->getContext()->toBaseNode();
-    if (baseprev==NULL)
+    Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
+    if (prev_parent)
+    {
+        doMoveObject(obj, prev_parent);
+    }
+    else
     {
         obj->getContext()->removeObject(obj);
         addObject(obj);
     }
-    else
-    {
-        Node* prev = down_cast<Node>(baseprev);
-        notifyMoveObject(obj,prev);
-        prev->doRemoveObject(obj);
-        doAddObject(obj);
+}
+
+
+void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onBeginAddChild(parent.get(), child.get());
+}
+
+void Node::notifyEndAddChild(Node::SPtr parent, Node::SPtr child)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onEndAddChild(parent.get(), child.get());
+}
+
+void Node::notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onBeginRemoveChild(parent.get(), child.get());
+}
+
+void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onEndRemoveChild(parent.get(), child.get());
+}
+
+void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onBeginAddObject(parent.get(), obj.get());
+}
+
+void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onEndAddObject(parent.get(), obj.get());
+}
+
+void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onBeginRemoveObject(parent.get(), obj.get());
+}
+
+void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onEndRemoveObject(parent.get(), obj.get());
+}
+
+void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onBeginAddSlave(master, slave);
+}
+
+void Node::notifyEndAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onEndAddSlave(master, slave);
+}
+
+void Node::notifyBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onBeginRemoveSlave(master, slave);
+}
+
+void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (auto& listener : root->listener)
+        listener->onEndRemoveSlave(master, slave);
+}
+
+void Node::notifySleepChanged(Node* node)
+{
+    if (this->getFirstParent() == nullptr) {
+        for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+            (*it)->sleepChanged(node);
     }
-}
-
-
-
-void Node::notifyAddChild(Node::SPtr node)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addChild(this, node.get());
-}
-
-
-void Node::notifyRemoveChild(Node::SPtr node)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeChild(this, node.get());
-}
-
-
-void Node::notifyMoveChild(Node::SPtr node, Node* prev)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveChild(prev, this, node.get());
-}
-
-
-void Node::notifyAddObject(core::objectmodel::BaseObject::SPtr obj)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addObject(this, obj.get());
-}
-
-void Node::notifyRemoveObject(core::objectmodel::BaseObject::SPtr obj)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeObject(this, obj.get());
-}
-
-void Node::notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveObject(prev, this, obj.get());
-}
-
-
-void Node::notifyAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addSlave(master, slave);
-}
-
-void Node::notifyRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeSlave(master, slave);
-}
-
-void Node::notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveSlave(previousMaster, master, slave);
-}
-
-void Node::notifySleepChanged()
-{
-    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->sleepChanged(this);
+    else {
+        dynamic_cast<Node*>(this->getFirstParent())->notifySleepChanged(node);
+    }
 }
 
 void Node::addListener(MutationListener* obj)
@@ -308,7 +366,7 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
     for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
         if ((*it)->getName() == name)
             return it->get();
-    return NULL;
+    return nullptr;
 }
 
 void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
@@ -317,12 +375,12 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     if (link)
     {
         if (!link->parseString(path,&pathStr))
-            return NULL;
+            return nullptr;
     }
     else
     {
-        if (!BaseLink::ParseString(path,&pathStr,NULL,this))
-            return NULL;
+        if (!BaseLink::ParseString(path,&pathStr,nullptr,this))
+            return nullptr;
     }
 
     if(DEBUG_LINK)
@@ -339,14 +397,14 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         return destType->dynamicCast(link->getOwnerBase());
     }
     Node* node = this;
-    BaseObject* master = NULL;
+    BaseObject* master = nullptr;
     bool based = false;
     if (ppos < psize && pathStr[ppos] == '[') // relative index in the list of objects
     {
         if (pathStr[psize-1] != ']')
         {
             serr << "Invalid index-based path \"" << path << "\"" << sendl;
-            return NULL;
+            return nullptr;
         }
         int index = atoi(pathStr.c_str()+ppos+1);
 
@@ -368,7 +426,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             ++index;
         }
         if (it == itend)
-            return NULL;
+            return nullptr;
 
         if(DEBUG_LINK)
             dmsg_info() << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." ;
@@ -380,7 +438,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         if(DEBUG_LINK)
             dmsg_info() << "  absolute path" ;
         BaseNode* basenode = this->getRoot();
-        if (!basenode) return NULL;
+        if (!basenode) return nullptr;
         node = down_cast<Node>(basenode);
         ++ppos;
         based = true;
@@ -410,7 +468,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             else
             {
                 core::objectmodel::BaseNode* firstParent = node->getFirstParent();
-                if (!firstParent) return NULL;
+                if (!firstParent) return nullptr;
                 node = static_cast<Node*>(firstParent); // TODO: explore other parents
                 if(DEBUG_LINK)
                     dmsg_info() << "  to parent node " << node->getName() ;
@@ -435,7 +493,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                 if(DEBUG_LINK)
                     dmsg_info() << "  to slave object " << name ;
                 master = master->getSlave(name);
-                if (!master) return NULL;
+                if (!master) return nullptr;
             }
             else
             {
@@ -457,10 +515,10 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                             dmsg_info()  << "  to object " << name ;
                         break;
                     }
-                    if (based) return NULL;
+                    if (based) return nullptr;
                     // this can still be found from an ancestor node
                     core::objectmodel::BaseNode* firstParent = node->getFirstParent();
-                    if (!firstParent) return NULL;
+                    if (!firstParent) return nullptr;
                     node = static_cast<Node*>(firstParent); // TODO: explore other parents
                     if(DEBUG_LINK)
                         dmsg_info()  << "  looking in ancestor node " << node->getName() ;
@@ -492,7 +550,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             if(DEBUG_LINK)
                 dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;
             if (!r) r = o;
-            else return NULL; // several objects are possible, this is an ambiguous path
+            else return nullptr; // several objects are possible, this is an ambiguous path
         }
         if (r) return r;
         // no object found, we look in parent nodes if the searched class is one of the known standard single components (state, topology, ...)
@@ -513,12 +571,12 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         else if (destType->hasParent(core::visual::VisualLoop::GetClass()))
             return destType->dynamicCast(node->getVisualLoop());
 
-        return NULL;
+        return nullptr;
     }
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void Node::doAddObject(BaseObject::SPtr sobj)
+bool Node::doAddObject(BaseObject::SPtr sobj)
 {
     this->setObjectContext(sobj);
     object.add(sobj);
@@ -528,11 +586,11 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     {
         unsorted.add(obj);
     }
-
+    return true;
 }
 
 /// Remove an object
-void Node::doRemoveObject(BaseObject::SPtr sobj)
+bool Node::doRemoveObject(BaseObject::SPtr sobj)
 {
     this->clearObjectContext(sobj);
     object.remove(sobj);
@@ -540,6 +598,15 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
 
     if( !obj->removeInNode( this ) )
         unsorted.remove(obj);
+    return true;
+}
+
+/// Remove an object
+void Node::doMoveObject(BaseObject::SPtr sobj, Node* prev_parent)
+{
+    if (prev_parent != nullptr)
+        prev_parent->removeObject(sobj);
+    addObject(sobj);
 }
 
 
@@ -648,15 +715,15 @@ Node* Node::getChild(const std::string& name) const
         if ((*it)->getName() == name)
             return it->get();
     }
-    return NULL;
+    return nullptr;
 }
 
 /// Get a descendant node given its name
 Node* Node::getTreeNode(const std::string& name) const
 {
-    Node* result = NULL;
+    Node* result = nullptr;
     result = getChild(name);
-    for (ChildIterator it = child.begin(), itend = child.end(); result == NULL && it != itend; ++it)
+    for (ChildIterator it = child.begin(), itend = child.end(); result == nullptr && it != itend; ++it)
         result = (*it)->getTreeNode(name);
     return result;
 }
@@ -927,20 +994,20 @@ void Node::sortComponents()
     std::map< BaseObject::SPtr, Vertex > vertex_from_component;
 
     // build the graph
-    for (int i = object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
+    for (int i = int(object.size()) - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
     {
         Vertex v = add_vertex( dependencyGraph );
-        component_from_vertex[v] = object[i];
-        vertex_from_component[object[i]] = v;
+        component_from_vertex[v] = object[unsigned(i)];
+        vertex_from_component[object[unsigned(i)]] = v;
     }
     assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
     for ( unsigned i=0; i<depend.getValue().size(); i+=2 )
     {
         BaseObject* o1 = getObject( depend.getValue()[i] );
         BaseObject* o2 = getObject( depend.getValue()[i+1] );
-        if ( o1==NULL ) {
+        if ( o1==nullptr ) {
             msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i];
-        }else if ( o2==NULL ) {
+        }else if ( o2==nullptr ) {
             msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i+1];
         }else
         {
@@ -977,7 +1044,7 @@ void Node::setSleeping(bool val)
     if (val != d_isSleeping.getValue())
     {
         d_isSleeping.setValue(val);
-        notifySleepChanged();
+        notifySleepChanged(this);
     }
 }
 

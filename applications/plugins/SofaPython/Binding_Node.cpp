@@ -328,8 +328,9 @@ static PyObject * Node_moveChild(PyObject *self, PyObject * args) {
     Node* obj = get_node(self);
 
     PyObject* pyChild;
-    if (!PyArg_ParseTuple(args, "O", &pyChild)) {
-        return nullptr;
+    PyObject* pyPrevParent;
+    if (!PyArg_ParseTuple(args, "OO", &pyChild, &pyPrevParent)) {
+        return NULL;
     }
 
     BaseNode* child = get_node(pyChild);
@@ -337,8 +338,13 @@ static PyObject * Node_moveChild(PyObject *self, PyObject * args) {
         PyErr_BadArgument();
         return nullptr;
     }
+    BaseNode* prevParent = get_node(pyPrevParent);
+    if (!child) {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
-    obj->moveChild(child);
+    obj->moveChild(child, prevParent);
     Py_RETURN_NONE;
 }
 

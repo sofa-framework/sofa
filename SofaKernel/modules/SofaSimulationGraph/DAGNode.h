@@ -35,9 +35,6 @@ namespace simulation
 namespace graph
 {
 
-
-
-
 /** Define the structure of the scene as a Directed Acyclic Graph. Contains component objects (as pointer lists) and parents/childs (as DAGNode objects).
  *
  * The visitor traversal is performed in two passes:
@@ -60,27 +57,11 @@ public:
 protected:
     DAGNode( const std::string& name="", DAGNode* parent=nullptr  );
 
-    ~DAGNode() override;
+    virtual ~DAGNode() override;
 
 public:
     /// Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
-
-    /// Pure Virtual method from BaseNode
-    /// Add a child node
-    void addChild(BaseNode::SPtr node) override;
-
-    /// Remove a child node
-    void removeChild(BaseNode::SPtr node) override;
-
-    /// Move a node from another node
-    void moveChild(BaseNode::SPtr obj) override;
-
-    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    bool addObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::addObject(obj); }
-
-    /// Remove an object
-    bool removeObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::removeObject(obj); }
 
     /// Remove the current node from the graph: consists in removing the link to its parent
     void detachFromGraph() override;
@@ -164,8 +145,11 @@ protected:
 
     LinkParents l_parents;
 
-    virtual void doAddChild(DAGNode::SPtr node);
-    void doRemoveChild(DAGNode::SPtr node);
+    virtual void moveChild(BaseNode::SPtr node) override;
+
+    virtual void doAddChild(BaseNode::SPtr node) override;
+    virtual void doRemoveChild(BaseNode::SPtr node) override;
+    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent) override;
 
 
     /// Execute a recursive action starting from this node.
@@ -184,15 +168,6 @@ protected:
 
     /// traversal updating the descendancy
     void updateDescendancy();
-
-
-    // need to update the ancestor descendancy
-    void notifyAddChild(Node::SPtr node) override;
-    // need to update the ancestor descendancy
-    void notifyRemoveChild(Node::SPtr node) override;
-    // need to update the ancestor descendancy
-    void notifyMoveChild(Node::SPtr node, Node* prev) override;
-
 
     /// traversal flags
     typedef enum

@@ -116,13 +116,13 @@ const std::string getClass(core::objectmodel::Base* obj){
 
 QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning, bool haveErrors)
 {
-    static QPixmap pixInfo((const char**)iconinfo_xpm);
+    static QPixmap pixInfo(reinterpret_cast<const char**>(iconinfo_xpm));
     static QImage imgInfo8 = pixInfo.scaledToWidth(16).toImage();
 
-    static QPixmap pixError((const char**)iconerror_xpm);
+    static QPixmap pixError(reinterpret_cast<const char**>(iconerror_xpm));
     static QImage imgError8 = pixError.scaledToWidth(16).toImage();
 
-    static QPixmap pixWarning((const char**)iconwarning_xpm);
+    static QPixmap pixWarning(reinterpret_cast<const char**>(iconwarning_xpm));
     static QImage imgWarning8 = pixWarning.scaledToWidth(16).toImage();
 
 
@@ -131,10 +131,10 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
 
     if (obj->toBaseNode())
     {
-        int flags = 0 ;
-        const char** icon = (const char**)iconsleep_xpm ;
+        unsigned int flags = 0 ;
+        const char** icon = reinterpret_cast<const char**>(iconsleep_xpm);
         if( !obj->toBaseNode()->getContext()->isSleeping() ){
-            icon = (const char**)iconnode_xpm ;
+            icon = reinterpret_cast<const char**>(iconnode_xpm) ;
             flags = 1 ;
         }
 
@@ -335,19 +335,24 @@ QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::addChild(Node* parent, Node* child)
+void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 {
-
-    if (frozen) return;
+    if (frozen)
+        return;
     if (items.count(child))
     {
         QTreeWidgetItem* item = items[child];
         if (item->treeWidget() == nullptr)
         {
             if (parent == nullptr)
+            {
+                dmsg_info("GraphListenerQListView") << "CREATING TOP LEVEL NODE '"<<child->getName()<<"'";
                 widget->insertTopLevelItem(0, item);
+            }
             else if (items.count(parent))
+            {
                 items[parent]->insertChild(0, item);
+            }
             else
             {
                 dmsg_error("GraphListenerQListView") << "Unknown parent node '"<<parent->getName()<<"'";
@@ -356,7 +361,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         }
         else
         {
-            static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
+            static QPixmap pixMultiNode(reinterpret_cast<const char**>(iconmultinode_xpm));
 
             // Node with multiple parents
             if (parent &&
@@ -391,7 +396,9 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         if (parent == nullptr)
             item = new QTreeWidgetItem(widget);
         else if (items.count(parent))
+        {
             item = createItem(items[parent]);
+        }
         else
         {
             dmsg_error("GraphListenerQListView") << "Unknown parent node '"<<parent->getName()<<"'";
@@ -404,14 +411,22 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         item->setExpanded(true);
         items[child] = item;
     }
-    // Add all objects and grand-children
-    MutationListener::addChild(parent, child);
+    for (Node::SPtr node : child->child)
+        onBeginAddChild(child, node.get());
+    for (BaseObject::SPtr obj : child->object)
+        onBeginAddObject(child, obj.get());
 }
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::removeChild(Node* parent, Node* child)
+void GraphListenerQListView::onBeginRemoveChild(Node* parent, Node* child)
 {
-    MutationListener::removeChild(parent, child);
+    SOFA_UNUSED(parent);
+
+    for (Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
+        onBeginRemoveObject(child, it->get());
+    for (Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
+        onBeginRemoveChild(child, it->get());
+
     if (items.count(child))
     {
         delete items[child];
@@ -419,48 +434,9 @@ void GraphListenerQListView::removeChild(Node* parent, Node* child)
     }
 }
 
-/*****************************************************************************************************************/
-void GraphListenerQListView::moveChild(Node* previous, Node* parent, Node* child)
-{
-    if (frozen && items.count(child))
-    {
-        QTreeWidgetItem* itemChild = items[child];
-        if (items.count(previous)) //itemChild->listView() != NULL)
-        {
-            QTreeWidgetItem* itemPrevious = items[previous];
-            //itemPrevious->takeItem(itemChild);
-            itemPrevious->removeChild(itemChild);
-        }
-        else
-        {
-            removeChild(previous, child);
-        }
-        return;
-    }
-    if (!items.count(child) || !items.count(previous))
-    {
-        addChild(parent, child);
-    }
-    else if (!items.count(parent))
-    {
-        removeChild(previous, child);
-    }
-    else
-    {
-        QTreeWidgetItem* itemChild = items[child];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        QTreeWidgetItem* itemParent = items[parent];
-        //        itemPrevious->takeItem(itemChild);
-        itemPrevious->removeChild(itemChild);
-        //        itemParent->insertItem(itemChild);
-        itemParent->addChild(itemChild);
-    }
-}
-
-
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObject* object)
+void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::BaseObject* object)
 {
     if (frozen) return;
     if (items.count(object))
@@ -473,7 +449,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
                 items[parent]->addChild(item);
             else
             {
-                dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
+                dmsg_error("GraphListenerQListView") << "Unknown parent node " << parent->getName()<< "'";
                 return;
             }
         }
@@ -485,7 +461,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
             item = createItem(items[parent]);
         else
         {
-            dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
+            dmsg_error("GraphListenerQListView") << "Unknown parent node " << parent->getName()<< "'";
             return;
         }
 
@@ -506,16 +482,19 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
 
         items[object] = item;
     }
-    // Add all slaves
-    MutationListener::addObject(parent, object);
+    for (BaseObject::SPtr slave : object->getSlaves())
+        onBeginAddSlave(object, slave.get());
 }
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::removeObject(Node* parent, core::objectmodel::BaseObject* object)
+void GraphListenerQListView::onBeginRemoveObject(Node* parent, core::objectmodel::BaseObject* object)
 {
-    // Remove all slaves
-    MutationListener::removeObject(parent, object);
+    SOFA_UNUSED(parent);
+
+    for (BaseObject::SPtr slave : object->getSlaves())
+        onBeginRemoveSlave(object, slave.get());
+
     if (items.count(object))
     {
         delete items[object];
@@ -523,39 +502,9 @@ void GraphListenerQListView::removeObject(Node* parent, core::objectmodel::BaseO
     }
 }
 
-/*****************************************************************************************************************/
-void GraphListenerQListView::moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object)
-{
-    if (frozen && items.count(object))
-    {
-        QTreeWidgetItem* itemObject = items[object];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        //        itemPrevious->takeItem(itemObject);
-        itemPrevious->removeChild(itemObject);
-        return;
-    }
-    if (!items.count(object) || !items.count(previous))
-    {
-        addObject(parent, object);
-    }
-    else if (!items.count(parent))
-    {
-        removeObject(previous, object);
-    }
-    else
-    {
-        QTreeWidgetItem* itemObject = items[object];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        QTreeWidgetItem* itemParent = items[parent];
-        //        itemPrevious->takeItem(itemObject);
-        itemPrevious->removeChild(itemObject);
-        //        itemParent->insertItem(itemObject);
-        itemParent->addChild(itemObject);
-    }
-}
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+void GraphListenerQListView::onBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
     if (frozen) return;
     if (items.count(slave))
@@ -598,51 +547,25 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
 
         items[slave] = item;
     }
-    // Add all slaves
-    MutationListener::addSlave(master, slave);
+
+    const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        onBeginAddSlave(slave, slaves[i].get());
 }
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+void GraphListenerQListView::onBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
-    // Remove all slaves
-    MutationListener::removeSlave(master, slave);
+    const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        onBeginRemoveSlave(slave, slaves[i].get());
+
+    SOFA_UNUSED(master);
     if (items.count(slave))
     {
         delete items[slave];
         items.erase(slave);
-    }
-}
-
-/*****************************************************************************************************************/
-void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
-{
-    if (frozen && items.count(slave))
-    {
-        QTreeWidgetItem* itemSlave = items[slave];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        //        itemPrevious->takeItem(itemSlave);
-        itemPrevious->removeChild(itemSlave);
-        return;
-    }
-    if (!items.count(slave) || !items.count(previous))
-    {
-        addSlave(master, slave);
-    }
-    else if (!items.count(master))
-    {
-        removeSlave(previous, slave);
-    }
-    else
-    {
-        QTreeWidgetItem* itemSlave = items[slave];
-        QTreeWidgetItem* itemPrevious = items[previous];
-        QTreeWidgetItem* itemMaster = items[master];
-        //        itemPrevious->takeItem(itemSlave);
-        itemPrevious->removeChild(itemSlave);
-        //        itemMaster->insertItem(itemSlave);
-        itemMaster->addChild(itemSlave);
     }
 }
 
@@ -671,7 +594,7 @@ void GraphListenerQListView::unfreeze(Node* groot)
 {
     if (!items.count(groot)) return;
     frozen = false;
-    addChild(nullptr, groot);
+    onBeginAddChild(nullptr, groot);
 }
 
 /*****************************************************************************************************************/
@@ -761,7 +684,7 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
             data = (*it);
             if(!datas.count(data))
             {
-                static QPixmap pixData((const char**)icondata_xpm);
+                static QPixmap pixData(reinterpret_cast<const char**>(icondata_xpm));
                 new_item = createItem(items[parent]);
                 name += "  ";
                 name += data->getName();

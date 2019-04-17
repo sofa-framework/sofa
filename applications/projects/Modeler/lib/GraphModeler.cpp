@@ -129,7 +129,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
             child->setName("Root");
     }
 
-    if (parent != NULL)
+    if (parent != nullptr)
     {
         parent->addChild(child);
 
@@ -142,7 +142,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     }
     else
     {
-        graphListener->addChild(NULL, child.get());
+        graphListener->onBeginAddChild(nullptr, child.get());
         //Set up the root
         this->topLevelItem(0)->setExpanded(true);
 
@@ -159,7 +159,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
 
 BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry::SPtr entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
-    BaseObject::SPtr object=NULL;
+    BaseObject::SPtr object=nullptr;
     if (!parent || !entry) return object;
 
     std::string templateUsed = templateName;
@@ -235,7 +235,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
                 }
             }
         }
-        object = c->createInstance(parent->getContext(), NULL);
+        object = c->createInstance(parent->getContext(), nullptr);
         GraphHistoryManager::Operation adding(object, GraphHistoryManager::Operation::ADD_OBJECT);
         adding.info=std::string("Adding Object ") + object->getClassName();
         emit operationPerformed(adding);
@@ -499,7 +499,7 @@ void GraphModeler::rightClick(const QPoint& p /*, int  index */)
     bool isSingleSelection= (selection.size() == 1);
     for (unsigned int i=0; i<selection.size(); ++i)
     {
-        if (getObject(item)!=NULL)
+        if (getObject(item)!=nullptr)
         {
             isNode = false;
             break;
@@ -592,17 +592,17 @@ Node::SPtr GraphModeler::loadNode()
 Node::SPtr GraphModeler::loadNode(QTreeWidgetItem* item, std::string filename, bool saveHistory)
 {
     Node::SPtr node;
-    if (!item) node=NULL;
+    if (!item) node=nullptr;
     else node=getNode(item);
 
     if (filename.empty())
     {
-        QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+        QString s = getOpenFileName ( this, nullptr,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
         if (s.length() >0)
         {
             filename = s.toStdString();
         }
-        else return NULL;
+        else return nullptr;
     }
     return loadNode(node,filename, saveHistory);
 }
@@ -650,7 +650,7 @@ void GraphModeler::linkComponent()
 
     // store the partial component hierarchy i.e we store the parent Nodes only
     std::vector<QTreeWidgetItem*> items;
-    for(QTreeWidgetItem *item = fromItem->parent(); item != NULL; item = item->parent())
+    for(QTreeWidgetItem *item = fromItem->parent(); item != nullptr; item = item->parent())
         items.push_back(item);
 
     // create and show the LinkComponent dialog box
@@ -682,7 +682,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
     if (newNode->getName() == "Group")
     {
         //We can't use the parent node, as it is null
-        if (!node) return NULL;
+        if (!node) return nullptr;
         //delete newNode;
         newNode = node;
     }
@@ -766,7 +766,7 @@ Node::SPtr GraphModeler::loadNode(Node::SPtr node, std::string path, bool saveHi
     xml::BaseElement* newXML=nullptr;
 
     newXML = xml::loadFromFile (path.c_str() );
-    if (newXML == nullptr) return NULL;
+    if (newXML == nullptr) return nullptr;
 
     //-----------------------------------------------------------------
     //Add the content of a xml file
@@ -896,7 +896,7 @@ void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile
 
 bool GraphModeler::getSaveFilename(std::string &filename)
 {
-    QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    QString s = sofa::gui::qt::getSaveFileName ( this, nullptr, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.toStdString().c_str());
@@ -980,10 +980,10 @@ void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
             emit operationPerformed(removal);
         }
         if (!parent)
-            graphListener->removeChild(parent, node);
+            graphListener->onBeginRemoveChild(parent, node);
         else
-            parent->removeChild((Node*)node);
-        if (!parent && this->children().size() == 0) addNode(NULL);
+            parent->removeChild(dynamic_cast<Node*>(node));
+        if (!parent && this->children().size() == 0) addNode(nullptr);
     }
 
 }

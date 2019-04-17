@@ -40,22 +40,22 @@ public:
     BaseNode* getFirstParent() const override;
 	
 	  /// Add a child node
-    virtual void addChild(BaseNode::SPtr node); 
+    virtual void doAddChild(BaseNode::SPtr node);
 
     /// Remove a child node
-    virtual void removeChild(BaseNode::SPtr node);
+    virtual void doRemoveChild(BaseNode::SPtr node);
 
     /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr node);
+    virtual void doMoveChild(BaseNode::SPtr node);
 
     /// Add a generic object
-    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doAddObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Remove a generic object
-    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doRemoveObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Move an object from a node to another node
-    virtual void moveObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual void doMoveObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Test if the given node is a parent of this node.
     bool hasParent(const BaseNode* node) const override; 
