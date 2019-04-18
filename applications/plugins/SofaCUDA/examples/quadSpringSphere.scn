@@ -1,10 +1,10 @@
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<CollisionPipeline verbose="0" />
+	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
-	<CollisionResponse name="Response" />
+	<DefaultContactManager name="Response" />
 	<NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 	<Node name="Floor">
-		<RegularGrid
+		<RegularGridTopology
 			nx="2" ny="1" nz="2"
 			xmin="20" xmax="-20"
 			ymin="-3.05" ymax="-3.05"
@@ -21,9 +21,9 @@
 		</Node>
 	</Node>
 	<Node name="SquareCloth1">
-		<EulerImplicit  rayleighStiffness="0.1" />
+		<EulerImplicitSolver rayleighStiffness="0.1" />
 		<CGLinearSolver iterations="10" rayleighMass="0.05" threshold="0.000001"/>
-		<RegularGrid
+		<RegularGridTopology
 			nx="100" ny="1" nz="100"
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
@@ -40,7 +40,7 @@
 			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 		<Node>
-			<RegularGrid
+			<RegularGridTopology
 				nx="4" ny="1" nz="4"
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
@@ -53,7 +53,7 @@
 		<!--
 		<Node name="Surf">
 			<MechanicalObject />
-			<RegularGrid
+			<RegularGridTopology
 				nx="100" ny="1" nz="100"
 				xmin="12" xmax="-12"
 				ymin="7" ymax="7"

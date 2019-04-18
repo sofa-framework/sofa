@@ -1,18 +1,18 @@
 <Node name="root" dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-	<CollisionResponse name="Response" response="default" />
+	<DefaultContactManager name="Response" response="default" />
 	<CollisionGroup name="Group" />
 	
 	<Node name="M1" processor="0">
-		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="10"/>
 		<MechanicalObject template="CudaVec3f"/>
 		<UniformMass totalmass="200" />
-		<RegularGrid
+		<RegularGridTopology
 			nx="10" ny="10" nz="46"
 			xmin="-9" xmax="-6"
 			ymin="0" ymax="3"
