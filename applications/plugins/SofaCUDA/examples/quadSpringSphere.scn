@@ -1,4 +1,4 @@
-<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
 	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="Response" />
@@ -21,8 +21,8 @@
 		</Node>
 	</Node>
 	<Node name="SquareCloth1">
-		<EulerImplicitSolver rayleighStiffness="0.1" />
-		<CGLinearSolver iterations="10" rayleighMass="0.05" threshold="0.000001"/>
+		<EulerImplicitSolver rayleighMass="0.05" rayleighStiffness="0.1" />
+		<CGLinearSolver iterations="10" threshold="0.000001"/>
 		<RegularGridTopology
 			nx="100" ny="1" nz="100"
 			xmin="12" xmax="-12"

@@ -1,4 +1,5 @@
-<Node name="root" dt="0.04" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root" dt="0.04">
+	<VisualStyle displayFlags="showBehaviorModels" />
 	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="Response" />
@@ -31,7 +32,7 @@
 		<BoxConstraint box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
 		<!--		<MeshSpringForceField stiffness="2333" /> -->
 		<TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />
-		<PlaneForceField normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
+		<PlaneForceField normal="0 1 0" d="-3" stiffness="10000"  showPlane="1" />
 		<Node>
 			<RegularGridTopology
 				nx="2" ny="2" nz="9"
@@ -40,7 +41,7 @@
 				zmin="-5.5" zmax="6.5"
 			/>
 			<MechanicalObject/>
-			<SphereModel radius="1.0" />
+			<TSphereModel radius="1.0" />
 			<BarycentricMapping />
 		</Node>
 		<Node>
@@ -50,7 +51,7 @@
 				ymin="0" ymax="3"
 				zmin="-7.5" zmax="7.5"
 			/>
-			<VisualModel name="Visual"/>
+			<OglModel name="Visual"/>
 			<SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>

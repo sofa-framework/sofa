@@ -1,30 +1,32 @@
-<Node name="root" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
-    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
-  <Node name="M1">
-    <MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
-<!--    <MeshObjLoader name="surface" filename="mesh/raptor8k1.obj" />-->
-    <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-    <CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
-<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
-	<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->
-    <MeshTopology src="@volume" />
-	<MechanicalObject template="CudaVec3f" />
+<Node name="root" dt="0.04">
+	<VisualStyle displayFlags="showBehaviorModels showForceFields" />
+	<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
+	
+	<Node name="M1">
+		<MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
+	<!--    <MeshObjLoader name="surface" filename="mesh/raptor8k1.obj" />-->
+		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+		<CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
+	<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
+		<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->
+		<MeshTopology src="@volume" />
+		<MechanicalObject template="CudaVec3f" />
 
-	<UniformMass mass="0.01" />
+		<UniformMass vertexMass="0.01" />
 
-	<BoxROI name="box0" box="-2.2 -1 -10 2.2  10  10" drawBoxes="1" />
-	<BoxROI name="box1" box="-2.2 -1  -1 2.2 2.5 1.5" drawBoxes="1" />
-	<IndexValueMapper name="ind_box0"                                      indices="@box0.tetrahedronIndices" value="100000" />
-	<IndexValueMapper name="ind_box1" inputValues="@ind_box0.outputValues" indices="@box1.tetrahedronIndices" value="1000000" />
+		<BoxROI name="box0" box="-2.2 -1 -10 2.2  10  10" drawBoxes="1" />
+		<BoxROI name="box1" box="-2.2 -1  -1 2.2 2.5 1.5" drawBoxes="1" />
+		<IndexValueMapper name="ind_box0"                                      indices="@box0.tetrahedronIndices" value="100000" />
+		<IndexValueMapper name="ind_box1" inputValues="@ind_box0.outputValues" indices="@box1.tetrahedronIndices" value="1000000" />
 
-	<TetrahedronFEMForceField name="FEM" youngModulus="@ind_box1.outputValues" poissonRatio="0.4" listening="true" />
+		<TetrahedronFEMForceField name="FEM" youngModulus="@ind_box1.outputValues" poissonRatio="0.4" listening="true" />
 
-	<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
-	<FixedConstraint indices="@box3.indices" />	  
+		<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
+		<FixedConstraint indices="@box3.indices" />	  
 
-	<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
-    <ConstantForceField points="@boxF.indices" force="7.5 -6.63 -15" arrowSizeCoef="0.1" />
-	<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  draw="1" drawSize="20" />
+		<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
+		<ConstantForceField indices="@boxF.indices" force="7.5 -6.63 -15" arrowSizeCoef="0.1" />
+		<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  showPlane="1" showPlaneSize="20" />
 <!--
 		<Node name="Surf">
 			<Mesh filename="mesh/raptor_35kp.obj"/>
