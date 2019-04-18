@@ -436,12 +436,13 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
+        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
     to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
-    return;
+    sofa::helper::AdvancedTimer::stepEnd("Update Quad2TriangleTopologicalMapping");
 }
 
 
