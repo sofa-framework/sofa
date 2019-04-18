@@ -499,12 +499,7 @@ void HeadlessRecorder::step()
     getSimulation()->animate(groot.get());
     sofa::helper::AdvancedTimer::end("Animate");
     getSimulation()->updateVisual(groot.get());
-<<<<<<< HEAD
     redraw();
-
-=======
-    //redraw();
->>>>>>> 1a3c25b2e3... Adapt headlessrecorder to use helper::gl::VideoRecorderFFMpeg
 }
 
 void HeadlessRecorder::resetView()
