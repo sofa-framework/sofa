@@ -53,9 +53,9 @@ public:
     virtual Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
 
     // max: added out parameter to get the root *before* createScene is called
-    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
-    virtual void doLoadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
-    bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    void loadSceneWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
+    virtual void doLoadSceneWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
+    bool loadTestWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file
     void write(Node* node, const char *filename) override;

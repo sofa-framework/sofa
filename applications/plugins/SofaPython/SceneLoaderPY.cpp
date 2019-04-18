@@ -86,12 +86,12 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 sofa::simulation::Node::SPtr SceneLoaderPY::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     sofa::simulation::Node::SPtr root;
-    doLoadSceneWithArguments(filename.c_str(), sceneArgs, &root);
+    doLoadSceneWithArguments(filename, sceneArgs, &root);
     return root;
 }
 
 
-void SceneLoaderPY::loadSceneWithArguments(const char *filename,
+void SceneLoaderPY::loadSceneWithArguments(const std::string& filename,
                                            const std::vector<std::string>& arguments,
                                            Node::SPtr* root_out)
 {
@@ -101,7 +101,7 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
 }
 
 
-void SceneLoaderPY::doLoadSceneWithArguments(const char *filename,
+void SceneLoaderPY::doLoadSceneWithArguments(const std::string& filename,
                                            const std::vector<std::string>& arguments,
                                            Node::SPtr* root_out)
 {
@@ -121,8 +121,8 @@ void SceneLoaderPY::doLoadSceneWithArguments(const char *filename,
     // We go the the current file's directory so that all relative path are correct
     SetDirectory chdir ( filename );
 
-    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename), arguments);
-    if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename)))
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename.c_str()), arguments);
+    if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename.c_str())))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( "scene script load error." );
@@ -151,7 +151,7 @@ void SceneLoaderPY::doLoadSceneWithArguments(const char *filename,
             if(root_out) *root_out = rootNode;
 
             SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
-            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
+            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename.c_str() ) );
 
             return;
         }
@@ -163,7 +163,7 @@ void SceneLoaderPY::doLoadSceneWithArguments(const char *filename,
 }
 
 
-bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
+bool SceneLoaderPY::loadTestWithArguments(const std::string& filename, const std::vector<std::string>& arguments)
 {
     PythonEnvironment::gil lock(__func__);    
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
