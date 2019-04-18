@@ -86,10 +86,10 @@ bool TriangleSetTopology_test::testTriangleBuffers()
     EXPECT_EQ(topoCon->getNumberOfTriangles(), nbrTriangle);
     EXPECT_EQ(topoCon->getTriangles().size(), nbrTriangle);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 triangles in this file should be :
     sofa::helper::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth0(0, 18, 11);

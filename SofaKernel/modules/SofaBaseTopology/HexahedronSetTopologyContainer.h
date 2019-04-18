@@ -147,7 +147,7 @@ public:
      * @param i The index of a hexahedron.
      * @return An EdgesInHexahedron containing the indices of the edges.
      */
-    const EdgesInHexahedron& getEdgesInHexahedron(HexaID i) override;
+    const EdgesInHexahedron& getEdgesInHexahedron(HexaID id) override;
 
 
     /** \brief Get the 6 quads that form a hexahedron.
@@ -155,7 +155,7 @@ public:
      * @param i The index of a hexahedron.
      * @return A QuadsInHexahedron containing the indices of the quads.
      */
-    const QuadsInHexahedron& getQuadsInHexahedron(HexaID i) override;
+    const QuadsInHexahedron& getQuadsInHexahedron(HexaID id) override;
 
 
     /** \brief Get the hexahedra around a vertex.
@@ -163,7 +163,7 @@ public:
      * @param i The index of a vertex.
      * @return A HexahedraAroundVertex containing the indices of the hexahedra this vertex belongs to.
      */
-    const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i) override;
+    const HexahedraAroundVertex& getHexahedraAroundVertex(PointID id) override;
 
 
     /** \brief Get the hexahedra around an edge.
@@ -171,7 +171,7 @@ public:
      * @param i The index of an edge.
      * @return A HexahedraAroundEdge containing the indices of the hexahedra this edge belongs to.
      */
-    const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i) override;
+    const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID id) override;
 
 
     /** \brief Get the hexahedra around a quad.
@@ -179,7 +179,7 @@ public:
      * @param i The index of a quad.
      * @return A HexahedraAroundQuad containing the indices of the hexahedra this quad belongs to.
      */
-    const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i) override;
+    const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID id) override;
 
 
     /** \brief Get the position of a vertex in a hexahedron from its index.
@@ -231,6 +231,9 @@ public:
 
     /// Dynamic Topology API
     /// @{
+
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see TriangleSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
      *

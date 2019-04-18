@@ -93,15 +93,15 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
     EXPECT_EQ(topoCon->getNumberOfTetrahedra(), nbrTetrahedron);
     EXPECT_EQ(topoCon->getTetrahedra().size(), nbrTetrahedron);
 
-    // check triangles should not be created
-    EXPECT_EQ(topoCon->getNumberOfTriangles(), 0);
-    EXPECT_EQ(topoCon->getNbTriangles(), 0);
-    EXPECT_EQ(topoCon->getTriangles().size(), 0);
+    // check triangles buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfTriangles(), nbrTriangle);
+    EXPECT_EQ(topoCon->getNbTriangles(), nbrTriangle);
+    EXPECT_EQ(topoCon->getTriangles().size(), nbrTriangle);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
     sofa::helper::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth0(22, 2, 11, 25);

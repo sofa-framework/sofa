@@ -121,7 +121,7 @@ public:
      * @param ID of a tetrahedron.
      * @return EdgesInTetrahedron list composing the input tetrahedron.
      */
-    const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID i) override;
+    const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID id) override;
 
 
     /** \brief Returns the 4 triangles adjacent to a given tetrahedron.
@@ -129,7 +129,7 @@ public:
      * @param ID of a tetrahedron.
      * @return TrianglesInTetrahedron list composing the input tetrahedron.
      */
-    const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID i) override;
+    const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID id) override;
 
 
     /** \brief Returns the set of tetrahedra adjacent to a given vertex.
@@ -137,7 +137,7 @@ public:
      * @param ID of a vertex.
      * @return TetrahedraAroundVertex list around the input vertex.
      */
-    const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID i) override;
+    const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID id) override;
 
 
     /** \brief Returns the set of tetrahedra adjacent to a given edge.
@@ -145,7 +145,7 @@ public:
      * @param ID of an edge.
      * @return TetrahedraAroundVertex list around the input edge.
      */
-    const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID i) override;
+    const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID id) override;
 
 
     /** \brief Returns the set of tetrahedra adjacent to a given triangle.
@@ -153,7 +153,7 @@ public:
      * @param ID of a triangle.
      * @return TetrahedraAroundVertex list around the input triangle.
      */
-    const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID i) override;
+    const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID id) override;
 
 
     /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex.
@@ -203,6 +203,9 @@ public:
 
     /// Dynamic Topology API
     /// @{
+
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see TriangleSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
      *

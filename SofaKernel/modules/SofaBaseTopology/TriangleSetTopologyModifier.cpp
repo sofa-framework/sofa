@@ -187,14 +187,29 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
     const TriangleID triangleIndex = (TriangleID)m_container->getNumberOfTriangles();
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
-    if(m_container->hasTrianglesAroundVertex())
-    {
-        for(unsigned int j=0; j<3; ++j)
+    // update nbr point if needed
+    unsigned int nbrP = m_container->getNbPoints();
+    for(unsigned int i=0; i<3; ++i)
+        if (t[i] + 1 > nbrP) // point not well init
         {
-            sofa::helper::vector< TriangleID > &shell = m_container->getTrianglesAroundVertexForModification( t[j] );
-            shell.push_back( triangleIndex );
+            nbrP = t[i] + 1;
+            m_container->setNbPoints(nbrP);
         }
+
+    // update m_trianglesAroundVertex
+    if (m_container->m_trianglesAroundVertex.size() < nbrP)
+        m_container->m_trianglesAroundVertex.resize(nbrP);
+
+    for(unsigned int j=0; j<3; ++j)
+    {
+        sofa::helper::vector< TriangleID > &shell = m_container->m_trianglesAroundVertex[t[j]];
+        shell.push_back( triangleIndex );
     }
+
+
+    // update edge-triangle cross buffers
+    if (m_container->m_edgesInTriangle.size() < triangleIndex+1)
+        m_container->m_edgesInTriangle.resize(triangleIndex+1);
 
     for(unsigned int j=0; j<3; ++j)
     {
@@ -211,23 +226,26 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
             assert (edgeIndex != InvalidID);
+            if (edgeIndex == InvalidID)
+            {
+                msg_error() << "Edge creation: " << e1 << " failed in addTriangleProcess. Edge will not be added in buffers.";
+                continue;
+            }
 
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
             addEdgesWarning( v.size(), v, edgeIndexList);
         }
 
-        if(m_container->hasEdgesInTriangle())
-        {
-            m_container->m_edgesInTriangle.resize(triangleIndex+1);
-            m_container->m_edgesInTriangle[triangleIndex][j]= edgeIndex;
-        }
+        // update m_edgesInTriangle
+        m_container->m_edgesInTriangle[triangleIndex][j]= edgeIndex;
 
-        if(m_container->hasTrianglesAroundEdge())
-        {
-            sofa::helper::vector< TriangleID > &shell = m_container->m_trianglesAroundEdge[m_container->m_edgesInTriangle[triangleIndex][j]];
-            shell.push_back( triangleIndex );
-        }
+        // update m_trianglesAroundEdge
+        if (m_container->m_trianglesAroundEdge.size() < m_container->getNbEdges())
+            m_container->m_trianglesAroundEdge.resize(m_container->getNbEdges());
+
+        sofa::helper::vector< TriangleID > &shell = m_container->m_trianglesAroundEdge[edgeIndex];
+        shell.push_back( triangleIndex );
     }
 
     m_triangle.push_back(t);
