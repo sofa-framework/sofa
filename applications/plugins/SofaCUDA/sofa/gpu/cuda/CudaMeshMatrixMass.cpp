@@ -19,6 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
+#define SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
+
 #include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
@@ -44,21 +47,15 @@ namespace mass
 {
 
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
 #endif // SOFA_GPU_CUDA_DOUBLE
+
 
 } // namespace mass
 
@@ -86,4 +83,6 @@ int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side compu
 } // namespace gpu
 
 } // namespace sofa
+
+#endif //SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
 
