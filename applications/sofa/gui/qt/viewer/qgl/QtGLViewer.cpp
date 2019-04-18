@@ -142,6 +142,8 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     vparams->zFar()  = camera()->zFar();
 
     connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
+
+    setShortcut(CAMERA_MODE, Qt::Key_M);
 }
 
 

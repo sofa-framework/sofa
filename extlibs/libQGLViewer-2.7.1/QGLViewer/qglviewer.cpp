@@ -510,7 +510,7 @@ void QGLViewer::setDefaultShortcuts() {
   setShortcut(ENABLE_TEXT, Qt::SHIFT + Qt::Key_Question);
   setShortcut(EXIT_VIEWER, Qt::Key_Escape);
   setShortcut(SAVE_SCREENSHOT, Qt::CTRL + Qt::Key_S);
-  setShortcut(CAMERA_MODE, Qt::Key_M);
+  setShortcut(CAMERA_MODE, Qt::Key_Space);
   setShortcut(FULL_SCREEN, Qt::ALT + Qt::Key_Return);
   setShortcut(STEREO, Qt::Key_S);
   setShortcut(ANIMATION, Qt::Key_Return);
