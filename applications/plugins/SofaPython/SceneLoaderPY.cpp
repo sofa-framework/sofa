@@ -83,10 +83,10 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPY::doLoad(const char *filename, const std::vector<std::string>* sceneArgs)
+sofa::simulation::Node::SPtr SceneLoaderPY::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     sofa::simulation::Node::SPtr root;
-    doLoadSceneWithArguments(filename, (sceneArgs != NULL ? *sceneArgs : std::vector<std::string>(0)), &root);
+    doLoadSceneWithArguments(filename.c_str(), sceneArgs, &root);
     return root;
 }
 

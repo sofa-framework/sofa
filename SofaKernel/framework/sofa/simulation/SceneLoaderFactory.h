@@ -66,7 +66,7 @@ public:
     virtual bool canWriteFileExtension(const char * /*extension*/) { return false; }
 
     /// load the file
-    sofa::simulation::Node::SPtr load(const char *filename, bool reload = false, const std::vector<std::string>* sceneArgs = NULL)
+    sofa::simulation::Node::SPtr load(const std::string& filename, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0))
     {
         if(reload)
             notifyReloadingSceneBefore();
@@ -82,7 +82,7 @@ public:
 
         return root;
     }
-    virtual sofa::simulation::Node::SPtr doLoad(const char *filename, const std::vector<std::string>* sceneArgs) = 0;
+    virtual sofa::simulation::Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) = 0;
 
     /// write scene graph in the file
     virtual void write(sofa::simulation::Node* /*node*/, const char * /*filename*/) {}

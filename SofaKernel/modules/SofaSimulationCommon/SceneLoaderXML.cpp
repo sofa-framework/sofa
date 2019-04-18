@@ -66,16 +66,16 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const char *filename, const std::vector<std::string>* sceneArgs)
+sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     SOFA_UNUSED(sceneArgs);
     sofa::simulation::Node::SPtr root;
 
-    if (!canLoadFileName(filename))
+    if (!canLoadFileName(filename.c_str()))
         return 0;
 
-    xml::BaseElement* xml = xml::loadFromFile ( filename );
-    root = processXML(xml, filename);
+    xml::BaseElement* xml = xml::loadFromFile ( filename.c_str() );
+    root = processXML(xml, filename.c_str());
 
     delete xml;
 

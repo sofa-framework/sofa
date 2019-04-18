@@ -60,12 +60,12 @@ void SceneLoaderPHP::getExtensionList(ExtensionList* list)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const char *filename, const std::vector<std::string>* sceneArgs)
+sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     SOFA_UNUSED(sceneArgs);
     sofa::simulation::Node::SPtr root;
 
-    if (!canLoadFileName(filename))
+    if (!canLoadFileName(filename.c_str()))
         return 0;
 
     std::string out="",error="";
@@ -99,7 +99,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const char *filename, const 
         if (out == "")
             return NULL;
     }
-    root = SceneLoaderXML::loadFromMemory(filename, out.c_str(), (unsigned int)out.size());
+    root = SceneLoaderXML::loadFromMemory(filename.c_str(), out.c_str(), (unsigned int)out.size());
 
     return root;
 }
