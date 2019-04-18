@@ -36,6 +36,8 @@ namespace component
 namespace topology
 {
 
+using sofa::core::objectmodel::ComponentState;
+
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
 template< class DataTypes>
@@ -138,35 +140,6 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     }
     tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa);
 
-/*
-    v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
-    qpa.push_back(QuadraturePoint(v,(Real) 8/405));
-    a=(7+sqrt((Real)15))/34;
-    b=(13+3*sqrt((Real)15))/34;
-     c=(2665-14*sqrt((Real)15))/226800;
-    for (i=0;i<4;++i) {
-        v=BarycentricCoordinatesType(a,a,a,a);
-        v[i]=b;
-        qpa.push_back(QuadraturePoint(v,c));
-    }
-    a=(7-sqrt((Real)15))/34;
-    b=(13-3*sqrt((Real)15))/34;
-    c=(2665+14*sqrt((Real)15))/226800;
-    for (i=0;i<4;++i) {
-        v=BarycentricCoordinatesType(a,a,a,a);
-        v[i]=b;
-        qpa.push_back(QuadraturePoint(v,c));
-    }
-    a=(5-sqrt((Real)15))/20;
-    b=(5+sqrt((Real)15))/20;
-    c=(Real)5/567;
-    for (i=0;i<6;++i) {
-        v=BarycentricCoordinatesType(a,a,a,a);
-        v[edgesInTetrahedronArray[i][0]]=b;
-        v[edgesInTetrahedronArray[i][1]]=b;
-        qpa.push_back(QuadraturePoint(v,c));
-    }
-    tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa); */
     /// integration with sixtic accuracy with 24 points
     // This rule is originally from Keast:
     // Patrick Keast,
@@ -925,6 +898,9 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(this->m_componentstate == ComponentState::Invalid)
+        return;
+
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
