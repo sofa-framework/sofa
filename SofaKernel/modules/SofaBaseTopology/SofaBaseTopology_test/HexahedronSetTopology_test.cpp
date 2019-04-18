@@ -93,15 +93,15 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
     EXPECT_EQ(topoCon->getNumberOfHexahedra(), nbrHexahedron);
     EXPECT_EQ(topoCon->getHexahedra().size(), nbrHexahedron);
 
-    // check quads should not be created
-    EXPECT_EQ(topoCon->getNumberOfQuads(), 0);
-    EXPECT_EQ(topoCon->getNbQuads(), 0);
-    EXPECT_EQ(topoCon->getQuads().size(), 0);
+    // check quads buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfQuads(), nbrQuad);
+    EXPECT_EQ(topoCon->getNbQuads(), nbrQuad);
+    EXPECT_EQ(topoCon->getQuads().size(), nbrQuad);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
     sofa::helper::fixed_array<HexahedronSetTopologyContainer::PointID, 8> elemTruth0(0, 1, 5, 4, 16, 17, 21, 20);

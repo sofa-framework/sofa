@@ -43,8 +43,9 @@ VideoRecorderFFMPEG::VideoRecorderFFMPEG()
     , m_prefix("sofa_video")
     , m_counter(-1)
     , m_ffmpeg(nullptr)
-    , m_buffer(nullptr)
-    , m_invalidParam(false)
+    , m_viewportBuffer(nullptr)
+    , m_ffmpegBuffer(nullptr)
+    , m_pixelFormatSize(4)
 {
 
 }
@@ -55,38 +56,48 @@ VideoRecorderFFMPEG::~VideoRecorderFFMPEG()
 }
 
 
-bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec )
+bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec)
 {
     msg_error_when(codec.empty(), "VideoRecorderFFMPEG") << "No codec specified";
-    msg_error_when(width & 1, "VideoRecorderFFMPEG")  << "Width  not divisible by 2 ("  << width << "x" << height << ").  Resize the viewport";
-    msg_error_when(height & 1, "VideoRecorderFFMPEG") << "Height not divisible by 2 ("  << width << "x" << height << ").  Resize the viewport";
-    
-    if ( codec.empty() || (width & 1) || ( height & 1) )
-    {
-        m_invalidParam = true;        
+    if ( codec.empty() )
+    {      
         return false;
     }
-
-    m_invalidParam = false;
-    
-    //std::string filename = findFilename();
+   
     m_filename = filename;
     m_framerate = framerate;
 
-    //GLint viewport[4];
-    //glGetIntegerv(GL_VIEWPORT,viewport);
-    m_Width = width;// viewport[2];
-    m_Height = height;// viewport[3];
+    msg_warning_when(width & 1, "VideoRecorderFFMPEG") << "Width  not divisible by 2 (" << width << "x" << height << "). The video capture will be slow. Resize the viewport to speed up the videocapture";
+    msg_warning_when(height & 1, "VideoRecorderFFMPEG") << "Height not divisible by 2 (" << width << "x" << height << "). The video capture will be slow. Resize the viewport to speed up the videocapture";
+
+    m_viewportWidth = width;
+    m_viewportHeight = height;
+
+    m_viewportBufferSize = m_pixelFormatSize * m_viewportWidth*m_viewportHeight;
+    m_viewportBuffer = new unsigned char[m_viewportBufferSize];
+
+    m_ffmpegWidth = width;
+    if (m_ffmpegWidth & 1)
+    {
+        ++m_ffmpegWidth;
+    }
+
+    m_ffmpegHeight = height;
+    if (m_ffmpegHeight & 1)
+    {
+        ++m_ffmpegHeight;
+    }
+
+    m_ffmpegBufferSize = m_pixelFormatSize * m_ffmpegWidth*m_ffmpegHeight;
+    m_ffmpegBuffer = new unsigned char [m_ffmpegBufferSize];
 
     m_FrameCount = 0;
-
-    m_buffer = new unsigned char [4*m_Width*m_Height];
 
     std::stringstream ss;
     ss << FFMPEG_EXEC_FILE
        << " -r " << m_framerate
         << " -f rawvideo -pix_fmt rgba "
-        << " -s " << m_Width << "x" << m_Height
+        << " -s " << m_ffmpegWidth << "x" << m_ffmpegHeight
         << " -i - -threads 0  -y"
         << " -preset fast "
         << " -pix_fmt " << codec // yuv420p " // " yuv444p "
@@ -113,35 +124,51 @@ bool VideoRecorderFFMPEG::init(const std::string& filename, int width, int heigh
 }
 
 void VideoRecorderFFMPEG::addFrame()
-{
-    if (m_invalidParam)
-    {
-        return;
-    }
-        
+{        
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
    
-    if ((viewport[2] != m_Width) || (viewport[3] != m_Height))
+    if ((viewport[2] != m_viewportWidth) || (viewport[3] != m_viewportHeight))
     {
-        std::cout << "WARNING viewport changed during video capture from " << m_Width << "x" << m_Height << "  to  " << viewport[2] << "x" << viewport[3] << std::endl;
+        std::cout << "WARNING viewport changed during video capture from " << m_viewportWidth << "x" << m_viewportHeight << "  to  " << viewport[2] << "x" << viewport[3] << std::endl;
     }
 
-    //glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, m_buffer);
 
-    glReadPixels(0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_buffer);
+    glReadPixels(0, 0, m_viewportWidth, m_viewportHeight, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_viewportBuffer);
 
-    fwrite(m_buffer, sizeof(unsigned char)*4*m_Width*m_Height, 1, m_ffmpeg);
+    // set ffmpeg buffer: initialize to 0 (black) 
+    memset(m_ffmpegBuffer, 0, m_ffmpegBufferSize);
+
+    if (m_viewportWidth == m_ffmpegWidth)
+    {
+        memcpy(m_ffmpegBuffer, m_viewportBuffer, m_viewportBufferSize);
+    }
+    else
+    {
+        const unsigned char* viewportBufferIter = m_viewportBuffer;
+        const size_t viewportRowSizeInBytes = m_pixelFormatSize * m_viewportWidth;
+
+        unsigned char* ffmpegBufferIter = m_ffmpegBuffer;
+        const size_t ffmpegRowSizeInBytes = m_pixelFormatSize * m_ffmpegWidth;
+
+        int row = m_viewportHeight;
+        while ( row-- > 0 )
+        {
+            memcpy( ffmpegBufferIter, viewportBufferIter, viewportRowSizeInBytes);
+            viewportBufferIter += viewportRowSizeInBytes;
+            ffmpegBufferIter += ffmpegRowSizeInBytes;
+        }
+    }
+
+
+
+    fwrite(m_ffmpegBuffer, m_ffmpegBufferSize, 1, m_ffmpeg);
     
     return;
 }
 
 void VideoRecorderFFMPEG::finishVideo()
 {    
-    if (m_invalidParam)
-    {
-        return;
-    } 
     
 #ifdef WIN32
     _pclose(m_ffmpeg);
@@ -149,7 +176,8 @@ void VideoRecorderFFMPEG::finishVideo()
     pclose(m_ffmpeg);
 #endif
     
-    delete m_buffer;
+    delete m_ffmpegBuffer;
+    delete m_viewportBuffer;
     std::cout << m_filename << " written" << std::endl;
 }
 

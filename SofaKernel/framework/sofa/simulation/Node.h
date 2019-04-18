@@ -113,7 +113,7 @@ public:
 protected:
     Node(const std::string& name="");
 
-    ~Node() override;
+    virtual ~Node() override;
 public:
     /// Create, add, then return the new child of this Node
     virtual Node::SPtr createChild(const std::string& nodeName)=0;
@@ -299,18 +299,41 @@ public:
 
     /// @}
 
+    /// @name Set/get objects
+    /// @{
+
+    /// Pure Virtual method from BaseNode
+    /// Add a child node
+    virtual void addChild(BaseNode::SPtr node) final;
+    /// Remove a child node
+    virtual void removeChild(BaseNode::SPtr node) final;
+    /// Move a node in this from another node
+    virtual void moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) final;
+    /// Move a node in this from another node
+    virtual void moveChild(BaseNode::SPtr node) override = 0;
+
+    /// Delegate methods overridden in child classes
+    /// Add a child node
+    virtual void doAddChild(BaseNode::SPtr node) = 0;
+    /// Remove a child node
+    virtual void doRemoveChild(BaseNode::SPtr node) = 0;
+    /// Move a node from another node
+    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) = 0;
+
+    /// @}
+
 
     /// @name Set/get objects
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Remove an object
-    bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Move an object from another node
-    void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) override;
+    virtual void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
 
     /// Find an object given its name
     sofa::core::objectmodel::BaseObject* getObject(const std::string& name) const;
@@ -486,6 +509,7 @@ public:
 
     /// Get a descendant node given its name
     Node* getTreeNode(const std::string& name) const;
+    Node* getNodeInGraph(const std::string& absolutePath) const;
 
     /// Get children nodes
     Children getChildren() const override;
@@ -538,39 +562,48 @@ public:
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
-	/// override context setSleeping to add notification.
-	void setSleeping(bool /*val*/) override;
+    /// override context setSleeping to add notification.
+    void setSleeping(bool /*val*/) override;
+
 
 protected:
     bool debug_;
     bool initialized;
 
-    virtual void doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-
+    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;
+private:    
+    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child);
 
-    virtual void notifyAddChild(Node::SPtr node);
-    virtual void notifyRemoveChild(Node::SPtr node);
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
-    virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);
-    virtual void notifySleepChanged();
+    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+
+    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child);
+    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child);
+
+    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj);
+
+    virtual void notifySleepChanged(Node* node);
+
+    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+
+    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
 
 
+protected:
     BaseContext* _context;
 
     helper::vector<MutationListener*> listener;
 
 
 public:
-
-    void notifyAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-    void notifyRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-    void notifyMoveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) override;
-
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 

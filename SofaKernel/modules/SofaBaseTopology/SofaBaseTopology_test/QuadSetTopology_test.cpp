@@ -87,10 +87,10 @@ bool QuadSetTopology_test::testQuadBuffers()
     EXPECT_EQ(topoCon->getNumberOfQuads(), nbrQuad);
     EXPECT_EQ(topoCon->getQuads().size(), nbrQuad);
 
-    // check edges should not be created
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    // check edges buffer has been created
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
     sofa::helper::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth0(3, 11, 5, 4);

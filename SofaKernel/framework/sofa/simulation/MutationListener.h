@@ -22,8 +22,8 @@
 #ifndef SOFA_SIMULATION_CORE_MUTATIONLISTENER_H
 #define SOFA_SIMULATION_CORE_MUTATIONLISTENER_H
 
-#include <sofa/simulation/simulationcore.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/simulationcore.h>
 
 namespace sofa
 {
@@ -33,31 +33,45 @@ namespace simulation
 
 class Node;
 
-///Generic API to handle mutations of the graph
+/// Generic API to handle mutations of the graph
 class SOFA_SIMULATION_CORE_API MutationListener
 {
-public:
+  public:
     virtual ~MutationListener();
 
-    virtual void addChild(Node* parent, Node* child);
+    virtual void sleepChanged(Node *node);
 
-    virtual void removeChild(Node* parent, Node* child);
+    virtual void onBeginAddChild(Node *parent, Node *child);
 
-    virtual void moveChild(Node* previous, Node* parent, Node* child);
+    virtual void onBeginRemoveChild(Node *parent, Node *child);
 
-    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
+    virtual void onBeginAddObject(Node *parent,
+                             core::objectmodel::BaseObject *object);
 
-    virtual void removeObject(Node* parent, core::objectmodel::BaseObject* object);
+    virtual void onBeginRemoveObject(Node *parent,
+                                core::objectmodel::BaseObject *object);
 
-    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
+    virtual void onBeginAddSlave(core::objectmodel::BaseObject *master,
+                            core::objectmodel::BaseObject *slave);
 
-    virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void onBeginRemoveSlave(core::objectmodel::BaseObject *master,
+                               core::objectmodel::BaseObject *slave);
 
-    virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void onEndAddChild(Node *parent, Node *child);
 
-    virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void onEndRemoveChild(Node *parent, Node *child);
 
-	virtual void sleepChanged(Node* node);
+    virtual void onEndAddObject(Node *parent,
+                             core::objectmodel::BaseObject *object);
+
+    virtual void onEndRemoveObject(Node *parent,
+                                core::objectmodel::BaseObject *object);
+
+    virtual void onEndAddSlave(core::objectmodel::BaseObject *master,
+                            core::objectmodel::BaseObject *slave);
+
+    virtual void onEndRemoveSlave(core::objectmodel::BaseObject *master,
+                               core::objectmodel::BaseObject *slave);
 };
 
 } // namespace simulation

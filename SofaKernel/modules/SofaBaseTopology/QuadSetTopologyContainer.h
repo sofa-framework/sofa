@@ -90,7 +90,7 @@ public:
      * @param ID of a Quad.
      * @return The corresponding Quad.
      */
-    const Quad getQuad(QuadID i) override;
+    const Quad getQuad(QuadID id) override;
 
 
     /** Returns the indices of a quad given four vertex indices.
@@ -107,7 +107,7 @@ public:
      * @param ID of a quad.
      * @return EdgesInQuad list composing the input quad.
     */
-    const EdgesInQuad& getEdgesInQuad(QuadID i) override;
+    const EdgesInQuad& getEdgesInQuad(QuadID id) override;
 
 
     /** \brief Returns the set of quads adjacent to a given vertex.
@@ -115,7 +115,7 @@ public:
      * @param ID of a vertex.
      * @return QuadsAroundVertex list around the input vertex.
      */
-    const QuadsAroundVertex& getQuadsAroundVertex(PointID i) override;
+    const QuadsAroundVertex& getQuadsAroundVertex(PointID id) override;
 
 
     /** \brief Returns the set of quads adjacent to a given edge.
@@ -123,7 +123,7 @@ public:
      * @param ID of an edge.
      * @return QuadsAroundEdge list around the input edge.
      */
-    const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i) override;
+    const QuadsAroundEdge& getQuadsAroundEdge(EdgeID id) override;
 
 
     /** \brief Returns the index (either 0, 1, 2, 3) of the vertex whose global index is vertexIndex.
@@ -151,7 +151,8 @@ public:
 
     /// Dynamic Topology API
     /// @{
-
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see EdgeSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
     *
