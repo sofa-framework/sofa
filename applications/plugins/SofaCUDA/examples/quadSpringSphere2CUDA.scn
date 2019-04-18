@@ -27,7 +27,7 @@
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
 	<Node name="SquareCloth1">
 		<MechanicalObject template="CudaVec3f" />
-		<UniformMass totalmass="100" />
+		<UniformMass totalMass="100" />
 		<RegularGridTopology
 			nx="20" ny="1" nz="20"
 			xmin="12" xmax="-12"
@@ -59,7 +59,7 @@
 	</Node>
 	<Node name="SquareCloth2">
 		<MechanicalObject template="CudaVec3f" />
-		<UniformMass totalmass="100" />
+		<UniformMass totalMass="100" />
 		<RegularGridTopology
 			nx="20" ny="1" nz="20"
 			xmin="12" xmax="-12"
@@ -91,7 +91,7 @@
 	</Node>
 	<Node name="SquareCloth3">
 		<MechanicalObject template="CudaVec3f" />
-		<UniformMass totalmass="100" />
+		<UniformMass totalMass="100" />
 		<RegularGridTopology
 			nx="20" ny="1" nz="20"
 			xmin="12" xmax="-12"
@@ -123,7 +123,7 @@
 	</Node>
 	<Node name="SquareCloth4">
 		<MechanicalObject template="CudaVec3f" />
-		<UniformMass totalmass="100" />
+		<UniformMass totalMass="100" />
 		<RegularGridTopology
 			nx="20" ny="1" nz="20"
 			xmin="12" xmax="-12"

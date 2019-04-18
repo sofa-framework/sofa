@@ -28,7 +28,7 @@
 			zmin="-7.5" zmax="7.5"
 		/>
 		<MechanicalObject template="CudaVec3f" />
-		<UniformMass totalmass="400" />
+		<UniformMass totalMass="400" />
 		<BoxConstraint box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
 		<!--		<MeshSpringForceField stiffness="2333" /> -->
 		<TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />

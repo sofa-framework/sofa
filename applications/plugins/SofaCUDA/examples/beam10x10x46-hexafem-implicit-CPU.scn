@@ -10,7 +10,7 @@
 		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="10"/>
 		<MechanicalObject template="Vec3f"/>
-		<UniformMass totalmass="200" />
+		<UniformMass totalMass="200" />
 		<RegularGridTopology
 			nx="10" ny="10" nz="46"
 			xmin="-9" xmax="-6"

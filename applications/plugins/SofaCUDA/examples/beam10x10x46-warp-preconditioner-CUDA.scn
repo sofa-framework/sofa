@@ -33,7 +33,7 @@
 		<!--<SparseCholeskySolver name="initsolver" printLog="true" />-->
 		<SparseTAUCSSolver name="initsolver" symmetric="true" options="taucs.factor.LLT=true taucs.factor.ordering=metis" printLog="false" />
 
-		<UniformMass totalmass="400" />
+		<UniformMass totalMass="400" />
 		<BoxConstraint box="-1.6 -0.1 7.4 1.6 3.1 7.6" />
 		<!--		<MeshSpringForceField stiffness="2333" /> -->
 		<TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />

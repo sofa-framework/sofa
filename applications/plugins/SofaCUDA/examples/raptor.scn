@@ -10,7 +10,7 @@
     <MeshTopology src="@volume" />
 	<MechanicalObject template="CudaVec3f" />
 
-	<UniformMass totalmass="1" />
+	<UniformMass totalMass="1" />
 
 	<BoxROI name="box0" box="-2.2 -1 -10 2.2  10  10" drawBoxes="1" />
 	<BoxROI name="box1" box="-2.2 -1  -1 2.2 2.5 1.5" drawBoxes="1" />
