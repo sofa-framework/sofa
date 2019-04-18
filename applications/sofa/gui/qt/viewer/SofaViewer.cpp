@@ -97,62 +97,70 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_V:
         // --- save video
     {
-        if(!_video)
+        if (m_isVideoButtonPressed == false)
         {
-            switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+            if (!_video)
             {
-            case SofaVideoRecorderManager::SCREENSHOTS :
-                break;
-            case SofaVideoRecorderManager::MOVIE :
-            {
-#ifdef SOFA_HAVE_FFMPEG
-                SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
-                unsigned int bitrate = videoManager->getBitrate();
-                unsigned int framerate = videoManager->getFramerate();
-                std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
-                videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
-#endif
+                switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+                {
+                case SofaVideoRecorderManager::SCREENSHOTS:
+                {
+                    //_video = !_video;
+                    break;
+                }
+                case SofaVideoRecorderManager::MOVIE:
+                {
+                    SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
+                    unsigned int bitrate = videoManager->getBitrate();
+                    unsigned int framerate = videoManager->getFramerate();
 
-                break;
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+                    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, videoManager->getCodecExtension());
+                    int width = getQWidget()->width();
+                    int height = getQWidget()->height();
+                    m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
+#endif // SOFA_HAVE_FFMPEG_EXEC
+
+                    break;
+                }
+                default:
+                    break;
+                }
+                if (SofaVideoRecorderManager::getInstance()->realtime())
+                {
+                    unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
+                    msg_info("SofaViewer") << "Starting capture timer ( " << framerate << " Hz )";
+                    unsigned int interv = (1000 + framerate - 1) / framerate;
+                    captureTimer.start(interv);
+                }
             }
-            default :
-                break;
-            }
-            if (SofaVideoRecorderManager::getInstance()->realtime())
+            else
             {
-                unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
-                msg_info("SofaViewer") << "Starting capture timer ( " << framerate << " Hz )";
-                unsigned int interv = (1000+framerate-1)/framerate;
-                captureTimer.start(interv);
+                if (captureTimer.isActive())
+                {
+                    msg_info("SofaViewer") << "Stopping capture timer ";
+                    captureTimer.stop();
+                }
+                switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+                {
+                case SofaVideoRecorderManager::SCREENSHOTS:
+                    break;
+                case SofaVideoRecorderManager::MOVIE:
+                {
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+                    m_videoRecorderFFMPEG.finishVideo();
+#endif //SOFA_HAVE_FFMPEG_EXEC
+                    break;
+                }
+                default:
+                    break;
+                }
             }
 
+            _video = !_video;
         }
-        else
-        {
-            if(captureTimer.isActive())
-            {
-                msg_info("SofaViewer") << "Stopping capture timer";
-                captureTimer.stop();
-            }
-            switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
-            {
-            case SofaVideoRecorderManager::SCREENSHOTS :
-                break;
-            case SofaVideoRecorderManager::MOVIE :
-            {
-#ifdef SOFA_HAVE_FFMPEG
-                videoRecorder.finishVideo();
-#endif //SOFA_HAVE_FFMPEG
-                break;
-            }
-            default :
-                break;
-            }
-        }
 
-        _video = !_video;
-        //capture.setCounter();
-
+        m_isVideoButtonPressed = true;
         break;
     }
     case Qt::Key_W:
@@ -251,6 +259,11 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
 
     switch (e->key())
     {
+    case Qt::Key_V:
+    {
+        m_isVideoButtonPressed = false;
+        break;
+    }
     case Qt::Key_Shift:
     {
         if (getPickHandler())
@@ -453,9 +466,9 @@ void SofaViewer::captureEvent()
                 screenshot(capture.findFilename(), 1);
                 break;
             case SofaVideoRecorderManager::MOVIE :
-#ifdef SOFA_HAVE_FFMPEG
-                videoRecorder.addFrame();
-#endif //SOFA_HAVE_FFMPEG
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+                m_videoRecorderFFMPEG.addFrame();
+#endif //SOFA_HAVE_FFMPEG_EXEC
                 break;
             default :
                 break;
