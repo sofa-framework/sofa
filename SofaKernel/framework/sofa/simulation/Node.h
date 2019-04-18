@@ -509,6 +509,7 @@ public:
 
     /// Get a descendant node given its name
     Node* getTreeNode(const std::string& name) const;
+    Node* getNodeInGraph(const std::string& absolutePath) const;
 
     /// Get children nodes
     Children getChildren() const override;
