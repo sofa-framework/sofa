@@ -411,10 +411,10 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
         item->setExpanded(true);
         items[child] = item;
     }
-    for (Node::SPtr node : child->child)
-        onBeginAddChild(child, node.get());
     for (BaseObject::SPtr obj : child->object)
         onBeginAddObject(child, obj.get());
+    for (Node::SPtr node : child->child)
+        onBeginAddChild(child, node.get());
 }
 
 /*****************************************************************************************************************/
