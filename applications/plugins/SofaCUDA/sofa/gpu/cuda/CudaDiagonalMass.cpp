@@ -36,16 +36,29 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace mass
+{
+
+template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
+#endif
+
+} // namespace mass
+
+} // namespace component
+
+
 namespace gpu
 {
 
 namespace cuda
 {
 
-template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3dTypes, double>;
-#endif
 
 // Register in the Factory
 int DiagonalMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -60,9 +73,9 @@ int DiagonalMassCudaClass = core::RegisterObject("Supports GPU-side computations
         ;
 
 
-} // namespace mass
+} // namespace cuda
 
-} // namespace component
+} // namespace gpu
 
 } // namespace sofa
 
