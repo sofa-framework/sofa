@@ -109,7 +109,7 @@ void RigidRigidMapping<TIn, TOut>::load(const char *filename)
     {
         // Default to mesh loader
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
-        if (mesh!=NULL)
+        if (mesh!=nullptr)
         {
             pts.resize(mesh->getVertices().size());
             for (unsigned int i=0; i<mesh->getVertices().size(); i++)
@@ -260,7 +260,7 @@ void RigidRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparam
     default: //n values are specified : heterogen repartition.getValue() mapping on the input dofs
         if (repartition.getValue().size() != in.size())
         {
-            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+            msg_error()<<"Mapping dofs repartition.getValue() is not correct";
             return;
         }
         cptOut=0;
@@ -342,7 +342,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
     default:
         if (repartition.getValue().size() != parentVelocities.size())
         {
-            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+            msg_error()<<"Mapping dofs repartition.getValue() is not correct";
             return;
         }
         cptchildVelocities=0;
@@ -423,7 +423,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
     default :
         if (repartition.getValue().size() != parentForces.size())
         {
-            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+            msg_error() <<"Mapping dofs repartition.getValue() is not correct";
             return;
         }
         for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
@@ -492,7 +492,7 @@ void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparam
     default :
         if (repartition.getValue().size() != parentForces.size())
         {
-            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+            msg_error() <<"Mapping dofs repartition.getValue() is not correct";
             return;
         }
         for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
@@ -723,7 +723,7 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
     default:
         if (repartition.getValue().size() != v_in.size())
         {
-            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+            msg_error() <<"Mapping dofs repartition.getValue() is not correct";
             dAcc_out.endEdit();
             return;
         }
