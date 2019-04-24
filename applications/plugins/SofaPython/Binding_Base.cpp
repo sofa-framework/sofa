@@ -105,7 +105,15 @@ PSDEDataFactory* getFactoryInstance(){
         s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
         s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
 
-        // VECTORS
+        // State vectors
+        s_localfactory->registerCreator(
+                    "Rigid3d::VecCoord", new DataCreator<sofa::defaulttype::Rigid3dTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3f::VecCoord", new DataCreator<sofa::defaulttype::Rigid3fTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3::VecCoord", new DataCreator<sofa::defaulttype::Rigid3Types::VecCoord>());
+
+        // General vectors
         for (const auto& container : containers)
         {
             // Scalars
