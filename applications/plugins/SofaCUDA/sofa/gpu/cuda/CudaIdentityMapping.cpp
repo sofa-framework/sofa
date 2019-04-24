@@ -58,9 +58,6 @@ template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, Vec3Types>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, ExtVec3Types >;
 template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
 
-template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3Types, Vec3Types>;
-template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3Types>;
-
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 // CudaVec3dTypes
