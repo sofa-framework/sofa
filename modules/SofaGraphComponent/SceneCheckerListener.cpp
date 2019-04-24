@@ -54,7 +54,8 @@ SceneCheckerListener* SceneCheckerListener::getInstance()
 
 void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
 {
-    m_sceneChecker.validate(node.get());
+    if(node.get())
+        m_sceneChecker.validate(node.get());
 }
 
 
