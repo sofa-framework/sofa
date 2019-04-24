@@ -1,25 +1,25 @@
 <Node name="root" dt="0.04">
-    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
+    
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
     <MeshObjLoader name="surface" filename="mesh/raptor_8kp.obj" triangulate="1" />
 <!--    <MeshObjLoader name="surface" filename="mesh/raptor8k1.obj" triangulate="1" />-->
 <!--    <MeshObjLoader name="surface" filename="mesh/raptor_35kp.obj" triangulate="1" />-->
-    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
     <MeshTopology src="@surface" />
 	<MechanicalObject template="Vec3d" />
 
-	<UniformMass mass="0.1" />
+	<UniformMass totalMass="0.1" />
 
 	<TriangularFEMForceFieldOptim name="FEM" youngModulus="10000" poissonRatio="0.4" />
 
 	<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
 	<FixedConstraint indices="@box3.indices" />	  
-	<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  draw="1" drawSize="20" />
-<!--	<CudaVisualModel template="CudaVec3f" diffuse="0.2 0.8 0.1 1.0" computeNormals="true" />-->
+	<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  showPlane="1" showPlaneSize="20" />
+
 	<Node name="Surf">
-		<VisualModel src="@../surface" diffuse="0.2 0.8 0.1 1.0" computeNormals="true" />
+		<OglModel src="@../surface" diffuse="0.2 0.8 0.1 1.0" />
 		<IdentityMapping />
 	</Node>
   </Node>
