@@ -393,9 +393,13 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
 
 static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    if( helper_addNewData(args, nullptr, obj) == nullptr )
+    BaseData* addeddata = helper_addNewData(args, nullptr, obj);
+    if( addeddata == nullptr )
+    {
+        PyErr_SetString(PyExc_ValueError, "Unable to create a new Sofa data field.");
         return nullptr ;
-    Py_RETURN_NONE;
+    }
+    return SP_BUILD_PYPTR(Data,BaseData,addeddata,false);
 }
 
 static PyObject * Base_getData(PyObject *self, PyObject *args ) {
