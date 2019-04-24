@@ -112,6 +112,8 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
+
+        m_container->checkTopology();
     }
     else
     {
@@ -146,6 +148,8 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
+
+        m_container->checkTopology();
     }
     else
     {
@@ -541,19 +545,25 @@ void TriangleSetTopologyModifier::removePointsProcess(const sofa::helper::vector
             // updating the triangles connected to the point replacing the removed one:
             // for all triangles connected to the last point
 
+            PointID pointID = indices[i];
+            const sofa::helper::vector<TriangleID> &oldShell = m_container->m_trianglesAroundVertex[pointID];
+            if (!oldShell.empty())
+                msg_error() << "m_trianglesAroundVertex is not empty around point: " << pointID << " with shell array: " << oldShell;
             sofa::helper::vector<TriangleID> &shell = m_container->m_trianglesAroundVertex[lastPoint];
+
+
             for(size_t j=0; j<shell.size(); ++j)
             {
                 const TriangleID q = shell[j];
                 for(unsigned int k=0; k<3; ++k)
                 {
                     if(m_triangle[q][k] == lastPoint)
-                        m_triangle[q][k] = indices[i];
+                        m_triangle[q][k] = pointID;
                 }
             }
 
-            // updating the edge shell itself (change the old index for the new one)
-            m_container->m_trianglesAroundVertex[ indices[i] ] = m_container->m_trianglesAroundVertex[ lastPoint ];
+            // updating the triangle shell itself (change the old index for the new one)
+            m_container->m_trianglesAroundVertex[ pointID ] = m_container->m_trianglesAroundVertex[ lastPoint ];
         }
 
         m_container->m_trianglesAroundVertex.resize( m_container->m_trianglesAroundVertex.size() - indices.size() );
