@@ -182,20 +182,6 @@ void RigidRigidMapping<TIn, TOut>::clear()
     this->points.endEdit();
 }
 
-/*
-template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::disable()
-{
-if (!this->points.getValue().empty() && this->toModel!=NULL)
-{
-VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-x.resize(points.getValue().size());
-for (unsigned int i=0;i<points.getValue().size();i++)
-x[i] = points.getValue()[i];
-}
-}
-*/
-
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 {
@@ -211,7 +197,6 @@ void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<unsigned 
     helper::vector<unsigned int>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.reserve(values.size());
-    //repartition.setValue(values);
     sofa::helper::vector<unsigned int>::iterator it = values.begin();
     while (it != values.end())
     {
@@ -415,20 +400,6 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
         getVCenter(parentForces[parentIndex]) += v;
         getVOrientation(parentForces[parentIndex]) += omega;
         mask.insertEntry(parentIndex);
-
-        //			if (!indexFromEnd.getValue())
-        //			{
-        //                            getVCenter(parentForces[index.getValue()]) += v;
-        //                            getVOrientation(parentForces[index.getValue()]) += omega;
-        //                            maskFrom->insertEntry(index.getValue());
-        //			}
-        //			else
-        //			{
-        //                            getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
-        //                            getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
-        //                            maskFrom->insertEntry(parentForces.size() - 1 - index.getValue());
-        //			}
-
         break;
     case 1 :
         childrenPerParent = repartition.getValue()[0];
