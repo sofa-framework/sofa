@@ -6,23 +6,50 @@ set(EXTLIBS_TARGETS
     tinyxml
 )
 
+######## SofaKernel/extlibs ########
+
+# Eigen (header-only): see SofaKernel/cmake/Modules/FindEigen3.cmake
+set(EIGEN_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.2.7" CACHE PATH "Eigen directory (containing Eigen/src/...)")
+mark_as_advanced(EIGEN_ROOT)
+
+# Nlohmann JSON (header-only): see SofaKernel/cmake/Modules/FindJson.cmake
+set(JSON_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/json" CACHE PATH "Nlohmann JSON directory")
+mark_as_advanced(JSON_ROOT)
+
+# Newmat
+find_package(Newmat QUIET)
+if(NOT Newmat_FOUND)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/newmat newmat)
+endif()
+
+# TinyXML
+find_package(TinyXML QUIET)
+if(NOT TinyXML_FOUND)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/tinyxml tinyxml)
+endif()
+
+####################################
+
 ## Necessary ones
-add_subdirectory(SuiteSparse)
-add_subdirectory(csparse)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.2.7 eigen)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/newmat newmat)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/tinyxml tinyxml)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/json json)
+#find_package(SuiteSparse QUIET)
+#message("SuiteSparse_FOUND = ${SuiteSparse_FOUND}")
+#if(NOT SuiteSparse_FOUND)
+#    add_subdirectory(SuiteSparse)
+#endif()
 
+find_package(CSparse QUIET)
+if(NOT CSparse_FOUND)
+    add_subdirectory(csparse)
+endif()
 
-## Optional ones
-if (SOFAGUI_ENABLE_QWT)
+if(SOFAGUI_ENABLE_QWT)
     message("Qwt activated")
     add_subdirectory(qwt-6.1.2/src qwt)
+    list(APPEND EXTLIBS_TARGETS qwt)
 endif()
 
 option(SOFA_BUILD_MINIFLOWVR "Build the miniFlowVR library distributed in the extlibs/ directory." OFF)
-if (SOFA_BUILD_MINIFLOWVR)
+if(SOFA_BUILD_MINIFLOWVR)
     add_subdirectory(miniFlowVR)
     list(APPEND EXTLIBS_TARGETS miniFlowVR)
 endif()

@@ -166,9 +166,18 @@ endif()
 ## Eigen
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
-
-## JSON
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
+install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen
+    COMPONENT headers
+    DESTINATION "include/extlibs/Eigen"
+    PATTERN "*.in" EXCLUDE
+    PATTERN "*.txt" EXCLUDE
+    PATTERN "*.cpp" EXCLUDE)
+install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/unsupported/Eigen
+    COMPONENT headers
+    DESTINATION "include/extlibs/Eigen"
+    PATTERN "*.in" EXCLUDE
+    PATTERN "*.txt" EXCLUDE
+    PATTERN "*.cpp" EXCLUDE)
 
 ## Generate & install the different files that contains the defines associated with
 ## the state of the build option.
