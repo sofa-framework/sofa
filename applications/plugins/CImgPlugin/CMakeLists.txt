@@ -12,7 +12,7 @@ set(SOURCE_FILES
     initCImgPlugin.cpp
     )
 
-add_subdirectory(extlibs/CImg extlibs/CImg)
+add_subdirectory(extlibs/CImg)
 
 find_package(CImg REQUIRED)
 find_package(SofaFramework REQUIRED)
@@ -82,18 +82,24 @@ endif()
 #Remove CImg sys calls
 list(APPEND CIMG_CFLAGS -Dcimg_no_system_calls)
 
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CIMGPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaCore ${EXTERNAL_LIBS})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>/include")
+#target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
 
 ## Install rules for the library; CMake package configurations files
-sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${${PROJECT_NAME}_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR ${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

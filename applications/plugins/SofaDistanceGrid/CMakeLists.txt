@@ -68,4 +68,10 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaDistanceGrid ${SOFADISTANCEGRID_VERSION} ${PROJECT_NAME} SofaDistanceGrid)
+#sofa_create_package(SofaDistanceGrid ${SOFADISTANCEGRID_VERSION} ${PROJECT_NAME} SofaDistanceGrid)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${SOFADISTANCEGRID_VERSION}
+    RELOCATABLE "plugins"
+    )

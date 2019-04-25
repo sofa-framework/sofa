@@ -93,7 +93,6 @@ endmacro()
 
 macro(sofa_add_generic directory name type)
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-
         string(TOUPPER ${type}_${name} option)
 
         # optional parameter to activate/desactivate the option
@@ -508,7 +507,68 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes")
         install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenes/" DESTINATION "${example_install_dir}" COMPONENT resources)
     endif()
+
+    # RELOCATABLE optional arg
+    set(optional_argv5 "${ARGV5}")
+    if(optional_argv5)
+        sofa_set_install_relocatable(${package_name} ${optional_argv5})
+    endif()
 endmacro()
+
+
+
+# sofa_set_install_relocatable
+#   TARGET MUST EXIST, TO BE CALLED AFTER add_library
+# Content:
+#   If building out of SOFA: does nothing.
+#   If building through SOFA: call add_custom_target with custom commands to obtain a self-contained relocatable install.
+#   Self-contained plugins are useful to build modular binaries: they do not "pollute" SOFA install
+#   with self-contained plugins SOFA install will always look the same, no matter how many plugins are included.
+# Effect:
+#   add_custom_target will add the line 'set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${install_dir}/${name}")' at the top of the
+#   plugin's cmake_install.cmake to force the plugin to be installed in it's own directory instead of in SOFA's install directory
+#   (look at the build directory of any plugin to find an example of cmake_install.cmake).
+function(sofa_set_install_relocatable target install_dir)
+    if(NOT SOFA_KERNEL_SOURCE_DIR)
+        # not building through SOFA
+        return()
+    endif()
+    if(NOT TARGET ${target})
+        message(WARNING "sofa_set_install_relocatable: \"${target}\" is not an existing target.")
+        return()
+    endif()
+
+    get_target_property(target_binary_dir ${target} BINARY_DIR)
+
+    set(COMMAND_IF "if")
+    set(COMMAND_IF_ARGS "[ ! -e ${target_binary_dir}/cmake_install.cmakepatch ] do ")
+    set(COMMAND_READ cat)
+    set(COMMAND_READ_ARGS "\"${target_binary_dir}/cmake_install.cmake\" >> \"${target_binary_dir_windows}\\\\cmake_install.cmakepatch\"")
+    if(WIN32)
+        string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
+        set(COMMAND_IF "if")
+        set(COMMAND_IF_ARGS "not exist \"${target_binary_dir}/cmake_install.cmakepatch\"")
+        set(COMMAND_READ type)
+        set(COMMAND_READ_ARGS "\"${target_binary_dir_windows}\\\\cmake_install.cmake\" >> \"${target_binary_dir_windows}\\\\cmake_install.cmakepatch\"")
+    endif()
+    file(REMOVE "${target_binary_dir}/cmake_install.cmakepatch")
+    add_custom_target(${target}_relocatable_install ALL
+        COMMENT "${target}: Patching cmake_install.cmake"
+        COMMAND ${COMMAND_IF} ${COMMAND_IF_ARGS}
+                ${CMAKE_COMMAND} -E echo "# Hack to make installed plugin independant and keep the add_subdirectory mechanism"
+                    > "${target_binary_dir}/cmake_install.cmakepatch"
+             && ${CMAKE_COMMAND} -E echo "set(CMAKE_INSTALL_PREFIX \\\"${CMAKE_INSTALL_PREFIX}/${install_dir}/${target}\\\")"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+             && ${CMAKE_COMMAND} -E echo ""
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+             && ${COMMAND_READ} ${COMMAND_READ_ARGS}
+             && ${CMAKE_COMMAND} -E echo "set(CMAKE_INSTALL_PREFIX \\\"${CMAKE_INSTALL_PREFIX}\\\")"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+             && ${CMAKE_COMMAND} -E copy "${target_binary_dir}/cmake_install.cmakepatch" "${target_binary_dir}/cmake_install.cmake"
+        )
+    add_dependencies(${target}_relocatable_install ${target})
+endfunction()
+
 
 
 # sofa_write_package_config_files(Foo <version> <build-include-dirs>)
@@ -580,7 +640,7 @@ endmacro()
 # sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "sofa/custom/install/dir" INCLUDE_SOURCE_DIR src/${PROJECT_NAME} )
 #
 function(sofa_generate_package)
-    set(oneValueArgs NAME VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR)
+    set(oneValueArgs NAME VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
     set(multiValueArgs TARGETS)
     cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     # Required arguments
@@ -601,7 +661,7 @@ function(sofa_generate_package)
         endif()
     endif()
 
-    sofa_install_targets("${ARG_NAME}" "${ARG_TARGETS}" "${include_install_dir}" "${ARG_INCLUDE_SOURCE_DIR}" "${ARG_EXAMPLE_INSTALL_DIR}")
+    sofa_install_targets("${ARG_NAME}" "${ARG_TARGETS}" "${include_install_dir}" "${ARG_INCLUDE_SOURCE_DIR}" "${ARG_EXAMPLE_INSTALL_DIR}" "${ARG_RELOCATABLE}")
     sofa_write_package_config_files("${ARG_NAME}" "${ARG_VERSION}")
 endfunction()
 

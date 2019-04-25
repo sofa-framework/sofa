@@ -39,4 +39,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FIL
 target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} SofaGuiQt)
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
-# TODO: install rules
+sofa_install_targets(image ${PROJECT_NAME} ${PROJECT_NAME})

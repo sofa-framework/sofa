@@ -1,11 +1,7 @@
 add_subdirectory(extlibs/DiffusionSolver)
 
 cmake_minimum_required(VERSION 3.1)
-project(image)
-
-set(IMAGE_MAJOR_VERSION 0)
-set(IMAGE_MINOR_VERSION 1)
-set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION})
+project(image VERSION 0.1)
 
 set(SOURCE_FILES
     CollisionToCarvingEngine.cpp
@@ -90,9 +86,6 @@ else(MultiThreading_FOUND)
     set (WITH_MULTITHREADING FALSE)
 endif(MultiThreading_FOUND)
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
-
 if( SofaPython_FOUND )
     # Config files and install rules for pythons scripts
     sofa_set_python_directory(${PROJECT_NAME} "python")
@@ -153,7 +146,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 if(FREENECT_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 
@@ -186,7 +178,9 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(image ${IMAGE_VERSION} ${PROJECT_NAME} image)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

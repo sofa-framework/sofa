@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
-project(Registration)
+project(Registration VERSION 0.1)
 
-set(REGISTRATION_MAJOR_VERSION 0)
-set(REGISTRATION_MINOR_VERSION 1)
-set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION})
+# VERSION backward compatibility
+#string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
+#set(${PROJECT_NAME_UPPER}_VERSION ${PROJECT_VERSION})
 
 set(HEADER_FILES
     ClosestPointRegistrationForceField.h
@@ -51,26 +51,21 @@ else()
     message(STATUS "Registration: could not find image, won't build IntensityProfileRegistrationForceField")
 endif()
 
-## Registration/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Registration/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "include/Registration")
-
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
 
 if(image_FOUND)
-    target_link_libraries(${PROJECT_NAME} image)
+    target_link_libraries(${PROJECT_NAME} PRIVATE image)
 endif()
 if(NOT ${SOFA_NO_OPENGL})
-    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SofaOpenglVisual)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_REGISTRATION")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
@@ -82,10 +77,15 @@ endif()
 find_package(SofaDistanceGrid QUIET)
 if(SofaDistanceGrid_FOUND)
     add_definitions("-DSOFA_HAVE_SOFADISTANCEGRID")
-    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SofaDistanceGrid)
 else()
     message(STATUS "Registration: could not find SOFADISTANCEGRID, won't build RegistrationContact for RigidDistanceGridCollisionModel.")
 endif()
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(Registration ${REGISTRATION_VERSION} Registration Registration)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

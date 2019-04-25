@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(Flexible)
-
-set(FLEXIBLE_MAJOR_VERSION 0)
-set(FLEXIBLE_MINOR_VERSION 1)
-set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION})
+project(Flexible VERSION 0.1)
 
 set(HEADER_FILES
     BaseJacobian.h
@@ -234,10 +230,6 @@ endif()
 set(README_FILES README_Flexible.txt)
 
 
-## Flexible/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Flexible/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "include/Flexible")
-
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
 
@@ -281,7 +273,6 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
 
 
@@ -302,13 +293,9 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} ${FLEXIBLE_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-## Hand-crafted install rules for the headers, to preserve the directory structure
-foreach(HEADER ${HEADER_FILES})
-    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "include/Flexible/${DIR}")
-endforeach(HEADER HEADERS)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

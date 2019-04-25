@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(RigidScale)
+project(RigidScale VERSION 0.1)
 
 set(HEADER_FILES "")
 
@@ -64,4 +64,9 @@ endif()
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGraphComponent SofaUserInteraction SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField SofaCore)
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(${PROJECT_NAME} 0.1 ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

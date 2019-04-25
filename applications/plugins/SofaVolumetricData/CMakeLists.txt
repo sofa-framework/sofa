@@ -7,7 +7,6 @@ find_package(SofaDistanceGrid REQUIRED)
 find_package(SofaImplicitField REQUIRED)
 
 set(HEADER_FILES
-    config.h
     initVolumetricData.h
     DistanceGrid.h
     FFDDistanceGridDiscreteIntersection.h
@@ -28,7 +27,6 @@ set(SOURCE_FILES
     initVolumetricData.cpp
 )
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaVolumetricData/config.h")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision ${SOFAADVANCED_DEPENDENCY_LINK})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)

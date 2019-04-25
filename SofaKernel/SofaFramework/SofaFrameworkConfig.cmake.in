@@ -7,6 +7,11 @@ if(HAS_SOFAFRAMEWORK_CMAKE_MODULE_PATH EQUAL -1)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 endif()
 
+list(FIND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../plugins" HAS_PLUGINS_CMAKE_PREFIX_PATH)
+if(HAS_PLUGINS_CMAKE_PREFIX_PATH EQUAL -1)
+    list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../plugins")
+endif()
+
 include(SofaMacros)
 
 # Help finding headers (install only)
