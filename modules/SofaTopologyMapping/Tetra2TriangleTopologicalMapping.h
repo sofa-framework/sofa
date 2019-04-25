@@ -82,7 +82,7 @@ public:
     unsigned int getFromIndex(unsigned int ind) override;
 
     /// Method to check the topology mapping maps regarding the upper topology
-    bool checkTopologies();
+    bool checkTopologies() override;
 
 protected:
     Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
