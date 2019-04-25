@@ -41,7 +41,6 @@ namespace gl
 VideoRecorderFFMPEG::VideoRecorderFFMPEG()
     : m_framerate(25)
     , m_prefix("sofa_video")
-    , m_counter(-1)
     , m_ffmpeg(nullptr)
     , m_viewportBuffer(nullptr)
     , m_ffmpegBuffer(nullptr)
@@ -199,7 +198,6 @@ std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, cons
         filename += ".";
         filename += extension;
     } while (stat(filename.c_str(), &st) == 0);
-    m_counter = c + 1;
     return filename;
 }
 

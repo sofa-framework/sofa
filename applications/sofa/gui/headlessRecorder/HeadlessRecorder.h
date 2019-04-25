@@ -113,7 +113,6 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    //std::unique_ptr<VideoRecorderFFmpeg> m_videorecorder;
     sofa::helper::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;
 
@@ -124,7 +123,8 @@ private:
     bool initTexturesDone;
     bool initVideoRecorder;
 
-    static int width, height, fps;
+    static GLsizei width, height;
+    static unsigned int fps;
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
     static HeadlessRecorder instance;

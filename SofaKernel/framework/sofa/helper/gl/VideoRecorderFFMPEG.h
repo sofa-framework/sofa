@@ -53,7 +53,6 @@ namespace gl
         unsigned int m_framerate;
 
         std::string m_prefix;
-        int m_counter;    
 
         FILE* m_ffmpeg;
 

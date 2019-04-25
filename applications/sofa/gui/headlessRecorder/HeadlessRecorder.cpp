@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "HeadlessRecorder.h"
-#include "VideoRecorderFFMpeg.h"
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
@@ -32,10 +31,10 @@ namespace gui
 namespace hRecorder
 {
 
-int HeadlessRecorder::width = 1920;
-int HeadlessRecorder::height = 1080;
+GLsizei HeadlessRecorder::width = 1920;
+GLsizei HeadlessRecorder::height = 1080;
 int HeadlessRecorder::recordTimeInSeconds = 5;
-int HeadlessRecorder::fps = 60;
+unsigned int HeadlessRecorder::fps = 60;
 std::string HeadlessRecorder::fileName = "tmp";
 bool HeadlessRecorder::saveAsVideo = false;
 bool HeadlessRecorder::saveAsScreenShot = false;
@@ -51,8 +50,8 @@ using sofa::simulation::getSimulation;
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable, GLXContext);
-static glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = 0;
+static glXCreateContextAttribsARBProc glXCreateContextAttribsARB = nullptr;
+static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = nullptr;
 
 void static_handler(int /*signum*/)
 {
@@ -62,11 +61,11 @@ void static_handler(int /*signum*/)
 
 // Class
 HeadlessRecorder::HeadlessRecorder()
+    : groot(nullptr)
+    , m_nFrames(0)
+    , initTexturesDone(false)
+    , initVideoRecorder(true)
 {
-    groot = NULL;
-    m_nFrames = 0;
-    initVideoRecorder = true;
-    initTexturesDone = false;
     vparams = core::visual::VisualParams::defaultInstance();
     vparams->drawTool() = &drawTool;
 
@@ -111,17 +110,20 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     argumentParser->addArgument(po::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),         "video", "enable video mode (save as avi, x264)");
     argumentParser->addArgument(po::value<std::string>(&fileName)->default_value(ss.str()), "filename", "(only HeadLessRecorder) name of the file");
     argumentParser->addArgument(po::value<int>(&recordTimeInSeconds)->default_value(5), "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
-    argumentParser->addArgument(po::value<int>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
-    argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
-    argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
+    argumentParser->addArgument(po::value<GLsizei>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
+    argumentParser->addArgument(po::value<GLsizei>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
+    argumentParser->addArgument(po::value<unsigned int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
     argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
     argumentParser->addArgument(po::value<std::string>(&recordTypeRaw)->default_value("wallclocktime"), "recordingmode", "(only HeadLessRecorder) define how the recording should be made; either \"simulationtime\" (records as if it was simulating in real time and skips frames accordingly), \"wallclocktime\" (records a frame for each time step) or an arbitrary interval time between each frame as a float.");
     return 0;
 }
 
-BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* HeadlessRecorder::CreateGUI(const char* name, sofa::simulation::Node::SPtr groot, const char* filename)
 {
-    msg_warning("HeadlessRecorder") << "This is an experimental feature. Works only on linux.\n\t" << "For any suggestion/help/bug please report to:\n\t" << "https://github.com/sofa-framework/sofa/pull/538";
+    SOFA_UNUSED(name);
+    SOFA_UNUSED(groot);
+    SOFA_UNUSED(filename);
+    msg_warning("HeadlessRecorder") << "This is an experimental feature. \n\t" << "For any suggestion/help/bug please report to:\n\t" << "https://github.com/sofa-framework/sofa/pull/538";
 
     int context_attribs[] = {
         GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
@@ -129,38 +131,36 @@ BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, sofa::simulation::Nod
         None
     };
 
-    Display* m_display;
-    int fbcount = 0;
-    GLXFBConfig* fbc = NULL;
-    GLXContext ctx;
-    GLXPbuffer pbuf;
-
     /* open display */
-    if ( ! (m_display = XOpenDisplay(0)) ){
-        fprintf(stderr, "Failed to open display\n");
-        exit(1);
+    Display* m_display = XOpenDisplay(nullptr);
+    if (!m_display){
+        msg_error("HeadlessRecorder") << "Failed to open display";
+        exit(EXIT_FAILURE);
     }
 
     /* get framebuffer configs, any is usable (might want to add proper attribs) */
-    if ( !(fbc = glXChooseFBConfig(m_display, DefaultScreen(m_display), NULL, &fbcount) ) ){
-        fprintf(stderr, "Failed to get FBConfig\n");
-        exit(1);
+    int fbcount = 0;
+    GLXFBConfig* fbc = glXChooseFBConfig(m_display, DefaultScreen(m_display), nullptr, &fbcount);
+    if (!fbc){
+        msg_error("HeadlessRecorder") << "Failed to get FBConfig";
+        exit(EXIT_FAILURE);
     }
 
     /* get the required extensions */
     glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB( (const GLubyte *) "glXCreateContextAttribsARB");
     glXMakeContextCurrentARB = (glXMakeContextCurrentARBProc)glXGetProcAddressARB( (const GLubyte *) "glXMakeContextCurrent");
     if ( !(glXCreateContextAttribsARB && glXMakeContextCurrentARB) ){
-        fprintf(stderr, "missing support for GLX_ARB_create_context\n");
+        msg_error("HeadlessRecorder") << "Missing support for GLX_ARB_create_context";
         XFree(fbc);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     /* create a context using glXCreateContextAttribsARB */
-    if ( !( ctx = glXCreateContextAttribsARB(m_display, fbc[0], 0, True, context_attribs)) ){
-        fprintf(stderr, "Failed to create opengl context\n");
+    GLXContext ctx = glXCreateContextAttribsARB(m_display, fbc[0], nullptr, True, context_attribs);
+    if (!ctx){
+        msg_error("HeadlessRecorder") << "Failed to create opengl context";
         XFree(fbc);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     /* create temporary pbuffer */
@@ -169,7 +169,7 @@ BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, sofa::simulation::Nod
         GLX_PBUFFER_HEIGHT, height,
         None
     };
-    pbuf = glXCreatePbuffer(m_display, fbc[0], pbuffer_attribs);
+    GLXPbuffer pbuf = glXCreatePbuffer(m_display, fbc[0], pbuffer_attribs);
 
     XFree(fbc);
     XSync(m_display, False);
@@ -180,20 +180,20 @@ BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, sofa::simulation::Nod
                     * using the default window.
                     */
         if ( !glXMakeContextCurrent(m_display, DefaultRootWindow(m_display), DefaultRootWindow(m_display), ctx) ){
-            fprintf(stderr, "failed to make current\n");
-            exit(1);
+            msg_error("HeadlessRecorder") << "Failed to make current";
+            exit(EXIT_FAILURE);
         }
     }
 
     GLenum err = glewInit();
     if (GLEW_OK != err)
     {
-        std:: cout << "GLEW Error: " << glewGetErrorString(err) << std::endl;
+        msg_error("HeadlessRecorder") << "GLEW Error: " << glewGetErrorString(err);
         exit(EXIT_FAILURE);
     }
 
     HeadlessRecorder* gui = new HeadlessRecorder();
-    gui->setScene(groot, filename);
+    //gui->setScene(groot, filename);
     gui->initializeGL();
     return gui;
 }
@@ -209,37 +209,17 @@ int HeadlessRecorder::closeGUI()
 // -----------------------------------------------------------------
 void HeadlessRecorder::initializeGL(void)
 {
-    static GLfloat    specular[4];
-    static GLfloat    ambientLight[4];
-    static GLfloat    diffuseLight[4];
-    static GLfloat    lightPosition[4];
-    static GLfloat    lmodel_ambient[]    = {0.0f, 0.0f, 0.0f, 0.0f};
-    static GLfloat    lmodel_twoside[]    = {GL_FALSE};
-    static GLfloat    lmodel_local[]        = {GL_FALSE};
-    static bool       initialized            = false;
+    const GLfloat specular[] {1.0f, 1.0f, 1.0f, 1.0f};
+    const GLfloat ambientLight[] {0.5f, 0.5f, 0.5f, 1.0f};
+    const GLfloat diffuseLight[] {0.9f, 0.9f, 0.9f, 1.0f};
+    const GLfloat lightPosition[] {-0.7f, 0.3f, 0.0f, 1.0f};
+    const GLfloat lmodel_ambient[] {0.0f, 0.0f, 0.0f, 0.0f};
+    const GLfloat lmodel_twoside[] {GL_FALSE};
+    const GLfloat lmodel_local[] {GL_FALSE};
+    static bool initialized = false;
 
     if (!initialized)
     {
-        lightPosition[0] = -0.7f;
-        lightPosition[1] = 0.3f;
-        lightPosition[2] = 0.0f;
-        lightPosition[3] = 1.0f;
-
-        ambientLight[0] = 0.5f;
-        ambientLight[1] = 0.5f;
-        ambientLight[2] = 0.5f;
-        ambientLight[3] = 1.0f;
-
-        diffuseLight[0] = 0.9f;
-        diffuseLight[1] = 0.9f;
-        diffuseLight[2] = 0.9f;
-        diffuseLight[3] = 1.0f;
-
-        specular[0] = 1.0f;
-        specular[1] = 1.0f;
-        specular[2] = 1.0f;
-        specular[3] = 1.0f;
-
         // Set light model
         glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, lmodel_local);
         glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, lmodel_twoside);
@@ -278,7 +258,7 @@ void HeadlessRecorder::initializeGL(void)
     }
 
     // switch to preset view
-    resetView();
+    //resetView();
 }
 
 bool HeadlessRecorder::canRecord()
@@ -302,7 +282,7 @@ int HeadlessRecorder::mainLoop()
 
     if (!saveAsVideo && !saveAsScreenShot)
     {
-        msg_error("HeadlessRecorder") <<  "Please, use at least one option: picture or video mode.";
+        msg_error("HeadlessRecorder") << "Please, use at least one option: picture or video mode.";
         return 0;
     }
     if ((recordType == RecordMode::simulationtime || recordType == RecordMode::timeinterval) && groot->getDt() > skipTime)
@@ -382,7 +362,7 @@ void HeadlessRecorder::drawScene(void)
     if (!groot) return;
     if(!currentCamera)
     {
-        msg_error("HeadlessRecorder") << "ERROR: no camera defined";
+        msg_error("HeadlessRecorder") << "No camera defined";
         return;
     }
 
@@ -399,8 +379,8 @@ void HeadlessRecorder::calcProjection()
 {
     double xNear, yNear;
     double xFactor = 1.0, yFactor = 1.0;
-    double offset;
-    double xForeground, yForeground, zForeground, xBackground, yBackground, zBackground;
+    //double offset;
+    //double xForeground, yForeground, zForeground, xBackground, yBackground, zBackground;
     Vector3 center;
 
     /// Camera part
@@ -419,7 +399,7 @@ void HeadlessRecorder::calcProjection()
 
     xNear = 0.35 * vparams->zNear();
     yNear = 0.35 * vparams->zNear();
-    offset = 0.001 * vparams->zNear(); // for foreground and background planes
+    //offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
     if ((height != 0) && (width != 0))
     {
@@ -434,7 +414,7 @@ void HeadlessRecorder::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
+    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
 
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
@@ -443,24 +423,24 @@ void HeadlessRecorder::calcProjection()
     xFactor *= 0.01;
     yFactor *= 0.01;
 
-    zForeground = -vparams->zNear() - offset;
-    zBackground = -vparams->zFar() + offset;
+    //zForeground = -vparams->zNear() - offset;
+    //zBackground = -vparams->zFar() + offset;
 
     if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
-        float ratio = (float)( vparams->zFar() / (vparams->zNear() * 20) );
+        float ratio = static_cast<float>( vparams->zFar() / (vparams->zNear() * 20) );
         Vector3 tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
-            ratio = (float)( -300 * (tcenter.norm2()) / tcenter[2] );
+            ratio = static_cast<float>( -300 * (tcenter.norm2()) / tcenter[2] );
         }
         glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear * yFactor) * ratio, (yNear * yFactor) * ratio,
                 vparams->zNear(), vparams->zFar());
     }
 
-    xForeground = -zForeground * xNear / vparams->zNear();
+    /*xForeground = -zForeground * xNear / vparams->zNear();
     yForeground = -zForeground * yNear / vparams->zNear();
     xBackground = -zBackground * xNear / vparams->zNear();
     yBackground = -zBackground * yNear / vparams->zNear();
@@ -469,7 +449,7 @@ void HeadlessRecorder::calcProjection()
     yForeground *= yFactor;
     xBackground *= xFactor;
     yBackground *= yFactor;
-
+    */
     glGetDoublev(GL_PROJECTION_MATRIX,lastProjectionMatrix);
 
     glMatrixMode(GL_MODELVIEW);
@@ -522,18 +502,15 @@ void HeadlessRecorder::newView()
     currentCamera->setDefaultView(groot->getGravity());
 }
 
-void HeadlessRecorder::setScene(sofa::simulation::Node::SPtr scene, const char* filename, bool)
+void HeadlessRecorder::setScene(sofa::simulation::Node::SPtr scene, const char* filename, bool temporaryFile)
 {
+    SOFA_UNUSED(temporaryFile);
     std::ostringstream ofilename;
 
-    sceneFileName = (filename==NULL)?"":filename;
+    sceneFileName = (filename == nullptr) ? "" : filename;
     if (!sceneFileName.empty())
     {
-        const char* begin = sceneFileName.c_str();
-        const char* end = strrchr(begin,'.');
-        if (!end) end = begin + sceneFileName.length();
-        ofilename << std::string(begin, end);
-        ofilename << "_";
+        ofilename << sceneFileName.substr(0, sceneFileName.find('.')) << "_";
     }
     else
         ofilename << "scene_";
@@ -568,8 +545,10 @@ sofa::simulation::Node* HeadlessRecorder::currentSimulation()
     return groot.get();
 }
 
-void HeadlessRecorder::setViewerResolution(int /*width*/, int /*height*/)
+void HeadlessRecorder::setViewerResolution(int width, int height)
 {
+    SOFA_UNUSED(width);
+    SOFA_UNUSED(height);
 }
 
 // -----------------------------------------------------------------
@@ -626,7 +605,7 @@ void HeadlessRecorder::screenshotPNG(std::string filename)
     bool success = false;
     if (img)
     {
-        img->init(width, height, 1, 1, sofa::helper::io::Image::UNORM8, sofa::helper::io::Image::RGBA);
+        img->init(static_cast<unsigned int>(width), static_cast<unsigned int>(height), 1, 1, sofa::helper::io::Image::UNORM8, sofa::helper::io::Image::RGBA);
         glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, img->getPixels());
 
         success = img->save(filename, 0);
