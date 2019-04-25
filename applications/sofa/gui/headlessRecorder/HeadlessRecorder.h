@@ -48,6 +48,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#include <sofa/helper/gl/Capture.h>
 
 namespace sofa
 {
@@ -100,7 +101,6 @@ private:
     void record();
     bool canRecord();
     bool keepFrame();
-    void screenshotPNG(std::string fileName);
 
     void displayOBJs();
     void drawScene();
@@ -122,6 +122,7 @@ private:
     double lastModelviewMatrix[16];
     bool initTexturesDone;
     bool initVideoRecorder;
+    sofa::helper::gl::Capture m_screencapture;
 
     static GLsizei width, height;
     static unsigned int fps;

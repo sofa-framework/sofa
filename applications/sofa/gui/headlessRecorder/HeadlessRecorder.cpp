@@ -314,6 +314,9 @@ int HeadlessRecorder::mainLoop()
         if (currentSimulation()) // && currentSimulation()->getContext()->getAnimate())
         {
             step();
+            GLint viewport[4];
+            glGetIntegerv(GL_VIEWPORT, viewport);
+            std::cout <<"vport " << viewport[0] << " "<< viewport[1] << " "<< viewport[2] << " "<< viewport[3] << std::endl;
         }
         else
         {
@@ -377,7 +380,6 @@ void HeadlessRecorder::drawScene(void)
 
 void HeadlessRecorder::calcProjection()
 {
-    double xNear, yNear;
     double xFactor = 1.0, yFactor = 1.0;
     //double offset;
     //double xForeground, yForeground, zForeground, xBackground, yBackground, zBackground;
@@ -397,8 +399,8 @@ void HeadlessRecorder::calcProjection()
     vparams->zNear() = currentCamera->getZNear();
     vparams->zFar() = currentCamera->getZFar();
 
-    xNear = 0.35 * vparams->zNear();
-    yNear = 0.35 * vparams->zNear();
+    double xNear = 0.35 * vparams->zNear();
+    double yNear = 0.35 * vparams->zNear();
     //offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
     if ((height != 0) && (width != 0))
@@ -560,7 +562,7 @@ void HeadlessRecorder::record()
     if (saveAsScreenShot)
     {
         std::string pngFilename = fileName + std::to_string(m_nFrames) + ".png" ;
-        screenshotPNG(pngFilename);
+        m_screencapture.saveScreen(pngFilename, 0);
     } else if (saveAsVideo)
     {
         if (initVideoRecorder)
@@ -583,43 +585,6 @@ void HeadlessRecorder::record()
             //m_videorecorder->stop();
             m_videorecorder.finishVideo();
         }
-    }
-}
-
-// -----------------------------------------------------------------
-// --- Screenshot
-// -----------------------------------------------------------------
-void HeadlessRecorder::screenshotPNG(std::string filename)
-{
-    std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
-    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-
-    //test if we can export in lossless image
-    bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
-    if (!imageSupport)
-    {
-        msg_error("Capture") << "Could not write " << extension << "image format (no support found)";
-        return;
-    }
-    helper::io::Image* img = helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
-    bool success = false;
-    if (img)
-    {
-        img->init(static_cast<unsigned int>(width), static_cast<unsigned int>(height), 1, 1, sofa::helper::io::Image::UNORM8, sofa::helper::io::Image::RGBA);
-        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, img->getPixels());
-
-        success = img->save(filename, 0);
-
-        if (success)
-        {
-            msg_info("Capture") << "Saved " << img->getWidth() << "x" << img->getHeight() << " screen image to " << filename;
-        }
-        delete img;
-    }
-
-    if(!success)
-    {
-        msg_error("Capture") << "Unknown error while saving screen image to " << filename;
     }
 }
 
