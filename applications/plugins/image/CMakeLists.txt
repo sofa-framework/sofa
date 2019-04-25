@@ -166,7 +166,7 @@ if( SofaPython_FOUND )
 endif()
 
 if(SOFA_HAVE_ZLIB)
-    target_link_libraries(${PROJECT_NAME} SofaFramework::ZLIB)
+    target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
 endif()
 
 if(SOFA_BUILD_TESTS)

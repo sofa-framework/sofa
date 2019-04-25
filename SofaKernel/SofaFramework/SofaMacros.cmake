@@ -596,10 +596,20 @@ macro(sofa_create_package package_name version the_targets include_install_dir)
 endmacro()
 
 
-
 # Get path of all library versions (involving symbolic links) for a specified library
-macro(sofa_install_libraries)
-    foreach(library ${ARGN})
+function(sofa_install_libraries)
+    set(options NO_COPY)
+    set(multiValueArgs TARGETS LIBRARIES)
+    cmake_parse_arguments("sofa_install_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    set(targets ${sofa_install_libraries_TARGETS})
+    set(libraries ${sofa_install_libraries_LIBRARIES})
+
+    foreach(target ${targets})
+        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+        list(APPEND libraries "${target_location}")
+    endforeach()
+
+    foreach(library ${libraries})
         if(EXISTS ${library})
             get_filename_component(LIBREAL ${library} REALPATH)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
@@ -616,40 +626,53 @@ macro(sofa_install_libraries)
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng16.dll
                 "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng.16.dylib
-            )
+                )
             file(GLOB_RECURSE STATIC_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-            )
+                )
 
             if(WIN32)
-                install(FILES ${SHARED_LIBS} DESTINATION bin COMPONENT applications)
+                install(FILES ${SHARED_LIBS} DESTINATION "bin" COMPONENT applications)
             else()
-                install(FILES ${SHARED_LIBS} DESTINATION lib COMPONENT applications)
+                install(FILES ${SHARED_LIBS} DESTINATION "lib" COMPONENT applications)
             endif()
-            install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
+            install(FILES ${STATIC_LIBS} DESTINATION "lib" COMPONENT libraries)
         endif()
     endforeach()
-endmacro()
 
-macro(sofa_install_get_libraries library)
+    if(WIN32 AND NOT NO_COPY)
+        sofa_copy_libraries(LIBRARIES ${libraries})
+    endif()
+endfunction()
+
+function(sofa_install_get_libraries library)
     message(WARNING "sofa_install_get_libraries() is deprecated. Please use sofa_install_libraries() instead.")
-    sofa_install_libraries(${library})
-endmacro()
+    sofa_install_libraries(LIBRARIES ${library})
+endfunction()
 
 
-macro(sofa_install_libraries_from_targets)
-    foreach(target ${ARGN})
-        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-        sofa_install_libraries(${target_location})
+function(sofa_copy_libraries)
+    set(multiValueArgs TARGETS LIBRARIES)
+    cmake_parse_arguments("sofa_copy_libraries" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    set(targets ${sofa_copy_libraries_TARGETS})
+    set(libraries ${sofa_copy_libraries_LIBRARIES})
+
+    foreach(target ${targets})
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                get_target_property(target_location ${target} LOCATION_${CONFIG})
+                list(APPEND libraries "${target_location}")
+            endforeach()
+        else() # Single-config generator (nmake)
+            get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+            list(APPEND libraries "${target_location}")
+        endif()
     endforeach()
-endmacro()
 
-
-macro(sofa_copy_libraries)
-    foreach(library ${ARGN})
+    foreach(library ${libraries})
         if(EXISTS ${library})
             get_filename_component(LIB_NAME ${library} NAME_WE)
             get_filename_component(LIB_PATH ${library} PATH)
@@ -668,22 +691,7 @@ macro(sofa_copy_libraries)
             endif()
         endif()
     endforeach()
-endmacro()
-
-
-macro(sofa_copy_libraries_from_targets)
-    foreach(target ${ARGN})
-        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                get_target_property(target_location ${target} LOCATION_${CONFIG})
-                sofa_copy_libraries(${target_location})
-            endforeach()
-        else() # Single-config generator (nmake)
-            get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-            sofa_copy_libraries(${target_location})
-        endif()
-    endforeach()
-endmacro()
+endfunction()
 
 
 

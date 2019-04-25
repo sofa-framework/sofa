@@ -58,10 +58,7 @@ if(Qt5Core_FOUND)
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
 
-    if(WIN32)
-        sofa_copy_libraries_from_targets(${QT_TARGETS})
-    endif()
-    sofa_install_libraries_from_targets(${QT_TARGETS})
+    sofa_install_libraries(TARGETS ${QT_TARGETS})
 
     # QT INSTALL (dirty)
     # Get Qt libraries dir
@@ -80,20 +77,23 @@ if(Qt5Core_FOUND)
         endif()
     endif()
     # Install Qt plugins
-    install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
+    install(DIRECTORY "${QT_PLUGINS_DIR}/iconengines" DESTINATION "bin" COMPONENT applications)
+    install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION "bin" COMPONENT applications)
+    install(DIRECTORY "${QT_PLUGINS_DIR}/platforms" DESTINATION "bin" COMPONENT applications)
+    install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
     # Install Qt XCB libraries
     file(GLOB QT_XCB_LIBRARIES
         "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-    sofa_install_libraries(${QT_XCB_LIBRARIES})
+    sofa_install_libraries(LIBRARIES ${QT_XCB_LIBRARIES})
     # Install Qt ICU libraries
     file(GLOB QT_ICU_LIBRARIES
         "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-    sofa_install_libraries(${QT_ICU_LIBRARIES})
+    sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
 endif()
 
 # These header files don't need to be processed by the moc.

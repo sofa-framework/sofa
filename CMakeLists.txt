@@ -487,7 +487,7 @@ endif()
 
 if(APPLE)
     find_package(ICU COMPONENTS data i18n uc)
-    sofa_install_libraries(${ICU_LIBRARIES})
+    sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
     message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
 endif()
 

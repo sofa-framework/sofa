@@ -278,6 +278,6 @@ if(UNIX AND NOT APPLE)
 		"/usr/lib/x86_64-linux-gnu/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
 		)
 	message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
-	sofa_install_libraries(${ICU_LIBRARIES})
+        sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
 	target_link_libraries(${PROJECT_NAME} PRIVATE ${ICU_LIBRARIES}) # force link with ICU
 endif()
