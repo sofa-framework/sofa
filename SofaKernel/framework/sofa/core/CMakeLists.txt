@@ -262,13 +262,10 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
-
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/core")
 
 if(UNIX AND NOT APPLE)
 	# Installing ICU libraries the hard way (dirty)
@@ -281,3 +278,5 @@ if(UNIX AND NOT APPLE)
         sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
 	target_link_libraries(${PROJECT_NAME} PRIVATE ${ICU_LIBRARIES}) # force link with ICU
 endif()
+
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/core")

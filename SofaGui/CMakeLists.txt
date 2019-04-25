@@ -77,7 +77,10 @@ if(NOT SOFA_NO_OPENGL)
             option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
             if(SOFAGUI_QGLVIEWER)
                 set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
-                add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+                find_package(QGLViewer QUIET)
+                if(NOT QGLViewer_FOUND)
+                    add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+                endif()
             endif()
 
             ## VSync
@@ -123,14 +126,15 @@ foreach(TARGET ${SOFAGUI_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../applications>")
+    target_include_directories(${TARGET} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
     # target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${QT_INCLUDES}>")
     set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX "_d")
     set_target_properties(${TARGET} PROPERTIES VERSION ${SOFAGUI_VERSION})
 endforeach()
 
-## SofaGuiConfig/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui" COMPONENT headers)
+## SofaGui/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/config.h" DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})
