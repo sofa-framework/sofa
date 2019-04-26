@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(Registration VERSION 0.1)
 
-# VERSION backward compatibility
-#string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
-#set(${PROJECT_NAME_UPPER}_VERSION ${PROJECT_VERSION})
 
 set(HEADER_FILES
     ClosestPointRegistrationForceField.h
