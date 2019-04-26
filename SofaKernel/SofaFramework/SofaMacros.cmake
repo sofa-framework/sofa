@@ -269,37 +269,52 @@ endmacro()
 #
 # Assumes relative path.
 macro(sofa_set_python_directory plugin_name directory)
+    message(WARNING "sofa_set_python_directory is deprecated. Use sofa_install_pythonscripts instead.")
+    sofa_install_pythonscripts(PLUGIN_NAME "${plugin_name}" PYTHONSCRIPTS_SOURCE_DIR "${directory}")
+endmacro()
+
+macro(sofa_install_pythonscripts)
+    set(oneValueArgs PLUGIN_NAME PYTHONSCRIPTS_SOURCE_DIR PYTHONSCRIPTS_INSTALL_DIR)
+    set(multiValueArgs TARGETS)
+    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+    # Required arguments
+    foreach(arg ARG_PLUGIN_NAME ARG_PYTHONSCRIPTS_SOURCE_DIR)
+        if("${${arg}}" STREQUAL "")
+            string(SUBSTRING "${arg}" 4 -1 arg_name) # arg name without "ARG_"
+            message(SEND_ERROR "Missing parameter ${arg_name}.")
+        endif()
+    endforeach()
+
     set(include_install_dir "lib/python2.7/site-packages")
-    set(optional_argv2 "${ARGV2}")
-    if(optional_argv2)
-        # ARGV3 is a non-breaking additional argument to handle INCLUDE_SOURCE_DIR (see sofa_generate_package)
-        # TODO: add a real argument "include_source_dir" to this macro
-        set(include_install_dir "${ARGV2}")
+    if(ARG_PYTHONSCRIPTS_INSTALL_DIR)
+        set(include_install_dir "${ARG_PYTHONSCRIPTS_INSTALL_DIR}")
     endif()
+
     ## Install python scripts, preserving the file tree
-    file(GLOB_RECURSE ALL_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*")
-    file(GLOB_RECURSE PYC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*.pyc")
+    file(GLOB_RECURSE ALL_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_PYTHONSCRIPTS_SOURCE_DIR}/*")
+    file(GLOB_RECURSE PYC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_PYTHONSCRIPTS_SOURCE_DIR}/*.pyc")
     if(PYC_FILES)
         list(REMOVE_ITEM ALL_FILES ${PYC_FILES})
     endif()
     foreach(python_file ${ALL_FILES})
-        file(RELATIVE_PATH script "${CMAKE_CURRENT_SOURCE_DIR}/${directory}" "${python_file}")
+        file(RELATIVE_PATH script "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_PYTHONSCRIPTS_SOURCE_DIR}" "${python_file}")
         get_filename_component(path ${script} DIRECTORY)
-        install(FILES ${directory}/${script}
+        install(FILES ${ARG_PYTHONSCRIPTS_SOURCE_DIR}/${script}
                 DESTINATION "${include_install_dir}/${path}"
-                COMPONENT headers)
+                COMPONENT applications)
     endforeach()
 
     ## Python configuration file (build tree)
-    file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${plugin_name}"
-         "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
+    file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${ARG_PLUGIN_NAME}"
+         "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_PYTHONSCRIPTS_SOURCE_DIR}")
     ## Python configuration file (install tree)
      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
          "${include_install_dir}")
      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
              DESTINATION "etc/sofa/python.d"
-             RENAME "${plugin_name}"
-             COMPONENT headers)
+             RENAME "${ARG_PLUGIN_NAME}"
+             COMPONENT applications)
 endmacro()
 
 

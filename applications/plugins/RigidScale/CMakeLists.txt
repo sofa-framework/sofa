@@ -48,7 +48,7 @@ set(README_FILE "")
 include_directories(${SOFA_EXTLIBS_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 add_definitions("-DSOFA_BUILD_RIGIDSCALE")

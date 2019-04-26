@@ -231,7 +231,7 @@ set(README_FILES README_Flexible.txt)
 
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
