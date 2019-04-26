@@ -119,7 +119,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     QScrollArea* m_scrollArea = new QScrollArea();
 
     //    const int screenHeight = QApplication::desktop()->height();
-    m_scrollArea->setMinimumSize(600,QApplication::desktop()->height() * 0.75);
+    QRect geometry = QApplication::desktop()->screenGeometry(this);
+
+    m_scrollArea->setMinimumSize(600, geometry.height() * 0.75);
     m_scrollArea->setWidgetResizable(true);
     dialogTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_scrollArea->setWidget(dialogTab);
