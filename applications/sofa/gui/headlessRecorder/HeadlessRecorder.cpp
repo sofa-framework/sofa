@@ -209,6 +209,7 @@ int HeadlessRecorder::closeGUI()
 // -----------------------------------------------------------------
 void HeadlessRecorder::initializeGL(void)
 {
+    const GLfloat specref[] {1.0f, 1.0f, 1.0f, 1.0f};
     const GLfloat specular[] {1.0f, 1.0f, 1.0f, 1.0f};
     const GLfloat ambientLight[] {0.5f, 0.5f, 0.5f, 1.0f};
     const GLfloat diffuseLight[] {0.9f, 0.9f, 0.9f, 1.0f};
@@ -220,6 +221,16 @@ void HeadlessRecorder::initializeGL(void)
 
     if (!initialized)
     {
+        glDepthFunc(GL_LEQUAL);
+        glClearDepth(1.0);
+        glEnable(GL_NORMALIZE);
+
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+
+
+
+
         // Set light model
         glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, lmodel_local);
         glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, lmodel_twoside);
@@ -232,8 +243,25 @@ void HeadlessRecorder::initializeGL(void)
         glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
         glEnable(GL_LIGHT0);
 
+
+
+
         // Define background color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        // Enable color tracking
+        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+        // All materials hereafter have full specular reflectivity with a high shine
+        glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
+        glMateriali(GL_FRONT, GL_SHININESS, 128);
+
+        glShadeModel(GL_SMOOTH);
+
+
+
+
+
 
         // frame buffer
         glGenFramebuffers(1, &fbo);

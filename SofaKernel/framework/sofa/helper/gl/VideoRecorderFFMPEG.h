@@ -40,47 +40,46 @@ namespace helper
 namespace gl
 {
 
-    class SOFA_HELPER_API VideoRecorderFFMPEG
-    {
-    protected:
-    
-        FILE* m_File;
-        int m_viewportWidth, m_viewportHeight;
-        int m_ffmpegWidth, m_ffmpegHeight;
-        int m_FrameCount;
+class SOFA_HELPER_API VideoRecorderFFMPEG
+{
+protected:
 
-        std::string m_filename;
-        unsigned int m_framerate;
+    FILE* m_File;
+    int m_viewportWidth, m_viewportHeight;
+    int m_ffmpegWidth, m_ffmpegHeight;
+    int m_FrameCount;
 
-        std::string m_prefix;
+    std::string m_filename;
+    unsigned int m_framerate;
 
-        FILE* m_ffmpeg;
+    std::string m_prefix;
 
-        unsigned char* m_viewportBuffer;
-        size_t m_viewportBufferSize; // size in bytes
+    FILE* m_ffmpeg;
 
-        unsigned char* m_ffmpegBuffer;
-        size_t m_ffmpegBufferSize; // size in bytes
+    unsigned char* m_viewportBuffer;
+    size_t m_viewportBufferSize; // size in bytes
 
-        int m_pixelFormatSize; // size in bytes
+    unsigned char* m_ffmpegBuffer;
+    size_t m_ffmpegBufferSize; // size in bytes
 
-    public:
+    int m_pixelFormatSize; // size in bytes
 
-        VideoRecorderFFMPEG();
-        ~VideoRecorderFFMPEG();
+public:
 
-        bool init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
-   
-        void addFrame();
-        void saveVideo();
-        void finishVideo();
+    VideoRecorderFFMPEG();
+    ~VideoRecorderFFMPEG();
 
-    
-        void setPrefix(const std::string v) { m_prefix = v; }
+    bool init(const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
 
-        std::string findFilename(const unsigned int bitrate, const unsigned int framerate, const std::string& extension);
+    void addFrame();
+    void saveVideo();
+    void finishVideo();
 
-    };
+    void setPrefix(const std::string v) { m_prefix = v; }
+
+    std::string findFilename(const unsigned int bitrate, const unsigned int framerate, const std::string& extension);
+
+};
 
 } // namespace gl
 
