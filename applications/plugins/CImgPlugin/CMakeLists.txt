@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.1)
 project(CImgPlugin VERSION 0.1)
 
 set(HEADER_FILES
-    ImageCImg.h
-    CImgPlugin.h
-    SOFACImg.h
+    src/CImgPlugin/ImageCImg.h
+    src/CImgPlugin/CImgPlugin.h
+    src/CImgPlugin/SOFACImg.h
     )
 
 set(SOURCE_FILES
-    ImageCImg.cpp
-    initCImgPlugin.cpp
+    src/CImgPlugin/ImageCImg.cpp
+    src/CImgPlugin/initCImgPlugin.cpp
     )
 
 add_subdirectory(extlibs/CImg)
@@ -87,8 +87,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CIMGPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaCore ${EXTERNAL_LIBS})
-#target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
@@ -98,6 +97,8 @@ sofa_generate_package(
     NAME ${PROJECT_NAME}
     TARGETS ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
+    INCLUDE_SOURCE_DIR "src/CImgPlugin"
+    INCLUDE_INSTALL_DIR "CImgPlugin"
     RELOCATABLE "plugins"
     )
 
