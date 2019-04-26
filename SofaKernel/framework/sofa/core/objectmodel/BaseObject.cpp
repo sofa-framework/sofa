@@ -50,7 +50,7 @@ BaseObject::BaseObject()
     l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
     setSourceFilePos(0);
-    setSourceFileName( HeaderFileLocation() );
+    setSourceFileName("");
 }
 
 BaseObject::~BaseObject()
