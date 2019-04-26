@@ -69,8 +69,6 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
-
-
 }
 
 Base::~Base()
@@ -534,6 +532,13 @@ void  Base::parse ( BaseObjectDescription* arg )
         // the same name cannot be extracted from BaseObjectDescription
         if (attrName == std::string("type")) continue;
 
+        if (attrName == std::string("name") && std::string(it.second.c_str()).empty())
+        {
+            msg_warning(getName()) << "Empty name given: Renaming to \"unnamed\""
+                                      " as this can lead to unexpected behaviors.";
+            parseField(attrName, "unnamed");
+            continue;
+        }
         if (!hasField(attrName)) continue;
 
         parseField(attrName, it.second);

@@ -132,7 +132,8 @@ DAGNode::~DAGNode()
 /// Create, add, then return the new child of this Node
 Node::SPtr DAGNode::createChild(const std::string& nodeName)
 {
-    DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
+    msg_warning_when(nodeName.empty(), getName()) << "Empty name given to child: Renaming to \"unnamed\" as this can lead to unexpected behaviors.";
+    DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName.empty()?"unnamed":nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
     return std::move(newchild);
 }

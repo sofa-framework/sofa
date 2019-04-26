@@ -54,7 +54,8 @@ GNode::~GNode()
 /// Create, add, then return the new child of this Node
 Node::SPtr GNode::createChild(const std::string& nodeName)
 {
-    GNode::SPtr newchild = sofa::core::objectmodel::New<GNode>(nodeName);
+    msg_warning_when(nodeName.empty(), getName()) << "Empty name given to child: Renaming to \"unnamed\" as this can lead to unexpected behaviors.";
+    GNode::SPtr newchild = sofa::core::objectmodel::New<GNode>(nodeName.empty()?"unnamed":nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
     return std::move(newchild);
 }
