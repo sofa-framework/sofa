@@ -175,7 +175,6 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
 
-    std::cout << "WIDGET: " << d->getName() << std::endl;
     std::string final_str;
     formatHelperString(helper,final_str);
     std::string ownerClass=data->getOwnerClass();
