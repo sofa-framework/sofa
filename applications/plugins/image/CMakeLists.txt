@@ -1,5 +1,3 @@
-add_subdirectory(extlibs/DiffusionSolver)
-
 cmake_minimum_required(VERSION 3.1)
 project(image VERSION 0.1)
 
@@ -127,7 +125,7 @@ if(SOFA_OPENMP)
 endif()
 
 
-find_package(DiffusionSolver CONFIG REQUIRED)
+find_package(DiffusionSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin ${MultiThreading_LIBRARY})

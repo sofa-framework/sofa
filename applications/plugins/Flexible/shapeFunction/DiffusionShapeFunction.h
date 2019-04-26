@@ -43,7 +43,7 @@
 #define GAUSS_SEIDEL 0
 #define JACOBI 1
 #define CG 2
-#include <image/extlibs/DiffusionSolver/DiffusionSolver.h>
+#include <DiffusionSolver/DiffusionSolver.h>
 
 
 

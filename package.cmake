@@ -61,6 +61,7 @@ message("----------------------")
 setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_COMPLIANT ON)
+setSofaOption(PLUGIN_DIFFUSIONSOLVER ON)
 setSofaOption(PLUGIN_EXTERNALBEHAVIORMODEL ON)
 setSofaOption(PLUGIN_FLEXIBLE ON) # Depends on image & CImgPlugin
 setSofaOption(PLUGIN_IMAGE ON) # Depends on CImgPlugin, soft dependency to MultiThreading
