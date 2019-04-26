@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <sofa/helper/io/Image.h>
-#include <CImgPlugin.h>
+#include "CImgPlugin.h"
 
 namespace sofa
 {
