@@ -31,6 +31,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <vector>
 
+#include <sofa/core/DataTracker.h>
+using sofa::core::objectmodel::DDGNode;
+
 namespace sofa
 {
 
@@ -39,6 +42,46 @@ namespace component
 
 namespace mapping
 {
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseData;
+class DataEngine : public DDGNode
+{
+public:
+    /// Create a DataCallback object associated with multiple Data.
+    void addInputs(std::initializer_list<BaseData*> datas)
+    {
+        for(BaseData* d : datas)
+        {
+            addInput(d);
+        }
+    }
+
+    /// Register a new callback function to this DataCallback
+    void setCallback(std::function<void(void)> f)
+    {
+        m_callback = f;
+    }
+
+    void update() override { m_callback(); }
+    const std::string& getName() const override
+    {
+        static std::string s="";
+        return s;
+    }
+
+    sofa::core::objectmodel::Base* getOwner() const override
+    {
+        return nullptr;
+    }
+
+    sofa::core::objectmodel::BaseData* getData() const override
+    {
+        return nullptr;
+    }
+private:
+    std::function<void()> m_callback;
+};
+
 
 template <class TIn, class TOut>
 class RigidRigidMapping : public core::Mapping<TIn, TOut>
@@ -72,6 +115,20 @@ protected:
     Mat rotation;
     class Loader;
     void load(const char* filename);
+
+public:
+    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
+    //axis length for display
+    Data<double> axisLength; ///< axis length for display
+    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+
+    Data< bool  > d_showObject;
+    Data< SReal > d_showObjectScale;
+
+    /// These two work together.
+    Data<unsigned> index; ///< input frame index
+    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+
     /// number of child frames per parent frame.
     /// If empty, all the children are attached to the parent with index
     /// given in the "index" attribute. If one value, each parent frame drives
@@ -79,13 +136,10 @@ protected:
     /// of child frames driven by each parent frame.
     Data< sofa::helper::vector<unsigned int> >  repartition;
 
-public:
-    Data<unsigned> index; ///< input frame index
-    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
-    //axis length for display
-    Data<double> axisLength; ///< axis length for display
-    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
-    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+    /// All the code should be written with d_srcIndices.
+    Data< helper::vector< unsigned int > > d_srcIndices ;
+
+    DataEngine m_tracker;
 
 protected:
     RigidRigidMapping() ;
@@ -93,6 +147,7 @@ protected:
 
 public:
     void init() override;
+    void reinit() override;
 
     void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
@@ -121,11 +176,6 @@ public:
     void setRepartition(sofa::helper::vector<unsigned int> values);
 
 protected:
-
-    bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMappings(); }
-
-    bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
-
     void updateForceMask() override { /*already done in applyJT*/ }
 };
 
