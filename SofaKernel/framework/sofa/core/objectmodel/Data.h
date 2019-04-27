@@ -170,7 +170,6 @@ public:
     void release()
     {
     }
-//    T& value() { return data; }
 };
 
 
@@ -244,11 +243,6 @@ public:
     {
         ptr.reset();
     }
-
-//    T& value()
-//    {
-//        return *beginEdit();
-//    }
 };
 
 /** \brief Container that holds a variable for a component.
@@ -534,7 +528,6 @@ bool TData<T>::read(const std::string& s)
         virtualEndEdit();
         return resized;
     }
-    //serr<<"Field::read "<<s.c_str()<<sendl;
     std::istringstream istr( s.c_str() );
     istr >> *virtualBeginEdit();
     virtualEndEdit();
@@ -542,10 +535,7 @@ bool TData<T>::read(const std::string& s)
     {
         return false;
     }
-    else
-    {
-        return true;
-    }
+    return true;
 }
 
 template <class T>
