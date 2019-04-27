@@ -69,6 +69,17 @@ MeshLoader::MeshLoader() : BaseLoader()
     , d_transformation(initData(&d_transformation, Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
     , d_previousTransformation( Matrix4::s_identity )
 {
+    /*
+    d_flipNormals.setGroup("Parameters");
+    d_triangulate.setGroup("Parameters");
+    d_createSubelements.setGroup("Parameters");
+    d_onlyAttachedPoints.setGroup("Parameters");
+    d_transformation.setGroup("Parameters");
+    d_translation.setGroup("Parameters");
+    d_rotation.setGroup("Parameters");
+    d_scale.setGroup("Parameters");
+    */
+
     addAlias(&d_tetrahedra, "tetras");
     addAlias(&d_hexahedra, "hexas");
     addAlias(&d_pentahedra, "pentas");
@@ -94,6 +105,31 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_pentahedra.setPersistent(false);
     d_pyramids.setPersistent(false);
     d_normals.setPersistent(false);
+
+    d_positions.setGroup("Vectors");
+    d_polylines.setGroup("Vectors");
+    d_edges.setGroup("Vectors");
+    d_triangles.setGroup("Vectors");
+    d_quads.setGroup("Vectors");
+    d_polygons.setGroup("Vectors");
+    d_tetrahedra.setGroup("Vectors");
+    d_hexahedra.setGroup("Vectors");
+    d_pentahedra.setGroup("Vectors");
+    d_pyramids.setGroup("Vectors");
+    d_normals.setGroup("Vectors");
+    d_highOrderTetrahedronPositions.setGroup("Vectors");
+    d_highOrderEdgePositions.setGroup("Vectors");
+    d_highOrderHexahedronPositions.setGroup("Vectors");
+    d_highOrderQuadPositions.setGroup("Vectors");
+    d_highOrderTrianglePositions.setGroup("Vectors");
+    d_edgesGroups.setGroup("Groups");
+    d_quadsGroups.setGroup("Groups");
+    d_polygonsGroups.setGroup("Groups");
+    d_pyramidsGroups.setGroup("Groups");
+    d_hexahedraGroups.setGroup("Groups");
+    d_trianglesGroups.setGroup("Groups");
+    d_pentahedraGroups.setGroup("Groups");
+    d_tetrahedraGroups.setGroup("Groups");
 }
 
 

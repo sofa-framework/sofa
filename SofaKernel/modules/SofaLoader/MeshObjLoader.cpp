@@ -49,7 +49,7 @@ MeshObjLoader::MeshObjLoader()
     , d_handleSeams(initData(&d_handleSeams, (bool)false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
     , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))    
     , faceType(MeshObjLoader::TRIANGLE)
-    , d_material(initData(&d_material,"material","Default material") )
+    , d_material(initData(&d_material,"defaultMaterial","Default material") )
     , materials(initData(&materials,"materials","List of materials") )
     , faceList(initData(&faceList,"faceList","List of face definitions.") )
     , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
@@ -62,12 +62,20 @@ MeshObjLoader::MeshObjLoader()
     , d_vertPosIdx      (initData   (&d_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
     , d_vertNormIdx     (initData   (&d_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
 {
-    faceList.setGroup("OBJ");
-    texIndexList.setGroup("OBJ");
-    texCoordsList.setGroup("OBJ");
-    normalsIndexList.setGroup("OBJ");
-    normalsList.setGroup("OBJ");
-    positionsList.setGroup("OBJ");
+    d_material.setGroup("Materials");
+    materials.setGroup("Materials");
+    addAlias(&d_material, "material");
+
+    faceList.setGroup("Vectors");
+    texIndexList.setGroup("Vectors");
+    texCoordsList.setGroup("Vectors");
+    normalsIndexList.setGroup("Vectors");
+    normalsList.setGroup("Vectors");
+    positionsList.setGroup("Vectors");
+    texCoords.setGroup("Vectors");
+    d_vertPosIdx.setGroup("Vectors");
+    d_vertNormIdx.setGroup("Vectors");
+
     //BUGFIX: data loaded from OBJ file should not be saved to XML
     faceList.setPersistent(false);
     texIndexList.setPersistent(false);
