@@ -41,6 +41,8 @@
 #include <QUrl>
 #include <QClipboard>
 
+#include <QSettings>
+
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 namespace sofa
@@ -455,6 +457,15 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
         }
     }
 
+    if( object_.isBase() )
+    {
+        contextMenu->addSeparator();
+        act = contextMenu->addAction("Go to Scene...", this, SLOT(openInstanciation()));
+        act->setEnabled(object_.asBase()->getInstanciationFileName() != "");
+        act = contextMenu->addAction("Go to Implementation...", this, SLOT(openImplementation()));
+        act->setEnabled(object_.asBase()->getSourceFileName() != "");
+    }
+
     contextMenu->addSeparator();
     act = contextMenu->addAction("Copy file path", this,SLOT(copyFilePathToClipBoard()));
     act = contextMenu->addAction("Open file in editor", this,SLOT(openInEditor()));
@@ -645,6 +656,55 @@ void QSofaListView::HideDatas()
         emit Lock(false);
     }
 }
+
+/// @brief Open a file at given path and line number using an external editor.
+///
+/// The external editor is defined in a QSettings with the following entries:
+/// [General]
+/// ExternalEditor=qtcreator
+/// ExternalEditorParams=-client ${filename}:${fileno}
+/// where ${filename} is expanded with the full path to the file
+/// where ${fileno} is expanded with the line number to open at.
+void openInExternalEditor(const std::string filename, const int fileloc)
+{
+    QFileInfo f(filename.c_str());
+
+    /// In case the setting file does not contains the needed entries, let's put default ones
+    /// based on qtcreator.
+    QSettings settings;
+    if(!settings.contains("ExternalEditor"))
+        settings.setValue("ExternalEditor", "qtcreator");
+    if(!settings.contains("ExternalEditorParams"))
+        settings.setValue("ExternalEditorParams", "-client ${filename}:${fileno}");
+
+    QString editor = settings.value("ExternalEditor").toString();
+    QString params = settings.value("ExternalEditorParams").toString();
+
+    params.replace("${filename}", f.absoluteFilePath());
+    params.replace("${fileno}", QString::number(fileloc));
+    QStringList paramsAsList = params.split(QRegExp("(\\ )"));
+    if(QProcess::execute(editor, paramsAsList))
+        msg_error("QSofaListView") << "Unable to open: " << editor.toStdString() << " " << params.toStdString();
+}
+
+void QSofaListView::openInstanciation()
+{
+    if(object_.isBase())
+    {
+        openInExternalEditor(object_.asBase()->getInstanciationFileName(),
+                             object_.asBase()->getInstanciationFilePos());
+    }
+}
+
+void QSofaListView::openImplementation()
+{
+    if(object_.isBase())
+    {
+        openInExternalEditor(object_.asBase()->getSourceFileName(),
+                             object_.asBase()->getSourceFilePos());
+    }
+}
+
 
 void QSofaListView::openInEditor()
 {
