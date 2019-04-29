@@ -50,7 +50,4 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC COMPILE_FLAGS "-DSOFA_HAVE_SOF
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-sofa_generate_package(NAME SofaExporter VERSION ${PROJECT_VERSION} TARGETS SofaExporter
-    INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaExporter"
-    )
+sofa_generate_package(NAME SofaExporter VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR ${PROJECT_NAME} INCLUDE_SOURCE_DIR "src/SofaExporter")
