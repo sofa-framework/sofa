@@ -14,19 +14,6 @@ endif()
 
 include(SofaMacros)
 
-# Help finding headers (install only)
-# TODO: a better way to do this?
-set(INCLUDE_PATHS
-    "${CMAKE_CURRENT_LIST_DIR}/../../../include/extlibs/WinDepPack"
-    "${CMAKE_CURRENT_LIST_DIR}/../../../include/extlibs/Eigen"
-    )
-foreach(include_path ${INCLUDE_PATHS})
-    list(FIND CMAKE_INCLUDE_PATH ${include_path} found_index)
-    if(${found_index} EQUAL -1)
-        list(APPEND CMAKE_INCLUDE_PATH ${include_path})
-    endif()
-endforeach()
-
 find_package(TinyXML REQUIRED)
 
 set(SOFA_HAVE_ZLIB "@SOFA_HAVE_ZLIB@")
