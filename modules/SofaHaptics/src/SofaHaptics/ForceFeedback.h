@@ -38,11 +38,11 @@ namespace controller
 {
 
 /// Base class implementing forcefeedback as a force field
-class SOFA_SOFAHAPTICS_API ForceFeedback : public core::behavior::BaseController
+class SOFA_SOFAHAPTICS_API ForceFeedback : public virtual core::behavior::BaseController
 {
 
 public:
-    SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
+    SOFA_ABSTRACT_CLASS(ForceFeedback,core::behavior::BaseController);
     Data<bool> f_activate; ///< boolean to activate or deactivate the forcefeedback
     Data<int> indice; ///< Tool indice in the OmniDriver
 

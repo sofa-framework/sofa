@@ -32,46 +32,46 @@ namespace component
 
 namespace controller
 {
-	EnslavementForceFeedback::EnslavementForceFeedback( core::CollisionModel* collModel1, core::CollisionModel* collModel2 )
-	: ContactListener( collModel1, collModel2)
+    EnslavementForceFeedback::EnslavementForceFeedback( core::CollisionModel* collModel1, core::CollisionModel* collModel2 )
+    : ContactListener( collModel1, collModel2)
     , relativeStiffness(initData(&relativeStiffness, 4.0, "relativeStiffness", "Relative Stiffness"))
     , attractionDistance(initData(&attractionDistance, 0.3, "attractionDistance", "Distance at which the Omni is attracted to the contact point."))
     , normalsPointOut(initData(&normalsPointOut, true, "normalsPointOut", "True if the normals of objects point outwards, false if they point inwards."))
     , contactScale(initData(&contactScale, 1.0, "contactScale", "Scales the maximum penetration depth."))
     , penOffset(initData(&penOffset, 0.0, "penetrationOffset", "Distance at which there is no reaction force."))
-	{
-	}
+    {
+    }
 
     void EnslavementForceFeedback::init()
     {
-        this->ForceFeedback::init();
-        this->ContactListener::init();
+        Inherit1::init();
+        Inherit2::init();
     }
 
-	void EnslavementForceFeedback::beginContact(const helper::vector<const helper::vector<core::collision::DetectionOutput>* >& contacts)
-	{
-	
-		ContactListener::ContactVectorsIterator vecIter;
-		ContactListener::ContactVectorsIterator lastVecIter = contacts.end();
+    void EnslavementForceFeedback::beginContact(const helper::vector<const helper::vector<core::collision::DetectionOutput>* >& contacts)
+    {
 
-		//this->endContact(NULL);
-		for(vecIter = contacts.begin(); vecIter != lastVecIter; ++vecIter)
-		{
-			ContactListener::ContactsIterator iter;
-			ContactListener::ContactsIterator lastIter = (*vecIter)->end();
+        ContactListener::ContactVectorsIterator vecIter;
+        ContactListener::ContactVectorsIterator lastVecIter = contacts.end();
 
-			for(iter = (*vecIter)->begin(); iter != lastIter; ++iter)
-			{
-				core::collision::DetectionOutput detectionOutput = (*iter);
-				sofa::defaulttype::Vec3d model1Coord = detectionOutput.point[0];
-				sofa::defaulttype::Vec3d model2Coord = detectionOutput.point[1];
+        //this->endContact(NULL);
+        for(vecIter = contacts.begin(); vecIter != lastVecIter; ++vecIter)
+        {
+            ContactListener::ContactsIterator iter;
+            ContactListener::ContactsIterator lastIter = (*vecIter)->end();
 
-				sofa::defaulttype::Vec3d u = model2Coord - model1Coord;
-				sofa::defaulttype::Vec3d norm = detectionOutput.normal;
-				double pen = u*norm; 
+            for(iter = (*vecIter)->begin(); iter != lastIter; ++iter)
+            {
+                core::collision::DetectionOutput detectionOutput = (*iter);
+                sofa::defaulttype::Vec3d model1Coord = detectionOutput.point[0];
+                sofa::defaulttype::Vec3d model2Coord = detectionOutput.point[1];
+
+                sofa::defaulttype::Vec3d u = model2Coord - model1Coord;
+                sofa::defaulttype::Vec3d norm = detectionOutput.normal;
+                double pen = u*norm;
 
                 pen = (pen - penOffset.getValue()) / contactScale.getValue();
-                
+
                 if(!normalsPointOut.getValue())
                 {
                     if(pen < 0 && pen > -1 * attractionDistance.getValue())
@@ -94,24 +94,30 @@ namespace controller
                         contactForce = (norm * pen *-1 * relativeStiffness.getValue());
                     }
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
-	void EnslavementForceFeedback::endContact(void*)
-	{
+    void EnslavementForceFeedback::endContact(void*)
+    {
         contactForce = contactForce*0;
-	}
+    }
 
     void EnslavementForceFeedback::computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz)
     {
-            fx = contactForce[0];
-            fy = contactForce[1];
-            fz = contactForce[2];
+        SOFA_UNUSED(x); SOFA_UNUSED(y); SOFA_UNUSED(z);
+        SOFA_UNUSED(u); SOFA_UNUSED(v); SOFA_UNUSED(w); SOFA_UNUSED(q);
+
+        fx = contactForce[0];
+        fy = contactForce[1];
+        fz = contactForce[2];
     }
 
     void EnslavementForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
     {
+        SOFA_UNUSED(world_H_tool);
+        SOFA_UNUSED(V_tool_world);
+        SOFA_UNUSED(W_tool_world);
     }
 
 
