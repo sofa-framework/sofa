@@ -137,7 +137,7 @@ sofa_install_libraries(
     )
 
 ## Eigen
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 3.3.7 REQUIRED CONFIG)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen
     COMPONENT headers

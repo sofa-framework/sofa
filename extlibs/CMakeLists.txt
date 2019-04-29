@@ -9,7 +9,7 @@ set(EXTLIBS_TARGETS
 ######## SofaKernel/extlibs ########
 
 # Eigen (header-only): see SofaKernel/cmake/Modules/FindEigen3.cmake
-set(EIGEN_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.2.7" CACHE PATH "Eigen directory (containing Eigen/src/...)")
+set(EIGEN_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.3.7" CACHE PATH "Eigen directory (containing Eigen/src/...)")
 mark_as_advanced(EIGEN_ROOT)
 
 # Nlohmann JSON (header-only): see SofaKernel/cmake/Modules/FindJson.cmake
@@ -29,8 +29,6 @@ if(NOT TinyXML_FOUND)
 endif()
 
 ####################################
-
-## Necessary ones
 
 find_package(CSparse QUIET)
 if(NOT CSparse_FOUND)
