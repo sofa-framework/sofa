@@ -2347,7 +2347,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         else
         {
             Cgrad = C*VMgradient;
-            gradTC = VMgradient.transpose()*C;
+            gradTC = Cgrad.transpose();
 
             if (_isPerfectlyPlastic.getValue())
                 //Assuming associative flow rule
