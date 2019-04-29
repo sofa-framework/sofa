@@ -327,7 +327,7 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 # Json (header only) dependency for AdvancedTimer
-find_package(json 3.1.2 REQUIRED)
+find_package(Json 3.1.2 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 install(DIRECTORY ${JSON_INCLUDE_DIR}
     COMPONENT headers
