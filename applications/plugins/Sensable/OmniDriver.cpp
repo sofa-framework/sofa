@@ -170,10 +170,10 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(pos* data->scale, rot);
     sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data->world_H_baseOmni * baseOmni_H_endOmni * data->endOmni_H_virtualTool;
 
-    Vec3d world_pos_tool = world_H_virtualTool.getOrigin();
     Quat world_quat_tool = world_H_virtualTool.getOrientation();
 
     ///////////////// 3D rendering ////////////////
+    //Vec3d world_pos_tool = world_H_virtualTool.getOrigin();
     //double fx=0.0, fy=0.0, fz=0.0;
     //if (data->forceFeedback != NULL)
     //	(data->forceFeedback)->computeForce(world_pos_tool[0], world_pos_tool[1], world_pos_tool[2], world_quat_tool[0], world_quat_tool[1], world_quat_tool[2], world_quat_tool[3], fx, fy, fz);
@@ -370,7 +370,7 @@ void OmniDriver::cleanup()
 void OmniDriver::setForceFeedbacks(vector<ForceFeedback*> ffs)
 {
     data.forceFeedbacks.clear();
-    for (int i=0; i<ffs.size(); i++)
+    for (size_t i=0; i<ffs.size(); i++)
         data.forceFeedbacks.push_back(ffs[i]);
     data.forceFeedbackIndice = 0;
 }
@@ -382,7 +382,7 @@ void OmniDriver::init()
     if (!mState) serr << "OmniDriver has no binding MechanicalState" << sendl;
     else sout << "[Omni] init" << sendl;
 
-    if(mState->getSize()<toolCount.getValue())
+    if(mState->getSize()<(size_t)toolCount.getValue())
         mState->resize(toolCount.getValue());
 }
 
@@ -436,7 +436,8 @@ void OmniDriver::reinit()
 }
 
 void OmniDriver::draw(const core::visual::VisualParams* vparam){
-	draw();
+    SOFA_UNUSED(vparam);
+    draw();
 }
 
 void OmniDriver::draw()
@@ -515,7 +516,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
                 data.forceFeedbackIndice=currentToolIndex;
                 // which forcefeedback ?
-                for (int i=0; i<data.forceFeedbacks.size(); i++)
+                for (size_t i=0; i<data.forceFeedbacks.size(); i++)
                     if (data.forceFeedbacks[i]->indice==data.forceFeedbackIndice)
                         data.forceFeedbacks[i]->setReferencePosition(world_H_virtualTool);
 

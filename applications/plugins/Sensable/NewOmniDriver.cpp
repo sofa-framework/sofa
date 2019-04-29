@@ -223,7 +223,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
         sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni((autreOmniDriver[i]->data.servoDeviceData.pos)* autreOmniDriver[i]->data.scale, autreOmniDriver[i]->data.servoDeviceData.quat);
 
-        Vec3d world_pos_tool = positionDevs[i].getCenter();
+        //Vec3d world_pos_tool = positionDevs[i].getCenter();
         Quat world_quat_tool = positionDevs[i].getOrientation();
 
         // we compute its value in the current Tool frame:
@@ -587,15 +587,13 @@ void NewOmniDriver::init()
                 visualNode[i].visu->updateVisual();
 
                 // create the visual mapping and at it to the graph //
-                visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > > ();
+                visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, ExtVec3Types > >();
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
                 visualNode[i].mapping->f_mapForces.setValue(false);
                 visualNode[i].mapping->f_mapMasses.setValue(false);
-                //visualNode[i].mapping->m_inputObject.setValue("@../RigidDOF");
-                //visualNode[i].mapping->m_outputObject.setValue("@VisualParticles");
                 visualNode[i].mapping->index.setValue(i+1);
                 visualNode[i].mapping->init();
             }
@@ -616,7 +614,7 @@ void NewOmniDriver::init()
 
         for(int j=0; j<=VN_X; j++)
         {
-            sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3, SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 scaleMapping[i] *= (float)(1.0*scale.getValue()/100.0);
             visualNode[j].mapping->points.endEdit();
@@ -710,7 +708,8 @@ void NewOmniDriver::reinit()
 }
 
 void NewOmniDriver::draw(const core::visual::VisualParams* vparam){
-	draw();
+    SOFA_UNUSED(vparam);
+    draw();
 }
 
 // setup omni device visualization
@@ -755,7 +754,7 @@ void NewOmniDriver::draw()
             float rapport=((float)data.scale)/oldScale;
             for(int j = 0; j<NVISUALNODE ; j++)
             {
-                sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+                sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
                     scaleMapping[i]*=rapport;
                 visualNode[j].mapping->points.endEdit();

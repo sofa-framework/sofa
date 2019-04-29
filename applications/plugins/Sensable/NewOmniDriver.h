@@ -125,7 +125,7 @@ public:
     SOFA_CLASS(NewOmniDriver, Controller);
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
-    typedef component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> MMechanicalObject;
+    typedef component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MMechanicalObject;
 
 
 
@@ -133,7 +133,7 @@ public:
     {
         simulation::Node::SPtr node;
         sofa::component::visualmodel::OglModel::SPtr visu;
-        sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
+        sofa::component::mapping::RigidMapping< Rigid3Types , ExtVec3Types  >::SPtr mapping;
     };
 
 
@@ -176,21 +176,21 @@ public:
     NewOmniDriver();
     virtual ~NewOmniDriver();
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reset();
-    void reinit();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reset() override;
+    void reinit() override;
 
     int initDevice();
 
-    void cleanup();
-	virtual void draw(const core::visual::VisualParams*) override;
+    void cleanup() override;
+    virtual void draw(const core::visual::VisualParams*) override;
     virtual void draw();
 
     void setForceFeedback(ForceFeedback* ff);
 
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
-    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override;
+    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override;
     void onAnimateBeginEvent();
 
     void setDataValue();
@@ -232,7 +232,7 @@ public:
     //vector<NewOmniDriver*> autreOmniDriver;
 
 private:
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
     bool noDevice;
 
 
