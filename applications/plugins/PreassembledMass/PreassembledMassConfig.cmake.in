@@ -5,7 +5,9 @@
 find_package(SofaGeneral REQUIRED)
 find_package(Compliant REQUIRED)
 
-if(@Flexible_FOUND@)
+set(PREASSEMBLEDMASS_HAVE_FLEXIBLE @Flexible_FOUND@)
+
+if(PREASSEMBLEDMASS_HAVE_FLEXIBLE)
     find_package(Flexible REQUIRED) # project is built with this dependency
 endif()
 
