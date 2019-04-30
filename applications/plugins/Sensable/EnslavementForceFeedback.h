@@ -50,16 +50,16 @@ public:
     virtual void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override;
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )  override;
 
-    Data<double> relativeStiffness; ///< Relative Stiffness
-    Data<double> attractionDistance; ///< Distance at which the Omni is attracted to the contact point.
-    Data<bool> normalsPointOut; ///< True if the normals of objects point outwards, false if they point inwards.
-    Data<double> contactScale; ///< Scales the maximum penetration depth.
-    Data<double> penOffset; ///< Distance at which there is no reaction force.
+    Data<double> d_relativeStiffness; ///< Relative Stiffness
+    Data<double> d_attractionDistance; ///< Distance at which the Omni is attracted to the contact point.
+    Data<bool> d_normalsPointOut; ///< True if the normals of objects point outwards, false if they point inwards.
+    Data<double> d_contactScale; ///< Scales the maximum penetration depth.
+    Data<double> d_penOffset; ///< Distance at which there is no reaction force.
 
 protected:
-    sofa::defaulttype::Vec3d contactForce;
+    sofa::defaulttype::Vec3d m_contactForce;
 
-    EnslavementForceFeedback( core::CollisionModel* collModel1 = NULL, core::CollisionModel* collModel2 = NULL );
+    EnslavementForceFeedback( core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
     ~EnslavementForceFeedback(){}
 };
 

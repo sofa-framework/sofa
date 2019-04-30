@@ -43,8 +43,8 @@ class SOFA_SOFAHAPTICS_API ForceFeedback : public virtual core::behavior::BaseCo
 
 public:
     SOFA_ABSTRACT_CLASS(ForceFeedback,core::behavior::BaseController);
-    Data<bool> f_activate; ///< boolean to activate or deactivate the forcefeedback
-    Data<int> indice; ///< Tool indice in the OmniDriver
+    Data<bool> d_activate; ///< boolean to activate or deactivate the forcefeedback
+    Data<int> d_indice; ///< Tool indice in the OmniDriver
 
     simulation::Node *context;
 

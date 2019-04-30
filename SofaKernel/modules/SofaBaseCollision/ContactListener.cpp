@@ -44,10 +44,10 @@ static int ContactListenerClass = core::RegisterObject("ContactListener .. ").ad
 
 
 ContactListener::ContactListener(  CollisionModel* collModel1 , CollisionModel* collModel2 )
-    :  mNarrowPhase(nullptr)
+    :  m_NarrowPhase(nullptr)
 {
-    mCollisionModel1 = collModel1;
-    mCollisionModel2 = collModel2;
+    m_CollisionModel1 = collModel1;
+    m_CollisionModel2 = collModel2;
 }
 
 ContactListener::~ContactListener()
@@ -56,9 +56,9 @@ ContactListener::~ContactListener()
 
 void ContactListener::init(void)
 {
-    helper::vector<ContactManager*> contactManagers;
-    mNarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
-    if ( mNarrowPhase != nullptr )
+//    helper::vector<ContactManager*> contactManagers;
+    m_NarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
+    if ( m_NarrowPhase != nullptr )
     {
         // add to the event listening
         f_listening.setValue(true);
@@ -69,13 +69,13 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
 {
     if (simulation::CollisionBeginEvent::checkEventType(_event))
     {
-        mContactsVector.clear();
+        m_ContactsVector.clear();
     }
 
     else if (simulation::CollisionEndEvent::checkEventType(_event))
     {
 
-        const NarrowPhaseDetection::DetectionOutputMap& detectionOutputsMap = mNarrowPhase->getDetectionOutputs();
+        const NarrowPhaseDetection::DetectionOutputMap& detectionOutputsMap = m_NarrowPhase->getDetectionOutputs();
 
         if ( detectionOutputsMap.size() == 0 )
         {
@@ -83,7 +83,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
             return;
         }
 
-        if  ( mCollisionModel2 == nullptr )
+        if  ( m_CollisionModel2 == nullptr )
         {
             //// check only one collision model
             for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputsMap.begin(); it!=detectionOutputsMap.end(); ++it )
@@ -91,11 +91,11 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 const CollisionModel* collMod1 = it->first.first;
                 const CollisionModel* collMod2 = it->first.second;
 
-                if ( mCollisionModel1 == collMod1 || mCollisionModel1 == collMod2 )
+                if ( m_CollisionModel1 == collMod1 || m_CollisionModel1 == collMod2 )
                 {
                     if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
                     {
-                        mContactsVector.push_back( contacts );
+                        m_ContactsVector.push_back( contacts );
                     }
                 }
             }
@@ -108,16 +108,16 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 const CollisionModel* collMod1 = it->first.first;
                 const CollisionModel* collMod2 = it->first.second;
 
-                if ( (mCollisionModel1==collMod1 && mCollisionModel2==collMod2) || (mCollisionModel1==collMod2 && mCollisionModel2==collMod1) )
+                if ( (m_CollisionModel1==collMod1 && m_CollisionModel2==collMod2) || (m_CollisionModel1==collMod2 && m_CollisionModel2==collMod1) )
                 {
                     if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
                     {
-                        mContactsVector.push_back( contacts );
+                        m_ContactsVector.push_back( contacts );
                     }
                 }
             }
         }
-        beginContact(mContactsVector);
+        beginContact(m_ContactsVector);
     }
 }
 

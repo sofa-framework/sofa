@@ -188,7 +188,7 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     // which forcefeedback ?
     ForceFeedback* ff = 0;
     for (int i=0; i<data->forceFeedbacks.size() && !ff; i++)
-        if (data->forceFeedbacks[i]->indice==data->forceFeedbackIndice)
+        if (data->forceFeedbacks[i]->d_indice==data->forceFeedbackIndice)
             ff = data->forceFeedbacks[i];
 
     if (ff != NULL)
@@ -230,16 +230,16 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     /* HDErrorInfo error;
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-    	printError(stderr, &error, "Error during scheduler callback");
-    	if (isSchedulerError(&error))
-    	{
-    		return HD_CALLBACK_DONE;
-    	}
+        printError(stderr, &error, "Error during scheduler callback");
+        if (isSchedulerError(&error))
+        {
+                return HD_CALLBACK_DONE;
+        }
            }*/
     /*
-     	OmniX = data->servoDeviceData.transform[12+0]*0.1;
-    	OmniY =	data->servoDeviceData.transform[12+1]*0.1;
-    	OmniZ =	data->servoDeviceData.transform[12+2]*0.1;
+        OmniX = data->servoDeviceData.transform[12+0]*0.1;
+        OmniY =	data->servoDeviceData.transform[12+1]*0.1;
+        OmniZ =	data->servoDeviceData.transform[12+2]*0.1;
     */
 
     //cout << "OmniDriver::stateCallback END" << endl;
@@ -450,7 +450,7 @@ void OmniDriver::draw()
 
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-		visu_base->name.setValue("BaseOmni");
+                visu_base->name.setValue("BaseOmni");
         visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
@@ -461,7 +461,7 @@ void OmniDriver::draw()
 
         visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-		visu_end->name.setValue("Stylus");
+                visu_end->name.setValue("Stylus");
         visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
@@ -517,7 +517,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 data.forceFeedbackIndice=currentToolIndex;
                 // which forcefeedback ?
                 for (size_t i=0; i<data.forceFeedbacks.size(); i++)
-                    if (data.forceFeedbacks[i]->indice==data.forceFeedbackIndice)
+                    if (data.forceFeedbacks[i]->d_indice==data.forceFeedbackIndice)
                         data.forceFeedbacks[i]->setReferencePosition(world_H_virtualTool);
 
                 /// TODO : SHOULD INCLUDE VELOCITY !!

@@ -34,11 +34,11 @@ namespace controller
 {
     EnslavementForceFeedback::EnslavementForceFeedback( core::CollisionModel* collModel1, core::CollisionModel* collModel2 )
     : ContactListener( collModel1, collModel2)
-    , relativeStiffness(initData(&relativeStiffness, 4.0, "relativeStiffness", "Relative Stiffness"))
-    , attractionDistance(initData(&attractionDistance, 0.3, "attractionDistance", "Distance at which the Omni is attracted to the contact point."))
-    , normalsPointOut(initData(&normalsPointOut, true, "normalsPointOut", "True if the normals of objects point outwards, false if they point inwards."))
-    , contactScale(initData(&contactScale, 1.0, "contactScale", "Scales the maximum penetration depth."))
-    , penOffset(initData(&penOffset, 0.0, "penetrationOffset", "Distance at which there is no reaction force."))
+    , d_relativeStiffness(initData(&d_relativeStiffness, 4.0, "d_relativeStiffness", "Relative Stiffness"))
+    , d_attractionDistance(initData(&d_attractionDistance, 0.3, "d_attractionDistance", "Distance at which the Omni is attracted to the contact point."))
+    , d_normalsPointOut(initData(&d_normalsPointOut, true, "d_normalsPointOut", "True if the normals of objects point outwards, false if they point inwards."))
+    , d_contactScale(initData(&d_contactScale, 1.0, "d_contactScale", "Scales the maximum penetration depth."))
+    , d_penOffset(initData(&d_penOffset, 0.0, "penetrationOffset", "Distance at which there is no reaction force."))
     {
     }
 
@@ -54,7 +54,6 @@ namespace controller
         ContactListener::ContactVectorsIterator vecIter;
         ContactListener::ContactVectorsIterator lastVecIter = contacts.end();
 
-        //this->endContact(NULL);
         for(vecIter = contacts.begin(); vecIter != lastVecIter; ++vecIter)
         {
             ContactListener::ContactsIterator iter;
@@ -70,28 +69,28 @@ namespace controller
                 sofa::defaulttype::Vec3d norm = detectionOutput.normal;
                 double pen = u*norm;
 
-                pen = (pen - penOffset.getValue()) / contactScale.getValue();
+                pen = (pen - d_penOffset.getValue()) / d_contactScale.getValue();
 
-                if(!normalsPointOut.getValue())
+                if(!d_normalsPointOut.getValue())
                 {
-                    if(pen < 0 && pen > -1 * attractionDistance.getValue())
+                    if(pen < 0 && pen > -1 * d_attractionDistance.getValue())
                     {
-                        contactForce = -(norm * pen);
+                        m_contactForce = -(norm * pen);
                     }
                     else if (pen >=0)
                     {
-                        contactForce = (norm * pen * -1 * relativeStiffness.getValue());
+                        m_contactForce = (norm * pen * -1 * d_relativeStiffness.getValue());
                     }
                 }
                 else
                 {
-                    if( pen > 0 && pen < attractionDistance.getValue())
+                    if( pen > 0 && pen < d_attractionDistance.getValue())
                     {
-                        contactForce = -(norm * pen);
+                        m_contactForce = -(norm * pen);
                     }
                     else if(pen <= 0)
                     {
-                        contactForce = (norm * pen *-1 * relativeStiffness.getValue());
+                        m_contactForce = (norm * pen *-1 * d_relativeStiffness.getValue());
                     }
                 }
             }
@@ -100,7 +99,7 @@ namespace controller
 
     void EnslavementForceFeedback::endContact(void*)
     {
-        contactForce = contactForce*0;
+        m_contactForce.set(0,0,0);
     }
 
     void EnslavementForceFeedback::computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz)
@@ -108,9 +107,9 @@ namespace controller
         SOFA_UNUSED(x); SOFA_UNUSED(y); SOFA_UNUSED(z);
         SOFA_UNUSED(u); SOFA_UNUSED(v); SOFA_UNUSED(w); SOFA_UNUSED(q);
 
-        fx = contactForce[0];
-        fy = contactForce[1];
-        fz = contactForce[2];
+        fx = m_contactForce[0];
+        fy = m_contactForce[1];
+        fz = m_contactForce[2];
     }
 
     void EnslavementForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )

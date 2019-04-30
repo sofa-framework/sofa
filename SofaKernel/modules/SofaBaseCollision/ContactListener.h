@@ -60,9 +60,6 @@ public:
 
     void handleEvent( core::objectmodel::Event* event ) override;
 
-    const CollisionModel* mCollisionModel1;
-    const CollisionModel* mCollisionModel2;
-
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
@@ -141,9 +138,13 @@ public:
         return obj;
     }
 
+protected:
+    const CollisionModel* m_CollisionModel1;
+    const CollisionModel* m_CollisionModel2;
+
 private:
-    helper::vector<const helper::vector<DetectionOutput>* > mContactsVector;
-    core::collision::NarrowPhaseDetection* mNarrowPhase;
+    helper::vector<const helper::vector<DetectionOutput>* > m_ContactsVector;
+    core::collision::NarrowPhaseDetection* m_NarrowPhase;
 };
 
 } // namespace collision

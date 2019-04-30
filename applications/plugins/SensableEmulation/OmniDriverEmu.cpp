@@ -276,7 +276,7 @@ void *hapticSimuExecute( void *ptr )
             // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
             for (unsigned int i=0; i<omniDrv->data.forceFeedbacks.size(); i++)
             {
-                if (omniDrv->data.forceFeedbacks[i]->indice==omniDrv->data.forceFeedbackIndice)
+                if (omniDrv->data.forceFeedbacks[i]->d_indice==omniDrv->data.forceFeedbackIndice)
                 {
                     omniDrv->data.forceFeedbacks[i]->computeWrench(world_H_virtualTool,temp1,temp2);
                 }
@@ -498,7 +498,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
                 //data.forceFeedback->setReferencePosition(world_H_virtualTool);
                 for (unsigned int i=0; i<data.forceFeedbacks.size(); i++)
-                    if (data.forceFeedbacks[i]->indice==data.forceFeedbackIndice)
+                    if (data.forceFeedbacks[i]->d_indice==data.forceFeedbackIndice)
                         data.forceFeedbacks[i]->setReferencePosition(world_H_virtualTool);
 
                 //-----------------------------
