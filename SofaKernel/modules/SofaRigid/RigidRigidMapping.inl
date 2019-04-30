@@ -261,6 +261,7 @@ void RigidRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparam
         if (repartition.getValue().size() != in.size())
         {
             msg_error()<<"Mapping dofs repartition.getValue() is not correct";
+            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while in.size() = " << in.size();
             return;
         }
         cptOut=0;
@@ -343,6 +344,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
         if (repartition.getValue().size() != parentVelocities.size())
         {
             msg_error()<<"Mapping dofs repartition.getValue() is not correct";
+            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while parentVelocities.size() = " << parentVelocities.size();
             return;
         }
         cptchildVelocities=0;
