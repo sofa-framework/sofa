@@ -31,6 +31,7 @@
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
+#include <sofa/helper/Utils.h>
 
 #include <QMenu>
 #include <QtGlobal> // version macro
@@ -40,7 +41,6 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QClipboard>
-
 #include <QSettings>
 
 using namespace sofa::simulation;
@@ -460,9 +460,9 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     if( object_.isBase() )
     {
         contextMenu->addSeparator();
-        act = contextMenu->addAction("Go to Scene...", this, SLOT(openInstanciation()));
+        act = contextMenu->addAction("Find in scene file", this, SLOT(openInstanciation()));
         act->setEnabled(object_.asBase()->getInstanciationFileName() != "");
-        act = contextMenu->addAction("Go to Implementation...", this, SLOT(openImplementation()));
+        act = contextMenu->addAction("Find in source file", this, SLOT(openImplementation()));
         act->setEnabled(object_.asBase()->getSourceFileName() != "");
     }
 
@@ -669,9 +669,11 @@ void openInExternalEditor(const std::string filename, const int fileloc)
 {
     QFileInfo f(filename.c_str());
 
+    std::string settingsFile = BaseGUI::getConfigDirectoryPath() + "/QSettings.ini";
+    QSettings settings(settingsFile.c_str(), QSettings::IniFormat);
+
     /// In case the setting file does not contains the needed entries, let's put default ones
     /// based on qtcreator.
-    QSettings settings;
     if(!settings.contains("ExternalEditor"))
         settings.setValue("ExternalEditor", "qtcreator");
     if(!settings.contains("ExternalEditorParams"))
@@ -683,8 +685,16 @@ void openInExternalEditor(const std::string filename, const int fileloc)
     params.replace("${filename}", f.absoluteFilePath());
     params.replace("${fileno}", QString::number(fileloc));
     QStringList paramsAsList = params.split(QRegExp("(\\ )"));
-    if(QProcess::execute(editor, paramsAsList))
-        msg_error("QSofaListView") << "Unable to open: " << editor.toStdString() << " " << params.toStdString();
+    if ( QProcess::execute(editor, paramsAsList) != 0 )
+    {
+        msg_warning("QSofaListView") << "Unable to execute \"" << editor.toStdString() << " "
+                                     << params.toStdString() << "\"" << msgendl
+                                     << "  The file will NOT be opened at the right line." << msgendl
+                                     << "  Set your preferred editor in: " << settingsFile << msgendl
+                                     << "  Falling back to your system default editor.";
+
+        QDesktopServices::openUrl(QUrl::fromLocalFile( f.absoluteFilePath() ));
+    }
 }
 
 void QSofaListView::openInstanciation()
