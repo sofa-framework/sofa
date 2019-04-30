@@ -55,29 +55,6 @@ endif()
 set(SOFAFRAMEWORK_DEPENDENCY_LINK) # will be added to SofaHelper link libraries
 set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES) # will be added to SofaHelper include dirs
 
-### Dependency pack for Windows
-if(MSVC)
-    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
-    set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "sofa windows dependency pack path")
-    if(SOFA_DEPENDENCY_PACK_DIR)
-        set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
-    else()
-        set(DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}") # Default
-    endif()
-
-    list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
-    if(CMAKE_CL_64)
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
-    else()
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
-    endif()
-
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
-endif()
-
 find_package(GTest CONFIG QUIET)
 set(SOFA_HAVE_GTEST ${GTest_FOUND})
 
