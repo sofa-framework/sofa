@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "StructDataWidget.h"
-#include <sofa/helper/Factory.inl>
-#include <iostream>
+#include <QEvent>
+#include <QWidget>
+#include "QMouseWheelAdjustementGuard.h"
 
 namespace sofa
 {
@@ -33,21 +32,22 @@ namespace gui
 namespace qt
 {
 
-using sofa::helper::Creator;
-using sofa::helper::fixed_array;
-using namespace sofa::defaulttype;
+QMouseWheelAdjustmentGuard::QMouseWheelAdjustmentGuard(QObject *parent) : QObject(parent)
+{
+}
 
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,float> > > DWClass_RigidCoord2f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,double> > > DWClass_RigidCoord2d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<2,float> > > DWClass_RigidMass2f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<2,double> > > DWClass_RigidMass2d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,float> > > DWClass_RigidCoord3f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,double> > > DWClass_RigidCoord3d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,float> > > DWClass_RigidMass3f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,double> > > DWClass_RigidMass3d("default",true);
+bool QMouseWheelAdjustmentGuard::eventFilter(QObject *o, QEvent *e)
+{
+    const QWidget* widget = static_cast<QWidget*>(o);
+    if (e->type() == QEvent::Wheel && widget && !widget->hasFocus())
+    {
+        e->ignore();
+        return true;
+    }
 
-} // namespace qt
+    return QObject::eventFilter(o, e);
+}
 
-} // namespace gui
-
-} // namespace sofa
+} /// namespace qt
+} /// namespace gui
+} /// namespace sofa
