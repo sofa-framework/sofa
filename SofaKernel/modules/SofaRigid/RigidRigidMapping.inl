@@ -260,8 +260,7 @@ void RigidRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparam
     default: //n values are specified : heterogen repartition.getValue() mapping on the input dofs
         if (repartition.getValue().size() != in.size())
         {
-            msg_error()<<"Mapping dofs repartition.getValue() is not correct";
-            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while in.size() = " << in.size();
+            msg_error()<<"Mapping dofs repartition is not correct: repartition.getValue().size() = " << repartition.getValue().size() << " while in.size() = " << in.size();
             return;
         }
         cptOut=0;
@@ -343,8 +342,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
     default:
         if (repartition.getValue().size() != parentVelocities.size())
         {
-            msg_error()<<"Mapping dofs repartition.getValue() is not correct";
-            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while parentVelocities.size() = " << parentVelocities.size();
+            msg_error()<<"Mapping dofs repartition is not correct: repartition.getValue().size() = " << repartition.getValue().size() << " while parentVelocities.size() = " << parentVelocities.size();
             return;
         }
         cptchildVelocities=0;
@@ -425,8 +423,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
     default :
         if (repartition.getValue().size() != parentForces.size())
         {
-            msg_error() <<"Mapping dofs repartition.getValue() is not correct";
-            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while parentForces.size() = " << parentForces.size();
+            msg_error() <<"Mapping dofs repartition is not correct: repartition.getValue().size() = " << repartition.getValue().size() << " while parentForces.size() = " << parentForces.size();
             return;
         }
         for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
@@ -495,8 +492,7 @@ void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparam
     default :
         if (repartition.getValue().size() != parentForces.size())
         {
-            msg_error() <<"Mapping dofs repartition.getValue() is not correct";
-            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while parentForces.size() = " << parentForces.size();
+            msg_error() <<"Mapping dofs repartition is not correct: repartition.getValue().size() = " << repartition.getValue().size() << " while parentForces.size() = " << parentForces.size();
             return;
         }
         for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
@@ -727,8 +723,7 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
     default:
         if (repartition.getValue().size() != v_in.size())
         {
-            msg_error() <<"Mapping dofs repartition.getValue() is not correct";
-            dmsg_error() << "repartition.getValue() = " << repartition.getValue().size() << " while v_in.size() = " << v_in.size();
+            msg_error() <<"Mapping dofs repartition is not correct: repartition.getValue().size() = " << repartition.getValue().size() << " while v_in.size() = " << v_in.size();
             dAcc_out.endEdit();
             return;
         }
