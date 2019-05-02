@@ -56,7 +56,6 @@ ContactListener::~ContactListener()
 
 void ContactListener::init(void)
 {
-//    helper::vector<ContactManager*> contactManagers;
     m_NarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
     if ( m_NarrowPhase != nullptr )
     {
