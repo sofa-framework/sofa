@@ -1175,17 +1175,17 @@ public:
     {
         Index nx = m.colSize();
         Index ny = m.rowSize();
-        out << "[";
+        //out << "[";
         for (Index y=0; y<ny; ++y)
         {
-            out << "\n[";
+            //out << "\n[";
             for (Index x=0; x<nx; ++x)
             {
                 out << " " << m.element(y,x);
             }
-            out << " ]";
+            out << "\n";// " ]";
         }
-        out << " ]";
+        //out << " ]";
         return out;
     }
 

@@ -287,12 +287,14 @@ public:
 
     void clear() override
     {
-        //if (pitch == nCol)
-        //    std::fill(data, data+nRow*pitch, (Real)0);
-        //else
-        for (Index i=0; i<nRow; ++i)
-            for (Index j=0; j<nCol; ++j)
-                data[i*pitch+j] = (Real)0;
+        if (pitch == nCol)
+            std::fill(data, data+nRow*pitch, (Real)0);
+        else
+        {
+            for (Index i = 0; i<nRow; ++i)
+                for (Index j = 0; j<nCol; ++j)
+                    data[i*pitch + j] = (Real)0;
+        }
     }
 
     /// matrix-vector product
@@ -391,17 +393,17 @@ public:
     {
         Index nx = v.colSize();
         Index ny = v.rowSize();
-        out << "[";
+        //out << "[";
         for (Index y=0; y<ny; ++y)
         {
-            out << "\n[";
+            //out << "\n[";
             for (Index x=0; x<nx; ++x)
             {
                 out << " " << v.element(y,x);
             }
-            out << " ]";
+            out << "\n";// " ]";
         }
-        out << " ]";
+        //out << " ]";
         return out;
     }
 
