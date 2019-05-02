@@ -459,9 +459,9 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     if( object_.isBase() )
     {
         contextMenu->addSeparator();
-        act = contextMenu->addAction("Find in scene file", this, SLOT(openInstanciation()));
+        act = contextMenu->addAction("Go to Scene...", this, SLOT(openInstanciation()));
         act->setEnabled(object_.asBase()->getInstanciationFileName() != "");
-        act = contextMenu->addAction("Find in source file", this, SLOT(openImplementation()));
+        act = contextMenu->addAction("Go to Implementation...", this, SLOT(openImplementation()));
         act->setEnabled(object_.asBase()->getSourceFileName() != "");
     }
 
