@@ -238,6 +238,9 @@ public:
     const VecTetraID getElementAroundElement(TetraID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
     const VecTetraID getElementAroundElements(VecTetraID elems) override;
+
+    /// Returns the set of element indices adjacent to a given element with direct link from n-1 order element type (i.e triangle for tetrahedron)
+    const VecTetraID getOppositeElement(TetraID elemID);
     /// @}
 
 
