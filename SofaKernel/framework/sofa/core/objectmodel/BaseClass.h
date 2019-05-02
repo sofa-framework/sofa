@@ -330,7 +330,7 @@ public:
         if (i==0)
             return Parents::GetClass();
         else
-            return NULL;
+            return nullptr;
     }
 };
 

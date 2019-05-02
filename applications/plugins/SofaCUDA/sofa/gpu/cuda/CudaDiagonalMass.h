@@ -84,6 +84,13 @@ void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(const core::Mecha
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
+#ifndef SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
+extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3fTypes, float>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3dTypes, double>;
+#endif
+#endif
+
 } // namespace mass
 
 } // namespace component

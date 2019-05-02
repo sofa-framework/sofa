@@ -187,10 +187,10 @@ public:
     /// @{
 
     /// Set one of the flags.
-    void setFlag(DataFlagsEnum flag, bool b)  { if(b) m_dataFlags |= (DataFlags)flag;  else m_dataFlags &= ~(DataFlags)flag; }
+    void setFlag(DataFlagsEnum flag, bool b)  { if(b) m_dataFlags |= static_cast<DataFlags>(flag);  else m_dataFlags &= ~static_cast<DataFlags>(flag); }
 
     /// Get one of the flags.
-    bool getFlag(DataFlagsEnum flag) const { return (m_dataFlags&(DataFlags)flag)!=0; }
+    bool getFlag(DataFlagsEnum flag) const { return (m_dataFlags&static_cast<DataFlags>(flag))!=0; }
 
     /// Return whether this %Data has to be displayed in GUIs.
     bool isDisplayed() const  { return getFlag(FLAG_DISPLAYED); }
@@ -236,7 +236,7 @@ public:
     }
 
     /// Return the name of this %Data within the Base component
-    const std::string& getName() const { return m_name; }
+    const std::string& getName() const override { return m_name; }
     /// Set the name of this %Data.
     ///
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
@@ -249,17 +249,17 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet(const core::ExecParams* params=nullptr) const { return m_isSets[currentAspect(params)]; }
+    bool isSet(const core::ExecParams* params=nullptr) const { return m_isSets[static_cast<size_t>(currentAspect(params))]; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset(const core::ExecParams* params=nullptr) { m_isSets[currentAspect(params)] = false; }
+    void unset(const core::ExecParams* params=nullptr) { m_isSets[static_cast<size_t>(currentAspect(params))] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet(const core::ExecParams* params=nullptr) { m_isSets[currentAspect(params)] = true; }
+    void forceSet(const core::ExecParams* params=nullptr) { m_isSets[static_cast<size_t>(currentAspect(params))] = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params=nullptr) const { return m_counters[currentAspect(params)]; }
+    int getCounter(const core::ExecParams* params=nullptr) const { return m_counters[static_cast<size_t>(currentAspect(params))]; }
 
     /// @}
 
@@ -282,17 +282,17 @@ public:
     /// Accessor to the vector containing all the fields of this object
     const VecLink& getLinks() const { return m_vecLink; }
 
-    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link);
+    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link) override;
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 
     template<class DataT>
     bool findDataLinkDest(DataT*& ptr, const std::string& path, const BaseLink* link)
     {
-        BaseData* base = NULL;
+        BaseData* base = nullptr;
         if (!findDataLinkDest(base, path, link)) return false;
         ptr = dynamic_cast<DataT*>(base);
-        return (ptr != NULL);
+        return (ptr != nullptr);
     }
 
     /// Add a link.
@@ -363,7 +363,7 @@ class LinkTraitsPtrCasts
 public:
     static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
     static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return nullptr; }
     static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
 };
 

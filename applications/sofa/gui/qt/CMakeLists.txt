@@ -44,6 +44,7 @@ set(HEADER_FILES
     TableDataWidget.h
     viewer/SofaViewer.h
     viewer/VisualModelPolicy.h
+    GenericWidget.h
 )
 
 set(SOURCE_FILES
@@ -150,6 +151,8 @@ if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
 set(QT_USE_IMPORTED_TARGETS 1)
+
+find_package(FFMPEGexec QUIET)
 
 find_package(Qt5 COMPONENTS Core QUIET)
 

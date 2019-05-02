@@ -80,11 +80,14 @@ public:
     void updateTopologicalMappingTopDown() override;
 
     unsigned int getFromIndex(unsigned int ind) override;
+
+    /// Method to check the topology mapping maps regarding the upper topology
+    bool checkTopologies() override;
+
 protected:
     Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
     Data<bool> noNewTriangles; ///< If true no new triangles are being created
     Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
-
     sofa::helper::vector<unsigned int> addedTriangleIndex;
     TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };

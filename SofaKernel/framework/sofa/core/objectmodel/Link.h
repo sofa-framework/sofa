@@ -345,7 +345,7 @@ public:
 
     size_t size(const core::ExecParams* params = nullptr) const
     {
-        return (size_t)m_value[core::ExecParams::currentAspect(params)].size();
+        return static_cast<size_t>(m_value[core::ExecParams::currentAspect(params)].size());
     }
 
     bool empty(const core::ExecParams* params = nullptr) const
@@ -493,7 +493,7 @@ public:
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
-    std::string getLinkedPath(unsigned int index=0) const
+    std::string getLinkedPath(unsigned int index=0) const override
     {
         return getPath(index);
     }
@@ -502,7 +502,7 @@ public:
     /// @{
 
     /// Read the command line
-    virtual bool read( const std::string& str )
+    virtual bool read( const std::string& str ) override
     {
         if (str.empty())
             return true;
@@ -566,7 +566,7 @@ public:
             // Remove the objects from the container that are not in the new list
             // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
             // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
-            unsigned int csize = (unsigned int)container.size();
+            unsigned int csize = static_cast<unsigned int>(container.size());
             for (unsigned int i = 0; i != csize; i++)
             {
                 DestPtr dest(container[i]);
@@ -597,7 +597,7 @@ public:
         if (!context)
         {
             std::string p,d;
-            return BaseLink::ParseString( path, &p, (ActiveFlags & FLAG_DATALINK) ? &d : NULL, NULL);
+            return BaseLink::ParseString( path, &p, (ActiveFlags & FLAG_DATALINK) ? &d : nullptr, nullptr);
         }
         else
         {
@@ -719,7 +719,7 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        unsigned int n = (unsigned int)this->getSize();
+        unsigned int n = static_cast<unsigned int>(this->getSize());
         for (unsigned int i = 0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];
@@ -801,17 +801,17 @@ public:
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
 
     SingleLink()
-        : m_validator(NULL)
+        : m_validator(nullptr)
     {
     }
 
     SingleLink(const BaseLink::InitLink<OwnerType>& init)
-        : Inherit(init), m_validator(NULL)
+        : Inherit(init), m_validator(nullptr)
     {
     }
 
     SingleLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
-        : Inherit(init), m_validator(NULL)
+        : Inherit(init), m_validator(nullptr)
     {
         if (val) this->add(val);
     }
@@ -842,9 +842,9 @@ public:
         ValueType& value = this->m_value[aspect].get();
         const DestPtr before = TraitsValueType::get(value);
         if (!before) return;
-        TraitsValueType::set(value, NULL);
+        TraitsValueType::set(value, nullptr);
         this->updateCounter(aspect);
-        changed(before, NULL);
+        changed(before, nullptr);
     }
 
     void set(DestPtr v)
@@ -874,7 +874,7 @@ public:
     void setPath(const std::string& path)
     {
         if (path.empty()) { reset(); return; }
-        DestType* ptr = NULL;
+        DestType* ptr = nullptr;
         if (this->m_owner)
             TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
         set(ptr, path);
@@ -939,7 +939,7 @@ protected:
         if (m_validator)
         {
             DestPtr after = val;
-            (this->m_owner->*m_validator)(NULL, after);
+            (this->m_owner->*m_validator)(nullptr, after);
             if (after != val)
                 TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
         }
@@ -949,7 +949,7 @@ protected:
     {
         if (m_validator)
         {
-            DestPtr after = NULL;
+            DestPtr after = nullptr;
             (this->m_owner->*m_validator)(val, after);
             if (after)
                 TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);

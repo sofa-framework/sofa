@@ -1090,14 +1090,15 @@ void DiagonalMass<DataTypes, MassType>::initFromMassDensity()
 {
     msg_info() << "massDensity information is used";
 
+    // Compute Mass per vertex using mesh topology
     computeMass();
 
-    const MassVector &vertexMass = d_vertexMass.getValue();
+    // Sum the mass per vertex to obtain total mass
+    const MassVector &vertexMass = d_vertexMass.getValue();    
     Real sumMass = 0.0;
-    for (size_t i=0; i<(size_t)_topology->getNbPoints(); i++)
-    {
-        sumMass += vertexMass[i];
-    }
+    for (auto vMass : vertexMass)
+        sumMass += vMass;
+
     d_totalMass.setValue(sumMass);
 }
 
@@ -1112,13 +1113,13 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
     Real sumMass = 0.0;
     setMassDensity(1.0);
 
+    // Compute Mass per vertex using mesh topology
     computeMass();
 
+    // Sum the mass per vertex to obtain total mass
     const MassVector &vertexMass = d_vertexMass.getValue();
-    for (size_t i=0; i<(size_t)_topology->getNbPoints(); i++)
-    {
-        sumMass += vertexMass[i];
-    }
+    for (auto vMass : vertexMass)
+        sumMass += vMass;
 
     setMassDensity((Real)totalMassTemp/sumMass);
 

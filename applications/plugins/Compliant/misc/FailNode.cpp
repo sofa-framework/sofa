@@ -48,22 +48,22 @@ size_t FailNode::getNbParents() const { fail(); return 0;}
 BaseNode* FailNode::getFirstParent() const { fail(); return NULL; }
 	
 /// Add a child node
-void FailNode::addChild(BaseNode::SPtr /*node*/){ fail(); }
+void FailNode::doAddChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Remove a child node
-void FailNode::removeChild(BaseNode::SPtr /*node*/){ fail(); }
+void FailNode::doRemoveChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Move a node from another node
-void FailNode::moveChild(BaseNode::SPtr /*node*/){ fail(); }
+void FailNode::doMoveChild(BaseNode::SPtr /*node*/){ fail(); }
 
 /// Add a generic object
-bool FailNode::addObject(BaseObject::SPtr /*obj*/){ fail(); return 0; }
+bool FailNode::doAddObject(BaseObject::SPtr /*obj*/){ fail(); return false; }
 
 /// Remove a generic object
-bool FailNode::removeObject(BaseObject::SPtr /*obj*/){ fail(); return 0; }
+bool FailNode::doRemoveObject(BaseObject::SPtr /*obj*/){ fail(); return false; }
 
 /// Move an object from a node to another node
-void FailNode::moveObject(BaseObject::SPtr /*obj*/){ fail(); }
+void FailNode::doMoveObject(BaseObject::SPtr /*obj*/){ fail(); }
 
 /// Test if the given node is a parent of this node.
 bool FailNode::hasParent(const BaseNode* /*node*/) const{ fail(); return 0; }

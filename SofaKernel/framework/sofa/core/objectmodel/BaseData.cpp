@@ -38,7 +38,7 @@ namespace objectmodel
 BaseData::BaseData(const char* h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
-    , m_owner(NULL), m_name("")
+    , m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
@@ -49,7 +49,7 @@ BaseData::BaseData(const char* h, DataFlags dataflags)
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(NULL), m_name("")
+    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
@@ -127,15 +127,15 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         if (!isCounterValid())
             update();
 
-        m_counters[currentAspect()]++;
-        m_isSets[currentAspect()] = true;
+        m_counters[size_t(currentAspect())]++;
+        m_isSets[size_t(currentAspect())] = true;
     }
     return true;
 }
 
 bool BaseData::setParent(const std::string& path)
 {
-    BaseData* parent = NULL;
+    BaseData* parent = nullptr;
     if (this->findDataLinkDest(parent, path, &parentBaseData))
         return setParent(parent, path);
     else // simply set the path
@@ -155,7 +155,7 @@ void BaseData::doSetParent(BaseData* parent)
 void BaseData::doDelInput(DDGNode* n)
 {
     if (parentBaseData == n)
-        doSetParent(NULL);
+        doSetParent(nullptr);
     DDGNode::doDelInput(n);
 }
 
@@ -317,8 +317,8 @@ void BaseData::addLink(BaseLink* l)
 
 void BaseData::copyAspect(int destAspect, int srcAspect)
 {
-    m_counters[destAspect] = m_counters[srcAspect];
-    m_isSets[destAspect] = m_isSets[srcAspect];
+    m_counters[size_t(destAspect)] = m_counters[size_t(srcAspect)];
+    m_isSets[size_t(destAspect)] = m_isSets[size_t(srcAspect)];
     DDGNode::copyAspect(destAspect, srcAspect);
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {

@@ -60,7 +60,7 @@ public:
     void processObject(simulation::Node*, core::objectmodel::BaseObject* obj);
 
     const char* getClassName() const override { return "PropagateEventVisitor"; }
-    virtual std::string getInfos() const { return std::string(m_event->getClassName());  }
+    virtual std::string getInfos() const override { return std::string(m_event->getClassName());  }
 protected:
     sofa::core::objectmodel::Event* m_event;
 };

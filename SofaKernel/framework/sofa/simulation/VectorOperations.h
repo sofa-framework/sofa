@@ -69,7 +69,7 @@ public:
     void v_threshold(core::MultiVecId a, SReal threshold) override; ///< nullify the values below the given threshold
 
     SReal finish() override;
-    void print(sofa::core::ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" );
+    void print(sofa::core::ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" ) override;
 
     size_t v_size(core::MultiVecId v) override;
 

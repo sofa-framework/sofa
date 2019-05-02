@@ -143,7 +143,8 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
     //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
+        // Force no wireframe mode to draw sphere collision
+        vparams->drawTool()->setPolygonMode(0,false);
 
         // Check topological modifications
         const int npoints = mstate->getSize();
@@ -167,10 +168,11 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     }
 
+    // restore current polygon mode
+    vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
+
     if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
-
-    vparams->drawTool()->setPolygonMode(0,false);
 }
 
 template <class DataTypes>

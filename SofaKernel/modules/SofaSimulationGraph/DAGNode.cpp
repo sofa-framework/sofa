@@ -82,7 +82,7 @@ public:
 
     Result processNodeTopDown(simulation::Node* node) override
     {
-        const DAGNode* dagnode = (const DAGNode*)node;
+        const DAGNode* dagnode = dynamic_cast<const DAGNode*>(node);
         if( dagnode->_descendancy.find(_searchNode)!=dagnode->_descendancy.end() ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
         {
             dagnode->getLocalObjects( _class_info, _container, _tags );
@@ -112,14 +112,12 @@ protected:
 
 };
 
-
-
 DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     : simulation::Node(name)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
     if( parent )
-        parent->addChild((Node*)this);
+        parent->addChild(dynamic_cast<Node*>(this));
 }
 
 DAGNode::~DAGNode()
@@ -136,64 +134,49 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 {
     DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
-    return newchild;
+    return std::move(newchild);
 }
 
-/// Add a child node
-void DAGNode::doAddChild(DAGNode::SPtr node)
-{
-    child.add(node);
-    node->l_parents.add(this);
-    node->l_parents.updateLinks(); // to fix load-time unresolved links
-}
 
-/// Remove a child
-void DAGNode::doRemoveChild(DAGNode::SPtr node)
+void DAGNode::moveChild(BaseNode::SPtr node)
 {
-    child.remove(node);
-    node->l_parents.remove(this);
+    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    for (auto& parent : dagnode->getParents()) {
+        Node::moveChild(node, parent);
+    }
 }
 
 
 /// Add a child node
-void DAGNode::addChild(core::objectmodel::BaseNode::SPtr node)
+void DAGNode::doAddChild(BaseNode::SPtr node)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
-    notifyAddChild(dagnode);
-    doAddChild(dagnode);
+    setDirtyDescendancy();
+    child.add(dagnode);
+    dagnode->l_parents.add(this);
+    dagnode->l_parents.updateLinks(); // to fix load-time unresolved links
 }
 
 /// Remove a child
-void DAGNode::removeChild(core::objectmodel::BaseNode::SPtr node)
+void DAGNode::doRemoveChild(BaseNode::SPtr node)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
-    notifyRemoveChild(dagnode);
-    doRemoveChild(dagnode);
+    setDirtyDescendancy();
+    child.remove(dagnode);
+    dagnode->l_parents.remove(this);
 }
 
 /// Move a node from another node
-void DAGNode::moveChild(BaseNode::SPtr node)
+void DAGNode::doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
-    if (!dagnode->getNbParents())
-    {
-        addChild(node);
-    }
-    else
-    {
-        const LinkParents::Container& parents = dagnode->l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; ++i)
-        {
-            DAGNode *prev = parents[i];
-            notifyMoveChild(dagnode,prev);
-            prev->doRemoveChild(dagnode);
-        }
-        doAddChild(dagnode);
-    }
-}
+    setDirtyDescendancy();
+    previous_parent->removeChild(node);
 
+    addChild(node);
+}
 
 /// Remove a child
 void DAGNode::detachFromGraph()
@@ -202,24 +185,6 @@ void DAGNode::detachFromGraph()
     const LinkParents::Container& parents = l_parents.getValue();
     while(!parents.empty())
         parents.back()->removeChild(this);
-}
-
-void DAGNode::notifyAddChild(Node::SPtr node)
-{
-    setDirtyDescendancy();
-    Node::notifyAddChild(node);
-}
-
-void DAGNode::notifyRemoveChild(Node::SPtr node)
-{
-    setDirtyDescendancy();
-    Node::notifyRemoveChild(node);
-}
-
-void DAGNode::notifyMoveChild(Node::SPtr node, Node* prev)
-{
-    setDirtyDescendancy();
-    Node::notifyMoveChild(node,prev);
 }
 
 /// Generic object access, possibly searching up or down from the current context
@@ -232,7 +197,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         if (getNbParents()) return getRootContext()->getObject(class_info, tags, dir);
         else dir = SearchDown; // we are the root, search down from here.
     }
-    void *result = NULL;
+    void *result = nullptr;
 #ifdef DEBUG_GETOBJECT
     std::string cname = class_info.name();
     if (cname != std::string("N4sofa4core6ShaderE"))
@@ -251,7 +216,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
                     std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() ;
 #endif
                 result = class_info.dynamicCast(obj);
-                if (result != NULL)
+                if (result != nullptr)
                 {
 #ifdef DEBUG_GETOBJECT
                     std::cout << "DAGNode: found object " << (obj)->getName() << " of type " << (obj)->getClassName() ;
@@ -261,7 +226,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             }
         }
 
-    if (result == NULL)
+    if (result == nullptr)
     {
         switch(dir)
         {
@@ -279,7 +244,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
                 result = (*it)->getObject(class_info, tags, dir);
-                if (result != NULL) break;
+                if (result != nullptr) break;
             }
             break;
         case SearchRoot:
@@ -347,22 +312,22 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         }
         else if (pend < path.length())
         {
-            return NULL;
+            return nullptr;
         }
         else
         {
             core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
-            if (obj == NULL)
+            if (obj == nullptr)
             {
-                return NULL;
+                return nullptr;
             }
             else
             {
                 void* result = class_info.dynamicCast(obj);
-                if (result == NULL)
+                if (result == nullptr)
                 {
                     dmsg_error("DAGNode") << "Object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name() ;
-                    return NULL;
+                    return nullptr;
                 }
                 else
                 {
@@ -402,7 +367,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         case SearchParents:
         {
             // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups
-            GetUpObjectsVisitor vis( (DAGNode*)this, class_info, container, tags);
+            GetUpObjectsVisitor vis( const_cast<DAGNode*>(this), class_info, container, tags);
             getRootContext()->executeVisitor(&vis);
         }
         break;
@@ -411,7 +376,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         {
             // a regular visitor is enforcing the selected object unicity
             GetDownObjectsVisitor vis(class_info, container, tags);
-            ((DAGNode*)(this))->executeVisitor(&vis);
+            (const_cast<DAGNode*>(this))->executeVisitor(&vis);
             break;
         }
         default:
@@ -442,7 +407,7 @@ size_t DAGNode::getNbParents() const
 core::objectmodel::BaseNode* DAGNode::getFirstParent() const
 {
     const LinkParents::Container& parents = l_parents.getValue();
-    if( parents.empty() ) return NULL;
+    if( parents.empty() ) return nullptr;
     else return l_parents.getValue()[0];
 }
 
@@ -461,7 +426,7 @@ bool DAGNode::hasParent(const BaseNode* node) const
 /// Test if the given context is a parent of this context.
 bool DAGNode::hasParent(const BaseContext* context) const
 {
-    if (context == NULL) return !getNbParents();
+    if (context == nullptr) return !getNbParents();
 
     const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; ++i)
@@ -494,13 +459,13 @@ core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
     // Check if a local mapping stops the search
     if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
     {
-        return NULL;
+        return nullptr;
     }
     for ( Sequence<core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
     {
         if (!(*i)->sameTopology())
         {
-            return NULL;
+            return nullptr;
         }
     }
     // No mapping with a different topology, continue on to the parents
@@ -515,7 +480,7 @@ core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
                 return res;
         }
     }
-    return NULL; // not found in any parents
+    return nullptr; // not found in any parents
 }
 
 
@@ -672,7 +637,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = unsigned(child.size()); i>0;)
                 static_cast<DAGNode*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
         else
             for(unsigned int i = 0; i<child.size(); ++i)
@@ -690,7 +655,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 
         // ... and continue the recursion
         if( action->childOrderReversed(this) )
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = unsigned(child.size()); i>0;)
                 static_cast<DAGNode*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
         else
             for(unsigned int i = 0; i<child.size(); ++i)
@@ -766,7 +731,7 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
     {
         statusMap[this] = VISITED;
         if( action->childOrderReversed(this) )
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = unsigned(child.size()); i>0;)
                 static_cast<DAGNode*>(child[--i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
         else
             for(unsigned int i = 0; i<child.size(); ++i)
@@ -842,7 +807,7 @@ DAGNode* DAGNode::findCommonParent( DAGNode* node1, DAGNode* node2 )
         else if( _descendancy.find(node1)!=_descendancy.end() && _descendancy.find(node2)!=_descendancy.end() ) return this;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const
@@ -851,7 +816,7 @@ void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_i
     {
         core::objectmodel::BaseObject* obj = it->get();
         void* result = class_info.dynamicCast(obj);
-        if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
+        if (result != nullptr && (tags.empty() || (obj)->getTags().includes(tags)))
             container(result);
     }
 }
@@ -859,7 +824,7 @@ void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_i
 
 
 //helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeDefaultClass("default");
-helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");
+static helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");
 
 } // namespace graph
 

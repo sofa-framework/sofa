@@ -22,6 +22,10 @@
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/helper/logging/Messaging.h>
 
+#ifdef __GNUC__
+#include <cxxabi.h>
+#endif // __GNUC__
+
 namespace sofa
 {
 
@@ -46,20 +50,20 @@ std::string BaseClass::decodeFullName(const std::type_info& t)
 #ifdef __GNUC__
     int status;
     /* size_t length; */ // although it should, length would not be filled in by the following call
-    char* allocname = abi::__cxa_demangle(t.name(), 0, /*&length*/0, &status);
-    if(allocname == 0)
+    char* allocname = abi::__cxa_demangle(t.name(), nullptr, /*&length*/nullptr, &status);
+    if(allocname == nullptr)
     {
         msg_error("BaseClass") << "decodeFullName: Unable to demangle symbol: " << t.name();
     }
     else
     {
-        int length = 0;
+        size_t length = 0;
         while(allocname[length] != '\0')
         {
             length++;
         }
         name.resize(length);
-        for(int i=0; i<(int)length; i++)
+        for(size_t i=0; i < length; i++)
             name[i] = allocname[i];
         free(allocname);
     }

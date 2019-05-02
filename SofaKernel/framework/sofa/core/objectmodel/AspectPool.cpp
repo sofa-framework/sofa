@@ -83,7 +83,7 @@ AspectPool::AspectPool()
     aspects.resize(SOFA_DATA_MAX_ASPECTS);
     for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
     {
-        aspects[i] = new Aspect(*this, i);
+        aspects[size_t(i)] = new Aspect(*this, i);
         AtomicInt aspectID(i);
         freeAspects.push(aspectID);
     }
@@ -118,7 +118,7 @@ AspectRef AspectPool::allocate()
     AtomicInt aspectID;
     if(freeAspects.pop(aspectID))
     {
-        ref = aspects[aspectID];
+        ref = aspects[size_t(aspectID)];
     }
     return ref;
 }
@@ -140,13 +140,13 @@ void AspectPool::release(int id)
 
 AspectRef AspectPool::getAspect(int id)
 {
-    if ((unsigned)id >= aspects.size())
+    if (unsigned(id) >= aspects.size())
     {
         return AspectRef();
     }
     else
     {
-        return aspects[id];
+        return aspects[size_t(id)];
     }
 }
 

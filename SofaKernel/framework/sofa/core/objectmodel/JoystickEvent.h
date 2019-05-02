@@ -76,7 +76,7 @@ public:
         /**
          * @brief Default destructor.
          */
-        virtual ~AxisEvent() {};
+        virtual ~AxisEvent();
 
         /**
          * @name	Accessors
@@ -121,7 +121,7 @@ public:
         /**
          * @brief	Default destructor
          */
-        virtual ~ButtonEvent() {};
+        virtual ~ButtonEvent();
 
         /**
          * @brief
@@ -175,7 +175,7 @@ public:
         /**
          * @brief Default destructor.
          */
-        virtual ~HatEvent() {};
+        virtual ~HatEvent();
 
         /**
          * @name	Accessors

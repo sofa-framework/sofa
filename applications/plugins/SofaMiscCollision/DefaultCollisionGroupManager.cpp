@@ -37,6 +37,7 @@ namespace collision
 {
 
 using core::collision::Contact;
+using core::objectmodel::BaseNode;
 
 
 int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
@@ -54,7 +55,7 @@ void DefaultCollisionGroupManager::clearGroup(const Container &inNodes,
                                               simulation::Node::SPtr group)
 {
     core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
-    while(!group->child.empty()) parent->moveChild(*group->child.begin());
+    while(!group->child.empty()) parent->moveChild(core::objectmodel::BaseNode::SPtr(group->child.begin()->get()->toBaseNode()));
 
     simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
     cleanupvis.execute(group.get());
@@ -117,8 +118,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // create a new group
                     group = parent->createChild(groupName);
 
-                    group->moveChild((simulation::Node*)group1);
-                    group->moveChild((simulation::Node*)group2);
+                    group->moveChild(BaseNode::SPtr(group1));
+                    group->moveChild(BaseNode::SPtr(group2));
                     groupSet.insert(group.get());
                 }
                 else if (group1IsColl)
@@ -127,7 +128,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // merge group2 in group1
                     if (!group2IsColl)
                     {
-                        group->moveChild(group2);
+                        group->moveChild(BaseNode::SPtr(group2));
                     }
                     else
                     {
@@ -151,8 +152,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                         while(!group2->object.empty())
                             group->moveObject(*group2->object.begin());
                         while(!group2->child.empty())
-                            group->moveChild(*group2->child.begin());
-                        parent->removeChild((simulation::Node*)group2);
+                            group->moveChild(BaseNode::SPtr(*group2->child.begin()));
+                        parent->removeChild(group2);
                         groupSet.erase(group2);
                         mergedGroups[group2] = group;
                         if (solver2.odeSolver) solver2.odeSolver.reset();
@@ -167,7 +168,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 {
                     // group1 is not a collision group while group2 is
                     group = group2;
-                    group->moveChild(group1);
+                    group->moveChild(BaseNode::SPtr(group1));
                 }
                 if (!group->solver.empty())
                 {

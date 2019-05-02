@@ -165,9 +165,7 @@ public:
         updatePath();
     }
 
-    virtual ~DataFileNameVector()
-    {
-    }
+    virtual ~DataFileNameVector();
 
     void endEdit(const core::ExecParams* params = nullptr)
     {

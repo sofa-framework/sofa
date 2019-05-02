@@ -98,10 +98,10 @@ public:
      * @name Accessors
      */
     //@{
-    int getPosX(void) const {return m_posX;};
-    int getPosY(void) const {return m_posY;};
-    int getWheelDelta(void) const {return m_wheelDelta;};
-    State getState(void) const {return m_state;};
+    int getPosX(void) const {return m_posX;}
+    int getPosY(void) const {return m_posY;}
+    int getWheelDelta(void) const {return m_wheelDelta;}
+    State getState(void) const {return m_state;}
     //}@
 
     const char* getClassName() const override { return "MouseEvent"; }
