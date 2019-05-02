@@ -674,68 +674,88 @@ bool TriangleSetTopologyContainer::checkTopology() const
 		if (hasTrianglesAroundVertex())
 		{
 			std::set <int> triangleSet;
-			std::set<int>::iterator it;
 
 			for (size_t i = 0; i < m_trianglesAroundVertex.size(); ++i)
 			{
 				const sofa::helper::vector<TriangleID> &tvs = m_trianglesAroundVertex[i];
 				for (size_t j = 0; j < tvs.size(); ++j)
 				{
-					bool check_triangle_vertex_shell = (m_triangle[tvs[j]][0] == i)
-						|| (m_triangle[tvs[j]][1] == i)
-						|| (m_triangle[tvs[j]][2] == i);
+                    const Triangle& triangle = m_triangle[tvs[j]];
+                    bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
 					if (!check_triangle_vertex_shell)
 					{
-						msg_error() << "*** CHECK FAILED : check_triangle_vertex_shell, i = " << i << " , j = " << j;
+                        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle " << tvs[j] << ": [" << triangle << "] not around vertex: " << i;
 						ret = false;
 					}
 
-					it = triangleSet.find(tvs[j]);
-					if (it == triangleSet.end())
-					{
-						triangleSet.insert(tvs[j]);
-					}
+                    triangleSet.insert(tvs[j]);
 				}
 			}
 
 			if (triangleSet.size() != m_triangle.size())
 			{
-				msg_error() << "*** CHECK FAILED : check_triangle_vertex_shell, triangle are missing in m_trianglesAroundVertex";
+                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundVertex out of " << m_triangle.size();
 				ret = false;
 			}
 		}
 
-		if (hasTrianglesAroundEdge())
-		{
-			std::set <int> triangleSet;
-			std::set<int>::iterator it;
 
+        if (hasTrianglesAroundEdge() && hasEdgesInTriangle())
+		{
+            // check first m_edgesInTriangle
+            helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+
+            if (m_edgesInTriangle.size() != m_triangle.size())
+            {
+                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: m_edgesInTriangle size: " << m_edgesInTriangle.size() << " not equal to " << m_triangle.size();
+                ret = false;
+            }
+
+            for (size_t i=0; i<m_edgesInTriangle.size(); ++i)
+            {
+                const Triangle& triangle = m_triangle[i];
+                const EdgesInTriangle& eInTri = m_edgesInTriangle[i];
+
+                for (unsigned int j=0; j<3; j++)
+                {
+                    const Edge& edge = m_edge[eInTri[j]];
+                    int cptFound = 0;
+                    for (unsigned int k=0; k<3; k++)
+                        if (edge[0] == triangle[k] || edge[1] == triangle[k])
+                            cptFound++;
+
+                    if (cptFound != 2)
+                    {
+                        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: edge: " << eInTri[j] << ": [" << edge << "] not found in triangle: " << i << ": " << triangle;
+                        ret = false;
+                    }
+                }
+            }
+
+            // check m_trianglesAroundEdge using checked m_edgesInTriangle
+			std::set <int> triangleSet;
 			for (size_t i = 0; i < m_trianglesAroundEdge.size(); ++i)
 			{
 				const sofa::helper::vector<TriangleID> &tes = m_trianglesAroundEdge[i];
 				for (size_t j = 0; j < tes.size(); ++j)
 				{
-					bool check_triangle_edge_shell = (m_edgesInTriangle[tes[j]][0] == i)
-						|| (m_edgesInTriangle[tes[j]][1] == i)
-						|| (m_edgesInTriangle[tes[j]][2] == i);
+                    const EdgesInTriangle& eInTri = m_edgesInTriangle[tes[j]];
+                    bool check_triangle_edge_shell = (eInTri[0] == i)
+                        || (eInTri[1] == i)
+                        || (eInTri[2] == i);
 					if (!check_triangle_edge_shell)
 					{
-						msg_error() << "*** CHECK FAILED : check_triangle_edge_shell, i = " << i << " , j = " << j;
+                        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle: " << tes[j] << " with edges: [" << eInTri << "] not found around edge: " << i;
 						ret = false;
 					}
 
-					it = triangleSet.find(tes[j]);
-					if (it == triangleSet.end())
-					{
-						triangleSet.insert(tes[j]);
-					}
-
+                    triangleSet.insert(tes[j]);
 				}
 			}
 
 			if (triangleSet.size() != m_triangle.size())
 			{
-				msg_error() << "*** CHECK FAILED : check_triangle_edge_shell, triangle are missing in m_trianglesAroundEdge";
+                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << m_triangle.size();
 				ret = false;
 			}
 
