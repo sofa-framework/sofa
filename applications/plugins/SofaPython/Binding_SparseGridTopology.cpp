@@ -222,7 +222,7 @@ static PyObject * SparseGridTopology_findCube(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    if (not PyList_Check(pylist) or PyList_Size(pylist) != 3) {
+    if (!PyList_Check(pylist) || PyList_Size(pylist) != 3) {
         SP_MESSAGE_ERROR("SparseGridTopology.findCube must have a position ([x, y, z]) as argument.");
         Py_RETURN_NONE;
     }

@@ -958,7 +958,7 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
         return nullptr;
     }
 
-    if (type_ptr and strlen(type_ptr))
+    if (type_ptr && strlen(type_ptr))
         type = std::string(type_ptr);
 #ifdef SOFA_HAVE_DAG
     else
@@ -968,7 +968,7 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
         type = std::string("TREE");
 #endif
 
-    if (name_ptr and strlen(name_ptr))
+    if (name_ptr && strlen(name_ptr))
         name = std::string(name_ptr);
 
 #ifdef SOFA_HAVE_DAG
