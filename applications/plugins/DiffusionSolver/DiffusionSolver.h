@@ -1,20 +1,9 @@
 #ifndef __DIFFUSIONSOLVER_H__
 #define __DIFFUSIONSOLVER_H__
 
+#include "config.h"
+
 #include <CImgPlugin/SOFACImg.h>
-
-#ifdef WIN32
-#	define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#   define IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#   ifdef _MSC_VER
-#       pragma warning(disable : 4231)
-#       pragma warning(disable : 4910)
-#   endif
-#else
-#	define EXPORT_DYNAMIC_LIBRARY
-#   define IMPORT_DYNAMIC_LIBRARY
-#endif
-
 
 /** Solving diffusion on 3D regular grids (stored as CImg)
  * @param size (in) the size of the regular domain in the 3 directions.
@@ -69,7 +58,7 @@ struct DiffusionSolver
 
 
 #if  !defined(__DIFFUSIONSOLVER_CPP)
-    extern template struct IMPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
+    extern template struct SOFA_DIFFUSIONSOLVER_API DiffusionSolver<float>;
 #endif
 
 

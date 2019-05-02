@@ -3,17 +3,27 @@ project(DiffusionSolver VERSION 0.1)
 
 find_package(CImgPlugin REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
+set(HEADER_FILES
+    config.h
+    DiffusionSolver.h
+    )
+
+set(SOURCE_FILES
+    initDiffusionSolver.cpp
+    DiffusionSolver.cpp
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 if("${CMAKE_BUILD_TYPE}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$") # no need for openmp in debug
     find_package(OpenMP QUIET)
     if (OPENMP_FOUND)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-		if(WIN32)
-			set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${OpenMP_CXX_FLAGS}")
-		else()
-			target_link_libraries(${PROJECT_NAME} -lm ${OpenMP_CXX_FLAGS})
-		endif()
+        if(WIN32)
+            set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${OpenMP_CXX_FLAGS}")
+        else()
+            target_link_libraries(${PROJECT_NAME} -lm ${OpenMP_CXX_FLAGS})
+        endif()
         message(STATUS "DiffusionSolver: forcing OpenMP")
     else()
         message(WARNING "DiffusionSolver: your compiler does not implement OpenMP, it will be single-threaded and very inefficient...")
@@ -24,6 +34,7 @@ if("${CMAKE_BUILD_TYPE}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$") # no need f
     endif()
 endif()
 
+target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DIFFUSIONSOLVER")
 target_link_libraries(${PROJECT_NAME} CImgPlugin)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
