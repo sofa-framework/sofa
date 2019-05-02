@@ -82,14 +82,15 @@ protected:
 public:
     Data<unsigned> index; ///< input frame index
     sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
-    //axis length for display
+
+    /// axis length for display
     Data<double> axisLength; ///< axis length for display
     Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
     Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
 protected:
     RigidRigidMapping() ;
-    virtual ~RigidRigidMapping(){}
+    ~RigidRigidMapping() override {}
 
 public:
     void init() override;
@@ -108,7 +109,7 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getJ() override
     {
-        return NULL;
+        return nullptr;
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -131,9 +132,6 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
 extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
-
-
-
 #endif
 
 } // namespace mapping
