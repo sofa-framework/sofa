@@ -461,9 +461,9 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     {
         contextMenu->addSeparator();
         act = contextMenu->addAction("Go to Scene...", this, SLOT(openInstanciation()));
-        act->setEnabled(object_.asBase()->getInstanciationFileName() != "");
+        act->setEnabled(object_.asBase()->getInstanciationSourceFileName() != "");
         act = contextMenu->addAction("Go to Implementation...", this, SLOT(openImplementation()));
-        act->setEnabled(object_.asBase()->getSourceFileName() != "");
+        act->setEnabled(object_.asBase()->getDefinitionSourceFileName() != "");
     }
 
     contextMenu->addSeparator();
@@ -691,8 +691,8 @@ void QSofaListView::openInstanciation()
 {
     if(object_.isBase())
     {
-        openInExternalEditor(object_.asBase()->getInstanciationFileName(),
-                             object_.asBase()->getInstanciationFilePos());
+        openInExternalEditor(object_.asBase()->getInstanciationSourceFileName(),
+                             object_.asBase()->getInstanciationSourceFilePos());
     }
 }
 
@@ -700,8 +700,8 @@ void QSofaListView::openImplementation()
 {
     if(object_.isBase())
     {
-        openInExternalEditor(object_.asBase()->getSourceFileName(),
-                             object_.asBase()->getSourceFilePos());
+        openInExternalEditor(object_.asBase()->getDefinitionSourceFileName(),
+                             object_.asBase()->getDefinitionSourceFilePos());
     }
 }
 
