@@ -180,12 +180,15 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
             edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
             edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
         }
-        for(size_t i=0; i<numTetra; ++i)
+        size_t i=0;
+        while(i<numTetra && foundEdge == true)
         {
             const Tetrahedron &t = m_tetrahedron[i];
             // adding edge i in the edge shell of both points
-            for(EdgeID j=0; j<6; ++j)
+            EdgeID j=0;
+            while(j<6 && foundEdge == true)
             {
+
                 //finding edge i in edge array
                 std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[edgesInTetrahedronArray[j][0]]);
 
@@ -199,13 +202,11 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                         foundEdge=true;
                     }
                 }
-                if (foundEdge == false)  // The edges and triangles in this mesh are only on the border: this mesh was probably created using Gmsh
-                    break;
                 if (CHECK_TOPOLOGY)
                     msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
+                j++;
             }
-            if (foundEdge == false)  // The edges and triangles in this mesh are only on the border: this mesh was probably created using Gmsh
-                break;
+            i++;
         }
     }
 
