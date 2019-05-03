@@ -105,7 +105,15 @@ PSDEDataFactory* getFactoryInstance(){
         s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
         s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
 
-        // VECTORS
+        // State vectors
+        s_localfactory->registerCreator(
+                    "Rigid3d::VecCoord", new DataCreator<sofa::defaulttype::Rigid3dTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3f::VecCoord", new DataCreator<sofa::defaulttype::Rigid3fTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3::VecCoord", new DataCreator<sofa::defaulttype::Rigid3Types::VecCoord>());
+
+        // General vectors
         for (const auto& container : containers)
         {
             // Scalars
@@ -385,9 +393,13 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
 
 static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    if( helper_addNewData(args, nullptr, obj) == nullptr )
+    BaseData* addeddata = helper_addNewData(args, nullptr, obj);
+    if( addeddata == nullptr )
+    {
+        PyErr_SetString(PyExc_ValueError, "Unable to create a new Sofa data field.");
         return nullptr ;
-    Py_RETURN_NONE;
+    }
+    return SP_BUILD_PYPTR(Data,BaseData,addeddata,false);
 }
 
 static PyObject * Base_getData(PyObject *self, PyObject *args ) {

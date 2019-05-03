@@ -63,19 +63,20 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if(data_ == nullptr)
         return;
 
-    const char* help_text = data_->getHelp();
-    const std::string label_text = help_text == NULL ? "" : help_text;
+    const std::string valuetype = data_->getValueTypeString();
+    std::stringstream s;
 
-    if (label_text != "TODO")
-    {
-        datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG, flags_);
-        datainfowidget_->setContentsMargins(0, 0, 0, 0);
-        datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        gridLayout_->addWidget(datainfowidget_, 0,0);
-        numWidgets_ += 1;
-    }
+    s << data_->getHelp()<< "\nData type: " << valuetype
+                         << "\nOwner: "<<data_->getOwnerClass() ;
+    const std::string fullHelpText = s.str();
+    setToolTip(fullHelpText.c_str());
+    datainfowidget_ = new QDisplayDataInfoWidget(this,fullHelpText,data_,
+                                                 flags.LINKPATH_MODIFIABLE_FLAG, flags_);
+    datainfowidget_->setContentsMargins(0, 0, 0, 0);
+    datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    gridLayout_->addWidget(datainfowidget_, 0,0);
+    numWidgets_ += 1;
 
-    setToolTip(data_->getHelp());
 
     DataWidget::CreatorArgument dwarg;
     dwarg.name =  data_->getName();
@@ -114,9 +115,8 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     datawidget_->setContentsMargins(0, 16, 0, 0);
     datawidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    const std::string valuetype = data_->getValueTypeString();
-    if (!valuetype.empty())
-        datawidget_->setToolTip(valuetype.c_str());
+
+    datawidget_->setToolTip(s.str().c_str());
 
     numWidgets_ += datawidget_->sizeWidget();
     connect(datawidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
