@@ -68,6 +68,7 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent);
+        w->setFocusPolicy(Qt::StrongFocus);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)
