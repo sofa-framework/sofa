@@ -110,8 +110,8 @@ bool ObjectElement::initNode()
 
             msg_warning(obj.get()) << SOFA_FILE_INFO_COPIED_FROM(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" ;        }
     }
-    obj->setInstanciationFilePos(getSrcLine());
-    obj->setInstanciationFileName(getSrcFile());
+    obj->setInstanciationSourceFilePos(getSrcLine());
+    obj->setInstanciationSourceFileName(getSrcFile());
     return true;
 }
 
