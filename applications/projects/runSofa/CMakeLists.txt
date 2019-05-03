@@ -72,3 +72,4 @@ if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
 else()
     sofa_install_targets(SofaGui runSofa runSofa)
 endif()
+

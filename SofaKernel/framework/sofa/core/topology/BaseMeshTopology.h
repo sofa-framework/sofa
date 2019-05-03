@@ -68,6 +68,14 @@ public:
     typedef sofa::helper::fixed_array<EdgeID,6>		EdgesInTetrahedron;
     typedef sofa::helper::fixed_array<QuadID,6>		QuadsInHexahedron;
     typedef sofa::helper::fixed_array<EdgeID,12>    EdgesInHexahedron;
+
+    static EdgesInTriangle        InvalidEdgesInTriangles;
+    static EdgesInQuad            InvalidEdgesInQuad;
+    static TrianglesInTetrahedron InvalidTrianglesInTetrahedron;
+    static EdgesInTetrahedron     InvalidEdgesInTetrahedron;
+    static QuadsInHexahedron      InvalidQuadsInHexahedron;
+    static EdgesInHexahedron      InvalidEdgesInHexahedron;
+
     /// @}
 
     /// dynamic-size neighbors arrays
@@ -327,7 +335,8 @@ public:
 };
 
 // map of triangles orientation inside a tetrahedron.
-static const unsigned int trianglesOrientationInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0},{0,2,1}};
+static const unsigned int trianglesOrientationInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0}, {0,2,1}};
+static const unsigned int quadsOrientationInHexahedronArray[6][4]= {{0,3,2,1}, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7}};
 
 } // namespace topology
 

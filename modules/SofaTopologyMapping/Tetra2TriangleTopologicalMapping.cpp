@@ -87,12 +87,14 @@ void Tetra2TriangleTopologicalMapping::init()
         msg_error() << "Pointer to output topology is invalid.";
         modelsOk = false;
     }
-
-    toModel->getContext()->get(m_outTopoModifier);
-    if (!m_outTopoModifier)
+    else
     {
-        msg_error() << "No TriangleSetTopologyModifier found in the Edge topology Node.";
-        modelsOk = false;
+        toModel->getContext()->get(m_outTopoModifier);
+        if (!m_outTopoModifier)
+        {
+            msg_error() << "No TriangleSetTopologyModifier found in the Triangle topology Node.";
+            modelsOk = false;
+        }
     }
 
     if (!modelsOk)
@@ -138,6 +140,8 @@ void Tetra2TriangleTopologicalMapping::init()
             Glob2LocMap[triId]= Loc2GlobVec.size() - 1;
         }
     }
+    // Need to fully init the target topology
+    toModel->init();
 
     Loc2GlobDataVec.endEdit();
     this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
@@ -297,13 +301,10 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             }
 
             // add new elements to output topology
-            m_outTopoModifier->addTrianglesProcess(triangles_to_create);
-            m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, triangleId_to_create);
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addTriangles(triangles_to_create);
 
             // remove elements not anymore on part of the border
             sofa::helper::vector< BaseMeshTopology::TriangleID > local_triangleId_to_remove;
-            std::sort(triangleId_to_remove.begin(), triangleId_to_remove.end(), std::greater<BaseMeshTopology::TriangleID>());
             for (auto triGlobId : triangleId_to_remove)
             {
                 std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(triGlobId);
@@ -312,25 +313,28 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     msg_error() << " in TETRAHEDRAADDED process, triangle id " << triGlobId << " not found in Glob2LocMap";
                     continue;
                 }
+                // add triangle for output topology update
+                local_triangleId_to_remove.push_back(iter_1->second);
+                Glob2LocMap.erase(iter_1);
+            }
 
-                BaseMeshTopology::TriangleID triangleLocId = iter_1->second;
+            // sort local triangle to remove
+            std::sort(local_triangleId_to_remove.begin(), local_triangleId_to_remove.end(), std::greater<BaseMeshTopology::TriangleID>());
+
+            for (auto triLocId : local_triangleId_to_remove)
+            {
                 BaseMeshTopology::TriangleID lastGlobId = Loc2GlobVec.back();
 
-                // swap and pop loc2Glob vec
-                Loc2GlobVec[triangleLocId] = lastGlobId;
+                // udpate loc2glob array
+                Loc2GlobVec[triLocId] = lastGlobId;
                 Loc2GlobVec.pop_back();
 
                 // redirect glob2loc map
-                Glob2LocMap.erase(iter_1);
-                Glob2LocMap[lastGlobId] = triangleLocId;
-
-                // add triangle for output topology update
-                local_triangleId_to_remove.push_back(triangleLocId);
+                Glob2LocMap[lastGlobId] = triLocId;
             }
 
             // remove old triangles
             m_outTopoModifier->removeTriangles(local_triangleId_to_remove, true, false);
-
             break;
         }
         case core::topology::TETRAHEDRAREMOVED:
@@ -422,11 +426,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
-
-            m_outTopoModifier->addTrianglesProcess(triangles_to_create) ;
-            m_outTopoModifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-            m_outTopoModifier->propagateTopologicalChanges();
-
+            m_outTopoModifier->addTriangles(triangles_to_create);
             break;
         }
 
@@ -535,7 +535,23 @@ bool Tetra2TriangleTopologicalMapping::checkTopologies()
 
         itM = Glob2LocMap.find(i);
         if (itM == Glob2LocMap.end()){
-            msg_error() << "Top triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " NOT FOUND";
+            msg_error() << "Top triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " NOT FOUND in Glob2LocMap";
+            for (unsigned int k=0; k<triangleArray_bot.size(); k++)
+            {
+                const BaseMeshTopology::Triangle& triBot = triangleArray_bot[k];
+                int cptFound = 0;
+                for (unsigned int j=0; j<3; j++)
+                {
+                    if (triBot[j] == tri[0] || triBot[j] == tri[1] || triBot[j] == tri[2])
+                        cptFound++;
+                }
+
+                if (cptFound == 3){
+                    msg_error() << "Top triangle: " << i << " -> " << tri << " found at bottom id: " << k << " -> " << triBot << " | Loc2GlobDataVec: " << buffer[k];
+                    break;
+                }
+            }
+
             allOk = false;
             continue;
         }

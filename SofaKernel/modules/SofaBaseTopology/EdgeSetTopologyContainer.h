@@ -56,12 +56,9 @@ protected:
 
     ~EdgeSetTopologyContainer() override {}
 public:
-
     void init() override;
 
     void reinit() override;
-
-
 
     /// Procedural creation methods
     /// @{
@@ -69,18 +66,13 @@ public:
     void addEdge( int a, int b ) override;
     /// @}
 
-
-
     /// BaseMeshTopology API
     /// @{
 
     /** \brief Returns the edge array.
      *
      */
-    const SeqEdges& getEdges() override
-    {
-        return getEdgeArray();
-    }
+    const SeqEdges& getEdges() override;
 
     /** \brief Get an Edge from its ID.
      *
@@ -104,7 +96,7 @@ public:
      * @param i The ID of the vertex.
      * @return An EdgesAroundVertex containing the indices of the edges.
      */
-    const EdgesAroundVertex& getEdgesAroundVertex(PointID i) override;
+    const EdgesAroundVertex& getEdgesAroundVertex(PointID id) override;
 
     /// @}
 
@@ -112,6 +104,8 @@ public:
 
     /// Dynamic Topology API
     /// @{
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers.
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
      *

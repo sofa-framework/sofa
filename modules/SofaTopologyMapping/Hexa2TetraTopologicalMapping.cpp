@@ -70,132 +70,147 @@ Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()
 }
 
 void Hexa2TetraTopologicalMapping::init()
-{
-    //sout << "INFO_print : init Hexa2TetraTopologicalMapping" << sendl;
-
+{    
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
-    if (fromModel)
+    // recheck models
+    bool modelsOk = true;
+    if (!fromModel)
     {
-
-        sout << "INFO_print : Hexa2TetraTopologicalMapping - from = hexa" << sendl;
-
-        if (toModel)
-        {
-
-            sout << "INFO_print : Hexa2TetraTopologicalMapping - to = tetra" << sendl;
-
-            TetrahedronSetTopologyContainer *to_tstc;
-            toModel->getContext()->get(to_tstc);
-            to_tstc->clear();
-
-            toModel->setNbPoints(fromModel->getNbPoints());
-
-            TetrahedronSetTopologyModifier *to_tstm;
-            toModel->getContext()->get(to_tstm);
-
-            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
-            Loc2GlobVec.clear();
-            Glob2LocMap.clear();
-
-            size_t nbcubes = fromModel->getNbHexahedra();
-
-            // These values are only correct if the mesh is a grid topology
-            int nx = 2;
-            int ny = 1;
-            //int nz = 1;
-            {
-                topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
-                if (grid != NULL)
-                {
-                    nx = grid->getNx()-1;
-                    ny = grid->getNy()-1;
-                    //nz = grid->getNz()-1;
-                }
-            }
-
-            // Tesselation of each cube into 6 tetrahedra
-            for (size_t i=0; i<nbcubes; i++)
-            {
-                core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
-#define swap(a,b) { int t = a; a = b; b = t; }
-                // TODO : swap indexes where needed (currently crash in TriangleSetContainer)
-                bool swapped = false;
-
-                if(swapping.getValue())
-                {
-                    if (!((i%nx)&1))
-                    {
-                        // swap all points on the X edges
-                        swap(c[0],c[1]);
-                        swap(c[3],c[2]);
-                        swap(c[4],c[5]);
-                        swap(c[7],c[6]);
-                        swapped = !swapped;
-                    }
-                    if (((i/nx)%ny)&1)
-                    {
-                        // swap all points on the Y edges
-                        swap(c[0],c[3]);
-                        swap(c[1],c[2]);
-                        swap(c[4],c[7]);
-                        swap(c[5],c[6]);
-                        swapped = !swapped;
-                    }
-                    if ((i/(nx*ny))&1)
-                    {
-                        // swap all points on the Z edges
-                        swap(c[0],c[4]);
-                        swap(c[1],c[5]);
-                        swap(c[2],c[6]);
-                        swap(c[3],c[7]);
-                        swapped = !swapped;
-                    }
-                }
-#undef swap
-                typedef core::topology::BaseMeshTopology::Tetra Tetra;
-
-                if(!swapped)
-                {
-                    to_tstm->addTetrahedronProcess(Tetra(c[0],c[5],c[1],c[6]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[0],c[1],c[3],c[6]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[1],c[3],c[6],c[2]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[6],c[3],c[0],c[7]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[6],c[7],c[0],c[5]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[7],c[5],c[4],c[0]));
-                }
-                else
-                {
-                    to_tstm->addTetrahedronProcess(Tetra(c[0],c[5],c[6],c[1]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[0],c[1],c[6],c[3]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[1],c[3],c[2],c[6]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[6],c[3],c[7],c[0]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[6],c[7],c[5],c[0]));
-                    to_tstm->addTetrahedronProcess(Tetra(c[7],c[5],c[0],c[4]));
-                }
-                for(int j=0; j<6; j++)
-                    Loc2GlobVec.push_back(i);
-                Glob2LocMap[i] = (unsigned int)Loc2GlobVec.size()-1;
-            }
-
-            //to_tstm->propagateTopologicalChanges();
-            to_tstm->notifyEndingEvent();
-            //to_tstm->propagateTopologicalChanges();
-            Loc2GlobDataVec.endEdit();
-        }
-
+        msg_error() << "Pointer to input topology is invalid.";
+        modelsOk = false;
     }
+
+    if (!toModel)
+    {
+        msg_error() << "Pointer to output topology is invalid.";
+        modelsOk = false;
+    }
+    else
+    {
+        TetrahedronSetTopologyModifier *to_tstm;
+        toModel->getContext()->get(to_tstm);
+        if (!to_tstm)
+        {
+            msg_error() << "No TetrahedronSetTopologyModifier found in the Tetrahedron topology Node.";
+            modelsOk = false;
+        }
+    }
+
+    if (!modelsOk)
+    {
+        this->m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
+    TetrahedronSetTopologyContainer *to_tstc;
+    toModel->getContext()->get(to_tstc);
+    // Clear output topology
+    to_tstc->clear();
+
+    // Set the same number of points
+    toModel->setNbPoints(fromModel->getNbPoints());
+
+    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+
+    Loc2GlobVec.clear();
+    Glob2LocMap.clear();
+
+    size_t nbcubes = fromModel->getNbHexahedra();
+
+    // These values are only correct if the mesh is a grid topology
+    int nx = 2;
+    int ny = 1;
+    //int nz = 1;
+    {
+        topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
+        if (grid != NULL)
+        {
+            nx = grid->getNx()-1;
+            ny = grid->getNy()-1;
+            //nz = grid->getNz()-1;
+        }
+    }
+
+    // Tesselation of each cube into 6 tetrahedra
+    for (size_t i=0; i<nbcubes; i++)
+    {
+        core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
+#define swap(a,b) { int t = a; a = b; b = t; }
+        // TODO : swap indexes where needed (currently crash in TriangleSetContainer)
+        bool swapped = false;
+
+        if(swapping.getValue())
+        {
+            if (!((i%nx)&1))
+            {
+                // swap all points on the X edges
+                swap(c[0],c[1]);
+                swap(c[3],c[2]);
+                swap(c[4],c[5]);
+                swap(c[7],c[6]);
+                swapped = !swapped;
+            }
+            if (((i/nx)%ny)&1)
+            {
+                // swap all points on the Y edges
+                swap(c[0],c[3]);
+                swap(c[1],c[2]);
+                swap(c[4],c[7]);
+                swap(c[5],c[6]);
+                swapped = !swapped;
+            }
+            if ((i/(nx*ny))&1)
+            {
+                // swap all points on the Z edges
+                swap(c[0],c[4]);
+                swap(c[1],c[5]);
+                swap(c[2],c[6]);
+                swap(c[3],c[7]);
+                swapped = !swapped;
+            }
+        }
+#undef swap
+        if(!swapped)
+        {
+            to_tstc->addTetra(c[0],c[5],c[1],c[6]);
+            to_tstc->addTetra(c[0],c[1],c[3],c[6]);
+            to_tstc->addTetra(c[1],c[3],c[6],c[2]);
+            to_tstc->addTetra(c[6],c[3],c[0],c[7]);
+            to_tstc->addTetra(c[6],c[7],c[0],c[5]);
+            to_tstc->addTetra(c[7],c[5],c[4],c[0]);
+        }
+        else
+        {
+            to_tstc->addTetra(c[0],c[5],c[6],c[1]);
+            to_tstc->addTetra(c[0],c[1],c[6],c[3]);
+            to_tstc->addTetra(c[1],c[3],c[2],c[6]);
+            to_tstc->addTetra(c[6],c[3],c[7],c[0]);
+            to_tstc->addTetra(c[6],c[7],c[5],c[0]);
+            to_tstc->addTetra(c[7],c[5],c[0],c[4]);
+        }
+        for(int j=0; j<6; j++)
+            Loc2GlobVec.push_back(i);
+        Glob2LocMap[i] = (unsigned int)Loc2GlobVec.size()-1;
+    }
+
+    Loc2GlobDataVec.endEdit();
+
+    // Need to fully init the target topology
+    toModel->init();
+
+    this->m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
 }
 
 unsigned int Hexa2TetraTopologicalMapping::getFromIndex(unsigned int /*ind*/)
 {
 
-    return 0;
+    return Topology::InvalidID;
 }
 
 void Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown()
 {
+    msg_warning() << "Method Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown() not yet implemented!";
 // TODO...
 }
 

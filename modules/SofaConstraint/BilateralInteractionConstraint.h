@@ -200,10 +200,9 @@ void BilateralInteractionConstraint<Rigid3Types>::addContact(Deriv /*norm*/,
 
 
 
-#if  !defined(SOFA_BUILD_CONSTRAINT)
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Vec3Types >;
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Rigid3Types >;
-
 #endif
 
 } // namespace bilateralinteractionconstraint

@@ -94,6 +94,10 @@ bool MeshGmshLoader::load()
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
+        // By default for Gmsh file format, create subElements except if specified not to.
+        if (!d_createSubelements.isSet())
+            d_createSubelements.setValue(true);
+
         // TODO 2018-04-06: temporary change to unify loader API
         //fileRead = readGmsh(file, gmshFormat);
         (void)gmshFormat;

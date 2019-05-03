@@ -69,17 +69,14 @@ public:
 
     /*****************************************************************************************************************/
     QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
+    virtual void onBeginAddChild(Node* parent, Node* child) override;
+    virtual void onBeginRemoveChild(Node* parent, Node* child) override;
+    virtual void onBeginAddObject(Node* parent, core::objectmodel::BaseObject* object) override;
+    virtual void onBeginRemoveObject(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
+    virtual void onBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
+    virtual void onBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
 
-    void addChild(Node* parent, Node* child) override;
-    void removeChild(Node* parent, Node* child) override;
-    void moveChild(Node* previous, Node* parent, Node* child) override;
-    void addObject(Node* parent, core::objectmodel::BaseObject* object) override;
-    void removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object) override;
-    void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object) override;
-    void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) override;
-    void sleepChanged(Node* node) override;
+    virtual void sleepChanged(Node* node) override;
     virtual void addDatas(core::objectmodel::BaseObject* parent);
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);

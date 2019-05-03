@@ -29,7 +29,6 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 endif()
 
 target_link_libraries(${PROJECT_NAME} CImgPlugin)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CImgPlugin_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 install(TARGETS ${PROJECT_NAME}

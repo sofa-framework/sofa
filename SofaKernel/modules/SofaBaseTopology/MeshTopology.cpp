@@ -1441,7 +1441,11 @@ const MeshTopology::EdgesAroundVertex& MeshTopology::getEdgesAroundVertex(PointI
 {
     if (!m_edgesAroundVertex.size() || i > m_edgesAroundVertex.size()-1)
         createEdgesAroundVertexArray();
-    return m_edgesAroundVertex[i];
+
+    if (i < m_edgesAroundVertex.size())
+        return m_edgesAroundVertex[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::EdgesAroundVertex& MeshTopology::getOrientedEdgesAroundVertex(PointID i)
@@ -1458,7 +1462,11 @@ const MeshTopology::EdgesAroundVertex& MeshTopology::getOrientedEdgesAroundVerte
                 createOrientedQuadsAroundVertexArray();
         }
     }
-    return m_orientedEdgesAroundVertex[i];
+
+    if (i <  m_orientedEdgesAroundVertex.size())
+        return m_orientedEdgesAroundVertex[i];
+
+    return InvalidSet;
 }
 
 
@@ -1466,124 +1474,199 @@ const MeshTopology::EdgesInTriangle& MeshTopology::getEdgesInTriangle(TriangleID
 {
     if (m_edgesInTriangle.empty() || i > m_edgesInTriangle.size()-1)
         createEdgesInTriangleArray();
-    return m_edgesInTriangle[i];
+
+    if (i < m_edgesInTriangle.size())
+        return m_edgesInTriangle[i];
+
+    return InvalidEdgesInTriangles;
 }
 
 const MeshTopology::EdgesInQuad& MeshTopology::getEdgesInQuad(QuadID i)
 {
     if (m_edgesInQuad.empty() || i > m_edgesInQuad.size()-1)
         createEdgesInQuadArray();
-    return m_edgesInQuad[i];
+
+    if (i < m_edgesInQuad.size())
+        return m_edgesInQuad[i];
+
+    return InvalidEdgesInQuad;
 }
 
 const MeshTopology::EdgesInTetrahedron& MeshTopology::getEdgesInTetrahedron(TetraID i)
 {
     if (m_edgesInTetrahedron.empty() || i > m_edgesInTetrahedron.size()-1)
         createEdgesInTetrahedronArray();
-    return m_edgesInTetrahedron[i];
+
+    if (i < m_edgesInTetrahedron.size())
+        return m_edgesInTetrahedron[i];
+
+    return InvalidEdgesInTetrahedron;
 }
 
 const MeshTopology::EdgesInHexahedron& MeshTopology::getEdgesInHexahedron(HexaID i)
 {
     if (!m_edgesInHexahedron.size() || i > m_edgesInHexahedron.size()-1)
         createEdgesInHexahedronArray();
-    return m_edgesInHexahedron[i];
+
+    if (i < m_edgesInHexahedron.size())
+        return m_edgesInHexahedron[i];
+
+    return InvalidEdgesInHexahedron;
 }
 
 const MeshTopology::TrianglesAroundVertex& MeshTopology::getTrianglesAroundVertex(PointID i)
 {
     if (!m_trianglesAroundVertex.size() || i > m_trianglesAroundVertex.size()-1)
         createTrianglesAroundVertexArray();
-    return m_trianglesAroundVertex[i];
+
+    if (i < m_trianglesAroundVertex.size())
+        return m_trianglesAroundVertex[i];
+
+    return InvalidSet;
 }
+
 const MeshTopology::TrianglesAroundVertex& MeshTopology::getOrientedTrianglesAroundVertex(PointID i)
 {
     if (!m_orientedTrianglesAroundVertex.size() || i > m_orientedTrianglesAroundVertex.size()-1)
         createOrientedTrianglesAroundVertexArray();
-    return m_orientedTrianglesAroundVertex[i];
+
+    if (i < m_orientedTrianglesAroundVertex.size())
+        return m_orientedTrianglesAroundVertex[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::TrianglesAroundEdge& MeshTopology::getTrianglesAroundEdge(EdgeID i)
 {
     if (m_trianglesAroundEdge.empty() || i > m_trianglesAroundEdge.size()-1)
         createTrianglesAroundEdgeArray();
-    return m_trianglesAroundEdge[i];
+
+    if (i < m_trianglesAroundEdge.size())
+        return m_trianglesAroundEdge[i];
+
+    return InvalidSet;
 }
+
 const MeshTopology::TrianglesInTetrahedron& MeshTopology::getTrianglesInTetrahedron(TetraID i)
 {
     if (!m_trianglesInTetrahedron.size() || i > m_trianglesInTetrahedron.size()-1)
         createTrianglesInTetrahedronArray();
-    return m_trianglesInTetrahedron[i];
+
+    if (i < m_trianglesInTetrahedron.size())
+        return m_trianglesInTetrahedron[i];
+
+    return InvalidTrianglesInTetrahedron;
 }
 
 const MeshTopology::QuadsAroundVertex& MeshTopology::getQuadsAroundVertex(PointID i)
 {
     if (m_quadsAroundVertex.empty() || i > m_quadsAroundVertex.size()-1)
         createQuadsAroundVertexArray();
-    return m_quadsAroundVertex[i];
+
+    if (i < m_quadsAroundVertex.size())
+        return m_quadsAroundVertex[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::QuadsAroundVertex& MeshTopology::getOrientedQuadsAroundVertex(PointID i)
 {
     if (m_orientedQuadsAroundVertex.empty() || i > m_orientedQuadsAroundVertex.size()-1)
         createOrientedQuadsAroundVertexArray();
-    return m_orientedQuadsAroundVertex[i];
+
+    if (i < m_orientedQuadsAroundVertex.size())
+        return m_orientedQuadsAroundVertex[i];
+
+    return InvalidSet;
 }
 
 const vector< MeshTopology::QuadID >& MeshTopology::getQuadsAroundEdge(EdgeID i)
 {
     if (!m_quadsAroundEdge.size() || i > m_quadsAroundEdge.size()-1)
         createQuadsAroundEdgeArray();
-    return m_quadsAroundEdge[i];
+
+
+    if(i < m_quadsAroundEdge.size())
+        return m_quadsAroundEdge[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::QuadsInHexahedron& MeshTopology::getQuadsInHexahedron(HexaID i)
 {
     if (!m_quadsInHexahedron.size() || i > m_quadsInHexahedron.size()-1)
         createQuadsInHexahedronArray();
-    return m_quadsInHexahedron[i];
+
+    if (i < m_quadsInHexahedron.size())
+        return m_quadsInHexahedron[i];
+
+    return InvalidQuadsInHexahedron;
 }
 
 const MeshTopology::TetrahedraAroundVertex& MeshTopology::getTetrahedraAroundVertex(PointID i)
 {
     if (!m_tetrahedraAroundVertex.size() || i > m_tetrahedraAroundVertex.size()-1)
         createTetrahedraAroundVertexArray();
-    return m_tetrahedraAroundVertex[i];
+
+    if (i < m_tetrahedraAroundVertex.size())
+        return m_tetrahedraAroundVertex[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::TetrahedraAroundEdge& MeshTopology::getTetrahedraAroundEdge(EdgeID i)
 {
     if (!m_tetrahedraAroundEdge.size() || i > m_tetrahedraAroundEdge.size()-1)
         createTetrahedraAroundEdgeArray();
-    return m_tetrahedraAroundEdge[i];
+
+    if (i < m_tetrahedraAroundEdge.size())
+        return m_tetrahedraAroundEdge[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::TetrahedraAroundTriangle& MeshTopology::getTetrahedraAroundTriangle(TriangleID i)
 {
     if (!m_tetrahedraAroundTriangle.size() || i > m_tetrahedraAroundTriangle.size()-1)
         createTetrahedraAroundTriangleArray();
-    return m_tetrahedraAroundTriangle[i];
+
+    if (i < m_tetrahedraAroundTriangle.size())
+        return m_tetrahedraAroundTriangle[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::HexahedraAroundVertex& MeshTopology::getHexahedraAroundVertex(PointID i)
 {
     if (!m_hexahedraAroundVertex.size() || i > m_hexahedraAroundVertex.size()-1)
         createHexahedraAroundVertexArray();
-    return m_hexahedraAroundVertex[i];
+
+    if (i < m_hexahedraAroundVertex.size())
+        return m_hexahedraAroundVertex[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::HexahedraAroundEdge& MeshTopology::getHexahedraAroundEdge(EdgeID i)
 {
     if (!m_hexahedraAroundEdge.size() || i > m_hexahedraAroundEdge.size()-1)
         createHexahedraAroundEdgeArray();
-    return m_hexahedraAroundEdge[i];
+
+    if (i < m_hexahedraAroundEdge.size())
+        return m_hexahedraAroundEdge[i];
+
+    return InvalidSet;
 }
 
 const MeshTopology::HexahedraAroundQuad& MeshTopology::getHexahedraAroundQuad(QuadID i)
 {
     if (!m_hexahedraAroundQuad.size() || i > m_hexahedraAroundQuad.size()-1)
         createHexahedraAroundQuadArray();
-    return m_hexahedraAroundQuad[i];
+
+    if (i < m_hexahedraAroundQuad.size())
+        return m_hexahedraAroundQuad[i];
+
+    return InvalidSet;
 }
 
 
@@ -1620,7 +1703,6 @@ const vector< MeshTopology::TrianglesAroundVertex >& MeshTopology::getTrianglesA
     {
         if (CHECK_TOPOLOGY)
             msg_warning() << "GetTrianglesAroundVertexArray TrianglesAroundVertex array is empty.";
-
         createTrianglesAroundVertexArray();
     }
 

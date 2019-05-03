@@ -1,6 +1,6 @@
 #include "CImgPlugin.h"
 
-#include <ImageCImg.h>
+#include "ImageCImg.h"
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/io/Image.h>

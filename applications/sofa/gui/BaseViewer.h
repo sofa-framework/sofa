@@ -38,9 +38,10 @@
 
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/gl/Texture.h>
-#ifdef SOFA_HAVE_FFMPEG
-#include <sofa/helper/gl/VideoRecorder.h>
-#endif //SOFA_HAVE_FFMPEG
+
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#endif // SOFA_HAVE_FFMPEG_EXEC
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -157,11 +158,12 @@ protected:
     sofa::helper::gl::Texture* texLogo;
 #endif
 
-#ifdef SOFA_HAVE_FFMPEG
-    sofa::helper::gl::VideoRecorder videoRecorder;
-#endif
+#ifdef SOFA_HAVE_FFMPEG_EXEC
+    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+#endif // SOFA_HAVE_FFMPEG_EXEC
 
     bool _video;
+    bool m_isVideoButtonPressed;
     bool _axis;
     bool _fullScreen;
     int _background;
