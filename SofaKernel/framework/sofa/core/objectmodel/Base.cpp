@@ -22,6 +22,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
@@ -530,15 +531,8 @@ void  Base::parse ( BaseObjectDescription* arg )
 
         // FIX: "type" is already used to define the type of object to instanciate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type")) continue;
-
-        if (attrName == std::string("name") && std::string(it.second.c_str()).empty())
-        {
-            msg_warning(getName()) << "Empty name given: Renaming to \"unnamed\""
-                                      " as this can lead to unexpected behaviors.";
-            parseField(attrName, "unnamed");
+        if (attrName == std::string("type"))
             continue;
-        }
         if (!hasField(attrName)) continue;
 
         parseField(attrName, it.second);
