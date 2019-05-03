@@ -52,6 +52,14 @@ void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::co
 
     const sofa::defaulttype::BaseMatrix* mappingK = l_mapping->getK();
 
+
+
+    if (mappingK==NULL)
+    {
+        msg_warning("can not get the stiffness matrix of the mapping ");
+        return;
+    }
+
     for (int i = 0; i < mappingK->rowSize(); ++i)
     {
         for (int j = 0; j < mappingK->colSize(); ++j)
