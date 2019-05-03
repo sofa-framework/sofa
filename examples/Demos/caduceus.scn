@@ -5,48 +5,55 @@
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
     <LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
     <FreeMotionAnimationLoop />
-    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <DefaultPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
+
+    <DefaultContactManager name="Response" response="FrictionContact" />
+
     <Camera position="0 30 90" lookAt="0 30 0"/>
     <LightManager />
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
     <SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
 
-    <CollisionResponse name="Response" response="FrictionContact" />
+    <MeshObjLoader name="visual_snake_body" filename="mesh/snake_body.obj" handleSeams="1" />
+    <MeshObjLoader name="visual_snake_cornea" filename="mesh/snake_cornea.obj" handleSeams="1" />
+    <MeshObjLoader name="visual_snake_eye" filename="mesh/snake_yellowEye.obj" handleSeams="1" />
+    <MeshObjLoader name="SOFA_pod" filename="mesh/SOFA_pod.obj" handleSeams="1" />
+
     <Node name="Snake" >
 
-        <SparseGridRamification name="grid" n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        <SparseGridRamificationTopology name="grid" n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
         <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" />
         <CGLinearSolver name="linear_solver" iterations="20" tolerance="1e-12" threshold="1e-18" />
-	<MechanicalObject name="dofs"  scale="1" dy="2" position="@grid.position"  tags="NoPicking" />
+        <MechanicalObject name="dofs"  scale="1" dy="2" position="@grid.position"  tags="NoPicking" />
         <UniformMass totalMass="1.0" />
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+        <UncoupledConstraintCorrection />
 
-	<UncoupledConstraintCorrection />
-	<Node name="Collis">
+        <Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
+            <TTriangleModel  selfCollision="0" />
+            <TLineModel    selfCollision="0" />
+            <TPointModel  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 
         <Node name="VisuBody" tags="Visual" >
-            <OglModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
+            <OglModel  name="VisualBody" src="@../../visual_snake_body" texturename="textures/snakeColorMap.png"  />
             <BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
 
         <Node name="VisuCornea" tags="Visual" >
-            <OglModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
+            <OglModel  name="VisualCornea" src="@../../visual_snake_cornea"   />
             <BarycentricMapping input="@.." output="@VisualCornea" />
         </Node>
 
         <Node name="VisuEye" tags="Visual" >
-            <OglModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
+            <OglModel  name="VisualEye" src="@../../visual_snake_eye"   />
             <BarycentricMapping input="@.." output="@VisualEye" />
         </Node>
     </Node>
@@ -54,31 +61,31 @@
     <Node name="Base" >
         <Node name="Stick">
                  <MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
-                 <Mesh src="@loader" />
+                 <MeshTopology src="@loader" />
                  <MechanicalObject src="@loader" name="CollisModel" />
-                 <Line simulated="false" moving="false" />
-                 <Point simulated="false"  moving="false"/>
+                 <TLineModel simulated="false" moving="false" />
+                 <TPointModel simulated="false"  moving="false"/>
         </Node>
         <Node name="Blobs">
                  <MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
-                 <Mesh src="@loader" />
+                 <MeshTopology src="@loader" />
                  <MechanicalObject src="@loader" name="CollisModel" />
-                 <Triangle simulated="false" moving="false"/>
-                 <Line simulated="false" moving="false"/>
-                 <Point simulated="false" moving="false"/>
+                 <TTriangleModel simulated="false" moving="false"/>
+                 <TLineModel simulated="false" moving="false"/>
+                 <TPointModel simulated="false" moving="false"/>
         </Node>
 
             <Node name="Foot">
             <MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
-            <Mesh src="@loader" />
+            <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle simulated="false" moving="false"/>
-            <Line simulated="false" moving="false"/>
-            <Point simulated="false" moving="false"/>
+            <TTriangleModel simulated="false" moving="false"/>
+            <TLineModel simulated="false" moving="false"/>
+            <TPointModel simulated="false" moving="false"/>
         </Node>
 
         <Node name="Visu" tags="Visual" >
-            <OglModel  name="OglModel" fileMesh="mesh/SOFA_pod.obj" />
+            <OglModel  name="OglModel" src="@../../SOFA_pod"  />
         </Node>
     </Node>
 </Node>
