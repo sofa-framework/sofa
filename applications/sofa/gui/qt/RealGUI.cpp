@@ -1853,8 +1853,8 @@ void RealGUI::createAdvanceTimerProfilerWindow()
 {
     m_windowTimerProfiler = new SofaWindowProfiler(this);
     m_windowTimerProfiler->hide();
-    connect ( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
-    connect(m_windowTimerProfiler, SIGNAL(WindowVisitorClosed(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
+    connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
+    connect( m_windowTimerProfiler, SIGNAL(closeWindow(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
 }
 
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)

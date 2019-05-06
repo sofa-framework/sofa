@@ -100,15 +100,11 @@ public:
 public slots:
     void closeEvent( QCloseEvent* )
     {
-        std::cout << "closeEvent" << std::endl;
- //       emit(WindowVisitorClosed(false));
-        //hide();
-        //clearGraph();
+        emit(closeWindow(false));
     }
 
-//signals:
-//    void WindowVisitorClosed(bool);
-public:
+signals:
+    void closeWindow(bool);
 
 protected:
     void updateChart();
@@ -120,6 +116,7 @@ protected:
     int m_step;
     int m_bufferSize;
     float m_maxFps;
+    float m_fpsMaxAxis;
     std::deque<AnimationStepData> m_profilingData;
     QtCharts::QLineSeries *m_series;
     sofa::helper::system::thread::ctime_t totalMs;

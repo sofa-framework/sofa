@@ -82,6 +82,7 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
     , totalMs(0.0)
     , m_bufferSize(100)
     , m_maxFps(0)
+    , m_fpsMaxAxis(0)
 {
     setupUi(this);
 
@@ -134,15 +135,31 @@ void SofaWindowProfiler::updateChart()
     for (auto stepData : m_profilingData)
     {
         m_series->replace(cpt, cpt, stepData.m_totalMs);
-        if (m_maxFps < stepData.m_totalMs){
-            m_maxFps = stepData.m_totalMs;
+        if (m_fpsMaxAxis < stepData.m_totalMs){
+            m_fpsMaxAxis = stepData.m_totalMs;
             updateAxis = true;
         }
+
+        // keep max ms value
+        if (m_maxFps < stepData.m_totalMs)
+            m_maxFps = stepData.m_totalMs;
+
         cpt++;
     }
 
+    // if needed enlarge the Y axis to cover new data
     if (updateAxis)
-        m_chart->axisY()->setRange(0, m_maxFps*1.1);
+        m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
+
+    // every loop on buffer size check if Y axis can be reduced
+    if (m_step% m_bufferSize)
+    {
+        if (m_maxFps < m_fpsMaxAxis)
+            m_fpsMaxAxis = m_maxFps;
+
+        m_maxFps = 0;
+        m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
+    }
 
     m_chartView->update();
 }
