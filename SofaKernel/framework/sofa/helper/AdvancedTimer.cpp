@@ -75,21 +75,6 @@ public:
     int defaultInterval;
     AdvancedTimer::outputType timerOutputType;
 
-    class StepData
-    {
-    public:
-        int level;
-        int num, numIt;
-        ctime_t tstart;
-        ctime_t tmin;
-        ctime_t tmax;
-        ctime_t ttotal;
-        ctime_t ttotal2;
-        int lastIt;
-        ctime_t lastTime;
-        StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
-    };
-
     std::map<AdvancedTimer::IdStep, StepData> stepData;
     helper::vector<AdvancedTimer::IdStep> steps;
 
@@ -1390,6 +1375,22 @@ json TimerData::getLightJson(std::string stepNumber)
     return jsonOutput;
 }
 
+
+helper::vector<AdvancedTimer::IdStep> AdvancedTimer::getSteps(IdTimer id, bool processData)
+{
+    TimerData& data = timers[id];
+    if (processData)
+        data.process();
+    return data.steps;
+}
+
+std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id, bool processData)
+{
+    TimerData& data = timers[id];
+    if (processData)
+        data.process();
+    return data.stepData;
+}
 
 std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
 {

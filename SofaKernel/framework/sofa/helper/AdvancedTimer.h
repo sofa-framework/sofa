@@ -121,6 +121,23 @@ namespace helper
 
  */
 
+typedef sofa::helper::system::thread::ctime_t ctime_t;
+typedef sofa::helper::system::thread::CTime CTime;
+class StepData
+{
+public:
+    int level;
+    int num, numIt;
+    ctime_t tstart;
+    ctime_t tmin;
+    ctime_t tmax;
+    ctime_t ttotal;
+    ctime_t ttotal2;
+    int lastIt;
+    ctime_t lastTime;
+    StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
+};
+
 class SOFA_HELPER_API AdvancedTimer
 {
 public:
@@ -303,6 +320,21 @@ public:
      */
     static std::string getTimeAnalysis(IdTimer id, simulation::Node* node);
 
+    /**
+     * @brief getSteps Return the vector of IDStep of the AdvancedTimer given execution
+     * @param id IdTimer, id of the timer
+     * @param processData bool, if true, will force timer data to be processed
+     * @return The timer steps iterator inside a vector
+     */
+    static helper::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
+
+    /**
+     * @brief getStepData Return the map of StepData of the AdvancedTimer given execution
+     * @param id IdTimer, id of the timer
+     * @param processData bool, if true, will force timer data to be processed
+     * @return The timer StepData of each timer step inside a map
+     */
+    static std::map<AdvancedTimer::IdStep, StepData> getStepData(IdTimer id, bool processData = false);
 
     static void clear();
     static void begin(IdTimer id);
