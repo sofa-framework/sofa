@@ -41,8 +41,9 @@ namespace qt
 
 using namespace QtCharts;
 
-SofaWindowProfiler::SofaWindowProfiler()
-    : m_step(0)
+SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
+    : QDialog(parent)
+    , m_step(0)
     , totalMs(0.0)
     , m_bufferSize(100)
     , m_maxFps(0)

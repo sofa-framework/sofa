@@ -32,7 +32,7 @@
 #include <QTableWidget>
 #include <QComboBox>
 
-#include <QWidget>
+#include <QDialog>
 #include <QPainter>
 #include <QTableWidget>
 
@@ -53,7 +53,7 @@ namespace gui
 namespace qt
 {
 
-class stepProfilingData
+class SofaWindowProfiler: public QDialog, public Ui_WindowProfiler
 {
 public:
     helper::vector<sofa::helper::AdvancedTimer::IdStep> m_steps;

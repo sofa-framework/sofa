@@ -1851,7 +1851,7 @@ void RealGUI::createWindowVisitor()
 
 void RealGUI::createAdvanceTimerProfilerWindow()
 {
-    m_windowTimerProfiler = new SofaWindowProfiler;
+    m_windowTimerProfiler = new SofaWindowProfiler(this);
     m_windowTimerProfiler->hide();
     connect ( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
     connect(m_windowTimerProfiler, SIGNAL(WindowVisitorClosed(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
@@ -2026,7 +2026,6 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
-    std::cout << "RealGUI::step()" << std::endl;
     sofa::helper::AdvancedTimer::begin("Animate");
 
     Node* root = currentSimulation();
@@ -2083,12 +2082,12 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
-    m_windowTimerProfiler->pushStepData();
+    if (displayTimeProfiler->isChecked())
+    {
+        m_windowTimerProfiler->pushStepData();
+    }
+
     sofa::helper::AdvancedTimer::end("Animate");
-
-
-    //std::cout << logs << std::endl;
-    std::cout << "########################" << std::endl;
 }
 
 //------------------------------------
