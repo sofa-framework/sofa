@@ -87,7 +87,7 @@ public:
             , m_totalPercent(0.0)
         {}
 
-        AnimationStepData(int step, std::map<helper::AdvancedTimer::IdStep, std::string> _steps, std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData);
+        AnimationStepData(int step, helper::vector<helper::AdvancedTimer::IdStep> _steps, std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData);
 
         virtual ~AnimationStepData();
         int m_stepIteration;
@@ -102,6 +102,9 @@ public slots:
     {
         emit(closeWindow(false));
     }
+
+    void updateSummaryLabels(int step);
+    void updateTree(int step);
 
 signals:
     void closeWindow(bool);

@@ -23,9 +23,9 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="main_layout">
      <item>
-      <layout class="QHBoxLayout" name="Layout">
+      <layout class="QHBoxLayout" name="LayoutUp">
        <item>
-        <layout class="QVBoxLayout" name="label_layout">
+        <layout class="QVBoxLayout" name="Layout_graphLabel">
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
@@ -33,10 +33,23 @@
            </property>
           </widget>
          </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="graph_layout">
+        <layout class="QVBoxLayout" name="Layout_graph">
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
@@ -55,7 +68,95 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout"/>
+      <layout class="QHBoxLayout" name="LayoutBottom">
+       <item>
+        <layout class="QVBoxLayout" name="Layout_summary">
+         <item>
+          <widget class="QLabel" name="label_summary">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+             <underline>true</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Summary</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="Layout_summaryInfo">
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_stepValue">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_stepN">
+             <property name="text">
+              <string>Step Number:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_time">
+             <property name="text">
+              <string>Time (ms)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="label_timeValue">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QScrollBar" name="step_scroller">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="Layout_tree">
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

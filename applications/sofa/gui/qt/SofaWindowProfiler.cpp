@@ -41,19 +41,19 @@ namespace qt
 
 using namespace sofa::helper;
 
-SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, std::map<AdvancedTimer::IdStep, std::string> _steps, std::map<AdvancedTimer::IdStep, sofa::helper::StepData> _stepData)
+SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, helper::vector<AdvancedTimer::IdStep> _steps, std::map<AdvancedTimer::IdStep, sofa::helper::StepData> _stepData)
     : m_stepIteration(step)
     , m_totalMs(0.0)
 {
     std::map<AdvancedTimer::IdStep, std::string>::iterator itM;
     //std::cout << " --------------- " << std::endl;
     static SReal timer_freqd = SReal(CTime::getTicksPerSec());
-    for (itM = _steps.begin(); itM != _steps.end(); ++itM)
-    {
-        std::string stepName = (*itM).second;
-        StepData& data = _stepData[(*itM).first];
+    for (unsigned int i=0; i<_steps.size(); ++i)
+    {        
+        StepData& data = _stepData[_steps[i]];
+        std::string stepName = data.label;
 
-        //std::cout << "Data: lvl: " << data.level << " ->  " << stepName << std::endl;
+      //  std::cout << "Data: lvl: " << data.level << " ->  " << stepName << std::endl;
         if (data.level == 0) // main info
         {
             m_totalMs = 1000.0 * SReal(data.ttotal) / timer_freqd;
@@ -88,6 +88,10 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 
     m_profilingData.resize(m_bufferSize);
     createChart();
+
+    step_scroller->setRange(0, m_bufferSize-1);
+    connect(step_scroller, SIGNAL(valueChanged(int)), this, SLOT(updateSummaryLabels(int)));
+    connect(step_scroller, SIGNAL(valueChanged(int)), this, SLOT(updateTree(int)));
 }
 
 
@@ -119,7 +123,7 @@ void SofaWindowProfiler::createChart()
 
     m_chartView = new QChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
-    graph_layout->addWidget(m_chartView);
+    Layout_graph->addWidget(m_chartView);
 
    // m_chartView = new QChartView(chart);
     //m_chartView->setRenderHint(QPainter::Antialiasing);
@@ -152,16 +156,30 @@ void SofaWindowProfiler::updateChart()
         m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
 
     // every loop on buffer size check if Y axis can be reduced
-    if (m_step% m_bufferSize)
+    if ((m_step% m_bufferSize) == 0)
     {
+        std::cout << "passe la: " << m_step << std::endl;
         if (m_maxFps < m_fpsMaxAxis)
             m_fpsMaxAxis = m_maxFps;
 
         m_maxFps = 0;
         m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
+        updateSummaryLabels(step_scroller->value());
     }
 
     m_chartView->update();
+}
+
+void SofaWindowProfiler::updateSummaryLabels(int step)
+{
+    const AnimationStepData& stepData = m_profilingData.at(step);
+    label_stepValue->setText(QString::number(stepData.m_stepIteration));
+    label_timeValue->setText(QString::number(stepData.m_totalMs));
+}
+
+void SofaWindowProfiler::updateTree(int step)
+{
+    std::cout << "updateTree: " << step << std::endl;
 }
 
 
