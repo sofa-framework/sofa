@@ -336,6 +336,12 @@ public:
      */
     static std::map<AdvancedTimer::IdStep, StepData> getStepData(IdTimer id, bool processData = false);
 
+    /**
+     * @brief clearDatato clear a specific Timer Data
+     * @param id IdTimer, id of the timer
+     */
+    static void clearData(IdTimer id);
+
     static void clear();
     static void begin(IdTimer id);
     static void end  (IdTimer id);

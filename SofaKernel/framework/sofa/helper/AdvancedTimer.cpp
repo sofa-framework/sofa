@@ -1394,7 +1394,17 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
     TimerData& data = timers[id];
     if (processData)
         data.process();
-    return data.stepData;
+
+    std::map<AdvancedTimer::IdStep, StepData> cpy = data.stepData;
+    data.clear();
+    return cpy;
+}
+
+void AdvancedTimer::clearData(IdTimer id)
+{
+    TimerData& data = timers[id];
+    data.process();
+    data.clear();
 }
 
 std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
