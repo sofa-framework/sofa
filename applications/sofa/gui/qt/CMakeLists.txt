@@ -26,11 +26,12 @@ set(MOC_HEADER_FILES
     QTransformationWidget.h
     RealGUI.h
     SimpleDataWidget.h
-    SofaMouseManager.h
-    SofaPluginManager.h
+    SofaMouseManager.h    
     SofaVideoRecorderManager.h
+    SofaPluginManager.h
     WDoubleLineEdit.h
     panels/QDocBrowser.h
+    SofaWindowProfiler.h
 )
 
 # these header files do not need MOCcing
@@ -80,6 +81,7 @@ set(SOURCE_FILES
     SofaMouseManager.cpp
     SofaPluginManager.cpp
     SofaVideoRecorderManager.cpp
+    SofaWindowProfiler.cpp
     StructDataWidget.cpp
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
@@ -94,6 +96,7 @@ set(UI_FILES
     MouseManager.ui
     PluginManager.ui
     VideoRecorderManager.ui
+    WindowProfiler.ui
 )
 
 
@@ -101,6 +104,7 @@ if(SOFA_DUMP_VISITOR_INFO)
     list(APPEND MOC_HEADER_FILES
 
          WindowVisitor.h
+
          QVisitorControlPanel.h
          PieWidget.h)
 
@@ -161,11 +165,11 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
-    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
+    find_package(Qt5 COMPONENTS Gui OpenGL Charts REQUIRED)
 
-    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL)
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Charts)
+    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Charts_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Charts_LIBRARIES})
     # target_include_directories(${EXT_QT_INCLUDES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})

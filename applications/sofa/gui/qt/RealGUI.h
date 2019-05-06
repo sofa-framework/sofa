@@ -92,6 +92,7 @@ class DisplayFlagsDataWidget;
 class SofaPluginManager;
 #ifdef SOFA_DUMP_VISITOR_INFO
 class WindowVisitor;
+class SofaWindowProfiler;
 class GraphVisitor;
 #endif
 
@@ -157,6 +158,7 @@ private:
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     WindowVisitor* windowTraceVisitor;
+    SofaWindowProfiler* m_windowTimerProfiler;
     GraphVisitor* handleTraceVisitor;
 #endif
 //-----------------OPTIONS DEFINITIONS------------------------}
@@ -331,6 +333,7 @@ private:
     void createSimulationGraph();
     void createPropertyWidget();
     void createWindowVisitor();
+    void createAdvanceTimerProfilerWindow();
 
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
@@ -368,6 +371,7 @@ public slots:
     virtual void displayComputationTime(bool);
     virtual void setExportGnuplot(bool);
     virtual void setExportVisitor(bool);
+    virtual void displayProflierWindow(bool);
     virtual void currentTabChanged(int index);
 
     virtual void fileNew();

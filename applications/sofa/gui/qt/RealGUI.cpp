@@ -32,6 +32,7 @@
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include "WindowVisitor.h"
+#include "SofaWindowProfiler.h"
 #include "GraphVisitor.h"
 #endif
 
@@ -315,6 +316,7 @@ RealGUI::RealGUI ( const char* viewername)
       windowTraceVisitor(NULL),
       handleTraceVisitor(NULL),
       #endif
+      m_windowTimerProfiler(nullptr),
 
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
@@ -424,6 +426,8 @@ RealGUI::RealGUI ( const char* viewername)
     createBackgroundGUIInfos(); // add GUI for Background Informations
 
     createWindowVisitor();
+
+    createAdvanceTimerProfilerWindow();
 
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
@@ -1845,6 +1849,14 @@ void RealGUI::createWindowVisitor()
 #endif
 }
 
+void RealGUI::createAdvanceTimerProfilerWindow()
+{
+    m_windowTimerProfiler = new SofaWindowProfiler;
+    m_windowTimerProfiler->hide();
+    connect ( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
+    connect(m_windowTimerProfiler, SIGNAL(WindowVisitorClosed(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
+}
+
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
     std::string filename(this->windowFilePath().toStdString());
@@ -2014,6 +2026,7 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
+    std::cout << "RealGUI::step()" << std::endl;
     sofa::helper::AdvancedTimer::begin("Animate");
 
     Node* root = currentSimulation();
@@ -2070,8 +2083,12 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
-
+    m_windowTimerProfiler->pushStepData();
     sofa::helper::AdvancedTimer::end("Animate");
+
+
+    //std::cout << logs << std::endl;
+    std::cout << "########################" << std::endl;
 }
 
 //------------------------------------
@@ -2317,6 +2334,18 @@ void RealGUI::setExportVisitor ( bool )
 {
 }
 #endif
+
+void RealGUI::displayProflierWindow (bool value)
+{
+    if (m_windowTimerProfiler == nullptr)
+        return;
+
+    if (value)
+        m_windowTimerProfiler->show();
+    else
+        m_windowTimerProfiler->hide();
+}
+
 
 //------------------------------------
 
