@@ -63,9 +63,9 @@ MeshLoader::MeshLoader() : BaseLoader()
     , d_triangulate(initData(&d_triangulate, false, "triangulate", "Divide all polygons into triangles"))
     , d_createSubelements(initData(&d_createSubelements, false, "createSubelements", "Divide all n-D elements into their (n-1)-D boundary elements (e.g. tetrahedra to triangles)"))
     , d_onlyAttachedPoints(initData(&d_onlyAttachedPoints, false, "onlyAttachedPoints", "Only keep points attached to elements of the mesh"))
-    , d_translation(initData(&d_translation, Vector3(), "translation", "Translation of the DOFs"))
-    , d_rotation(initData(&d_rotation, Vector3(), "rotation", "Rotation of the DOFs"))
-    , d_scale(initData(&d_scale, Vector3(1.0, 1.0, 1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
+    , d_translation(initData(&d_translation, Vec3(), "translation", "Translation of the DOFs"))
+    , d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs"))
+    , d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
     , d_transformation(initData(&d_transformation, Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
     , d_previousTransformation( Matrix4::s_identity )
 {
@@ -125,9 +125,9 @@ void MeshLoader::init()
 void MeshLoader::reinit()
 {
     Matrix4 transformation = d_transformation.getValue();
-    const Vector3& scale = d_scale.getValue();
-    const Vector3& rotation = d_rotation.getValue();
-    const Vector3& translation = d_translation.getValue();
+    const Vec3& scale = d_scale.getValue();
+    const Vec3& rotation = d_rotation.getValue();
+    const Vec3& translation = d_translation.getValue();
 
 
     this->applyTransformation(d_previousTransformation);
@@ -136,7 +136,7 @@ void MeshLoader::reinit()
 
     if (transformation != Matrix4::s_identity)
     {
-        if (d_scale != Vector3(1.0, 1.0, 1.0) || d_rotation != Vector3(0.0, 0.0, 0.0) || d_translation != Vector3(0.0, 0.0, 0.0))
+        if (d_scale != Vec3(1.0, 1.0, 1.0) || d_rotation != Vec3(0.0, 0.0, 0.0) || d_translation != Vec3(0.0, 0.0, 0.0))
         {
             msg_info() << "Parameters scale, rotation, translation ignored in favor of transformation matrix";
         }
@@ -805,7 +805,7 @@ void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids, const Pyramid&
 void MeshLoader::copyMeshToData(sofa::helper::io::Mesh* _mesh)
 {
     // copy vertices
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vec3>& my_positions = *(d_positions.beginEdit());
     my_positions = _mesh->getVertices();
     d_positions.endEdit();
 
