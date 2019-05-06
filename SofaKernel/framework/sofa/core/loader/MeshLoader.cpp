@@ -35,39 +35,39 @@ namespace loader
 using namespace sofa::defaulttype;
 
 MeshLoader::MeshLoader() : BaseLoader()
-    , d_positions(initData(&d_positions, "position", "Vertices of the mesh loaded"))
-    , d_polylines(initData(&d_polylines, "polylines", "Polylines of the mesh loaded"))
-    , d_edges(initData(&d_edges, "edges", "Edges of the mesh loaded"))
-    , d_triangles(initData(&d_triangles, "triangles", "Triangles of the mesh loaded"))
-    , d_quads(initData(&d_quads, "quads", "Quads of the mesh loaded"))
-    , d_polygons(initData(&d_polygons, "polygons", "Polygons of the mesh loaded"))
-    , d_highOrderEdgePositions(initData(&d_highOrderEdgePositions, "highOrderEdgePositions", "High order edge points of the mesh loaded"))
-    , d_highOrderTrianglePositions(initData(&d_highOrderTrianglePositions, "highOrderTrianglePositions", "High order triangle points of the mesh loaded"))
-    , d_highOrderQuadPositions(initData(&d_highOrderQuadPositions, "highOrderQuadPositions", "High order quad points of the mesh loaded"))
-    , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra of the mesh loaded"))
-    , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Hexahedra of the mesh loaded"))
-    , d_pentahedra(initData(&d_pentahedra, "pentahedra", "Pentahedra of the mesh loaded"))
-    , d_highOrderTetrahedronPositions(initData(&d_highOrderTetrahedronPositions, "highOrderTetrahedronPositions", "High order tetrahedron points of the mesh loaded"))
-    , d_highOrderHexahedronPositions(initData(&d_highOrderHexahedronPositions, "highOrderHexahedronPositions", "High order hexahedron points of the mesh loaded"))
-    , d_pyramids(initData(&d_pyramids, "pyramids", "Pyramids of the mesh loaded"))
-    , d_normals(initData(&d_normals, "normals", "Normals of the mesh loaded"))
-    , d_edgesGroups(initData(&d_edgesGroups, "edgesGroups", "Groups of Edges"))
-    , d_trianglesGroups(initData(&d_trianglesGroups, "trianglesGroups", "Groups of Triangles"))
-    , d_quadsGroups(initData(&d_quadsGroups, "quadsGroups", "Groups of Quads"))
-    , d_polygonsGroups(initData(&d_polygonsGroups, "polygonsGroups", "Groups of Polygons"))
-    , d_tetrahedraGroups(initData(&d_tetrahedraGroups, "tetrahedraGroups", "Groups of Tetrahedra"))
-    , d_hexahedraGroups(initData(&d_hexahedraGroups, "hexahedraGroups", "Groups of Hexahedra"))
-    , d_pentahedraGroups(initData(&d_pentahedraGroups, "pentahedraGroups", "Groups of Pentahedra"))
-    , d_pyramidsGroups(initData(&d_pyramidsGroups, "pyramidsGroups", "Groups of Pyramids"))
-    , d_flipNormals(initData(&d_flipNormals, false, "flipNormals", "Flip Normals"))
-    , d_triangulate(initData(&d_triangulate, false, "triangulate", "Divide all polygons into triangles"))
-    , d_createSubelements(initData(&d_createSubelements, false, "createSubelements", "Divide all n-D elements into their (n-1)-D boundary elements (e.g. tetrahedra to triangles)"))
-    , d_onlyAttachedPoints(initData(&d_onlyAttachedPoints, false, "onlyAttachedPoints", "Only keep points attached to elements of the mesh"))
-    , d_translation(initData(&d_translation, Vec3(), "translation", "Translation of the DOFs"))
-    , d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs"))
-    , d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
-    , d_transformation(initData(&d_transformation, Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
-    , d_previousTransformation( Matrix4::s_identity )
+  , d_positions(initData(&d_positions, "position", "Vertices of the mesh loaded"))
+  , d_polylines(initData(&d_polylines, "polylines", "Polylines of the mesh loaded"))
+  , d_edges(initData(&d_edges, "edges", "Edges of the mesh loaded"))
+  , d_triangles(initData(&d_triangles, "triangles", "Triangles of the mesh loaded"))
+  , d_quads(initData(&d_quads, "quads", "Quads of the mesh loaded"))
+  , d_polygons(initData(&d_polygons, "polygons", "Polygons of the mesh loaded"))
+  , d_highOrderEdgePositions(initData(&d_highOrderEdgePositions, "highOrderEdgePositions", "High order edge points of the mesh loaded"))
+  , d_highOrderTrianglePositions(initData(&d_highOrderTrianglePositions, "highOrderTrianglePositions", "High order triangle points of the mesh loaded"))
+  , d_highOrderQuadPositions(initData(&d_highOrderQuadPositions, "highOrderQuadPositions", "High order quad points of the mesh loaded"))
+  , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra of the mesh loaded"))
+  , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Hexahedra of the mesh loaded"))
+  , d_pentahedra(initData(&d_pentahedra, "pentahedra", "Pentahedra of the mesh loaded"))
+  , d_highOrderTetrahedronPositions(initData(&d_highOrderTetrahedronPositions, "highOrderTetrahedronPositions", "High order tetrahedron points of the mesh loaded"))
+  , d_highOrderHexahedronPositions(initData(&d_highOrderHexahedronPositions, "highOrderHexahedronPositions", "High order hexahedron points of the mesh loaded"))
+  , d_pyramids(initData(&d_pyramids, "pyramids", "Pyramids of the mesh loaded"))
+  , d_normals(initData(&d_normals, "normals", "Normals of the mesh loaded"))
+  , d_edgesGroups(initData(&d_edgesGroups, "edgesGroups", "Groups of Edges"))
+  , d_trianglesGroups(initData(&d_trianglesGroups, "trianglesGroups", "Groups of Triangles"))
+  , d_quadsGroups(initData(&d_quadsGroups, "quadsGroups", "Groups of Quads"))
+  , d_polygonsGroups(initData(&d_polygonsGroups, "polygonsGroups", "Groups of Polygons"))
+  , d_tetrahedraGroups(initData(&d_tetrahedraGroups, "tetrahedraGroups", "Groups of Tetrahedra"))
+  , d_hexahedraGroups(initData(&d_hexahedraGroups, "hexahedraGroups", "Groups of Hexahedra"))
+  , d_pentahedraGroups(initData(&d_pentahedraGroups, "pentahedraGroups", "Groups of Pentahedra"))
+  , d_pyramidsGroups(initData(&d_pyramidsGroups, "pyramidsGroups", "Groups of Pyramids"))
+  , d_flipNormals(initData(&d_flipNormals, false, "flipNormals", "Flip Normals"))
+  , d_triangulate(initData(&d_triangulate, false, "triangulate", "Divide all polygons into triangles"))
+  , d_createSubelements(initData(&d_createSubelements, false, "createSubelements", "Divide all n-D elements into their (n-1)-D boundary elements (e.g. tetrahedra to triangles)"))
+  , d_onlyAttachedPoints(initData(&d_onlyAttachedPoints, false, "onlyAttachedPoints", "Only keep points attached to elements of the mesh"))
+  , d_translation(initData(&d_translation, Vec3(), "translation", "Translation of the DOFs"))
+  , d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs"))
+  , d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
+  , d_transformation(initData(&d_transformation, Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
+  , d_previousTransformation( Matrix4::s_identity )
 {
     addAlias(&d_tetrahedra, "tetras");
     addAlias(&d_hexahedra, "hexas");
@@ -94,6 +94,32 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_pentahedra.setPersistent(false);
     d_pyramids.setPersistent(false);
     d_normals.setPersistent(false);
+
+    d_positions.setGroup("Vectors");
+    d_polylines.setGroup("Vectors");
+    d_edges.setGroup("Vectors");
+    d_triangles.setGroup("Vectors");
+    d_quads.setGroup("Vectors");
+    d_polygons.setGroup("Vectors");
+    d_tetrahedra.setGroup("Vectors");
+    d_hexahedra.setGroup("Vectors");
+    d_pentahedra.setGroup("Vectors");
+    d_pyramids.setGroup("Vectors");
+    d_normals.setGroup("Vectors");
+    d_highOrderTetrahedronPositions.setGroup("Vectors");
+    d_highOrderEdgePositions.setGroup("Vectors");
+    d_highOrderHexahedronPositions.setGroup("Vectors");
+    d_highOrderQuadPositions.setGroup("Vectors");
+    d_highOrderTrianglePositions.setGroup("Vectors");
+
+    d_edgesGroups.setGroup("Groups");
+    d_quadsGroups.setGroup("Groups");
+    d_polygonsGroups.setGroup("Groups");
+    d_pyramidsGroups.setGroup("Groups");
+    d_hexahedraGroups.setGroup("Groups");
+    d_trianglesGroups.setGroup("Groups");
+    d_pentahedraGroups.setGroup("Groups");
+    d_tetrahedraGroups.setGroup("Groups");
 }
 
 
@@ -147,8 +173,8 @@ void MeshLoader::reinit()
         // is applied to the points to implement the matrix product TRSx
 
         transformation = Matrix4::transformTranslation(translation) *
-                         Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
-                         Matrix4::transformScale(scale);
+                Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
+                Matrix4::transformScale(scale);
     }
 
     if (transformation != Matrix4::s_identity)
