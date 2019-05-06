@@ -54,12 +54,12 @@ RigidRigidMapping<TIn,TOut>::RigidRigidMapping()
                            "the given number of children frames. Otherwise, the values are the number \n"
                            "of child frames driven by each parent frame. ")),
       index(initData(&index,(unsigned)0,"index","input frame index")),
-      fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
+      fileRigidRigidMapping(initData(&fileRigidRigidMapping,"filename","Xsp file where to load rigidrigid mapping description")),
       axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
       indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
       globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
 {
-    this->addAlias(&fileRigidRigidMapping,"filename");
+    this->addAlias(&fileRigidRigidMapping,"fileRigidRigidMapping");
 }
 
 

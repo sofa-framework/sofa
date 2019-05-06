@@ -46,10 +46,10 @@ FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
     : f_mass0 ( initData ( &f_mass0,"f_mass0","vector of lumped blocks of the mass matrix in the rest position." ) )
     , f_mass ( initData ( &f_mass,"f_mass","vector of lumped blocks of the mass matrix." ) )
     , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
+    , fileMass( initData(&fileMass,  "filename", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
 {
-    this->addAlias(&fileMass,"filename");
+    this->addAlias(&fileMass,"fileMass");
 }
 
 

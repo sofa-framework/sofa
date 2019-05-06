@@ -202,7 +202,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_quads           (initData   (&m_quads, "quads", "quads of the model"))
     , m_vertPosIdx      (initData   (&m_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
     , m_vertNormIdx     (initData   (&m_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
-    , fileMesh          (initData   (&fileMesh, "fileMesh"," Path to the model"))
+    , fileMesh          (initData   (&fileMesh, "filename"," Path to an ogl model"))
     , texturename       (initData   (&texturename, "texturename", "Name of the Texture"))
     , m_translation     (initData   (&m_translation, Vec3Real(), "translation", "Initial Translation of the object"))
     , m_rotation        (initData   (&m_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
@@ -219,7 +219,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     m_topology = nullptr;
 
     //material.setDisplayed(false);
-    addAlias(&fileMesh, "filename");
+    addAlias(&fileMesh, "fileMesh");
 
     m_vertices2     .setGroup("Vector");
     m_vnormals      .setGroup("Vector");
