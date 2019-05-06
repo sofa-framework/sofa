@@ -1376,12 +1376,17 @@ json TimerData::getLightJson(std::string stepNumber)
 }
 
 
-helper::vector<AdvancedTimer::IdStep> AdvancedTimer::getSteps(IdTimer id, bool processData)
+std::map<AdvancedTimer::IdStep, std::string> AdvancedTimer::getSteps(IdTimer id, bool processData)
 {
     TimerData& data = timers[id];
     if (processData)
         data.process();
-    return data.steps;
+
+    std::map<AdvancedTimer::IdStep, std::string> mapName;
+    for (auto step : data.steps)
+        mapName[step] = std::string(step);
+
+    return mapName;
 }
 
 std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id, bool processData)
