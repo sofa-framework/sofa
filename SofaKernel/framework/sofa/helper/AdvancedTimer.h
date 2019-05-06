@@ -324,9 +324,9 @@ public:
      * @brief getSteps Return the vector of IDStep of the AdvancedTimer given execution
      * @param id IdTimer, id of the timer
      * @param processData bool, if true, will force timer data to be processed
-     * @return The timer steps iterator inside a map with the corresponding step as std::string
+     * @return The timer steps iterator inside a vector
      */
-    static std::map<AdvancedTimer::IdStep,std::string> getSteps(IdTimer id, bool processData = false);
+    static helper::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
 
     /**
      * @brief getStepData Return the map of StepData of the AdvancedTimer given execution
