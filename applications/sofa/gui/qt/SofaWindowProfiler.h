@@ -55,22 +55,56 @@ namespace qt
 
 class SofaWindowProfiler: public QDialog, public Ui_WindowProfiler
 {
-public:
-    helper::vector<sofa::helper::AdvancedTimer::IdStep> m_steps;
-    std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> m_stepData;
-};
-
-class SofaWindowProfiler: public QWidget, public Ui_WindowProfiler
-{
     Q_OBJECT
 public:
     enum componentType {NODE, COMMENT, COMPONENT, VECTOR, OTHER};
-    SofaWindowProfiler();
+    SofaWindowProfiler(QWidget* parent);
 
     void pushStepData();
 
-public slots:
 
+    class AnimationSubStepData
+    {
+    public:
+        AnimationSubStepData(){}
+
+        int m_level;
+        std::string m_subStepName;
+        SReal m_totalMs;
+        SReal m_totalPercent;
+        SReal m_selfMs;
+        SReal m_selfPercent;
+
+        sofa::helper::vector<AnimationSubStepData*> m_children;
+    };
+
+    class AnimationStepData
+    {
+    public:
+        AnimationStepData()
+            : m_stepIteration(-1)
+            , m_totalMs(0.0)
+            , m_totalPercent(0.0)
+        {}
+
+        AnimationStepData(int step, std::map<helper::AdvancedTimer::IdStep, std::string> _steps, std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData);
+
+        virtual ~AnimationStepData();
+        int m_stepIteration;
+        SReal m_totalMs;
+        SReal m_totalPercent;
+
+        sofa::helper::vector<AnimationSubStepData*> m_subSteps;
+    };
+
+public slots:
+    void closeEvent( QCloseEvent* )
+    {
+        std::cout << "closeEvent" << std::endl;
+ //       emit(WindowVisitorClosed(false));
+        //hide();
+        //clearGraph();
+    }
 
 //signals:
 //    void WindowVisitorClosed(bool);
@@ -82,11 +116,11 @@ protected:
 
     QtCharts::QChart *m_chart;
     QtCharts::QChartView* m_chartView;
-    sofa::helper::vector<stepProfilingData> m_profilingData;
+    //sofa::helper::vector<AnimationStepData> m_profilingData;
     int m_step;
     int m_bufferSize;
     float m_maxFps;
-    std::deque<float> m_stepFps;
+    std::deque<AnimationStepData> m_profilingData;
     QtCharts::QLineSeries *m_series;
     sofa::helper::system::thread::ctime_t totalMs;
 };

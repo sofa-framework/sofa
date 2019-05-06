@@ -39,6 +39,41 @@ namespace qt
 {
 //QPixmap *WindowVisitor::icons[WindowVisitor::OTHER+1];
 
+using namespace sofa::helper;
+
+SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, std::map<AdvancedTimer::IdStep, std::string> _steps, std::map<AdvancedTimer::IdStep, sofa::helper::StepData> _stepData)
+    : m_stepIteration(step)
+    , m_totalMs(0.0)
+{
+    std::map<AdvancedTimer::IdStep, std::string>::iterator itM;
+    //std::cout << " --------------- " << std::endl;
+    static SReal timer_freqd = SReal(CTime::getTicksPerSec());
+    for (itM = _steps.begin(); itM != _steps.end(); ++itM)
+    {
+        std::string stepName = (*itM).second;
+        StepData& data = _stepData[(*itM).first];
+
+        //std::cout << "Data: lvl: " << data.level << " ->  " << stepName << std::endl;
+        if (data.level == 0) // main info
+        {
+            m_totalMs = 1000.0 * SReal(data.ttotal) / timer_freqd;
+            //std::cout << "Data: lvl: " << data.level << " ->  " << stepName << " -> ms: " << data.ttotal << std::endl;
+        }
+
+    }
+}
+
+SofaWindowProfiler::AnimationStepData::~AnimationStepData()
+{
+    for (unsigned int i=0; i<m_subSteps.size(); ++i)
+    {
+        delete m_subSteps[i];
+        m_subSteps[i] = nullptr;
+    }
+    m_subSteps.clear();
+}
+
+
 using namespace QtCharts;
 
 SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
@@ -57,45 +92,12 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 
 void SofaWindowProfiler::pushStepData()
 {
-    m_profilingData[m_step].m_steps = sofa::helper::AdvancedTimer::getSteps("Animate");
-    m_profilingData[m_step].m_stepData = sofa::helper::AdvancedTimer::getStepData("Animate");
-
-    std::cout << "stepData: " << m_profilingData[m_step].m_stepData.size() << std::endl;
-
-    //m_series->append(m_step, m_profilingData[m_step].m_stepData[sofa::helper::AdvancedTimer::IdStep()].ttotal);
-    float fps = m_profilingData[m_step].m_stepData[sofa::helper::AdvancedTimer::IdStep()].ttotal;
-    float diff = fps - totalMs;
-    totalMs = fps;
-
-    std::cout << "m_step: " << m_step << " ->fps: "<< diff << " / " << totalMs << std::endl;
-    m_stepFps.pop_front();
-    m_stepFps.push_back(diff);
-
-    if (m_maxFps < diff)
-        m_maxFps = diff;
-//    m_chartView->addSeries(m_series);
-//    m_chartView->update();
+    m_profilingData.pop_front();
+    m_profilingData.push_back(AnimationStepData(m_step, sofa::helper::AdvancedTimer::getSteps("Animate", true), sofa::helper::AdvancedTimer::getStepData("Animate")));
     m_step++;
-
-    if (m_step == m_bufferSize) // loop over the buffer size
-    {
-        m_step = 0;
-        m_chart->axisY()->setRange(0, m_maxFps*1.1);
-    }
+    //sofa::helper::AdvancedTimer::clearData("Animate");
     updateChart();
 }
-
-//void WindowVisitor::setCharts(std::vector< dataTime >&latestC, std::vector< dataTime >&maxTC, std::vector< dataTime >&totalC,
-//        std::vector< dataTime >&latestV, std::vector< dataTime >&maxTV, std::vector< dataTime >&totalV)
-//{
-//    componentsTime=latestC;
-//    componentsTimeMax=maxTC;
-//    componentsTimeTotal=totalC;
-//    visitorsTime=latestV;
-//    visitorsTimeMax=maxTV;
-//    visitorsTimeTotal=totalV;
-//    setCurrentCharts(typeOfCharts->currentIndex());
-//}
 
 
 void SofaWindowProfiler::createChart()
@@ -104,26 +106,19 @@ void SofaWindowProfiler::createChart()
 
     for(unsigned int i=0; i<m_bufferSize; i++)
     {
-        m_stepFps.push_back(0.0f);
         m_series->append(i, 0.0f);
     }
-//    series->append(0, 6);
-//    series->append(2, 4);
-//    series->append(3, 8);
-//    series->append(7, 4);
-//    series->append(10, 5);
 
     m_chart = new QChart();
     m_chart->legend()->hide();
     m_chart->addSeries(m_series);
     m_chart->createDefaultAxes();
-    m_chart->setTitle("Simple line chart example");
+    m_chart->setTitle("Animation step duration (in ms)");
     m_chart->axisY()->setRange(0, 1000);
 
     m_chartView = new QChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     graph_layout->addWidget(m_chartView);
-    //->addWidget(chartView);
 
    // m_chartView = new QChartView(chart);
     //m_chartView->setRenderHint(QPainter::Antialiasing);
@@ -132,20 +127,25 @@ void SofaWindowProfiler::createChart()
 
 void SofaWindowProfiler::updateChart()
 {
+    bool updateAxis = false;
+
+    // Need to slide all the serie. Sure this could be optimised with deeper knowledge in QLineSeries/QChart
     int cpt = 0;
-    //std::deque<float>::iterator itQ;
-    for (auto fps : m_stepFps)
-    //for (itQ = m_stepFps.begin(); itQ != m_stepFps.end(); ++itQ)
+    for (auto stepData : m_profilingData)
     {
-        m_series->replace(cpt, cpt, fps);
+        m_series->replace(cpt, cpt, stepData.m_totalMs);
+        if (m_maxFps < stepData.m_totalMs){
+            m_maxFps = stepData.m_totalMs;
+            updateAxis = true;
+        }
         cpt++;
     }
 
-    m_chart->addSeries(m_series);
+    if (updateAxis)
+        m_chart->axisY()->setRange(0, m_maxFps*1.1);
+
     m_chartView->update();
 }
-
-
 
 
 }
