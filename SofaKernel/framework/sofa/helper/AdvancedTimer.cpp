@@ -602,6 +602,7 @@ void TimerData::process()
                 ++data.numIt;
             }
             data.lastTime = t;
+            data.label = std::string(id);
             ++data.num;
             break;
         }
@@ -616,6 +617,7 @@ void TimerData::process()
                 ctime_t dur = t - data.lastTime;
                 data.ttotal += dur;
                 data.ttotal2 += dur*dur;
+                data.label = std::string(id);
                 if (data.num == 1 || dur > data.tmax) data.tmax = dur;
                 if (data.num == 1 || dur < data.tmin) data.tmin = dur;
             }

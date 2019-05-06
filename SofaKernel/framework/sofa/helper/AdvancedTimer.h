@@ -135,6 +135,7 @@ public:
     ctime_t ttotal2;
     int lastIt;
     ctime_t lastTime;
+    std::string label;
     StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
 };
 
