@@ -180,13 +180,11 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
             edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
             edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
         }
-        size_t i=0;
-        while(i<numTetra && foundEdge == true)
+        for ( size_t i = 0 ; (i < numTetra) && (foundEdge == true) ; ++i )
         {
             const Tetrahedron &t = m_tetrahedron[i];
             // adding edge i in the edge shell of both points
-            EdgeID j=0;
-            while(j<6 && foundEdge == true)
+            for ( EdgeID j = 0 ; (j < 6) && (foundEdge == true) ; ++j )
             {
 
                 //finding edge i in edge array
@@ -204,9 +202,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                 }
                 if (CHECK_TOPOLOGY)
                     msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
-                j++;
             }
-            i++;
         }
     }
 
@@ -388,14 +384,15 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
         createTrianglesInTetrahedronArray();
     m_tetrahedraAroundTriangle.resize( getNumberOfTriangles());
     if (m_trianglesInTetrahedron.size() !=0){
-    for (size_t i=0; i<getNumberOfTetrahedra(); ++i)
-    {
-        // adding tetrahedron i in the shell of all neighbors triangles
-        for (TriangleID j=0; j<4; ++j)
+        for (size_t i=0; i<getNumberOfTetrahedra(); ++i)
         {
-            m_tetrahedraAroundTriangle[ m_trianglesInTetrahedron[i][j] ].push_back( (TetrahedronID)i );
+            // adding tetrahedron i in the shell of all neighbors triangles
+            for (TriangleID j=0; j<4; ++j)
+            {
+                m_tetrahedraAroundTriangle[ m_trianglesInTetrahedron[i][j] ].push_back( (TetrahedronID)i );
+            }
         }
-    }}
+    }
 }
 
 const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()

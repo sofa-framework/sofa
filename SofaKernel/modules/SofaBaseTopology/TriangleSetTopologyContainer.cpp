@@ -265,13 +265,11 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
             edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0], (EdgeID)edge));
             edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1], (EdgeID)edge));
         }
-        size_t i=0;
-        while(i<numTriangles && foundEdge==true)
+        for ( size_t i = 0 ; (i < numTriangles) && (foundEdge == true) ; ++i )
         {
             const Triangle &t = m_triangle[i];
             // adding edge i in the edge shell of both points
-            int j=0;
-            while(j<3 && foundEdge==true)
+            for ( unsigned int j = 0 ; (j < 3) && (foundEdge == true) ; ++j )
             {
                 //finding edge i in edge array
                 std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[(j+1)%3]);
@@ -288,9 +286,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 }
                 if (CHECK_TOPOLOGY)
                     msg_warning_when(!foundEdge) << "Cannot find edge for triangle " << i << " and edge "<< j;
-                j++;
             }
-            i++;
         }
     }
     if(!hasEdges() || foundEdge == false) // To optimize, this method should be called without creating edgesArray before.
