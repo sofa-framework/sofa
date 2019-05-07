@@ -81,22 +81,22 @@ void SofaWindowProfiler::AnimationSubStepData::addChild(AnimationSubStepData* ch
 }
 
 
-void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal totalMs)
+void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal invTotalMs)
 {
     if (!m_children.empty()) // compute from leaf to trunk
     {
         SReal totalChildrenMs = 0.0;
         for (unsigned int i=0; i<m_children.size(); i++)
         {
-            m_children[i]->computeTimeAndPercentage(totalMs);
+            m_children[i]->computeTimeAndPercentage(invTotalMs);
             totalChildrenMs += m_children[i]->m_totalMs;
         }
 
         // now that all children are update, compute ms and %
         m_selfMs = m_totalMs - totalChildrenMs;
 
-        m_selfPercent = m_selfMs / totalMs * 100;
-        m_totalPercent = m_totalMs / totalMs * 100;
+        m_selfPercent = m_selfMs * invTotalMs;
+        m_totalPercent = m_totalMs * invTotalMs;
 
 //        std::cout << m_subStepName << " -> m_selfMs: " << m_selfMs << " - " << m_selfPercent
 //                  << " | m_totalMs: " << m_totalMs << " - " << m_totalPercent << std::endl;
@@ -107,8 +107,8 @@ void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal to
             msg_warning("SofaWindowProfiler") << "m_totalMs: " << m_totalMs << " != m_selfMs: " << m_selfMs;
 
         // compute %
-        m_selfPercent = m_selfMs / totalMs * 100;
-        m_totalPercent = m_totalMs / totalMs * 100;
+        m_selfPercent = m_selfMs * invTotalMs;
+        m_totalPercent = m_totalMs * invTotalMs;
 
 //        std::cout << m_subStepName << " -> m_selfMs: " << m_selfMs << " - " << m_selfPercent
 //                  << " | m_totalMs: " << m_totalMs << " - " << m_totalPercent << std::endl;
@@ -160,21 +160,19 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, helper::vecto
     }
 
     // update percentage
+    SReal invTotalMs = 100 / m_totalMs;
     for (unsigned int i=0; i<m_subSteps.size(); i++)
     {
-        m_subSteps[i]->computeTimeAndPercentage(m_totalMs);
+        m_subSteps[i]->computeTimeAndPercentage(invTotalMs);
     }
 }
 
 SofaWindowProfiler::AnimationStepData::~AnimationStepData()
 {
-    std::cout << "~AnimationStepData():  " << m_stepIteration << std::endl;
-    std::cout << "~AnimationStepData():  " << m_subSteps.size() << std::endl;
     for (unsigned int i=0; i<m_subSteps.size(); ++i)
     {
-        std::cout << i << " ->  " << m_subSteps[i]->m_subStepName << std::endl;
-        //delete m_subSteps[i];
-        //m_subSteps[i] = nullptr;
+        delete m_subSteps[i];
+        m_subSteps[i] = nullptr;
     }
     m_subSteps.clear();
 }

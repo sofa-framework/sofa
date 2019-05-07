@@ -77,7 +77,7 @@ public:
         SReal m_selfPercent;
 
         void addChild(AnimationSubStepData* child);
-        void computeTimeAndPercentage(SReal totalMs);
+        void computeTimeAndPercentage(SReal invTotalMs);
 
         sofa::helper::vector<AnimationSubStepData*> m_children;
     };
