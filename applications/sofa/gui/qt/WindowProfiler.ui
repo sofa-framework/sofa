@@ -154,6 +154,38 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QTreeWidget" name="tree_steps">
+           <property name="columnCount">
+            <number>5</number>
+           </property>
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string notr="true">2</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string notr="true">3</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string notr="true">4</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string notr="true">5</string>
+            </property>
+           </column>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

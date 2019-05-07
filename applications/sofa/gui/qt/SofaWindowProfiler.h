@@ -109,6 +109,7 @@ public slots:
 
     void updateSummaryLabels(int step);
     void updateTree(int step);
+    void addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent);
 
 signals:
     void closeWindow(bool);
@@ -116,6 +117,7 @@ signals:
 protected:
     void updateChart();
     void createChart();
+    void createTreeView();
 
     QtCharts::QChart *m_chart;
     QtCharts::QChartView* m_chartView;

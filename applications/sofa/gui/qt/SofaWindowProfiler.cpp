@@ -192,12 +192,23 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 {
     setupUi(this);
 
+    // fill buffer with empty data.
     m_profilingData.resize(m_bufferSize);
+    for (unsigned int i=0; i<m_bufferSize; ++i)
+        m_profilingData[i] = new AnimationStepData();
+
+    // creating chart widget
     createChart();
 
+    // create treeView
+    createTreeView();
+
+    // create and connect different widgets
     step_scroller->setRange(0, m_bufferSize-1);
     connect(step_scroller, SIGNAL(valueChanged(int)), this, SLOT(updateSummaryLabels(int)));
     connect(step_scroller, SIGNAL(valueChanged(int)), this, SLOT(updateTree(int)));
+
+
 }
 
 
@@ -208,6 +219,16 @@ void SofaWindowProfiler::pushStepData()
     m_step++;
     sofa::helper::AdvancedTimer::clearData("Animate");
     updateChart();
+}
+
+
+void SofaWindowProfiler::createTreeView()
+{
+    QStringList columnNames;
+    columnNames << "Hierarchy Step Name" << "Total (%)" << "Self (%)" << "Time (ms)" << "Self (ms)";
+    tree_steps->setHeaderLabels(columnNames);
+    tree_steps->header()->setStretchLastSection(false);
+    tree_steps->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 }
 
 
@@ -284,9 +305,38 @@ void SofaWindowProfiler::updateSummaryLabels(int step)
     label_timeValue->setText(QString::number(stepData->m_totalMs));
 }
 
+
+
 void SofaWindowProfiler::updateTree(int step)
 {
-    std::cout << "updateTree: " << step << std::endl;
+    const AnimationStepData* stepData = m_profilingData.at(step);
+
+    tree_steps->clear();
+
+    for (unsigned int i=0; i<stepData->m_subSteps.size(); i++)
+    {
+        addTreeItem(stepData->m_subSteps[i], nullptr);
+    }
+}
+
+void SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent)
+{
+    // add item to the tree
+    QTreeWidgetItem* treeItem = nullptr;
+    if (parent == nullptr) // top item
+        treeItem = new QTreeWidgetItem(tree_steps);
+    else
+        treeItem = new QTreeWidgetItem(parent);
+
+    treeItem->setText(0, QString::fromStdString(subStep->m_subStepName));
+    treeItem->setText(1, QString::number(subStep->m_totalPercent));
+    treeItem->setText(2, QString::number(subStep->m_selfPercent));
+    treeItem->setText(3, QString::number(subStep->m_totalMs));
+    treeItem->setText(4, QString::number(subStep->m_selfMs));
+
+    // process children
+    for (unsigned int i=0; i<subStep->m_children.size(); i++)
+        addTreeItem(subStep->m_children[i], treeItem);
 }
 
 
