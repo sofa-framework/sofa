@@ -41,34 +41,140 @@ namespace qt
 
 using namespace sofa::helper;
 
+SofaWindowProfiler::AnimationSubStepData::AnimationSubStepData(int level, std::string name, SReal selfMs)
+    : m_level(level)
+    , m_subStepName(name)
+    , m_totalMs(selfMs)
+    , m_selfMs(selfMs)
+{
+
+}
+
+SofaWindowProfiler::AnimationSubStepData::~AnimationSubStepData()
+{
+    for (unsigned int i=0; i<m_children.size(); ++i)
+        delete m_children[i];
+
+    m_children.clear();
+}
+
+void SofaWindowProfiler::AnimationSubStepData::addChild(AnimationSubStepData* child)
+{
+    if (m_level + 1 == child->m_level) // direct child
+    {
+        m_children.push_back(child);
+    }
+    else //little child
+    {
+        if (m_children.empty()) // little child without child...
+        {
+            msg_error("SofaWindowProfiler") << "Problem when registering child: " << child->m_subStepName << " under parent: " << this->m_subStepName;
+
+            // quick adoption
+            AnimationSubStepData* achild = new AnimationSubStepData(m_level+1, "Step not registered", 0.0);
+            m_children.push_back(achild);
+        }
+
+        m_children.back()->addChild(child);
+    }
+    // will update the selfMS and percentage after tree has been built.
+}
+
+
+void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal totalMs)
+{
+    if (!m_children.empty()) // compute from leaf to trunk
+    {
+        SReal totalChildrenMs = 0.0;
+        for (unsigned int i=0; i<m_children.size(); i++)
+        {
+            m_children[i]->computeTimeAndPercentage(totalMs);
+            totalChildrenMs += m_children[i]->m_totalMs;
+        }
+
+        // now that all children are update, compute ms and %
+        m_selfMs = m_totalMs - totalChildrenMs;
+
+        m_selfPercent = m_selfMs / totalMs * 100;
+        m_totalPercent = m_totalMs / totalMs * 100;
+
+//        std::cout << m_subStepName << " -> m_selfMs: " << m_selfMs << " - " << m_selfPercent
+//                  << " | m_totalMs: " << m_totalMs << " - " << m_totalPercent << std::endl;
+    }
+    else // leaf
+    {
+        if (m_totalMs != m_selfMs)
+            msg_warning("SofaWindowProfiler") << "m_totalMs: " << m_totalMs << " != m_selfMs: " << m_selfMs;
+
+        // compute %
+        m_selfPercent = m_selfMs / totalMs * 100;
+        m_totalPercent = m_totalMs / totalMs * 100;
+
+//        std::cout << m_subStepName << " -> m_selfMs: " << m_selfMs << " - " << m_selfPercent
+//                  << " | m_totalMs: " << m_totalMs << " - " << m_totalPercent << std::endl;
+    }
+}
+
+// quick method to convert freq time into ms
+SReal convertInMs(ctime_t t, int nbIter=1)
+{
+    static SReal timer_freqd = SReal(CTime::getTicksPerSec());
+    return 1000.0 * SReal(t) / SReal (timer_freqd * nbIter);
+}
+
+
 SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, helper::vector<AdvancedTimer::IdStep> _steps, std::map<AdvancedTimer::IdStep, sofa::helper::StepData> _stepData)
     : m_stepIteration(step)
     , m_totalMs(0.0)
 {
-    std::map<AdvancedTimer::IdStep, std::string>::iterator itM;
-    //std::cout << " --------------- " << std::endl;
-    static SReal timer_freqd = SReal(CTime::getTicksPerSec());
-    for (unsigned int i=0; i<_steps.size(); ++i)
-    {        
-        StepData& data = _stepData[_steps[i]];
-        std::string stepName = data.label;
+    m_subSteps.clear();
 
-      //  std::cout << "Data: lvl: " << data.level << " ->  " << stepName << std::endl;
+    AnimationSubStepData* currentSubStep = nullptr;
+
+    bool totalSet = false;
+    for (unsigned int i=0; i<_steps.size(); i++)
+    {        
+        std::cout << i;
+        StepData& data = _stepData[_steps[i]];
+
         if (data.level == 0) // main info
         {
-            m_totalMs = 1000.0 * SReal(data.ttotal) / timer_freqd;
-            //std::cout << "Data: lvl: " << data.level << " ->  " << stepName << " -> ms: " << data.ttotal << std::endl;
+            m_totalMs = convertInMs(data.ttotal);
+            if (m_totalMs != 0.0) // total Ms not always set.. need to understand why
+                totalSet = true;
+            //std::cout << " -> totalMs: " << m_totalMs << std::endl;
         }
+        else if (data.level == 1) // direct substep
+        {
+            currentSubStep = new AnimationSubStepData(data.level, data.label, convertInMs(data.ttotal));
+            m_subSteps.push_back(currentSubStep);
 
+            if (!totalSet) // total Ms not always set.. sum totalMass of top level steps
+                m_totalMs += currentSubStep->m_totalMs;
+        }
+        else
+        {
+            AnimationSubStepData* child = new AnimationSubStepData(data.level, data.label, convertInMs(data.ttotal));
+            currentSubStep->addChild(child);
+        }
+    }
+
+    // update percentage
+    for (unsigned int i=0; i<m_subSteps.size(); i++)
+    {
+        m_subSteps[i]->computeTimeAndPercentage(m_totalMs);
     }
 }
 
 SofaWindowProfiler::AnimationStepData::~AnimationStepData()
 {
+    std::cout << "~AnimationStepData():  " << m_stepIteration << std::endl;
+    std::cout << "~AnimationStepData():  " << m_subSteps.size() << std::endl;
     for (unsigned int i=0; i<m_subSteps.size(); ++i)
     {
-        delete m_subSteps[i];
-        m_subSteps[i] = nullptr;
+        std::cout << i << " ->  " << m_subSteps[i]->m_subStepName << std::endl;
+        //delete m_subSteps[i];
+        //m_subSteps[i] = nullptr;
     }
     m_subSteps.clear();
 }

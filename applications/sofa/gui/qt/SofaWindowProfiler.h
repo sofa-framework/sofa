@@ -66,7 +66,8 @@ public:
     class AnimationSubStepData
     {
     public:
-        AnimationSubStepData(){}
+        AnimationSubStepData(int level, std::string name, SReal selfMs);
+        virtual ~AnimationSubStepData();
 
         int m_level;
         std::string m_subStepName;
@@ -74,6 +75,9 @@ public:
         SReal m_totalPercent;
         SReal m_selfMs;
         SReal m_selfPercent;
+
+        void addChild(AnimationSubStepData* child);
+        void computeTimeAndPercentage(SReal totalMs);
 
         sofa::helper::vector<AnimationSubStepData*> m_children;
     };
