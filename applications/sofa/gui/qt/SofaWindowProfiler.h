@@ -54,6 +54,48 @@ namespace qt
 {
 
 /**
+ * @brief The ProfilerChartView class is a overide of QtCharts::QChartView
+ * to be able to catch mouse selection and update all widgets of \sa SofaWindowProfiler
+ * Will also overide drawForeground to draw a line to show the selected step.
+ */
+class ProfilerChartView : public QtCharts::QChartView
+{
+    Q_OBJECT
+public:
+    ProfilerChartView(QtCharts::QChart *chart, QWidget *parent, int bufferSize);
+
+    /// method to update the max value of the Y axis (for line rendering).
+    void updateYMax(int y) {m_maxY = m_maxY;}
+
+protected:
+    /// Overide to catch mouse selection on the graph.
+    virtual void mousePressEvent(QMouseEvent *event);
+    /// Overide to draw line at the step selected.
+    virtual void drawForeground(QPainter *painter, const QRectF &rect);
+
+signals:
+    /// signal emited when a step has been selected on the graph @param int is the step number
+    void pointSelected(int);
+
+public slots:
+    /// method to update the selection on the graph.
+    void updateSelection(int x);
+
+protected:
+    /// copy of the serie size to check if selection is not out of bound
+    int m_bufferSize;
+
+    /// 2D point of the line to draw the selection
+    QPointF m_lineSelect;
+    QPointF m_lineOrigin;
+
+    /// Step number selected on the graph. -1 if none
+    int m_pointSelected;
+    /// Stored value of the Y axis max.
+    int m_maxY;
+};
+
+/**
  * @brief The SofaWindowProfiler class
  * This class is a QDialog widget to display information recorded by AdvancedTimer mechanism
  * At each step, info will be gathered from the AdvancedTimer using class sofa::helper::StepData
@@ -136,6 +178,9 @@ public slots:
         emit(closeWindow(false));
     }
 
+    /// Method to update all widgets from select absisse on the graph
+    void updateFromSelectedStep(int step);
+
     /// Method called when a given @param step is triggered to update summary information
     void updateSummaryLabels(int step);
     /// Method called when a given @param step is triggered to update the QTreeView
@@ -147,8 +192,8 @@ signals:
 protected:
     /// Pointer to the chart Data
     QtCharts::QChart *m_chart;
-    /// Pointer to the chart drawing
-    QtCharts::QChartView* m_chartView;
+    /// Pointer to the \sa ProfilerChartView class to handle chart drawing/selection
+    ProfilerChartView* m_chartView;
 
     /// Current animation step internally recorded.
     int m_step;
@@ -165,8 +210,11 @@ protected:
     /// Serie of step duration in ms to be plot on the graph. size = \sa m_bufferSize
     QtCharts::QLineSeries *m_series;
 };
-}
-}
-}
+
+} // namespace qt
+
+} // namespace gui
+
+} // namespace sofa
 
 #endif // SOFA_WINDOWPROFILER_H
