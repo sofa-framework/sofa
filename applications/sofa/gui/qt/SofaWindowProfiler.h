@@ -53,16 +53,30 @@ namespace gui
 namespace qt
 {
 
+/**
+ * @brief The SofaWindowProfiler class
+ * This class is a QDialog widget to display information recorded by AdvancedTimer mechanism
+ * At each step, info will be gathered from the AdvancedTimer using class sofa::helper::StepData
+ * Info will be displayed by:
+ * - ploting the step duration into a graph
+ * - Showing information duration/step number
+ * - Showing all substep of an animation step with their own duration in ms and the corresponding percentage over the whole step.
+ */
 class SofaWindowProfiler: public QDialog, public Ui_WindowProfiler
 {
     Q_OBJECT
 public:
-    enum componentType {NODE, COMMENT, COMPONENT, VECTOR, OTHER};
     SofaWindowProfiler(QWidget* parent);
 
+    /// main method to iterate on the advanceTimer Data and update the info in the widgets
     void pushStepData();
 
-
+    /**
+     * @brief The AnimationSubStepData Internal class to store data for each step of the animation. Correspond to one AdvanceTimer::begin/end
+     * Data stored/computed will be step name, its time in ms and the corresponding % inside the whole step.
+     * the total ms and percentage it represent if this step has substeps.
+     * Buffer of AnimationSubStepData corresponding to its children substeps
+     */
     class AnimationSubStepData
     {
     public:
@@ -82,13 +96,18 @@ public:
         sofa::helper::vector<AnimationSubStepData*> m_children;
     };
 
+    /**
+     * @brief The AnimationStepData internal class to store all info of a animation step recorded by advanceTimer
+     * Data stored/computed will be the step number, and the total time in ms of the step.
+     * All Data will then be stored inside a tree of \sa AnimationSubStepData tree.
+     */
     class AnimationStepData
     {
     public:
+        // default constructor for empty data.
         AnimationStepData()
             : m_stepIteration(-1)
             , m_totalMs(0.0)
-            , m_totalPercent(0.0)
         {}
 
         AnimationStepData(int step, helper::vector<helper::AdvancedTimer::IdStep> _steps, std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData);
@@ -96,10 +115,20 @@ public:
         virtual ~AnimationStepData();
         int m_stepIteration;
         SReal m_totalMs;
-        SReal m_totalPercent;
 
         sofa::helper::vector<AnimationSubStepData*> m_subSteps;
     };
+
+protected:
+    /// Method called at creation to init the chart
+    void createChart();
+    /// Method called at creation to init the QTreeWidget
+    void createTreeView();
+
+    /// Method called at each iteration to update the chart
+    void updateChart();
+    /// Method to add new QTreeWidgetItem item inside the QTreeWidget using the data from \sa AnimationSubStepData
+    void addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent);
 
 public slots:
     void closeEvent( QCloseEvent* )
@@ -107,28 +136,34 @@ public slots:
         emit(closeWindow(false));
     }
 
+    /// Method called when a given @param step is triggered to update summary information
     void updateSummaryLabels(int step);
+    /// Method called when a given @param step is triggered to update the QTreeView
     void updateTree(int step);
-    void addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent);
 
 signals:
     void closeWindow(bool);
 
 protected:
-    void updateChart();
-    void createChart();
-    void createTreeView();
-
+    /// Pointer to the chart Data
     QtCharts::QChart *m_chart;
+    /// Pointer to the chart drawing
     QtCharts::QChartView* m_chartView;
-    //sofa::helper::vector<AnimationStepData> m_profilingData;
+
+    /// Current animation step internally recorded.
     int m_step;
-    int m_bufferSize;
-    float m_maxFps;
-    float m_fpsMaxAxis;
+    /// Size of the buffer data stored. (i.e number of stepData info stored)
+    unsigned int m_bufferSize;
+    /// Bigger step encountered in ms.
+    SReal m_maxFps;
+    /// Current Y max value of the graph (max ms encountered x1.1)
+    SReal m_fpsMaxAxis;
+
+    /// Buffer of \sa AnimationStepData (data for each step), deque size correspond to \sa m_bufferSize
     std::deque<AnimationStepData*> m_profilingData;
+
+    /// Serie of step duration in ms to be plot on the graph. size = \sa m_bufferSize
     QtCharts::QLineSeries *m_series;
-    sofa::helper::system::thread::ctime_t totalMs;
 };
 }
 }

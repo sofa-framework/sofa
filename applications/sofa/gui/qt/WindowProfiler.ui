@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Plugin Manager</string>
+   <string>AdvanceTimer profiler window</string>
   </property>
   <property name="sizeGripEnabled" stdset="0">
    <bool>false</bool>
@@ -71,6 +71,9 @@
       <layout class="QHBoxLayout" name="LayoutBottom">
        <item>
         <layout class="QVBoxLayout" name="Layout_summary">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
          <item>
           <widget class="QLabel" name="label_summary">
            <property name="font">

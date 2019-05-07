@@ -157,10 +157,10 @@ private:
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    WindowVisitor* windowTraceVisitor;
-    SofaWindowProfiler* m_windowTimerProfiler;
+    WindowVisitor* windowTraceVisitor;    
     GraphVisitor* handleTraceVisitor;
 #endif
+    SofaWindowProfiler* m_windowTimerProfiler;
 //-----------------OPTIONS DEFINITIONS------------------------}
 
 

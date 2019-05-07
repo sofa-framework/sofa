@@ -183,7 +183,6 @@ using namespace QtCharts;
 SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
     : QDialog(parent)
     , m_step(0)
-    , totalMs(0.0)
     , m_bufferSize(100)
     , m_maxFps(0)
     , m_fpsMaxAxis(0)
@@ -203,10 +202,10 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 
     // create and connect different widgets
     step_scroller->setRange(0, m_bufferSize-1);
+    step_scroller->setMinimumWidth(200);
+    step_scroller->setMaximumWidth(200);
     connect(step_scroller, SIGNAL(valueChanged(int)), this, SLOT(updateSummaryLabels(int)));
     connect(step_scroller, SIGNAL(valueChanged(int)), this, SLOT(updateTree(int)));
-
-
 }
 
 
@@ -222,9 +221,12 @@ void SofaWindowProfiler::pushStepData()
 
 void SofaWindowProfiler::createTreeView()
 {
+    // set column names
     QStringList columnNames;
     columnNames << "Hierarchy Step Name" << "Total (%)" << "Self (%)" << "Time (ms)" << "Self (ms)";
     tree_steps->setHeaderLabels(columnNames);
+
+    // set column properties
     tree_steps->header()->setStretchLastSection(false);
     tree_steps->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 }
@@ -284,7 +286,6 @@ void SofaWindowProfiler::updateChart()
     // every loop on buffer size check if Y axis can be reduced
     if ((m_step% m_bufferSize) == 0)
     {
-        std::cout << "passe la: " << m_step << std::endl;
         if (m_maxFps < m_fpsMaxAxis)
             m_fpsMaxAxis = m_maxFps;
 
@@ -322,13 +323,20 @@ void SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep, QTreeWidgetI
     // add item to the tree
     QTreeWidgetItem* treeItem = nullptr;
     if (parent == nullptr) // top item
+    {
         treeItem = new QTreeWidgetItem(tree_steps);
+        QFont font = QApplication::font();
+        font.setBold(true);
+        treeItem->setExpanded(true);
+        for (int i=0; i<treeItem->columnCount(); i++)
+            treeItem->setFont(i, font);
+    }
     else
         treeItem = new QTreeWidgetItem(parent);
 
     treeItem->setText(0, QString::fromStdString(subStep->m_subStepName));
-    treeItem->setText(1, QString::number(subStep->m_totalPercent));
-    treeItem->setText(2, QString::number(subStep->m_selfPercent));
+    treeItem->setText(1, QString::number(subStep->m_totalPercent, 'g', 2));
+    treeItem->setText(2, QString::number(subStep->m_selfPercent, 'g', 2));
     treeItem->setText(3, QString::number(subStep->m_totalMs));
     treeItem->setText(4, QString::number(subStep->m_selfMs));
 
