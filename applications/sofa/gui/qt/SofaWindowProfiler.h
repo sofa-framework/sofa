@@ -65,7 +65,7 @@ public:
     ProfilerChartView(QtCharts::QChart *chart, QWidget *parent, int bufferSize);
 
     /// method to update the max value of the Y axis (for line rendering).
-    void updateYMax(int y) {m_maxY = m_maxY;}
+    void updateYMax(int y) {m_maxY = y;}
 
 protected:
     /// Overide to catch mouse selection on the graph.

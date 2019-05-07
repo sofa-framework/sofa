@@ -189,7 +189,6 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, helper::vecto
     bool totalSet = false;
     for (unsigned int i=0; i<_steps.size(); i++)
     {        
-        std::cout << i;
         StepData& data = _stepData[_steps[i]];
 
         if (data.level == 0) // main info
@@ -303,16 +302,17 @@ void SofaWindowProfiler::createChart()
     m_chart = new QChart();
     m_chart->legend()->hide();
     m_chart->addSeries(m_series);
-    m_chart->createDefaultAxes();
+    QValueAxis *axisY = new QValueAxis();
+    m_chart->addAxis(axisY, Qt::AlignLeft);
+    m_series->attachAxis(axisY);
+
     m_chart->setTitle("Animation step duration (in ms)");
     m_chart->axisY()->setRange(0, 1000);
 
     m_chartView = new ProfilerChartView(m_chart, this, m_bufferSize);
     m_chartView->setRenderHint(QPainter::Antialiasing);
-    Layout_graph->addWidget(m_chartView);
 
-   // m_chartView = new QChartView(chart);
-    //m_chartView->setRenderHint(QPainter::Antialiasing);
+    Layout_graph->addWidget(m_chartView);
 }
 
 
@@ -339,8 +339,10 @@ void SofaWindowProfiler::updateChart()
     }
 
     // if needed enlarge the Y axis to cover new data
-    if (updateAxis)
+    if (updateAxis){
         m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
+        m_chartView->updateYMax(m_fpsMaxAxis*1.1);
+    }
 
     // every loop on buffer size check if Y axis can be reduced
     if ((m_step% m_bufferSize) == 0)
@@ -350,10 +352,14 @@ void SofaWindowProfiler::updateChart()
 
         m_maxFps = 0;
         m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
-        updateSummaryLabels(step_scroller->value());
+        m_chartView->updateYMax(m_fpsMaxAxis*1.1);
     }
 
     m_chartView->update();
+
+    // update all widgets from value sliced
+    updateSummaryLabels(step_scroller->value());
+    updateTree(step_scroller->value());
 }
 
 
@@ -390,14 +396,7 @@ void SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep, QTreeWidgetI
     // add item to the tree
     QTreeWidgetItem* treeItem = nullptr;
     if (parent == nullptr) // top item
-    {
         treeItem = new QTreeWidgetItem(tree_steps);
-        QFont font = QApplication::font();
-        font.setBold(true);
-        treeItem->setExpanded(true);
-        for (int i=0; i<treeItem->columnCount(); i++)
-            treeItem->setFont(i, font);
-    }
     else
         treeItem = new QTreeWidgetItem(parent);
 
@@ -406,6 +405,16 @@ void SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep, QTreeWidgetI
     treeItem->setText(2, QString::number(subStep->m_selfPercent, 'g', 2));
     treeItem->setText(3, QString::number(subStep->m_totalMs));
     treeItem->setText(4, QString::number(subStep->m_selfMs));
+
+    if (parent == nullptr)
+    {
+        treeItem->setExpanded(true);
+        QFont font = QApplication::font();
+        font.setBold(true);
+
+        for (int i=0; i<treeItem->columnCount(); i++)
+            treeItem->setFont(i, font);
+    }
 
     // process children
     for (unsigned int i=0; i<subStep->m_children.size(); i++)
