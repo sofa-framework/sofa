@@ -204,9 +204,9 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 void SofaWindowProfiler::pushStepData()
 {
     m_profilingData.pop_front();
-    m_profilingData.push_back(AnimationStepData(m_step, sofa::helper::AdvancedTimer::getSteps("Animate", true), sofa::helper::AdvancedTimer::getStepData("Animate")));
+    m_profilingData.push_back(new AnimationStepData(m_step, sofa::helper::AdvancedTimer::getSteps("Animate", true), sofa::helper::AdvancedTimer::getStepData("Animate")));
     m_step++;
-    //sofa::helper::AdvancedTimer::clearData("Animate");
+    sofa::helper::AdvancedTimer::clearData("Animate");
     updateChart();
 }
 
@@ -242,17 +242,18 @@ void SofaWindowProfiler::updateChart()
 
     // Need to slide all the serie. Sure this could be optimised with deeper knowledge in QLineSeries/QChart
     int cpt = 0;
-    for (auto stepData : m_profilingData)
+    for (auto* stepData : m_profilingData)
     {
-        m_series->replace(cpt, cpt, stepData.m_totalMs);
-        if (m_fpsMaxAxis < stepData.m_totalMs){
-            m_fpsMaxAxis = stepData.m_totalMs;
+        m_series->replace(cpt, cpt, stepData->m_totalMs);
+
+        if (m_fpsMaxAxis < stepData->m_totalMs){
+            m_fpsMaxAxis = stepData->m_totalMs;
             updateAxis = true;
         }
 
         // keep max ms value
-        if (m_maxFps < stepData.m_totalMs)
-            m_maxFps = stepData.m_totalMs;
+        if (m_maxFps < stepData->m_totalMs)
+            m_maxFps = stepData->m_totalMs;
 
         cpt++;
     }
@@ -278,9 +279,9 @@ void SofaWindowProfiler::updateChart()
 
 void SofaWindowProfiler::updateSummaryLabels(int step)
 {
-    const AnimationStepData& stepData = m_profilingData.at(step);
-    label_stepValue->setText(QString::number(stepData.m_stepIteration));
-    label_timeValue->setText(QString::number(stepData.m_totalMs));
+    const AnimationStepData* stepData = m_profilingData.at(step);
+    label_stepValue->setText(QString::number(stepData->m_stepIteration));
+    label_timeValue->setText(QString::number(stepData->m_totalMs));
 }
 
 void SofaWindowProfiler::updateTree(int step)

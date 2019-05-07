@@ -124,7 +124,7 @@ protected:
     int m_bufferSize;
     float m_maxFps;
     float m_fpsMaxAxis;
-    std::deque<AnimationStepData> m_profilingData;
+    std::deque<AnimationStepData*> m_profilingData;
     QtCharts::QLineSeries *m_series;
     sofa::helper::system::thread::ctime_t totalMs;
 };
