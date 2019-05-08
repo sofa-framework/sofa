@@ -327,6 +327,10 @@ void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
             }
             else
             {
+                msg_error() << "Cannot find triangle " << j
+                    << " [" << t[(j + 1) % 4] << ", " << t[(j + 2) % 4] << ", " << t[(j + 3) % 4] << "]"                     
+                    << " in tetrahedron " << i;
+
                 m_trianglesInTetrahedron.clear();
                 return;
             }
@@ -380,17 +384,47 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
     // first clear potential previous buffer
     clearTetrahedraAroundTriangle();
 
-    if(!hasTrianglesInTetrahedron())
+    if (!hasTetrahedra()) // this method should only be called when tetrahedra exist
+        createTetrahedronSetArray();
+
+    if (hasTetrahedraAroundTriangle()) // created by upper topology (inside createTetrahedronSetArray)
+        return;
+
+    const size_t numTetra = getNumberOfTetrahedra();
+    if (numTetra == 0)
+    {
+        msg_warning() << "TetrahedraAroundTriangle buffer can't be created as no tetrahedra are present in this topology.";
+        return;
+    }
+
+    if (!hasTriangles()) // this method should only be called when triangles exist
+        createTriangleSetArray();
+    
+    const size_t numTriangles = getNumberOfTriangles();
+    if (numTriangles == 0)
+    {
+        msg_warning() << "TetrahedraAroundTriangle buffer can't be created as no triangles are present in this topology.";
+        return;
+    }
+
+
+    if(!hasTrianglesInTetrahedron()) 
         createTrianglesInTetrahedronArray();
-    m_tetrahedraAroundTriangle.resize( getNumberOfTriangles());
-    if (m_trianglesInTetrahedron.size() !=0){
-        for (size_t i=0; i<getNumberOfTetrahedra(); ++i)
+
+    if (m_trianglesInTetrahedron.empty())
+    {
+        msg_warning() << "TetrahedraAroundTriangle buffer can't be created as trianglesInTetrahedron buffer creation failed.";
+        return;
+    }
+
+    m_tetrahedraAroundTriangle.resize(numTriangles);
+
+    for (size_t i=0; i<numTetra; ++i)
+    {
+        // adding tetrahedron i in the shell of all neighbors triangles
+        for (TriangleID j=0; j<4; ++j)
         {
-            // adding tetrahedron i in the shell of all neighbors triangles
-            for (TriangleID j=0; j<4; ++j)
-            {
-                m_tetrahedraAroundTriangle[ m_trianglesInTetrahedron[i][j] ].push_back( (TetrahedronID)i );
-            }
+            m_tetrahedraAroundTriangle[ m_trianglesInTetrahedron[i][j] ].push_back( (TetrahedronID)i );
         }
     }
 }

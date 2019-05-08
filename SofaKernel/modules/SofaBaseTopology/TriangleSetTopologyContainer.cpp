@@ -284,8 +284,15 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                         foundEdge=true;
                     }
                 }
-                if (CHECK_TOPOLOGY)
-                    msg_warning_when(!foundEdge) << "Cannot find edge for triangle " << i << " and edge "<< j;
+
+                if (!foundEdge)
+                {
+                    msg_error() << "Cannot find edge " << j
+                        << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
+                        << " in triangle " << i;
+                    m_edgesInTriangle.clear();
+                    return;
+                }
             }
         }
     }
