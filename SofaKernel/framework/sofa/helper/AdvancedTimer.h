@@ -282,7 +282,8 @@ public:
     {
         STDOUT,
         LJSON,
-        JSON
+        JSON,
+        GUI
     };
 
 

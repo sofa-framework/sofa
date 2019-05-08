@@ -304,6 +304,14 @@ void AdvancedTimer::end(IdTimer id)
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
         return;
     }
+
+    TimerData& dataT = timers[id];
+    if (dataT.timerOutputType == GUI || dataT.timerOutputType == LJSON || dataT.timerOutputType == JSON)
+    {
+        dataT.clear();
+        return;
+    }
+
     helper::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
     {
@@ -346,6 +354,7 @@ std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
     {
         case JSON   : return getTimeAnalysis(id, node);
         case LJSON  : return getTimeAnalysis(id, node);
+        case GUI    : return std::string("");
         case STDOUT : end(id);
                       return std::string("");
         default :     end(id);
@@ -929,6 +938,8 @@ AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string type)
 		return LJSON;
 	else if(type.compare("stdout") == 0)
 		return STDOUT;
+    else if(type.compare("gui") == 0)
+        return GUI;
 	else // Add your own outputTypes before the else
 	{
 		msg_warning("AdvancedTimer") << "Unable to set output type to " << type << ". Switching to the default 'stdout' output. Valid types are [stdout, json, ljson].";
@@ -1400,7 +1411,6 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
 void AdvancedTimer::clearData(IdTimer id)
 {
     TimerData& data = timers[id];
-    data.process();
     data.clear();
 }
 
