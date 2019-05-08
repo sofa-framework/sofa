@@ -39,7 +39,7 @@ int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >
 GLint OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
 
 OglTexture::OglTexture()
-    :textureFilename(initData(&textureFilename, (std::string) "", "textureFilename", "Texture Filename"))
+    :textureFilename(initData(&textureFilename, (std::string) "", "filename", "Texture Filename"))
     ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
     ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
     ,repeat(initData(&repeat, (bool) false, "repeat", "Repeat Texture ?"))
@@ -61,7 +61,7 @@ OglTexture::OglTexture()
     ,texture(nullptr)
     ,img(nullptr)
 {
-    this->addAlias(&textureFilename, "filename");
+    this->addAlias(&textureFilename, "textureFilename");
 }
 
 OglTexture::~OglTexture()

@@ -192,6 +192,34 @@ public:
     /// Get the template type names (if any) used to instantiate this object
     virtual std::string getTemplateName() const;
 
+    /// Set the source filename (where the component is implemented)
+    void setDefinitionSourceFileName(const std::string& sourceFileName);
+
+    /// Get the source filename (where the component is implemented)
+    const std::string& getDefinitionSourceFileName() const;
+
+    /// Set the source location (where the component is implemented)
+    void setDefinitionSourceFilePos(const int);
+
+    /// Get the source location (where the component is implemented)
+    int getDefinitionSourceFilePos() const;
+
+    /// Set the file where the instance has been created
+    /// This is useful to store where the component was emitted from
+    void setInstanciationSourceFileName(const std::string& sourceFileName);
+
+    /// Get the file where the instance has been created
+    /// This is useful to store where the component was emitted from
+    const std::string& getInstanciationSourceFileName() const;
+
+    /// Set the file location (line number) where the instance has been created
+    /// This is useful to store where the component was emitted from
+    void setInstanciationSourceFilePos(const int);
+
+    /// Get the file location (line number) where the instance has been created
+    /// This is useful to store where the component was emitted from
+    int getInstanciationSourceFilePos() const;
+
     /// @name fields
     ///   Data fields management
     /// @{
@@ -458,6 +486,11 @@ public:
     Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
     Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
+
+    std::string m_definitionSourceFileName        {""};
+    int         m_definitionSourceFilePos         {-1};
+    std::string m_instanciationSourceFileName     {""};
+    int         m_instanciationSourceFilePos      {-1};
 
     /// @name casting
     ///   trivial cast to a few base components
