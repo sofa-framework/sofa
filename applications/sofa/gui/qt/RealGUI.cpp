@@ -2339,6 +2339,7 @@ void RealGUI::displayProflierWindow (bool value)
     if (m_windowTimerProfiler == nullptr)
         return;
 
+    m_windowTimerProfiler->activateATimer(value);
     if (value)
         m_windowTimerProfiler->show();
     else

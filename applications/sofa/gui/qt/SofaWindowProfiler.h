@@ -110,6 +110,9 @@ class SofaWindowProfiler: public QDialog, public Ui_WindowProfiler
 public:
     SofaWindowProfiler(QWidget* parent);
 
+    /// method called when window is shown to activate advanceTimer recording.
+    void activateATimer(bool activate);
+
     /// main method to iterate on the advanceTimer Data and update the info in the widgets
     void pushStepData();
 

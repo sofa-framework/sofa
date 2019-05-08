@@ -265,6 +265,14 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 }
 
 
+void SofaWindowProfiler::activateATimer(bool activate)
+{
+    sofa::helper::AdvancedTimer::setEnabled("Animate", activate);
+    sofa::helper::AdvancedTimer::setInterval("Animate", 1);
+    sofa::helper::AdvancedTimer::setOutputType("Animate", "gui");
+}
+
+
 void SofaWindowProfiler::pushStepData()
 {
     m_profilingData.pop_front();
