@@ -31,7 +31,7 @@
 #include <QPixmap>
 #include <QTableWidget>
 #include <QComboBox>
-
+#include <QDialog>
 #include <iostream>
 
 namespace sofa
@@ -43,12 +43,12 @@ namespace gui
 namespace qt
 {
 
-class WindowVisitor: public QWidget, public Ui_VisitorGUI
+class WindowVisitor: public QDialog, public Ui_VisitorGUI
 {
     Q_OBJECT
 public:
     enum componentType {NODE, COMMENT, COMPONENT, VECTOR, OTHER};
-    WindowVisitor();
+    WindowVisitor(QWidget *parent);
 
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);
