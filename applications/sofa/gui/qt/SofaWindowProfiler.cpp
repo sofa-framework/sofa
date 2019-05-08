@@ -56,15 +56,12 @@ void ProfilerChartView::mousePressEvent(QMouseEvent *event)
     auto const valueInSeries = chart()->mapToValue(event->localPos());
 
     int width = valueInSeries.x();
-    //int height = valueInSeries.y();
 
     if (width >= 0 && width < m_bufferSize)
     {
         m_pointSelected = width;
         updateSelection(m_pointSelected);
         emit pointSelected(m_pointSelected);
-//        this->resetCachedContent();
-//        this->update();
     }
     else
         m_pointSelected = -1;
@@ -75,16 +72,17 @@ void ProfilerChartView::updateSelection(int x)
     m_pointSelected = x;
     m_lineSelect = chart()->mapToPosition(QPointF(x, m_maxY));
     m_lineOrigin = chart()->mapToPosition(QPointF(x, 0));
+
+    this->scene()->update(this->sceneRect());
 }
 
 
-void ProfilerChartView::drawForeground(QPainter *painter, const QRectF &rect)
-{
+void ProfilerChartView::drawForeground(QPainter *painter, const QRectF &)
+{    
     if (m_pointSelected == -1)
         return;
 
     painter->drawLine(m_lineOrigin, m_lineSelect);
-//    this->update();
 }
 
 
@@ -355,7 +353,7 @@ void SofaWindowProfiler::updateChart()
         m_chartView->updateYMax(m_fpsMaxAxis*1.1);
     }
 
-    m_chartView->update();
+ //   m_chartView->update();
 
     // update all widgets from value sliced
     updateSummaryLabels(step_scroller->value());

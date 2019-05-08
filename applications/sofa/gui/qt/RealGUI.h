@@ -92,9 +92,11 @@ class DisplayFlagsDataWidget;
 class SofaPluginManager;
 #ifdef SOFA_DUMP_VISITOR_INFO
 class WindowVisitor;
-class SofaWindowProfiler;
 class GraphVisitor;
 #endif
+
+
+class SofaWindowProfiler;
 
 namespace viewer
 {
