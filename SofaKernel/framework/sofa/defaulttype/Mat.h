@@ -866,7 +866,7 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            msg_error("Mat") << "invertMatrix finds too small determinant, matrix = "<<from;
+            msg_error("Mat") << "invertMatrix (general case) finds too small determinant: " << pivot << " for matrix = " << from;
             return false;
         }
 
@@ -908,7 +908,7 @@ bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        msg_error("Mat") << "invertMatrix finds too small determinant, matrix = "<<from;
+        msg_error("Mat") << "invertMatrix (special case 3x3) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 
@@ -933,7 +933,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        msg_error("Mat") << "invertMatrix finds too small determinant, matrix = "<<from;
+        msg_error("Mat") << "invertMatrix (special case 2x2) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 
@@ -1022,11 +1022,13 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
         }
         in >> m[i];
     }
+    if(in.eof()) return in;
     c = in.peek();
     while (c==' ' || c=='\n' || c==']')
     {
         in.get();
         if( c==']' ) break;
+        if(in.eof()) break;
         c = in.peek();
     }
     return in;

@@ -4,6 +4,7 @@ Demos/TriangleSurfaceCutting.scn 100 1e-4 1
 Demos/liver.scn 100 1e-4 1
 Demos/collisionMultiple.scn 100 1e-4 1
 Demos/simpleBoundaryConditions.scn 100 1e-4 1
+Demos/chainAll.scn 100 1e-2 1
 
 ### Components scenes ###
 Components/forcefield/BeamFEMForceField.scn 100 1e-4

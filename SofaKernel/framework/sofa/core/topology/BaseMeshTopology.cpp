@@ -60,9 +60,9 @@ static int _init_  = initStaticStructures();
 
 
 BaseMeshTopology::BaseMeshTopology()
-    : fileTopology(initData(&fileTopology,"fileTopology","Filename of the mesh"))
+    : fileTopology(initData(&fileTopology,"filename","Filename of the mesh"))
 {
-    addAlias(&fileTopology,"filename");
+    addAlias(&fileTopology,"fileTopology");
 }
 
 /// Returns the set of edges adjacent to a given vertex.

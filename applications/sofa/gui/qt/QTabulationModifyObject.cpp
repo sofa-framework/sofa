@@ -55,13 +55,6 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
 
     this->setLayout(vbox);
 
-//    //add a scrollable area for data properties
-//    QScrollArea* m_scrollArea = new QScrollArea();
-//    m_scrollArea->setMinimumSize(400,100);
-//    m_scrollArea->setWidgetResizable(true);
-//    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//    m_scrollArea->setWidget(this);
-
     //find correct maxPixelSize according to the current screen resolution
     pixelMaxSize = screenHeight - 300;
 }

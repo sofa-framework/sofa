@@ -157,7 +157,7 @@ protected:
       /// Pointer to topology
       sofa::core::topology::BaseMeshTopology::SPtr topology;
       /// Saving the number of edges
-      unsigned int nbEdges;
+      size_t nbEdges;
 
 public:
       /// Boolean if the diffusion coefficients have loaded from file

@@ -40,6 +40,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QClipboard>
+#include <QSettings>
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
@@ -455,6 +456,15 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
         }
     }
 
+    if( object_.isBase() )
+    {
+        contextMenu->addSeparator();
+        act = contextMenu->addAction("Go to Scene...", this, SLOT(openInstanciation()));
+        act->setEnabled(object_.asBase()->getInstanciationSourceFileName() != "");
+        act = contextMenu->addAction("Go to Implementation...", this, SLOT(openImplementation()));
+        act->setEnabled(object_.asBase()->getDefinitionSourceFileName() != "");
+    }
+
     contextMenu->addSeparator();
     act = contextMenu->addAction("Copy file path", this,SLOT(copyFilePathToClipBoard()));
     act = contextMenu->addAction("Open file in editor", this,SLOT(openInEditor()));
@@ -645,6 +655,65 @@ void QSofaListView::HideDatas()
         emit Lock(false);
     }
 }
+
+/// @brief Open a file at given path and line number using an external editor.
+///
+/// The external editor is defined in a QSettings with the following entries:
+/// [General]
+/// ExternalEditor=qtcreator
+/// ExternalEditorParams=-client ${filename}:${fileno}
+/// where ${filename} is expanded with the full path to the file
+/// where ${fileno} is expanded with the line number to open at.
+void openInExternalEditor(const std::string filename, const int fileloc)
+{
+    QFileInfo f(filename.c_str());
+
+    std::string settingsFile = BaseGUI::getConfigDirectoryPath() + "/QSettings.ini";
+    QSettings settings(settingsFile.c_str(), QSettings::IniFormat);
+
+    /// In case the setting file does not contains the needed entries, let's put default ones
+    /// based on qtcreator.
+    if(!settings.contains("ExternalEditor"))
+        settings.setValue("ExternalEditor", "qtcreator");
+    if(!settings.contains("ExternalEditorParams"))
+        settings.setValue("ExternalEditorParams", "-client ${filename}:${fileno}");
+
+    QString editor = settings.value("ExternalEditor").toString();
+    QString params = settings.value("ExternalEditorParams").toString();
+
+    params.replace("${filename}", f.absoluteFilePath());
+    params.replace("${fileno}", QString::number(fileloc));
+    QStringList paramsAsList = params.split(QRegExp("(\\ )"));
+    if ( QProcess::execute(editor, paramsAsList) != 0 )
+    {
+        msg_warning("QSofaListView") << "Unable to execute \"" << editor.toStdString() << " "
+                                     << params.toStdString() << "\"" << msgendl
+                                     << "  The file will NOT be opened at the right line." << msgendl
+                                     << "  Set your preferred editor in: " << settingsFile << msgendl
+                                     << "  Falling back to your system default editor.";
+
+        QDesktopServices::openUrl(QUrl::fromLocalFile( f.absoluteFilePath() ));
+    }
+}
+
+void QSofaListView::openInstanciation()
+{
+    if(object_.isBase())
+    {
+        openInExternalEditor(object_.asBase()->getInstanciationSourceFileName(),
+                             object_.asBase()->getInstanciationSourceFilePos());
+    }
+}
+
+void QSofaListView::openImplementation()
+{
+    if(object_.isBase())
+    {
+        openInExternalEditor(object_.asBase()->getDefinitionSourceFileName(),
+                             object_.asBase()->getDefinitionSourceFilePos());
+    }
+}
+
 
 void QSofaListView::openInEditor()
 {

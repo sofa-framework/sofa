@@ -44,11 +44,6 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<float>, TABLE_H
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<double>, TABLE_HORIZONTAL > > DWClass_vectord("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<std::string> > > DWClass_vectorstring("default",true);
 
-//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<int>, TABLE_HORIZONTAL > > DWClass_Pointi("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<unsigned int>, TABLE_HORIZONTAL > > DWClass_Pointu("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<float>, TABLE_HORIZONTAL > > DWClass_Pointf("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<double>, TABLE_HORIZONTAL > > DWClass_Pointd("default",true);
-
 #ifdef TODOTOPO
 Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointSubset, TABLE_HORIZONTAL > > DWClass_PointSubset("default",true);
 #endif
@@ -145,31 +140,16 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::P
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<float,3> > > > DWClass_vectorPolynomialLD3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<float,2> > > > DWClass_vectorPolynomialLD2f("default",true);
 
-#ifdef TODOLINK
-Creator<DataWidgetFactory,TableDataWidget< sofa::core::objectmodel::VectorObjectRef >  >  DWClass_DataVectorRefWidget("default",true);
-#endif
-
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<2,float> > > > DWClass_vectorRigidCoord2f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<2,double> > > > DWClass_vectorRigidCoord2d("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<2,float> > > > DWClass_vectorRigidDeriv2f("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<2,double> > > > DWClass_vectorRigidDeriv2d("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<3,float> > > > DWClass_vectorRigidCoord3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<3,double> > > > DWClass_vectorRigidCoord3d("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,float> > > > DWClass_vectorRigidDeriv3f("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,double> > > > DWClass_vectorRigidDeriv3d("default",true);
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<float> > > > DWClass_vectorLinearSpringf("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<double> > > > DWClass_vectorLinearSpringd("default",true);
 
-//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid2fTypes> > > > DWClass_vectorJointSpring2f("default",true);
-//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid2dTypes> > > > DWClass_vectorJointSpring2d("default",true);
-
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorJointSpring3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::GearSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorGearSpring3f("default",true);
-
-
-// Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::DiscreteElementModelInternalData<sofa::defaulttype::Vec3fTypes> > > > DWClass_vectorDiscreteElementModelInternalData3f("default", true);
-// Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::DiscreteElementModelInternalData<sofa::defaulttype::Vec3dTypes> > > > DWClass_vectorDiscreteElementModelInternalData3d("default", true);
 
 } // namespace qt
 

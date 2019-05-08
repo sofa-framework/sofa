@@ -1,11 +1,11 @@
-<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
-	<CollisionPipeline verbose="0" />
+	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
-	<CollisionResponse name="Response" />
+	<DefaultContactManager name="Response" />
 	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 	<Node name="Floor">
-		<RegularGrid
+		<RegularGridTopology
 			nx="2" ny="1" nz="2"
 			xmin="20" xmax="-20"
 			ymin="-3.05" ymax="-3.05"
@@ -23,11 +23,11 @@
 	</Node>
 	<Node name="SquareCloth1">
 		<!--<CGImplicit rayleighMass="0.05"  iterations="10" threshold="0.000001"/>-->
-		<EulerImplicit rayleighMass="0.05" rayleighStiffness="0.1" />
+		<EulerImplicitSolver rayleighMass="0.05" rayleighStiffness="0.1" />
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
 		<MechanicalObject template="CudaVec3f" />
-		<UniformMass totalmass="100" />
-		<RegularGrid
+		<UniformMass totalMass="100" />
+		<RegularGridTopology
 			nx="100" ny="1" nz="100"
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
@@ -43,7 +43,7 @@
 			<CudaVisualModel template="CudaVec3f" diffuse="0 0.8 0 1.0" computeNormals="true" />
 		</Node>
 		<Node>
-			<RegularGrid
+			<RegularGridTopology
 				nx="4" ny="1" nz="4"
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
@@ -56,7 +56,7 @@
 		<!--
 		<Node name="Surf">
 			<MechanicalObject />
-			<RegularGrid
+			<RegularGridTopology
 				nx="100" ny="1" nz="100"
 				xmin="12" xmax="-12"
 				ymin="7" ymax="7"
