@@ -14,7 +14,7 @@ namespace constraint
 template< class DataTypes >
 UniformConstraint<DataTypes>::UniformConstraint()
     :d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation is computed."))
-    ,d_constraintRestPos(initData(&d_constraintRestPos, false, "constraintRestPos", "if false, constraint the pos to be zero / if true constraint the current position to stay at rest position"))
+    ,d_constraintRestPos(initData(&d_constraintRestPos, false, "constrainToRestPos", "if false, constrains the pos to be zero / if true constraint the current position to stay at rest position"))
     ,m_constraintIndex(0)
 {
 
