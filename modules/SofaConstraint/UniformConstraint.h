@@ -37,7 +37,7 @@ public:
     sofa::Data<bool> d_constraintRestPos;
 protected:
 
-    int unsigned m_constraintIndex;
+    unsigned int m_constraintIndex;
 
     UniformConstraint();
 };
