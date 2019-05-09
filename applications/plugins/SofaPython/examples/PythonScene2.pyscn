@@ -10,33 +10,33 @@ class KeyboardControl(Sofa.PythonScriptController):
 	# key and mouse events; use this to add some user interaction to your scripts 
 	def onKeyPressed(self,k):
 		
-		# free_position is a scalar array : [tx,ty,tz,rx,ry,rz,rw]
+		# position is a scalar array : [tx,ty,tz,rx,ry,rz,rw]
 		global DOFs
-		free_position=DOFs.free_position
+		position=DOFs.position
 
 		# translation speed
 		speed = 1 
 
 		# UP key : front
 		if ord(k)==19:
-			free_position[0][2]-=speed
+			position[0][2]-=speed
 		# DOWN key : rear
 		if ord(k)==21:
-			free_position[0][2]+=speed
+			position[0][2]+=speed
 		# LEFT key : left
 		if ord(k)==18:
-			free_position[0][1]-=speed
+			position[0][1]-=speed
 		# RIGHT key : right
 		if ord(k)==20:
-			free_position[0][1]+=speed
+			position[0][1]+=speed
 		# PAGEUP key : up
 		if ord(k)==22:
-			free_position[0][0]-=speed
+			position[0][0]-=speed
 		# PAGEDN key : down
 		if ord(k)==23:
-			free_position[0][0]+=speed
+			position[0][0]+=speed
 			
-		DOFs.free_position=free_position
+		DOFs.position=position
 		return 0 
 
 

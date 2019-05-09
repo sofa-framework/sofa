@@ -270,7 +270,8 @@ public:
     static const MyClass* GetClass() { return MyClass::get(); }         \
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
     { return GetClass(); }                                              \
-	static const char* HeaderFileLocation() { return __FILE__; }         \
+    static const char* HeaderFileLocation() { return __FILE__; }        \
+    virtual const char* getHeaderFileLocation() { return __FILE__; }    \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
     initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
              ::sofa::core::objectmodel::BaseData::DataFlags dataflags)  \

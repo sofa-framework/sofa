@@ -362,27 +362,6 @@ template<int N, class T>
 class data_widget_container < sofa::defaulttype::RigidCoord<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidCoord<N, T> >
 {};
 
-//      template<int N, class T>
-//      class struct_data_trait < sofa::defaulttype::RigidDeriv<N, T> >
-//      {
-//      public:
-//        typedef sofa::defaulttype::RigidDeriv<N, T> data_type;
-//        enum { NVAR = 2 };
-//        static void set( data_type& /*d*/ )
-//        {
-//        }
-//      };
-//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<3 COMMA T>, 0, "VCenter", "d", typename data_type::Vec3, getVCenter());
-//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<3 COMMA T>, 1, "VOrientation", "w", typename data_type::Vec3, getVOrientation());
-//
-//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<2 COMMA T>, 0, "VCenter", "d", typename data_type::Vec2, getVCenter());
-//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<2 COMMA T>, 1, "VOrientation", "dA", typename data_type::Real, getVOrientation());
-//
-//      template<int N, class T>
-//      class data_widget_container < sofa::defaulttype::RigidDeriv<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidDeriv<N, T> >
-//      {};
-
-
 template<int N, class T>
 class struct_data_trait < sofa::defaulttype::RigidMass<N, T> >
 {
@@ -523,52 +502,6 @@ class data_widget_container < CLASS > : public struct_data_widget_container < CL
 
 #undef CLASS
 
-//
-//////////////////////////////////////////////////////////////////
-///// sofa::component::DiscreteElement support
-//////////////////////////////////////////////////////////////////
-//
-//#define CLASS typename sofa::component::DiscreteElementModelInternalData< T >
-//
-//template<class T>
-//class struct_data_trait < CLASS >
-//{
-//public:
-//	typedef CLASS data_type;
-//	enum { NVAR = 22 };
-//	static void set( data_type& /*d*/)
-//	{
-//	}
-//};
-//
-//template<class T> STRUCT_DATA_VAR(CLASS, 0, "Mass", "Mass", typename data_type::Real, mass);
-//template<class T> STRUCT_DATA_VAR(CLASS, 1, "Ray", "Ray", typename data_type::Real, rayon);
-//template<class T> STRUCT_DATA_VAR(CLASS, 2, "Translation Stiffness", "Ks Trans", typename data_type::VecCoord, k_tran_crit);
-//template<class T> STRUCT_DATA_VAR(CLASS, 3, "Rotation Stiffness", "Ks Rot", typename data_type::VecCoord, k_rot_crit);
-//template<class T> STRUCT_DATA_VAR(CLASS, 4, "Alpha", "Alpha", typename data_type::Real, alpha);
-//template<class T> STRUCT_DATA_VAR(CLASS, 5, "Is armature", "Arma", bool, arma);
-//template<class T> STRUCT_DATA_VAR(CLASS, 6, "Frame Direction", "Frame Dir.", typename data_type::VecCoord, dirarm);
-//template<class T> STRUCT_DATA_VAR(CLASS, 7, "Utilisation Loi de Transfert du Moment", "LTM", bool, ltm);
-//template<class T> STRUCT_DATA_VAR(CLASS, 8, "Utilisation Limite Plastique", "LTM Plast.", bool, ltm_plast);
-//template<class T> STRUCT_DATA_VAR(CLASS, 9, "Ponderation de la raideur de flexion", "Beta", typename data_type::Real, beta);
-//template<class T> STRUCT_DATA_VAR(CLASS, 10, "Limite Plastique du Moment", "LIM Plast.", typename data_type::Real, lim_plast);
-//template<class T> STRUCT_DATA_VAR(CLASS, 11, "Discrete Element Type", "Type", int, type_ed);
-//template<class T> STRUCT_DATA_VAR(CLASS, 12, "Masse Volumique Initiale", "Density", typename data_type::Real, density);
-//template<class T> STRUCT_DATA_VAR(CLASS, 13, "Module de Young", "Young", typename data_type::Real, young_modulus);
-//template<class T> STRUCT_DATA_VAR(CLASS, 14, "Coefficient de Poisson", "Poisson", typename data_type::Real, poisson_ratio);
-//template<class T> STRUCT_DATA_VAR(CLASS, 15, "Limite locale a la traction", "Loc. Trac. Lim.", typename data_type::Real, local_traction_limit);
-//template<class T> STRUCT_DATA_VAR(CLASS, 16, "Ecrouissage en traction", "Hard.", typename data_type::Real, hardenning);
-//template<class T> STRUCT_DATA_VAR(CLASS, 17, "Deformation Max en %", "Def.", typename data_type::Real, deformation);
-//template<class T> STRUCT_DATA_VAR(CLASS, 18, "Cohesion", "Cohe.", typename data_type::Real, cohesion);
-//template<class T> STRUCT_DATA_VAR(CLASS, 19, "Angle de Frottement Interne", "Int. Fric. Ang.", typename data_type::Real, internal_friction_angle);
-//template<class T> STRUCT_DATA_VAR(CLASS, 20, "Angle de Frottement de Contact", "Cont. Fric. Ang.", typename data_type::Real, contact_friction_angle);
-//template<class T> STRUCT_DATA_VAR(CLASS, 21, "Adoucissement", "Adou.", typename data_type::Real, adoucissement);
-//
-//template<class T>
-//class data_widget_container < CLASS > : public struct_data_widget_container < CLASS >
-//{};
-//
-//#undef CLASS
 
 ////////////////////////////////////////////////////////////////
 /// sofa::core::loader::Material support
@@ -595,9 +528,6 @@ template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 5, "Shininess", "
 template<>
 class data_widget_container < sofa::core::loader::Material > : public struct_data_widget_container < sofa::core::loader::Material >
 {};
-
-//      template<>
-//      unsigned int SimpleDataWidget< sofa::core::loader::Material >::numColumnWidget() { return 2; }
 
 } // namespace qt
 

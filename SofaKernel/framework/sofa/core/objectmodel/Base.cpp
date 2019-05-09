@@ -677,6 +677,59 @@ void Base::clearOutputs()
     clearLoggedMessages();
 }
 
+/// Set the source filename (where the component is implemented)
+void Base::setDefinitionSourceFileName(const std::string& sourceFileName)
+{
+    m_definitionSourceFileName = sourceFileName;
+}
+
+/// Get the source filename (where the component is implemented)
+const std::string& Base::getDefinitionSourceFileName() const
+{
+    return m_definitionSourceFileName;
+}
+
+/// Set the source location (where the component is implemented)
+void Base::setDefinitionSourceFilePos(const int linenum)
+{
+    m_definitionSourceFilePos = linenum;
+}
+
+/// Get the source location (where the component is implemented)
+int Base::getDefinitionSourceFilePos() const
+{
+    return m_definitionSourceFilePos;
+}
+
+/// Set the file where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationSourceFileName(const std::string& filename)
+{
+    m_instanciationSourceFileName = filename;
+}
+
+/// Get the file where the instance has been created
+/// This is useful to store where the component was emitted from
+const std::string& Base::getInstanciationSourceFileName() const
+{
+    return m_instanciationSourceFileName;
+}
+
+/// Set the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationSourceFilePos(const int lineco)
+{
+    m_instanciationSourceFilePos = lineco;
+}
+
+/// Get the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+int Base::getInstanciationSourceFilePos() const
+{
+    return m_instanciationSourceFilePos;
+}
+
+
 
 
 } // namespace objectmodel
