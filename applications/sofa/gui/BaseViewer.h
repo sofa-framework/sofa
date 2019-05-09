@@ -156,11 +156,11 @@ protected:
 #ifndef SOFA_NO_OPENGL
     sofa::helper::gl::Capture capture;
     sofa::helper::gl::Texture* texLogo;
-#endif
 
 #ifdef SOFA_HAVE_FFMPEG_EXEC
     sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
 #endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFA_NO_OPENGL
 
     bool _video;
     bool m_isVideoButtonPressed;
