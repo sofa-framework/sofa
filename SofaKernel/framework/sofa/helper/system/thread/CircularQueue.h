@@ -171,7 +171,7 @@ class SOFA_HELPER_API ManyThreadsPerEnd
 public:
 
 protected:
-    typedef helper::system::atomic<int> AtomicInt;
+    typedef std::atomic<int> AtomicInt;
 
     ManyThreadsPerEnd();
     
