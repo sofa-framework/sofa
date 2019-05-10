@@ -25,7 +25,7 @@
             <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
             <MechanicalObject name="Collision Cube" />
             <!-- Collision Models -->
-            <Triangle name="Cube Triangle For Collision" />
+            <TriangleCollisionModel name="Cube Triangle For Collision" />
             <LineCollisionModel name="Cube Edge For Collision" />
             <PointCollisionModel name="Cube Point For Collision" />
             <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
@@ -46,7 +46,7 @@
             <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
             <MechanicalObject name="Collision Cube" />
             <!-- Collision Models -->
-            <Triangle name="Cube Triangle For Collision" />
+            <TriangleCollisionModel name="Cube Triangle For Collision" />
             <LineCollisionModel name="Cube Edge For Collision" />
             <PointCollisionModel name="Cube Point For Collision" />
             <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
@@ -56,6 +56,6 @@
         <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />
         <MechanicalObject name="Floor Particles" />
         <!-- Collision Models -->
-        <Triangle name="Floor Triangle For Collision" moving="0" simulated="0" />
+        <TriangleCollisionModel name="Floor Triangle For Collision" moving="0" simulated="0" />
     </Node>
 </Node>

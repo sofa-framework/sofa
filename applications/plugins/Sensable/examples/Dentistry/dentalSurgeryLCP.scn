@@ -24,7 +24,7 @@
 		 	<MeshObjLoader filename="Demos/Dentistry/data/mesh/skull_and_teeth_coarse.obj"  name="loader"/>
 			<Mesh src="@loader" name="ToothCollisionModel"  />
 			<MechanicalObject src="@loader" name="toothState" />		
-			<Triangle name="tooth" contactStiffness="100" simulated="0" moving="0"/>
+			<TriangleCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>
 			<LineCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
 			<PointCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
 		</Node>

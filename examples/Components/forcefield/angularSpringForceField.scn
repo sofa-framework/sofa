@@ -31,7 +31,7 @@
 			<Node name="Collision">
 	            <CubeTopology max="9.2 0.05 0.05" min="0 -0.05 -0.05" nx="70" ny="2" nz="2" />
 	            <MechanicalObject name="skinDOFs" />
-	            <Triangle /> 
+	            <TriangleCollisionModel /> 
 	            <LineCollisionModel />
 	            <PointCollisionModel />
 	            <BeamLinearMapping isMechanical="true" />

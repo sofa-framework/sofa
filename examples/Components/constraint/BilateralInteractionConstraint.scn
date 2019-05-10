@@ -19,7 +19,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" dy="2.5" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
         </Node>
@@ -41,7 +41,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="10.0" />
+            <TriangleCollisionModel contactStiffness="10.0" />
             <LineCollisionModel contactStiffness="10.0" />
             <PointCollisionModel contactStiffness="10.0" />
             <RigidMapping />
@@ -66,7 +66,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />
@@ -91,7 +91,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />
@@ -116,7 +116,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />

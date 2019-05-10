@@ -21,7 +21,7 @@
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <PointCollisionModel />
             <LineCollisionModel />
             <BarycentricMapping />
@@ -42,7 +42,7 @@
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <PointCollisionModel />
             <LineCollisionModel />
             <BarycentricMapping />
@@ -63,7 +63,7 @@
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <PointCollisionModel />
             <LineCollisionModel />
             <BarycentricMapping />

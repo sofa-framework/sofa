@@ -50,7 +50,7 @@
     <Node name="World">
         <MechanicalObject position="-4 -1.6 -4    4 -5.6 -4    4 -6.4 4    -4 -2.4 4" scale="1.075" />
         <Mesh triangles="0 1 2  0 2 3" />
-        <Triangle contactStiffness="20" moving="false" simulated="false" />
+        <TriangleCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <LineCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <PointCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <OglModel name="VModel" color="blue" printLog="true" />

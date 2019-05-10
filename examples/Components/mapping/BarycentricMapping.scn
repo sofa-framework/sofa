@@ -11,7 +11,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
@@ -32,7 +32,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="2.5" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -54,7 +54,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="5" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -75,7 +75,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -94,7 +94,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -106,7 +106,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dz="6" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" dz="6" />
@@ -127,7 +127,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="2.5" dz="6" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -149,7 +149,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="5" dz="6" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -171,7 +171,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="7.5" dz="6" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -193,7 +193,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="10" dz="6" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -205,7 +205,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dz="12" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" dz="12" color="gray" />
@@ -226,7 +226,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="2.5" dz="12" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -248,7 +248,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="5" dz="12" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -270,7 +270,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="7.5" dz="12" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -292,7 +292,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="10" dz="12" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -304,7 +304,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dz="18" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" dz="18" color="gray" />
@@ -324,7 +324,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -345,7 +345,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -366,7 +366,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -387,7 +387,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <BarycentricMapping />
@@ -399,7 +399,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dz="24" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" dz="24" color="gray" />
@@ -417,7 +417,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -436,7 +436,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -455,7 +455,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -474,7 +474,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />

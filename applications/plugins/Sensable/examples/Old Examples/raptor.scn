@@ -21,7 +21,7 @@
 		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<Mesh src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState" rotation="0 0 90"/>		
-			<Triangle name="raptor" contactStiffness="100" simulated="0" moving="0"/>
+			<TriangleCollisionModel name="raptor" contactStiffness="100" simulated="0" moving="0"/>
 			<LineCollisionModel name="raptor" contactStiffness="100" simulated="0" moving="0"/>	
 			<PointCollisionModel name="raptor" contactStiffness="100" simulated="0" moving="0"/>	
 		</Node>

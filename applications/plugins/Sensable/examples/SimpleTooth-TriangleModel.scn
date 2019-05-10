@@ -40,7 +40,7 @@
       <MeshObjLoader name="loader"  filename="data/mesh/tooth_closed.obj"/>
       <MeshTopology src="@loader" name="ToothCollisionModel" />
       <MechanicalObject src="@loader" template="Vec3d" name="toothState" />
-      <Triangle />
+      <TriangleCollisionModel />
 
     </Node>
   </Node>

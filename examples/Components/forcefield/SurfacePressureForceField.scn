@@ -20,7 +20,7 @@
             <MeshObjLoader name="loader" filename="mesh/frog.obj" />
             <Mesh />
             <MechanicalObject src="@loader" />
-            <Triangle group="1" />
+            <TriangleCollisionModel group="1" />
             <LineCollisionModel group="1" />
             <PointCollisionModel group="1" />
             <SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0" />
@@ -43,7 +43,7 @@
             <MeshObjLoader name="loader" filename="mesh/frog_quads.obj" />
             <Mesh />
             <MechanicalObject src="@loader" />
-            <Triangle group="1" />
+            <TriangleCollisionModel group="1" />
             <LineCollisionModel group="1" />
             <PointCollisionModel group="1" />
             <SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0" />

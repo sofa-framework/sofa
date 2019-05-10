@@ -28,7 +28,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader"  />
-                <Triangle />
+                <TriangleCollisionModel />
                 <BarycentricMapping />
             </Node>
         </Node>
@@ -50,7 +50,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="7" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <BarycentricMapping />
             </Node>
         </Node>

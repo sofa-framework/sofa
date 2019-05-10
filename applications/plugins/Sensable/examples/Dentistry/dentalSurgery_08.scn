@@ -45,7 +45,7 @@ Using LCP contact detection and resolution:
                 <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="0" />
                 <MechanicalObject name="colTongue" />
-                <Triangle name="tongue" />
+                <TriangleCollisionModel name="tongue" />
                 <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
             </Node>
         </Node>
@@ -54,7 +54,7 @@ Using LCP contact detection and resolution:
             <Node name="CollisionModel">
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
-                <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
@@ -90,7 +90,7 @@ Using LCP contact detection and resolution:
             <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
-            <Triangle name="instrument" contactStiffness="10" />
+            <TriangleCollisionModel name="instrument" contactStiffness="10" />
             <LineCollisionModel name="instrument" contactStiffness="10" />
             <PointCollisionModel name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />

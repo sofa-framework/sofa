@@ -39,7 +39,7 @@
       <MeshObjLoader name="loader"  filename="data/mesh/box_inside.obj" />
       <MeshTopology src="@loader" name="BoxCollisionModel" />
       <MechanicalObject src="@loader" template="Vec3d" name="boxState" />
-      <Triangle />
+      <TriangleCollisionModel />
 
     </Node>
   </Node>

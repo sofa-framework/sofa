@@ -43,7 +43,7 @@
             <CubeTopology nx="256" ny="8" nz="8" min="0 -0.1 -0.1" max="31 0.1 0.1" />
             <MechanicalObject />
             <BeamLinearMapping_mt granularity="512" isMechanical="true" />
-            <Triangle />
+            <TriangleCollisionModel />
             <!--        <OglModel /> -->
         </Node>
     </Node>

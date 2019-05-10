@@ -49,7 +49,7 @@ An assemblage of all the previous steps altogether
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />
 		        <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
-                <Triangle name="tongue" contactStiffness="5" />
+                <TriangleCollisionModel name="tongue" contactStiffness="5" />
                 <LineCollisionModel name="tongue" contactStiffness="5" />
                 <PointCollisionModel name="tongue" contactStiffness="5" />
             </Node>
@@ -59,7 +59,7 @@ An assemblage of all the previous steps altogether
             <Node name="CollisionModel">
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
-                <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>

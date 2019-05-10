@@ -42,7 +42,7 @@
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="1" />
+            <TriangleCollisionModel  selfCollision="1" />
             <LineCollisionModel    selfCollision="1" />
             <PointCollisionModel  selfCollision="1" />
             <BarycentricMapping input="@.." output="@." />
@@ -87,7 +87,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Triangle simulated="false" moving="false" proximity="1" />
+            <TriangleCollisionModel simulated="false" moving="false" proximity="1" />
             <LineCollisionModel simulated="false" moving="false" proximity="1" />
             <PointCollisionModel simulated="false" moving="false" proximity="1" />
         </Node>
@@ -97,7 +97,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Triangle simulated="false" moving="false" proximity="1" />
+            <TriangleCollisionModel simulated="false" moving="false" proximity="1" />
             <LineCollisionModel simulated="false" moving="false" proximity="1" />
             <PointCollisionModel simulated="false" moving="false" proximity="1" />
         </Node>
@@ -108,7 +108,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Triangle simulated="false" moving="false"/>
+            <TriangleCollisionModel simulated="false" moving="false"/>
         </Node>  -->    
 
 

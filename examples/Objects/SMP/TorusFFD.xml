@@ -18,7 +18,7 @@
     <MeshObjLoader name="collisionLoader" filename="mesh/torus_for_collision.obj"/>
 		<Mesh src="@collisionLoader" />
 		<MechanicalObject dx="0" dy="0" dz="0" scale="1.0"/>
-		<Triangle />
+		<TriangleCollisionModel />
 		<LineCollisionModel />
 		<PointCollisionModel />
 		<BarycentricMapping />

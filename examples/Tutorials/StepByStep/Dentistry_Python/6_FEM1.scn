@@ -44,7 +44,7 @@ Control the instrument with the UP and DOWN keys + CTRL
         	 	<MeshObjLoader filename="data/mesh/tongue.obj"  name="loader"/>
         		<Mesh src="@loader" name="tongueCollisionModel"  />
         		<MechanicalObject src="@loader" name="colTongue"/>		
-        		<Triangle name="tongue" contactStiffness="5"/>
+        		<TriangleCollisionModel name="tongue" contactStiffness="5"/>
         		<LineCollisionModel name="tongue" contactStiffness="5"/>	
         		<PointCollisionModel name="tongue" contactStiffness="5"/>	
         		<BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@colTongue" mapForces="false"/>

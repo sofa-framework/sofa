@@ -20,7 +20,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <BarycentricMapping />
@@ -42,7 +42,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <BarycentricMapping />
@@ -52,7 +52,7 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="30.25" scale="0.7" rx="180" />
-        <Triangle name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />
         <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
@@ -61,7 +61,7 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-30.25" scale="0.7" />
-        <Triangle name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />
         <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/

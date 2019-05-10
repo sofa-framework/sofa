@@ -52,7 +52,7 @@ position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh /> 
 			<MechanicalObject  name="PointSet"/>
-			<Triangle />
+			<TriangleCollisionModel />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" name="SMapping"  input="@../DOFs"  output="@PointSet" />
 		</Node>
 -->

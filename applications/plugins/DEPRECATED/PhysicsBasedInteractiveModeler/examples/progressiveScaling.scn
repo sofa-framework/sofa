@@ -30,7 +30,7 @@
 				<MeshLoader name="meshLoader" filename="mesh/victoria_coarse.obj" />
 				<Mesh />
 				<MechanicalObject name="Collision" dx="10" scale="0.01"/>
-				<Triangle />
+				<TriangleCollisionModel />
 				<LineCollisionModel />
 				<PointCollisionModel />
 				<BarycentricMapping input="@.." output="@Collision"/> 

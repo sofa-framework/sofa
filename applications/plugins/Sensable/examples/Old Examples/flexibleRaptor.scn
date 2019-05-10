@@ -33,7 +33,7 @@
 		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<Mesh src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
-			<Triangle name="raptor" contactStiffness="100"/>
+			<TriangleCollisionModel name="raptor" contactStiffness="100"/>
 			<LineCollisionModel name="raptor" contactStiffness="100"/>	
 			<PointCollisionModel name="raptor" contactStiffness="100"/>	
 			<BarycentricMapping name="tongueMapping" input="@../mecaRaptor" output="@raptorState" mapForces="false"/>

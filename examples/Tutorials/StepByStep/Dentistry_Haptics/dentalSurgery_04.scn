@@ -15,7 +15,7 @@
             <Node name="CollisionModel">
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
-                <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>

@@ -43,7 +43,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
       			<Mesh src="@MeshLoader"  /> 
       			<MechanicalObject  name="PointSet"/>
-      			<Triangle />
+      			<TriangleCollisionModel />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>

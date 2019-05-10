@@ -47,7 +47,7 @@ FEM force field of the tongue
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />
                 <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
-                <Triangle name="tongue" contactStiffness="5" />
+                <TriangleCollisionModel name="tongue" contactStiffness="5" />
                 <LineCollisionModel name="tongue" contactStiffness="5" />
                 <PointCollisionModel name="tongue" contactStiffness="5" />
             </Node>

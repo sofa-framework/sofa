@@ -36,7 +36,7 @@
         <Node name="Collision">
             <Mesh src="@../../loader" />
             <MechanicalObject name="dof" />
-            <TTriangleModel />
+            <TriangleCollisionModel />
             <LinearMapping template="Affine,Vec3d" />
             <Node name="Visual"  >
                 <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />

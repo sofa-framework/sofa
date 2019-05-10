@@ -11,7 +11,7 @@
       <MeshObjLoader name="loader" filename="file"/>
       <Mesh src="@loader"/>
       <MechanicalObject src="@loader" scale3d="1 1 1"/>
-      <Triangle contactStiffness="200"/>
+      <TriangleCollisionModel contactStiffness="200"/>
       <LineCollisionModel     contactStiffness="@[-1].contactStiffness"/>
       <PointCollisionModel    contactStiffness="@[-1].contactStiffness" />
 	  <RigidMapping/>

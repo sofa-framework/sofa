@@ -52,7 +52,7 @@
 					<OglModel name="Visual1" color="0.3 1 0.3 1"/>
 					<IdentityMapping input="@../.." output="@Visual1"/>
 
-					<Triangle group="2" name="cube1_collis_tri"/>
+					<TriangleCollisionModel group="2" name="cube1_collis_tri"/>
 					<LineCollisionModel group="2"  name="cube1_collis_line"/>
 					<PointCollisionModel group="2" name="cube2_collis_point"/>
 				</Node>
@@ -90,7 +90,7 @@
 					<OglModel name="Visual2" color="0.3 0.3 1 1"/>
 					<IdentityMapping input="@../.." output="@Visual2"/>
 
-					<Triangle group="3" name="cube2_collis_tri"/>
+					<TriangleCollisionModel group="3" name="cube2_collis_tri"/>
 					<LineCollisionModel group="3"  name="cube2_collis_line"/>
 					<PointCollisionModel group="3" name="cube2_collis_point"/>
 				</Node>

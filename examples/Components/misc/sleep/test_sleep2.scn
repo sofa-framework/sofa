@@ -17,7 +17,7 @@
 		<TransformEngine name="transform" translation="0 -1.5 0" rotation="0 0 10" scale="10 0.2 4" input_position="@loader.position" />
 		<Mesh src="@loader" />
 		<MechanicalObject position="@transform.output_position" template="Vec3d" />
-		<Triangle simulated="0" moving="0" />
+		<TriangleCollisionModel simulated="0" moving="0" />
 		<LineCollisionModel simulated="0" moving="0" />
 		<PointCollisionModel simulated="0" moving="0" />
 		<OglModel name="Visual" color="1 0 0 1" src="@loader" position="@transform.output_position"/>
@@ -40,7 +40,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />
@@ -64,7 +64,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />
@@ -88,7 +88,7 @@
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <LineCollisionModel />
             <PointCollisionModel />
             <RigidMapping />

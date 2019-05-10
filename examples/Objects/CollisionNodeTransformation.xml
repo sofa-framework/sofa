@@ -2,7 +2,7 @@
   <MeshObjLoader name="loader" filename="file"/>
   <Mesh src="@loader"/>
   <MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="0 0 0"/>
-  <Triangle contactStiffness="200"/>
+  <TriangleCollisionModel contactStiffness="200"/>
   <LineCollisionModel     contactStiffness="@[-1].contactStiffness"/>
   <PointCollisionModel    contactStiffness="@[-1].contactStiffness" />
   <BarycentricMapping />

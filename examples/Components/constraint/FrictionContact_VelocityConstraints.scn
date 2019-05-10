@@ -22,7 +22,7 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -40,7 +40,7 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -58,7 +58,7 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -76,7 +76,7 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -94,7 +94,7 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -112,7 +112,7 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader"/>
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <LineCollisionModel />
                 <PointCollisionModel />
                 <RigidMapping />
@@ -122,7 +122,7 @@
             <MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0 0.8 0.3 0.3" />

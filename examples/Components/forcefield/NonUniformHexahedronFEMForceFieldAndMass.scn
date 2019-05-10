@@ -20,7 +20,7 @@
             <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="1" />
+            <TriangleCollisionModel contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />
             <PointCollisionModel contactStiffness="1" />
             <BarycentricMapping />
@@ -40,7 +40,7 @@
             <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="1" />
+            <TriangleCollisionModel contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />
             <PointCollisionModel contactStiffness="1" />
             <BarycentricMapping />

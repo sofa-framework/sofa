@@ -12,7 +12,7 @@
 			zmin="-20" zmax="20" />
 		<MechanicalObject />
 		<!--
-		<Triangle simulated="0" moving="0" />
+		<TriangleCollisionModel simulated="0" moving="0" />
 		<LineCollisionModel simulated="0" moving="0" />
 		<PointCollisionModel simulated="0" moving="0" />
 			  -->
@@ -62,7 +62,7 @@
 				ymin="7" ymax="7"
 				zmin="-12" zmax="12" />
 			<IdentityMapping />
-			<Triangle />
+			<TriangleCollisionModel />
 		</Node>
 		-->
 	</Node>

@@ -22,7 +22,7 @@
 		<MeshObjLoader name="meshLoader1" filename="mesh/cube.obj" />
 		<MeshTopology name="Mesh" src="@meshLoader1" />
 		<MechanicalObject template="Vec3d" name="Obstacle"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1" />
-		<TTriangleModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
+		<TriangleCollisionModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<LineCollisionModel template="Vec3d" name="Lines"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<PointCollisionModel template="Vec3d" name="Points"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/cube.obj"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />

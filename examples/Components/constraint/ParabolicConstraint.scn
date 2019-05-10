@@ -26,7 +26,7 @@
         <MeshObjLoader name="loader" filename="mesh/cube.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" scale="20" dz="-35" />
-        <Triangle simulated="0" moving="0" />
+        <TriangleCollisionModel simulated="0" moving="0" />
         <OglModel name="Visual" fileMesh="mesh/cube.obj" color="gray" scale="20" dz="-35" />
     </Node>
 </Node>
