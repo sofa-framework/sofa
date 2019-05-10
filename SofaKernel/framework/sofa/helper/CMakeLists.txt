@@ -235,7 +235,7 @@ if(Boost_thread_FOUND)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
 
-if(Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+if(Boost_FILESYSTEM_FOUND)
     list(APPEND HEADER_FILES system/FileRepository.h)
     list(APPEND SOURCE_FILES system/FileRepository.cpp)
 endif()

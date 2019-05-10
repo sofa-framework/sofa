@@ -113,13 +113,12 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 ## Boost
 # required boost libraries
 find_package(Boost
-    REQUIRED system filesystem locale program_options chrono atomic
+    REQUIRED system filesystem program_options chrono atomic
     OPTIONAL_COMPONENTS thread date_time
     )
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
-set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
 set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
@@ -128,20 +127,17 @@ list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
 if(SOFA_HAVE_BOOST_SYSTEM
-   AND SOFA_HAVE_BOOST_FILESYSTEM
-   AND SOFA_HAVE_BOOST_LOCALE)
+   AND SOFA_HAVE_BOOST_FILESYSTEM)
 
     set(SOFA_HAVE_BOOST 1)
 
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostProgramOptions SofaFramework "${Boost_PROGRAM_OPTIONS_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
     set(BOOST_TARGETS
         ${BoostSystem_Target}
         ${BoostFileSystem_Target}
-        ${BoostLocale_Target}
         ${BoostProgramOptions_Target})
 
     if(SOFA_HAVE_BOOST_DATE_TIME)
