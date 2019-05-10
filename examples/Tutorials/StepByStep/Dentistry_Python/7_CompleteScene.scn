@@ -50,7 +50,7 @@ An assemblage of all the previous steps altogether
                 <MechanicalObject name="colTongue" />
 		        <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
                 <Triangle name="tongue" contactStiffness="5" />
-                <Line name="tongue" contactStiffness="5" />
+                <LineCollisionModel name="tongue" contactStiffness="5" />
                 <Point name="tongue" contactStiffness="5" />
             </Node>
         </Node>
@@ -60,7 +60,7 @@ An assemblage of all the previous steps altogether
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
                 <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Line name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
@@ -94,7 +94,7 @@ An assemblage of all the previous steps altogether
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
-            <Line name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>

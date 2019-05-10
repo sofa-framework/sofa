@@ -94,7 +94,7 @@
 				<TransformEngine template="Vec3d" input_position="@[-2].vertices" rotationMatrix="@../../../param.rotationMat" translation="@../../../param.translation" scale="@../../../param.scale3d" />
 				<MechanicalObject name="mObject" position="@[-1].output_position" />
 				<Triangle/>
-				<Line />
+				<LineCollisionModel />
 				<Point />
 				<BarycentricMapping input="@.." output="@mObject" />
 				<Node > 

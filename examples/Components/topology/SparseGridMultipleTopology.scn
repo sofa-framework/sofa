@@ -34,7 +34,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <Point />
             <BarycentricMapping />
         </Node>

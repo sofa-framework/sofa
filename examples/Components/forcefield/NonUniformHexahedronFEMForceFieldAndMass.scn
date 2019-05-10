@@ -21,7 +21,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="1" />
-            <Line contactStiffness="1" />
+            <LineCollisionModel contactStiffness="1" />
             <Point contactStiffness="1" />
             <BarycentricMapping />
         </Node>
@@ -41,7 +41,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="1" />
-            <Line contactStiffness="1" />
+            <LineCollisionModel contactStiffness="1" />
             <Point contactStiffness="1" />
             <BarycentricMapping />
         </Node>

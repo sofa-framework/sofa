@@ -18,7 +18,7 @@
 		<Mesh src="@loader" />
 		<MechanicalObject position="@transform.output_position" template="Vec3d" />
 		<Triangle simulated="0" moving="0" />
-		<Line simulated="0" moving="0" />
+		<LineCollisionModel simulated="0" moving="0" />
 		<Point simulated="0" moving="0" />
 		<OglModel name="Visual" color="1 0 0 1" src="@loader" position="@transform.output_position"/>
     </Node>
@@ -42,7 +42,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="10.0" />
-            <Line contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
             <Point contactStiffness="10.0" />
             <RigidMapping />
         </Node>
@@ -67,7 +67,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="10.0" />
-            <Line contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
             <Point contactStiffness="10.0" />
             <RigidMapping />
         </Node>

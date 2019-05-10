@@ -43,7 +43,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <Triangle  selfCollision="1" />
-            <Line    selfCollision="1" />
+            <LineCollisionModel    selfCollision="1" />
             <Point  selfCollision="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
@@ -78,7 +78,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-            <Line simulated="false" moving="false" proximity="1.4" />
+            <LineCollisionModel simulated="false" moving="false" proximity="1.4" />
             <Point simulated="false"  moving="false" proximity="1.4"/>
         </Node>
         
@@ -88,7 +88,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <Triangle simulated="false" moving="false" proximity="1" />
-            <Line simulated="false" moving="false" proximity="1" />
+            <LineCollisionModel simulated="false" moving="false" proximity="1" />
             <Point simulated="false" moving="false" proximity="1" />
         </Node>
 
@@ -98,7 +98,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <Triangle simulated="false" moving="false" proximity="1" />
-            <Line simulated="false" moving="false" proximity="1" />
+            <LineCollisionModel simulated="false" moving="false" proximity="1" />
             <Point simulated="false" moving="false" proximity="1" />
         </Node>
 

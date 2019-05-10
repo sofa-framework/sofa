@@ -20,7 +20,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" dy="2.5" />
             <Triangle simulated="0" moving="0" />
-            <Line simulated="0" moving="0" />
+            <LineCollisionModel simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
         </Node>
         <Node name="Constraints">
@@ -42,7 +42,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="10.0" />
-            <Line contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
             <Point contactStiffness="10.0" />
             <RigidMapping />
         </Node>
@@ -67,7 +67,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <Point />
             <RigidMapping />
         </Node>
@@ -92,7 +92,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <Point />
             <RigidMapping />
         </Node>
@@ -117,7 +117,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="1.0" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <Point />
             <RigidMapping />
         </Node>

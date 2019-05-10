@@ -16,7 +16,7 @@
 		<!-- 		<Mesh /> -->
 		<MechanicalObject name="Collision" rx="20" rz="5"/>
 <!--		<Point />
-		<Line />-->
+		<LineCollisionModel />-->
 		<Triangle />
 		<Node > 
 	        	<OglModel name="VisualModel" color="0.93 0.83 0.81 1" />

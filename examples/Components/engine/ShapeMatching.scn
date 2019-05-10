@@ -26,7 +26,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dz="10" />
             <Triangle contactStiffness="1000" />
-            <Line contactStiffness="1000" />
+            <LineCollisionModel contactStiffness="1000" />
             <Point contactStiffness="1000" />
             <IdentityMapping />
         </Node>
@@ -36,7 +36,7 @@
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <Triangle name="FloorTriangle" simulated="0" moving="0" />
-        <Line name="FloorLine" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
         <Point name="FloorLine" simulated="0" moving="0" />
         <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" dy="-10" scale="1.75" />
     </Node>

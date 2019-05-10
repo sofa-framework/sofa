@@ -26,7 +26,7 @@
             <MechanicalObject name="Collision Cube" />
             <!-- Collision Models -->
             <Triangle name="Cube Triangle For Collision" />
-            <Line name="Cube Edge For Collision" />
+            <LineCollisionModel name="Cube Edge For Collision" />
             <Point name="Cube Point For Collision" />
             <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
         </Node>
@@ -47,7 +47,7 @@
             <MechanicalObject name="Collision Cube" />
             <!-- Collision Models -->
             <Triangle name="Cube Triangle For Collision" />
-            <Line name="Cube Edge For Collision" />
+            <LineCollisionModel name="Cube Edge For Collision" />
             <Point name="Cube Point For Collision" />
             <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
         </Node>

@@ -45,7 +45,7 @@ Control the instrument with the UP and DOWN keys + CTRL
         		<Mesh src="@loader" name="tongueCollisionModel"  />
         		<MechanicalObject src="@loader" name="colTongue"/>		
         		<Triangle name="tongue" contactStiffness="5"/>
-        		<Line name="tongue" contactStiffness="5"/>	
+        		<LineCollisionModel name="tongue" contactStiffness="5"/>	
         		<Point name="tongue" contactStiffness="5"/>	
         		<BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@colTongue" mapForces="false"/>
             </Node>
@@ -77,7 +77,7 @@ Control the instrument with the UP and DOWN keys + CTRL
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
-            <Line name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>

@@ -15,7 +15,7 @@
         <MeshTopology src="@../loader_torus2_for_collision" />
         <MechanicalObject src="@../loader_torus2_for_collision" />
         <TTriangleModel moving="0" simulated="0" />
-        <TLineModel moving="0" simulated="0" />
+        <LineCollisionModel moving="0" simulated="0" />
         <TPointModel moving="0" simulated="0" />
         <OglModel color="0.500 0.500 0.500" src="@../loader_torus2" name="Visual" />
     </Node>
@@ -34,7 +34,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject dx="7.6871" dy="0.0000" dz="0.9632" rx="10.0000" ry="-15.0000" rz="0.0000" src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -54,7 +54,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject dx="10.0309" dy="0.0000" dz="2.1145" rx="15.0000" ry="-25.0000" rz="0.0000" src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -74,7 +74,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -92,7 +92,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <RigidMapping />
         </Node>
@@ -112,7 +112,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject dx="20.7850" dy="0.1285" dz="15.4381" rx="-36.1968" ry="38.9599" rz="6.3146" src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -132,7 +132,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject dx="22.1025" dy="-0.1037" dz="13.4780" rx="-26.3682" ry="62.5274" rz="-0.8890" src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -152,7 +152,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject dx="2.5428" dy="0.0000" dz="0.0195" rx="-0.0000" ry="-5.0000" rz="0.0000" src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -172,7 +172,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject dx="5.1472" dy="0.0000" dz="0.3725" rx="5.0000" ry="-10.0000" rz="0.0000" src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -193,7 +193,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject dx="16.6441" dy="0.0000" dz="6.3875" rx="30.0000" ry="-40.0000" rz="0.0000" src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -213,7 +213,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject dx="18.5592" dy="0.0000" dz="7.9944" rx="48.8686" ry="-40.0000" rz="0.0000" src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -233,7 +233,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject dx="20.4743" dy="0.0000" dz="9.6014" rx="56.6532" ry="-40.0000" rz="-0.0000" src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -253,7 +253,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject dx="22.4849" dy="-0.1005" dz="11.2034" rx="85.4976" ry="-41.5228" rz="4.1695" src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -273,7 +273,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -293,7 +293,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -313,7 +313,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -333,7 +333,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -342,7 +342,7 @@
         <MeshTopology src="@../loader_torus2_for_collision" />
         <MechanicalObject dx="0.0000" dy="0.0000" dz="24.0000" rx="0.0000" ry="0.0000" rz="0.0000" src="@../loader_torus2_for_collision" />
         <TTriangleModel moving="0" simulated="0" />
-        <TLineModel moving="0" simulated="0" />
+        <LineCollisionModel moving="0" simulated="0" />
         <TPointModel moving="0" simulated="0" />
         <OglModel color="0.500 0.500 0.500" dx="0.0000" dy="0.0000" dz="24.0000" src="@../loader_torus2" name="Visual" rx="0.0000" ry="0.0000" rz="0.0000" />
     </Node>
@@ -359,7 +359,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <RigidMapping />
         </Node>
@@ -377,7 +377,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <RigidMapping />
         </Node>
@@ -395,7 +395,7 @@
             <MeshTopology src="@../../loader_torus_for_collision" />
             <MechanicalObject src="@../../loader_torus_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <RigidMapping />
         </Node>
@@ -413,7 +413,7 @@
             <MeshTopology src="@../../loader_torus2_for_collision" />
             <MechanicalObject src="@../../loader_torus2_for_collision" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <RigidMapping />
         </Node>

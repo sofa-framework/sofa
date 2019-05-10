@@ -36,7 +36,7 @@
                         <Mesh />
                         <MechanicalObject/>
                         <Triangle />
-                        <Line />
+                        <LineCollisionModel />
                         <Point />
                         <RigidMapping />
                 </Node>
@@ -54,7 +54,7 @@
                         <Mesh />
                         <MechanicalObject scale="0.01"/>
                         <Triangle />
-                        <Line />
+                        <LineCollisionModel />
                         <Point />
                         <RigidMapping />
                 </Node>

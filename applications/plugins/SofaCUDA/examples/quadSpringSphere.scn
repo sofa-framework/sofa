@@ -12,7 +12,7 @@
 		<MechanicalObject />
 		<!--
 		<Triangle simulated="0" moving="0" />
-		<Line simulated="0" moving="0" />
+		<LineCollisionModel simulated="0" moving="0" />
 		<Point simulated="0" moving="0" />
 			  -->
 		<Node name="Visu">

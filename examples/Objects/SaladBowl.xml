@@ -3,7 +3,7 @@
     <MeshTopology src="@meshLoader" />
     <MechanicalObject scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0"/>
     <TTriangleModel name="FloorTriangleModel" moving="false" simulated="false" contactStiffness="10"/>
-    <TLineModel name="FloorLineModel" moving="false" simulated="false" contactStiffness="10"/>
+    <LineCollisionModel name="FloorLineModel" moving="false" simulated="false" contactStiffness="10"/>
     <TPointModel name="FloorPointModel" moving="false" simulated="false" contactStiffness="10" />
     <OglModel name="FloorV" src="@meshLoader" texturename="textures/floor.bmp" color="1 1 1 1" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" />
 </Node>

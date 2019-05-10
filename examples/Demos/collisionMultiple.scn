@@ -33,7 +33,7 @@
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -55,7 +55,7 @@
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -91,7 +91,7 @@
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TTriangleModel />
-            <TLineModel />
+            <LineCollisionModel />
             <TPointModel />
             <BarycentricMapping />
         </Node>
@@ -102,7 +102,7 @@
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
         <TTriangleModel name="FloorTriangleModel" simulated="0" moving="0" />
-        <TLineModel name="FloorLineModel" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLineModel" simulated="0" moving="0" />
         <TPointModel name="FloorPointModel" simulated="0" moving="0" />
         <OglModel name="FloorV" src="@../../Loader-floor" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
     </Node>

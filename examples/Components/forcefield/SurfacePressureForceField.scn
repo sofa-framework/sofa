@@ -21,7 +21,7 @@
             <Mesh />
             <MechanicalObject src="@loader" />
             <Triangle group="1" />
-            <Line group="1" />
+            <LineCollisionModel group="1" />
             <Point group="1" />
             <SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0" />
             <BarycentricMapping input="@.." output="@." />
@@ -44,7 +44,7 @@
             <Mesh />
             <MechanicalObject src="@loader" />
             <Triangle group="1" />
-            <Line group="1" />
+            <LineCollisionModel group="1" />
             <Point group="1" />
             <SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0" />
             <BarycentricMapping input="@.." output="@." />

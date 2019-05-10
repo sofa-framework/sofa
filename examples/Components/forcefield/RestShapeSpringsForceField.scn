@@ -17,7 +17,7 @@
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" />
             <Triangle group="1" />
-            <Line group="1" />
+            <LineCollisionModel group="1" />
             <Point group="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
@@ -40,7 +40,7 @@
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" />
             <Triangle group="1" />
-            <Line group="1" />
+            <LineCollisionModel group="1" />
             <Point group="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
@@ -60,7 +60,7 @@
 			<Mesh src="@loader"/>
 			<MechanicalObject src="@loader"/>
 			<Triangle group="1"/>
-			<Line group="1"/>
+			<LineCollisionModel group="1"/>
 			<Point group="1"/>
 			<RigidMapping input="@.." output="@."/>
 		</Node>
@@ -80,7 +80,7 @@
 			<Mesh src="@loader"/>
 			<MechanicalObject src="@loader"/>
 			<Triangle group="1"/>
-			<Line group="1"/>
+			<LineCollisionModel group="1"/>
 			<Point group="1"/>
 			<RigidMapping input="@.." output="@."/>
 		</Node>

@@ -47,7 +47,7 @@
         <Node name="Tool1CM">
           <RegularGrid nx="1" ny="2" nz="1" min="0 -0.350 0" max="0 0 0" />
           <MechanicalObject name="Endoscope Collision State"/>
-          <Line group="1"/>
+          <LineCollisionModel group="1"/>
           <Point group="1"/>
           <RigidMapping name="MM->CM mapping" input="@.." index="1"/>
         </Node>
@@ -63,7 +63,7 @@
           <Mesh/>
           <MechanicalObject name="CM" scale="0.001"  dy="0.025"/>
           <Triangle group="1"/>
-          <Line group="1"/>
+          <LineCollisionModel group="1"/>
           <Point group="1"/>
           <RigidMapping input="@.." output="@CM" index="2"/>
         </Node>
@@ -81,7 +81,7 @@
           <Mesh/>
           <MechanicalObject name="CM" scale="0.001"  dy="0.025" />
           <Triangle group="1"/>
-          <Line group="1"/>
+          <LineCollisionModel group="1"/>
           <Point group="1"/>
           <RigidMapping input="@.." output="@CM" index="3"/>
         </Node>
@@ -131,7 +131,7 @@
     <Mesh/>
     <MechanicalObject scale="0.1" dx="0.4" dy="-0.3" dz="0.4"/>
     <Triangle simulated="0" moving="0"/>
-    <Line simulated="0" moving="0"/>
+    <LineCollisionModel simulated="0" moving="0"/>
     <Point simulated="0" moving="0"/>
     <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0.0 0.4 0.6 0.2" scale="0.1" dx="0.4" dy="-0.3"  dz="0.4"/>
   </Node>

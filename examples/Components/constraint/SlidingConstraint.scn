@@ -25,7 +25,7 @@
             <Mesh filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
             <Triangle contactStiffness="0.1" />
-            <Line contactStiffness="0.1" />
+            <LineCollisionModel contactStiffness="0.1" />
             <Point contactStiffness="0.1" />
             <RigidMapping />
         </Node>
@@ -52,7 +52,7 @@
             <Mesh filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
             <Triangle contactStiffness="0.1" />
-            <Line contactStiffness="0.1" />
+            <LineCollisionModel contactStiffness="0.1" />
             <Point contactStiffness="0.1" />
             <RigidMapping />
         </Node>

@@ -18,7 +18,7 @@
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
                 <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Line name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
@@ -40,7 +40,7 @@
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
-            <Line name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>

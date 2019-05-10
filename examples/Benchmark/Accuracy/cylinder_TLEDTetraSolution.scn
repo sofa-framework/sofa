@@ -21,7 +21,7 @@
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="1.0" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <Point />
         </Node>
 	</Node>

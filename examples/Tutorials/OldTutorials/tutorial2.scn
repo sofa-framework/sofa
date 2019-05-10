@@ -60,7 +60,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <RigidMapping />
             <PlaneForceField normal="0 1 -0.5" d="-10" />
             <PlaneForceField normal="0 0 1" d="-50" />

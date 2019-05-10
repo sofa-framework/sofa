@@ -12,7 +12,7 @@
       <Mesh src="@loader"/>
       <MechanicalObject src="@loader" scale3d="1 1 1"/>
       <Triangle contactStiffness="200"/>
-      <Line     contactStiffness="@[-1].contactStiffness"/>
+      <LineCollisionModel     contactStiffness="@[-1].contactStiffness"/>
       <Point    contactStiffness="@[-1].contactStiffness" />
 	  <RigidMapping/>
 	</Node>

@@ -28,7 +28,7 @@ Using LCP contact detection and resolution:
                 <Mesh src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
                 <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Line name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
@@ -64,7 +64,7 @@ Using LCP contact detection and resolution:
             <Mesh src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" rx="180" rz="150" dx="-1.2" dy="-1.6" dz="3.55" />
             <Triangle name="instrument" contactStiffness="10" />
-            <Line name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>

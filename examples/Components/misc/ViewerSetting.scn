@@ -33,7 +33,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
+            <LineCollisionModel    selfCollision="0" />
             <Point  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
@@ -60,7 +60,7 @@
 			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Line simulated="false" moving="false" />
+            <LineCollisionModel simulated="false" moving="false" />
             <Point simulated="false"  moving="false"/>
 		</Node>
 		<Node name="Blobs">
@@ -68,7 +68,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
 			<Triangle simulated="false" moving="false"/>
-            <Line simulated="false" moving="false"/>
+            <LineCollisionModel simulated="false" moving="false"/>
             <Point simulated="false" moving="false"/>
 		</Node>
 
@@ -77,7 +77,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
 			<Triangle simulated="false" moving="false"/>
-            <Line simulated="false" moving="false"/>
+            <LineCollisionModel simulated="false" moving="false"/>
             <Point simulated="false" moving="false"/>
 		</Node>
 

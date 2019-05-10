@@ -53,7 +53,7 @@
 					<IdentityMapping input="@../.." output="@Visual1"/>
 
 					<Triangle group="2" name="cube1_collis_tri"/>
-					<Line group="2"  name="cube1_collis_line"/>
+					<LineCollisionModel group="2"  name="cube1_collis_line"/>
 					<Point group="2" name="cube2_collis_point"/>
 				</Node>
 			</Node>
@@ -91,7 +91,7 @@
 					<IdentityMapping input="@../.." output="@Visual2"/>
 
 					<Triangle group="3" name="cube2_collis_tri"/>
-					<Line group="3"  name="cube2_collis_line"/>
+					<LineCollisionModel group="3"  name="cube2_collis_line"/>
 					<Point group="3" name="cube2_collis_point"/>
 				</Node>
 			</Node>

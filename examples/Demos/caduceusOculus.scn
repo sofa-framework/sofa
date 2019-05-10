@@ -33,7 +33,7 @@
 			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<TTriangleModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" />
-			<TLineModel template="Vec3d" name="tLineModel1"  selfCollision="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel1"  selfCollision="0" />
 			<TPointModel template="Vec3d" name="tPointModel1"  selfCollision="0" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="barycentricMap1"  tags="Visu"  input="@.."  output="@." />
 		</Node>
@@ -55,7 +55,7 @@
 			<MeshObjLoader name="loader"  tags="Visu"  filename="mesh/collision_batons.obj" />
 			<MeshTopology name="meshTopology2"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
-			<TLineModel template="Vec3d" name="tLineModel2"  moving="0"  simulated="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel2"  moving="0"  simulated="0" />
 			<TPointModel template="Vec3d" name="tPointModel2"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Blobs"  >
@@ -63,7 +63,7 @@
 			<MeshTopology name="meshTopology3"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<TTriangleModel template="Vec3d" name="tTriangleModel2"  moving="0"  simulated="0" />
-			<TLineModel template="Vec3d" name="tLineModel3"  moving="0"  simulated="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel3"  moving="0"  simulated="0" />
 			<TPointModel template="Vec3d" name="tPointModel3"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Foot"  >
@@ -71,7 +71,7 @@
 			<MeshTopology name="meshTopology4"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<TTriangleModel template="Vec3d" name="tTriangleModel3"  moving="0"  simulated="0" />
-			<TLineModel template="Vec3d" name="tLineModel4"  moving="0"  simulated="0" />
+			<LineCollisionModel template="Vec3d" name="tLineModel4"  moving="0"  simulated="0" />
 			<TPointModel template="Vec3d" name="tPointModel4"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Visu"  tags="Visual"  >

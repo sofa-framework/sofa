@@ -20,7 +20,7 @@
             <Mesh name="Cube1 Mesh" filename="mesh/cube.obj" />
             <MechanicalObject name="Collision Cube1" />
             <Triangle name="TriangleModel1" />
-            <Line name="Cube1 Edge For Collision" />
+            <LineCollisionModel name="Cube1 Edge For Collision" />
             <Point name="Cube1 Point For Collision" />
             <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube1 RigidDOF" object2="Collision Cube1" />
         </Node>-->
@@ -39,7 +39,7 @@
             <Mesh name="Cube Mesh2" filename="mesh/cube.obj" />
             <MechanicalObject name="Collision Cube2" scale="2 2 2" />
             <Triangle name="TriangleModel2" />
-            <Line name="Cube2 Edge For Collision" />
+            <LineCollisionModel name="Cube2 Edge For Collision" />
             <Point name="Cube2 Point For Collision" />
             <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube2 RigidDOF" object2="Collision Cube2" />
         </Node>-->

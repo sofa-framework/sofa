@@ -15,7 +15,7 @@
 		<Mesh src="@loader"/>
 		<MechanicalObject src="@loader" useMask="true"  translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 		<Triangle />
-		<Line />
+		<LineCollisionModel />
 		<Point />
 		<BarycentricMapping />
 	</Node>

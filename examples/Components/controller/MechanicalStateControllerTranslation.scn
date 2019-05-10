@@ -19,7 +19,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="50" />
             <Triangle />
-            <Line />
+            <LineCollisionModel />
             <Point />
             <RigidMapping />
         </Node>
