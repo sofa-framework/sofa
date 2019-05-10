@@ -37,7 +37,8 @@ namespace qt
 {
 QPixmap *WindowVisitor::icons[WindowVisitor::OTHER+1];
 
-WindowVisitor::WindowVisitor()
+WindowVisitor::WindowVisitor(QWidget *parent)
+    : QDialog(parent)
 {
     setupUi(this);
 

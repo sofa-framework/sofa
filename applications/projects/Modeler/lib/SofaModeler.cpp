@@ -342,7 +342,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
-    plugin_dialog = new SofaPluginManager();
+    plugin_dialog = new SofaPluginManager(this);
     plugin_dialog->hide();
 
 
