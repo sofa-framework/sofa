@@ -53,6 +53,8 @@ namespace gui
 namespace qt
 {
 
+typedef sofa::helper::system::thread::ctime_t ctime_t;
+
 /**
  * @brief The ProfilerChartView class is a overide of QtCharts::QChartView
  * to be able to catch mouse selection and update all widgets of \sa SofaWindowProfiler
@@ -128,17 +130,21 @@ public:
     class AnimationSubStepData
     {
     public:
-        AnimationSubStepData(int level, std::string name, SReal selfMs);
+        AnimationSubStepData(int level, std::string name, ctime_t start);
         virtual ~AnimationSubStepData();
 
-        int m_level;
-        std::string m_subStepName;
+        int m_level;        
+        std::string m_name;
+        int m_nbrCall;
+        ctime_t m_start;
+        ctime_t m_end;
+
+        std::string m_tag;
         SReal m_totalMs;
         SReal m_totalPercent;
         SReal m_selfMs;
         SReal m_selfPercent;
 
-        void addChild(AnimationSubStepData* child);
         void computeTimeAndPercentage(SReal invTotalMs);
 
         sofa::helper::vector<AnimationSubStepData*> m_children;
@@ -165,6 +171,8 @@ public:
         SReal m_totalMs;
 
         sofa::helper::vector<AnimationSubStepData*> m_subSteps;
+    protected:
+        bool processData(const std::string& idString);
     };
 
 protected:

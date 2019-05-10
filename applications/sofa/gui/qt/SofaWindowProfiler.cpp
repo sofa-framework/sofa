@@ -87,15 +87,20 @@ void ProfilerChartView::drawForeground(QPainter *painter, const QRectF &)
 
 
 
-
+// quick method to convert freq time into ms
+SReal convertInMs(ctime_t t, int nbIter=1)
+{
+    static SReal timer_freqd = SReal(CTime::getTicksPerSec());
+    return 1000.0 * SReal(t) / SReal (timer_freqd * nbIter);
+}
 
 ///////////////////////////////////////// AnimationSubStepData ///////////////////////////////////
 
-SofaWindowProfiler::AnimationSubStepData::AnimationSubStepData(int level, std::string name, SReal selfMs)
+SofaWindowProfiler::AnimationSubStepData::AnimationSubStepData(int level, std::string name, ctime_t start)
     : m_level(level)
-    , m_subStepName(name)
-    , m_totalMs(selfMs)
-    , m_selfMs(selfMs)
+    , m_name(name)
+    , m_nbrCall(1)
+    , m_start(start)
 {
 
 }
@@ -107,29 +112,6 @@ SofaWindowProfiler::AnimationSubStepData::~AnimationSubStepData()
 
     m_children.clear();
 }
-
-void SofaWindowProfiler::AnimationSubStepData::addChild(AnimationSubStepData* child)
-{
-    if (m_level + 1 == child->m_level) // direct child
-    {
-        m_children.push_back(child);
-    }
-    else //little child
-    {
-        if (m_children.empty()) // little child without child...
-        {
-            msg_error("SofaWindowProfiler") << "Problem when registering child: " << child->m_subStepName << " under parent: " << this->m_subStepName;
-
-            // quick adoption
-            AnimationSubStepData* achild = new AnimationSubStepData(m_level+1, "Step not registered", 0.0);
-            m_children.push_back(achild);
-        }
-
-        m_children.back()->addChild(child);
-    }
-    // will update the selfMS and percentage after tree has been built.
-}
-
 
 void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal invTotalMs)
 {
@@ -143,33 +125,25 @@ void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal in
         }
 
         // now that all children are update, compute ms and %
+        m_totalMs = convertInMs(m_end - m_start);
         m_selfMs = m_totalMs - totalChildrenMs;
 
         m_selfPercent = m_selfMs * invTotalMs;
         m_totalPercent = m_totalMs * invTotalMs;
-
-//        std::cout << m_subStepName << " -> m_selfMs: " << m_selfMs << " - " << m_selfPercent
-//                  << " | m_totalMs: " << m_totalMs << " - " << m_totalPercent << std::endl;
     }
     else // leaf
     {
-        if (m_totalMs != m_selfMs)
-            msg_warning("SofaWindowProfiler") << "m_totalMs: " << m_totalMs << " != m_selfMs: " << m_selfMs;
+        // compute ms:
+        m_totalMs = convertInMs(m_end - m_start);
+        if (m_nbrCall != 1)
+            m_selfMs = SReal(m_totalMs / m_nbrCall);
+        else
+            m_selfMs = m_totalMs;
 
         // compute %
         m_selfPercent = m_selfMs * invTotalMs;
         m_totalPercent = m_totalMs * invTotalMs;
-
-//        std::cout << m_subStepName << " -> m_selfMs: " << m_selfMs << " - " << m_selfPercent
-//                  << " | m_totalMs: " << m_totalMs << " - " << m_totalPercent << std::endl;
     }
-}
-
-// quick method to convert freq time into ms
-SReal convertInMs(ctime_t t, int nbIter=1)
-{
-    static SReal timer_freqd = SReal(CTime::getTicksPerSec());
-    return 1000.0 * SReal(t) / SReal (timer_freqd * nbIter);
 }
 
 
@@ -180,38 +154,105 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::st
     : m_stepIteration(step)
     , m_totalMs(0.0)
 {
-    helper::vector<helper::AdvancedTimer::IdStep> _steps = sofa::helper::AdvancedTimer::getSteps(idString, true);
-    std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData = sofa::helper::AdvancedTimer::getStepData(idString);
     m_subSteps.clear();
     
-    AnimationSubStepData* currentSubStep = nullptr;
-
-    bool totalSet = false;
-    for (unsigned int i=0; i<_steps.size(); i++)
+    bool res = processData(idString);
+    if (!res) // error clear data
     {
-        StepData& data = _stepData[_steps[i]];
-
-        if (data.level == 0) // main info
+        for (unsigned int i=0; i<m_subSteps.size(); ++i)
         {
-            m_totalMs = convertInMs(data.ttotal);
-            if (m_totalMs != 0.0) // total Ms not always set.. need to understand why
-                totalSet = true;
-            //std::cout << " -> totalMs: " << m_totalMs << std::endl;
+            delete m_subSteps[i];
+            m_subSteps[i] = nullptr;
         }
-        else if (data.level == 1) // direct substep
-        {
-            currentSubStep = new AnimationSubStepData(data.level, data.label, convertInMs(data.ttotal));
-            m_subSteps.push_back(currentSubStep);
+        m_subSteps.clear();
+    }
+}
 
-            if (!totalSet) // total Ms not always set.. sum totalMass of top level steps
-                m_totalMs += currentSubStep->m_totalMs;
-        }
-        else
+
+bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idString)
+{
+    helper::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
+
+    //AnimationSubStepData* currentSubStep = nullptr;
+    std::stack<AnimationSubStepData*> processStack;
+    int level = 0;
+    ctime_t t0 = 0;
+    ctime_t tEnd = CTime::getTime();
+    ctime_t tCurr;
+    for (unsigned int ri = 0; ri < _records.size(); ++ri)
+    {
+        const Record& rec = _records[ri];
+
+        if (level == 0) // main step
         {
-            AnimationSubStepData* child = new AnimationSubStepData(data.level, data.label, convertInMs(data.ttotal));
-            currentSubStep->addChild(child);
+            t0 = rec.time;
+            level++;
+            continue;
+        }
+
+        tCurr = rec.time - t0;
+
+        if (rec.type == Record::RBEGIN || rec.type == Record::RSTEP_BEGIN || rec.type == Record::RSTEP)
+        {
+//            for (int i=0; i<level; ++i)
+//                std::cout << ".";
+//            std::cout << level << " Begin: " << AdvancedTimer::IdStep(rec.id) << " at " << rec.time << " obj: " << rec.obj << " val: " << rec.val << std::endl;
+
+            AnimationSubStepData* currentSubStep = new AnimationSubStepData(level, AdvancedTimer::IdStep(rec.id), tCurr);
+            if (rec.obj)
+                currentSubStep->m_tag = std::string(AdvancedTimer::IdObj(rec.obj));
+
+            if (level == 1) // Add top level step
+                m_subSteps.push_back(currentSubStep);
+            else
+            {
+                if (processStack.empty())
+                {
+                    msg_error("SofaWindowProfiler") << "No parent found to add step: " << currentSubStep->m_name;
+                    delete currentSubStep;
+                    return false;
+                }
+                else if (processStack.top()->m_level + 1 != currentSubStep->m_level)
+                {
+                    msg_warning("SofaWindowProfiler") << "Problem of level coherence between step: " << currentSubStep->m_name << " with level: " << currentSubStep->m_level
+                                                      << " and parent step: " << processStack.top()->m_name << " with level: " << processStack.top()->m_level;
+                }
+
+                // add next step to the hierarchy
+                processStack.top()->m_children.push_back(currentSubStep);
+            }
+
+            // add step into the stack for parent/child order
+            processStack.push(currentSubStep);
+            ++level;
+        }
+
+        if (rec.type == Record::REND || rec.type == Record::RSTEP_END)
+        {
+            --level;
+//            for (int i=0; i<level; ++i)
+//                std::cout << ".";
+//            std::cout << level << " End: " << AdvancedTimer::IdStep(rec.id) << " at " << rec.time << " obj: " << rec.obj << " val: " << rec.val << std::endl;
+
+            if (processStack.empty())
+            {
+                msg_error("SofaWindowProfiler") << "End step with no step in the stack for: " << AdvancedTimer::IdStep(rec.id);
+                return false;
+            }
+            else if (AdvancedTimer::IdStep(rec.id) != processStack.top()->m_name)
+            {
+                msg_error("SofaWindowProfiler") << "Not the same name to end step between logs: " << AdvancedTimer::IdStep(rec.id) << " and top stack: " << processStack.top()->m_name;
+                return false;
+            }
+
+            AnimationSubStepData* currentSubStep = processStack.top();
+            processStack.pop();
+
+            currentSubStep->m_end = tCurr;
         }
     }
+    // compute total MS step:
+    m_totalMs = convertInMs(tEnd - t0);
 
     // update percentage
     SReal invTotalMs = 100 / m_totalMs;
@@ -219,6 +260,8 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::st
     {
         m_subSteps[i]->computeTimeAndPercentage(invTotalMs);
     }
+
+    return true;
 }
 
 SofaWindowProfiler::AnimationStepData::~AnimationStepData()
@@ -429,21 +472,22 @@ void SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep, QTreeWidgetI
     else
         treeItem = new QTreeWidgetItem(parent);
 
-    treeItem->setText(0, QString::fromStdString(subStep->m_subStepName));
+    treeItem->setText(0, QString::fromStdString(subStep->m_name));
     treeItem->setText(1, QString::number(subStep->m_totalPercent, 'g', 2));
     treeItem->setText(2, QString::number(subStep->m_selfPercent, 'g', 2));
     treeItem->setText(3, QString::number(subStep->m_totalMs));
     treeItem->setText(4, QString::number(subStep->m_selfMs));
 
-    if (parent == nullptr)
-    {
-        treeItem->setExpanded(true);
+    if (subStep->m_level <= 1)
+    {        
         QFont font = QApplication::font();
         font.setBold(true);
 
         for (int i=0; i<treeItem->columnCount(); i++)
             treeItem->setFont(i, font);
     }
+    if (subStep->m_level <= 3)
+        treeItem->setExpanded(true);
 
     // process children
     for (unsigned int i=0; i<subStep->m_children.size(); i++)
