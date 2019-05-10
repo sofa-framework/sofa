@@ -54,17 +54,6 @@ template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 
-class Record
-{
-public:
-    ctime_t time;
-    enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
-    unsigned int id;
-    unsigned int obj;
-    double val;
-    Record() : type(RNONE), id(0), obj(0), val(0) {}
-};
-
 class TimerData
 {
 public:
@@ -1403,6 +1392,12 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
     if (processData)
         data.process();
     return data.stepData;
+}
+
+helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
+{
+    TimerData& data = timers[id];
+    return data.records;
 }
 
 void AdvancedTimer::clearData(IdTimer id)

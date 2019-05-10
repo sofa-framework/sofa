@@ -123,6 +123,18 @@ namespace helper
 
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;
+
+class Record
+{
+public:
+    ctime_t time;
+    enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
+    unsigned int id;
+    unsigned int obj;
+    double val;
+    Record() : type(RNONE), id(0), obj(0), val(0) {}
+};
+
 class StepData
 {
 public:
@@ -337,6 +349,13 @@ public:
      * @return The timer StepData of each timer step inside a map
      */
     static std::map<AdvancedTimer::IdStep, StepData> getStepData(IdTimer id, bool processData = false);
+
+    /**
+     * @brief getRecords the vector of \sa Record of the AdvancedTimer given execution id.
+     * @param id IdTimer, id of the timer
+     * @return The timer full records inside a vector of \sa Record
+     */
+    static helper::vector<Record> getRecords(IdTimer id);
 
     /**
      * @brief clearDatato clear a specific Timer Data
