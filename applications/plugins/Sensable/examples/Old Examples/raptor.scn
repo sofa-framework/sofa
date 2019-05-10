@@ -23,7 +23,7 @@
 			<MechanicalObject src="@loader" name="raptorState" rotation="0 0 90"/>		
 			<Triangle name="raptor" contactStiffness="100" simulated="0" moving="0"/>
 			<LineCollisionModel name="raptor" contactStiffness="100" simulated="0" moving="0"/>	
-			<Point name="raptor" contactStiffness="100" simulated="0" moving="0"/>	
+			<PointCollisionModel name="raptor" contactStiffness="100" simulated="0" moving="0"/>	
 		</Node>
 	</Node>
 	
@@ -60,7 +60,7 @@
 			<Mesh src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<LineCollisionModel name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" /> 
+			<PointCollisionModel name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField  object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />

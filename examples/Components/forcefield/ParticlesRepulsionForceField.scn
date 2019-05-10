@@ -11,7 +11,7 @@
         <!--
 		<Triangle simulated="0" moving="0" />
 		<LineCollisionModel simulated="0" moving="0" />
-		<Point simulated="0" moving="0" />
+		<PointCollisionModel simulated="0" moving="0" />
 			  -->
         <Node name="Visu">
             <OglModel name="Visual" color="red" />

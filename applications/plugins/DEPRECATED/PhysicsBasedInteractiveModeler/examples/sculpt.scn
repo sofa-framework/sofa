@@ -15,7 +15,7 @@
 		<TriangleSetGeometryAlgorithms name="Geo" template="Vec3d" />
 		<!-- 		<Mesh /> -->
 		<MechanicalObject name="Collision" rx="20" rz="5"/>
-<!--		<Point />
+<!--		<PointCollisionModel />
 		<LineCollisionModel />-->
 		<Triangle />
 		<Node > 

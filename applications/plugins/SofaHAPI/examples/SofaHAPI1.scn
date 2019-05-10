@@ -46,7 +46,7 @@
 			<MechanicalObject name="CM" />
 			<Triangle bothSide="true" group="1" color="0 0 1 1" />
 			<LineCollisionModel  bothSide="true" group="1" />
-			<Point bothSide="true" group="1" />
+			<PointCollisionModel bothSide="true" group="1" />
 			<RigidMapping />
 		</Node>	
 
@@ -100,7 +100,7 @@
           <MechanicalObject />
           <Triangle name="CMT" simulated="0" moving="0" />
           <LineCollisionModel name="CML"  simulated="0" moving="0" />
-          <Point name="CMP"  simulated="0" moving="0" />
+          <PointCollisionModel name="CMP"  simulated="0" moving="0" />
           <RigidMapping />
         </Node>
     </Node>

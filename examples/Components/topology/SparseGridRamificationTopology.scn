@@ -22,7 +22,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle />
-            <Point />
+            <PointCollisionModel />
             <LineCollisionModel />
             <BarycentricMapping />
         </Node>
@@ -43,7 +43,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle />
-            <Point />
+            <PointCollisionModel />
             <LineCollisionModel />
             <BarycentricMapping />
         </Node>
@@ -64,7 +64,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle />
-            <Point />
+            <PointCollisionModel />
             <LineCollisionModel />
             <BarycentricMapping />
         </Node>

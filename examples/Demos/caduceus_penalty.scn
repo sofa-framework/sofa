@@ -29,7 +29,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <Triangle  selfCollision="0"  contactStiffness="10"/>
             <LineCollisionModel    selfCollision="0" contactStiffness="10"/>
-            <Point  selfCollision="0" contactStiffness="10"/>
+            <PointCollisionModel  selfCollision="0" contactStiffness="10"/>
             <BarycentricMapping name="barymeca" input="@.." output="@." />
         </Node>
 

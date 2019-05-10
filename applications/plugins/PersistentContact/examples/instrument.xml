@@ -23,7 +23,7 @@
 					<Mesh src="@ml"/>
 					<MechanicalObject src="@ml" name="CM" rx="180"/>
 					<LineCollisionModel name="FGL Line" proximity="1.5" group="11"/>   
-					<Point name="FGL Point" proximity="1.5" group="11"/>
+					<PointCollisionModel name="FGL Point" proximity="1.5" group="11"/>
 					<RigidMapping name="mapping1" input="@../GrasperDOFs" output="@CM" index="3"/>
 				</Node>
 				
@@ -37,7 +37,7 @@
 					<Mesh src="@ml"/>
 					<MechanicalObject src="@ml" name="CM" rx="180"/>
 					<LineCollisionModel name="SGL Line" proximity="1.5" group="11"/>
-					<Point name="SGL Point" proximity="1.5" group="11"/>
+					<PointCollisionModel name="SGL Point" proximity="1.5" group="11"/>
 					<RigidMapping name="mapping2" input="@../GrasperDOFs" output="@CM" index="4"/>
 				</Node>
 				

@@ -14,7 +14,7 @@
     <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
     <Triangle name="Floor" simulated="0" moving="0"  group='2'/>
     <LineCollisionModel name="Floor" simulated="0" moving="0" group='2'/>
-    <Point name="Floor" simulated="0" moving="0" group='2'/>
+    <PointCollisionModel name="Floor" simulated="0" moving="0" group='2'/>
     <OglModel name="FloorV" src="@loader" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
   </Node>
 

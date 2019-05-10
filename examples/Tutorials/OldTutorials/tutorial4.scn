@@ -21,7 +21,7 @@
             <MechanicalObject src="@loader"/>
             <Triangle />
             <LineCollisionModel />
-            <Point />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -42,7 +42,7 @@
             <MechanicalObject src="@loader"/>
             <Triangle />
             <LineCollisionModel />
-            <Point />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -75,7 +75,7 @@
             <MechanicalObject src="@loader"/>
             <Triangle />
             <LineCollisionModel />
-            <Point />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -85,7 +85,7 @@
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
         <Triangle name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" notexturename="textures/floor.bmp" color="gray" dy="-10" />
     </Node>
 </Node>

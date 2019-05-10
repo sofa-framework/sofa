@@ -44,7 +44,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <Triangle  selfCollision="1" />
             <LineCollisionModel    selfCollision="1" />
-            <Point  selfCollision="1" />
+            <PointCollisionModel  selfCollision="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 
@@ -79,7 +79,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <LineCollisionModel simulated="false" moving="false" proximity="1.4" />
-            <Point simulated="false"  moving="false" proximity="1.4"/>
+            <PointCollisionModel simulated="false"  moving="false" proximity="1.4"/>
         </Node>
         
         <Node name="Blobs">
@@ -89,7 +89,7 @@
             <RigidMapping/>
             <Triangle simulated="false" moving="false" proximity="1" />
             <LineCollisionModel simulated="false" moving="false" proximity="1" />
-            <Point simulated="false" moving="false" proximity="1" />
+            <PointCollisionModel simulated="false" moving="false" proximity="1" />
         </Node>
 
         <Node name="Foot">
@@ -99,7 +99,7 @@
             <RigidMapping/>
             <Triangle simulated="false" moving="false" proximity="1" />
             <LineCollisionModel simulated="false" moving="false" proximity="1" />
-            <Point simulated="false" moving="false" proximity="1" />
+            <PointCollisionModel simulated="false" moving="false" proximity="1" />
         </Node>
 
 

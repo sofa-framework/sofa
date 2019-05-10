@@ -40,7 +40,7 @@
 				<MechanicalObject src="@meshLoader" name="MichelleCM" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
 				<Triangle color="1 0 0 0.3" contactStiffness="0.1" group="5"/>
 				<LineCollisionModel color="1 0 0 1" group="5"/>
-				<Point color="1 0 0 1" group="5"/>
+				<PointCollisionModel color="1 0 0 1" group="5"/>
 				<BarycentricMapping name="TOR1_CMMAP" input="@.." output="@."/>
 			</Node>
 		</Node>
@@ -74,7 +74,7 @@
 				<MechanicalObject src="@meshLoader" name="MichelleCM" dx="30" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
 				<Triangle color="0 1 0 0.3" contactStiffness="0.1" group="5"/>
 				<LineCollisionModel color="0 1 0 1" group="5"/>
-				<Point color="0 1 0 1" group="5"/>
+				<PointCollisionModel color="0 1 0 1" group="5"/>
 				<BarycentricMapping name="TOR2_CMMAP" input="@.." output="@."/>
 			</Node>
 			

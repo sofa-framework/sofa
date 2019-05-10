@@ -17,7 +17,7 @@
         <MechanicalObject src="@loader" scale="5.0" />
         <Triangle simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <LineCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
-        <Point simulated="0" moving="0" name="Torus1Triangle" group="1" />
+        <PointCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="0.5 0.5 0.5 1.0" scale="5.0" />
     </Node>
 	
@@ -37,7 +37,7 @@
             <MechanicalObject src="@loader" scale="5.0" />
             <Triangle name="Torus2Triangle" group="2" />
             <LineCollisionModel name="Torus2Triangle" group="2" />
-            <Point name="Torus2Triangle" group="2" />
+            <PointCollisionModel name="Torus2Triangle" group="2" />
             <RigidMapping />
         </Node>
     </Node>
@@ -58,7 +58,7 @@
             <MechanicalObject src="@loader" scale="5.0" />
             <Triangle name="Torus3Triangle" group="3" />
             <LineCollisionModel name="Torus3Triangle" group="3" />
-            <Point name="Torus3Triangle" group="3" />
+            <PointCollisionModel name="Torus3Triangle" group="3" />
             <RigidMapping />
         </Node>
     </Node>
@@ -79,7 +79,7 @@
             <MechanicalObject src="@loader" scale="5.0" />
             <Triangle name="Torus4Triangle" group="4" />
             <LineCollisionModel name="Torus4Line" group="4" />
-            <Point name="Torus4Point" group="4" />
+            <PointCollisionModel name="Torus4Point" group="4" />
             <RigidMapping />
         </Node>
     </Node>

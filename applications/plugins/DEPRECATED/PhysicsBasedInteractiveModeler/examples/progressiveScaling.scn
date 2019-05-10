@@ -32,7 +32,7 @@
 				<MechanicalObject name="Collision" dx="10" scale="0.01"/>
 				<Triangle />
 				<LineCollisionModel />
-				<Point />
+				<PointCollisionModel />
 				<BarycentricMapping input="@.." output="@Collision"/> 
 			</Node>
 <!--			<Node name="Visual">
@@ -48,6 +48,6 @@
 		<MechanicalObject rest_position="@[-1].position" position="@[-1].position" />
 		<Triangle/>
 		<LineCollisionModel />
-		<Point />
+		<PointCollisionModel />
 	</Node>
 </Node>

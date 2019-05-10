@@ -24,7 +24,7 @@
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle /> <LineCollisionModel /> <Point /> <SubsetMapping />
+            <Triangle /> <LineCollisionModel /> <PointCollisionModel /> <SubsetMapping />
         </Node>
     </Node>
 	
@@ -46,7 +46,7 @@
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="50" dy="20" />
-            <Triangle /> <LineCollisionModel /> <Point /> <SubsetMapping />
+            <Triangle /> <LineCollisionModel /> <PointCollisionModel /> <SubsetMapping />
         </Node>
     </Node>
 	
@@ -68,7 +68,7 @@
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="-30" dy="10" />
-            <Triangle /> <LineCollisionModel /> <Point /> <SubsetMapping />
+            <Triangle /> <LineCollisionModel /> <PointCollisionModel /> <SubsetMapping />
         </Node>
     </Node>
 	
@@ -78,7 +78,7 @@
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <Triangle name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
-        <Point name="FloorLine" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
         <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" scaleTex="0.2 0.2" dy="-10" scale="1.75" />
     </Node>
 </Node>

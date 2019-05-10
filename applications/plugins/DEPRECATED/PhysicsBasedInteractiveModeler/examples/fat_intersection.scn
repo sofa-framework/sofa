@@ -95,7 +95,7 @@
 				<MechanicalObject name="mObject" position="@[-1].output_position" />
 				<Triangle/>
 				<LineCollisionModel />
-				<Point />
+				<PointCollisionModel />
 				<BarycentricMapping input="@.." output="@mObject" />
 				<Node > 
 					<OglModel name="VisualModel" color="0.93 0.83 0.81 1.0"/>

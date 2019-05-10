@@ -29,7 +29,7 @@ Using LCP contact detection and resolution:
                 <MechanicalObject src="@../loader" name="toothState" />
                 <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
                 <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
                 <OglModel name="TeethVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
@@ -65,7 +65,7 @@ Using LCP contact detection and resolution:
             <MechanicalObject src="@loader" name="instrumentCollisionState" rx="180" rz="150" dx="-1.2" dy="-1.6" dz="3.55" />
             <Triangle name="instrument" contactStiffness="10" />
             <LineCollisionModel name="instrument" contactStiffness="10" />
-            <Point name="instrument" contactStiffness="10" />
+            <PointCollisionModel name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
         <VectorSpringForceField object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />

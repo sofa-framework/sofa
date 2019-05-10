@@ -25,7 +25,7 @@
                 <MechanicalObject src="@loader" scale="1.0" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -64,7 +64,7 @@
                 <MechanicalObject src="@loader" scale="0.3" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -95,7 +95,7 @@
             <MechanicalObject src="@loader" />
             <Triangle simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
-            <Point simulated="0" moving="0" />
+            <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="1 0 0 0.3" />
         </Node>
     </Node>

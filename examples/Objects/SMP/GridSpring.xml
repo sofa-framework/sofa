@@ -15,7 +15,7 @@
 		<MechanicalObject src="@loader" useMask="true"  />
 		<Triangle />
 		<LineCollisionModel />
-		<Point />
+		<PointCollisionModel />
 		<BarycentricMapping />
 	</Node>
 </Node>

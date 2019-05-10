@@ -22,7 +22,7 @@
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />
-            <Point contactStiffness="1" />
+            <PointCollisionModel contactStiffness="1" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -42,7 +42,7 @@
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="1" />
             <LineCollisionModel contactStiffness="1" />
-            <Point contactStiffness="1" />
+            <PointCollisionModel contactStiffness="1" />
             <BarycentricMapping />
         </Node>
     </Node>

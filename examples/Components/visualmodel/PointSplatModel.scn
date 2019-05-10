@@ -52,7 +52,7 @@
         <Mesh triangles="0 1 2  0 2 3" />
         <Triangle contactStiffness="20" moving="false" simulated="false" />
         <LineCollisionModel contactStiffness="20" moving="false" simulated="false" />
-        <Point contactStiffness="20" moving="false" simulated="false" />
+        <PointCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <OglModel name="VModel" color="blue" printLog="true" />
     </Node>
 </Node>

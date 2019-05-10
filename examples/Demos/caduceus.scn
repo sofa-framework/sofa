@@ -38,7 +38,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <TTriangleModel  selfCollision="0" />
             <LineCollisionModel    selfCollision="0" />
-            <TPointModel  selfCollision="0" />
+            <PointCollisionModel  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 
@@ -64,7 +64,7 @@
                  <MeshTopology src="@loader" />
                  <MechanicalObject src="@loader" name="CollisModel" />
                  <LineCollisionModel simulated="false" moving="false" />
-                 <TPointModel simulated="false"  moving="false"/>
+                 <PointCollisionModel simulated="false"  moving="false"/>
         </Node>
         <Node name="Blobs">
                  <MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
@@ -72,7 +72,7 @@
                  <MechanicalObject src="@loader" name="CollisModel" />
                  <TTriangleModel simulated="false" moving="false"/>
                  <LineCollisionModel simulated="false" moving="false"/>
-                 <TPointModel simulated="false" moving="false"/>
+                 <PointCollisionModel simulated="false" moving="false"/>
         </Node>
 
             <Node name="Foot">
@@ -81,7 +81,7 @@
             <MechanicalObject src="@loader" name="CollisModel" />
             <TTriangleModel simulated="false" moving="false"/>
             <LineCollisionModel simulated="false" moving="false"/>
-            <TPointModel simulated="false" moving="false"/>
+            <PointCollisionModel simulated="false" moving="false"/>
         </Node>
 
         <Node name="Visu" tags="Visual" >

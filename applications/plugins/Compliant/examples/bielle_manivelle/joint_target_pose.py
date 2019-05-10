@@ -8,10 +8,10 @@ scale = 1
 
 # parts of the mechanism
 parts = [ 
-    ["Corps","Corps.msh","1.36 0 0.0268 0 0 0 1","0 0 0 0 0 0 1","22.8 751 737", "2.1e+11","0.28","7.8e+3",1291.453/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","TPointModel","ExtVec3f","0.obj","Actor_Sensor_NA",],
-    ["Roue","Roue.msh","0 -0.00604 0.354 0 0 0 1","0 0 -0.148 0 0 0 1","105 106 205", "2.1e+11","0.28","7.8e+3",780.336/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","TPointModel","ExtVec3f","3.obj","Actor_Sensor_NA"],
-   ["Came","Came.msh","0 0 -0.00768 0 0 0 1","1.085 -0.072 0.33 0 0 0 1","40.5 40.6 0.331", "2.1e+11","0.28","7.8e+3",161.416/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","TPointModel","ExtVec3f","2.obj","Actor_Sensor_NA"],
-   ["Piston","Piston.msh","0 0 0.424 0 0 0 1","2.05 0 0.33 0 0 0 1","0.356 14.6 14.7", "2.1e+11","0.28","7.8e+3",132.759/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","TPointModel","ExtVec3f","1.obj","Actor_Sensor_NA"]
+    ["Corps","Corps.msh","1.36 0 0.0268 0 0 0 1","0 0 0 0 0 0 1","22.8 751 737", "2.1e+11","0.28","7.8e+3",1291.453/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","PointCollisionModel","ExtVec3f","0.obj","Actor_Sensor_NA",],
+    ["Roue","Roue.msh","0 -0.00604 0.354 0 0 0 1","0 0 -0.148 0 0 0 1","105 106 205", "2.1e+11","0.28","7.8e+3",780.336/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","PointCollisionModel","ExtVec3f","3.obj","Actor_Sensor_NA"],
+   ["Came","Came.msh","0 0 -0.00768 0 0 0 1","1.085 -0.072 0.33 0 0 0 1","40.5 40.6 0.331", "2.1e+11","0.28","7.8e+3",161.416/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","PointCollisionModel","ExtVec3f","2.obj","Actor_Sensor_NA"],
+   ["Piston","Piston.msh","0 0 0.424 0 0 0 1","2.05 0 0.33 0 0 0 1","0.356 14.6 14.7", "2.1e+11","0.28","7.8e+3",132.759/scale,"TetrahedronFEMForceField","Rigid","Vec3d","LineCollisionModel","PointCollisionModel","ExtVec3f","1.obj","Actor_Sensor_NA"]
 ]
 
 

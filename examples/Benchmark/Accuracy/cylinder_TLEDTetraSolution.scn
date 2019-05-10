@@ -22,7 +22,7 @@
             <MechanicalObject src="@loader" scale="1.0" />
             <Triangle />
             <LineCollisionModel />
-            <Point />
+            <PointCollisionModel />
         </Node>
 	</Node>
 

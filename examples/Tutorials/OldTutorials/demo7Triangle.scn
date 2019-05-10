@@ -24,7 +24,7 @@
                 <MechanicalObject src="@loader" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -41,7 +41,7 @@
                 <MechanicalObject src="@loader" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
             <Node name="Visu">
@@ -63,7 +63,7 @@
                 <MechanicalObject src="@loader" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -84,7 +84,7 @@
                 <MechanicalObject src="@loader" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -102,7 +102,7 @@
                 <MechanicalObject src="@loader" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -123,7 +123,7 @@
                 <MechanicalObject src="@loader" />
                 <Triangle />
                 <LineCollisionModel />
-                <Point />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -139,7 +139,7 @@
         <MechanicalObject src="@loader" dy="-20" />
         <Triangle name="Floor" simulated="0" moving="0" />
         <LineCollisionModel name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
     </Node>
 </Node>

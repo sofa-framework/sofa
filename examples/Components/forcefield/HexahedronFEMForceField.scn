@@ -16,6 +16,6 @@
         <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
         <Triangle />
         <LineCollisionModel />
-        <Point />
+        <PointCollisionModel />
     </Node>
 </Node>

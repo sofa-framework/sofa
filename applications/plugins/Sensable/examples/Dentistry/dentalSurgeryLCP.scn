@@ -26,7 +26,7 @@
 			<MechanicalObject src="@loader" name="toothState" />		
 			<Triangle name="tooth" contactStiffness="100" simulated="0" moving="0"/>
 			<LineCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
-			<Point name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
+			<PointCollisionModel name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
 		</Node>
 	</Node>
 	
@@ -74,7 +74,7 @@
 			<Mesh src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<LineCollisionModel name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" /> 
+			<PointCollisionModel name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >

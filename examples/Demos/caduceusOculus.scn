@@ -34,7 +34,7 @@
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<TTriangleModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" />
 			<LineCollisionModel template="Vec3d" name="tLineModel1"  selfCollision="0" />
-			<TPointModel template="Vec3d" name="tPointModel1"  selfCollision="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel1"  selfCollision="0" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="barycentricMap1"  tags="Visu"  input="@.."  output="@." />
 		</Node>
 		<Node 	 name="VisuBody"  tags="Visual"  >
@@ -56,7 +56,7 @@
 			<MeshTopology name="meshTopology2"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<LineCollisionModel template="Vec3d" name="tLineModel2"  moving="0"  simulated="0" />
-			<TPointModel template="Vec3d" name="tPointModel2"  moving="0"  simulated="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel2"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Blobs"  >
 			<MeshObjLoader name="loader"  tags="Visu"  filename="mesh/collision_boules_V3.obj" />
@@ -64,7 +64,7 @@
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<TTriangleModel template="Vec3d" name="tTriangleModel2"  moving="0"  simulated="0" />
 			<LineCollisionModel template="Vec3d" name="tLineModel3"  moving="0"  simulated="0" />
-			<TPointModel template="Vec3d" name="tPointModel3"  moving="0"  simulated="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel3"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Foot"  >
 			<MeshObjLoader name="loader"  tags="Visu"  filename="mesh/collision_pied.obj" />
@@ -72,7 +72,7 @@
 			<MechanicalObject template="Vec3d" name="CollisModel"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
 			<TTriangleModel template="Vec3d" name="tTriangleModel3"  moving="0"  simulated="0" />
 			<LineCollisionModel template="Vec3d" name="tLineModel4"  moving="0"  simulated="0" />
-			<TPointModel template="Vec3d" name="tPointModel4"  moving="0"  simulated="0" />
+			<PointCollisionModel template="Vec3d" name="tPointModel4"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Visu"  tags="Visual"  >
 			<OglModel template="ExtVec3d" name="OglModel"  tags="Visu"  src="@../../loader_SOFA_pod"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />

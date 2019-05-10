@@ -20,7 +20,7 @@
 		<MechanicalObject dx="0" dy="0" dz="0" scale="1.0"/>
 		<Triangle />
 		<LineCollisionModel />
-		<Point />
+		<PointCollisionModel />
 		<BarycentricMapping />
 	</Node>
 </Node>

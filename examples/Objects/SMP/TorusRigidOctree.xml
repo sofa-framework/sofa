@@ -13,7 +13,7 @@
 		<MechanicalObject scale="1.0" />
 		<TriangleOctree />
 		<LineCollisionModel />
-		<Point />
+		<PointCollisionModel />
 		<RigidMapping />
 	</Node>
 </Node>

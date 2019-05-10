@@ -19,7 +19,7 @@
     <Node name="CM">
         <MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
         <LineCollisionModel />
-        <TPointModel />
+        <PointCollisionModel />
         <IdentityMapping/>
     </Node>
     
