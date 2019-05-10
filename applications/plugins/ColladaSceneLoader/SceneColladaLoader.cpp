@@ -571,15 +571,15 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                     if(generateCollisionModels.getValue())
                     {
-                        TTriangleModel<defaulttype::Vec3Types>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3Types> >();
+                        TriangleCollisionModel<defaulttype::Vec3Types>::SPtr currentTriangleCollisionModel = sofa::core::objectmodel::New<TriangleCollisionModel<defaulttype::Vec3Types> >();
                         {
-                            // adding the generated TTriangleModel to its parent Node
-                            currentSubNode->addObject(currentTTriangleModel);
+                            // adding the generated TriangleCollisionModel to its parent Node
+                            currentSubNode->addObject(currentTriangleCollisionModel);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
                                 nameStream << componentIndex++;
-                            currentTTriangleModel->setName(nameStream.str());
+                            currentTriangleCollisionModel->setName(nameStream.str());
                         }
 
                         LineCollisionModel<defaulttype::Vec3Types>::SPtr currentLineCollisionModel = sofa::core::objectmodel::New<LineCollisionModel<defaulttype::Vec3Types> >();
