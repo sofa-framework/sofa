@@ -54,14 +54,6 @@ if(SOFA_BUILD_MINIFLOWVR)
     list(APPEND EXTLIBS_TARGETS miniFlowVR)
 endif()
 
-option(SOFA_BUILD_ARTRACK
-"Build the ARTrack library distributed in the extlibs/ directory.  This library
-is used only by the ARTrack plugin."  OFF)
-if(SOFA_BUILD_ARTRACK)
-    add_subdirectory(ARTrack ARTrackLib)
-    list(APPEND EXTLIBS_TARGETS ARTrackLib)
-endif()
-
 option(SOFA_BUILD_METIS
 "Build the metis library distributed in the extlibs/ directory.  It is used only
 by the SparseLDLSolver component.  Note that this library is usually available
