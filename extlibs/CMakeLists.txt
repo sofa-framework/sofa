@@ -31,11 +31,6 @@ endif()
 ####################################
 
 ## Necessary ones
-#find_package(SuiteSparse QUIET)
-#message("SuiteSparse_FOUND = ${SuiteSparse_FOUND}")
-#if(NOT SuiteSparse_FOUND)
-#    add_subdirectory(SuiteSparse)
-#endif()
 
 find_package(CSparse QUIET)
 if(NOT CSparse_FOUND)
