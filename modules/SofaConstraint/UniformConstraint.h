@@ -34,9 +34,10 @@ public:
     void getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset) override;
 
     sofa::Data<bool> d_iterative;
+    sofa::Data<bool> d_constraintRestPos;
 protected:
 
-    unsigned m_constraintIndex;
+    unsigned int m_constraintIndex;
 
     UniformConstraint();
 };

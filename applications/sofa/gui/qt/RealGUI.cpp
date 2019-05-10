@@ -150,7 +150,11 @@ class QSOFAApplication : public QApplication
 public:
     QSOFAApplication(int &argc, char ** argv)
         : QApplication(argc,argv)
-    { }
+    {
+        QCoreApplication::setOrganizationName("Sofa Consortium");
+        QCoreApplication::setOrganizationDomain("sofa");
+        QCoreApplication::setApplicationName("runSofa");
+    }
 
 #if QT_VERSION < 0x050000
     static inline QString translate(const char * context, const char * key, const char * disambiguation,
@@ -206,6 +210,7 @@ public:
 
 BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
 {
+
     CreateApplication();
 
     // create interface
@@ -728,7 +733,6 @@ int RealGUI::closeGUI()
     settings.beginGroup("viewer");
     settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
     settings.endGroup();
-
     delete this;
     return 0;
 }

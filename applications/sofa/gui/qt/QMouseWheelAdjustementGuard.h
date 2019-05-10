@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
+#define SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
 
-#include "StructDataWidget.h"
-#include <sofa/helper/Factory.inl>
-#include <iostream>
+#include <QObject>
 
 namespace sofa
 {
@@ -33,21 +33,26 @@ namespace gui
 namespace qt
 {
 
-using sofa::helper::Creator;
-using sofa::helper::fixed_array;
-using namespace sofa::defaulttype;
+/// @brief Filter qt events to allows wheel event to only be accepted when the widget has focus.
+///
+/// To use it you need to do:
+///    myWidget->setFocusPolicy(Qt::StrongFocus);
+///    myWidget->installEventFilter(new MouseWheelWidgetAdjustmentGuard(ui.comboBox));
+///
+/// This code is grabbed from:
+/// https://stackoverflow.com/questions/5821802/qspinbox-inside-a-qscrollarea-how-to-prevent-spin-box-from-stealing-focus-when
+class QMouseWheelAdjustmentGuard : public QObject
+{
+public:
+    explicit QMouseWheelAdjustmentGuard(QObject *parent);
 
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,float> > > DWClass_RigidCoord2f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,double> > > DWClass_RigidCoord2d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<2,float> > > DWClass_RigidMass2f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<2,double> > > DWClass_RigidMass2d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,float> > > DWClass_RigidCoord3f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,double> > > DWClass_RigidCoord3d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,float> > > DWClass_RigidMass3f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,double> > > DWClass_RigidMass3d("default",true);
+protected:
+    bool eventFilter(QObject* o, QEvent* e) override;
+};
 
-} // namespace qt
+} /// namespace qt
+} /// namespace gui
+} /// namespace sofa
 
-} // namespace gui
+#endif /// SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
 
-} // namespace sofa

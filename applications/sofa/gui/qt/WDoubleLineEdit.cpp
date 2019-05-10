@@ -29,6 +29,7 @@ using std::cerr; using std::endl;
 WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(parent /*,name */)
 {
     setObjectName(name);
+    setFocusPolicy( Qt::StrongFocus );
 
     m_iPercent=-1;
     m_fMinValue=0.0;

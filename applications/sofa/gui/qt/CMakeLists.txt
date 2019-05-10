@@ -18,6 +18,7 @@ set(MOC_HEADER_FILES
     QRGBAColorPicker.h
     QModelViewTableUpdater.h
     QMouseOperations.h
+    QMouseWheelAdjustementGuard.h
     QSofaListView.h
     QSofaStatWidget.h
     QTabulationModifyObject.h
@@ -67,6 +68,7 @@ set(SOURCE_FILES
     QMenuFilesRecentlyOpened.cpp
     QModelViewTableUpdater.cpp
     QMouseOperations.cpp
+    QMouseWheelAdjustementGuard.cpp
     QSofaListView.cpp
     QSofaStatWidget.cpp
     QTabulationModifyObject.cpp

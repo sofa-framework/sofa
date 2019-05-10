@@ -132,7 +132,38 @@ DAGNode::~DAGNode()
 /// Create, add, then return the new child of this Node
 Node::SPtr DAGNode::createChild(const std::string& nodeName)
 {
-    DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
+    DAGNode::SPtr newchild;
+    if (nodeName.empty())
+    {
+        int i = 0;
+        std::string newName = "unnamed";
+        bool uid_found = false;
+        while (!uid_found)
+        {
+            uid_found = true;
+            for (const auto& c : this->child)
+            {
+                if (c->getName() == newName)
+                {
+                    newName = "unnamed" + std::to_string(++i);
+                    uid_found = true;
+                }
+            }
+            for (const auto& o : this->object)
+            {
+                if (o->getName() == newName)
+                {
+                    newName = "unnamed" + std::to_string(++i);
+                    uid_found = true;
+                }
+            }
+        }
+        msg_error("Node::createChild()") << "Empty string given to property 'name': Forcefully setting an empty name is forbidden.\n"
+                                      "Renaming to " + newName + " to avoid unexpected behaviors.";
+        newchild = sofa::core::objectmodel::New<DAGNode>(newName);
+    }
+    else
+        newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
     return std::move(newchild);
 }

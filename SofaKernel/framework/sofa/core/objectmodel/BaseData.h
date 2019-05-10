@@ -367,6 +367,36 @@ public:
     static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
 };
 
+/** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
+ *  and providing access to its data through a non-const void* ptr taking care of the
+ * beginEdit/endEdit pairs.
+ *
+ *  Advantadges of using a WriteAccessWithRawPtr are :
+ *
+ *  - It can be faster that the default methods and operators of the container,
+ *  as verifications and changes notifications can be handled in the accessor's
+ *  constructor and destructor instead of at each item access.
+ */
+class WriteAccessWithRawPtr
+{
+public:
+    WriteAccessWithRawPtr(BaseData* data)
+    {
+        m_data = data;
+        ptr = data->beginEditVoidPtr();
+    }
+
+    ~WriteAccessWithRawPtr()
+    {
+        m_data->endEditVoidPtr();
+    }
+
+    void*     ptr;
+private:
+    WriteAccessWithRawPtr(){}
+    BaseData* m_data;
+};
+
 } // namespace objectmodel
 
 } // namespace core
