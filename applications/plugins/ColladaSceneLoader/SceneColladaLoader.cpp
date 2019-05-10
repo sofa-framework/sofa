@@ -593,15 +593,15 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentLineCollisionModel->setName(nameStream.str());
                         }
 
-                        TPointModel<defaulttype::Vec3Types>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3Types> >();
+                        PointCollisionModel<defaulttype::Vec3Types>::SPtr currentPointCollisionModel = sofa::core::objectmodel::New<PointCollisionModel<defaulttype::Vec3Types> >();
                         {
-                            // adding the generated TPointModel to its parent Node
-                            currentSubNode->addObject(currentTPointModel);
+                            // adding the generated PointCollisionModel to its parent Node
+                            currentSubNode->addObject(currentPointCollisionModel);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
                                 nameStream << componentIndex++;
-                            currentTPointModel->setName(nameStream.str());
+                            currentPointCollisionModel->setName(nameStream.str());
                         }
                     }
 
