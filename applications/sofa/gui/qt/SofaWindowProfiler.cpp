@@ -176,17 +176,19 @@ SReal convertInMs(ctime_t t, int nbIter=1)
 
 ///////////////////////////////////////// AnimationStepData ///////////////////////////////////
 
-SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, helper::vector<AdvancedTimer::IdStep> _steps, std::map<AdvancedTimer::IdStep, sofa::helper::StepData> _stepData)
+SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::string& idString)
     : m_stepIteration(step)
     , m_totalMs(0.0)
 {
+    helper::vector<helper::AdvancedTimer::IdStep> _steps = sofa::helper::AdvancedTimer::getSteps(idString, true);
+    std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData = sofa::helper::AdvancedTimer::getStepData(idString);
     m_subSteps.clear();
-
+    
     AnimationSubStepData* currentSubStep = nullptr;
 
     bool totalSet = false;
     for (unsigned int i=0; i<_steps.size(); i++)
-    {        
+    {
         StepData& data = _stepData[_steps[i]];
 
         if (data.level == 0) // main info
@@ -276,7 +278,8 @@ void SofaWindowProfiler::activateATimer(bool activate)
 void SofaWindowProfiler::pushStepData()
 {
     m_profilingData.pop_front();
-    m_profilingData.push_back(new AnimationStepData(m_step, sofa::helper::AdvancedTimer::getSteps("Animate", true), sofa::helper::AdvancedTimer::getStepData("Animate")));
+    std::string idString = "Animate";
+    m_profilingData.push_back(new AnimationStepData(m_step, idString));
     m_step++;
 
     updateChart();

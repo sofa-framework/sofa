@@ -158,7 +158,7 @@ public:
             , m_totalMs(0.0)
         {}
 
-        AnimationStepData(int step, helper::vector<helper::AdvancedTimer::IdStep> _steps, std::map<sofa::helper::AdvancedTimer::IdStep, sofa::helper::StepData> _stepData);
+        AnimationStepData(int step, const std::string& idString);
 
         virtual ~AnimationStepData();
         int m_stepIteration;

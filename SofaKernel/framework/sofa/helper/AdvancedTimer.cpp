@@ -1402,10 +1402,7 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
     TimerData& data = timers[id];
     if (processData)
         data.process();
-
-    std::map<AdvancedTimer::IdStep, StepData> cpy = data.stepData;
-    data.clear();
-    return cpy;
+    return data.stepData;
 }
 
 void AdvancedTimer::clearData(IdTimer id)
