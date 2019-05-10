@@ -806,6 +806,9 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     {
         simulationGraph->expandPathFrom(expandedNodes);
     }
+
+    if (m_windowTimerProfiler)
+        m_windowTimerProfiler->resetGraph();
 }
 
 

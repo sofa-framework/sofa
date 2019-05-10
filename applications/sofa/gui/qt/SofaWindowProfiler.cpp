@@ -278,8 +278,28 @@ void SofaWindowProfiler::pushStepData()
     m_profilingData.pop_front();
     m_profilingData.push_back(new AnimationStepData(m_step, sofa::helper::AdvancedTimer::getSteps("Animate", true), sofa::helper::AdvancedTimer::getStepData("Animate")));
     m_step++;
-    sofa::helper::AdvancedTimer::clearData("Animate");
+
     updateChart();
+}
+
+
+void SofaWindowProfiler::resetGraph()
+{
+    if (m_step == 0)
+        return;
+
+    for(unsigned int i=0; i<m_bufferSize; i++)
+    {
+        m_series->replace(i, 0.0, 0.0);
+        if (m_profilingData[i] && m_profilingData[i]->m_stepIteration != -1)
+        {
+            delete m_profilingData[i];
+            m_profilingData[i] = new AnimationStepData();
+        }
+    }
+
+    step_scroller->setValue(1); // for rest by changing 2 times value
+    step_scroller->setValue(0);
 }
 
 

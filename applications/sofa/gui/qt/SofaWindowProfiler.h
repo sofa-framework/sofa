@@ -116,6 +116,9 @@ public:
     /// main method to iterate on the advanceTimer Data and update the info in the widgets
     void pushStepData();
 
+    /// Method to clear all Data and reset graph
+    void resetGraph();
+
     /**
      * @brief The AnimationSubStepData Internal class to store data for each step of the animation. Correspond to one AdvanceTimer::begin/end
      * Data stored/computed will be step name, its time in ms and the corresponding % inside the whole step.
