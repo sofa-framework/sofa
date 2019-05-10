@@ -23,6 +23,6 @@
 	</Node>
 	<Node>	<!-- target obtained from experimental data with a silicon with known mechanical properties-->
             <MechanicalObject position="0 -0.11625 0.128"/>
-            <Sphere radius='0.002' color="white"/>
+            <SphereCollisionModel radius='0.002' color="white"/>
         </Node>
 </Node>

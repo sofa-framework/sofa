@@ -17,7 +17,7 @@
 			<MechanicalObject name="collisDOFs" template="Vec3d" position="@./controller2DOFS.points" />
 			<EdgeSetTopologyContainer nbPoints="2" edges="0 1" />
 			<LineCollisionModel name="colliLine" group="1" />
-			<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
+			<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
 			<RigidMapping/>
 		</Node>
 	</Node>
@@ -32,7 +32,7 @@
 			<MechanicalObject name="collisDOFs" template="Vec3d" position="@./controller2DOFS.points" />
 			<EdgeSetTopologyContainer nbPoints="2" edges="0 1" />
 			<LineCollisionModel name="colliLine" group="1" />
-			<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
+			<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
 			<RigidMapping/>
 		</Node>
 	</Node>

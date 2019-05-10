@@ -18,7 +18,7 @@
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere name="CollisionModel" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <RigidMapping name="sphere mapping" />
         </Node>
     </Node>

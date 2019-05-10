@@ -30,7 +30,7 @@
         <!--
       <Node name="Collision">
         <MechanicalObject/>
-        <Sphere radius=".2" position="0 0 0 0 0 0" />
+        <SphereCollisionModel radius=".2" position="0 0 0 0 0 0" />
         <RigidMapping index="7" />
       </Node>
 -->
@@ -61,7 +61,7 @@
 -->
         <Node name="Collision">
             <MechanicalObject />
-            <Sphere radius=".2" position="0 0 0 0 0 0" />
+            <SphereCollisionModel radius=".2" position="0 0 0 0 0 0" />
             <RigidMapping index="1" />
         </Node>
     </Node>

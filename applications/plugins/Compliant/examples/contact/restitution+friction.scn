@@ -82,31 +82,31 @@
     <Node name="Ball 1">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 -10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction="0" contactRestitution="1" />
+    <SphereCollisionModel radius="1" contactFriction="0" contactRestitution="1" />
   </Node>
   
      <Node name="Ball 0.75">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 -5 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction="0" contactRestitution="0.75" />
+    <SphereCollisionModel radius="1" contactFriction="0" contactRestitution="0.75" />
   </Node>
    -
      <Node name="Ball 0.5">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 0 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction="0" contactRestitution="0.5" />
+    <SphereCollisionModel radius="1" contactFriction="0" contactRestitution="0.5" />
   </Node>
  
      <Node name="Ball 0.25">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 5 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction="0" contactRestitution="0.25" />
+    <SphereCollisionModel radius="1" contactFriction="0" contactRestitution="0.25" />
   </Node>
  
    <Node name="Ball 0">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction="0" contactRestitution="0" />
+    <SphereCollisionModel radius="1" contactFriction="0" contactRestitution="0" />
   </Node>
   
   
