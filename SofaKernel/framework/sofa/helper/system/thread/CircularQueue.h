@@ -23,7 +23,7 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H
 #define SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H
 
-#include "../atomic.h"
+#include <atomic>
 #include <sofa/helper/fixed_array.h>
 
 namespace sofa
