@@ -196,9 +196,9 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
         {
 //            for (int i=0; i<level; ++i)
 //                std::cout << ".";
-//            std::cout << level << " Begin: " << AdvancedTimer::IdStep(rec.id) << " at " << rec.time << " obj: " << rec.obj << " val: " << rec.val << std::endl;
+//            std::cout << level << " Begin: " << rec.label << " at " << rec.time << " obj: " << rec.obj << " val: " << rec.val << std::endl;
 
-            AnimationSubStepData* currentSubStep = new AnimationSubStepData(level, AdvancedTimer::IdStep(rec.id), tCurr);
+            AnimationSubStepData* currentSubStep = new AnimationSubStepData(level, rec.label, tCurr);
             if (rec.obj)
                 currentSubStep->m_tag = std::string(AdvancedTimer::IdObj(rec.obj));
 
@@ -232,16 +232,16 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
             --level;
 //            for (int i=0; i<level; ++i)
 //                std::cout << ".";
-//            std::cout << level << " End: " << AdvancedTimer::IdStep(rec.id) << " at " << rec.time << " obj: " << rec.obj << " val: " << rec.val << std::endl;
+//            std::cout << level << " End: " << rec.label << " at " << rec.time << " obj: " << rec.obj << " val: " << rec.val << std::endl;
 
             if (processStack.empty())
             {
-                msg_error("SofaWindowProfiler") << "End step with no step in the stack for: " << AdvancedTimer::IdStep(rec.id);
+                msg_error("SofaWindowProfiler") << "End step with no step in the stack for: " << rec.label;
                 return false;
             }
-            else if (AdvancedTimer::IdStep(rec.id) != processStack.top()->m_name)
+            else if (rec.label != processStack.top()->m_name)
             {
-                msg_error("SofaWindowProfiler") << "Not the same name to end step between logs: " << AdvancedTimer::IdStep(rec.id) << " and top stack: " << processStack.top()->m_name;
+                msg_error("SofaWindowProfiler") << "Not the same name to end step between logs: " << rec.label << " and top stack: " << processStack.top()->m_name;
                 return false;
             }
 
@@ -346,6 +346,7 @@ void SofaWindowProfiler::resetGraph()
 
     step_scroller->setValue(1); // for rest by changing 2 times value
     step_scroller->setValue(0);
+    m_step = 0;
 }
 
 

@@ -129,6 +129,7 @@ class Record
 public:
     ctime_t time;
     enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
+    std::string label;
     unsigned int id;
     unsigned int obj;
     double val;
@@ -417,6 +418,9 @@ public:
     }
 
     // API using strings instead of Id, to remove the need for Id creation when no timing is recorded
+
+    static void begin(const char* idStr);
+    static void end(const char* idStr);
 
     static void stepBegin(const char* idStr);
     static void stepBegin(const char* idStr, const char* objStr);

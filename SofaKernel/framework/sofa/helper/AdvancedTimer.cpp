@@ -471,6 +471,16 @@ void AdvancedTimer::valAdd(IdVal id, double val)
 
 // API using strings instead of Id, to remove the need for Id creation when no timing is recorded
 
+void AdvancedTimer::begin(const char* idStr)
+{
+    begin(IdTimer(idStr));
+}
+
+void AdvancedTimer::end(const char* idStr)
+{
+    end(IdTimer(idStr));
+}
+
 void AdvancedTimer::stepBegin(const char* idStr)
 {
     helper::vector<Record>* curRecords = getCurRecords();
@@ -1397,6 +1407,8 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
 helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
 {
     TimerData& data = timers[id];
+    for (unsigned int i=0; i<data.records.size(); ++i)
+        data.records[i].label = std::string(AdvancedTimer::IdStep(data.records[i].id));
     return data.records;
 }
 
