@@ -54,7 +54,7 @@ SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObje
 SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
 
 
-void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/);
+SOFA_SOFAPYTHON_API void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/);
 
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
