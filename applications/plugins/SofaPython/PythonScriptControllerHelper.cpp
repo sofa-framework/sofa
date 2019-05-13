@@ -27,6 +27,9 @@ namespace helper {
 
 namespace internal {
 
+
+void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
+
 PyObject* PythonScriptController_valueToPyObject(bool param)
 {
     PyObject* value = nullptr;
