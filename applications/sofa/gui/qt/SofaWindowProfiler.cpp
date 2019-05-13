@@ -146,6 +146,30 @@ void SofaWindowProfiler::AnimationSubStepData::computeTimeAndPercentage(SReal in
     }
 }
 
+SReal SofaWindowProfiler::AnimationSubStepData::getStepMs(const std::string& stepName, const std::string& parentName)
+{
+    SReal result = 0.0;
+    if (parentName == m_name)
+    {
+        for (unsigned int i=0; i<m_children.size(); i++)
+        {
+            if (m_children[i]->m_name == stepName)
+                return m_children[i]->m_totalMs;
+        }
+    }
+    else
+    {
+        for (unsigned int i=0; i<m_children.size(); i++)
+        {
+            result = m_children[i]->getStepMs(stepName, parentName);
+            if (result != 0.0)
+                return result;
+        }
+    }
+
+    return 0.0;
+}
+
 
 
 ///////////////////////////////////////// AnimationStepData ///////////////////////////////////
@@ -264,6 +288,32 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
     return true;
 }
 
+
+SReal SofaWindowProfiler::AnimationStepData::getStepMs(const std::string& stepName, const std::string& parentName)
+{
+    SReal result = 0.0;
+    if (parentName == "")
+    {
+        for (unsigned int i=0; i<m_subSteps.size(); i++)
+        {
+            if (m_subSteps[i]->m_name == stepName)
+                return m_subSteps[i]->m_totalMs;
+        }
+    }
+    else
+    {
+        for (unsigned int i=0; i<m_subSteps.size(); i++)
+        {
+            result = m_subSteps[i]->getStepMs(stepName, parentName);
+            if (result != 0.0)
+                return result;
+        }
+    }
+
+    return 0.0;
+}
+
+
 SofaWindowProfiler::AnimationStepData::~AnimationStepData()
 {
     for (unsigned int i=0; i<m_subSteps.size(); ++i)
@@ -284,6 +334,8 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
     , m_bufferSize(100)
     , m_maxFps(0)
     , m_fpsMaxAxis(0)
+    , m_selectedStep("")
+    , m_selectedParentStep("")
 {
     setupUi(this);
 
@@ -337,6 +389,7 @@ void SofaWindowProfiler::resetGraph()
     for(unsigned int i=0; i<m_bufferSize; i++)
     {
         m_series->replace(i, 0.0, 0.0);
+        m_selectionSeries->replace(i, 0.0, 0.0);
         if (m_profilingData[i] && m_profilingData[i]->m_stepIteration != -1)
         {
             delete m_profilingData[i];
@@ -347,6 +400,8 @@ void SofaWindowProfiler::resetGraph()
     step_scroller->setValue(1); // for rest by changing 2 times value
     step_scroller->setValue(0);
     m_step = 0;
+    m_selectedStep = "";
+    m_selectedParentStep = "";
 }
 
 
@@ -360,26 +415,38 @@ void SofaWindowProfiler::createTreeView()
     // set column properties
     tree_steps->header()->setStretchLastSection(false);
     tree_steps->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+
+    connect(tree_steps, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onStepSelected(QTreeWidgetItem*,int)));
 }
 
 
 void SofaWindowProfiler::createChart()
 {
-    m_series = new QLineSeries();  
+    m_series = new QLineSeries();
+    QPen pen = m_series->pen();
+    pen.setColor(Qt::red);
+    pen.setWidth(2);
+    m_series->setName("Full Animation Step");
+    m_series->setPen(pen);
+
+    m_selectionSeries = new QLineSeries();
+    m_selectionSeries->setName("Selected SubStep");
 
     for(unsigned int i=0; i<m_bufferSize; i++)
     {
         m_series->append(i, 0.0f);
+        m_selectionSeries->append(i, 0.0f);
     }
 
     m_chart = new QChart();
-    m_chart->legend()->hide();
     m_chart->addSeries(m_series);
+    m_chart->addSeries(m_selectionSeries);
     QValueAxis *axisY = new QValueAxis();
     m_chart->addAxis(axisY, Qt::AlignLeft);
     m_series->attachAxis(axisY);
+    m_selectionSeries->attachAxis(axisY);
 
-    m_chart->setTitle("Animation step duration (in ms)");
+    m_chart->setTitle("Steps durations (in ms)");
     m_chart->axisY()->setRange(0, 1000);
 
     m_chartView = new ProfilerChartView(m_chart, this, m_bufferSize);
@@ -398,6 +465,12 @@ void SofaWindowProfiler::updateChart()
     for (auto* stepData : m_profilingData)
     {
         m_series->replace(cpt, cpt, stepData->m_totalMs);
+
+        if (m_selectedStep != "")
+        {
+            SReal value = stepData->getStepMs(m_selectedStep, m_selectedParentStep);
+            m_selectionSeries->replace(cpt, cpt, value);
+        }
 
         if (m_fpsMaxAxis < stepData->m_totalMs){
             m_fpsMaxAxis = stepData->m_totalMs;
@@ -493,6 +566,21 @@ void SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep, QTreeWidgetI
     // process children
     for (unsigned int i=0; i<subStep->m_children.size(); i++)
         addTreeItem(subStep->m_children[i], treeItem);
+}
+
+void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
+{
+    if (item->parent())
+        m_selectedParentStep = item->parent()->text(0).toStdString();
+    m_selectedStep = item->text(0).toStdString();
+
+    int cpt = 0;
+    for (auto* stepData : m_profilingData)
+    {
+        SReal value = stepData->getStepMs(m_selectedStep, m_selectedParentStep);
+        m_selectionSeries->replace(cpt, cpt, value);
+        cpt++;
+    }
 }
 
 

@@ -146,6 +146,8 @@ public:
         SReal m_selfPercent;
 
         void computeTimeAndPercentage(SReal invTotalMs);
+        // Method to get a given step duration (ms) given its name and parent name
+        SReal getStepMs(const std::string& stepName, const std::string& parentName);
 
         sofa::helper::vector<AnimationSubStepData*> m_children;
     };
@@ -165,6 +167,9 @@ public:
         {}
 
         AnimationStepData(int step, const std::string& idString);
+
+        // Method to get a given step duration (ms) given its name and parent name
+        SReal getStepMs(const std::string& stepName, const std::string& parentName);
 
         virtual ~AnimationStepData();
         int m_stepIteration;
@@ -199,6 +204,8 @@ public slots:
     void updateSummaryLabels(int step);
     /// Method called when a given @param step is triggered to update the QTreeView
     void updateTree(int step);
+    /// Method called when a QTreeWidgetItem is selected in the Tree view.
+    void onStepSelected(QTreeWidgetItem *item, int column);
 
 signals:
     void closeWindow(bool);
@@ -223,6 +230,13 @@ protected:
 
     /// Serie of step duration in ms to be plot on the graph. size = \sa m_bufferSize
     QtCharts::QLineSeries *m_series;
+
+    /// Serie of selection substep duration in ms to be plot on the graph. size = \sa m_bufferSize
+    QtCharts::QLineSeries *m_selectionSeries;
+    /// Name of the substep selected in the Tree
+    std::string m_selectedStep;
+    /// Name of the parent of the substep selected in the Tree
+    std::string m_selectedParentStep;
 };
 
 } // namespace qt
