@@ -40,6 +40,10 @@ namespace qt
 using namespace sofa::helper;
 using namespace QtCharts;
 
+typedef sofa::helper::system::thread::ctime_t ctime_t;
+typedef sofa::helper::system::thread::CTime CTime;
+
+
 ///////////////////////////////////////// ProfilerChartView ///////////////////////////////////
 
 ProfilerChartView::ProfilerChartView(QChart *chart, QWidget *parent, int bufferSize)

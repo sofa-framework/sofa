@@ -121,13 +121,10 @@ namespace helper
 
  */
 
-typedef sofa::helper::system::thread::ctime_t ctime_t;
-typedef sofa::helper::system::thread::CTime CTime;
-
 class Record
 {
 public:
-    ctime_t time;
+    sofa::helper::system::thread::ctime_t time;
     enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
     std::string label;
     unsigned int id;
@@ -141,13 +138,13 @@ class StepData
 public:
     int level;
     int num, numIt;
-    ctime_t tstart;
-    ctime_t tmin;
-    ctime_t tmax;
-    ctime_t ttotal;
-    ctime_t ttotal2;
+    sofa::helper::system::thread::ctime_t tstart;
+    sofa::helper::system::thread::ctime_t tmin;
+    sofa::helper::system::thread::ctime_t tmax;
+    sofa::helper::system::thread::ctime_t ttotal;
+    sofa::helper::system::thread::ctime_t ttotal2;
     int lastIt;
-    ctime_t lastTime;
+    sofa::helper::system::thread::ctime_t lastTime;
     std::string label;
     StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
 };
