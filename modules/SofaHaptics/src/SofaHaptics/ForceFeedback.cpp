@@ -31,8 +31,8 @@ namespace controller
 {
 
 ForceFeedback::ForceFeedback():
-    f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-  , indice(initData(&indice, 0, "indice", "Tool indice in the OmniDriver"))
+    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
 }
 

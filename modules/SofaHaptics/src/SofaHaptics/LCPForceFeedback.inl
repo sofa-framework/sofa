@@ -186,7 +186,7 @@ static std::mutex s_mtx;
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
 {    
-    if (!this->f_activate.getValue())
+    if (!this->d_activate.getValue())
     {
         return;
     }

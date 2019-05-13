@@ -318,6 +318,8 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
       m_windowTimerProfiler(nullptr),
 
+      m_sofaMouseManager(nullptr),
+
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
@@ -409,6 +411,9 @@ RealGUI::RealGUI ( const char* viewername)
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->addWidget(statWidget);
 
+    // create al widgets first
+    m_sofaMouseManager = new SofaMouseManager(this);
+
     createSimulationGraph();
 
     //disable widget, can be bothersome with objects with a lot of data
@@ -429,7 +434,7 @@ RealGUI::RealGUI ( const char* viewername)
 
     createAdvanceTimerProfilerWindow();
 
-    SofaMouseManager::getInstance()->hide();
+    m_sofaMouseManager->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
@@ -1145,8 +1150,8 @@ void RealGUI::showPluginManager()
 
 void RealGUI::showMouseManager()
 {
-    SofaMouseManager::getInstance()->updateContent();
-    SofaMouseManager::getInstance()->show();
+    m_sofaMouseManager->updateContent();
+    m_sofaMouseManager->show();
 }
 
 //------------------------------------
@@ -1275,7 +1280,7 @@ void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::View
 
 void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
 {
-    SofaMouseManager::getInstance()->updateOperation(button);
+    m_sofaMouseManager->updateOperation(button);
 }
 
 //------------------------------------
@@ -1704,7 +1709,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         qtViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
     }
 
-    SofaMouseManager::getInstance()->setPickHandler(_viewer->getPickHandler());
+   m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
@@ -1733,7 +1738,7 @@ void RealGUI::parseOptions()
 
 void RealGUI::createPluginManager()
 {
-    pluginManager_dialog = new SofaPluginManager();
+    pluginManager_dialog = new SofaPluginManager(this);
     pluginManager_dialog->hide();
     this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
     this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
@@ -1843,7 +1848,7 @@ void RealGUI::createWindowVisitor()
     this->exportVisitorCheckbox->hide();
 #else
     //Main window containing a QListView only
-    windowTraceVisitor = new WindowVisitor;
+    windowTraceVisitor = new WindowVisitor(this);
     windowTraceVisitor->graphView->setSortingEnabled(false);
     windowTraceVisitor->hide();
     connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
