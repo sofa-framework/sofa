@@ -95,8 +95,11 @@ class WindowVisitor;
 class GraphVisitor;
 #endif
 
-class SofaWindowProfiler;
 class SofaMouseManager;
+
+#ifdef HAS_QTCHART
+class SofaWindowProfiler;
+#endif
 
 namespace viewer
 {
@@ -162,9 +165,10 @@ private:
     WindowVisitor* windowTraceVisitor;    
     GraphVisitor* handleTraceVisitor;
 #endif
-    SofaWindowProfiler* m_windowTimerProfiler;
     SofaMouseManager* m_sofaMouseManager;
-
+#ifdef HAS_QTCHART
+    SofaWindowProfiler* m_windowTimerProfiler;
+#endif
 //-----------------OPTIONS DEFINITIONS------------------------}
 
 

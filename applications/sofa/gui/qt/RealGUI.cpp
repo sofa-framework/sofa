@@ -32,9 +32,13 @@
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include "WindowVisitor.h"
-#include "SofaWindowProfiler.h"
 #include "GraphVisitor.h"
 #endif
+
+#ifdef HAS_QTCHART
+#include "SofaWindowProfiler.h"
+#endif
+
 
 #ifdef SOFA_PML
 #include <sofa/simulation/Node.h>
@@ -812,8 +816,10 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         simulationGraph->expandPathFrom(expandedNodes);
     }
 
+#ifdef HAS_QTCHART
     if (m_windowTimerProfiler)
         m_windowTimerProfiler->resetGraph();
+#endif
 }
 
 
@@ -1859,10 +1865,14 @@ void RealGUI::createWindowVisitor()
 
 void RealGUI::createAdvanceTimerProfilerWindow()
 {
+#ifdef HAS_QTCHART
     m_windowTimerProfiler = new SofaWindowProfiler(this);
     m_windowTimerProfiler->hide();
     connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
     connect( m_windowTimerProfiler, SIGNAL(closeWindow(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
+#else
+    displayTimeProfiler->setEnabled(false);
+#endif
 }
 
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
@@ -2090,10 +2100,12 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
+#ifdef HAS_QTCHART
     if (displayTimeProfiler->isChecked())
     {
         m_windowTimerProfiler->pushStepData();
     }
+#endif
 
     sofa::helper::AdvancedTimer::end("Animate");
 }
@@ -2344,6 +2356,7 @@ void RealGUI::setExportVisitor ( bool )
 
 void RealGUI::displayProflierWindow (bool value)
 {
+#ifdef HAS_QTCHART
     if (m_windowTimerProfiler == nullptr)
         return;
 
@@ -2352,6 +2365,9 @@ void RealGUI::displayProflierWindow (bool value)
         m_windowTimerProfiler->show();
     else
         m_windowTimerProfiler->hide();
+#else
+    SOFA_UNUSED(value);
+#endif
 }
 
 

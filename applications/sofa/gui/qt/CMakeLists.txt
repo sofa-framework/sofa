@@ -31,7 +31,6 @@ set(MOC_HEADER_FILES
     SofaPluginManager.h
     WDoubleLineEdit.h
     panels/QDocBrowser.h
-    SofaWindowProfiler.h
 )
 
 # these header files do not need MOCcing
@@ -80,8 +79,7 @@ set(SOURCE_FILES
     SimpleDataWidget.cpp
     SofaMouseManager.cpp
     SofaPluginManager.cpp
-    SofaVideoRecorderManager.cpp
-    SofaWindowProfiler.cpp
+    SofaVideoRecorderManager.cpp    
     StructDataWidget.cpp
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
@@ -95,8 +93,7 @@ set(UI_FILES
     GUI.ui
     MouseManager.ui
     PluginManager.ui
-    VideoRecorderManager.ui
-    WindowProfiler.ui
+    VideoRecorderManager.ui    
 )
 
 
@@ -153,8 +150,20 @@ if(SOFAGUI_QGLVIEWER)
     list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
 
-if(SOFA_DUMP_VISITOR_INFO)
+# QChart
+find_package(Qt5 COMPONENTS Charts QUIET)
+if (Qt5Charts_FOUND)
+    list(APPEND MOC_HEADER_FILES SofaWindowProfiler.h)
+    list(APPEND SOURCE_FILES SofaWindowProfiler.cpp)
+    list(APPEND UI_FILES WindowProfiler.ui)
+
+    set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
+    set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Charts_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Charts_LIBRARIES})
+
+    add_definitions(-DHAS_QTCHART)
 endif()
+
 
 set(QT_USE_IMPORTED_TARGETS 1)
 
@@ -165,11 +174,11 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
-    find_package(Qt5 COMPONENTS Gui OpenGL Charts REQUIRED)
+    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
 
-    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Charts)
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Charts_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Charts_LIBRARIES})
+    set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+    set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
     # target_include_directories(${EXT_QT_INCLUDES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
