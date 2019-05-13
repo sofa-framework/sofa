@@ -97,7 +97,7 @@ class GraphVisitor;
 
 class SofaMouseManager;
 
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
 class SofaWindowProfiler;
 #endif
 
@@ -166,7 +166,7 @@ private:
     GraphVisitor* handleTraceVisitor;
 #endif
     SofaMouseManager* m_sofaMouseManager;
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
     SofaWindowProfiler* m_windowTimerProfiler;
 #endif
 //-----------------OPTIONS DEFINITIONS------------------------}

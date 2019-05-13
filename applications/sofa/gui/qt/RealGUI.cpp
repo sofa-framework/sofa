@@ -35,7 +35,7 @@
 #include "GraphVisitor.h"
 #endif
 
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
 #include "SofaWindowProfiler.h"
 #endif
 
@@ -320,7 +320,10 @@ RealGUI::RealGUI ( const char* viewername)
       windowTraceVisitor(NULL),
       handleTraceVisitor(NULL),
       #endif
+
+      #ifdef SOFAGUIQT_HAS_QTCHARTS
       m_windowTimerProfiler(nullptr),
+      #endif
 
       m_sofaMouseManager(nullptr),
 
@@ -816,7 +819,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         simulationGraph->expandPathFrom(expandedNodes);
     }
 
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
     if (m_windowTimerProfiler)
         m_windowTimerProfiler->resetGraph();
 #endif
@@ -1865,7 +1868,7 @@ void RealGUI::createWindowVisitor()
 
 void RealGUI::createAdvanceTimerProfilerWindow()
 {
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
     m_windowTimerProfiler = new SofaWindowProfiler(this);
     m_windowTimerProfiler->hide();
     connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
@@ -2100,7 +2103,7 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
     if (displayTimeProfiler->isChecked())
     {
         m_windowTimerProfiler->pushStepData();
@@ -2356,7 +2359,7 @@ void RealGUI::setExportVisitor ( bool )
 
 void RealGUI::displayProflierWindow (bool value)
 {
-#ifdef HAS_QTCHART
+#ifdef SOFAGUIQT_HAS_QTCHARTS
     if (m_windowTimerProfiler == nullptr)
         return;
 
