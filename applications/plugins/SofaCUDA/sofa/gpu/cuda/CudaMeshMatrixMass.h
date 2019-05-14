@@ -110,6 +110,20 @@ void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addForce(const core
 template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
+
+#ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+#endif //SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
+
 } // namespace mass
 
 } // namespace component

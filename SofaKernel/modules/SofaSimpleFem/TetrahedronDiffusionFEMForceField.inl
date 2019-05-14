@@ -65,7 +65,8 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
     edgeDiffusionCoefficient.clear();
     edgeDiffusionCoefficient.resize(nbEdges);
 
-    unsigned int i,j,k,l, nbTetra;
+    size_t nbTetra, i;
+    unsigned int j,k,l;
     typename DataTypes::Real val1,volume;
     typename DataTypes::Real diff;
     Vec3 point[4],shapeVector[4];
@@ -175,7 +176,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
 
     if (!topology)
     {
-        msg_error() << "Object is not able to acces topology!";
+        msg_error() << "Topology is not found";
         return;
     }
     if (topology->getNbTetrahedra()==0)
@@ -330,7 +331,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addForce (const core::Mechani
 
     Coord dp;
 
-    for(unsigned int i=0; i<nbEdges; i++ )
+    for(size_t i=0; i<nbEdges; i++ )
     {
         v0=topology->getEdge(i)[0];
         v1=topology->getEdge(i)[1];
@@ -370,7 +371,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::M
 
     Coord dp;
 
-    for(int i=0; i<(int)nbEdges; i++ )
+    for(size_t i=0; i<nbEdges; i++ )
     {
         v0=topology->getEdge(i)[0];
         v1=topology->getEdge(i)[1];
@@ -405,7 +406,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
 
     if((int)(mat->colSize()) != (topology->getNbPoints()*N) || (int)(mat->rowSize()) != (topology->getNbPoints()*N))
     {
-        serr<<"Wrong size of the input Matrix: need resize in addKToMatrix function."<<sendl;
+        msg_error()<<"Wrong size of the input Matrix: need resize in addKToMatrix function.";
         mat->resize(topology->getNbPoints()*N,topology->getNbPoints()*N);
     }
 
@@ -415,7 +416,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
     unsigned int v0,v1;
 
 
-    for(int i=0; i<(int)nbEdges; i++ )
+    for(size_t i=0; i<nbEdges; i++ )
     {
         v0=topology->getEdge(i)[0];
         v1=topology->getEdge(i)[1];

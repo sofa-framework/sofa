@@ -43,7 +43,22 @@ class NarrowPhaseDetection;
 class SOFA_BASE_COLLISION_API ContactListener : public virtual core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(ContactListener, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseObject);
+
+
+    ContactListener( CollisionModel* collModel1 = nullptr, CollisionModel* collModel2 = nullptr );
+    ~ContactListener() override ;
+
+    void init(void) override;
+
+    // DetectionOutput iterators
+    typedef helper::vector<const helper::vector<DetectionOutput>* >::const_iterator ContactVectorsIterator;
+    typedef helper::vector<DetectionOutput>::const_iterator ContactsIterator;
+
+    virtual void beginContact(const helper::vector<const helper::vector<DetectionOutput>* >& ) {}
+    virtual void endContact(void*) {}
+
+    void handleEvent( core::objectmodel::Event* event ) override;
 
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
@@ -124,31 +139,12 @@ public:
     }
 
 protected:
-    ContactListener( CollisionModel* collModel1 = nullptr, CollisionModel* collModel2 = nullptr );
-
-    ~ContactListener() override ;
-
-    // DetectionOutput iterators
-    typedef helper::vector<const helper::vector<DetectionOutput>* >::const_iterator ContactVectorsIterator;
-    typedef helper::vector<DetectionOutput>::const_iterator ContactsIterator;
-
-    virtual void beginContact(const helper::vector<const helper::vector<DetectionOutput>* >& ) {}
-    virtual void endContact(void*) {}
-
-    const CollisionModel* mCollisionModel1;
-    const CollisionModel* mCollisionModel2;
-
-
+    const CollisionModel* m_CollisionModel1;
+    const CollisionModel* m_CollisionModel2;
 
 private:
-
-    helper::vector<const helper::vector<DetectionOutput>* > mContactsVector;
-    core::collision::NarrowPhaseDetection* mNarrowPhase;
-
-    void init(void) override;
-    void handleEvent( core::objectmodel::Event* event ) override;
-
-
+    helper::vector<const helper::vector<DetectionOutput>* > m_ContactsVector;
+    core::collision::NarrowPhaseDetection* m_NarrowPhase;
 };
 
 } // namespace collision

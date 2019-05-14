@@ -35,4 +35,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 sofa_generate_package(NAME ${PROJECT_NAME}
                       VERSION ${PROJECT_VERSION}
                       TARGETS ${PROJECT_NAME}
-                      INCLUDE_ROOT_DIR ${PROJECT_NAME})
+                      INCLUDE_INSTALL_DIR ${PROJECT_NAME})

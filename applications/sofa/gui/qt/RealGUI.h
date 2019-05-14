@@ -95,6 +95,8 @@ class WindowVisitor;
 class GraphVisitor;
 #endif
 
+class SofaMouseManager;
+
 namespace viewer
 {
 class SofaViewer;
@@ -159,6 +161,9 @@ private:
     WindowVisitor* windowTraceVisitor;
     GraphVisitor* handleTraceVisitor;
 #endif
+
+    SofaMouseManager* m_sofaMouseManager;
+
 //-----------------OPTIONS DEFINITIONS------------------------}
 
 

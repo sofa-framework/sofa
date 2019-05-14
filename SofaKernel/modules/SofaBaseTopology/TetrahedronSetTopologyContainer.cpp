@@ -160,10 +160,53 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
     if (hasEdgesInTetrahedron()) // created by upper topology
         return;
 
+    bool foundEdge = true;
 
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    if (hasEdges())
+    {
+        /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
+        const size_t numTetra = getNumberOfTetrahedra();
+        const EdgeID numEdges = (EdgeID)getNumberOfEdges();
+        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
-    if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
+        m_edgesInTetrahedron.resize(numTetra);
+        /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
+        std::multimap<PointID, EdgeID> edgesAroundVertexMap;
+        std::multimap<PointID, EdgeID>::iterator it;
+
+        for (EdgeID edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
+        {
+            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
+            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
+        }
+        for ( size_t i = 0 ; (i < numTetra) && (foundEdge == true) ; ++i )
+        {
+            const Tetrahedron &t = m_tetrahedron[i];
+            // adding edge i in the edge shell of both points
+            for ( EdgeID j = 0 ; (j < 6) && (foundEdge == true) ; ++j )
+            {
+
+                //finding edge i in edge array
+                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[edgesInTetrahedronArray[j][0]]);
+
+                foundEdge=false;
+                for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
+                {
+                    EdgeID edge = (*it).second;
+                    if ( (m_edge[edge][0] == t[edgesInTetrahedronArray[j][0]] && m_edge[edge][1] == t[edgesInTetrahedronArray[j][1]]) || (m_edge[edge][0] == t[edgesInTetrahedronArray[j][1]] && m_edge[edge][1] == t[edgesInTetrahedronArray[j][0]]))
+                    {
+                        m_edgesInTetrahedron[i][j] = edge;
+                        foundEdge=true;
+                    }
+                }
+                if (CHECK_TOPOLOGY)
+                    msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
+            }
+        }
+    }
+
+    if(!hasEdges() || foundEdge == false) // To optimize, this method should be called without creating edgesArray before.
     {
         /// create edge array and triangle edge array at the same time
         const size_t numTetra = getNumberOfTetrahedra();
@@ -196,50 +239,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
             }
         }
     }
-    else
-    {
-        /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
-        const size_t numTetra = getNumberOfTetrahedra();
-        const EdgeID numEdges = (EdgeID)getNumberOfEdges();
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
-        m_edgesInTetrahedron.resize(numTetra);
-        /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
-        std::multimap<PointID, EdgeID> edgesAroundVertexMap;
-        std::multimap<PointID, EdgeID>::iterator it;
-        bool foundEdge;
-
-        for (EdgeID edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
-        {
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
-        }
-
-        for(size_t i=0; i<numTetra; ++i)
-        {
-            const Tetrahedron &t = m_tetrahedron[i];
-            // adding edge i in the edge shell of both points
-            for(EdgeID j=0; j<6; ++j)
-            {
-                //finding edge i in edge array
-                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[edgesInTetrahedronArray[j][0]]);
-
-                foundEdge=false;
-                for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
-                {
-                    EdgeID edge = (*it).second;
-                    if ( (m_edge[edge][0] == t[edgesInTetrahedronArray[j][0]] && m_edge[edge][1] == t[edgesInTetrahedronArray[j][1]]) || (m_edge[edge][0] == t[edgesInTetrahedronArray[j][1]] && m_edge[edge][1] == t[edgesInTetrahedronArray[j][0]]))
-                    {
-                        m_edgesInTetrahedron[i][j] = edge;
-                        foundEdge=true;
-                    }
-                }
-
-                if (CHECK_TOPOLOGY)
-                    msg_warning_when(!foundEdge) << " In getTetrahedronArray, cannot find edge for tetrahedron " << i << "and edge "<< j;
-            }
-        }
-    }
 }
 
 void TetrahedronSetTopologyContainer::createTriangleSetArray()
@@ -314,7 +314,6 @@ void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
 
     m_trianglesInTetrahedron.resize( getNumberOfTetrahedra());
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
-
     for(size_t i = 0; i < m_tetrahedron.size(); ++i)
     {
         const Tetrahedron &t=m_tetrahedron[i];
@@ -323,7 +322,19 @@ void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
         for (TriangleID j=0; j<4; ++j)
         {
             TriangleID triangleIndex = getTriangleIndex(t[(j+1)%4], t[(j+2)%4], t[(j+3)%4]);
-            m_trianglesInTetrahedron[i][j] = triangleIndex;
+            if (triangleIndex != InvalidID){
+                   m_trianglesInTetrahedron[i][j] = triangleIndex;
+            }
+            else
+            {
+                msg_error() << "Cannot find triangle " << j
+                    << " [" << t[(j + 1) % 4] << ", " << t[(j + 2) % 4] << ", " << t[(j + 3) % 4] << "]"                     
+                    << " in tetrahedron " << i;
+
+                m_trianglesInTetrahedron.clear();
+                return;
+            }
+
         }
     }
 }
@@ -373,12 +384,42 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
     // first clear potential previous buffer
     clearTetrahedraAroundTriangle();
 
-    if(!hasTrianglesInTetrahedron())
+    if (!hasTetrahedra()) // this method should only be called when tetrahedra exist
+        createTetrahedronSetArray();
+
+    if (hasTetrahedraAroundTriangle()) // created by upper topology (inside createTetrahedronSetArray)
+        return;
+
+    const size_t numTetra = getNumberOfTetrahedra();
+    if (numTetra == 0)
+    {
+        msg_warning() << "TetrahedraAroundTriangle buffer can't be created as no tetrahedra are present in this topology.";
+        return;
+    }
+
+    if (!hasTriangles()) // this method should only be called when triangles exist
+        createTriangleSetArray();
+    
+    const size_t numTriangles = getNumberOfTriangles();
+    if (numTriangles == 0)
+    {
+        msg_warning() << "TetrahedraAroundTriangle buffer can't be created as no triangles are present in this topology.";
+        return;
+    }
+
+
+    if(!hasTrianglesInTetrahedron()) 
         createTrianglesInTetrahedronArray();
 
-    m_tetrahedraAroundTriangle.resize( getNumberOfTriangles());
+    if (m_trianglesInTetrahedron.empty())
+    {
+        msg_warning() << "TetrahedraAroundTriangle buffer can't be created as trianglesInTetrahedron buffer creation failed.";
+        return;
+    }
 
-    for (size_t i=0; i<getNumberOfTetrahedra(); ++i)
+    m_tetrahedraAroundTriangle.resize(numTriangles);
+
+    for (size_t i=0; i<numTetra; ++i)
     {
         // adding tetrahedron i in the shell of all neighbors triangles
         for (TriangleID j=0; j<4; ++j)
@@ -658,63 +699,157 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
 
         if (hasTetrahedraAroundVertex())
         {
+            std::set <int> tetrahedronSet;
             for (size_t i = 0; i < m_tetrahedraAroundVertex.size(); ++i)
             {
                 const sofa::helper::vector<TetrahedronID> &tvs = m_tetrahedraAroundVertex[i];
                 for (size_t j = 0; j < tvs.size(); ++j)
                 {
-                    bool check_tetra_vertex_shell = (m_tetrahedron[tvs[j]][0] == i)
-                        || (m_tetrahedron[tvs[j]][1] == i)
-                        || (m_tetrahedron[tvs[j]][2] == i)
-                        || (m_tetrahedron[tvs[j]][3] == i);
+                    const Tetrahedron& tetrahedron = m_tetrahedron[tvs[j]];
+                    bool check_tetra_vertex_shell = (tetrahedron[0] == i)
+                        || (tetrahedron[1] == i)
+                        || (tetrahedron[2] == i)
+                        || (tetrahedron[3] == i);
                     if (!check_tetra_vertex_shell)
                     {
-                        msg_error() << "*** CHECK FAILED : check_tetra_vertex_shell, i = " << i << " , j = " << j ;
+                        msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: tetrahedron " << tvs[j] << ": [" << tetrahedron << "] not around vertex: " << i;
                         ret = false;
                     }
+
+                    tetrahedronSet.insert(tvs[j]);
                 }
             }
-        }
 
-        if (hasTetrahedraAroundEdge())
-        {
-            for (size_t i = 0; i < m_tetrahedraAroundEdge.size(); ++i)
+            if (tetrahedronSet.size() != m_tetrahedron.size())
             {
-                const sofa::helper::vector<TetrahedronID> &tes = m_tetrahedraAroundEdge[i];
-                for (size_t j = 0; j < tes.size(); ++j)
+                msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: found " << tetrahedronSet.size() << " tetrahedra in m_tetrahedraAroundVertex out of " << m_tetrahedron.size();
+                ret = false;
+            }
+        }
+
+
+        if (hasTetrahedraAroundTriangle() && hasTrianglesInTetrahedron())
+        {
+            // check first m_trianglesInTetrahedron
+            helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+
+            if (m_trianglesInTetrahedron.size() != m_tetrahedron.size())
+            {
+                msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: m_trianglesInTetrahedron size: " << m_trianglesInTetrahedron.size() << " not equal to " << m_tetrahedron.size();
+                ret = false;
+            }
+
+            for (size_t i=0; i<m_trianglesInTetrahedron.size(); ++i)
+            {
+                const Tetrahedron& tetrahedron = m_tetrahedron[i];
+                const TrianglesInTetrahedron& triInTetra = m_trianglesInTetrahedron[i];
+
+                for (unsigned int j=0; j<4; j++)
                 {
-                    bool check_tetra_edge_shell = (m_edgesInTetrahedron[tes[j]][0] == i)
-                        || (m_edgesInTetrahedron[tes[j]][1] == i)
-                        || (m_edgesInTetrahedron[tes[j]][2] == i)
-                        || (m_edgesInTetrahedron[tes[j]][3] == i)
-                        || (m_edgesInTetrahedron[tes[j]][4] == i)
-                        || (m_edgesInTetrahedron[tes[j]][5] == i);
-                    if (!check_tetra_edge_shell)
+                    const Triangle& triangle = m_triangle[triInTetra[j]];
+                    int cptFound = 0;
+                    for (unsigned int k=0; k<4; k++)
+                        if (triangle[0] == tetrahedron[k] || triangle[1] == tetrahedron[k] || triangle[2] == tetrahedron[k])
+                            cptFound++;
+
+                    if (cptFound != 3)
                     {
-                        msg_error() << "*** CHECK FAILED : check_tetra_edge_shell, i = " << i << " , j = " << j ;
+                        msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: triangle: " << triInTetra[j] << ": [" << triangle << "] not found in tetrahedron: " << i << ": " << tetrahedron;
                         ret = false;
                     }
                 }
             }
-        }
 
-        if (hasTetrahedraAroundTriangle())
-        {
+            // check m_tetrahedraAroundTriangle using checked m_trianglesInTetrahedron
+            std::set <int> tetrahedronSet;
             for (size_t i = 0; i < m_tetrahedraAroundTriangle.size(); ++i)
             {
                 const sofa::helper::vector<TetrahedronID> &tes = m_tetrahedraAroundTriangle[i];
                 for (size_t j = 0; j < tes.size(); ++j)
                 {
-                    bool check_tetra_triangle_shell = (m_trianglesInTetrahedron[tes[j]][0] == i)
-                        || (m_trianglesInTetrahedron[tes[j]][1] == i)
-                        || (m_trianglesInTetrahedron[tes[j]][2] == i)
-                        || (m_trianglesInTetrahedron[tes[j]][3] == i);
+                    const TrianglesInTetrahedron& triInTetra = m_trianglesInTetrahedron[tes[j]];
+                    bool check_tetra_triangle_shell = (triInTetra[0] == i)
+                        || (triInTetra[1] == i)
+                        || (triInTetra[2] == i)
+                        || (triInTetra[3] == i);
                     if (!check_tetra_triangle_shell)
                     {
-                        msg_error() << "*** CHECK FAILED : check_tetra_triangle_shell, i = " << i << " , j = " << j ;
+                        msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: tetrahedron: " << tes[j] << " with triangle: [" << triInTetra << "] not found around triangle: " << i;
+                        ret = false;
+                    }
+
+                    tetrahedronSet.insert(tes[j]);
+                }
+            }
+
+            if (tetrahedronSet.size() != m_tetrahedron.size())
+            {
+                msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: found " << tetrahedronSet.size() << " tetrahedra in m_tetrahedraAroundTriangle out of " << m_tetrahedron.size();
+                ret = false;
+            }
+        }
+
+
+        if (hasTetrahedraAroundEdge() && hasEdgesInTetrahedron())
+        {
+            // check first m_edgesInTetrahedron
+            helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+
+            if (m_edgesInTetrahedron.size() != m_tetrahedron.size())
+            {
+                msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: m_edgesInTetrahedron size: " << m_edgesInTetrahedron.size() << " not equal to " << m_tetrahedron.size();
+                ret = false;
+            }
+
+            for (size_t i=0; i<m_edgesInTetrahedron.size(); ++i)
+            {
+                const Tetrahedron& tetrahedron = m_tetrahedron[i];
+                const EdgesInTetrahedron& eInTetra = m_edgesInTetrahedron[i];
+
+                for (unsigned int j=0; j<6; j++)
+                {
+                    const Edge& edge = m_edge[eInTetra[j]];
+                    int cptFound = 0;
+                    for (unsigned int k=0; k<4; k++)
+                        if (edge[0] == tetrahedron[k] || edge[1] == tetrahedron[k])
+                            cptFound++;
+
+                    if (cptFound != 2)
+                    {
+                        msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: edge: " << eInTetra[j] << ": [" << edge << "] not found in tetrahedron: " << i << ": " << tetrahedron;
                         ret = false;
                     }
                 }
+            }
+
+            // check m_tetrahedraAroundEdge using checked m_edgesInTetrahedron
+            std::set <int> tetrahedronSet;
+            for (size_t i = 0; i < m_tetrahedraAroundEdge.size(); ++i)
+            {
+                const sofa::helper::vector<TetrahedronID> &tes = m_tetrahedraAroundEdge[i];
+                for (size_t j = 0; j < tes.size(); ++j)
+                {
+                    const EdgesInTetrahedron& eInTetra = m_edgesInTetrahedron[tes[j]];
+                    bool check_tetra_edge_shell = (eInTetra[0] == i)
+                        || (eInTetra[1] == i)
+                        || (eInTetra[2] == i)
+                        || (eInTetra[3] == i)
+                        || (eInTetra[4] == i)
+                        || (eInTetra[5] == i);
+                    if (!check_tetra_edge_shell)
+                    {
+                        msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: tetrahedron: " << tes[j] << " with edges: [" << eInTetra << "] not found around edge: " << i;
+                        ret = false;
+                    }
+
+                    tetrahedronSet.insert(tes[j]);
+                }
+            }
+
+            if (tetrahedronSet.size() != m_tetrahedron.size())
+            {
+                msg_error() << "TetrahedronSetTopologyContainer::checkTopology() failed: found " << tetrahedronSet.size() << " tetrahedra in m_tetrahedraAroundTriangle out of " << m_tetrahedron.size();
+                ret = false;
             }
         }
 
@@ -949,6 +1084,47 @@ const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContaine
 
 
     return elemAll;
+}
+
+
+const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getOppositeElement(TetraID elemID)
+{
+    VecTetraID elems;
+    if (!hasTetrahedraAroundTriangle())
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "In getOppositeElement: TetrahedraAroundTriangle shell array is empty.";
+        return elems;
+    }
+
+    if (!hasTrianglesInTetrahedron())
+    {
+        if(CHECK_TOPOLOGY)
+            msg_warning() << "In getOppositeElement: TrianglesInTetrahedron shell array is empty.";
+        return elems;
+    }
+
+    if (elemID > m_trianglesInTetrahedron.size())
+        return elems;
+
+    const TrianglesInTetrahedron& triInTetra = m_trianglesInTetrahedron[elemID];
+    elems.reserve(4);
+    for (auto triID: triInTetra) // loop on the 4 triangles
+    {
+        const TetrahedraAroundTriangle& tetraATri = m_tetrahedraAroundTriangle[triID];
+        if (tetraATri.size() > 2 )
+            msg_warning() << "In getOppositeElement: more than 2 tetrahedron around triangle: " << triID << " -> " << tetraATri;
+
+        if (tetraATri.size() == 1) // triangle on border
+            continue;
+
+        if (tetraATri[0] == elemID)
+            elems.push_back(tetraATri[1]);
+        else
+            elems.push_back(tetraATri[0]);
+    }
+
+    return elems;
 }
 
 /// @}

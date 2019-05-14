@@ -19,52 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PLUGINMANAGER_H
-#define SOFA_PLUGINMANAGER_H
+#ifndef SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
+#define SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
 
-#include <ui_PluginManager.h>
-#include "SofaGUIQt.h"
-#include <QTreeWidgetItem>
-
-#include <set>
-
+#include <QObject>
 
 namespace sofa
 {
+
 namespace gui
 {
+
 namespace qt
 {
 
-class SofaPluginManager: public QDialog, public Ui_PluginManager
+/// @brief Filter qt events to allows wheel event to only be accepted when the widget has focus.
+///
+/// To use it you need to do:
+///    myWidget->setFocusPolicy(Qt::StrongFocus);
+///    myWidget->installEventFilter(new MouseWheelWidgetAdjustmentGuard(ui.comboBox));
+///
+/// This code is grabbed from:
+/// https://stackoverflow.com/questions/5821802/qspinbox-inside-a-qscrollarea-how-to-prevent-spin-box-from-stealing-focus-when
+class QMouseWheelAdjustmentGuard : public QObject
 {
-    Q_OBJECT
 public:
-    SofaPluginManager(QWidget *parent);
+    explicit QMouseWheelAdjustmentGuard(QObject *parent);
 
-
-signals:
-
-    void libraryAdded();
-    void libraryRemoved();
-
-public slots:
-
-    void addLibrary();
-    void removeLibrary();
-
-    void updateComponentList();
-    void updateDescription();
-public:
-    void updatePluginsListView();
-private:
-    void savePluginsToIniFile();
-    void loadPluginsFromIniFile();
+protected:
+    bool eventFilter(QObject* o, QEvent* e) override;
 };
 
+} /// namespace qt
+} /// namespace gui
+} /// namespace sofa
 
-}
-}
-}
+#endif /// SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
 
-#endif

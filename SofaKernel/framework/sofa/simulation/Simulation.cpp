@@ -366,7 +366,6 @@ void Simulation::updateVisualContext (Node* root)
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    sofa::helper::AdvancedTimer::begin("Animate");
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
     sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
@@ -384,7 +383,6 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     }
 
     sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
-    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 /// Export a scene to an OBJ 3D Scene

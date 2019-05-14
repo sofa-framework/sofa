@@ -79,7 +79,6 @@ find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(Newmat REQUIRED)
 find_package(CImgPlugin REQUIRED)
-
 find_package(MultiThreading QUIET)
 
 if(MultiThreading_FOUND)
@@ -102,14 +101,13 @@ if(NOT ${SOFA_NO_OPENGL})
     list(APPEND HEADER_FILES ImageViewer.h)
     list(APPEND SOURCE_FILES ImageViewer.cpp)
 
-if(FREENECT_FOUND)
-    list(APPEND HEADER_FILES Kinect.h)
-    list(APPEND SOURCE_FILES Kinect.cpp)
-    message(STATUS "image: found the freenect library")
-else()
-    message(STATUS "image: could not find the freenect library, won't build the Kinect component")
-endif()
-
+    if(FREENECT_FOUND)
+        list(APPEND HEADER_FILES Kinect.h)
+        list(APPEND SOURCE_FILES Kinect.cpp)
+        message(STATUS "image: found the freenect library")
+    else()
+        message(STATUS "image: could not find the freenect library, won't build the Kinect component")
+    endif()
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
@@ -133,7 +131,6 @@ if(SOFA_OPENMP)
     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
 endif()
 
-
 find_package(DiffusionSolver CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
@@ -148,17 +145,16 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImgPlugin_INCLUDE_DIRS}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
 if(FREENECT_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")
 endif()
+
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-
 set(IMAGE_COMPILER_FLAGS "-DSOFA_BUILD_IMAGE")
-
 
 if( SofaPython_FOUND )
     target_link_libraries(${PROJECT_NAME} SofaPython)    

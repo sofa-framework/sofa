@@ -19,52 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PLUGINMANAGER_H
-#define SOFA_PLUGINMANAGER_H
-
-#include <ui_PluginManager.h>
-#include "SofaGUIQt.h"
-#include <QTreeWidgetItem>
-
-#include <set>
-
+#include <QEvent>
+#include <QWidget>
+#include "QMouseWheelAdjustementGuard.h"
 
 namespace sofa
 {
+
 namespace gui
 {
+
 namespace qt
 {
 
-class SofaPluginManager: public QDialog, public Ui_PluginManager
+QMouseWheelAdjustmentGuard::QMouseWheelAdjustmentGuard(QObject *parent) : QObject(parent)
 {
-    Q_OBJECT
-public:
-    SofaPluginManager(QWidget *parent);
-
-
-signals:
-
-    void libraryAdded();
-    void libraryRemoved();
-
-public slots:
-
-    void addLibrary();
-    void removeLibrary();
-
-    void updateComponentList();
-    void updateDescription();
-public:
-    void updatePluginsListView();
-private:
-    void savePluginsToIniFile();
-    void loadPluginsFromIniFile();
-};
-
-
-}
-}
 }
 
-#endif
+bool QMouseWheelAdjustmentGuard::eventFilter(QObject *o, QEvent *e)
+{
+    const QWidget* widget = static_cast<QWidget*>(o);
+    if (e->type() == QEvent::Wheel && widget && !widget->hasFocus())
+    {
+        e->ignore();
+        return true;
+    }
+
+    return QObject::eventFilter(o, e);
+}
+
+} /// namespace qt
+} /// namespace gui
+} /// namespace sofa

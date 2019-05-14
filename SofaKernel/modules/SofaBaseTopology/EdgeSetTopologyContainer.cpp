@@ -231,32 +231,28 @@ bool EdgeSetTopologyContainer::checkTopology() const
 		{
 			helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 			std::set<int> edgeSet;
-			std::set<int>::iterator it;
 
+            // loop on all edges around vertex
             for (size_t i = 0; i < m_edgesAroundVertex.size(); ++i)
 			{
-
 				const sofa::helper::vector<EdgeID> &es = m_edgesAroundVertex[i];
 				for (size_t j = 0; j < es.size(); ++j)
 				{
-					bool check_edge_vertex_shell = (m_edge[es[j]][0] == i) || (m_edge[es[j]][1] == i);
-					if (!check_edge_vertex_shell)
+                    const Edge& edge = m_edge[es[j]];
+                    if (!(edge[0] == i || edge[1] == i))
 					{
-						msg_warning() << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j;
+                        msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: edge " << es[j] << ": [" << edge << "] not around vertex: " << i;
 						ret = false;
 					}
 
-					it = edgeSet.find(es[j]);
-					if (it == edgeSet.end())
-					{
-						edgeSet.insert(es[j]);
-					}
+                    // count number of edge
+                    edgeSet.insert(es[j]);
 				}
 			}
 
 			if (edgeSet.size() != m_edge.size())
 			{
-				msg_warning() << "*** CHECK FAILED : check_edge_vertex_shell, edge are missing in m_edgesAroundVertex";
+                msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << m_edge.size();
 				ret = false;
             }
         }

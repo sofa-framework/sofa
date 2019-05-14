@@ -130,7 +130,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     : Inherit()
     , points(initData(&points, "initialPoints", "Local Coordinates of the points"))
     , index(initData(&index, (unsigned)0, "index", "input DOF index"))
-    , fileRigidMapping(initData(&fileRigidMapping, "fileRigidMapping", "Filename"))
+    , fileRigidMapping(initData(&fileRigidMapping, "filename", "Xsp file where rigid mapping information can be loaded from."))
     , useX0(initData(&useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
@@ -139,7 +139,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , matrixJ()
     , updateJ(false)
 {
-    this->addAlias(&fileRigidMapping, "filename");
+    this->addAlias(&fileRigidMapping, "fileRigidMapping");
 }
 
 template <class TIn, class TOut>

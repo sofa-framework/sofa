@@ -137,6 +137,9 @@ public:
         msg_info() << "#################";
     }
 
+    /// Method to check the topology mapping maps regarding the upper topology
+    virtual bool checkTopologies() {return false;}
+
     /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
     *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.
     */

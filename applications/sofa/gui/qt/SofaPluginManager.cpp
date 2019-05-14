@@ -44,7 +44,8 @@ namespace qt
 
 #define LOCATION_COLUMN 3
 
-SofaPluginManager::SofaPluginManager()
+SofaPluginManager::SofaPluginManager(QWidget *parent)
+    : QDialog(parent)
 {
     setupUi(this);
     // SIGNAL / SLOTS CONNECTIONS

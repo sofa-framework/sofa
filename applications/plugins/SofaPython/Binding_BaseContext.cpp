@@ -81,8 +81,6 @@ static PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/
     return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
-
-
 /// object factory
 static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
@@ -124,8 +122,24 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
         Py_DecRef(values);
     }
 
+    // Same system as in ElementNameHelper (XML parser)
+    static std::map<std::string, int> instanceCounter;
+
+    if (std::string(desc.getAttribute("name")).empty())
+    {
+        std::string type = desc.getAttribute("type");
+        std::string shortName = sofa::core::ObjectFactory::ShortName(type);
+        if (instanceCounter.find(shortName) != instanceCounter.end())
+            shortName += std::to_string(instanceCounter[shortName]++);
+        else
+            instanceCounter[shortName] = 1;
+        msg_error("createObject") << "Empty string given to property 'name': Forcefully setting an empty name is forbidden.\n"
+                                      "Renaming to " + shortName +" to avoid unexpected behaviors.";
+        desc.setAttribute("name", shortName);
+    }
+
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
-    if (obj==0)
+    if (obj == nullptr)
     {
         std::stringstream msg;
         msg << "Unable to create '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'." ;
@@ -163,7 +177,9 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
         if (node && node->isInitialized())
             msg_warning(node) << "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized";
     }
-
+    auto fileinfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    obj->setInstanciationSourceFilePos(fileinfo->line);
+    obj->setInstanciationSourceFileName(fileinfo->filename);
     return sofa::PythonFactory::toPython(obj.get());
 }
 

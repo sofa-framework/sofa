@@ -63,6 +63,8 @@ bool NodeElement::initNode()
         core::objectmodel::BaseNode* baseNode;
         if (getTypedObject()!=NULL && getParentElement()!=NULL && (baseNode = getParentElement()->getObject()->toBaseNode()))
         {
+            getTypedObject()->setInstanciationSourceFilePos(getSrcLine());
+            getTypedObject()->setInstanciationSourceFileName(getSrcFile());
             baseNode->addChild(getTypedObject());
         }
         return true;
