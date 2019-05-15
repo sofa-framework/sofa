@@ -131,7 +131,7 @@ DocBrowser::~DocBrowser()
 
 }
 
-DocBrowser::DocBrowser(RealGUI* g) : QWidget()
+DocBrowser::DocBrowser(RealGUI* g) : QDialog(g)
 {
     m_realgui = g ;
     m_browserhistory = new BrowserHistory() ;

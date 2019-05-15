@@ -34,8 +34,9 @@ namespace gui
 {
 namespace qt
 {
-SofaMouseManager::SofaMouseManager()
-    : gui(new Ui_MouseManager)
+SofaMouseManager::SofaMouseManager(QWidget *parent)
+    : QDialog(parent)
+    , gui(new Ui_MouseManager)
 {
     gui->setupUi(this);
 
