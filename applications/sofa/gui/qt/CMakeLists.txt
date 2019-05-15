@@ -160,6 +160,8 @@ if (Qt5Charts_FOUND)
     set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
     set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Charts_INCLUDE_DIRS})
     set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Charts_LIBRARIES})
+else()
+    message("-- SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
 
 
