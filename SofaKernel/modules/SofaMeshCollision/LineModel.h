@@ -200,6 +200,8 @@ protected:
 
 };
 
+template <class TDataTypes> using TLineModel __attribute__ ((deprecated)) = LineCollisionModel<TDataTypes>;
+
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)

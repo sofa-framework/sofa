@@ -169,6 +169,8 @@ protected:
     PointActiver *myActiver;
 };
 
+template <class TDataTypes> using TPointModel __attribute__ ((deprecated)) = PointCollisionModel<TDataTypes>;
+
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)

@@ -36,7 +36,6 @@ namespace component
 namespace collision
 {
 
-
 template<class DataTypes>
 class SphereCollisionModel;
 
@@ -186,7 +185,7 @@ protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };
 
-
+template <class TDataTypes> using TSphereModel __attribute__ ((deprecated)) = SphereCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TSphere<DataTypes>::TSphere(ParentModel* model, int index)
