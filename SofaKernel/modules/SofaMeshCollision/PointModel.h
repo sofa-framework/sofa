@@ -169,7 +169,7 @@ protected:
     PointActiver *myActiver;
 };
 
-template <class TDataTypes> using TPointModel __attribute__ ((deprecated)) = PointCollisionModel<TDataTypes>;
+template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated please use PointCollisionModel instead.")]] = PointCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)

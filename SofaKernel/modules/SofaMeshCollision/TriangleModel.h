@@ -226,7 +226,7 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
-template <class TDataTypes> using TTriangleModel __attribute__ ((deprecated)) = TriangleCollisionModel<TDataTypes>;
+template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated please use TriangleCollisionModel instead.")]] = TriangleCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)

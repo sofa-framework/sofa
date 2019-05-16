@@ -200,7 +200,7 @@ protected:
 
 };
 
-template <class TDataTypes> using TLineModel __attribute__ ((deprecated)) = LineCollisionModel<TDataTypes>;
+template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated please use LineCollisionModel instead.")]] = LineCollisionModel<TDataTypes>;
 
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, int index)
