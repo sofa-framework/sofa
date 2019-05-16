@@ -786,7 +786,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
+    mSimulation = simulation::getSimulation()->load ( filename.c_str(), reload );
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
     {

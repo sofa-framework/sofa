@@ -48,6 +48,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 find_package(MiniFlowVR QUIET)
 if(MiniFlowVR_FOUND)
+    set(SOFADISTANCEGRID_WITH_MINIFLOWVR TRUE)
     add_definitions("-DSOFA_HAVE_MINIFLOWVR")
     target_link_libraries(${PROJECT_NAME} PUBLIC miniFlowVR)
     message(STATUS "SofaDistanceGrid: MiniFlowVR enabled.")
@@ -67,4 +68,9 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaDistanceGrid ${SOFADISTANCEGRID_VERSION} ${PROJECT_NAME} SofaDistanceGrid)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${SOFADISTANCEGRID_VERSION}
+    RELOCATABLE "plugins"
+    )

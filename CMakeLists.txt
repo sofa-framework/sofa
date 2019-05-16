@@ -54,16 +54,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTOR
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 
 ## Environment
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/packages)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
+list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 
 ## RPATH
 if(UNIX)
@@ -76,10 +73,20 @@ if(UNIX)
     # the need to play with LD_LIBRARY_PATH to get applications to run.
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
+    set(CMAKE_INSTALL_RPATH
+        "$ORIGIN/../lib"
+        "$$ORIGIN/../lib"
+        )
 
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
+        list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path"
+            "@loader_path/../lib"
+            "@executable_path"
+            "@executable_path/../lib"
+            )
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
 
@@ -109,8 +116,7 @@ if(MSVC)
     if(SOFA_DEPENDENCY_PACK_DIR)
         set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
     else()
-        # Default
-        set(DEPENDENCY_PACK_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+        set(DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}") # Default
     endif()
 
     list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
@@ -120,7 +126,7 @@ if(MSVC)
         list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
     endif()
 
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include COMPONENT headers)
+    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
@@ -303,7 +309,7 @@ install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applicat
 set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
     set(SHARE_DIR "share/sofa")
     set(EXAMPLES_DIR "share/sofa/examples")
 else()
@@ -386,10 +392,6 @@ cpack_add_component(applications
     )
 cpack_add_component(headers
     DISPLAY_NAME "C++ Headers"
-    GROUP development
-    )
-cpack_add_component(Eigen_headers
-    DISPLAY_NAME "Eigen Headers"
     GROUP development
     )
 cpack_add_component(GTest_headers
@@ -498,9 +500,10 @@ if(CPACK_BINARY_NSIS)
 endif()
 #######################
 
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE)
     find_package(ICU COMPONENTS data i18n uc)
-    sofa_install_libraries(${ICU_LIBRARIES})
+    sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
+    message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
 endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)

@@ -321,18 +321,33 @@ if(APPLE)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()
 
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
 if(SOFA_BUILD_TESTS)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} gtest)
-else()
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
+    target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 endif()
 
+# Json (header only) dependency for AdvancedTimer
+find_package(Json 3.1.2 REQUIRED)
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
+install(DIRECTORY ${JSON_INCLUDE_DIR}
+    COMPONENT headers
+    DESTINATION "include/extlibs"
+    PATTERN "*.in" EXCLUDE
+    PATTERN "*.txt" EXCLUDE
+    PATTERN "*.cpp" EXCLUDE
+    )
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
-# For generated files, like sofa/config.h
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>"
+    "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
+target_include_directories(${PROJECT_NAME} SYSTEM
+    PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>"
+    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>"
+    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
+    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/json>"
+    )
+
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 
 # The default binary suffix for libraries/plugins is "_d" when using a debug build.
@@ -345,4 +360,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COM
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/helper")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework/sofa/helper")

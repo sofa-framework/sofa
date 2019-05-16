@@ -54,10 +54,6 @@ if (CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
 endif()
 
 
-## CGALPlugin/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h" DESTINATION "include/CGALPlugin")
-
 if(WIN32)
     #add library dir as it is not added automatically on Windows (?)
     link_directories(${CGAL_LIBRARIES_DIR})

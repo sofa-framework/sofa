@@ -25,4 +25,4 @@ if(NOT SOFA_NO_OPENGL)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
 endif()
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")

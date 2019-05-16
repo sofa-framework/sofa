@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaPython)
-
-set(SOFAPYTHON_MAJOR_VERSION 0)
-set(SOFAPYTHON_MINOR_VERSION 1)
-set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION})
+project(SofaPython VERSION 0.1)
 
 if(UNIX)
   list(APPEND PYTHON_LIBRARIES dl)
@@ -156,26 +152,22 @@ find_package(SofaMisc REQUIRED)
 find_package(SofaExporter)
 
 if(SofaExporter_FOUND)
-list(APPEND SOURCE_FILES
-   Binding_OBJExporter.cpp
-   Binding_STLExporter.cpp
-    )
+    list(APPEND SOURCE_FILES
+        Binding_OBJExporter.cpp
+        Binding_STLExporter.cpp
+        )
 
-list(APPEND HEADER_FILES
-   Binding_OBJExporter.h
-   Binding_STLExporter.h
-    )
+    list(APPEND HEADER_FILES
+        Binding_OBJExporter.h
+        Binding_STLExporter.h
+        )
 endif()
 
 # TODO: Get rid of absolute paths in SofaPython
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
-# SofaPython/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython" COMPONENT headers)
-
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
@@ -203,9 +195,13 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(NAME SofaPython VERSION ${SOFAPYTHON_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR SofaPython)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )
