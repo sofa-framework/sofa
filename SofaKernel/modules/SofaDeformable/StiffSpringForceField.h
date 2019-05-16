@@ -29,7 +29,7 @@
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/MechanicalParams.h>
-
+#include <SofaBaseTopology/TopologySubsetData.h>
 
 namespace sofa
 {
@@ -61,6 +61,8 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
     typedef typename Inherit::Spring Spring;
@@ -69,6 +71,9 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    SetIndex f_indices1; ///< Indices of the source points on the first model
+    SetIndex f_indices2; ///< Indices of the fixed points on the second model
+    core::objectmodel::Data<SReal> d_length;
 protected:
     sofa::helper::vector<Mat>  dfdx;
 
