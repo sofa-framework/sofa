@@ -898,7 +898,7 @@ bool LegacyVTKReader::readFile(const char* filename)
         }
         else if (!kw.empty())
         {
-            msg_warning(this) << "WARNING: Unknown keyword " << kw ;
+            msg_warning(this) << "Unknown keyword " << kw ;
         }
 
         msg_info(this) << "LNG: " << inputCellDataVector.size() ;
