@@ -103,7 +103,6 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 
     if(!SOFA_GUI_VSYNC)
     {
-        std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
         f.setSwapInterval(0); // disable vertical refresh sync
     }
 
@@ -130,7 +129,6 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 //    int val = 0;
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
-    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync
 #endif
 #if defined(QT_VERSION) && QT_VERSION >= 0x040700

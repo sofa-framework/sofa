@@ -8,12 +8,13 @@ sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollisionGroupManager
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
-sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
+sofa_add_plugin(SofaVolumetricData SofaVolumetricData) # Depends on SofaDistanceGrid and SofaImplicitField
 sofa_add_plugin(MultiThreading MultiThreading)
-sofa_add_plugin(image image)           # Depends on CImagePlugin, soft dependency to MultiThreading
+sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
+sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, soft dependency to MultiThreading
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
-sofa_add_plugin(Flexible Flexible)     # Depends on image & CImagePlugin
+sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant
 sofa_add_plugin(ColladaSceneLoader ColladaSceneLoader) # Depends on Flexible and image

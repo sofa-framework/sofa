@@ -44,14 +44,8 @@ class SofaMouseManager : public QDialog
     std::unique_ptr<Ui_MouseManager> gui;
 public:
 
-    SofaMouseManager();
+    SofaMouseManager(QWidget *parent);
     ~SofaMouseManager() override;
-
-    static SofaMouseManager* getInstance()
-    {
-        static SofaMouseManager instance;
-        return &instance;
-    }
 
     void updateContent();
 

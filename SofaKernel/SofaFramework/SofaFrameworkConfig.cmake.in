@@ -7,10 +7,14 @@ if(HAS_SOFAFRAMEWORK_CMAKE_MODULE_PATH EQUAL -1)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 endif()
 
+list(FIND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../plugins" HAS_PLUGINS_CMAKE_PREFIX_PATH)
+if(HAS_PLUGINS_CMAKE_PREFIX_PATH EQUAL -1)
+    list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../plugins")
+endif()
+
 include(SofaMacros)
 
 find_package(TinyXML REQUIRED)
-sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}")
 
 set(SOFA_HAVE_ZLIB "@SOFA_HAVE_ZLIB@")
 set(SOFA_HAVE_GLEW "@SOFA_HAVE_GLEW@")
@@ -33,34 +37,18 @@ endif()
 
 if(SOFA_HAVE_ZLIB)
     find_package(ZLIB REQUIRED)
-    sofa_create_target(ZLIB SofaFramework "${ZLIB_LIBRARIES}" "${ZLIB_INCLUDE_DIRS}")
 endif()
 
 if(SOFA_HAVE_GLEW)
     find_package(GLEW REQUIRED)
-    sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}")
 endif()
 
 if(SOFA_HAVE_BOOST)
-    find_package(Boost QUIET REQUIRED COMPONENTS system filesystem locale program_options OPTIONAL_COMPONENTS date_time thread)
-    
-    if(Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND AND Boost_PROGRAM_OPTIONS_FOUND)
-        sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-        sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-        sofa_create_target(BoostProgramOptions SofaFramework "${Boost_PROGRAM_OPTIONS_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    endif()
-
-    if(Boost_DATE_TIME_FOUND)
-        sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    endif()
-
-    if(Boost_THREAD_FOUND)
-        sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    endif()
+    find_package(Boost QUIET REQUIRED system filesystem program_options OPTIONAL_COMPONENTS date_time thread)
 endif()
 
 if(NOT TARGET SofaCore)
-	include("${CMAKE_CURRENT_LIST_DIR}/SofaFrameworkTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaFrameworkTargets.cmake")
 endif()
 
 check_required_components(SofaHelper SofaDefaultType SofaCore)

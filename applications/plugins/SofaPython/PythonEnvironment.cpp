@@ -251,26 +251,37 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
 {
     bool added = false;
+
+    std::vector<std::string> pythonDirs = {
+        pluginsDirectory + "/python",
+        pluginsDirectory + "/python2.7",
+    };
+
     std::vector<std::string> files;
     FileSystem::listDirectory(pluginsDirectory, files);
-
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
         const std::string pluginSubdir = pluginsDirectory + "/" + *i;
         if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
         {
-            const std::string pythonDir = pluginSubdir + "/python";
-            const std::string python27Dir = pluginSubdir + "/python2.7";
-            if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
-            {
-                addPythonModulePath(pythonDir);
-                added = true;
-            }
-            else if (FileSystem::exists(python27Dir) && FileSystem::isDirectory(python27Dir))
-            {
-                addPythonModulePath(python27Dir);
-                added = true;
-            }
+            pythonDirs.push_back(pluginSubdir + "/python");
+            pythonDirs.push_back(pluginSubdir + "/python2.7");
+        }
+    }
+
+    for(std::string pythonDir : pythonDirs)
+    {
+        // Search for a subdir "site-packages"
+        if (FileSystem::exists(pythonDir+"/site-packages") && FileSystem::isDirectory(pythonDir+"/site-packages"))
+        {
+            addPythonModulePath(pythonDir+"/site-packages");
+            added = true;
+        }
+        // Or fallback to "python"
+        else if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
+        {
+            addPythonModulePath(pythonDir);
+            added = true;
         }
     }
 

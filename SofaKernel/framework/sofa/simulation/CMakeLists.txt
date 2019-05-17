@@ -143,4 +143,4 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
 endif()
 
-sofa_install_targets(SofaSimulation ${PROJECT_NAME} "sofa/simulation")
+sofa_install_targets(SofaSimulation ${PROJECT_NAME} "SofaSimulation/sofa/simulation")

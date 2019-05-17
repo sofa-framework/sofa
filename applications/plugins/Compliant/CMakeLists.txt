@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(Compliant)
-
-set(COMPLIANT_MAJOR_VERSION 0)
-set(COMPLIANT_MINOR_VERSION 1)
-set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION})
+project(Compliant VERSION 0.1)
 
 set(HEADER_FILES
     assembly/AssembledSystem.h
@@ -227,7 +223,6 @@ if( SofaPython_FOUND )
     set(PYTHON_FILES
         python/Compliant/Control.py
         python/Compliant/Frame.py
-        python/Compliant/Quaternion.py
         python/Compliant/Rigid.py
         python/Compliant/Script.py
         python/Compliant/StructuralAPI.py
@@ -256,8 +251,7 @@ if( SofaPython_FOUND )
         )
 
     # Config files and install rules for pythons scripts
-    sofa_set_python_directory(${PROJECT_NAME} "python")
-
+    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
 
@@ -265,17 +259,12 @@ set(README_FILES Compliant.txt)
 
 find_package(SofaMisc REQUIRED)
 
-## Compliant/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Compliant/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/Compliant/config.h" DESTINATION "include/Compliant")
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaMiscCollision)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${COMPLIANT_VERSION})
 
 # linking explicitly with rt looks necessary on some posix (e.g. CentOS)
 if(UNIX AND NOT APPLE)
@@ -307,13 +296,9 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
 endif()
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(Compliant ${COMPLIANT_VERSION} Compliant Compliant)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-## Hand-crafted install rules for the headers, to preserve the directory structure
-foreach(HEADER ${HEADER_FILES})
-    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
-endforeach(HEADER HEADERS)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

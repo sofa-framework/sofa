@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaMiscCollision)
+project(SofaMiscCollision VERSION 1.0)
 
-set(SOFAMISCCOLLISION_VERSION 1.0)
 set(SOFA_HAVE_SOFAMISCCOLLISION 1)
 
 find_package(SofaSphFluid QUIET)
@@ -84,5 +83,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MIS
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-sofa_generate_package(NAME SofaMiscCollision VERSION ${SOFAMISCCOLLISION_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR SofaMiscCollision)
-
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

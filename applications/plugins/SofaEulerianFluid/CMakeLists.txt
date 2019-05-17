@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaEulerianFluid)
-
-set(SOFAEULERIANFLUID_VERSION 1.0)
+project(SofaEulerianFluid VERSION 1.0)
 
 set(HEADER_FILES
     Fluid2D.h
@@ -34,5 +32,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 #include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
-#sofa_create_package(SofaEulerianFluid ${SOFATEST_VERSION} ${PROJECT_NAME} SofaEulerianFluid)
-
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

@@ -517,6 +517,14 @@ void BoxROI<DataTypes>::doUpdate()
     if(!d_doUpdate.getValue()){
         return ;
     }
+    if (d_X0.getValue().size() == 0)
+    {
+        msg_warning() << "No rest position yet defined. Box might not work properly. \n"
+                         "This may be caused by an early call of init() on the box before  \n"
+                         "the mesh or the MechanicalObject of the node was initialized too";
+        return;
+    }
+
 
     const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
