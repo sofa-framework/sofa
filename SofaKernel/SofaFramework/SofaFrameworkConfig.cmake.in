@@ -44,7 +44,7 @@ if(SOFA_HAVE_GLEW)
 endif()
 
 if(SOFA_HAVE_BOOST)
-    find_package(Boost QUIET REQUIRED system filesystem locale program_options OPTIONAL_COMPONENTS date_time thread)
+    find_package(Boost QUIET REQUIRED system filesystem program_options OPTIONAL_COMPONENTS date_time thread)
 endif()
 
 if(NOT TARGET SofaCore)

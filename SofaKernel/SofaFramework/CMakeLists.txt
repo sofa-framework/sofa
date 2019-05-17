@@ -105,14 +105,13 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 ## Boost
 # required boost libraries
 find_package(Boost
-    REQUIRED system filesystem locale program_options chrono atomic
+    REQUIRED system filesystem program_options chrono atomic
     OPTIONAL_COMPONENTS thread date_time
     )
 
 set(SOFA_HAVE_BOOST 1)
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
-set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
 set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
@@ -120,7 +119,6 @@ set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 set(BOOST_TARGETS
     Boost::system
     Boost::filesystem
-    Boost::locale
     Boost::program_options
     )
 if(SOFA_HAVE_BOOST_DATE_TIME)
