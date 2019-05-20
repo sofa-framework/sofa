@@ -35,6 +35,11 @@
 #include "GraphVisitor.h"
 #endif
 
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+#include "SofaWindowProfiler.h"
+#endif
+
+
 #ifdef SOFA_PML
 #include <sofa/simulation/Node.h>
 #endif
@@ -316,6 +321,10 @@ RealGUI::RealGUI ( const char* viewername)
       handleTraceVisitor(NULL),
       #endif
 
+      #ifdef SOFAGUIQT_HAS_QTCHARTS
+      m_windowTimerProfiler(nullptr),
+      #endif
+
       m_sofaMouseManager(nullptr),
 
       simulationGraph(nullptr),
@@ -430,6 +439,7 @@ RealGUI::RealGUI ( const char* viewername)
 
     createWindowVisitor();
 
+    createAdvanceTimerProfilerWindow();
 
     m_sofaMouseManager->hide();
     SofaVideoRecorderManager::getInstance()->hide();
@@ -808,6 +818,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     {
         simulationGraph->expandPathFrom(expandedNodes);
     }
+
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    if (m_windowTimerProfiler)
+        m_windowTimerProfiler->resetGraph();
+#endif
 }
 
 
@@ -1851,6 +1866,18 @@ void RealGUI::createWindowVisitor()
 #endif
 }
 
+void RealGUI::createAdvanceTimerProfilerWindow()
+{
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    m_windowTimerProfiler = new SofaWindowProfiler(this);
+    m_windowTimerProfiler->hide();
+    connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
+    connect( m_windowTimerProfiler, SIGNAL(closeWindow(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
+#else
+    displayTimeProfiler->setEnabled(false);
+#endif
+}
+
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
     std::string filename(this->windowFilePath().toStdString());
@@ -2076,6 +2103,12 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    if (displayTimeProfiler->isChecked())
+    {
+        m_windowTimerProfiler->pushStepData();
+    }
+#endif
 
     sofa::helper::AdvancedTimer::end("Animate");
 }
@@ -2323,6 +2356,23 @@ void RealGUI::setExportVisitor ( bool )
 {
 }
 #endif
+
+void RealGUI::displayProflierWindow (bool value)
+{
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    if (m_windowTimerProfiler == nullptr)
+        return;
+
+    m_windowTimerProfiler->activateATimer(value);
+    if (value)
+        m_windowTimerProfiler->show();
+    else
+        m_windowTimerProfiler->hide();
+#else
+    SOFA_UNUSED(value);
+#endif
+}
+
 
 //------------------------------------
 
