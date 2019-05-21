@@ -19,13 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <iostream>
-
 #include <sofa/defaulttype/Mat.h>
-
 #include <sofa/defaulttype/Quat.h>
-
 #include <sofa/helper/testing/NumericTest.h>
 using namespace sofa::helper::testing ;
 

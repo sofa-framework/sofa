@@ -71,7 +71,6 @@
 
 #ifdef WIN32
 #define UNICODE
-#define _USE_MATH_DEFINES // just to access M_PI with cmath
 #endif // WIN32
 
 #ifdef SOFA_FLOAT
