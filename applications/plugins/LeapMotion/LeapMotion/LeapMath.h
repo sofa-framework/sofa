@@ -33,7 +33,7 @@ static const float RAD_TO_DEG  = 57.295779513f;
  * The Vector struct represents a three-component mathematical vector or point
  * such as a direction or position in three-dimensional space.
  *
- * The Leap software employs a right-handed Cartesian coordinatFe system.
+ * The Leap software employs a right-handed Cartesian coordinate system.
  * Values given are in units of real-world millimeters. The origin is centered
  * at the center of the Leap device. The x- and z-axes lie in the horizontal
  * plane, with the x-axis running parallel to the long edge of the device.
