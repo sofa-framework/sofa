@@ -39,6 +39,20 @@ int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of 
 
 using namespace sofa::defaulttype;
 
+OglSceneFrame::OglSceneFrame()
+    : drawFrame(initData(&drawFrame, true,  "draw", "Display the frame or not"))
+    , style(initData(&style, "style", "Style of the frame"))
+    , alignment(initData(&alignment, "alignment", "Alignment of the frame in the view"))
+    , quadratic(nullptr)
+{
+    sofa::helper::OptionsGroup styleOptions(3,"Arrows", "Cylinders", "CubeCones");
+    styleOptions.setSelectedItem(1);
+    style.setValue(styleOptions);
+
+    sofa::helper::OptionsGroup alignmentOptions(4,"BottomLeft", "BottomRight", "TopRight", "TopLeft");
+    alignmentOptions.setSelectedItem(1);
+    alignment.setValue(alignmentOptions);
+}
 void OglSceneFrame::init()
 {
     updateVisual();

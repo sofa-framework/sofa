@@ -73,9 +73,9 @@ protected:
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
     void activateMappers();
 
-    StickContactConstraint() : model1(NULL), model2(NULL), intersectionMethod(NULL), parent(NULL) {}
-
+    StickContactConstraint();
     StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
+
     ~StickContactConstraint() override;
 public:
     Data<bool> f_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected

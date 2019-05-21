@@ -71,28 +71,9 @@ public:
     Real Ratio;	/// Gear ratio (default 1)
 
     ///constructors
-    GearSpring()
-        : m1(0), m2(0), p1(0), p2(0), previousAngle1(0), previousAngle2(0), angle1(0), angle2(0), kd(0)
-        , hardStiffnessTrans(10000), softStiffnessRot(10000), hardStiffnessRot(10000), Ratio(1)
-        //, freeAxis(0,0)
-    {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
-    }
-
-    GearSpring(int m1, int m2, int p1, int p2)
-        : m1(m1), m2(m2), p1(p1), p2(p2), previousAngle1(0), previousAngle2(0), angle1(0), angle2(0), kd(0)
-        , hardStiffnessTrans(10000), softStiffnessRot(10000), hardStiffnessRot(10000), Ratio(1)
-        //, freeAxis(0,0)
-    {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
-    }
-
-    GearSpring(int m1, int m2, int p1, int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio)
-        : m1(m1), m2(m2), p1(p1), p2(p2), previousAngle1(0), previousAngle2(0), angle1(0), angle2(0), kd(kd)
-        , hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), Ratio(ratio)
-    {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
-    }
+    GearSpring();
+    GearSpring(int m1, int m2, int p1, int p2);
+    GearSpring(int m1, int m2, int p1, int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio);
 
     //accessors
     Real getHardStiffnessRotation() {return hardStiffnessRot;}
@@ -221,8 +202,8 @@ protected:
     /// Apply the stiffness, i.e. accumulate df given dx
     void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, /*const*/ Spring& spring, Real kFactor);
 
-    GearSpringForceField(MechanicalState* object1, MechanicalState* object2);
     GearSpringForceField();
+    GearSpringForceField(MechanicalState* object1, MechanicalState* object2);
 
     virtual ~GearSpringForceField();
 

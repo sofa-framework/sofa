@@ -52,20 +52,7 @@ public:
     /**
      * @brief Default constructor.
      */
-    TriangleInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-    {
-
-    }
-
-    /**
-     * @brief Empty constructor. Required by TriangleData<>.
-     */
-    TriangleInfo()
-        : InfoFilter(NULL)
-    {
-
-    }
+    TriangleInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.

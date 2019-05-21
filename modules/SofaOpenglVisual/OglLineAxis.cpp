@@ -41,6 +41,14 @@ int OglLineAxisClass = core::RegisterObject("Display scene axis")
 
 using namespace sofa::defaulttype;
 
+OglLineAxis::OglLineAxis()
+    : axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw"))
+    , size(initData(&size, (float)(10.0),  "size", "Size of the squared grid"))
+    , thickness(initData(&thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid"))
+    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
+    , drawX(true), drawY(true), drawZ(true)
+{}
+
 void OglLineAxis::init()
 {
     updateVisual();

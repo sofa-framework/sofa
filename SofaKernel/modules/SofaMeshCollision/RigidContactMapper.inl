@@ -38,7 +38,6 @@ namespace component
 namespace collision
 {
 
-
 template < class TCollisionModel, class DataTypes >
 void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
 {

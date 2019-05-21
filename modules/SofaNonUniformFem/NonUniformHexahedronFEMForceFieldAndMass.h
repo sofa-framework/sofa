@@ -83,13 +83,7 @@ public:
     Data<bool> _useMass; ///< Do we want to use this ForceField like a Mass? (or do we prefer using a separate Mass)
     Data<Real> _totalMass;
 protected:
-    NonUniformHexahedronFEMForceFieldAndMass()
-        : HexahedronFEMForceFieldAndMassT()
-        , _nbVirtualFinerLevels(initData(&_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
-        , _useMass(initData(&_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
-        , _totalMass(initData(&_totalMass,(Real)0.0,"totalMass",""))
-    {
-    }
+    NonUniformHexahedronFEMForceFieldAndMass();
 
 public:
 
