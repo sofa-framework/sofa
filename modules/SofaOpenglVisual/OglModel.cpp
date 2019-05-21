@@ -49,9 +49,6 @@ static int OglModelClass = core::RegisterObject("Generic visual model for OpenGL
         ;
 
 template<class T>
-const T* getData(const defaulttype::ResizableExtVector<T>& v) { return v.getData(); }
-
-template<class T>
 const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
@@ -150,11 +147,11 @@ void OglModel::drawGroup(int ig, bool transparent)
 {
     glEnable(GL_NORMALIZE);
 
-    const ResizableExtVector<Edge>& edges = this->getEdges();
-    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
-    const ResizableExtVector<Quad>& quads = this->getQuads();
+    const Inherit::VecEdge& edges = this->getEdges();
+    const Inherit::VecTriangle& triangles = this->getTriangles();
+    const Inherit::VecQuad& quads = this->getQuads();
     const VecCoord& vertices = this->getVertices();
-    const ResizableExtVector<Deriv>& vnormals = this->getVnormals();
+    const VecDeriv& vnormals = this->getVnormals();
 
     FaceGroup g;
     if (ig < 0)
@@ -191,10 +188,11 @@ void OglModel::drawGroup(int ig, bool transparent)
         }
 
         glEnable(GL_TEXTURE_2D);
+
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	uintptr_t pt = (vertices.size()*sizeof(vertices[0]))
+	    uintptr_t pt = (vertices.size()*sizeof(vertices[0]))
                     + (vnormals.size()*sizeof(vnormals[0]));
-            glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(pt));
+        glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(pt));
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
@@ -237,6 +235,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (g.nbe > 0 && !drawPoints)
     {
         const Edge* indices = nullptr;
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
         GLenum prim = GL_LINES;
@@ -260,6 +259,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (g.nbt > 0 && !drawPoints)
     {
         const Triangle* indices = nullptr;
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
         GLenum prim = GL_TRIANGLES;
@@ -282,6 +282,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (g.nbq > 0 && !drawPoints)
     {
         const Quad* indices = nullptr;
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
 
         GLenum prim = GL_QUADS;
@@ -370,7 +371,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& vertices = this->getVertices();
-    const ResizableExtVector<Deriv>& vnormals = this->getVnormals();
+    const VecDeriv& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
     const VecCoord& vtangents= this->getVtangents();
     const VecCoord& vbitangents= this->getVbitangents();
@@ -396,6 +397,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glNormalPointer(datatype, 0, reinterpret_cast<void*>(vertexArrayByteSize));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -411,6 +413,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize ));
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         if (hasTangents)
@@ -804,7 +807,7 @@ void OglModel::initVertexBuffer()
 
 void OglModel::initEdgesIndicesBuffer()
 {
-    const ResizableExtVector<Edge>& edges = this->getEdges();
+    const Inherit::VecEdge& edges = this->getEdges();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -815,7 +818,7 @@ void OglModel::initEdgesIndicesBuffer()
 
 void OglModel::initTrianglesIndicesBuffer()
 {
-    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
+    const Inherit::VecTriangle& triangles = this->getTriangles();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -826,7 +829,7 @@ void OglModel::initTrianglesIndicesBuffer()
 
 void OglModel::initQuadsIndicesBuffer()
 {
-    const ResizableExtVector<Quad>& quads = this->getQuads();
+    const Inherit::VecQuad& quads = this->getQuads();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -939,9 +942,9 @@ void OglModel::updateQuadsIndicesBuffer()
 }
 void OglModel::updateBuffers()
 {
-    const ResizableExtVector<Edge>& edges = this->getEdges();
-    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
-    const ResizableExtVector<Quad>& quads = this->getQuads();
+    const Inherit::VecEdge& edges = this->getEdges();
+    const Inherit::VecTriangle& triangles = this->getTriangles();
+    const Inherit::VecQuad& quads = this->getQuads();
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& normals = this->getVnormals();
     const VecTexCoord& texCoords = this->getVtexcoords();

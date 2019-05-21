@@ -39,7 +39,6 @@ using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
@@ -114,7 +113,6 @@ private:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

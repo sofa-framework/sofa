@@ -39,7 +39,6 @@ using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
@@ -80,7 +79,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

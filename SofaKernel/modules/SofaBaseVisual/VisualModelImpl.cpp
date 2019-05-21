@@ -60,7 +60,7 @@ using namespace sofa::core::topology;
 using namespace sofa::core::loader;
 using helper::vector;
 
-ExtVec3State::ExtVec3State()
+Vec3State::Vec3State()
     : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
     , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
     , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
@@ -71,12 +71,12 @@ ExtVec3State::ExtVec3State()
     m_vnormals.setGroup("Vector");
 }
 
-void ExtVec3State::resize(size_t vsize)
+void Vec3State::resize(size_t vsize)
 {
-    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+    helper::WriteOnlyAccessor< Data<VecCoord > > positions = m_positions;
     if( positions.size() == vsize ) return;
-    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
-    helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
+    helper::WriteOnlyAccessor< Data<VecCoord > > restPositions = m_restPositions;
+    helper::WriteOnlyAccessor< Data<VecDeriv > > normals = m_vnormals;
 
     positions.resize(vsize);
     restPositions.resize(vsize); // todo allocate restpos only when it is necessary
@@ -85,9 +85,9 @@ void ExtVec3State::resize(size_t vsize)
     modified = true;
 }
 
-size_t ExtVec3State::getSize() const { return m_positions.getValue().size(); }
+size_t Vec3State::getSize() const { return m_positions.getValue().size(); }
 
-Data<ExtVec3State::VecCoord>* ExtVec3State::write(     core::VecCoordId  v )
+Data<Vec3State::VecCoord>* Vec3State::write(     core::VecCoordId  v )
 {
     modified = true;
 
@@ -96,33 +96,33 @@ Data<ExtVec3State::VecCoord>* ExtVec3State::write(     core::VecCoordId  v )
     if( v == core::VecCoordId::restPosition() )
         return &m_restPositions;
 
-    return NULL;
+    return nullptr;
 }
 
-const Data<ExtVec3State::VecCoord>* ExtVec3State::read(core::ConstVecCoordId  v )  const
+const Data<Vec3State::VecCoord>* Vec3State::read(core::ConstVecCoordId  v )  const
 {
     if( v == core::VecCoordId::position() )
         return &m_positions;
     if( v == core::VecCoordId::restPosition() )
         return &m_restPositions;
 
-    return NULL;
+    return nullptr;
 }
 
-Data<ExtVec3State::VecDeriv>*	ExtVec3State::write(core::VecDerivId v )
+Data<Vec3State::VecDeriv>*	Vec3State::write(core::VecDerivId v )
 {
     if( v == core::VecDerivId::normal() )
         return &m_vnormals;
 
-    return NULL;
+    return nullptr;
 }
 
-const Data<ExtVec3State::VecDeriv>* ExtVec3State::read(core::ConstVecDerivId v ) const
+const Data<Vec3State::VecDeriv>* Vec3State::read(core::ConstVecDerivId v ) const
 {
     if( v == core::VecDerivId::normal() )
         return &m_vnormals;
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -132,43 +132,43 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     VisualModelImpl* obj = this;
 
-    if (arg->getAttribute("normals")!=NULL)
+    if (arg->getAttribute("normals")!=nullptr)
         obj->setUseNormals(arg->getAttributeAsInt("normals", 1)!=0);
 
-    if (arg->getAttribute("castshadow")!=NULL)
+    if (arg->getAttribute("castshadow")!=nullptr)
         obj->setCastShadow(arg->getAttributeAsInt("castshadow", 1)!=0);
 
-    if (arg->getAttribute("flip")!=NULL)
+    if (arg->getAttribute("flip")!=nullptr)
         obj->flipFaces();
 
     if (arg->getAttribute("color"))
         obj->setColor(arg->getAttribute("color"));
 
-    if (arg->getAttribute("su")!=NULL || arg->getAttribute("sv")!=NULL)
+    if (arg->getAttribute("su")!=nullptr || arg->getAttribute("sv")!=nullptr)
         m_scaleTex = TexCoord(arg->getAttributeAsFloat("su",1.0),
                               arg->getAttributeAsFloat("sv",1.0));
 
-    if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
+    if (arg->getAttribute("du")!=nullptr || arg->getAttribute("dv")!=nullptr)
         m_translationTex = TexCoord(arg->getAttributeAsFloat("du",0.0),
                                     arg->getAttributeAsFloat("dv",0.0));
 
-    if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
+    if (arg->getAttribute("rx")!=nullptr || arg->getAttribute("ry")!=nullptr || arg->getAttribute("rz")!=nullptr)
         m_rotation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("rx",0.0),
                                      (Real)arg->getAttributeAsFloat("ry",0.0),
                                      (Real)arg->getAttributeAsFloat("rz",0.0)));
 
-    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+    if (arg->getAttribute("dx")!=nullptr || arg->getAttribute("dy")!=nullptr || arg->getAttribute("dz")!=nullptr)
         m_translation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("dx",0.0),
                                         (Real)arg->getAttributeAsFloat("dy",0.0),
                                         (Real)arg->getAttributeAsFloat("dz",0.0)));
 
-    if (arg->getAttribute("scale")!=NULL)
+    if (arg->getAttribute("scale")!=nullptr)
     {
         m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("scale",1.0),
                                   (Real)arg->getAttributeAsFloat("scale",1.0),
                                   (Real)arg->getAttributeAsFloat("scale",1.0)));
     }
-    else if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
+    else if (arg->getAttribute("sx")!=nullptr || arg->getAttribute("sy")!=nullptr || arg->getAttribute("sz")!=nullptr)
     {
         m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("sx",1.0),
                                   (Real)arg->getAttributeAsFloat("sy",1.0),
@@ -209,7 +209,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
     , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
     , m_translationTex  (initData   (&m_translationTex, TexCoord(0.0,0.0), "translationTex", "Translation of the texture"))
-    , material			(initData	(&material, "material", "Material")) // tex(NULL)
+    , material			(initData	(&material, "material", "Material")) // tex(nullptr)
     , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
     , materials			(initData	(&materials, "materials", "List of materials"))
@@ -409,10 +409,10 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     VecCoord& restPositions = *(m_restPositions.beginEdit());
     VecCoord& positions = *(m_positions.beginEdit());
     VecCoord& vertices2 = *(m_vertices2.beginEdit());
-    ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
+    VecDeriv& vnormals = *(m_vnormals.beginEdit());
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
-    ResizableExtVector<int>& vertPosIdx = (*m_vertPosIdx.beginEdit());
-    ResizableExtVector<int>& vertNormIdx = (*m_vertNormIdx.beginEdit());;
+    helper::vector<int>& vertPosIdx = (*m_vertPosIdx.beginEdit());
+    helper::vector<int>& vertNormIdx = (*m_vertNormIdx.beginEdit());;
 
     positions.resize(nbVIn);
 
@@ -486,9 +486,9 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     m_vertNormIdx.endEdit();
 
     // Then we create the triangles and quads
-    ResizableExtVector< Edge >& edges = *(m_edges.beginEdit());
-    ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
-    ResizableExtVector< Quad >& quads = *(m_quads.beginEdit());
+    VecEdge& edges = *(m_edges.beginEdit());
+    VecTriangle& triangles = *(m_triangles.beginEdit());
+    VecQuad& quads = *(m_quads.beginEdit());
 
     for (unsigned int i = 0; i < facetsImport.size(); i++)
     {
@@ -816,7 +816,7 @@ public:
             }
         }
         // BUGFIX: remove link to the Data as it is now specific to this instance
-        this->m_topologyData->setParent(NULL);
+        this->m_topologyData->setParent(nullptr);
     }
 
     void applyDestroyFunction(unsigned int, Coord& )
@@ -847,7 +847,7 @@ void VisualModelImpl::init()
         }
         helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
         helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
-        helper::ReadAccessor<Data<sofa::defaulttype::ResizableExtVector<int>>> vertPosIdx = m_vertPosIdx;
+        helper::ReadAccessor<Data<helper::vector<int>>> vertPosIdx = m_vertPosIdx;
         int nbVIn = 0;
         for (int i = 0; i < (int)vertPosIdx.size(); ++i)
         {
@@ -906,15 +906,15 @@ void VisualModelImpl::computeNormals()
     //const VecCoord& vertices = m_vertices2.getValue();
     if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() == (vertices).size())) return;
 
-    const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
-    const ResizableExtVector<Quad>& quads = m_quads.getValue();
-    const ResizableExtVector<int> &vertNormIdx = m_vertNormIdx.getValue();
+    const VecTriangle& triangles = m_triangles.getValue();
+    const VecQuad& quads = m_quads.getValue();
+    const helper::vector<int> &vertNormIdx = m_vertNormIdx.getValue();
 
     if (vertNormIdx.empty())
     {
         int nbn = (vertices).size();
 
-        ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
+        VecDeriv& normals = *(m_vnormals.beginEdit());
 
         normals.resize(nbn);
         for (int i = 0; i < nbn; i++)
@@ -1002,7 +1002,7 @@ void VisualModelImpl::computeNormals()
             normals[i].normalize();
         }
 
-        ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
+        VecDeriv& vnormals = *(m_vnormals.beginEdit());
         vnormals.resize(vertices.size());
         for (unsigned int i = 0; i < vertices.size(); i++)
         {
@@ -1032,8 +1032,8 @@ void VisualModelImpl::computeTangents()
 {
     if (!m_computeTangents.getValue() || !m_vtexcoords.getValue().size()) return;
 
-    const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
-    const ResizableExtVector<Quad>& quads = m_quads.getValue();
+    const VecTriangle& triangles = m_triangles.getValue();
+    const VecQuad& quads = m_quads.getValue();
     const VecCoord& vertices = getVertices();
     const VecTexCoord& texcoords = m_vtexcoords.getValue();
     VecCoord& normals = *(m_vnormals.beginEdit());
@@ -1181,10 +1181,10 @@ void VisualModelImpl::computeUVSphereProjection()
 
 void VisualModelImpl::flipFaces()
 {
-    ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
-    ResizableExtVector<Edge>& edges = *(m_edges.beginEdit());
-    ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
-    ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
+    VecDeriv& vnormals = *(m_vnormals.beginEdit());
+    VecEdge& edges = *(m_edges.beginEdit());
+    VecTriangle& triangles = *(m_triangles.beginEdit());
+    VecQuad& quads = *(m_quads.beginEdit());
 
     for (unsigned int i = 0; i < edges.size() ; i++)
     {
@@ -1264,7 +1264,7 @@ void VisualModelImpl::updateVisual()
                 useTopology = false; // dynamic topology
                 computeMesh();
             }
-            else if (topoMod == NULL && (m_topology->getRevision() != lastMeshRev))  // static topology
+            else if (topoMod == nullptr && (m_topology->getRevision() != lastMeshRev))  // static topology
             {
                 computeMesh();
             }
@@ -1297,7 +1297,7 @@ void VisualModelImpl::updateVisual()
 
 void VisualModelImpl::computePositions()
 {
-    const ResizableExtVector<int> &vertPosIdx = m_vertPosIdx.getValue();
+    const helper::vector<int> &vertPosIdx = m_vertPosIdx.getValue();
 
     if (!vertPosIdx.empty())
     {
@@ -1379,7 +1379,7 @@ void VisualModelImpl::computeMesh()
 
     dmsg_info() << " copying " << inputTriangles.size() << " triangles from topology" ;
 
-    ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+    VecTriangle& triangles = *(m_triangles.beginEdit());
     triangles.resize(inputTriangles.size());
 
     for (unsigned int i=0; i<triangles.size(); ++i)
@@ -1393,7 +1393,7 @@ void VisualModelImpl::computeMesh()
 
     dmsg_info() << " copying " << inputQuads.size()<< " quads from topology." ;
 
-    ResizableExtVector< Quad >& quads = *(m_quads.beginEdit());
+    VecQuad& quads = *(m_quads.beginEdit());
     quads.resize(inputQuads.size());
 
     for (unsigned int i=0; i<quads.size(); ++i)
@@ -1409,8 +1409,8 @@ void VisualModelImpl::handleTopologyChange()
 
     bool debug_mode = false;
 
-    ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
-    ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
+    VecTriangle& triangles = *(m_triangles.beginEdit());
+    VecQuad& quads = *(m_quads.beginEdit());
     m_positions.beginEdit();
 
     std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
@@ -1767,7 +1767,7 @@ void VisualModelImpl::handleTopologyChange()
             /* fjourdes:
             ! THIS IS OBVIOUSLY NOT THE APPROPRIATE WAY TO DO IT !
             However : VisualModelImpl stores in two separates data the vertices
-              - Data position in inherited ExtVec3State
+              - Data position in inherited Vec3State
               - Data vertices
             I don t know what is the purpose of the Data vertices (except at the init maybe ? )
             When doing topological operations on a graph like
@@ -1785,7 +1785,7 @@ void VisualModelImpl::handleTopologyChange()
             The IdentityMapping reflects the changes in topology by updating the Data position of the OglModel
             knowing the Data position of the MechObj named Triangles.
             However the Data vertices which is used to compute the normals is not updated, and the next computeNormals will
-            fail. BTW this is odd that normals are computed using Data vertices since Data normals it belongs to ExtVec3State
+            fail. BTW this is odd that normals are computed using Data vertices since Data normals it belongs to Vec3State
             (like Data position) ...
             So my question is how the changes in the Data position of and OglModel are reflected to its Data vertices?
             It must be done somewhere since ultimately visual models are drawn correctly by OglModel::internalDraw !
@@ -1833,7 +1833,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 {
     *out << "g "<<name<<"\n";
 
-    if (mtl != NULL) // && !material.name.empty())
+    if (mtl != nullptr) // && !material.name.empty())
     {
         std::string name; // = material.name;
         if (name.empty())
@@ -1860,14 +1860,14 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     }
 
     const VecCoord& x = m_positions.getValue();
-    const ResizableExtVector<Deriv>& vnormals = m_vnormals.getValue();
+    const VecDeriv& vnormals = m_vnormals.getValue();
     const VecTexCoord& vtexcoords = m_vtexcoords.getValue();
-    const ResizableExtVector<Edge>& edges = m_edges.getValue();
-    const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
-    const ResizableExtVector<Quad>& quads = m_quads.getValue();
+    const VecEdge& edges = m_edges.getValue();
+    const VecTriangle& triangles = m_triangles.getValue();
+    const VecQuad& quads = m_quads.getValue();
 
-    const ResizableExtVector<int> &vertPosIdx = m_vertPosIdx.getValue();
-    const ResizableExtVector<int> &vertNormIdx = m_vertNormIdx.getValue();
+    const helper::vector<int> &vertPosIdx = m_vertPosIdx.getValue();
+    const helper::vector<int> &vertNormIdx = m_vertNormIdx.getValue();
 
     int nbv = x.size();
 
@@ -1966,16 +1966,15 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     tindex+=nbt;
 }
 
-//template class SOFA_BASE_VISUAL_API VisualModelPointHandler< ResizableExtVector<ExtVec3fTypes::Coord> >;
-template class SOFA_BASE_VISUAL_API VisualModelPointHandler< ResizableExtVector<VisualModelImpl::Coord> >;
-template class SOFA_BASE_VISUAL_API VisualModelPointHandler< ResizableExtVector<VisualModelImpl::TexCoord> >;
+template class SOFA_BASE_VISUAL_API VisualModelPointHandler< VisualModelImpl::VecCoord>;
+template class SOFA_BASE_VISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
 
 } // namespace visualmodel
 
 namespace topology
 {
-template class PointData< sofa::defaulttype::ResizableExtVector<sofa::defaulttype::ExtVec3fTypes::Coord> >;
-template class PointData< sofa::defaulttype::ResizableExtVector<sofa::defaulttype::ExtVec2fTypes::Coord> >;
+template class PointData< sofa::defaulttype::Vec3fTypes::VecCoord >;
+template class PointData< sofa::defaulttype::Vec2fTypes::VecCoord >;
 }
 
 } // namespace component

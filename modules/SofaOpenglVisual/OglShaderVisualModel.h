@@ -48,7 +48,8 @@ namespace visualmodel
 class SOFA_OPENGL_VISUAL_API OglShaderVisualModel : public OglModel
 {
 public:
-    SOFA_CLASS(OglShaderVisualModel, OglModel);
+    using Inherit = OglModel;
+    SOFA_CLASS(OglShaderVisualModel, Inherit);
 
 protected:
     GLuint abo;

@@ -116,7 +116,6 @@ static RegisterTemplateAlias Rigid3Alias("Rigid3", sofa::defaulttype::Rigid3Type
 /// Compatibility aliases for niceness.
 static RegisterTemplateAlias RigidAlias("Rigid", sofa::defaulttype::Rigid3Types::Name(), true);
 
-static RegisterTemplateAlias ExtVec3fAlias("ExtVec3f", sofa::defaulttype::ExtVec3Types::Name(), isSRealDouble());
 static RegisterTemplateAlias Rigid2fAlias("Rigid2f", sofa::defaulttype::Rigid2Types::Name(), isSRealDouble());
 static RegisterTemplateAlias Rigid3fAlias("Rigid3f", sofa::defaulttype::Rigid3Types::Name(), isSRealDouble());
 static RegisterTemplateAlias Vec1fAlias("Vec1f", sofa::defaulttype::Vec1Types::Name(), isSRealDouble());
@@ -124,7 +123,6 @@ static RegisterTemplateAlias Vec2fAlias("Vec2f", sofa::defaulttype::Vec2Types::N
 static RegisterTemplateAlias Vec3fAlias("Vec3f", sofa::defaulttype::Vec3Types::Name(), isSRealDouble());
 static RegisterTemplateAlias Vec6fAlias("Vec6f", sofa::defaulttype::Vec6Types::Name(), isSRealDouble());
 
-static RegisterTemplateAlias ExtVec3dAlias("ExtVec3d", sofa::defaulttype::ExtVec3Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Vec1dAlias("Vec1d", sofa::defaulttype::Vec1Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Vec2dAlias("Vec2d", sofa::defaulttype::Vec2Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Vec3dAlias("Vec3d", sofa::defaulttype::Vec3Types::Name(), isSRealFloat());

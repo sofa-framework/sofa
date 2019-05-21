@@ -88,8 +88,6 @@ protected:
 #if  !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
- 
-extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
 #endif
 

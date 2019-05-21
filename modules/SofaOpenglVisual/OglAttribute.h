@@ -59,10 +59,10 @@ public:
     /// if attributes are not static, update the buffer
     void updateVisual() override;
 
-    sofa::defaulttype::ResizableExtVector<TDataTypes>* beginEdit();
+    helper::vector<TDataTypes>* beginEdit();
     void endEdit();
-    const sofa::defaulttype::ResizableExtVector<TDataTypes>& getValue() const;
-    void setValue( const sofa::defaulttype::ResizableExtVector<TDataTypes>& value);
+    const helper::vector<TDataTypes>& getValue() const;
+    void setValue( const helper::vector<TDataTypes>& value);
     void enable();
     void disable();
     void bwdDraw(core::visual::VisualParams* ) override;
@@ -96,7 +96,7 @@ protected:
 
     unsigned int _usage;
 
-    Data<sofa::defaulttype::ResizableExtVector<TDataTypes> > value; ///< internal Data
+    Data<helper::vector<TDataTypes> > value; ///< internal Data
     Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;

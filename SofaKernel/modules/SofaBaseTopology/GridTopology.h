@@ -60,7 +60,7 @@ using MeshTopology::getHexahedron;
     typedef sofa::defaulttype::Vec3i Vec3i;
     typedef sofa::defaulttype::Vector2 Vector2;
     typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
+    typedef Vector2 TextCoords2D;
     friend class GridUpdate;
 
 
