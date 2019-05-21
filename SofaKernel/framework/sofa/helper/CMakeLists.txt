@@ -343,10 +343,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 target_include_directories(${PROJECT_NAME} SYSTEM
     PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>"
-    PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>"
     PUBLIC "$<INSTALL_INTERFACE:include/extlibs/Eigen>"
     PUBLIC "$<INSTALL_INTERFACE:include/extlibs/json>"
     )
+if(MSVC)
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
+endif()
 
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 
