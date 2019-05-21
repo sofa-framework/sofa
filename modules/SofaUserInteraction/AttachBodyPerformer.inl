@@ -146,11 +146,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         typename DataTypes::Real r=0.0;
         typename DataTypes::Coord dofPicked;
         DataTypes::setCPos(dofPicked, pointPicked);
-        index = mapper->addPointB(dofPicked, idx, r
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , picked.baryCoords
-#endif
-                                 );
+        index = mapper->addPointB(dofPicked, idx, r);
         mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
