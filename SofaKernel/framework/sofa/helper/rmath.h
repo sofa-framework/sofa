@@ -23,6 +23,7 @@
 #define SOFA_HELPER_RMATH_H
 
 #include <sofa/helper/helper.h>
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <limits>
 
