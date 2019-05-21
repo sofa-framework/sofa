@@ -17,7 +17,7 @@
 namespace Leap {
 
 /** The constant pi as a single precision floating point number. */
-static const float PI          = 3.1415926536f;
+static const float PI          = M_PI;
 /**
  * The constant ratio to convert an angle measure from degrees to radians.
  * Multiply a value in degrees by this constant to convert to radians.
@@ -33,7 +33,7 @@ static const float RAD_TO_DEG  = 57.295779513f;
  * The Vector struct represents a three-component mathematical vector or point
  * such as a direction or position in three-dimensional space.
  *
- * The Leap software employs a right-handed Cartesian coordinate system.
+ * The Leap software employs a right-handed Cartesian coordinatFe system.
  * Values given are in units of real-world millimeters. The origin is centered
  * at the center of the Leap device. The x- and z-axes lie in the horizontal
  * plane, with the x-axis running parallel to the long edge of the device.
