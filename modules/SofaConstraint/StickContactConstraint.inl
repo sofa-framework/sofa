@@ -159,17 +159,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         typename DataTypes2::Real r2 = 0.;
 
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[1]
-#endif
-                                  );
+        index2 = mapper2.addPointB(o->point[1], index2, r2);
         double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
