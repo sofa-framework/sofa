@@ -296,7 +296,7 @@ find_package(FFMPEGexec QUIET)
 if (FFMPEG_EXEC_FOUND AND NOT SOFA_NO_OPENGL)
 	list(APPEND HEADER_FILES gl/VideoRecorderFFMPEG.h)
     list(APPEND SOURCE_FILES gl/VideoRecorderFFMPEG.cpp)
-endif( FFMPEG_EXEC_FOUND)
+endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
