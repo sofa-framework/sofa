@@ -153,7 +153,7 @@ private:
     Base(const Base& b);
     Base& operator=(const Base& b);
 
-    sofa::helper::system::atomic<int> ref_counter;
+    std::atomic<int> ref_counter;
     void addRef();
     void release();
 

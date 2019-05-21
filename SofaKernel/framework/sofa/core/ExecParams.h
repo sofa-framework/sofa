@@ -22,8 +22,8 @@
 #ifndef SOFA_CORE_EXEC_PARAMS_H
 #define SOFA_CORE_EXEC_PARAMS_H
 
-#include <sofa/helper/system/atomic.h>
 #include <sofa/core/core.h>
+#include <atomic>
 
 namespace sofa
 {
@@ -58,7 +58,7 @@ public:
 
 private:
 
-    static sofa::helper::system::atomic<int> g_nbThreads;
+    static std::atomic<int> g_nbThreads;
 
     class SOFA_CORE_API ExecParamsThreadStorage
     {
