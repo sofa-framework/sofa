@@ -116,15 +116,8 @@ void GearSpringForceField<DataTypes>::reinit()
 template <class DataTypes>
 void GearSpringForceField<DataTypes>::bwdInit()
 {
-//   this->Inherit::bwdInit();
-
     reinit();
 }
-
-
-
-static const double pi=3.14159265358979323846264338327950288;
-
 
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
@@ -135,7 +128,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     if(spring.m1==spring.p1) cp1 = &spring.ini1; else { cp1 = &p1[spring.p1]; dv1 += v1[spring.p1];	spring.ini1 = *cp1;	}
     if(spring.m2==spring.p2) cp2 = &spring.ini2; else { cp2 = &p2[spring.p2]; dv2 += v2[spring.p2];	spring.ini2 = *cp2;	}
 
-// pivot
+    // pivot
     // force
     Vector  fT1 = ((*cp1).getCenter() - (*cc1).getCenter())*spring.hardStiffnessTrans + getVCenter(dv1)*spring.kd,
             fT2 = ((*cp2).getCenter() - (*cc2).getCenter())*spring.hardStiffnessTrans + getVCenter(dv2)*spring.kd;
@@ -143,7 +136,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     // torque
     Vector fR1 , fR2;
     getVectorAngle(*cc1,*cp1,spring.freeAxis[0],fR1);		fR1 = fR1*spring.hardStiffnessRot + getVOrientation(dv1)*spring.kd,
-                                                            getVectorAngle(*cc2,*cp2,spring.freeAxis[1],fR2);		fR2 = fR2*spring.hardStiffnessRot + getVOrientation(dv2)*spring.kd;
+            getVectorAngle(*cc2,*cp2,spring.freeAxis[1],fR2);		fR2 = fR2*spring.hardStiffnessRot + getVOrientation(dv2)*spring.kd;
 
     // add force
     const Deriv force1(fT1, fR1 );
@@ -151,7 +144,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     const Deriv force2(fT2, fR2 );
     f2[spring.m2] += force2; this->mstate2->forceMask.insertEntry(spring.m2);	if(spring.m2!=spring.p2) { 	f2[spring.p2] -= force2; this->mstate2->forceMask.insertEntry(spring.p2); }
 
-// gear
+    // gear
     // get gear rotation axis in global coord
     Mat M1, M2;
     cc1->writeRotationMatrix(M1);
@@ -166,22 +159,15 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
 
     // compute 1D forces using updated angles around gear rotation axis
     Real newAngle1 = getAngleAroundAxis(*cp1,*cc1,spring.freeAxis[0]),
-         newAngle2 = getAngleAroundAxis(*cp2,*cc2,spring.freeAxis[1]);
+            newAngle2 = getAngleAroundAxis(*cp2,*cc2,spring.freeAxis[1]);
 
-    Real PI2=(Real)2.*(Real)pi;
-    while(newAngle1 - spring.previousAngle1 > pi) newAngle1 -= PI2;
-    while(newAngle1 - spring.previousAngle1 < -pi) newAngle1 += PI2;
-    while(newAngle2 - spring.previousAngle2 > pi) newAngle2 -= PI2;
-    while(newAngle2 - spring.previousAngle2 < -pi) newAngle2 += PI2;
+    while(newAngle1 - spring.previousAngle1 > M_PI) newAngle1 -= M_2_PI;
+    while(newAngle1 - spring.previousAngle1 < -M_PI) newAngle1 += M_2_PI;
+    while(newAngle2 - spring.previousAngle2 > M_PI) newAngle2 -= M_2_PI;
+    while(newAngle2 - spring.previousAngle2 < -M_PI) newAngle2 += M_2_PI;
 
     spring.angle1 += newAngle1 - spring.previousAngle1; spring.previousAngle1 = newAngle1;
     spring.angle2 += newAngle2 - spring.previousAngle2; spring.previousAngle2 = newAngle2;
-
-    // avoid drift ???
-    //while(spring.angle1 > PI) { spring.angle1 -= PI2; spring.angle2 -= PI2 * spring.Ratio ;}
-    //while(spring.angle1 <-PI) { spring.angle1 += PI2; spring.angle2 += PI2 * spring.Ratio ;}
-    //spring.angle1 = newAngle1;
-
 
     Real f = ( - spring.angle1 * spring.Ratio - spring.angle2 ) * spring.softStiffnessRot; // force1 = - force2  at contact point
 
@@ -217,7 +203,7 @@ void GearSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDer
 {
     Deriv d1 = -dx1[spring.m1] , d2 = -dx2[spring.m2] ;
 
-// pivots
+    // pivots
     if(spring.m1!=spring.p1) d1 += dx1[spring.p1];
     if(spring.m2!=spring.p2) d2 += dx2[spring.p2];
 
@@ -234,12 +220,12 @@ void GearSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDer
             dfR2 = spring.ini2.rotate(KR2.linearProduct(spring.ini2.inverseRotate(getVOrientation(d2))));
 
     const Deriv dforce1(dfT1,dfR1),
-          dforce2(dfT2,dfR2);
+            dforce2(dfT2,dfR2);
 
     f1[spring.m1] += dforce1 * kFactor; if(spring.m1!=spring.p1) f1[spring.p1] -= dforce1 * kFactor;
     f2[spring.m2] += dforce2 * kFactor; if(spring.m2!=spring.p2) f2[spring.p2] -= dforce2 * kFactor;
 
-// gear
+    // gear
     Real dangle1 = spring.ini1.inverseRotate(getVOrientation(dx1[spring.m1]))[spring.freeAxis[0]];
     Real dangle2 = spring.ini2.inverseRotate(getVOrientation(dx2[spring.m2]))[spring.freeAxis[1]];
 
