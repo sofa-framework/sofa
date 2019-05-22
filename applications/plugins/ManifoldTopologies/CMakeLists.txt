@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(ManifoldTopologies)
-
-set(MANIFOLDTOPOLOGIES_VERSION 0.1)
+project(ManifoldTopologies VERSION 0.1)
 
 set(HEADER_FILES
     ManifoldEdgeSetGeometryAlgorithms.h
@@ -40,15 +38,12 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${MANIFOLDTOPOLOGIES_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MANIFOLD_TOPOLOGIES")
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT ManifoldTopologies_libraries
-        EXPORT ManifoldTopologiesTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

@@ -23,8 +23,8 @@ set(SOURCE_FILES
 include(../imagetoolbox/imagetoolbox.cmake)
 
 find_package(SofaGui REQUIRED QUIET)
-
 find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
+
 if(Qt5Core_FOUND)
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 else()
@@ -39,4 +39,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FIL
 target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} SofaGuiQt)
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
-# TODO: install rules
+sofa_install_targets(image ${PROJECT_NAME} ${PROJECT_NAME})

@@ -13,8 +13,8 @@ namespace constraint
 
 template< class DataTypes >
 UniformConstraint<DataTypes>::UniformConstraint()
-    :d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation\
-                                                            is computed."))
+    :d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation is computed."))
+    ,d_constraintRestPos(initData(&d_constraintRestPos, false, "constrainToRestPos", "if false, constrains the pos to be zero / if true constraint the current position to stay at rest position"))
     ,m_constraintIndex(0)
 {
 
@@ -43,6 +43,19 @@ void UniformConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::Const
     }
 }
 
+template<class DstV, class Free>
+void computeViolation(DstV& resV, unsigned int constraintIndex, const
+                      Free& free, size_t N, std::function<double(int i, int j)> f)
+{
+    for (std::size_t i = 0; i < free.size(); ++i)
+    {
+        for (std::size_t j = 0; j < N; ++j)
+        {
+            resV->set(constraintIndex + i*N + j, f(i, j) );
+        }
+    }
+}
+
 template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
@@ -51,38 +64,34 @@ void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::Cons
     const SReal dt = this->getContext()->getDt();
     const SReal invDt = 1.0 / dt;
 
-    auto pos = this->getMState()->readPositions();
+    auto pos     = this->getMState()->readPositions();
+    auto restPos = this->getMState()->readRestPositions();
 
     if (cParams->constOrder() == sofa::core::ConstraintParams::VEL)
     {
-        const std::size_t N = Deriv::size();
-
-        for (std::size_t i = 0; i < vfree.size(); ++i)
-        {
-            for (std::size_t j = 0; j < N; ++j)
-            {
-                resV->set(m_constraintIndex + i*N + j, vfree[i][j] + invDt * pos[i][j] );
-            }
+        if (d_constraintRestPos.getValue()){
+            computeViolation(resV, m_constraintIndex, vfree, Deriv::size(),[&invDt,&pos,&vfree,&restPos](int i, int j)
+            { return vfree[i][j] + invDt *(pos[i][j]-restPos[i][j]); });
+        }
+        else {
+            computeViolation(resV, m_constraintIndex, vfree, Deriv::size(),[&invDt,&pos,&vfree](int i, int j)
+            { return vfree[i][j] + invDt *pos[i][j]; });
         }
     }
     else
     {
-        const std::size_t N = Coord::size();
-
-        for (std::size_t i = 0; i < xfree.size(); ++i)
-        {
-            for (std::size_t j = 0; j < N; ++j)
-            {
-                resV->set(m_constraintIndex + i*N + j, xfree[i][j]);
-            }
-        }
+        if( d_constraintRestPos.getValue() )
+            computeViolation(resV, m_constraintIndex, xfree, Coord::size(),
+                             [&xfree,&restPos](int i, int j){ return xfree[i][j] - restPos[i][j]; });
+        else
+            computeViolation(resV, m_constraintIndex, xfree, Coord::size(),[&xfree](int i, int j){ return xfree[i][j]; });
     }
 }
 
 template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset)
 {
-   
+
     if (d_iterative.getValue(cParams))
     {
         for (std::size_t i = 0; i < this->getMState()->getSize(); ++i)

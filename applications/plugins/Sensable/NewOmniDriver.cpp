@@ -223,7 +223,6 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
         sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni((autreOmniDriver[i]->data.servoDeviceData.pos)* autreOmniDriver[i]->data.scale, autreOmniDriver[i]->data.servoDeviceData.quat);
 
-        Vec3d world_pos_tool = positionDevs[i].getCenter();
         Quat world_quat_tool = positionDevs[i].getOrientation();
 
         // we compute its value in the current Tool frame:
@@ -236,20 +235,6 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         autreOmniDriver[i]->data.currentForce[0] = Wrench_endOmni_inBaseOmni.getForce()[0] * autreOmniDriver[i]->data.forceScale;
         autreOmniDriver[i]->data.currentForce[1] = Wrench_endOmni_inBaseOmni.getForce()[1] * autreOmniDriver[i]->data.forceScale;
         autreOmniDriver[i]->data.currentForce[2] = Wrench_endOmni_inBaseOmni.getForce()[2] * autreOmniDriver[i]->data.forceScale;
-
-        //cout<<currentForce[0]<<currentForce[1]<<currentForce[2]<<endl;
-
-        //	if((autreOmniDriver[i]->data.servoDeviceData.m_buttonState & HD_DEVICE_BUTTON_1) || autreOmniDriver[i]->data.permanent_feedback)
-        //{
-        //	if(currentForce[0]>0.1)
-        //		cout<<currentForce[0]<<" "<<currentForce[1]<<" "<<currentForce[2]<<endl;
-        //	HHD hapticHD = hHDVector[i];
-        //	hdMakeCurrentDevice(hapticHD);
-        //	hdBeginFrame(hapticHD);
-        //	//hdSetDoublev(HD_CURRENT_FORCE, autreOmniDriver[i]->data.currentForce);
-        //	hdEndFrame(hapticHD);
-        //}
-
         autreOmniDriver[i]->data.servoDeviceData.nupdates++;
     }
 
@@ -587,15 +572,13 @@ void NewOmniDriver::init()
                 visualNode[i].visu->updateVisual();
 
                 // create the visual mapping and at it to the graph //
-                visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > > ();
+                visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3Types, ExtVec3Types > >();
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
                 visualNode[i].mapping->f_mapForces.setValue(false);
                 visualNode[i].mapping->f_mapMasses.setValue(false);
-                //visualNode[i].mapping->m_inputObject.setValue("@../RigidDOF");
-                //visualNode[i].mapping->m_outputObject.setValue("@VisualParticles");
                 visualNode[i].mapping->index.setValue(i+1);
                 visualNode[i].mapping->init();
             }
@@ -616,7 +599,7 @@ void NewOmniDriver::init()
 
         for(int j=0; j<=VN_X; j++)
         {
-            sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3, SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 scaleMapping[i] *= (float)(1.0*scale.getValue()/100.0);
             visualNode[j].mapping->points.endEdit();
@@ -710,7 +693,8 @@ void NewOmniDriver::reinit()
 }
 
 void NewOmniDriver::draw(const core::visual::VisualParams* vparam){
-	draw();
+    SOFA_UNUSED(vparam);
+    draw();
 }
 
 // setup omni device visualization
@@ -737,14 +721,7 @@ void NewOmniDriver::draw()
             posDOF[i].getCenter() = posD[i].getCenter();
             posDOF[i].getOrientation() = posD[i].getOrientation();
         }
-        //for(int i=0;i<NVISUALNODE;i++)
-        //{
-        //	if(omniVisu.getValue() || i>6)
-        //	{
-        //		visualNode[i].visu->drawVisual();
-        //		visualNode[i].mapping->draw();
-        //	}
-        //}
+
         rigidDOF->x.endEdit();
         posDevice.endEdit();
 
@@ -755,7 +732,7 @@ void NewOmniDriver::draw()
             float rapport=((float)data.scale)/oldScale;
             for(int j = 0; j<NVISUALNODE ; j++)
             {
-                sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+                sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
                     scaleMapping[i]*=rapport;
                 visualNode[j].mapping->points.endEdit();
@@ -778,7 +755,6 @@ void NewOmniDriver::draw()
 
 void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
-    //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<std::endl;
     if(axesActif && omniVisu.getValue())
     {
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )

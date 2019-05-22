@@ -84,12 +84,7 @@ protected:
     /// the quaternion doing the projection
     QuatR m_projection;
 
-
-
-
-    ParabolicConstraint();
-
-    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~ParabolicConstraint();
 public:

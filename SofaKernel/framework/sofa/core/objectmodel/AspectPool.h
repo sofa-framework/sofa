@@ -76,7 +76,7 @@ private:
 
     AspectPool& pool;
     const int id;
-    helper::system::atomic<int> counter;
+    std::atomic<int> counter;
 };
 
 
@@ -121,7 +121,7 @@ private:
     AspectPool(const AspectPool& r);
     AspectPool& operator=(const AspectPool& r);
 
-    typedef helper::system::atomic<int> AtomicInt;
+    typedef std::atomic<int> AtomicInt;
     typedef helper::system::thread::CircularQueue<
     AtomicInt,
     helper::system::thread::FixedPower2Size<SOFA_DATA_MAX_ASPECTS>::type,
@@ -156,7 +156,7 @@ public:
     void clear();
 
 protected:
-    typedef helper::system::atomic<int> AtomicInt;
+    typedef std::atomic<int> AtomicInt;
 
     AspectPool& pool;
     AtomicInt latestID; ///< -1 or aspect ID of the last version sent

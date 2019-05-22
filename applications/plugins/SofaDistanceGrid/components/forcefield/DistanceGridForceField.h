@@ -171,7 +171,7 @@ public:
 protected:
     DistanceGridForceField()
         : grid(NULL)
-        , fileDistanceGrid( initData( &fileDistanceGrid, "fileDistanceGrid", "load distance grid from specified file"))
+        , fileDistanceGrid( initData( &fileDistanceGrid, "filename", "load distance grid from specified file"))
         , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
         , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
         , nx( initData( &nx, 64, "nx", "number of values on X axis") )
@@ -193,7 +193,7 @@ protected:
     {
         this->addAlias(&stiffnessIn,"stiffness");
         this->addAlias(&stiffnessOut,"stiffness");
-        this->addAlias(&fileDistanceGrid,"filename");
+        this->addAlias(&fileDistanceGrid,"fileDistanceGrid");
     }
 public:
     void init() override;

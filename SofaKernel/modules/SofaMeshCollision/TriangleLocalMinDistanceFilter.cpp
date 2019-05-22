@@ -38,6 +38,11 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
+TriangleInfo::TriangleInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+{
+}
+
 void TriangleInfo::buildFilter(unsigned int tri_index)
 {
 

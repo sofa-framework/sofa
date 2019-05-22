@@ -1,11 +1,5 @@
-add_subdirectory(extlibs/DiffusionSolver)
-
 cmake_minimum_required(VERSION 3.1)
-project(image)
-
-set(IMAGE_MAJOR_VERSION 0)
-set(IMAGE_MINOR_VERSION 1)
-set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION})
+project(image VERSION 0.1)
 
 set(SOURCE_FILES
     CollisionToCarvingEngine.cpp
@@ -79,7 +73,6 @@ find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(Newmat REQUIRED)
 find_package(CImgPlugin REQUIRED)
-
 find_package(MultiThreading QUIET)
 
 if(MultiThreading_FOUND)
@@ -90,26 +83,22 @@ else(MultiThreading_FOUND)
     set (WITH_MULTITHREADING FALSE)
 endif(MultiThreading_FOUND)
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
-
 if( SofaPython_FOUND )
     # Config files and install rules for pythons scripts
-    sofa_set_python_directory(${PROJECT_NAME} "python")
+    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
 if(NOT ${SOFA_NO_OPENGL})
     list(APPEND HEADER_FILES ImageViewer.h)
     list(APPEND SOURCE_FILES ImageViewer.cpp)
 
-if(FREENECT_FOUND)
-    list(APPEND HEADER_FILES Kinect.h)
-    list(APPEND SOURCE_FILES Kinect.cpp)
-    message(STATUS "image: found the freenect library")
-else()
-    message(STATUS "image: could not find the freenect library, won't build the Kinect component")
-endif()
-
+    if(FREENECT_FOUND)
+        list(APPEND HEADER_FILES Kinect.h)
+        list(APPEND SOURCE_FILES Kinect.cpp)
+        message(STATUS "image: found the freenect library")
+    else()
+        message(STATUS "image: could not find the freenect library, won't build the Kinect component")
+    endif()
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
@@ -134,7 +123,7 @@ if(SOFA_OPENMP)
 endif()
 
 
-find_package(DiffusionSolver CONFIG REQUIRED)
+find_package(DiffusionSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin ${MultiThreading_LIBRARY})
@@ -149,15 +138,13 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
 if(FREENECT_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-
 set(IMAGE_COMPILER_FLAGS "-DSOFA_BUILD_IMAGE")
-
 
 if( SofaPython_FOUND )
     target_link_libraries(${PROJECT_NAME} SofaPython)    
@@ -165,7 +152,7 @@ if( SofaPython_FOUND )
 endif()
 
 if(SOFA_HAVE_ZLIB)
-    target_link_libraries(${PROJECT_NAME} SofaFramework::ZLIB)
+    target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
 endif()
 
 if(SOFA_BUILD_TESTS)
@@ -185,7 +172,9 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(image ${IMAGE_VERSION} ${PROJECT_NAME} image)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    RELOCATABLE "plugins"
+    )

@@ -6,7 +6,7 @@ find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
 find_package(CImgPlugin REQUIRED)
 find_package(Freenect QUIET)
-find_package(DiffusionSolver CONFIG REQUIRED)
+find_package(DiffusionSolver REQUIRED)
 
 if(NOT TARGET image)
 	include("${CMAKE_CURRENT_LIST_DIR}/imageTargets.cmake")

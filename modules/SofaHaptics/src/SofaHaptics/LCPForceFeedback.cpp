@@ -55,7 +55,7 @@ void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::Sol
         const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world )
 {
-    if (!this->f_activate.getValue())
+    if (!this->d_activate.getValue())
     {
         return;
     }

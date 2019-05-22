@@ -58,7 +58,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
 
 protected:
-    PairInteractionForceField(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
+    PairInteractionForceField(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     ~PairInteractionForceField() override;
 public:

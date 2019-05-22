@@ -66,6 +66,15 @@ public:
     bool isNode()   { return type == typeNode;   }
     bool isObject() { return type == typeObject; }
     bool isData()   { return type == typeData;   }
+    bool isBase()   { return isNode() || isObject(); }
+    sofa::core::objectmodel::Base* asBase()
+    {
+        if( isNode() )
+            return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Node);
+        if( isObject() )
+            return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Object);
+        return nullptr;
+    }
 } ObjectModel;
 
 enum SofaListViewAttribute
@@ -131,6 +140,8 @@ protected Q_SLOTS:
     void HideDatas();
     void ShowDatas();
     void openInEditor();
+    void openInstanciation();
+    void openImplementation();
     void copyFilePathToClipBoard();
     void DeactivateNode();
     void ActivateNode();

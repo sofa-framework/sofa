@@ -278,6 +278,13 @@
 #define dmsg_advice(...) DMSGADVICE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define dmsg_advice_when(cond, ...) if(cond) dmsg_advice(__VA_ARGS__)
 
+#define dmsg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define dmsg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define dmsg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define dmsg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define dmsg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define dmsg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+
 #define MSG_REGISTER_CLASS(classType, nameName) \
     namespace sofa {         \
     namespace helper {       \

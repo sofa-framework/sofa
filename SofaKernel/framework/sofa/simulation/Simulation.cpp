@@ -366,7 +366,6 @@ void Simulation::updateVisualContext (Node* root)
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    sofa::helper::AdvancedTimer::begin("Animate");
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
     sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
@@ -384,7 +383,6 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     }
 
     sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
-    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 /// Export a scene to an OBJ 3D Scene
@@ -434,7 +432,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 
 
 /// Load a scene from a file
-Node::SPtr Simulation::load ( const char *filename )
+Node::SPtr Simulation::load ( const char *filename, bool reload )
 {
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
@@ -442,7 +440,7 @@ Node::SPtr Simulation::load ( const char *filename )
 
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
-    if (loader) return loader->load(filename);
+    if (loader) return loader->load(filename, reload);
 
     // unable to load file
     serr << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;

@@ -22,6 +22,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
@@ -69,8 +70,6 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
-
-
 }
 
 Base::~Base()
@@ -84,7 +83,7 @@ void Base::addRef()
 
 void Base::release()
 {
-    if (ref_counter.dec_and_test_null())
+    if (ref_counter.fetch_sub(1) == 1)
     {
         delete this;
     }
@@ -532,8 +531,8 @@ void  Base::parse ( BaseObjectDescription* arg )
 
         // FIX: "type" is already used to define the type of object to instanciate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type")) continue;
-
+        if (attrName == std::string("type"))
+            continue;
         if (!hasField(attrName)) continue;
 
         parseField(attrName, it.second);
@@ -677,6 +676,59 @@ void Base::clearOutputs()
                               " To remove this warning you need to use clearLoggedMessages() instead. ";
     clearLoggedMessages();
 }
+
+/// Set the source filename (where the component is implemented)
+void Base::setDefinitionSourceFileName(const std::string& sourceFileName)
+{
+    m_definitionSourceFileName = sourceFileName;
+}
+
+/// Get the source filename (where the component is implemented)
+const std::string& Base::getDefinitionSourceFileName() const
+{
+    return m_definitionSourceFileName;
+}
+
+/// Set the source location (where the component is implemented)
+void Base::setDefinitionSourceFilePos(const int linenum)
+{
+    m_definitionSourceFilePos = linenum;
+}
+
+/// Get the source location (where the component is implemented)
+int Base::getDefinitionSourceFilePos() const
+{
+    return m_definitionSourceFilePos;
+}
+
+/// Set the file where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationSourceFileName(const std::string& filename)
+{
+    m_instanciationSourceFileName = filename;
+}
+
+/// Get the file where the instance has been created
+/// This is useful to store where the component was emitted from
+const std::string& Base::getInstanciationSourceFileName() const
+{
+    return m_instanciationSourceFileName;
+}
+
+/// Set the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+void Base::setInstanciationSourceFilePos(const int lineco)
+{
+    m_instanciationSourceFilePos = lineco;
+}
+
+/// Get the file location (line number) where the instance has been created
+/// This is useful to store where the component was emitted from
+int Base::getInstanciationSourceFilePos() const
+{
+    return m_instanciationSourceFilePos;
+}
+
 
 
 

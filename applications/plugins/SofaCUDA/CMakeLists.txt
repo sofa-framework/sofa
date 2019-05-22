@@ -285,9 +285,6 @@ set(SOFACUDA_ARCH "sm_20" CACHE STRING "GPU architecture, as passed to nvcc with
 
 include(SofaCUDANvccFlags.cmake)
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h" DESTINATION "include/SofaCUDA")
-
 
 # nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,

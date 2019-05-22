@@ -24,7 +24,7 @@
 *   - damien.marchal@univ-lille1.fr
 *******************************************************************************/
 
-#include <QWidget>
+#include <QDialog>
 #include "../SofaGUIQt.h"
 
 ////////////////////////////// FORWARD DECLARATION ////////////////////////////
@@ -47,7 +47,7 @@ namespace gui
 namespace qt
 {
 
-class SOFA_SOFAGUIQT_API DocBrowser : public QWidget
+class SOFA_SOFAGUIQT_API DocBrowser : public QDialog
 {
 Q_OBJECT
 
