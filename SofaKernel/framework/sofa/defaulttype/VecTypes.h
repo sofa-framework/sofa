@@ -239,6 +239,17 @@ typedef StdVectorTypes<Vec2,Vec2,Vec2::value_type> Vec2Types;
 typedef StdVectorTypes<Vec1,Vec1,Vec1::value_type> Vec1Types;
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
+// Deprecated classes in 19.06, will be removed in 19.12
+template <class TCoord, class TDeriv, class TReal> using ExtVectorTypes __attribute__ ((deprecated))
+  = StdVectorTypes<TCoord, TDeriv, TReal>;
+
+template <class T> using ExtVector __attribute__ ((deprecated))
+  = helper::vector<T>;
+
+template <class T> using ResizableExtVector __attribute__ ((deprecated))
+  = helper::vector<T>;
+
+
 } // namespace defaulttype
 
 } // namespace sofa

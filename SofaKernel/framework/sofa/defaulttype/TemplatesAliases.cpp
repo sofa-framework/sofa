@@ -130,6 +130,34 @@ static RegisterTemplateAlias Vec6dAlias("Vec6d", sofa::defaulttype::Vec6Types::N
 static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
 
+// deprecated template names
+
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec1fAlias("ExtVec1f", sofa::defaulttype::Vec1Types::Name(), isSRealDouble());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec2fAlias("ExtVec2f", sofa::defaulttype::Vec2Types::Name(), isSRealDouble());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec3fAlias("ExtVec3f", sofa::defaulttype::Vec3Types::Name(), isSRealDouble());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec6fAlias("ExtVec6f", sofa::defaulttype::Vec6Types::Name(), isSRealDouble());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec1dAlias("ExtVec1d", sofa::defaulttype::Vec1Types::Name(), isSRealFloat());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec2dAlias("ExtVec2d", sofa::defaulttype::Vec2Types::Name(), isSRealFloat());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec3dAlias("ExtVec3d", sofa::defaulttype::Vec3Types::Name(), isSRealFloat());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec6dAlias("ExtVec6d", sofa::defaulttype::Vec6Types::Name(), isSRealFloat());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec1Alias("ExtVec1", sofa::defaulttype::Vec1Types::Name());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec2Alias("ExtVec2", sofa::defaulttype::Vec2Types::Name());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec3Alias("ExtVec3", sofa::defaulttype::Vec3Types::Name());
+[[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Aliases will be removed in 19.12")]]
+static RegisterTemplateAlias ExtVec6Alias("ExtVec6", sofa::defaulttype::Vec6Types::Name());
+
+
 }// defaulttype
 
 }// sofa
