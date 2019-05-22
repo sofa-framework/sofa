@@ -227,8 +227,6 @@ public:
 };
 
 
-
-
 template<class DataTypes>
 inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
@@ -240,9 +238,11 @@ inline TTriangle<DataTypes>::TTriangle(const core::CollisionElementIterator& i)
 {}
 
 template<class DataTypes>
-inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index, helper::ReadAccessor<typename DataTypes::VecCoord>& /*x*/)
-    : core::TCollisionElementIterator<ParentModel>(model, index)
-{}
+inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index, helper::ReadAccessor<typename DataTypes::VecCoord>& x)
+    : TTriangle(model, index)
+{
+    SOFA_UNUSED(x);
+}
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->m_triangles))[this->index][0]]; }

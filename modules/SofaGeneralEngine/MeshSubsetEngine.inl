@@ -34,6 +34,26 @@ namespace engine
 {
 
 template <class DataTypes>
+MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
+    : Inherited()
+    , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
+    , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
+    , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
+    , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
+    , indices(initData(&indices,"indices","Index lists of the selected vertices"))
+    , position(initData(&position,"position","Vertices of mesh subset"))
+    , edges(initData(&edges,"edges","edges of mesh subset"))
+    , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
+    , quads(initData(&quads,"quads","Quads of mesh subset"))
+{
+}
+
+template <class DataTypes>
+MeshSubsetEngine<DataTypes>::~MeshSubsetEngine()
+{
+}
+
+template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);

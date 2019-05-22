@@ -67,7 +67,7 @@ public:
     typename MMapping::SPtr mapping;
 
     IdentityContactMapper()
-        : model(NULL), mapping(NULL)
+        : model(nullptr), mapping(nullptr)
     {
     }
 

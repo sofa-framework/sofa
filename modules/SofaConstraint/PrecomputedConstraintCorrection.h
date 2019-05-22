@@ -74,7 +74,7 @@ public:
 	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:
-    PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
+    PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
     virtual ~PrecomputedConstraintCorrection();
 public:

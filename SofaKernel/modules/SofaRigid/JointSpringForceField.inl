@@ -39,27 +39,17 @@ using sofa::defaulttype::Vec4f;
 using sofa::defaulttype::Vector3;
 
 template<class DataTypes>
-JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2)
-    : Inherit1(object1, object2)
-    , m_lastTime((Real)0.0)
-    , m_infile(NULL)
-    , m_outfile(NULL)
-    , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
-    , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
-    , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
-    , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
-    , d_showLawfulTorsion(initData(&d_showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
-    , d_showExtraTorsion(initData(&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+JointSpringForceField<DataTypes>::JointSpringForceField()
+    : JointSpringForceField(nullptr, nullptr)
 {
 }
 
 template<class DataTypes>
-JointSpringForceField<DataTypes>::JointSpringForceField()
-    : m_infile(NULL)
-    , m_outfile(NULL)
+JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2)
+    : Inherit1(object1, object2)
     , m_lastTime((Real)0.0)
+    , m_infile(nullptr)
+    , m_outfile(nullptr)
     , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
     , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))

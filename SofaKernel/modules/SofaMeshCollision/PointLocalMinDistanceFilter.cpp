@@ -43,6 +43,10 @@ namespace component
 namespace collision
 {
 
+PointInfo::PointInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+{
+}
 
 void PointInfo::buildFilter(unsigned int p_index)
 {
