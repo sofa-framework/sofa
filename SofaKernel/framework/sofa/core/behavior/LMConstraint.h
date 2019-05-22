@@ -74,23 +74,8 @@ public:
     typedef typename DataTypes2::MatrixDeriv::RowType MatrixDerivRowType2;
 
 protected:
-    LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2)
-        : constrainedObject1(dof1)
-        , constrainedObject2(dof2)
-        , simulatedObject1(dof1)
-        , simulatedObject2(dof2)
-    {
-
-    }
-
-    LMConstraint()
-        : constrainedObject1(NULL)
-        , constrainedObject2(NULL)
-        , simulatedObject1(NULL)
-        , simulatedObject2(NULL)
-    {
-
-    }
+    LMConstraint();
+    LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2);
 
     ~LMConstraint() override;
 public:

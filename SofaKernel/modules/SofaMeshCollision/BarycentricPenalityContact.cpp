@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_CPP
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa

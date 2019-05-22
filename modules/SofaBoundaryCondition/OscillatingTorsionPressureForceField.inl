@@ -51,8 +51,8 @@ OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForce
     , dmin(initData(&dmin,Real(0.0), "dmin", "Minimum distance from the origin along the normal direction"))
     , dmax(initData(&dmax,Real(0.0), "dmax", "Maximum distance from the origin along the normal direction"))
     , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
+    , rotationAngle(0)
 {
-    rotationAngle = 0;
 }
 
 template <class DataTypes>

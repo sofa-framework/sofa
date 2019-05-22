@@ -80,27 +80,7 @@ protected:
     void computeNormals();
     helper::vector<defaulttype::Vec3f> m_normals;
 
-    DataDisplay()
-        : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
-          , f_pointData(initData(&f_pointData, "pointData", "Data associated with nodes"))
-          , f_triangleData(initData(&f_triangleData, "triangleData", "Data associated with triangles"))
-          , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
-          , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
-          , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-          , f_colorNaN(initData(&f_colorNaN, defaulttype::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
-          , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
-          , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
-          , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
-          , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
-          , state(NULL)
-          , topology(NULL)
-          , oldMin(0)
-          , oldMax(0)
-    {
-        this->addAlias(&f_triangleData,"cellData"); // backward compatibility
-        d_currentMin.setReadOnly(true);
-        d_currentMax.setReadOnly(true);
-    }
+    DataDisplay();
 };
 
 } // namespace visualmodel

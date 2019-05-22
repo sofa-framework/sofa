@@ -69,7 +69,6 @@ using sofa::gui::GUIManager;
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/atomic.h>
 
 using sofa::core::ExecParams ;
 
@@ -166,8 +165,11 @@ int main(int argc, char** argv)
         }
     }
 
-    // Force add plugins dir to PluginRepository (even if not existing)
-    PluginRepository.addFirstPath( Utils::getSofaPathPrefix()+"/plugins" );
+    // Add plugins and modules dirs to PluginRepository
+    if ( FileSystem::isDirectory(Utils::getSofaPathPrefix()+"/plugins") )
+    {
+        PluginRepository.addFirstPath(Utils::getSofaPathPrefix()+"/plugins");
+    }
 
     sofa::helper::BackTrace::autodump();
 
@@ -443,14 +445,17 @@ int main(int argc, char** argv)
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
     }
-    GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
-
 
     //=======================================
     //Apply Options
 
+    // start anim option
     if (startAnim)
         groot->setAnimate(true);
+
+    // set scene and animation root to the gui
+    GUIManager::SetScene(groot, fileName.c_str(), temporaryFile);
+
     if (printFactory)
     {
         msg_info("") << "////////// FACTORY //////////" ;

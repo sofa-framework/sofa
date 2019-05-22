@@ -1,0 +1,12 @@
+# CMake package configuration file for the plugin '@PROJECT_NAME@'
+
+@PACKAGE_INIT@
+
+find_package(SofaGui REQUIRED)
+find_package(Qt5 COMPONENTS Core REQUIRED)
+
+if(NOT TARGET CImgPlugin)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
+
+check_required_components(@PROJECT_NAME@)

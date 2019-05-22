@@ -239,9 +239,11 @@ inline TTriangle<DataTypes>::TTriangle(const core::CollisionElementIterator& i)
 {}
 
 template<class DataTypes>
-inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index, helper::ReadAccessor<typename DataTypes::VecCoord>& /*x*/)
-    : core::TCollisionElementIterator<ParentModel>(model, index)
-{}
+inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index, helper::ReadAccessor<typename DataTypes::VecCoord>& x)
+    : TTriangle(model, index)
+{
+    SOFA_UNUSED(x);
+}
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->m_triangles))[this->index][0]]; }
@@ -300,7 +302,6 @@ typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
 extern template class SOFA_MESH_COLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
-
 #endif
 
 } // namespace collision

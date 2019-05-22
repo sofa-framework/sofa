@@ -271,14 +271,17 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSiz
         return false;
     }
     // atomically reserve the element to read
-    int readIdx = head.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
+    int readIdx = head.fetch_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
 
     // Active wait:
     // loop as long as other threads have not put any valid value in the element.
     // It happens when the queue is temporarily empty.
-    while((item = array[readIdx]) == -1)
+    do
     {
+        item.exchange(array[readIdx]);
     }
+    while(item == -1);
+    //while((item = array[readIdx]) == -1)
 
     // mark the element as available
     array[readIdx] = -1;
@@ -295,13 +298,18 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSi
     }
 
     // atomically reserve the element to write
-    int writeIdx = tail.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
+    int writeIdx = tail.fetch_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
     // Active wait:
     // loop as long as the element has not been read by another thread (which is indicated by a -1 value).
     // It happens when the queue is temporarily full.
-    while(array[writeIdx].compare_and_swap(-1, item) != -1)
+
+    int refInt;
+    do
     {
+        refInt = -1;
     }
+    while(!array[writeIdx].compare_exchange_strong(refInt, item) );
+    //while(array[writeIdx].compare_and_swap(-1, item) != -1)
 
     return true;
 }

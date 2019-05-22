@@ -37,6 +37,22 @@ namespace behavior
 {
 
 template<class DataTypes1,class DataTypes2>
+LMConstraint<DataTypes1,DataTypes2>::LMConstraint()
+    : LMConstraint(nullptr, nullptr)
+{
+}
+
+template<class DataTypes1,class DataTypes2>
+LMConstraint<DataTypes1,DataTypes2>::LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2)
+    : constrainedObject1(dof1)
+    , constrainedObject2(dof2)
+    , simulatedObject1(dof1)
+    , simulatedObject2(dof2)
+{
+}
+
+
+template<class DataTypes1,class DataTypes2>
 LMConstraint<DataTypes1,DataTypes2>::~LMConstraint()
 {
 }

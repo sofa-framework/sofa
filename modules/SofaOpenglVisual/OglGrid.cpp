@@ -40,6 +40,14 @@ int OglGridClass = core::RegisterObject("Display a simple grid")
 
 using namespace sofa::defaulttype;
 
+OglGrid::OglGrid()
+    : plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid"))
+    , size(initData(&size, 10.0f,  "size", "Size of the squared grid"))
+    , nbSubdiv(initData(&nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
+    , color(initData(&color, defaulttype::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
+    , thickness(initData(&thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
+    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
+{}
 
 void OglGrid::init()
 {

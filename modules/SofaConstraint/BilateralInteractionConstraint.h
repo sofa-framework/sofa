@@ -128,10 +128,9 @@ protected:
     bool activated;
     int iteration;
 
-    BilateralInteractionConstraint(MechanicalState* object1,
-                                   MechanicalState* object2) ;
+    BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralInteractionConstraint(MechanicalState* object) ;
-    BilateralInteractionConstraint() ;
+    BilateralInteractionConstraint();
 
     virtual ~BilateralInteractionConstraint(){}
 public:

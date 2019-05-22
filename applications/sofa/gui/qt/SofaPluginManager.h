@@ -40,8 +40,7 @@ class SofaPluginManager: public QDialog, public Ui_PluginManager
 {
     Q_OBJECT
 public:
-
-    SofaPluginManager();
+    SofaPluginManager(QWidget *parent);
 
 
 signals:

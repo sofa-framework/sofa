@@ -95,6 +95,12 @@ class WindowVisitor;
 class GraphVisitor;
 #endif
 
+class SofaMouseManager;
+
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+class SofaWindowProfiler;
+#endif
+
 namespace viewer
 {
 class SofaViewer;
@@ -156,8 +162,12 @@ private:
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    WindowVisitor* windowTraceVisitor;
+    WindowVisitor* windowTraceVisitor;    
     GraphVisitor* handleTraceVisitor;
+#endif
+    SofaMouseManager* m_sofaMouseManager;
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    SofaWindowProfiler* m_windowTimerProfiler;
 #endif
 //-----------------OPTIONS DEFINITIONS------------------------}
 
@@ -331,6 +341,7 @@ private:
     void createSimulationGraph();
     void createPropertyWidget();
     void createWindowVisitor();
+    void createAdvanceTimerProfilerWindow();
 
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
@@ -368,6 +379,7 @@ public slots:
     virtual void displayComputationTime(bool);
     virtual void setExportGnuplot(bool);
     virtual void setExportVisitor(bool);
+    virtual void displayProflierWindow(bool);
     virtual void currentTabChanged(int index);
 
     virtual void fileNew();
