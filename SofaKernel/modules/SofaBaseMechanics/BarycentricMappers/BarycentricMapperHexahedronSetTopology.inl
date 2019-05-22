@@ -117,12 +117,13 @@ helper::vector<SReal> BarycentricMapperHexahedronSetTopology<In,Out>::getBaryCoe
 {
     helper::vector<SReal> hexahedronCoef{(1-fx)*(1-fy)*(1-fz),
                 (fx)*(1-fy)*(1-fz),
-                (1-fx)*(fy)*(1-fz),
-                (fx)*(fy)*(1-fz),
+                (fx)*(fy)*(1 - fz),
+                (1 - fx)*(fy)*(1 - fz),
                 (1-fx)*(1-fy)*(fz),
                 (fx)*(1-fy)*(fz),
-                (1-fx)*(fy)*(fz),
-                (fx)*(fy)*(fz)};
+                (fx)*(fy)*(fz),
+                (1 - fx)*(fy)*(fz)
+    };
     return hexahedronCoef;
 }
 
