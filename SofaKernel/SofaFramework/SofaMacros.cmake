@@ -544,6 +544,8 @@ endmacro()
 #   plugin's cmake_install.cmake to force the plugin to be installed in it's own directory instead of in SOFA's install directory
 #   (look at the build directory of any plugin to find an example of cmake_install.cmake).
 function(sofa_set_install_relocatable target install_dir)
+    message("sofa_set_install_relocatable")
+    message("SOFA_KERNEL_SOURCE_DIR = ${SOFA_KERNEL_SOURCE_DIR}") 
     if(NOT SOFA_KERNEL_SOURCE_DIR)
         # not building through SOFA
         return()
@@ -586,7 +588,6 @@ function(sofa_set_install_relocatable target install_dir)
              && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
              || true
         )
-    add_dependencies(${target}_relocatable_install ${target})
 endfunction()
 
 
