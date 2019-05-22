@@ -78,14 +78,7 @@ public:
     int nbp;
 
 protected:
-    RigidContactMapper()
-        : model(nullptr)
-        , child(nullptr)
-        , mapping(nullptr)
-        , outmodel(nullptr)
-        , nbp(0)
-    {
-    }
+    RigidContactMapper();
 
 public:
 

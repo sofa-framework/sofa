@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 #include <iostream>
 

@@ -72,8 +72,8 @@ public:
 
     ///constructors
     GearSpring();
-    GearSpring(int m1, int m2, int p1, int p2);
-    GearSpring(int m1, int m2, int p1, int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio);
+    GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2);
+    GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio);
 
     //accessors
     Real getHardStiffnessRotation() {return hardStiffnessRot;}

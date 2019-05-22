@@ -51,12 +51,12 @@ template<class DataTypes>
 TTriangleModel<DataTypes>::TTriangleModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
-    , m_mstate(NULL)
-    , m_topology(NULL)
+    , m_mstate(nullptr)
+    , m_topology(nullptr)
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
-    , m_pointModels(NULL)
-    , m_lmdFilter(NULL)
+    , m_pointModels(nullptr)
+    , m_lmdFilter(nullptr)
 {
     m_triangles = &m_internalTriangles;
     enum_type = TRIANGLE_TYPE;

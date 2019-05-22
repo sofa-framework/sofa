@@ -50,13 +50,13 @@ GearSpring<DataTypes>::GearSpring()
 }
 
 template<class DataTypes>
-GearSpring<DataTypes>::GearSpring(int m1, int m2, int p1, int p2)
+GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2)
     : GearSpring(m1, m2, p1, p2, 10000, 10000, 10000, 10000, 1)
 {
 }
 
 template<class DataTypes>
-GearSpring<DataTypes>::GearSpring(int m1, int m2, int p1, int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio)
+GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned  int m2, unsigned int p1, unsigned int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio)
     : m1(m1)
     , m2(m2)
     , p1(p1)
