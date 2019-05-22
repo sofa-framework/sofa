@@ -4,6 +4,7 @@
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
+	<CollisionGroupManager name="Group" />
     <Node name="Chain">
         <Node name="Fixed">
             <MeshObjLoader name="loaderMeca" filename="mesh/torus_for_collision.obj" />
@@ -16,6 +17,6 @@
         <include name="FEM" href="Objects/TorusFEM.xml" dx="2.5" />
         <include name="Spring" href="Objects/TorusSpring.xml" dx="5" rx="90" />
         <include name="FFD" href="Objects/TorusFFD.xml" dx="7.5" />
-        <include name="TorusRigid" href="Objects/TorusRigid.xml" dx="10" rx="90" />
+        <!-- <include name="TorusRigid" href="Objects/TorusRigid.xml" dx="10" rx="90" /> -->
     </Node>
 </Node>
