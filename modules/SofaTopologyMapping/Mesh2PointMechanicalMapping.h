@@ -62,7 +62,7 @@ public:
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
 protected:
-    Mesh2PointMechanicalMapping(core::State<In>* from = NULL, core::State<Out>* to = NULL);
+    Mesh2PointMechanicalMapping(core::State<In>* from = nullptr, core::State<Out>* to = nullptr);
 
     virtual ~Mesh2PointMechanicalMapping();
 

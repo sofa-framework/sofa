@@ -35,9 +35,31 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
+RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField()
+    : RegularGridSpringForceField(nullptr, nullptr)
+{
+}
+
+template<class DataTypes>
+RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
+    : StiffSpringForceField<DataTypes>(object1, object2),
+      linesStiffness  (initData(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
+      , linesDamping  (initData(&linesDamping  ,Real(5),"linesDamping"  ,"Lines Damping"))
+      , quadsStiffness(initData(&quadsStiffness,Real(100),"quadsStiffness","Quads Stiffness"))
+      , quadsDamping  (initData(&quadsDamping  ,Real(5),"quadsDamping"  ,"Quads Damping"))
+      , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
+      , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
+      , topology(nullptr)
+{
+    this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");
+    this->addAlias(&quadsStiffness,    "stiffness"); this->addAlias(&quadsDamping,    "damping");
+    this->addAlias(&cubesStiffness,    "stiffness"); this->addAlias(&cubesDamping,    "damping");
+}
+
+template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::init()
 {
-    if (this->mstate1 == NULL)
+    if (this->mstate1 == nullptr)
     {
         this->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
         this->mstate2 = this->mstate1;

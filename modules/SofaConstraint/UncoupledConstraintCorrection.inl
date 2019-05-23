@@ -57,14 +57,15 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 /// Compute compliance between 2 constraint Jacobians for Rigid types
 template<typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
-    unsigned int /*index*/,
+    unsigned int index,
     const sofa::defaulttype::RigidDeriv<3, Real>& n1, const sofa::defaulttype::RigidDeriv<3, Real>& n2,
-    const Real /*comp0*/, const VecReal& comp)
+    const Real comp0, const VecReal& comp)
 {
-    double w;
+    SOFA_UNUSED(index);
+    SOFA_UNUSED(comp0);
 
     // translation part
-    w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
+    double w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
     // rotation part
     w += (n1.getVOrientation()[0] * comp[1] + n1.getVOrientation()[1] * comp[2] + n1.getVOrientation()[2] * comp[3]) * n2.getVOrientation()[0];
     w += (n1.getVOrientation()[0] * comp[2] + n1.getVOrientation()[1] * comp[4] + n1.getVOrientation()[2] * comp[5]) * n2.getVOrientation()[1];
@@ -86,10 +87,13 @@ inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
 /// Compute displacement from constraint force for Rigid types
 template<typename Real, class VecReal>
 inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_computeDx(
-    unsigned int /*index*/,
+    unsigned int index,
     const sofa::defaulttype::RigidDeriv<3, Real>& f,
-    const Real /*comp0*/, const VecReal& comp)
+    const Real comp0, const VecReal& comp)
 {
+    SOFA_UNUSED(index);
+    SOFA_UNUSED(comp0);
+
     sofa::defaulttype::RigidDeriv<3, Real> dx;
     // translation part
     dx.getVCenter() = (f.getVCenter()) * comp[0];
@@ -113,7 +117,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
     , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
-    , m_pOdeSolver(NULL)
+    , m_pOdeSolver(nullptr)
 {
 }
 

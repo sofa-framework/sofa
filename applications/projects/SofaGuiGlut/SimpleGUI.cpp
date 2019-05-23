@@ -220,17 +220,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
     gui->setScene(groot, filename);
     gui->initializeGL();
 
-    GLuint screen_width;
-    GLuint screen_height;
-    psglGetDeviceDimensions(psglGetCurrentDevice(), &screen_width, &screen_height);
-
-    SimpleGUI* gui = new SimpleGUI();
-    gui->setScene(groot, filename);
-
-    gui->initializeGL();
-    gui->resizeGL(screen_width, screen_height);
-#endif
-
     return gui;
 }
 

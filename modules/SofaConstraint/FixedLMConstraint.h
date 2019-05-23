@@ -72,21 +72,7 @@ protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
-
-    FixedLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
-
-    FixedLMConstraint()
-        : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
+    FixedLMConstraint( MechanicalState *dof = nullptr);
 
     ~FixedLMConstraint()
     {

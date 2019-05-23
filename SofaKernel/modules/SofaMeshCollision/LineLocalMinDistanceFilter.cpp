@@ -40,6 +40,14 @@ namespace collision
 {
 
 
+LineInfo::LineInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+    , m_computedRightAngleCone(0.0)
+    , m_computedLeftAngleCone(0.0)
+    , m_twoTrianglesAroundEdge(false)
+{
+}
+
 void LineInfo::buildFilter(unsigned int edge_index)
 {
     using sofa::helper::vector;

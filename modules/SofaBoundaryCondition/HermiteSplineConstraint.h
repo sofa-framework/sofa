@@ -93,9 +93,7 @@ public:
 
 
 protected:
-    HermiteSplineConstraint();
-
-    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~HermiteSplineConstraint();
 public:

@@ -103,47 +103,6 @@ endif(NOT WIN32)
 set(BOOST_MIN_VERSION "1.54.0")
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
-### Dependency pack for Windows
-if(MSVC)
-
-    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
-    if(SOFA_DEPENDENCY_PACK_DIR)
-        set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
-    else()
-        # Default
-        set(DEPENDENCY_PACK_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-    endif()
-
-    list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
-    if(CMAKE_CL_64)
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
-    else()
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
-    endif()
-
-    if(CMAKE_CL_64)
-        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win64/*.dll")
-        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win64/*.lib")
-    else()
-        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win32/*.dll")
-        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win32/*.lib")
-    endif()
-    ## Copy DLLs to the build tree
-    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-        endforeach()
-    else()                      # Single-config generator (nmake)
-        file(COPY ${DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-    endif()
-    ## Install DLLs
-    install(FILES ${DLLS} DESTINATION bin)
-    install(FILES ${LIBS} DESTINATION lib)
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
-
-endif()
 
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
 # build directory, it points to the source tree, whereas in the install

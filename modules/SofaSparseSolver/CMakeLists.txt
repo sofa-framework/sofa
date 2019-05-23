@@ -61,6 +61,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLin
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFASPARSESOLVER")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFASPARSESOLVER")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 if(Metis_FOUND)
     target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_METIS")
@@ -72,4 +73,7 @@ if(CSparse_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC csparse)
 endif()
 
-sofa_generate_package(NAME SofaSparseSolver VERSION ${PROJECT_VERSION} TARGETS SofaSparseSolver INCLUDE_INSTALL_DIR SofaSparseSolver INCLUDE_SOURCE_DIR "src/SofaSparseSolver")
+sofa_generate_package(NAME SofaSparseSolver VERSION ${PROJECT_VERSION} TARGETS SofaSparseSolver
+    INCLUDE_SOURCE_DIR "src/SofaSparseSolver"
+    INCLUDE_INSTALL_DIR "SofaSparseSolver"
+    )

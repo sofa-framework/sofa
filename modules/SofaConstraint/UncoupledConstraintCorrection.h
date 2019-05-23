@@ -61,7 +61,7 @@ public:
 
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
-    UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
+    UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
     virtual ~UncoupledConstraintCorrection();
 public:

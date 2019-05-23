@@ -32,7 +32,6 @@
 #endif
 
 #include <boost/filesystem.hpp>
-#include <boost/locale.hpp>
 
 #include <cstring>
 #include <cstdlib>
@@ -211,7 +210,7 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
-    boost::filesystem::path::imbue( boost::locale::generator().generate("") );
+    boost::filesystem::path::imbue(std::locale(""));
     boost::filesystem::path p(newfname);
     if (boost::filesystem::exists(p))
     {
