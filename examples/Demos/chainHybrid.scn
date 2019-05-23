@@ -4,7 +4,7 @@
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
-	<CollisionGroupManager name="Group" />
+    <CollisionGroupManager name="Group" />
     <Node name="Chain">
         <Node name="Fixed">
             <MeshObjLoader name="loaderMeca" filename="mesh/torus_for_collision.obj" />
