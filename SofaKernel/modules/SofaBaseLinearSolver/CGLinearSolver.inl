@@ -169,9 +169,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 
     std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
+    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
-    sofa::helper::vector<SReal>& graph_den = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Denominator") : std::string("Denominator")];
+    sofa::helper::vector<SReal>& graph_den = graph[std::string("Denominator")];
     graph_den.clear();
     graph_error.push_back(1);
     unsigned nb_iter = 0;

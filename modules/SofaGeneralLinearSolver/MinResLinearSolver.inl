@@ -88,7 +88,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
 
     std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
+    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);
 

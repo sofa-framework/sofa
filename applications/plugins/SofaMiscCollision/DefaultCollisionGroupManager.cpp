@@ -275,32 +275,6 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     if (solvernode->linearSolver.empty())
         return solvernode; // no linearsolver
     core::behavior::BaseLinearSolver * linearSolver = solvernode->linearSolver[0];
-    if (!linearSolver->isMultiGroup())
-    {
-        return solvernode;
-    }
-    // This solver handles multiple groups, we have to find which group contains this collision model
-    // First move up to the node of the initial mechanical object
-    while (node->mechanicalMapping && node->mechanicalMapping->getMechFrom()[0])
-        node = static_cast<simulation::Node*>(node->mechanicalMapping->getMechFrom()[0]->getContext());
-
-    // Then check if it is one of the child nodes of the solver node
-    for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
-        if (*it == node)
-        {
-            return it->get();
-        }
-
-    // Then check if it is a child of one of the child nodes of the solver node
-    for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
-        if (node->hasParent(it->get()))
-            return it->get();
-
-    // Then check if it is a grand-childs of one of the child nodes of the solver node
-    for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
-        if (node->getContext()->hasAncestor(it->get()))
-            return it->get();
-
     // group not found, simply return the solver node
     return solvernode;
 }
