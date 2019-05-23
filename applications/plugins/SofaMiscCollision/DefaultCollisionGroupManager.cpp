@@ -62,7 +62,6 @@ void DefaultCollisionGroupManager::clearCollisionGroup(simulation::Node::SPtr gr
     simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
     vis.execute(group.get());
     group->detachFromGraph();
-    //delete group;
     group.reset();
 }
 
@@ -70,8 +69,8 @@ void DefaultCollisionGroupManager::clearCollisionGroup(simulation::Node::SPtr gr
 void DefaultCollisionGroupManager::changeInstance(Instance inst)
 {
     core::collision::CollisionGroupManager::changeInstance(inst);
-    storedGroupSet[instance].swap(groupSet);
-    groupSet.swap(storedGroupSet[inst]);
+    storedGroupSet[instance].swap(groupMap);
+    groupMap.swap(storedGroupSet[inst]);
 }
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts)
@@ -109,10 +108,10 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
             if (!mergeSolvers || solver.odeSolver!=NULL)
             {
-                auto group1Iter = groupSet.find(group1);
-                auto group2Iter = groupSet.find(group2);
-                bool group1IsColl = group1Iter != groupSet.end();
-                bool group2IsColl = group2Iter != groupSet.end();
+                auto group1Iter = groupMap.find(group1);
+                auto group2Iter = groupMap.find(group2);
+                bool group1IsColl = group1Iter != groupMap.end();
+                bool group2IsColl = group2Iter != groupMap.end();
                 if (!group1IsColl && !group2IsColl)
                 {
                     char groupName[32];
@@ -122,8 +121,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
                     collGroup->moveChild(BaseNode::SPtr(group1));
                     collGroup->moveChild(BaseNode::SPtr(group2));
-                    groupSet[group1] = collGroup.get();
-                    groupSet[group2] = collGroup.get();
+                    groupMap[group1] = collGroup.get();
+                    groupMap[group2] = collGroup.get();
                 }
                 else if (group1IsColl)
                 {
@@ -136,7 +135,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     else
                     {
                         simulation::Node::SPtr collGroup2 = group2Iter->second;
-                        groupSet[group2] = collGroup.get();
+                        groupMap[group2] = collGroup.get();
                         // merge groups and remove collGroup2
                         SolverSet solver2;
                         if (mergeSolvers)
@@ -159,14 +158,13 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                         while(!collGroup2->child.empty())
                             collGroup->moveChild(BaseNode::SPtr(*collGroup2->child.begin()));
                         parent->removeChild(collGroup2);
-                        groupSet.erase(collGroup2.get());
+                        groupMap.erase(collGroup2.get());
                         mergedGroups[collGroup2.get()] = collGroup;
                         if (solver2.odeSolver) solver2.odeSolver.reset();
                         if (solver2.linearSolver) solver2.linearSolver.reset();
                         if (solver2.constraintSolver) solver2.constraintSolver.reset();
                         // BUGFIX(2007-06-23 Jeremie A): we can't remove group2 yet, to make sure the keys in mergedGroups are unique.
-                        removedGroup.push_back(collGroup2);
-                        //delete group2;                        
+                        removedGroup.push_back(collGroup2);                       
                     }
                 }
                 else
@@ -252,7 +250,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
 {
-    for (std::map<simulation::Node*, simulation::Node*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (std::map<simulation::Node*, simulation::Node*>::iterator it = groupMap.begin(); it!=groupMap.end(); ++it)
     {
         if (it->second->getParents().size() > 0)
         {
@@ -260,7 +258,7 @@ void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /
         }
     }
 
-    groupSet.clear();
+    groupMap.clear();
     groups.clear();
 }
 

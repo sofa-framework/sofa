@@ -44,7 +44,8 @@ public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
     typedef std::map<simulation::Node*, simulation::Node*> GroupMap; 
-    GroupMap groupSet; // <deformable object node*, collison group node*>
+    // this map stores the deformable object node and its collision group <deformable object node*, collison group node*>
+    GroupMap groupMap; 
 
 public:
     void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
