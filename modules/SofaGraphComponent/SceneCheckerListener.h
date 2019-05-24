@@ -49,7 +49,7 @@ public:
 
     // Do nothing on reload
     virtual void rightBeforeReloadingScene() override {}
-    virtual void rightAfterReloadingScene(Node::SPtr node) override {}
+    virtual void rightAfterReloadingScene(Node::SPtr /* node */) override {}
 
 private:
     SceneCheckerListener();

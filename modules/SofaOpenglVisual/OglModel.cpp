@@ -57,27 +57,27 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
-    : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
-    , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    : blendTransparency(initData(&blendTransparency, true, "blendTranslucency", "Blend transparent parts"))
+    , premultipliedAlpha(initData(&premultipliedAlpha, false, "premultipliedAlpha", "is alpha premultiplied ?"))
     #ifndef SOFA_HAVE_GLEW
-    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
+    , useVBO(initData(&useVBO, false, "useVBO", "Use VBO for rendering"))
     #else
-    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
+    , useVBO(initData(&useVBO, true, "useVBO", "Use VBO for rendering"))
     #endif
-    , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
-    , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
-    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
-    , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
-    , lineWidth(initData(&lineWidth, (GLfloat) 1, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
-    , pointSize(initData(&pointSize, (GLfloat) 1, "pointSize", "Point size (set if != 1, only for points rendering)"))
-    , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
-    , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
+    , writeZTransparent(initData(&writeZTransparent, false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
+    , alphaBlend(initData(&alphaBlend, false, "alphaBlend", "Enable alpha blending"))
+    , depthTest(initData(&depthTest, true, "depthTest", "Enable depth testing"))
+    , cullFace(initData(&cullFace, 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , lineWidth(initData(&lineWidth, 1.0f, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
+    , pointSize(initData(&pointSize, 1.0f, "pointSize", "Point size (set if != 1, only for points rendering)"))
+    , lineSmooth(initData(&lineSmooth, false, "lineSmooth", "Enable smooth line rendering"))
+    , pointSmooth(initData(&pointSmooth, false, "pointSmooth", "Enable smooth point rendering"))
     , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
-    , tex(NULL)
+    , tex(nullptr)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , canUseVBO(false), VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
@@ -109,7 +109,7 @@ OglModel::OglModel()
 
 OglModel::~OglModel()
 {
-    if (tex!=NULL) delete tex;
+    if (tex!=nullptr) delete tex;
 
     for (unsigned int i = 0 ; i < textures.size() ; i++)
     {
@@ -156,30 +156,30 @@ void OglModel::drawGroup(int ig, bool transparent)
     {
         g.materialId = -1;
         g.edge0 = 0;
-        g.nbe = edges.size();
+        g.nbe = int(edges.size());
         g.tri0 = 0;
-        g.nbt = triangles.size();
+        g.nbt = int(triangles.size());
         g.quad0 = 0;
-        g.nbq = quads.size();
+        g.nbq = int(quads.size());
     }
     else
     {
-        g = this->groups.getValue()[ig];
+        g = this->groups.getValue()[size_t(ig)];
     }
     Material m;
     if (g.materialId < 0)
         m = this->material.getValue();
     else
-        m = this->materials.getValue()[g.materialId];
+        m = this->materials.getValue()[size_t(g.materialId)];
 
-    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0) || hasTransparent();
+    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0f) || hasTransparent();
     if (transparent ^ isTransparent) return;
 
 
     if (!tex && m.useTexture && m.activated)
     {
         //get the texture id corresponding to the current material
-        unsigned int indexInTextureArray = materialTextureIdMap[g.materialId];
+        size_t indexInTextureArray = size_t(materialTextureIdMap[g.materialId]);
         if (indexInTextureArray < textures.size() && textures[indexInTextureArray])
         {
             textures[indexInTextureArray]->bind();
@@ -190,9 +190,9 @@ void OglModel::drawGroup(int ig, bool transparent)
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0]))
-                    + (vnormals.size()*sizeof(vnormals[0]))
-                    );
+            uintptr_t pt = (vertices.size()*sizeof(vertices[0]))
+                    + (vnormals.size()*sizeof(vnormals[0]));
+            glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(pt));
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
@@ -237,13 +237,13 @@ void OglModel::drawGroup(int ig, bool transparent)
         //Disable lighting if we draw points
         glDisable(GL_LIGHTING);
         glColor4fv(diffuse.data());
-        glDrawArrays(GL_POINTS, 0, vertices.size());
+        glDrawArrays(GL_POINTS, 0, GLsizei(vertices.size()));
         glEnable(GL_LIGHTING);
         glColor4f(1.0,1.0,1.0,1.0);
     }
     if (g.nbe > 0 && !drawPoints)
     {
-        const Edge* indices = NULL;
+        const Edge* indices = nullptr;
 #ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
@@ -279,7 +279,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbt > 0 && !drawPoints)
     {
-        const Triangle* indices = NULL;
+        const Triangle* indices = nullptr;
 #ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
@@ -315,7 +315,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbq > 0 && !drawPoints)
     {
-        const Quad* indices = NULL;
+        const Quad* indices = nullptr;
 #ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
@@ -359,10 +359,10 @@ void OglModel::drawGroup(int ig, bool transparent)
 
     if (!tex && m.useTexture && m.activated)
     {
-        unsigned int indexInTextureArray = materialTextureIdMap[g.materialId];
-        if (indexInTextureArray < textures.size() && textures[indexInTextureArray])
+        int indexInTextureArray = materialTextureIdMap[g.materialId];
+        if (indexInTextureArray < int(textures.size()) && textures[indexInTextureArray])
         {
-            textures[indexInTextureArray]->unbind();
+            textures[size_t(indexInTextureArray)]->unbind();
         }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisable(GL_TEXTURE_2D);
@@ -385,8 +385,8 @@ void OglModel::drawGroups(bool transparent)
     }
     else
     {
-        for (unsigned int i=0; i<groups.size(); ++i)
-            drawGroup(i, transparent);
+        for (size_t i=0; i<groups.size(); ++i)
+            drawGroup(int(i), transparent);
     }
 }
 
@@ -429,8 +429,8 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     {
         glBindBufferARB(GL_ARRAY_BUFFER, vbo);
 
-        glVertexPointer(3, datatype, 0, (char*)NULL + 0);
-        glNormalPointer(datatype, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
+        glVertexPointer(3, datatype, 0, nullptr);
+        glNormalPointer(datatype, 0, reinterpret_cast<void*>(vertices.size()*sizeof(vertices[0])));
 
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
     }
@@ -455,7 +455,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
+            glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>((vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) ));
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
@@ -474,9 +474,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             {
                 glBindBufferARB(GL_ARRAY_BUFFER, vbo);
                 glTexCoordPointer(3, GL_FLOAT, 0,
-                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
+                                  reinterpret_cast<void*>((vertices.size()*sizeof(vertices[0])) +
                         (vnormals.size()*sizeof(vnormals[0])) +
-                        (vtexcoords.size()*sizeof(vtexcoords[0])));
+                        (vtexcoords.size()*sizeof(vtexcoords[0]))));
                 glBindBufferARB(GL_ARRAY_BUFFER, 0);
             }
             else
@@ -488,10 +488,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             {
                 glBindBufferARB(GL_ARRAY_BUFFER, vbo);
                 glTexCoordPointer(3, GL_FLOAT, 0,
-                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
+                                  reinterpret_cast<void*>((vertices.size()*sizeof(vertices[0])) +
                         (vnormals.size()*sizeof(vnormals[0])) +
                         (vtexcoords.size()*sizeof(vtexcoords[0])) +
-                        (vtangents.size()*sizeof(vtangents[0])));
+                        (vtangents.size()*sizeof(vtangents[0]))));
                 glBindBufferARB(GL_ARRAY_BUFFER, 0);
             }
             else
@@ -579,12 +579,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (lineWidth.isSet())
     {
-        glLineWidth((GLfloat)1);
+        glLineWidth(1.0f);
     }
 
     if (pointSize.isSet())
     {
-        glPointSize((GLfloat)1);
+        glPointSize(1.0f);
     }
 
     switch (cullFace.getValue())
@@ -850,8 +850,8 @@ void OglModel::createQuadsIndicesBuffer()
 
 void OglModel::initVertexBuffer()
 {
-    unsigned positionsBufferSize, normalsBufferSize;
-    unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
+    size_t positionsBufferSize, normalsBufferSize;
+    size_t textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
     const VecCoord& vertices = this->getVertices();
     const VecCoord& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
@@ -872,14 +872,14 @@ void OglModel::initVertexBuffer()
         }
     }
 
-    unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
+    size_t totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
             tangentsBufferSize + bitangentsBufferSize;
 
     glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Vertex Buffer creation
     glBufferDataARB(GL_ARRAY_BUFFER,
-                    totalSize,
-                    NULL,
+                    long(totalSize),
+                    nullptr,
                     GL_DYNAMIC_DRAW);
 
 
@@ -895,7 +895,7 @@ void OglModel::initEdgesIndicesBuffer()
 
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, edges.size()*sizeof(edges[0]), NULL, GL_DYNAMIC_DRAW);
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
     updateEdgesIndicesBuffer();
 
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -907,7 +907,7 @@ void OglModel::initTrianglesIndicesBuffer()
 
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
     updateTrianglesIndicesBuffer();
 
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -918,7 +918,7 @@ void OglModel::initQuadsIndicesBuffer()
     const ResizableExtVector<Quad>& quads = this->getQuads();
 
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
     updateQuadsIndicesBuffer();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
@@ -932,19 +932,19 @@ void OglModel::updateVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    unsigned positionsBufferSize, normalsBufferSize;
-    unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
+    long positionsBufferSize, normalsBufferSize;
+    long textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
 
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    positionsBufferSize = long(vertices.size()*sizeof(vertices[0]));
+    normalsBufferSize = long(vnormals.size()*sizeof(vnormals[0]));
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
-        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+        textureCoordsBufferSize = long(vtexcoords.size() * sizeof(vtexcoords[0]));
 
         if (hasTangents)
         {
-            tangentsBufferSize = vtangents.size() * sizeof(vtangents[0]);
-            bitangentsBufferSize = vbitangents.size() * sizeof(vbitangents[0]);
+            tangentsBufferSize = long(vtangents.size() * sizeof(vtangents[0]));
+            bitangentsBufferSize = long(vbitangents.size() * sizeof(vbitangents[0]));
         }
     }
 
@@ -991,7 +991,7 @@ void OglModel::updateEdgesIndicesBuffer()
 {
     const ResizableExtVector<Edge>& edges = this->getEdges();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
-    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, edges.size()*sizeof(edges[0]), &edges[0]);
+    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -999,7 +999,7 @@ void OglModel::updateTrianglesIndicesBuffer()
 {
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
+    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -1007,7 +1007,7 @@ void OglModel::updateQuadsIndicesBuffer()
 {
     const ResizableExtVector<Quad>& quads = this->getQuads();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
+    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 #endif

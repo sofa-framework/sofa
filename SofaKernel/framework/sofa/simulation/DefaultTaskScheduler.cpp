@@ -24,7 +24,7 @@ namespace sofa
                 return ::operator new(sz);
             }
             
-            void free(void* ptr, std::size_t sz) final
+            void free(void* ptr, std::size_t /* sz */) final
             {
                 ::operator delete(ptr);
             }
@@ -122,7 +122,7 @@ namespace sofa
             /* start worker threads */
             for( unsigned int i=1; i<m_threadCount; ++i)
             {
-                WorkerThread* thread = new WorkerThread(this, i);
+                WorkerThread* thread = new WorkerThread(this, int(i));
                 thread->create_and_attach(this);
                 _threads[thread->getId()] = thread;
                 thread->start(this);
@@ -226,8 +226,8 @@ namespace sofa
         
         
         WorkerThread::WorkerThread(DefaultTaskScheduler* const& pScheduler, const int index, const std::string& name)
-        : m_type(0)
-        , m_name(name + std::to_string(index))
+        : m_name(name + std::to_string(index))
+        , m_type(0)
         , m_tasks()
         , m_taskScheduler(pScheduler)
         {
@@ -353,9 +353,7 @@ namespace sofa
                 runTask(task);
                 
             } //;;while (stealTasks());	
-            
-            
-            return;
+
             
         }
         
