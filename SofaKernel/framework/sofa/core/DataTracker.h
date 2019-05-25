@@ -218,7 +218,7 @@ namespace core
         /// This method is needed by DDGNode
         void update() override{}
         /// This method is needed by DDGNode
-        const std::string& getName() const
+        const std::string& getName() const override
         {
             static const std::string emptyName ="";
             return emptyName;
