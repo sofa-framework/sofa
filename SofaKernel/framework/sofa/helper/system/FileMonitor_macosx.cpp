@@ -65,7 +65,7 @@ public:
         m_filename = filename;
         m_listener = listener;
 
-        FSEventStreamContext context = {0};
+        FSEventStreamContext context = {0, this, nullptr, nullptr, nullptr};
         context.info = this;
 
         CFStringRef filename_str = CFStringCreateWithCString(
@@ -113,7 +113,7 @@ These steps are explained in more detail in the sections that follow.
     }
 
 private:
-    static void eventCallback(ConstFSEventStreamRef streamRef, void *clientCallBackInfo, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[])
+    static void eventCallback(ConstFSEventStreamRef /*streamRef*/, void *clientCallBackInfo, size_t /*numEvents*/, void */*eventPaths*/, const FSEventStreamEventFlags /*eventFlags*/[], const FSEventStreamEventId /*eventIds*/[])
     {
         MonitoredFile *mf = (MonitoredFile*)clientCallBackInfo;
         mf->m_changed=true;
@@ -183,7 +183,7 @@ int FileMonitor::addFile(const std::string& directoryname, const std::string& fi
 volatile sig_atomic_t keep_going = 1;
 
 /* The signal handler just clears the flag and re-enables itself. */
-void catch_alarm (int sig)
+void catch_alarm (int /*sig*/)
 {
 //    printf("TIMEOUT!!!!!!!!!!!!!!!!!!\n");
     keep_going = 0;
