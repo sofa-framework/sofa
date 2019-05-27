@@ -86,6 +86,7 @@ public:
     void reinit() override;
 
     void doUpdate() override;
+    void handleEvent(core::objectmodel::Event *event) override;
 
     virtual std::string getTemplateName() const override
     {

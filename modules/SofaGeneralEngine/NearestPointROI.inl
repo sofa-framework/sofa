@@ -29,6 +29,7 @@
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 
 namespace sofa
 {
@@ -120,6 +121,16 @@ void NearestPointROI<DataTypes>::doUpdate()
     if(f_indices1.getValue().size() != f_indices2.getValue().size())
     {
         msg_error() << "Size mismatch between indices1 and indices2";
+    }
+}
+
+template<class DataTypes>
+void NearestPointROI<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (simulation::AnimateBeginEvent::checkEventType(event))
+    {
+        setDirtyValue();
+        doUpdate();
     }
 }
 
