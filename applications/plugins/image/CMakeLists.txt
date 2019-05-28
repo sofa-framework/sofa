@@ -126,7 +126,7 @@ endif()
 find_package(DiffusionSolver QUIET)
 # warning to remove at v19.12
 if(NOT DiffusionSolver_FOUND)
-    message( WARNING "image: DiffusionSolver is now a plugin, make sure you activated the associated CMake option (PLUGIN_DIFFUSIONSOLVER)")
+    message(SEND_ERROR "image: DiffusionSolver is now a plugin, make sure you activated the associated CMake option (PLUGIN_DIFFUSIONSOLVER)")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
