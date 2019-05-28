@@ -124,6 +124,10 @@ endif()
 
 
 find_package(DiffusionSolver REQUIRED)
+# warning to remove at v19.12
+if(NOT DiffusionSolver_FOUND)
+    message( WARNING "image: DiffusionSolver is now a plugin, make sure you activated the associated CMake option (PLUGIN_DIFFUSIONSOLVER)")
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin ${MultiThreading_LIBRARY})
