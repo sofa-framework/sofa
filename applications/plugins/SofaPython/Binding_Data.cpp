@@ -25,9 +25,11 @@
 #include "Binding_LinearSpring.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::WriteAccessWithRawPtr;
+
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::BaseObject ;
-using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::Base ;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -481,19 +483,18 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
     return nullptr;
 }
 
-
 static PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
     BaseData* data = get_basedata( self );
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); /// info about the data value
-    int index;
+    unsigned int index;
     PyObject *value;
 
     if (!PyArg_ParseTuple(args, "iO", &index, &value)) {
         return nullptr;
     }
 
-    if ((unsigned int)index >= typeinfo->size())
+    if (index >= typeinfo->size())
     {
         SP_PYERR_SETSTRING_OUTOFBOUND(0);
         return nullptr;
@@ -501,17 +502,20 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
 
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
-        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));
+        WriteAccessWithRawPtr access {data} ;
+        typeinfo->setScalarValue(access.ptr,index,PyFloat_AsDouble(value));
         return PyInt_FromLong(0);
     }
     if (typeinfo->Integer() && PyInt_Check(value))
     {
-        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),index,PyInt_AsLong(value));
+        WriteAccessWithRawPtr access {data} ;
+        typeinfo->setIntegerValue(access.ptr,index,PyInt_AsLong(value));
         return PyInt_FromLong(0);
     }
     if (typeinfo->Text() && PyString_Check(value))
     {
-        typeinfo->setTextValue((void*)data->getValueVoidPtr(),index,PyString_AsString(value));
+        WriteAccessWithRawPtr access {data} ;
+        typeinfo->setTextValue(access.ptr,index,PyString_AsString(value));
         return PyInt_FromLong(0);
     }
 
@@ -573,13 +577,14 @@ static PyObject * Data_getSize(PyObject *self, PyObject * args)
 static PyObject * Data_setSize(PyObject *self, PyObject * args)
 {
     BaseData* data = get_basedata( self );
-    int size;
+    unsigned int size;
     if (!PyArg_ParseTuple(args, "i",&size))
     {
         return nullptr;
     }
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-    typeinfo->setSize((void*)data->getValueVoidPtr(),size);
+    WriteAccessWithRawPtr access {data};
+    typeinfo->setSize(access.ptr,size);
     Py_RETURN_NONE;
 }
 

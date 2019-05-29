@@ -93,10 +93,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAHAPI")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-## SofaHAPI/config.h
-configure_file(SofaHAPI.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h" DESTINATION "include/SofaHAPI")
-
 ## Install rules for the library and the header; CMake package configurations files
 sofa_create_package(SofaHAPI ${SOFAHAPI_VERSION} SofaHAPI SofaHAPI)
 

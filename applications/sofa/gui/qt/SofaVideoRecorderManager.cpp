@@ -103,7 +103,8 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     //this->addLayout(layout);
 }
 
-SofaVideoRecorderManager::SofaVideoRecorderManager()
+SofaVideoRecorderManager::SofaVideoRecorderManager(QWidget *parent)
+    : QDialog(parent)
 {
     setupUi(this);
     captureOptionsWidget = new CaptureOptionsWidget(this);

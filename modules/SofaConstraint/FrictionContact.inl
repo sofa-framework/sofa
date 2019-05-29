@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
@@ -41,12 +41,19 @@ namespace collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
+FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact()
+    : FrictionContact(nullptr, nullptr, nullptr)
+{
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1)
     , model2(model2)
     , intersectionMethod(intersectionMethod)
-    , m_constraint(NULL)
-    , parent(NULL)
+    , m_constraint(nullptr)
+    , parent(nullptr)
     , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
     , tol (initData(&tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {

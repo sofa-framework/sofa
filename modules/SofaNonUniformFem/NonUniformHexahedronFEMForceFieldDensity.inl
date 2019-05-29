@@ -43,6 +43,13 @@ using std::set;
 using namespace sofa::defaulttype;
 
 
+template <class DataTypes>
+NonUniformHexahedronFEMForceFieldDensity<DataTypes>::NonUniformHexahedronFEMForceFieldDensity()
+    : NonUniformHexahedronFEMForceFieldAndMass<DataTypes>()
+    , densityFile(core::objectmodel::Base::initData(&densityFile,"densityFile","RAW File containing gray scale density"))
+    , dimensionDensityFile(core::objectmodel::Base::initData(&dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file"))
+{
+}
 
 template <class DataTypes>
 void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()

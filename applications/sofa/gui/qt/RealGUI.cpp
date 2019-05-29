@@ -35,6 +35,11 @@
 #include "GraphVisitor.h"
 #endif
 
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+#include "SofaWindowProfiler.h"
+#endif
+
+
 #ifdef SOFA_PML
 #include <sofa/simulation/Node.h>
 #endif
@@ -150,7 +155,11 @@ class QSOFAApplication : public QApplication
 public:
     QSOFAApplication(int &argc, char ** argv)
         : QApplication(argc,argv)
-    { }
+    {
+        QCoreApplication::setOrganizationName("Sofa Consortium");
+        QCoreApplication::setOrganizationDomain("sofa");
+        QCoreApplication::setApplicationName("runSofa");
+    }
 
 #if QT_VERSION < 0x050000
     static inline QString translate(const char * context, const char * key, const char * disambiguation,
@@ -206,6 +215,7 @@ public:
 
 BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
 {
+
     CreateApplication();
 
     // create interface
@@ -311,6 +321,12 @@ RealGUI::RealGUI ( const char* viewername)
       handleTraceVisitor(NULL),
       #endif
 
+      #ifdef SOFAGUIQT_HAS_QTCHARTS
+      m_windowTimerProfiler(nullptr),
+      #endif
+
+      m_sofaMouseManager(nullptr),
+
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
@@ -402,6 +418,9 @@ RealGUI::RealGUI ( const char* viewername)
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->addWidget(statWidget);
 
+    // create al widgets first
+    m_sofaMouseManager = new SofaMouseManager(this);
+
     createSimulationGraph();
 
     //disable widget, can be bothersome with objects with a lot of data
@@ -420,7 +439,9 @@ RealGUI::RealGUI ( const char* viewername)
 
     createWindowVisitor();
 
-    SofaMouseManager::getInstance()->hide();
+    createAdvanceTimerProfilerWindow();
+
+    m_sofaMouseManager->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
@@ -728,7 +749,6 @@ int RealGUI::closeGUI()
     settings.beginGroup("viewer");
     settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
     settings.endGroup();
-
     delete this;
     return 0;
 }
@@ -776,7 +796,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
+    mSimulation = simulation::getSimulation()->load ( filename.c_str(), reload );
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
     {
@@ -798,6 +818,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     {
         simulationGraph->expandPathFrom(expandedNodes);
     }
+
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    if (m_windowTimerProfiler)
+        m_windowTimerProfiler->resetGraph();
+#endif
 }
 
 
@@ -1134,8 +1159,8 @@ void RealGUI::showPluginManager()
 
 void RealGUI::showMouseManager()
 {
-    SofaMouseManager::getInstance()->updateContent();
-    SofaMouseManager::getInstance()->show();
+    m_sofaMouseManager->updateContent();
+    m_sofaMouseManager->show();
 }
 
 //------------------------------------
@@ -1264,7 +1289,7 @@ void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::View
 
 void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
 {
-    SofaMouseManager::getInstance()->updateOperation(button);
+    m_sofaMouseManager->updateOperation(button);
 }
 
 //------------------------------------
@@ -1693,7 +1718,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         qtViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
     }
 
-    SofaMouseManager::getInstance()->setPickHandler(_viewer->getPickHandler());
+   m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
@@ -1724,7 +1749,7 @@ void RealGUI::parseOptions()
 
 void RealGUI::createPluginManager()
 {
-    pluginManager_dialog = new SofaPluginManager();
+    pluginManager_dialog = new SofaPluginManager(this);
     pluginManager_dialog->hide();
     this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
     this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
@@ -1834,12 +1859,24 @@ void RealGUI::createWindowVisitor()
     this->exportVisitorCheckbox->hide();
 #else
     //Main window containing a QListView only
-    windowTraceVisitor = new WindowVisitor;
+    windowTraceVisitor = new WindowVisitor(this);
     windowTraceVisitor->graphView->setSortingEnabled(false);
     windowTraceVisitor->hide();
     connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
     connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
     handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
+#endif
+}
+
+void RealGUI::createAdvanceTimerProfilerWindow()
+{
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    m_windowTimerProfiler = new SofaWindowProfiler(this);
+    m_windowTimerProfiler->hide();
+    connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
+    connect( m_windowTimerProfiler, SIGNAL(closeWindow(bool)), this->displayTimeProfiler, SLOT(setChecked(bool)));
+#else
+    displayTimeProfiler->setEnabled(false);
 #endif
 }
 
@@ -2068,6 +2105,12 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    if (displayTimeProfiler->isChecked())
+    {
+        m_windowTimerProfiler->pushStepData();
+    }
+#endif
 
     sofa::helper::AdvancedTimer::end("Animate");
 }
@@ -2315,6 +2358,23 @@ void RealGUI::setExportVisitor ( bool )
 {
 }
 #endif
+
+void RealGUI::displayProflierWindow (bool value)
+{
+#ifdef SOFAGUIQT_HAS_QTCHARTS
+    if (m_windowTimerProfiler == nullptr)
+        return;
+
+    m_windowTimerProfiler->activateATimer(value);
+    if (value)
+        m_windowTimerProfiler->show();
+    else
+        m_windowTimerProfiler->hide();
+#else
+    SOFA_UNUSED(value);
+#endif
+}
+
 
 //------------------------------------
 

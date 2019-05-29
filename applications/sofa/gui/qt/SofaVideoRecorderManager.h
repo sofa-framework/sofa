@@ -81,7 +81,7 @@ class SofaVideoRecorderManager: public QDialog, public Ui_VideoRecorderManager
 public:
     enum RecordingType { SCREENSHOTS, MOVIE };
 
-    SofaVideoRecorderManager();
+    SofaVideoRecorderManager(QWidget *parent = Q_NULLPTR);
 
     static SofaVideoRecorderManager* getInstance()
     {

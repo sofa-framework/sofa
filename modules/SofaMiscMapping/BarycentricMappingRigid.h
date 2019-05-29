@@ -93,17 +93,7 @@ protected:
     typename Out::VecCoord actualPos;
 
     /// TEMP
-
-    BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
-        : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
-          map(initData(&map,"map", "mapper data")),
-          mapOrient(initData(&mapOrient,"mapOrient", "mapper data for mapped frames")),
-          _fromContainer(fromTopology),
-          _fromGeomAlgo(NULL),
-          matrixJ(NULL),
-          updateJ(true)
-    {}
-
+    BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology);
     virtual ~BarycentricMapperTetrahedronSetTopologyRigid() {}
 
 public:

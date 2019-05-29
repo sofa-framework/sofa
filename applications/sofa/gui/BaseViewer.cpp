@@ -129,10 +129,11 @@ void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
                                                       : prefix;
 #ifndef SOFA_NO_OPENGL
     capture.setPrefix(fullPrefix);
-#endif
+
 #ifdef SOFA_HAVE_FFMPEG_EXEC
     m_videoRecorderFFMPEG.setPrefix(fullPrefix);
-#endif
+#endif // SOFA_HAVE_FFMPEG_EXEC
+#endif // SOFA_NO_OPENGL
 }
 
 void BaseViewer::screenshot(const std::string& filename, int compression_level)

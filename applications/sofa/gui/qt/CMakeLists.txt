@@ -18,16 +18,16 @@ set(MOC_HEADER_FILES
     QRGBAColorPicker.h
     QModelViewTableUpdater.h
     QMouseOperations.h
+    QMouseWheelAdjustementGuard.h
     QSofaListView.h
-    QSofaRecorder.h
     QSofaStatWidget.h
     QTabulationModifyObject.h
     QTransformationWidget.h
     RealGUI.h
     SimpleDataWidget.h
-    SofaMouseManager.h
-    SofaPluginManager.h
+    SofaMouseManager.h    
     SofaVideoRecorderManager.h
+    SofaPluginManager.h
     WDoubleLineEdit.h
     panels/QDocBrowser.h
 )
@@ -68,8 +68,8 @@ set(SOURCE_FILES
     QMenuFilesRecentlyOpened.cpp
     QModelViewTableUpdater.cpp
     QMouseOperations.cpp
+    QMouseWheelAdjustementGuard.cpp
     QSofaListView.cpp
-    QSofaRecorder.cpp
     QSofaStatWidget.cpp
     QTabulationModifyObject.cpp
     QTransformationWidget.cpp
@@ -77,7 +77,7 @@ set(SOURCE_FILES
     SimpleDataWidget.cpp
     SofaMouseManager.cpp
     SofaPluginManager.cpp
-    SofaVideoRecorderManager.cpp
+    SofaVideoRecorderManager.cpp    
     StructDataWidget.cpp
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
@@ -91,7 +91,7 @@ set(UI_FILES
     GUI.ui
     MouseManager.ui
     PluginManager.ui
-    VideoRecorderManager.ui
+    VideoRecorderManager.ui    
 )
 
 
@@ -99,6 +99,7 @@ if(SOFA_DUMP_VISITOR_INFO)
     list(APPEND MOC_HEADER_FILES
 
          WindowVisitor.h
+
          QVisitorControlPanel.h
          PieWidget.h)
 
@@ -147,8 +148,20 @@ if(SOFAGUI_QGLVIEWER)
     list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
 
-if(SOFA_DUMP_VISITOR_INFO)
+# QChart
+find_package(Qt5 COMPONENTS Charts QUIET)
+if (Qt5Charts_FOUND)
+    list(APPEND MOC_HEADER_FILES SofaWindowProfiler.h)
+    list(APPEND SOURCE_FILES SofaWindowProfiler.cpp)
+    list(APPEND UI_FILES WindowProfiler.ui)
+
+    set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
+    set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Charts_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Charts_LIBRARIES})
+else()
+    message("-- SofaGuiQt: QtCharts not found, SofaWindowProfiler will not be built.")
 endif()
+
 
 set(QT_USE_IMPORTED_TARGETS 1)
 
@@ -161,9 +174,9 @@ if(Qt5Core_FOUND)
     set(QT5_NO_LINK_QTMAIN 1)
     find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
 
-    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL)
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+    set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
     # target_include_directories(${EXT_QT_INCLUDES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
@@ -171,10 +184,7 @@ if(Qt5Core_FOUND)
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
 
-    if(WIN32)
-        sofa_copy_libraries_from_targets(${QT_TARGETS})
-    endif()
-    sofa_install_libraries_from_targets(${QT_TARGETS})
+    sofa_install_libraries(TARGETS ${QT_TARGETS})
 
     # QT INSTALL (dirty)
     # Get Qt libraries dir
@@ -193,29 +203,44 @@ if(Qt5Core_FOUND)
         endif()
     endif()
     # Install Qt plugins
-    install(DIRECTORY "${QT_PLUGINS_DIR}/" DESTINATION "bin" COMPONENT applications)
+    if(EXISTS "${QT_PLUGINS_DIR}/iconengines")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/iconengines" DESTINATION "bin" COMPONENT applications)
+    endif()
+    if(EXISTS "${QT_PLUGINS_DIR}/imageformats")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION "bin" COMPONENT applications)
+    endif()
+    if(EXISTS "${QT_PLUGINS_DIR}/platforms")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/platforms" DESTINATION "bin" COMPONENT applications)
+    endif()
+    if(EXISTS "${QT_PLUGINS_DIR}/styles")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
+    endif()
     # Install Qt XCB libraries
     file(GLOB QT_XCB_LIBRARIES
         "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-    sofa_install_libraries(${QT_XCB_LIBRARIES})
+    sofa_install_libraries(LIBRARIES ${QT_XCB_LIBRARIES})
     # Install Qt ICU libraries
     file(GLOB QT_ICU_LIBRARIES
         "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
         "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-    sofa_install_libraries(${QT_ICU_LIBRARIES})
+    sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
+
+# add define for QtCharts
+if (Qt5Charts_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC SOFAGUIQT_HAS_QTCHARTS)
+endif()
+
 # For files generated by the moc
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaLoader SofaOpenglVisual SofaMiscForceField)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaExporter)
 if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
 endif()
@@ -228,12 +253,12 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 
-sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
+sofa_install_targets(SofaGui SofaGuiQt "SofaGui/sofa/gui/qt")
 
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
-if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
     set(RESOURCES_DIR "share/sofa/gui/qt")
 else()
     set(RESOURCES_DIR "../share/sofa/gui/qt")
@@ -242,5 +267,3 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_B
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
 install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
-install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
-install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)

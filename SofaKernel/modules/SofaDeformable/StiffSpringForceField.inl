@@ -39,6 +39,18 @@ namespace component
 namespace interactionforcefield
 {
 
+template<class DataTypes>
+StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
+    : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
+{
+}
+
+template<class DataTypes>
+StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
+    : SpringForceField<DataTypes>(object1, object2, ks, kd)
+{
+}
+
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()

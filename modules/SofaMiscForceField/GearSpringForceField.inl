@@ -43,11 +43,41 @@ namespace component
 namespace interactionforcefield
 {
 
+template<class DataTypes>
+GearSpring<DataTypes>::GearSpring()
+    : GearSpring(0, 0, 0, 0)
+{
+}
+
+template<class DataTypes>
+GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned int m2, unsigned int p1, unsigned int p2)
+    : GearSpring(m1, m2, p1, p2, 10000, 10000, 10000, 10000, 1)
+{
+}
+
+template<class DataTypes>
+GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned  int m2, unsigned int p1, unsigned int p2, Real hardKst, Real softKsr, Real hardKsr, Real kd, Real ratio)
+    : m1(m1)
+    , m2(m2)
+    , p1(p1)
+    , p2(p2)
+    , previousAngle1(0)
+    , previousAngle2(0)
+    , angle1(0)
+    , angle2(0)
+    , kd(kd)
+    , hardStiffnessTrans(hardKst)
+    , softStiffnessRot(softKsr)
+    , hardStiffnessRot(hardKsr)
+    , Ratio(ratio)
+{
+    freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
+}
 
 template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
-    , outfile(NULL)
+    , outfile(nullptr)
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
@@ -59,13 +89,7 @@ GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, 
 
 template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField()
-    : outfile(NULL)
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
-    , f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
-    , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , lastTime((Real)0.0)
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    : GearSpringForceField(nullptr, nullptr)
 {
 }
 
