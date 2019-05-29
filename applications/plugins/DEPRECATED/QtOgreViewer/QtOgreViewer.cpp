@@ -526,11 +526,9 @@ void QtOgreViewer::showEvent(QShowEvent *e)
 
 void QtOgreViewer::initializeGL()
 {
-#ifdef SOFA_HAVE_GLEW
     glewInit();
     if (!GLEW_ARB_multitexture)
         std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#endif
 }
 
 void QtOgreViewer::paintGL()

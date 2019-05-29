@@ -131,7 +131,6 @@ public:
     GLuint getIboQuads()    { return iboQuads; }
     const std::vector<helper::gl::Texture*>& getTextures() const { return textures;	}
 
-#ifdef SOFA_HAVE_GLEW
     void createVertexBuffer();
     void createEdgesIndicesBuffer();
     void createTrianglesIndicesBuffer();
@@ -144,7 +143,6 @@ public:
     void updateEdgesIndicesBuffer();
     void updateTrianglesIndicesBuffer();
     void updateQuadsIndicesBuffer();
-#endif
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;

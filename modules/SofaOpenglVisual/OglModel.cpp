@@ -59,11 +59,7 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 OglModel::OglModel()
     : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
     , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    #ifndef SOFA_HAVE_GLEW
-    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
-    #else
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
-    #endif
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
@@ -186,7 +182,6 @@ void OglModel::drawGroup(int ig, bool transparent)
         }
 
         glEnable(GL_TEXTURE_2D);
-#ifdef SOFA_HAVE_GLEW
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
@@ -196,7 +191,6 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
-#endif // SOFA_HAVE_GLEW
         {
             //get the texture coordinates
             const VecTexCoord& vtexcoords = this->getVtexcoords();
@@ -244,11 +238,9 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (g.nbe > 0 && !drawPoints)
     {
         const Edge* indices = NULL;
-#ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
         else
-#endif
             indices = edges.getData();
 
         GLenum prim = GL_LINES;
@@ -272,19 +264,15 @@ void OglModel::drawGroup(int ig, bool transparent)
 
         glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
 
-#ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
     }
     if (g.nbt > 0 && !drawPoints)
     {
         const Triangle* indices = NULL;
-#ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
         else
-#endif
             indices = triangles.getData();
 
         GLenum prim = GL_TRIANGLES;
@@ -308,19 +296,15 @@ void OglModel::drawGroup(int ig, bool transparent)
 
         glDrawElements(prim, g.nbt * 3, GL_UNSIGNED_INT, indices + g.tri0);
 
-#ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
     }
     if (g.nbq > 0 && !drawPoints)
     {
         const Quad* indices = NULL;
-#ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
         else
-#endif
             indices = quads.getData();
 
 
@@ -351,10 +335,8 @@ void OglModel::drawGroup(int ig, bool transparent)
 
         glDrawElements(prim, g.nbq * 4, GL_UNSIGNED_INT, indices + g.quad0);
 
-#ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
     }
 
     if (!tex && m.useTexture && m.activated)
@@ -424,7 +406,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     GLuint datatype = glType<DataTypes::Real>();
 
-#ifdef SOFA_HAVE_GLEW
     if(VBOGenDone && useVBO.getValue())
     {
         glBindBufferARB(GL_ARRAY_BUFFER, vbo);
@@ -435,7 +416,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
     }
     else
-#endif // SOFA_HAVE_GLEW
     {
         glVertexPointer (3, datatype, 0, vertices.getData());
         glNormalPointer (datatype, 0, vnormals.getData());
@@ -451,7 +431,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnable(GL_TEXTURE_2D);
             tex->bind();
         }
-#ifdef SOFA_HAVE_GLEW
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
@@ -459,7 +438,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
-#endif // SOFA_HAVE_GLEW
         {
             glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
         }
@@ -467,7 +445,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
         if (hasTangents)
         {
-#ifdef SOFA_HAVE_GLEW
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             if(VBOGenDone && useVBO.getValue())
@@ -498,7 +475,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
                 glTexCoordPointer(3, GL_FLOAT, 0, vbitangents.getData());
 
             glClientActiveTexture(GL_TEXTURE0);
-#endif //  SOFA_HAVE_GLEW
         }
     }
 
@@ -522,9 +498,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         glDepthMask(GL_FALSE);
-#ifdef SOFA_HAVE_GLEW
         glBlendEquation( blendEq );
-#endif // SOFA_HAVE_GLEW
         glBlendFunc( sfactor, dfactor );
         glEnable(GL_BLEND);
     }
@@ -601,9 +575,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         // restore Default value
-#ifdef SOFA_HAVE_GLEW
         glBlendEquation( GL_FUNC_ADD );
-#endif // SOFA_HAVE_GLEW
         glBlendFunc( GL_ONE, GL_ONE );
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
@@ -617,7 +589,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glDisable(GL_TEXTURE_2D);
         }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#ifdef SOFA_HAVE_GLEW
         if (hasTangents)
         {
             glClientActiveTexture(GL_TEXTURE1);
@@ -626,7 +597,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             glClientActiveTexture(GL_TEXTURE0);
         }
-#endif // SOFA_HAVE_GLEW
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
@@ -761,7 +731,6 @@ void OglModel::initVisual()
 
 #endif
 
-#if defined(SOFA_HAVE_GLEW)
     if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
         msg_warning() << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." ;
@@ -780,7 +749,6 @@ void OglModel::initVisual()
         msg_warning() << "GL Vendor : " << glGetString(GL_VENDOR) ;
         msg_warning() << "GL Extensions: " << glGetString(GL_EXTENSIONS) ;
     }
-#endif
 
     updateBuffers();
 
@@ -817,7 +785,6 @@ void OglModel::initTextures()
         }
     }
 }
-#ifdef SOFA_HAVE_GLEW
 void OglModel::createVertexBuffer()
 {
     glGenBuffersARB(1, &vbo);
@@ -1010,7 +977,6 @@ void OglModel::updateQuadsIndicesBuffer()
     glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-#endif
 void OglModel::updateBuffers()
 {
     const ResizableExtVector<Edge>& edges = this->getEdges();
@@ -1024,7 +990,6 @@ void OglModel::updateBuffers()
 
     if (initDone)
     {
-#ifdef SOFA_HAVE_GLEW
         if (useVBO.getValue() && canUseVBO)
         {
             if(!VBOGenDone)
@@ -1089,7 +1054,6 @@ void OglModel::updateBuffers()
             oldTrianglesSize = triangles.size();
             oldQuadsSize = quads.size();
         }
-#endif
     }
 
 }
@@ -1114,7 +1078,6 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_ONE_MINUS_SRC_ALPHA;
     }
-#ifdef SOFA_HAVE_GLEW
     // .... add ohter OGL symbolic constants
     // glBlendEquation Value
     else if  ( strcmp( c, "GL_FUNC_ADD") == 0)
@@ -1133,7 +1096,6 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_MIN;
     }
-#endif // SOFA_HAVE_GLEW
     else
     {
         msg_warning() << " OglModel - not valid or not supported openGL enum value: " << c ;
