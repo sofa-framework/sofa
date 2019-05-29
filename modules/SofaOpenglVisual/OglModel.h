@@ -71,6 +71,7 @@ protected:
     Data<bool> pointSmooth; ///< Enable smooth point rendering
     /// Suppress field for save as function
     Data < bool > isToPrint;
+    Data < bool > isEnabled;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)

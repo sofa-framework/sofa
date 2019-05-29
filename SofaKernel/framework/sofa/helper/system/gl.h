@@ -28,7 +28,7 @@
 #include <sofa/helper/system/config.h>
 #include <string>
 
-#  include <GL/glew.h>
+#include <GL/glew.h>
 
 extern SOFA_HELPER_API const char* GetGlExtensionsList();
 
