@@ -58,7 +58,6 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 OglModel::OglModel()
     : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
     , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
@@ -69,6 +68,7 @@ OglModel::OglModel()
     , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
     , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
+    , forceFloat( initData(&forceFloat, true, "forceFloat", "Convert data to float befor sending to opengl."))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
@@ -180,7 +180,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         }
 
         glEnable(GL_TEXTURE_2D);
-        if(VBOGenDone && useVBO.getValue())
+        if(VBOGenDone)
         {
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0]))
@@ -222,7 +222,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.data());
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.data());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-    const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
+    const bool useBufferObjects = (VBOGenDone);
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
@@ -248,11 +248,8 @@ void OglModel::drawGroup(int ig, bool transparent)
             msg_warning() << "LINES_ADJACENCY primitive type invalid for edge topologies" ;
             break;
         case 2:
-            if (canUsePatches)
-            {
-                prim = GL_PATCHES;
-                glPatchParameteri(GL_PATCH_VERTICES,2);
-            }
+            prim = GL_PATCHES;
+            glPatchParameteri(GL_PATCH_VERTICES,2);
             break;
         default:
             break;
@@ -278,11 +275,8 @@ void OglModel::drawGroup(int ig, bool transparent)
             msg_warning() << "LINES_ADJACENCY primitive type invalid for triangular topologies" ;
             break;
         case 2:
-            if (canUsePatches)
-            {
-                prim = GL_PATCHES;
-                glPatchParameteri(GL_PATCH_VERTICES,3);
-            }
+            prim = GL_PATCHES;
+            glPatchParameteri(GL_PATCH_VERTICES,3);
             break;
         default:
             break;
@@ -309,11 +303,8 @@ void OglModel::drawGroup(int ig, bool transparent)
             prim = GL_LINES_ADJACENCY_EXT;
             break;
         case 2:
-            if (canUsePatches)
-            {
-                prim = GL_PATCHES;
-                glPatchParameteri(GL_PATCH_VERTICES,4);
-            }
+            prim = GL_PATCHES;
+            glPatchParameteri(GL_PATCH_VERTICES,4);
             break;
         default:
             break;
@@ -396,7 +387,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     GLuint datatype = glType<DataTypes::Real>();
 
-    if(VBOGenDone && useVBO.getValue())
+    if(VBOGenDone)
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
@@ -421,7 +412,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnable(GL_TEXTURE_2D);
             tex->bind();
         }
-        if(VBOGenDone && useVBO.getValue())
+        if(VBOGenDone)
         {
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
@@ -437,7 +428,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         {
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            if(VBOGenDone && useVBO.getValue())
+            if(VBOGenDone)
             {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 glTexCoordPointer(3, GL_FLOAT, 0,
@@ -451,7 +442,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
             glClientActiveTexture(GL_TEXTURE2);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            if(VBOGenDone && useVBO.getValue())
+            if(VBOGenDone)
             {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 glTexCoordPointer(3, GL_FLOAT, 0,
@@ -710,7 +701,7 @@ void OglModel::initVisual()
     }
 
     canUseVBO = vboAvailable;
-    if (useVBO.getValue() && !canUseVBO)
+    if (!canUseVBO)
     {
         msg_warning() << "OglModel : VBO is not supported by your GPU" ;
     }
@@ -824,9 +815,9 @@ void OglModel::initVertexBuffer()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     //Vertex Buffer creation
     glBufferData(GL_ARRAY_BUFFER,
-                    totalSize,
-                    NULL,
-                    GL_DYNAMIC_DRAW);
+                 totalSize,
+                 NULL,
+                 GL_DYNAMIC_DRAW);
 
 
     updateVertexBuffer();
@@ -969,7 +960,7 @@ void OglModel::updateBuffers()
 
     if (initDone)
     {
-        if (useVBO.getValue() && canUseVBO)
+        if (canUseVBO)
         {
             if(!VBOGenDone)
             {

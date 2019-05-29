@@ -60,7 +60,6 @@ public:
     Data<bool> blendTransparency; ///< Blend transparent parts
 protected:
     Data<bool> premultipliedAlpha; ///< is alpha premultiplied ?
-    Data<bool> useVBO; ///< Use VBO for rendering
     Data<bool> writeZTransparent; ///< Write into Z Buffer for Transparent Object
     Data<bool> alphaBlend; ///< Enable alpha blending
     Data<bool> depthTest; ///< Enable depth testing
@@ -72,6 +71,7 @@ protected:
     /// Suppress field for save as function
     Data < bool > isToPrint;
     Data < bool > isEnabled;
+    Data < bool > forceFloat;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
@@ -123,7 +123,6 @@ public:
     bool isUseEdges()	{ return useEdges; }
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
-    bool isUseVbo()	{ return useVBO.getValue(); }
 
     helper::gl::Texture* getTex() const	{ return tex; }
     GLuint getVbo()	{ return vbo;	}
