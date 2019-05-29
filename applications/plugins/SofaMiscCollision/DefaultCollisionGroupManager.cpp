@@ -271,11 +271,8 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
 
     if (listSolver.empty())
         return NULL;
+
     simulation::Node* solvernode = static_cast<simulation::Node*>(listSolver.back()->getContext());
-    if (solvernode->linearSolver.empty())
-        return solvernode; // no linearsolver
-    core::behavior::BaseLinearSolver * linearSolver = solvernode->linearSolver[0];
-    // group not found, simply return the solver node
     return solvernode;
 }
 
