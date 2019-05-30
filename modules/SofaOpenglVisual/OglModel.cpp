@@ -67,7 +67,7 @@ OglModel::OglModel()
     , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
     , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
     , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
-    , forceFloat( initData(&forceFloat, true, "forceFloat", "Convert data to float befor sending to opengl."))
+    , forceFloat( initData(&forceFloat, false, "forceFloat", "Convert data to float befor sending to opengl."))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
@@ -330,6 +330,16 @@ GLuint glType<double>(){ return GL_DOUBLE; }
 template<>
 GLuint glType<float>(){ return GL_FLOAT; }
 
+template<class InType, class OutType>
+void copyVector(const InType& src, OutType& dst)
+{
+    unsigned int i=0;
+    for(auto& item : src)
+    {
+        dst[i].set(item);
+        ++i;
+    }
+}
 
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
@@ -353,18 +363,33 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
+
     glEnable(GL_LIGHTING);
 
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
+    /// Default values for the vbo
     GLuint datatype = glType<DataTypes::Real>();
+    GLuint vertexdatasize = sizeof(vertices[0]);
+    GLuint normaldatasize = sizeof(vnormals[0]);
 
+
+    /// In case we are forcing to float before sending to opengl...
+    if(forceFloat.getValue())
+    {
+        datatype = GL_FLOAT;
+        vertexdatasize = sizeof(verticesTmpBuffer[0]);
+        normaldatasize = sizeof(normalsTmpBuffer[0]);
+    }
+
+    GLuint vertexArrayByteSize = vertices.size() * vertexdatasize;
+    GLuint normalArrayByteSize = vnormals.size() * normaldatasize;
 
     //// Update the vertex buffers.
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexPointer(3, datatype, 0, (char*)NULL + 0);
-    glNormalPointer(datatype, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
+    glNormalPointer(datatype, 0, (char*)NULL + vertexArrayByteSize);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -377,21 +402,23 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnable(GL_TEXTURE_2D);
             tex->bind();
         }
+
+        GLuint textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
+        glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + vertexArrayByteSize + normalArrayByteSize );
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         if (hasTangents)
         {
+            GLuint tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
+
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(3, GL_FLOAT, 0,
-                              (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
-                    (vnormals.size()*sizeof(vnormals[0])) +
-                    (vtexcoords.size()*sizeof(vtexcoords[0])));
+                              (char*)NULL + vertexArrayByteSize + normalArrayByteSize + textureArrayByteSize);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             glClientActiveTexture(GL_TEXTURE2);
@@ -399,10 +426,8 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(3, GL_FLOAT, 0,
-                              (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
-                    (vnormals.size()*sizeof(vnormals[0])) +
-                    (vtexcoords.size()*sizeof(vtexcoords[0])) +
-                    (vtangents.size()*sizeof(vtangents[0])));
+                              (char*)NULL + vertexArrayByteSize + normalArrayByteSize
+                              + textureArrayByteSize + tangentArrayByteSize);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             glClientActiveTexture(GL_TEXTURE0);
@@ -734,7 +759,6 @@ void OglModel::createQuadsIndicesBuffer()
     useQuads = true;
 }
 
-
 void OglModel::initVertexBuffer()
 {
     unsigned positionsBufferSize, normalsBufferSize;
@@ -746,8 +770,16 @@ void OglModel::initVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    if(forceFloat.getValue())
+    {
+        positionsBufferSize = (vertices.size()*sizeof(Vec3f));
+        normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
+    }else
+    {
+        positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+        normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    }
+
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
@@ -767,7 +799,6 @@ void OglModel::initVertexBuffer()
                  totalSize,
                  NULL,
                  GL_DYNAMIC_DRAW);
-
 
     updateVertexBuffer();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -806,6 +837,7 @@ void OglModel::initQuadsIndicesBuffer()
 
 void OglModel::updateVertexBuffer()
 {
+
     const VecCoord& vertices = this->getVertices();
     const VecCoord& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
@@ -818,6 +850,24 @@ void OglModel::updateVertexBuffer()
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    const void* positionBuffer = vertices.getData();
+    const void* normalBuffer = vnormals.getData();
+
+
+    if(forceFloat.getValue())
+    {
+        verticesTmpBuffer.resize( vertices.size() );
+        normalsTmpBuffer.resize( vnormals.size() );
+
+        copyVector(vertices, verticesTmpBuffer);
+        copyVector(vnormals, normalsTmpBuffer);
+
+        positionsBufferSize = (vertices.size()*sizeof(Vec3f));
+        normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
+        positionBuffer = verticesTmpBuffer.data();
+        normalBuffer = normalsTmpBuffer.data();
+    }
+
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
@@ -834,13 +884,13 @@ void OglModel::updateVertexBuffer()
     glBufferSubData(GL_ARRAY_BUFFER,
                     0,
                     positionsBufferSize,
-                    vertices.getData());
+                    positionBuffer);
 
     //Normals
     glBufferSubData(GL_ARRAY_BUFFER,
                     positionsBufferSize,
                     normalsBufferSize,
-                    vnormals.getData());
+                    normalBuffer);
 
     //Texture coords
     if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
@@ -905,6 +955,7 @@ void OglModel::updateBuffers()
     {
         if(!VBOGenDone)
         {
+            std::cout << "INIT BUFFERS..." << std::endl;
             createVertexBuffer();
             //Index Buffer Object
             //Edges indices
@@ -928,6 +979,8 @@ void OglModel::updateBuffers()
                 initVertexBuffer();
             else
                 updateVertexBuffer();
+
+
             //Indices
             //Edges
             if(useEdges)

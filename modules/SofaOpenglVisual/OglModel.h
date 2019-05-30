@@ -86,6 +86,13 @@ protected:
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
+
+    /// These two buffers are used with the "forceFloat" data field is activated.
+    /// When this is the case the data types send to openGL is always converted to floating points
+    /// values before touching opengl.
+    std::vector<sofa::defaulttype::Vec3f> verticesTmpBuffer;
+    std::vector<sofa::defaulttype::Vec3f> normalsTmpBuffer;
+
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
     void drawGroup(int ig, bool transparent);
