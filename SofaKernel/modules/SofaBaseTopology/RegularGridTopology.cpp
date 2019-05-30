@@ -171,23 +171,66 @@ Vector3 RegularGridTopology::getPointInGrid(int i, int j, int k) const
     return d_p0.getValue()+dx*i+dy*j+dz*k;
 }
 
-int RegularGridTopology::findPoint(const Vector3& pos)
+int RegularGridTopology::findPoint(const Vector3& position) const
 {
-    Vector3 p = pos-d_p0.getValue();
-    SReal x = p*dx*inv_dx2;
-    SReal y = p*dy*inv_dy2;
-    SReal z = p*dz*inv_dz2;
-    int ix = int(x+1000000)-1000000; // Do not round toward 0...
-    int iy = int(y+1000000)-1000000;
-    int iz = int(z+1000000)-1000000;
+    const Vector3 p0 = d_p0.getValue();
+    const Vec3i   n  = d_n.getValue();
+    const Vector3 d (dx[0], dy[1], dz[2]);
 
+    // Get the position relative to the corner of the grid
+    const Vector3 p = position-p0;
+
+    // Get the index of the closest node by rounding the number of cells in the x, y and z direction
+    // from the corner of the grid to the queried point
+    const int ix = int(round(p[0]/d[0]));
+    const int iy = int(round(p[1]/d[1]));
+    const int iz = int(round(p[2]/d[2]));
+
+    // Make sure the node lies inside the boundaries of the grid
     if (ix < 0 || iy < 0 || iz < 0)
         return -1;
 
-    if (ix > d_n.getValue()[0] || iy > d_n.getValue()[1]|| iz > d_n.getValue()[2])
+    if (ix > (n[0] - 1) || iy > (n[1] - 1) || iz > (n[2] - 1))
         return -1;
 
+    // Return the node index
     return getIndex(ix, iy, iz);
+}
+
+int RegularGridTopology::findPoint(const Vector3& position, const SReal epsilon) const
+{
+    const Vector3 p0 = d_p0.getValue();
+    const Vec3i   n  = d_n.getValue();
+    const Vector3 d (dx[0], dy[1], dz[2]);
+
+    // Get the position relative to the corner of the grid
+    const Vector3 p = position-p0;
+
+    // Get the index of the closest node by rounding the number of cells in the x, y and z direction
+    // from the corner of the grid to the queried point
+    const int ix = int(round(p[0]/d[0]));
+    const int iy = int(round(p[1]/d[1]));
+    const int iz = int(round(p[2]/d[2]));
+
+    // Make sure the node lies inside the boundaries of the grid
+    if (ix < 0 || iy < 0 || iz < 0)
+        return -1;
+
+    if (ix > n[0] || iy > n[1]|| iz > n[2])
+        return -1;
+
+    // Get the node index
+    const auto node_index = getIndex(ix, iy, iz);
+
+    // Make sure the node lies inside a sphere of radius (d * epsilon) centered on the queried position
+    const auto node_position = Vector3(ix*d[0], iy*d[1], iz*d[2]);
+    const auto m = epsilon*d[0]; // allowed margin
+    const auto e = p-node_position; // vector between the node and the queried position
+
+    if (e[0]*e[0] + e[1]*e[1]+ e[2]*e[2] > m*m)
+        return -1;
+
+    return node_index;
 }
 
 /// return the cube containing the given point (or -1 if not found).
