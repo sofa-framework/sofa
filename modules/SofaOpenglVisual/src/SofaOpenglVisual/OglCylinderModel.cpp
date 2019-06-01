@@ -45,7 +45,7 @@ namespace component
 namespace visualmodel
 {
 
-int OglCylinderModelClass = core::RegisterObject("A simple visualization for set of cylinder.")
+static int OglCylinderModelClass = core::RegisterObject("A simple visualization for set of cylinder.")
         .add< OglCylinderModel >()
         ;
 
@@ -56,7 +56,6 @@ OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
       color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
-      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 

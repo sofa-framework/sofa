@@ -212,8 +212,6 @@ public:
 
     // Returns the ID of the shader element
     const std::string& getSEID() const { return id.getValue(); }
-
-    //virtual void setInShader(OglShader& s) = 0;
 };
 
 }//namespace visualmodel

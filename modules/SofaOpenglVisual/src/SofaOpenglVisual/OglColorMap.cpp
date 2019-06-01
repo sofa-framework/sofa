@@ -124,7 +124,6 @@ OglColorMap* OglColorMap::getDefault()
     if (defaultOglColorMap == NULL) {
         defaultOglColorMap = sofa::core::objectmodel::New< OglColorMap >();
         std::string tmp("");
-        //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()
         defaultOglColorMap->init();
     }
     return defaultOglColorMap.get();
@@ -143,10 +142,8 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     {
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_1D, texture);
-        //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         int width = getNbColors();
         unsigned char *data = new unsigned char[ width * 3 ];
