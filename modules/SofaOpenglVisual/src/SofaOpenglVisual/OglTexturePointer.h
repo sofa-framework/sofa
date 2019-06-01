@@ -61,8 +61,8 @@ protected:
     OglTexturePointer();
     ~OglTexturePointer() override;
 
-    Data<unsigned short> textureUnit; ///< Set the texture unit
-    Data<bool> enabled; ///< enabled ?
+    Data<unsigned short> d_textureUnit; ///< Set the texture unit
+    Data<bool> d_enabled; ///< enabled ?
 
 public:
     void init() override;
@@ -71,7 +71,7 @@ public:
     void fwdDraw(core::visual::VisualParams*) override;
     void bwdDraw(core::visual::VisualParams*) override;
 
-    unsigned short getTextureUnit() { return textureUnit.getValue(); }
+    unsigned short getTextureUnit() { return d_textureUnit.getValue(); }
 
     void bind();
     void unbind();
@@ -82,9 +82,9 @@ public:
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    const core::objectmodel::BaseData* getSEValue() const override { return &textureUnit; }
+    const core::objectmodel::BaseData* getSEValue() const override { return &d_textureUnit; }
     // Returns the value of the shader element
-    core::objectmodel::BaseData* getSEValue() override { return &textureUnit; }
+    core::objectmodel::BaseData* getSEValue() override { return &d_textureUnit; }
 };
 
 }

@@ -48,19 +48,19 @@ int OglViewportClass = core::RegisterObject("OglViewport")
 
 
 OglViewport::OglViewport()
-    :p_screenPosition(initData(&p_screenPosition, "screenPosition", "Viewport position"))
-    ,p_screenSize(initData(&p_screenSize, "screenSize", "Viewport size"))
-    ,p_cameraPosition(initData(&p_cameraPosition, Vec3f(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
-    ,p_cameraOrientation(initData(&p_cameraOrientation,Quat(), "cameraOrientation", "Camera's orientation"))
-    ,p_cameraRigid(initData(&p_cameraRigid, "cameraRigid", "Camera's rigid coord"))
-    ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
-    ,p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
-    ,p_fovy(initData(&p_fovy, (double) 60.0, "fovy", "Field of View (Y axis)"))
-    ,p_enabled(initData(&p_enabled, true, "enabled", "Enable visibility of the viewport"))
-    ,p_advancedRendering(initData(&p_advancedRendering, false, "advancedRendering", "If true, viewport will be hidden if advancedRendering visual flag is not enabled"))
-    ,p_useFBO(initData(&p_useFBO, true, "useFBO", "Use a FBO to render the viewport"))
-    ,p_swapMainView(initData(&p_swapMainView, false, "swapMainView", "Swap this viewport with the main view"))
-    ,p_drawCamera(initData(&p_drawCamera, false, "drawCamera", "Draw a frame representing the camera (see it in main viewport)"))
+    :d_screenPosition(initData(&d_screenPosition, "screenPosition", "Viewport position"))
+    ,d_screenSize(initData(&d_screenSize, "screenSize", "Viewport size"))
+    ,d_cameraPosition(initData(&d_cameraPosition, Vec3f(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
+    ,d_cameraOrientation(initData(&d_cameraOrientation,Quat(), "cameraOrientation", "Camera's orientation"))
+    ,d_cameraRigid(initData(&d_cameraRigid, "cameraRigid", "Camera's rigid coord"))
+    ,d_zNear(initData(&d_zNear, "zNear", "Camera's ZNear"))
+    ,d_zFar(initData(&d_zFar, "zFar", "Camera's ZFar"))
+    ,d_fovy(initData(&d_fovy, (double) 60.0, "fovy", "Field of View (Y axis)"))
+    ,d_enabled(initData(&d_enabled, true, "enabled", "Enable visibility of the viewport"))
+    ,d_advancedRendering(initData(&d_advancedRendering, false, "advancedRendering", "If true, viewport will be hidden if advancedRendering visual flag is not enabled"))
+    ,d_useFBO(initData(&d_useFBO, true, "useFBO", "Use a FBO to render the viewport"))
+    ,d_swapMainView(initData(&d_swapMainView, false, "swapMainView", "Swap this viewport with the main view"))
+    ,d_drawCamera(initData(&d_drawCamera, false, "drawCamera", "Draw a frame representing the camera (see it in main viewport)"))
 {
 }
 
@@ -71,22 +71,22 @@ OglViewport::~OglViewport()
 
 void OglViewport::init()
 {
-    if (p_cameraRigid.isSet() || p_cameraRigid.getParent())
+    if (d_cameraRigid.isSet() || d_cameraRigid.getParent())
     {
-        p_cameraPosition.setDisplayed(false);
-        p_cameraOrientation.setDisplayed(false);
+        d_cameraPosition.setDisplayed(false);
+        d_cameraOrientation.setDisplayed(false);
     }
     else
     {
-        p_cameraRigid.setDisplayed(false);
+        d_cameraRigid.setDisplayed(false);
     }
 }
 
 void OglViewport::initVisual()
 {
-    if (p_useFBO.getValue())
+    if (d_useFBO.getValue())
     {
-        const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+        const Vec<2, unsigned int> screenSize = d_screenSize.getValue();
         fbo = std::unique_ptr<helper::gl::FrameBufferObject>(new helper::gl::FrameBufferObject());
         fbo->init(screenSize[0],screenSize[1]);
     }
@@ -94,9 +94,9 @@ void OglViewport::initVisual()
 
 bool OglViewport::isVisible(const core::visual::VisualParams*)
 {
-    if (!p_enabled.getValue())
+    if (!d_enabled.getValue())
         return false;
-    if (p_advancedRendering.getValue())
+    if (d_advancedRendering.getValue())
     {
         VisualStyle* vstyle = NULL;
         this->getContext()->get(vstyle);
@@ -110,23 +110,23 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 {
     if (!isVisible(vp)) return;
 
-    if (p_swapMainView.getValue())
+    if (d_swapMainView.getValue())
     {
         const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
         Vec3f cameraPosition;
         Quat cameraOrientation;
 
         //Take the rigid if it is connected to something
-        if (p_cameraRigid.isDisplayed())
+        if (d_cameraRigid.isDisplayed())
         {
-            RigidCoord rcam = p_cameraRigid.getValue();
+            RigidCoord rcam = d_cameraRigid.getValue();
             cameraPosition =  rcam.getCenter() ;
             cameraOrientation = rcam.getOrientation();
         }
         else
         {
-            cameraPosition = p_cameraPosition.getValue();
-            cameraOrientation = p_cameraOrientation.getValue();
+            cameraPosition = d_cameraPosition.getValue();
+            cameraOrientation = d_cameraOrientation.getValue();
         }
 
         cameraOrientation.normalize();
@@ -143,7 +143,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 
         double zNear=1e10, zFar=-1e10;
         //recompute zNear, zFar
-        if (fabs(p_zNear.getValue()) < 0.0001 || fabs(p_zFar.getValue()) < 0.0001)
+        if (fabs(d_zNear.getValue()) < 0.0001 || fabs(d_zFar.getValue()) < 0.0001)
         {
             for (int corner=0; corner<8; ++corner)
             {
@@ -176,8 +176,8 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         }
         else
         {
-            zNear = p_zNear.getValue();
-            zFar = p_zFar.getValue();
+            zNear = d_zNear.getValue();
+            zFar = d_zFar.getValue();
         }
 
         //Launch FBO process
@@ -186,7 +186,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
-        gluPerspective(p_fovy.getValue(),ratio,zNear, zFar);
+        gluPerspective(d_fovy.getValue(),ratio,zNear, zFar);
 
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -206,7 +206,7 @@ void OglViewport::postDrawScene(core::visual::VisualParams* vp)
 {
     if (!isVisible(vp)) return;
 
-    if (p_swapMainView.getValue())
+    if (d_swapMainView.getValue())
     {
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
@@ -214,7 +214,7 @@ void OglViewport::postDrawScene(core::visual::VisualParams* vp)
         glPopMatrix();
     }
     renderToViewport(vp);
-    if (p_useFBO.getValue())
+    if (d_useFBO.getValue())
         renderFBOToScreen(vp);
 }
 
@@ -227,11 +227,11 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 
     const Viewport viewport = vp->viewport();
     //Launch FBO process
-    const Vec<2, int> screenPosition = p_screenPosition.getValue();
-    const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+    const Vec<2, int> screenPosition = d_screenPosition.getValue();
+    const Vec<2, unsigned int> screenSize = d_screenSize.getValue();
     int x0 = (screenPosition[0]>=0 ? screenPosition[0] : viewport[2]+screenPosition[0]);
     int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
-    if (p_useFBO.getValue())
+    if (d_useFBO.getValue())
     {
         fbo->init(screenSize[0],screenSize[1]);
         fbo->start();
@@ -247,7 +247,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     double ratio = (double)screenSize[0]/(double)screenSize[1];
 
-    if (p_swapMainView.getValue())
+    if (d_swapMainView.getValue())
     {
         GLdouble matrix[16];
         glGetDoublev(GL_PROJECTION_MATRIX, matrix);
@@ -275,16 +275,16 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         Quat cameraOrientation;
 
         //Take the rigid if it is connected to something
-        if (p_cameraRigid.isDisplayed())
+        if (d_cameraRigid.isDisplayed())
         {
-            RigidCoord rcam = p_cameraRigid.getValue();
+            RigidCoord rcam = d_cameraRigid.getValue();
             cameraPosition =  rcam.getCenter() ;
             cameraOrientation = rcam.getOrientation();
         }
         else
         {
-            cameraPosition = p_cameraPosition.getValue();
-            cameraOrientation = p_cameraOrientation.getValue();
+            cameraPosition = d_cameraPosition.getValue();
+            cameraOrientation = d_cameraOrientation.getValue();
         }
 
         cameraOrientation.normalize();
@@ -299,7 +299,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         }
 
         //recompute zNear, zFar
-        if (fabs(p_zNear.getValue()) < 0.0001 || fabs(p_zFar.getValue()) < 0.0001)
+        if (fabs(d_zNear.getValue()) < 0.0001 || fabs(d_zFar.getValue()) < 0.0001)
         {
             for (int corner=0; corner<8; ++corner)
             {
@@ -332,14 +332,14 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         }
         else
         {
-            zNear = p_zNear.getValue();
-            zFar = p_zFar.getValue();
+            zNear = d_zNear.getValue();
+            zFar = d_zFar.getValue();
         }
 
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
-        gluPerspective(p_fovy.getValue(),ratio,zNear, zFar);
+        gluPerspective(d_fovy.getValue(),ratio,zNear, zFar);
 
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -365,7 +365,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    if (p_useFBO.getValue())
+    if (d_useFBO.getValue())
     {
         fbo->stop();
     }
@@ -379,7 +379,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 
 void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
 {
-    if (!p_useFBO.getValue())
+    if (!d_useFBO.getValue())
         return;
 
     const Viewport& viewport = vp->viewport();
@@ -388,8 +388,8 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
     float txmax,tymax;
     float txmin,tymin;
 
-    const Vec<2, int> screenPosition = p_screenPosition.getValue();
-    const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+    const Vec<2, int> screenPosition = d_screenPosition.getValue();
+    const Vec<2, unsigned int> screenSize = d_screenSize.getValue();
 
     int x0 = (screenPosition[0]>=0 ? screenPosition[0] : viewport[2]+screenPosition[0]);
     int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
@@ -441,14 +441,14 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
 
 void OglViewport::draw(const core::visual::VisualParams* vparams)
 {
-	if (!p_drawCamera.getValue())
+	if (!d_drawCamera.getValue())
 		return;
 
-	if (!p_cameraRigid.isDisplayed())
-		vparams->drawTool()->drawFrame(p_cameraPosition.getValue(), p_cameraOrientation.getValue(), Vector3(0.1,0.1,0.1));
+	if (!d_cameraRigid.isDisplayed())
+		vparams->drawTool()->drawFrame(d_cameraPosition.getValue(), d_cameraOrientation.getValue(), Vector3(0.1,0.1,0.1));
 	else
 	{
-		RigidCoord rcam = p_cameraRigid.getValue();
+		RigidCoord rcam = d_cameraRigid.getValue();
 		vparams->drawTool()->drawFrame(rcam.getCenter(), rcam.getOrientation(), Vector3(0.1,0.1,0.1));
 	}
 }

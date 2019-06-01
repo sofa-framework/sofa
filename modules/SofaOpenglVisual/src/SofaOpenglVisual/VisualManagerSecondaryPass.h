@@ -51,9 +51,9 @@ class SOFA_OPENGL_VISUAL_API VisualManagerSecondaryPass : public component::visu
 public:
     SOFA_CLASS(VisualManagerSecondaryPass, component::visualmodel::VisualManagerPass);
 
-    Data< sofa::core::objectmodel::TagSet > input_tags; ///< list of input passes used as source textures
-    Data< sofa::core::objectmodel::TagSet > output_tags; ///< output reference tag (use it if the resulting fbo is used as a source for another secondary pass)
-    sofa::core::objectmodel::DataFileName fragFilename;
+    Data< sofa::core::objectmodel::TagSet > d_inputTags; ///< list of input passes used as source textures
+    Data< sofa::core::objectmodel::TagSet > d_outputTags; ///< output reference tag (use it if the resulting fbo is used as a source for another secondary pass)
+    sofa::core::objectmodel::DataFileName d_fragFilename;
 
 protected:
     OglShader::SPtr m_shaderPostproc;
@@ -76,7 +76,7 @@ public:
 
     helper::gl::FrameBufferObject& getFBO() override {return *fbo;}
 
-    const sofa::core::objectmodel::TagSet& getOutputTags() {return output_tags.getValue();}
+    const sofa::core::objectmodel::TagSet& getOutputTags() {return d_outputTags.getValue();}
 
 private:
 

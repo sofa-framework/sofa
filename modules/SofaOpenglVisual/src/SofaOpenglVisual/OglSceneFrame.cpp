@@ -40,18 +40,18 @@ int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of 
 using namespace sofa::defaulttype;
 
 OglSceneFrame::OglSceneFrame()
-    : drawFrame(initData(&drawFrame, true,  "draw", "Display the frame or not"))
-    , style(initData(&style, "style", "Style of the frame"))
-    , alignment(initData(&alignment, "alignment", "Alignment of the frame in the view"))
+    : d_drawFrame(initData(&d_drawFrame, true,  "draw", "Display the frame or not"))
+    , d_style(initData(&d_style, "style", "Style of the frame"))
+    , d_alignment(initData(&d_alignment, "alignment", "Alignment of the frame in the view"))
     , quadratic(nullptr)
 {
     sofa::helper::OptionsGroup styleOptions(3,"Arrows", "Cylinders", "CubeCones");
     styleOptions.setSelectedItem(1);
-    style.setValue(styleOptions);
+    d_style.setValue(styleOptions);
 
     sofa::helper::OptionsGroup alignmentOptions(4,"BottomLeft", "BottomRight", "TopRight", "TopLeft");
     alignmentOptions.setSelectedItem(1);
-    alignment.setValue(alignmentOptions);
+    d_alignment.setValue(alignmentOptions);
 }
 void OglSceneFrame::init()
 {
@@ -71,13 +71,13 @@ void OglSceneFrame::updateVisual()
 
 void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
-    if (!drawFrame.getValue()) return;
+    if (!d_drawFrame.getValue()) return;
 
     glPushAttrib( GL_ALL_ATTRIB_BITS);
 
     const Viewport& viewport = vparams->viewport();
 
-    switch(alignment.getValue().getSelectedId())
+    switch(d_alignment.getValue().getSelectedId())
     {
         case 0:
         default:
@@ -135,7 +135,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     if (quadratic)
     {
 
-        switch (style.getValue().getSelectedId())
+        switch (d_style.getValue().getSelectedId())
         {
             case 0:
             default:

@@ -40,10 +40,10 @@ int ClipPlaneClass = core::RegisterObject("Add a clipping Plane to the 3D scene.
 
 
 ClipPlane::ClipPlane()
-    : position(initData(&position, sofa::defaulttype::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
-    , normal(initData(&normal, sofa::defaulttype::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
-    , id(initData(&id, 0, "id", "Clipping plane OpenGL ID"))
-    , active(initData(&active,true,"active","Control whether the clipping plane should be applied or not"))
+    : d_position(initData(&d_position, sofa::defaulttype::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
+    , d_normal(initData(&d_normal, sofa::defaulttype::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
+    , d_id(initData(&d_id, 0, "id", "Clipping plane OpenGL ID"))
+    , d_active(initData(&d_active,true,"active","Control whether the clipping plane should be applied or not"))
 {
 }
 
@@ -53,7 +53,7 @@ ClipPlane::~ClipPlane()
 
 sofa::core::objectmodel::ComponentState ClipPlane::checkDataValues()
 {
-    if(id.getValue() < 0)
+    if(d_id.getValue() < 0)
     {
         msg_error() << "plane ID cannot be negative. The component is disabled." ;
         return ComponentState::Invalid;
@@ -77,36 +77,36 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
     if(m_componentstate==ComponentState::Invalid)
         return ;
 
-    wasActive = glIsEnabled(GL_CLIP_PLANE0+id.getValue());
-    if (active.getValue())
+    wasActive = glIsEnabled(GL_CLIP_PLANE0+d_id.getValue());
+    if (d_active.getValue())
     {
-        glGetClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);
-        sofa::defaulttype::Vector3 p = position.getValue();
-        sofa::defaulttype::Vector3 n = normal.getValue();
+        glGetClipPlane(GL_CLIP_PLANE0+d_id.getValue(), saveEq);
+        sofa::defaulttype::Vector3 p = d_position.getValue();
+        sofa::defaulttype::Vector3 n = d_normal.getValue();
         GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
-        glClipPlane(GL_CLIP_PLANE0+id.getValue(), c);
+        glClipPlane(GL_CLIP_PLANE0+d_id.getValue(), c);
         if (!wasActive)
-            glEnable(GL_CLIP_PLANE0+id.getValue());
+            glEnable(GL_CLIP_PLANE0+d_id.getValue());
     }
     else
     {
         if (wasActive)
-            glDisable(GL_CLIP_PLANE0+id.getValue());
+            glDisable(GL_CLIP_PLANE0+d_id.getValue());
     }
 }
 
 void ClipPlane::bwdDraw(core::visual::VisualParams*)
 {
-    if (active.getValue())
+    if (d_active.getValue())
     {
-        glClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);
+        glClipPlane(GL_CLIP_PLANE0+d_id.getValue(), saveEq);
         if (!wasActive)
-            glDisable(GL_CLIP_PLANE0+id.getValue());
+            glDisable(GL_CLIP_PLANE0+d_id.getValue());
     }
     else
     {
         if (wasActive)
-            glEnable(GL_CLIP_PLANE0+id.getValue());
+            glEnable(GL_CLIP_PLANE0+d_id.getValue());
     }
 }
 

@@ -57,29 +57,29 @@ class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
 public:
     SOFA_CLASS(OglModel, VisualModelImpl);
 
-    Data<bool> blendTransparency; ///< Blend transparent parts
+    Data<bool> d_blendTransparency; ///< Blend transparent parts
 protected:
-    Data<bool> premultipliedAlpha; ///< is alpha premultiplied ?
-    Data<bool> writeZTransparent; ///< Write into Z Buffer for Transparent Object
-    Data<bool> alphaBlend; ///< Enable alpha blending
-    Data<bool> depthTest; ///< Enable depth testing
-    Data<int> cullFace; ///< Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)
-    Data<GLfloat> lineWidth; ///< Line width (set if != 1, only for lines rendering)
-    Data<GLfloat> pointSize; ///< Point size (set if != 1, only for points rendering)
-    Data<bool> lineSmooth; ///< Enable smooth line rendering
-    Data<bool> pointSmooth; ///< Enable smooth point rendering
+    Data<bool> d_premultipliedAlpha; ///< is alpha premultiplied ?
+    Data<bool> d_writeZTransparent; ///< Write into Z Buffer for Transparent Object
+    Data<bool> d_alphaBlend; ///< Enable alpha blending
+    Data<bool> d_depthTest; ///< Enable depth testing
+    Data<int> d_cullFace; ///< Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)
+    Data<GLfloat> d_lineWidth; ///< Line width (set if != 1, only for lines rendering)
+    Data<GLfloat> d_pointSize; ///< Point size (set if != 1, only for points rendering)
+    Data<bool> d_lineSmooth; ///< Enable smooth line rendering
+    Data<bool> d_pointSmooth; ///< Enable smooth point rendering
     /// Suppress field for save as function
-    Data < bool > isToPrint;
-    Data < bool > isEnabled;
-    Data < bool > forceFloat;
+    Data < bool > d_isToPrint;
+    Data < bool > d_isEnabled;
+    Data < bool > d_forceFloat;
 
     // primitive types
-    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
+    Data<sofa::helper::OptionsGroup> d_primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
 
     //alpha blend function
-    Data<sofa::helper::OptionsGroup> blendEquation; ///< if alpha blending is enabled this specifies how source and destination colors are combined
-    Data<sofa::helper::OptionsGroup> sourceFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed
-    Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
+    Data<sofa::helper::OptionsGroup> d_blendEquation; ///< if alpha blending is enabled this specifies how source and destination colors are combined
+    Data<sofa::helper::OptionsGroup> d_sourceFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed
+    Data<sofa::helper::OptionsGroup> d_destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
     GLenum blendEq, sfactor, dfactor;
 
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn

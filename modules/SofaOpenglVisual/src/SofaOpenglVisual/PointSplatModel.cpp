@@ -56,38 +56,38 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
 PointSplatModel::PointSplatModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : radius(initData(&radius, 1.0f, "radius", "Radius of the spheres.")),
-      textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
-      alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
-      _topology(NULL),
-      _mstate(NULL),
-      texture_data(NULL),
-      pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+    : d_radius(initData(&d_radius, 1.0f, "radius", "Radius of the spheres.")),
+      d_textureSize(initData(&d_textureSize, 32, "textureSize", "Size of the billboard texture.")),
+      d_alpha(initData(&d_alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
+      d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
+      m_topology(NULL),
+      m_mstate(NULL),
+      m_textureData(NULL),
+      m_pointData(initData(&m_pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
 PointSplatModel::~PointSplatModel()
 {
-    if(texture_data != NULL)
-        delete [] texture_data;
+    if(m_textureData != NULL)
+        delete [] m_textureData;
 }
 
 void PointSplatModel::init()
 {
-    getContext()->get(_topology);
-    if(_topology)
-        _mstate = _topology->getContext()->getMechanicalState();
+    getContext()->get(m_topology);
+    if(m_topology)
+        m_mstate = m_topology->getContext()->getMechanicalState();
     else
-        getContext()->get(_mstate);
+        getContext()->get(m_mstate);
 
     VisualModel::init();
 
     core::loader::VoxelLoader *loader;
     getContext()->get(loader);
-    if(loader && _mstate)
+    if(loader && m_mstate)
     {
-        unsigned int nbPoints = _mstate->getSize();
+        unsigned int nbPoints = m_mstate->getSize();
 
         const helper::vector<unsigned int> idxInRegularGrid = loader->getHexaIndicesInGrid();
 
@@ -96,10 +96,10 @@ void PointSplatModel::init()
         {
             const unsigned char *imageData = loader->getData();
 
-            helper::vector<unsigned char>* pData = pointData.beginEdit();
+            helper::vector<unsigned char>* pData = m_pointData.beginEdit();
             for(unsigned int i=0; i<nbPoints; ++i)
                 (*pData).push_back(imageData[idxInRegularGrid[i]]);
-            pointData.endEdit();
+            m_pointData.endEdit();
         }
     }
 
@@ -110,12 +110,12 @@ void PointSplatModel::init()
 
 void PointSplatModel::reinit()
 {
-    if(texture_data != NULL)
-        delete [] texture_data;
+    if(m_textureData != NULL)
+        delete [] m_textureData;
 
-    unsigned int texture_size = textureSize.getValue();
+    unsigned int texture_size = d_textureSize.getValue();
     unsigned int half_texture_size = texture_size >> 1;
-    texture_data = new unsigned char [texture_size * texture_size];
+    m_textureData = new unsigned char [texture_size * texture_size];
 
     for(unsigned int i=0; i<half_texture_size; ++i)
     {
@@ -125,12 +125,12 @@ void PointSplatModel::reinit()
             const float y = j / (float) half_texture_size;
             const float dist = sqrt(x*x + y*y);
             const float value = cos(3.141592f/2.0f * dist);
-            const unsigned char texValue = (value < 0.0f) ? 0 : (unsigned char) (255.0f * alpha.getValue() * value);
+            const unsigned char texValue = (value < 0.0f) ? 0 : (unsigned char) (255.0f * d_alpha.getValue() * value);
 
-            texture_data[half_texture_size + i + (half_texture_size + j) * texture_size] = texValue;
-            texture_data[half_texture_size + i + (half_texture_size - 1 - j) * texture_size] = texValue;
-            texture_data[half_texture_size - 1 - i + (half_texture_size + j) * texture_size] = texValue;
-            texture_data[half_texture_size - 1 - i + (half_texture_size - 1 - j) * texture_size] = texValue;
+            m_textureData[half_texture_size + i + (half_texture_size + j) * texture_size] = texValue;
+            m_textureData[half_texture_size + i + (half_texture_size - 1 - j) * texture_size] = texValue;
+            m_textureData[half_texture_size - 1 - i + (half_texture_size + j) * texture_size] = texValue;
+            m_textureData[half_texture_size - 1 - i + (half_texture_size - 1 - j) * texture_size] = texValue;
         }
     }
 }
@@ -139,7 +139,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
-    const helper::vector<unsigned char>& pData = pointData.getValue();
+    const helper::vector<unsigned char>& pData = m_pointData.getValue();
 
     glPushAttrib(GL_ENABLE_BIT);
 
@@ -151,12 +151,12 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
     glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     GLuint	texture;
-    unsigned int texture_size = (unsigned) textureSize.getValue();
+    unsigned int texture_size = (unsigned) d_textureSize.getValue();
 
     glGenTextures (1, &texture);
     glBindTexture (GL_TEXTURE_2D, texture);
     glTexImage2D (GL_TEXTURE_2D, 0, GL_ALPHA, texture_size, texture_size, 0,
-            GL_ALPHA, GL_UNSIGNED_BYTE, texture_data);
+            GL_ALPHA, GL_UNSIGNED_BYTE, m_textureData);
     glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -165,15 +165,15 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
 
     VecCoord	vertices;
 
-    if (_mstate)
+    if (m_mstate)
     {
-        vertices.resize(_mstate->getSize());
+        vertices.resize(m_mstate->getSize());
 
         for (unsigned int i=0; i<vertices.size(); i++)
         {
-            vertices[i][0] = (Real)_mstate->getPX(i);
-            vertices[i][1] = (Real)_mstate->getPY(i);
-            vertices[i][2] = (Real)_mstate->getPZ(i);
+            vertices[i][0] = (Real)m_mstate->getPX(i);
+            vertices[i][1] = (Real)m_mstate->getPY(i);
+            vertices[i][2] = (Real)m_mstate->getPZ(i);
         }
     }
 
@@ -205,7 +205,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
 
         const Coord& center = vertices[i];
 
-        const float qsize = radius.getValue();
+        const float qsize = d_radius.getValue();
 
         // Now, build a quad around the center point based on the vRight
         // and vUp vectors. This will guarantee that the quad will be
@@ -222,7 +222,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
             m = 0.5f + 2.0f * pData[i] / 255.0f;
         }
 
-        const defaulttype::RGBAColor& mc = color.getValue() ;
+        const defaulttype::RGBAColor& mc = d_color.getValue() ;
         glColor4f (m*mc.r(), m*mc.g(), m*mc.b(), mc.a());
 
         glBegin( GL_QUADS );

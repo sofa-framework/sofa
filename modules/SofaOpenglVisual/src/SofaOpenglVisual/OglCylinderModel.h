@@ -70,19 +70,16 @@ public:
 
 private:
     void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
+    void setColor(std::string d_color);
 
 private:
-    Data<float>		radius; ///< Radius of the cylinder.
-    // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color; ///< Color of the cylinders.
+    Data<float>		d_radius; ///< Radius of the cylinder.
+    Data<defaulttype::RGBAColor>	d_color; ///< Color of the cylinders.
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges; ///< List of edge indices
 
-
     float r,g,b,a;
-    // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 
     typedef ExtVec3State::Coord Coord;
     typedef ExtVec3State::VecCoord VecCoord;

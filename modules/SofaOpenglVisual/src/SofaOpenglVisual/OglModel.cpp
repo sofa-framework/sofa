@@ -56,22 +56,22 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
-    : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
-    , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
-    , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
-    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
-    , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
-    , lineWidth(initData(&lineWidth, (GLfloat) 1, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
-    , pointSize(initData(&pointSize, (GLfloat) 1, "pointSize", "Point size (set if != 1, only for points rendering)"))
-    , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
-    , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
-    , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
-    , forceFloat( initData(&forceFloat, false, "forceFloat", "Convert data to float befor sending to opengl."))
-    , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
-    , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
-    , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
-    , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
+    : d_blendTransparency(initData(&d_blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
+    , d_premultipliedAlpha(initData(&d_premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    , d_writeZTransparent(initData(&d_writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
+    , d_alphaBlend(initData(&d_alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
+    , d_depthTest(initData(&d_depthTest, (bool) true, "depthTest", "Enable depth testing"))
+    , d_cullFace(initData(&d_cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , d_lineWidth(initData(&d_lineWidth, (GLfloat) 1, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
+    , d_pointSize(initData(&d_pointSize, (GLfloat) 1, "pointSize", "Point size (set if != 1, only for points rendering)"))
+    , d_lineSmooth(initData(&d_lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
+    , d_pointSmooth(initData(&d_pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
+    , d_isEnabled( initData(&d_isEnabled, true, "isEnabled", "Activate/deactive the component."))
+    , d_forceFloat( initData(&d_forceFloat, false, "forceFloat", "Convert data to float befor sending to opengl."))
+    , d_primitiveType( initData(&d_primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
+    , d_blendEquation( initData(&d_blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
+    , d_sourceFactor( initData(&d_sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
+    , d_destFactor( initData(&d_destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
     , tex(NULL)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
@@ -80,26 +80,26 @@ OglModel::OglModel()
 
     textures.clear();
 
-    sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
+    sofa::helper::OptionsGroup* blendEquationOptions = d_blendEquation.beginEdit();
     blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
     blendEquationOptions->setSelectedItem(0);
-    blendEquation.endEdit();
+    d_blendEquation.endEdit();
 
     // alpha blend values
-    sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
+    sofa::helper::OptionsGroup* sourceFactorOptions = d_sourceFactor.beginEdit();
     sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     sourceFactorOptions->setSelectedItem(2);
-    sourceFactor.endEdit();
+    d_sourceFactor.endEdit();
 
-    sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
+    sofa::helper::OptionsGroup* destFactorOptions = d_destFactor.beginEdit();
     destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     destFactorOptions->setSelectedItem(3);
-    destFactor.endEdit();
+    d_destFactor.endEdit();
 
-    sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
+    sofa::helper::OptionsGroup* primitiveTypeOptions = d_primitiveType.beginEdit();
     primitiveTypeOptions->setNames(4, "DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS");
     primitiveTypeOptions->setSelectedItem(0);
-    primitiveType.endEdit();
+    d_primitiveType.endEdit();
 }
 
 OglModel::~OglModel()
@@ -212,7 +212,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.data());
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.data());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-    const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
+    const bool drawPoints = (d_primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
         //Disable lighting if we draw points
@@ -228,7 +228,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
         GLenum prim = GL_LINES;
-        switch (primitiveType.getValue().getSelectedId())
+        switch (d_primitiveType.getValue().getSelectedId())
         {
         case 1:
             msg_warning() << "LINES_ADJACENCY primitive type invalid for edge topologies" ;
@@ -251,7 +251,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
         GLenum prim = GL_TRIANGLES;
-        switch (primitiveType.getValue().getSelectedId())
+        switch (d_primitiveType.getValue().getSelectedId())
         {
         case 1:
             msg_warning() << "LINES_ADJACENCY primitive type invalid for triangular topologies" ;
@@ -273,7 +273,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
 
         GLenum prim = GL_QUADS;
-        switch (primitiveType.getValue().getSelectedId())
+        switch (d_primitiveType.getValue().getSelectedId())
         {
         case 1:
             prim = GL_LINES_ADJACENCY_EXT;
@@ -346,7 +346,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (!vparams->displayFlags().getShowVisualModels())
         return;
 
-    if(!isEnabled.getValue())
+    if(!d_isEnabled.getValue())
         return;
 
     /// Checks that the VBO's are ready.
@@ -376,7 +376,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
 
     /// In case we are forcing to float before sending to opengl...
-    if(forceFloat.getValue())
+    if(d_forceFloat.getValue())
     {
         datatype = GL_FLOAT;
         vertexdatasize = sizeof(verticesTmpBuffer[0]);
@@ -434,10 +434,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         }
     }
 
-    if (transparent && blendTransparency.getValue())
+    if (transparent && d_blendTransparency.getValue())
     {
         glEnable(GL_BLEND);
-        if (writeZTransparent.getValue())
+        if (d_writeZTransparent.getValue())
             glDepthMask(GL_TRUE);
         else glDepthMask(GL_FALSE);
 
@@ -445,13 +445,13 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
         drawGroups(transparent);
 
-        if (premultipliedAlpha.getValue())
+        if (d_premultipliedAlpha.getValue())
             glBlendFunc(GL_ONE, GL_ONE);
         else
             glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
-    if (alphaBlend.getValue())
+    if (d_alphaBlend.getValue())
     {
         glDepthMask(GL_FALSE);
         glBlendEquation( blendEq );
@@ -459,10 +459,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glEnable(GL_BLEND);
     }
 
-    if (!depthTest.getValue())
+    if (!d_depthTest.getValue())
         glDisable(GL_DEPTH_TEST);
 
-    switch (cullFace.getValue())
+    switch (d_cullFace.getValue())
     {
     case 1:
         glCullFace(GL_BACK);
@@ -474,22 +474,22 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         break;
     }
 
-    if (lineWidth.isSet())
+    if (d_lineWidth.isSet())
     {
-        glLineWidth(lineWidth.getValue());
+        glLineWidth(d_lineWidth.getValue());
     }
 
-    if (pointSize.isSet())
+    if (d_pointSize.isSet())
     {
-        glPointSize(pointSize.getValue());
+        glPointSize(d_pointSize.getValue());
     }
 
-    if (pointSmooth.getValue())
+    if (d_pointSmooth.getValue())
     {
         glEnable(GL_POINT_SMOOTH);
     }
 
-    if (lineSmooth.getValue())
+    if (d_lineSmooth.getValue())
     {
         glEnable(GL_LINE_SMOOTH);
         glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
@@ -497,27 +497,27 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     drawGroups(transparent);
 
-    if (lineSmooth.getValue())
+    if (d_lineSmooth.getValue())
     {
         glDisable(GL_LINE_SMOOTH);
     }
 
-    if (pointSmooth.getValue())
+    if (d_pointSmooth.getValue())
     {
         glDisable(GL_POINT_SMOOTH);
     }
 
-    if (lineWidth.isSet())
+    if (d_lineWidth.isSet())
     {
         glLineWidth((GLfloat)1);
     }
 
-    if (pointSize.isSet())
+    if (d_pointSize.isSet())
     {
         glPointSize((GLfloat)1);
     }
 
-    switch (cullFace.getValue())
+    switch (d_cullFace.getValue())
     {
     case 1:
     case 2:
@@ -525,10 +525,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         break;
     }
 
-    if (!depthTest.getValue())
+    if (!d_depthTest.getValue())
         glEnable(GL_DEPTH_TEST);
 
-    if (alphaBlend.getValue())
+    if (d_alphaBlend.getValue())
     {
         // restore Default value
         glBlendEquation( GL_FUNC_ADD );
@@ -557,7 +557,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
 
-    if (transparent && blendTransparency.getValue())
+    if (transparent && d_blendTransparency.getValue())
     {
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -593,7 +593,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
 bool OglModel::hasTransparent()
 {
-    if(alphaBlend.getValue())
+    if(d_alphaBlend.getValue())
         return true;
     return VisualModelImpl::hasTransparent();
 }
@@ -680,14 +680,14 @@ void OglModel::initVisual()
         msg_warning() << "OglModel : VBO is not supported by your GPU" ;
     }
 
-    if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
+    if (d_primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
         msg_warning() << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." ;
     }
 
     canUsePatches = (glewIsSupported("GL_ARB_tessellation_shader")!=0);
 
-    if (primitiveType.getValue().getSelectedId() == 2 && !canUsePatches)
+    if (d_primitiveType.getValue().getSelectedId() == 2 && !canUsePatches)
     {
         msg_warning() << "GL_ARB_tessellation_shader not supported by your graphics card and/or OpenGL driver." ;
         msg_warning() << "GL Version: " << glGetString(GL_VERSION) ;
@@ -704,11 +704,11 @@ void OglModel::initVisual()
     if (m_updateTangents.getValue())
         computeTangents();
 
-    if ( alphaBlend.getValue() )
+    if ( d_alphaBlend.getValue() )
     {
-        blendEq = getGLenum( blendEquation.getValue().getSelectedItem().c_str() );
-        sfactor = getGLenum( sourceFactor.getValue().getSelectedItem().c_str() );
-        dfactor = getGLenum( destFactor.getValue().getSelectedItem().c_str() );
+        blendEq = getGLenum( d_blendEquation.getValue().getSelectedItem().c_str() );
+        sfactor = getGLenum( d_sourceFactor.getValue().getSelectedItem().c_str() );
+        dfactor = getGLenum( d_destFactor.getValue().getSelectedItem().c_str() );
     }
 }
 
@@ -770,7 +770,7 @@ void OglModel::initVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    if(forceFloat.getValue())
+    if(d_forceFloat.getValue())
     {
         positionsBufferSize = (vertices.size()*sizeof(Vec3f));
         normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
@@ -854,7 +854,7 @@ void OglModel::updateVertexBuffer()
     const void* normalBuffer = vnormals.getData();
 
 
-    if(forceFloat.getValue())
+    if(d_forceFloat.getValue())
     {
         verticesTmpBuffer.resize( vertices.size() );
         normalsTmpBuffer.resize( vnormals.size() );

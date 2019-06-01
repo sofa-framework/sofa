@@ -74,7 +74,7 @@ public:
 };
 
 OrderIndependentTransparencyManager::OrderIndependentTransparencyManager()
-    : depthScale(initData(&depthScale, 0.01f, "depthScale", "Depth scale"))
+    : d_depthScale(initData(&d_depthScale, 0.01f, "depthScale", "Depth scale"))
     , fbo()
     , accumulationShader()
     , compositionShader()
@@ -233,7 +233,7 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
     glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
 
     accumulationShader.TurnOn();
-    accumulationShader.SetFloat(accumulationShader.GetVariable("DepthScale"), depthScale.getValue());
+    accumulationShader.SetFloat(accumulationShader.GetVariable("DepthScale"), d_depthScale.getValue());
     drawTransparents(vp, &accumulationShader);
     accumulationShader.TurnOff();
 
@@ -400,7 +400,7 @@ void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visu
     OglModel* oglModel = dynamic_cast<OglModel*>(vm);
     if(oglModel)
     {
-        oglModel->blendTransparency.setValue(false);
+        oglModel->d_blendTransparency.setValue(false);
         hasTexture = oglModel->hasTexture();
     }
 

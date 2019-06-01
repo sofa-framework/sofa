@@ -197,21 +197,21 @@ class SOFA_OPENGL_VISUAL_API OglShaderElement : public core::visual::ShaderEleme
 {
 protected:
     ///Name of element (corresponding with the shader)
-    Data<std::string> id;
+    Data<std::string> d_id;
     ///Name of element (corresponding with the shader)
-    Data<unsigned int> indexShader;
+    Data<unsigned int> d_indexShader;
     ///Shader to use the element with
-    std::set<OglShader*> shaders;
+    std::set<OglShader*> d_shaders;
 public:
     OglShaderElement();
     ~OglShaderElement() override {}
     void init() override;
-    const std::string getId() const {return id.getValue();}
-    void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();}
-    void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}
+    const std::string getId() const {return d_id.getValue();}
+    void setID( std::string str ) { *(d_id.beginEdit()) = str; d_id.endEdit();}
+    void setIndexShader( unsigned int index) { *(d_indexShader.beginEdit()) = index; d_indexShader.endEdit();}
 
     // Returns the ID of the shader element
-    const std::string& getSEID() const { return id.getValue(); }
+    const std::string& getSEID() const { return d_id.getValue(); }
 };
 
 }//namespace visualmodel

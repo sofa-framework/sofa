@@ -87,7 +87,7 @@ public:
     SOFA_CLASS(OrderIndependentTransparencyManager, core::visual::VisualManager);
 
 public:
-    Data<float> depthScale; ///< Depth scale
+    Data<float> d_depthScale; ///< Depth scale
 
 protected:
     OrderIndependentTransparencyManager();

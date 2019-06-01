@@ -50,33 +50,34 @@ class SOFA_OPENGL_VISUAL_API PostProcessManager : public core::visual::VisualMan
 public:
     SOFA_CLASS(PostProcessManager,core::visual::VisualModel);
 
-private:
-    static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
-    static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
-    Data<double> zNear; ///< Set zNear distance (for Depth Buffer)
-    Data<double> zFar; ///< Set zFar distance (for Depth Buffer)
-    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
-    OglShader* dofShader;
-    bool postProcessEnabled;
+    Data<double> d_zNear; ///< Set zNear distance (for Depth Buffer)
+    Data<double> d_zFar; ///< Set zFar distance (for Depth Buffer)
 
-public:
     ///Files where vertex shader is defined
-    sofa::core::objectmodel::DataFileName vertFilename;
+    sofa::core::objectmodel::DataFileName d_vertFilename;
+
     ///Files where fragment shader is defined
-    sofa::core::objectmodel::DataFileName fragFilename;
-protected:
-    PostProcessManager();
-    ~PostProcessManager() override;
-public:
+    sofa::core::objectmodel::DataFileName d_fragFilename;
+
     void init() override;
-    void reinit() override { };
+    void reinit() override { }
     void initVisual() override;
 
     void preDrawScene(core::visual::VisualParams* vp) override;
     bool drawScene(core::visual::VisualParams* vp) override;
     void postDrawScene(core::visual::VisualParams* vp) override;
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
+
+protected:
+    PostProcessManager();
+    ~PostProcessManager() override;
+
+private:
+    static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
+    static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_fbo;
+    OglShader* m_dofShader;
+    bool m_postProcessEnabled;
 };
 
 } //visualmodel

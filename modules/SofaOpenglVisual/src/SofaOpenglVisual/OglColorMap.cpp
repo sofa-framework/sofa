@@ -45,17 +45,17 @@ int OglColorMapClass = core::RegisterObject("Provides color palette and support 
         ;
 
 OglColorMap::OglColorMap()
-: f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
-, f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
-, f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
-, f_legendOffset(initData(&f_legendOffset, defaulttype::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
-, f_legendTitle(initData(&f_legendTitle,"legendTitle", "Add a title to the legend"))
+: d_paletteSize(initData(&d_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
+, d_colorScheme(initData(&d_colorScheme, "colorScheme", "Color scheme to use"))
+, d_showLegend(initData(&d_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
+, d_legendOffset(initData(&d_legendOffset, defaulttype::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
+, d_legendTitle(initData(&d_legendTitle,"legendTitle", "Add a title to the legend"))
 , d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
 , d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
 , d_legendRangeScale(initData(&d_legendRangeScale,1.f,"legendRangeScale","to change the unit of the min/max value of the legend"))
 , texture(0)
 {
-   f_colorScheme.beginEdit()->setNames(19,
+   d_colorScheme.beginEdit()->setNames(19,
         "Red to Blue",  // HSV space
         "Blue to Red",  // HSV space
         "HSV",          // HSV space
@@ -77,8 +77,8 @@ OglColorMap::OglColorMap()
 		"RedInv",// HSV space
         "Custom"// TODO: Custom colors
         );
-    f_colorScheme.beginEdit()->setSelectedItem("HSV");
-    f_colorScheme.endEdit();
+    d_colorScheme.beginEdit()->setSelectedItem("HSV");
+    d_colorScheme.endEdit();
 
 }
 
@@ -90,21 +90,6 @@ OglColorMap::~OglColorMap() {
         glDeleteTextures(1, &texture);
 }
 
-// For backward compatibility only
-// TODO: remove this later
-//void OglColorMap::initOld(const std::string &data)
-//{
-//    if (data == "") {
-//        entries.insert(entries.end(), DefaultOglColorMapEntries, DefaultOglColorMapEntries+NDefaultOglColorMapEntries);
-//        return;
-//    }
-//
-//    std::istringstream is(data);
-//    is >> *this;
-//
-//    return;
-//}
-
 void OglColorMap::init()
 {
     reinit();
@@ -113,8 +98,8 @@ void OglColorMap::init()
 
 void OglColorMap::reinit()
 {
-    m_colorMap.setPaletteSize(f_paletteSize.getValue());
-    m_colorMap.setColorScheme(f_colorScheme.getValue().getSelectedItem());
+    m_colorMap.setPaletteSize(d_paletteSize.getValue());
+    m_colorMap.setColorScheme(d_colorScheme.getValue().getSelectedItem());
     m_colorMap.reinit();
     }
 
@@ -133,7 +118,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowVisual() ) return;
 
-    if (!f_showLegend.getValue()) return;
+    if (!d_showLegend.getValue()) return;
 
     // Prepare texture for legend
     // crashes on mac in batch mode (no GL context)
@@ -171,7 +156,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     // TODO: move the code to DrawTool
 
 
-    const std::string& legendTitle = f_legendTitle.getValue();
+    const std::string& legendTitle = d_legendTitle.getValue();
     int yoffset = legendTitle.empty() ? 0 : 25;
 
 
@@ -218,16 +203,16 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glBegin(GL_QUADS);
 
     glTexCoord1f(1.0);
-    glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(20.0f+d_legendOffset.getValue().x(), yoffset+20.0f+d_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(1.0);
-    glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(10.0f+d_legendOffset.getValue().x(), yoffset+20.0f+d_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
-    glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(10.0f+d_legendOffset.getValue().x(), yoffset+120.0f+d_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
-    glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(20.0f+d_legendOffset.getValue().x(), yoffset+120.0f+d_legendOffset.getValue().y(), 0.0f);
 
     glEnd();
 
@@ -254,8 +239,8 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     if( !legendTitle.empty() )
     {
-        vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
-                                              (int)f_legendOffset.getValue().y(), // y
+        vparams->drawTool()->writeOverlayText((int)d_legendOffset.getValue().x(), // x
+                                              (int)d_legendOffset.getValue().y(), // y
                                               11u, // size
                                               textcolor,
                                               legendTitle.c_str());
@@ -270,14 +255,14 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
 
 
-    vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
-                                          yoffset + (int)f_legendOffset.getValue().y(), // y
+    vparams->drawTool()->writeOverlayText((int)d_legendOffset.getValue().x(), // x
+                                          yoffset + (int)d_legendOffset.getValue().y(), // y
                                           12u, // size
                                           textcolor,
                                           smax.str().c_str());
 
-    vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
-                                          yoffset + 120 + (int)f_legendOffset.getValue().y(), // y
+    vparams->drawTool()->writeOverlayText((int)d_legendOffset.getValue().x(), // x
+                                          yoffset + 120 + (int)d_legendOffset.getValue().y(), // y
                                           12u, // size
                                           textcolor,
                                           smin.str().c_str());

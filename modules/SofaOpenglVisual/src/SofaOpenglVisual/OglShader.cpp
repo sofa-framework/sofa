@@ -554,8 +554,8 @@ void  OglShader::setGeometryVerticesOut(const unsigned int index, GLint v)
 #endif
 
 OglShaderElement::OglShaderElement()
-    : id(initData(&id, std::string(""), "id", "Set an ID name"))
-    , indexShader(initData(&indexShader, (unsigned int) 0, "indexShader", "Set the index of the desired shader you want to apply this parameter"))
+    : d_id(initData(&d_id, std::string(""), "id", "Set an ID name"))
+    , d_indexShader(initData(&d_indexShader, (unsigned int) 0, "indexShader", "Set the index of the desired shader you want to apply this parameter"))
 {
 
 }
@@ -564,8 +564,8 @@ void OglShaderElement::init()
 {
     sofa::core::objectmodel::BaseContext* mycontext = this->getContext();
 
-    if (id.getValue().empty())
-        id.setValue(this->getName());
+    if (d_id.getValue().empty())
+        d_id.setValue(this->getName());
 
     /*when no multipass is active */
     sofa::component::visualmodel::CompositingVisualLoop* isMultipass=NULL;
@@ -574,9 +574,9 @@ void OglShaderElement::init()
     {
         if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>(this->getTags()) )
         {
-            shaders.insert( shader );
+            d_shaders.insert( shader );
 
-            msg_info() << this->id.getValue() << " set in " << shader->getName();
+            msg_info() << this->d_id.getValue() << " set in " << shader->getName();
         }
         return;
     }
@@ -591,12 +591,12 @@ void OglShaderElement::init()
         mycontext->core::objectmodel::BaseContext::get<OglShader, helper::vector<OglShader*> >(&gotShaders, (*it));
         for(helper::vector<OglShader*>::iterator it2 = gotShaders.begin(); it2!= gotShaders.end(); ++it2) //merge into shaders vector
         {
-            shaders.insert(*it2);
+            d_shaders.insert(*it2);
             //shaders.push_back(*it2);
         }
     }
 
-    if (shaders.empty())
+    if (d_shaders.empty())
     {
         serr << this->getTypeName() <<" \"" << this->getName() << "\": no relevant shader found. please check tags validity"<< sendl;
         return;

@@ -62,8 +62,8 @@ void OglShaderDefineMacro::init()
 {
     OglShaderMacro::init();
 
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->addDefineMacro(indexShader.getValue(), id.getValue(), value.getValue());
+    for(std::set<OglShader*>::iterator it = d_shaders.begin(), iend = d_shaders.end(); it!=iend; ++it)
+        (*it)->addDefineMacro(d_indexShader.getValue(), d_id.getValue(), value.getValue());
 }
 
 }

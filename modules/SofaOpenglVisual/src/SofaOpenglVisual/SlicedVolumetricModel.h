@@ -67,19 +67,16 @@ public:
     void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 protected:
-//    void setColor(float r, float g, float b);
-//    void setColor(std::string color);
-
     void findAndDrawTriangles();
 
-    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
-    Data<defaulttype::RGBAColor>	color; ///< Billboard color.(default=1.0,1.0,1.0,1.0)
+    Data<float>		d_alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
+    Data<defaulttype::RGBAColor>	d_color; ///< Billboard color.(default=1.0,1.0,1.0,1.0)
 
-    Data<int> _nbPlanes; ///< Number of billboards.
-    int _nbPlanesOld;
+    Data<int> d_nbPlanes; ///< Number of billboards.
+    int m_nbPlanesOld;
 
-    core::topology::BaseMeshTopology*	_topology;
-    core::behavior::BaseMechanicalState* _mstate;
+    core::topology::BaseMeshTopology*	m_topology;
+    core::behavior::BaseMechanicalState* m_mstate;
 
     unsigned char *texture_data;
 
@@ -88,12 +85,12 @@ protected:
     typedef defaulttype::ExtVec3fTypes::Real Real;
 
 
-    bool _first;
-    GLuint _texname;
-    int _width,_height,_depth;
-    Coord vRight,vUp,_planeNormal;
-    Real _radius;
-    Real _planeSeparations;
+    bool m_first;
+    GLuint m_texname;
+    int m_width,m_height,m_depth;
+    Coord m_vRight,m_vUp,m_planeNormal;
+    Real m_radius;
+    Real m_planeSeparations;
     void computePlaneSeparations();
 
     typedef core::topology::BaseMeshTopology::Edge Edge;

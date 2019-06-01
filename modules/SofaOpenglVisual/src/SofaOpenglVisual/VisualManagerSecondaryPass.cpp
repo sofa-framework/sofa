@@ -50,9 +50,9 @@ int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSeconda
         ;
 
 VisualManagerSecondaryPass::VisualManagerSecondaryPass()
-    : input_tags(initData( &input_tags, "input_tags", "list of input passes used as source textures"))
-    , output_tags(initData( &output_tags, "output_tags", "output reference tag (use it if the resulting fbo is used as a source for another secondary pass)"))
-    , fragFilename(initData(&fragFilename, "fragFilename", "Set the fragment shader filename to load"))
+    : d_inputTags(initData( &d_inputTags, "input_tags", "list of input passes used as source textures"))
+    , d_outputTags(initData( &d_outputTags, "output_tags", "output reference tag (use it if the resulting fbo is used as a source for another secondary pass)"))
+    , d_fragFilename(initData(&d_fragFilename, "fragFilename", "Set the fragment shader filename to load"))
     , l_shader(initLink("shader", "Shader to apply for compositing"))
 {
     nbFbo=0;
@@ -81,7 +81,7 @@ void VisualManagerSecondaryPass::initVisual()
         m_shaderPostproc->vertFilename.addPath("shaders/compositing.vert");
 
 
-        if(fragFilename.getValue().empty())
+        if(d_fragFilename.getValue().empty())
         {
             msg_warning() << "The attribute 'fragFilename' is not set. " << msgendl
                           << "Using the default one named 'compositing.frag'" << msgendl
@@ -90,7 +90,7 @@ void VisualManagerSecondaryPass::initVisual()
             m_shaderPostproc->fragFilename.addPath("shaders/compositing.frag");
         }
         else
-            m_shaderPostproc->fragFilename.addPath(fragFilename.getFullPath(),true);
+            m_shaderPostproc->fragFilename.addPath(d_fragFilename.getFullPath(),true);
 
         m_shaderPostproc->init();
         m_shaderPostproc->initVisual();
@@ -122,7 +122,7 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
         VisualManagerSecondaryPass *currentSecondaryPass=dynamic_cast<VisualManagerSecondaryPass*>((*it));
         if(currentSecondaryPass && (this->getName()!=currentSecondaryPass->getName()))
         {
-            if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
+            if((!currentSecondaryPass->getOutputTags().empty()) && (d_inputTags.getValue().includes(currentSecondaryPass->getOutputTags())) )
             {
                 m_shaderPostproc->setInt(0, (currentSecondaryPass->getOutputName()).c_str(), nbFbo);
                 nbFbo++;
@@ -132,7 +132,7 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
         {
             if(currentPass && (this->getName()!=currentPass->getName()))
             {
-                if(input_tags.getValue().includes(currentPass->getTags()))
+                if(d_inputTags.getValue().includes(currentPass->getTags()))
                 {
                     m_shaderPostproc->setInt(0, (currentPass->getOutputName()).c_str(), nbFbo);
                     nbFbo++;
@@ -228,7 +228,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
         VisualManagerSecondaryPass *currentSecondaryPass=dynamic_cast<VisualManagerSecondaryPass*>((*it));
         if(currentSecondaryPass && (this->getName()!=currentSecondaryPass->getName()))
         {
-            if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
+            if((!currentSecondaryPass->getOutputTags().empty()) && (d_inputTags.getValue().includes(currentSecondaryPass->getOutputTags())) )
             {
                 if (!currentSecondaryPass->hasFilledFbo())
                 {
@@ -248,7 +248,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
             if(currentPass && (this->getName()!=currentPass->getName()))
             {
 
-                if(input_tags.getValue().includes(currentPass->getTags()))
+                if(d_inputTags.getValue().includes(currentPass->getTags()))
                 {
                     if (!currentPass->hasFilledFbo())
                     {

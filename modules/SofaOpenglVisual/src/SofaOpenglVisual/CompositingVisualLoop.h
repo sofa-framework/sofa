@@ -82,4 +82,6 @@ public:
 } // namespace component
 
 } //sofa
+
+
 #endif  /* SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H */

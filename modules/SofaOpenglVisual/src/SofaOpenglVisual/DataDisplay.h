@@ -52,13 +52,13 @@ public:
     typedef helper::vector<Real> VecCellData;
 
 public:
-    Data<bool> f_maximalRange; ///< Keep the maximal range through all timesteps
-    Data<VecPointData> f_pointData; ///< Data associated with nodes
-    Data<VecCellData> f_triangleData; ///< Data associated with triangles
-    Data<VecCellData> f_quadData; ///< Data associated with quads
-    Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
-    Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
-    Data<defaulttype::RGBAColor> f_colorNaN; ///< Color for NaNs
+    Data<bool> d_maximalRange; ///< Keep the maximal range through all timesteps
+    Data<VecPointData> d_pointData; ///< Data associated with nodes
+    Data<VecCellData> d_triangleData; ///< Data associated with triangles
+    Data<VecCellData> d_quadData; ///< Data associated with quads
+    Data<VecPointData> d_pointTriangleData; ///< Data associated with nodes per triangle
+    Data<VecPointData> d_pointQuadData; ///< Data associated with nodes per quad
+    Data<defaulttype::RGBAColor> d_colorNaN; ///< Color for NaNs
     Data<defaulttype::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
     Data<float> d_currentMin; ///< Current min range
     Data<float> d_currentMax; ///< Current max range

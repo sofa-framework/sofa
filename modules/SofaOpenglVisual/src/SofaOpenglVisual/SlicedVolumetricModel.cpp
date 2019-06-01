@@ -36,8 +36,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 
-#define GETCOORD(i) Coord((Real)_mstate->getPX(i), (Real)_mstate->getPY(i), (Real)_mstate->getPZ(i) )
-
+#define GETCOORD(i) Coord((Real)m_mstate->getPX(i), (Real)m_mstate->getPY(i), (Real)m_mstate->getPZ(i) )
 
 
 namespace sofa
@@ -64,13 +63,13 @@ const int SlicedVolumetricModel::__edges__[12][2] = {{ 0,1 }, { 3,2 }, { 4,5 }, 
 
 SlicedVolumetricModel::SlicedVolumetricModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :
-    alpha(initData(&alpha, 0.2f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-    color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
-    _nbPlanes(initData(&_nbPlanes, 100, "nbSlices", "Number of billboards.")),
-    _topology(NULL),
-    _mstate(NULL),
+    d_alpha(initData(&d_alpha, 0.2f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
+    d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
+    d_nbPlanes(initData(&d_nbPlanes, 100, "nbSlices", "Number of billboards.")),
+    m_topology(NULL),
+    m_mstate(NULL),
     texture_data(NULL),
-    _first(1)
+    m_first(1)
 {
 }
 
@@ -82,13 +81,13 @@ SlicedVolumetricModel::~SlicedVolumetricModel()
 
 void SlicedVolumetricModel::init()
 {
-    getContext()->get(_topology);
-    if(_topology)
-        _mstate = _topology->getContext()->getMechanicalState();
+    getContext()->get(m_topology);
+    if(m_topology)
+        m_mstate = m_topology->getContext()->getMechanicalState();
     else
-        getContext()->get(_mstate);
+        getContext()->get(m_mstate);
 
-    _mstate->init();
+    m_mstate->init();
 
     VisualModel::init();
 
@@ -96,11 +95,11 @@ void SlicedVolumetricModel::init()
     getContext()->get(loader);
     if(loader)
     {
-        loader->createSegmentation3DTexture( &texture_data, _width, _height, _depth );
+        loader->createSegmentation3DTexture( &texture_data, m_width, m_height, m_depth );
     }
 
 
-    if( topology::SparseGridTopology* sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_topology ) )
+    if( topology::SparseGridTopology* sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology ) )
     {
         _minBBox[0] = sparseGrid->getXmin();
         _minBBox[1] = sparseGrid->getYmin();
@@ -116,14 +115,14 @@ void SlicedVolumetricModel::init()
 
     }
 
-    _nbPlanesOld = _nbPlanes.getValue();
+    m_nbPlanesOld = d_nbPlanes.getValue();
 
-    const Coord& p0 = GETCOORD(_topology->getHexahedron(0)[0]);
-    const Coord& p7 = GETCOORD(_topology->getHexahedron(0)[6]);
-    _radius = (p7-p0).norm() / 2;
+    const Coord& p0 = GETCOORD(m_topology->getHexahedron(0)[0]);
+    const Coord& p7 = GETCOORD(m_topology->getHexahedron(0)[6]);
+    m_radius = (p7-p0).norm() / 2;
 
-    _textureCoordinates.resize( _mstate->getSize() );
-    for( size_t i=0; i<_mstate->getSize(); ++i)
+    _textureCoordinates.resize( m_mstate->getSize() );
+    for( size_t i=0; i<m_mstate->getSize(); ++i)
     {
         const Coord& p = GETCOORD( i );
         _textureCoordinates[i][0] = (Real)((p[0]- _minBBox[0]) / (_maxBBox[0] - _minBBox[0]));
@@ -138,11 +137,11 @@ void SlicedVolumetricModel::init()
 
 void SlicedVolumetricModel::reinit()
 {
-    if( _nbPlanesOld != _nbPlanes.getValue() || _first )
+    if( m_nbPlanesOld != d_nbPlanes.getValue() || m_first )
     {
-        alpha.setValue((alpha.getValue()*Real(_nbPlanesOld))/Real(_nbPlanes.getValue()));
-        _planeSeparations = (Real)((_maxBBox[0]-_minBBox[0]) / (Real)_nbPlanes.getValue());
-        _nbPlanesOld = _nbPlanes.getValue();
+        d_alpha.setValue((d_alpha.getValue()*Real(m_nbPlanesOld))/Real(d_nbPlanes.getValue()));
+        m_planeSeparations = (Real)((_maxBBox[0]-_minBBox[0]) / (Real)d_nbPlanes.getValue());
+        m_nbPlanesOld = d_nbPlanes.getValue();
     }
 }
 
@@ -150,17 +149,17 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
-    if( _first )
+    if( m_first )
     {
 
-        _first = false;
+        m_first = false;
 
         glewInit();
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         // request 1 texture name from OpenGL
-        glGenTextures(1, &_texname);
-        glBindTexture(GL_TEXTURE_3D, _texname);
+        glGenTextures(1, &m_texname);
+        glBindTexture(GL_TEXTURE_3D, m_texname);
         // when this texture needs to be shrunk to fit on small polygons, use linear interpolation of the texels to determine the color
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         // when this texture needs to be magnified to fit on a big polygon, use linear interpolation of the texels to determine the color
@@ -173,7 +172,7 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
         // this is a 3d texture, level 0 (max detail), GL should store it in RGB8 format, its WIDTHxHEIGHTxDEPTH in size,
         // it doesnt have a border, we're giving it to GL in RGB format as a series of unsigned bytes, and texels is where the texel data is.
-        glTexImage3D(GL_TEXTURE_3D, 0, GL_ALPHA, _width, _height, _depth, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture_data);
+        glTexImage3D(GL_TEXTURE_3D, 0, GL_ALPHA, m_width, m_height, m_depth, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture_data);
 
         delete [] texture_data;
         texture_data = NULL;
@@ -188,15 +187,15 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 
     float mat[16];
     glGetFloatv( GL_MODELVIEW_MATRIX, mat );
-    vRight=Coord( mat[0], mat[4], mat[8] );
-    vUp=Coord( mat[1], mat[5], mat[9] );
-    _planeNormal = vRight.cross( vUp);
-    _planeNormal.normalize();
+    m_vRight=Coord( mat[0], mat[4], mat[8] );
+    m_vUp=Coord( mat[1], mat[5], mat[9] );
+    m_planeNormal = m_vRight.cross( m_vUp);
+    m_planeNormal.normalize();
 
-    glBindTexture(GL_TEXTURE_3D, _texname);
+    glBindTexture(GL_TEXTURE_3D, m_texname);
 
-    auto& c=color.getValue() ;
-    glColor4f( c.r(),c.g(),c.b(), alpha.getValue());
+    auto& c=d_color.getValue() ;
+    glColor4f( c.r(),c.g(),c.b(), d_alpha.getValue());
 
     glEnable(GL_TEXTURE_3D);
 
@@ -222,12 +221,12 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 
 
-    for(size_t i = 0 ; i < _mstate->getSize(); ++i )
+    for(size_t i = 0 ; i < m_mstate->getSize(); ++i )
     {
         Coord p = GETCOORD( i );
 
 
-        Real actualLastPoint = _planeNormal * p;
+        Real actualLastPoint = m_planeNormal * p;
         if( actualLastPoint < maxLastPoint )
         {
             maxLastPoint = actualLastPoint;
@@ -236,10 +235,10 @@ void SlicedVolumetricModel::findAndDrawTriangles()
     }
 
 
-    lastPoint += _planeNormal * .1;
+    lastPoint += m_planeNormal * .1;
 
     std::list<unsigned int>positiveCubes;
-    for(unsigned int i=0; i<_topology->getNbHexahedra(); ++i)
+    for(unsigned int i=0; i<m_topology->getNbHexahedra(); ++i)
         positiveCubes.push_back( i );
 
     do
@@ -248,8 +247,8 @@ void SlicedVolumetricModel::findAndDrawTriangles()
         int nbintersections = 0;
 
         // trouver le centre du plan de coupe
-        Coord planeCenter = lastPoint + _planeNormal * (actualPlane * _planeSeparations);
-        Real planeConstant = _planeNormal * planeCenter;
+        Coord planeCenter = lastPoint + m_planeNormal * (actualPlane * m_planeSeparations);
+        Real planeConstant = m_planeNormal * planeCenter;
 
         EdgesMap _edgesMap;
 
@@ -258,14 +257,14 @@ void SlicedVolumetricModel::findAndDrawTriangles()
         // seulement les nouveaux cubes potentiellement intersectable, ie proches ou devant le plan
         for(std::list<unsigned int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
         {
-            const BaseMeshTopology::Hexa& cell = _topology->getHexahedron( *itcell );
+            const BaseMeshTopology::Hexa& cell = m_topology->getHexahedron( *itcell );
 
             Coord cubebarycenter = GETCOORD( cell[0] ) + (GETCOORD( cell[6] ) - GETCOORD( cell[0] ) ) / 2.0;
 
-            Real dist = (_planeNormal * cubebarycenter) - planeConstant; //distance du centre du cube au plan
+            Real dist = (m_planeNormal * cubebarycenter) - planeConstant; //distance du centre du cube au plan
 
 
-            if( fabs(dist) >= _radius)
+            if( fabs(dist) >= m_radius)
             {
                 if( dist>0 ) // du bon cote mais plus loin, on garde pour plus tard
                 {
@@ -305,7 +304,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                     dirnormalized.normalize();
 
                     Real where;
-                    int howmany = intersectionSegmentPlane( s0,s1, dirnormalized, _planeNormal, planeConstant, where );
+                    int howmany = intersectionSegmentPlane( s0,s1, dirnormalized, m_planeNormal, planeConstant, where );
                     if( howmany == 1 )
                     {
 
@@ -393,7 +392,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
             ++itcell;
         }
 
-        if(actualPlane>_nbPlanes.getValue()*.9 && !nbintersections)break;
+        if(actualPlane>d_nbPlanes.getValue()*.9 && !nbintersections)break;
 
         ++actualPlane;
 

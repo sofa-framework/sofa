@@ -107,17 +107,16 @@ class SOFA_OPENGL_VISUAL_API OglFloatAttribute : public OglAttribute<1, GL_FLOAT
 {
 public:
     SOFA_CLASS(OglFloatAttribute, SOFA_TEMPLATE3(OglAttribute, 1, GL_FLOAT, float));
-    OglFloatAttribute() {};
-    virtual ~OglFloatAttribute() { };
-
+    OglFloatAttribute() {}
+    virtual ~OglFloatAttribute() override { }
 };
 
 class SOFA_OPENGL_VISUAL_API OglFloat2Attribute : public OglAttribute<2, GL_FLOAT, sofa::defaulttype::Vec<2, float> >
 {
 public:
     SOFA_CLASS(OglFloat2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_FLOAT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 2, float)));
-    OglFloat2Attribute() {};
-    virtual ~OglFloat2Attribute() { };
+    OglFloat2Attribute() {}
+    virtual ~OglFloat2Attribute() override { }
 
 };
 
@@ -125,8 +124,8 @@ class SOFA_OPENGL_VISUAL_API OglFloat3Attribute : public OglAttribute<3, GL_FLOA
 {
 public:
     SOFA_CLASS(OglFloat3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_FLOAT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 3, float)));
-    OglFloat3Attribute() {};
-    virtual ~OglFloat3Attribute() { };
+    OglFloat3Attribute() {}
+    virtual ~OglFloat3Attribute() override { }
 
 };
 
@@ -134,8 +133,8 @@ class SOFA_OPENGL_VISUAL_API OglFloat4Attribute : public OglAttribute<4, GL_FLOA
 {
 public:
     SOFA_CLASS(OglFloat4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_FLOAT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 4, float)));
-    OglFloat4Attribute() {};
-    virtual ~OglFloat4Attribute() { };
+    OglFloat4Attribute() {}
+    virtual ~OglFloat4Attribute() override { }
 
 };
 
@@ -147,17 +146,16 @@ class SOFA_OPENGL_VISUAL_API OglIntAttribute : public OglAttribute<1, GL_INT, in
 {
 public:
     SOFA_CLASS(OglIntAttribute, SOFA_TEMPLATE3(OglAttribute, 1, GL_INT, int));
-    OglIntAttribute() {};
-    virtual ~OglIntAttribute() { };
-
+    OglIntAttribute() {}
+    virtual ~OglIntAttribute() override { }
 };
 
 class SOFA_OPENGL_VISUAL_API OglInt2Attribute : public OglAttribute<2, GL_INT, sofa::defaulttype::Vec<2, int> >
 {
 public:
     SOFA_CLASS(OglInt2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 2, int)));
-    OglInt2Attribute() {};
-    virtual ~OglInt2Attribute() { };
+    OglInt2Attribute() {}
+    virtual ~OglInt2Attribute() override { }
 
 };
 
@@ -165,8 +163,8 @@ class SOFA_OPENGL_VISUAL_API OglInt3Attribute : public OglAttribute<3, GL_INT, s
 {
 public:
     SOFA_CLASS(OglInt3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 3, int)));
-    OglInt3Attribute() {};
-    virtual ~OglInt3Attribute() { };
+    OglInt3Attribute() {}
+    virtual ~OglInt3Attribute() override { }
 
 };
 
@@ -174,8 +172,8 @@ class SOFA_OPENGL_VISUAL_API OglInt4Attribute : public OglAttribute<4, GL_INT, s
 {
 public:
     SOFA_CLASS(OglInt4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 4, int)));
-    OglInt4Attribute() {};
-    virtual ~OglInt4Attribute() { };
+    OglInt4Attribute() {}
+    virtual ~OglInt4Attribute() override { }
 
 };
 
@@ -187,8 +185,8 @@ class SOFA_OPENGL_VISUAL_API OglUIntAttribute : public OglAttribute<1, GL_UNSIGN
 {
 public:
     SOFA_CLASS(OglUIntAttribute, SOFA_TEMPLATE3(OglAttribute, 1, GL_UNSIGNED_INT, unsigned int));
-    OglUIntAttribute() {};
-    virtual ~OglUIntAttribute() { };
+    OglUIntAttribute() {}
+    virtual ~OglUIntAttribute() override { }
 
 };
 
@@ -196,8 +194,8 @@ class SOFA_OPENGL_VISUAL_API OglUInt2Attribute : public OglAttribute<2, GL_UNSIG
 {
 public:
     SOFA_CLASS(OglUInt2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 2, unsigned int)));
-    OglUInt2Attribute() {};
-    virtual ~OglUInt2Attribute() { };
+    OglUInt2Attribute() {}
+    virtual ~OglUInt2Attribute() override { }
 
 };
 
@@ -205,8 +203,8 @@ class SOFA_OPENGL_VISUAL_API OglUInt3Attribute : public OglAttribute<3, GL_UNSIG
 {
 public:
     SOFA_CLASS(OglUInt3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 3, unsigned int)));
-    OglUInt3Attribute() {};
-    virtual ~OglUInt3Attribute() { };
+    OglUInt3Attribute() {}
+    virtual ~OglUInt3Attribute() override { }
 
 };
 
@@ -214,8 +212,8 @@ class SOFA_OPENGL_VISUAL_API OglUInt4Attribute : public OglAttribute<4, GL_UNSIG
 {
 public:
     SOFA_CLASS(OglUInt4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 4, unsigned int)));
-    OglUInt4Attribute() {};
-    virtual ~OglUInt4Attribute() { };
+    OglUInt4Attribute() {}
+    virtual ~OglUInt4Attribute() override { }
 
 };
 

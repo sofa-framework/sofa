@@ -54,25 +54,25 @@ public:
     SOFA_CLASS2(OglTexture, core::visual::VisualModel, OglShaderElement);
 
 protected:
-    sofa::core::objectmodel::DataFileName textureFilename;
-    Data<unsigned short> textureUnit; ///< Set the texture unit
-    Data<bool> enabled; ///< enabled ?
-    Data<bool> repeat; ///< Repeat Texture ?
-    Data<bool> linearInterpolation; ///< Interpolate Texture ?
-    Data<bool> generateMipmaps; ///< Generate mipmaps ?
-    Data<bool> srgbColorspace; ///< SRGB colorspace ?
-    Data<float> minLod; ///< Minimum mipmap lod ?
-    Data<float> maxLod; ///< Maximum mipmap lod ?
-    Data<unsigned int> proceduralTextureWidth; ///< Width of procedural Texture
-    Data<unsigned int> proceduralTextureHeight; ///< Height of procedural Texture
-    Data<unsigned int> proceduralTextureNbBits; ///< Nb bits per color
-    Data<helper::vector<unsigned int> > proceduralTextureData; ///< Data of procedural Texture 
-    sofa::core::objectmodel::DataFileName cubemapFilenamePosX;
-    sofa::core::objectmodel::DataFileName cubemapFilenamePosY;
-    sofa::core::objectmodel::DataFileName cubemapFilenamePosZ;
-    sofa::core::objectmodel::DataFileName cubemapFilenameNegX;
-    sofa::core::objectmodel::DataFileName cubemapFilenameNegY;
-    sofa::core::objectmodel::DataFileName cubemapFilenameNegZ;
+    sofa::core::objectmodel::DataFileName d_textureFilename;
+    Data<unsigned short> d_textureUnit; ///< Set the texture unit
+    Data<bool> d_enabled; ///< enabled ?
+    Data<bool> d_repeat; ///< Repeat Texture ?
+    Data<bool> d_linearInterpolation; ///< Interpolate Texture ?
+    Data<bool> d_generateMipmaps; ///< Generate mipmaps ?
+    Data<bool> d_srgbColorspace; ///< SRGB colorspace ?
+    Data<float> d_minLod; ///< Minimum mipmap lod ?
+    Data<float> d_maxLod; ///< Maximum mipmap lod ?
+    Data<unsigned int> d_proceduralTextureWidth; ///< Width of procedural Texture
+    Data<unsigned int> d_proceduralTextureHeight; ///< Height of procedural Texture
+    Data<unsigned int> d_proceduralTextureNbBits; ///< Nb bits per color
+    Data<helper::vector<unsigned int> > d_proceduralTextureData; ///< Data of procedural Texture
+    sofa::core::objectmodel::DataFileName d_cubemapFilenamePosX;
+    sofa::core::objectmodel::DataFileName d_cubemapFilenamePosY;
+    sofa::core::objectmodel::DataFileName d_cubemapFilenamePosZ;
+    sofa::core::objectmodel::DataFileName d_cubemapFilenameNegX;
+    sofa::core::objectmodel::DataFileName d_cubemapFilenameNegY;
+    sofa::core::objectmodel::DataFileName d_cubemapFilenameNegZ;
 
     helper::gl::Texture* texture;
     helper::io::Image* img;
@@ -90,7 +90,7 @@ public:
     void bwdDraw(core::visual::VisualParams*) override;
 
     std::string getTextureName();
-    unsigned short getTextureUnit() { return textureUnit.getValue(); }
+    unsigned short getTextureUnit() { return d_textureUnit.getValue(); }
 
     void bind();
     void unbind();
@@ -101,9 +101,9 @@ public:
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    const core::objectmodel::BaseData* getSEValue() const override { return &textureFilename; }
+    const core::objectmodel::BaseData* getSEValue() const override { return &d_textureFilename; }
     // Returns the value of the shader element
-    core::objectmodel::BaseData* getSEValue() override { return &textureFilename; }
+    core::objectmodel::BaseData* getSEValue() override { return &d_textureFilename; }
 };
 
 class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture

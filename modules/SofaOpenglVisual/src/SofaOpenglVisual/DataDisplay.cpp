@@ -53,13 +53,13 @@ int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data
         ;
 
 DataDisplay::DataDisplay()
-    : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
-    , f_pointData(initData(&f_pointData, "pointData", "Data associated with nodes"))
-    , f_triangleData(initData(&f_triangleData, "triangleData", "Data associated with triangles"))
-    , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
-    , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
-    , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-    , f_colorNaN(initData(&f_colorNaN, defaulttype::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
+    : d_maximalRange(initData(&d_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
+    , d_pointData(initData(&d_pointData, "pointData", "Data associated with nodes"))
+    , d_triangleData(initData(&d_triangleData, "triangleData", "Data associated with triangles"))
+    , d_quadData(initData(&d_quadData, "quadData", "Data associated with quads"))
+    , d_pointTriangleData(initData(&d_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
+    , d_pointQuadData(initData(&d_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
+    , d_colorNaN(initData(&d_colorNaN, defaulttype::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
     , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
     , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
     , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
@@ -69,7 +69,7 @@ DataDisplay::DataDisplay()
     , oldMin(0)
     , oldMax(0)
 {
-    this->addAlias(&f_triangleData,"cellData"); // backward compatibility
+    this->addAlias(&d_triangleData,"cellData"); // backward compatibility
     d_currentMin.setReadOnly(true);
     d_currentMax.setReadOnly(true);
 }
@@ -103,11 +103,11 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
-    const VecPointData &ptData = f_pointData.getValue();
-    const VecCellData &triData = f_triangleData.getValue();
-    const VecCellData &quadData = f_quadData.getValue();
-    const VecPointData &pointTriData = f_pointTriangleData.getValue();
-    const VecPointData &pointQuadData = f_pointQuadData.getValue();
+    const VecPointData &ptData = d_pointData.getValue();
+    const VecCellData &triData = d_triangleData.getValue();
+    const VecCellData &quadData = d_quadData.getValue();
+    const VecPointData &pointTriData = d_pointTriangleData.getValue();
+    const VecPointData &pointQuadData = d_pointQuadData.getValue();
 
     bool bDrawPointData = false;
     bool bDrawCellData = false;
@@ -202,7 +202,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     if( d_userRange.getValue()[0] < d_userRange.getValue()[1] )
     {
-        if( f_maximalRange.getValue() )
+        if( d_maximalRange.getValue() )
         {
             if( max > d_userRange.getValue()[1] ) max=d_userRange.getValue()[1];
             if( min < d_userRange.getValue()[0] ) min=d_userRange.getValue()[0];
@@ -218,7 +218,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     if (max > oldMax) oldMax = max;
     if (min < oldMin) oldMin = min;
 
-    if (f_maximalRange.getValue()) {
+    if (d_maximalRange.getValue()) {
         max = oldMax;
         min = oldMin;
     }
@@ -254,7 +254,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int i=0; i<nbTriangles; i++)
             {
                 Vec4f color = isnan(triData[i])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(triData[i]));
                 const Triangle& t = topology->getTriangle(i);
                 vparams->drawTool()->drawTriangle(
@@ -272,13 +272,13 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int i=0; i<nbTriangles; i++)
             {
                 Vec4f color0 = isnan(pointTriData[i*3])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(pointTriData[i*3]));
                 Vec4f color1 = isnan(pointTriData[i*3+1])
-                        ? f_colorNaN.getValue()
+                        ? d_colorNaN.getValue()
                         : defaulttype::RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
                 Vec4f color2 = isnan(pointTriData[i*3+2])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
                 const Triangle& t = topology->getTriangle(i);
 
@@ -305,7 +305,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int i=0; i<nbQuads; i++)
             {
                 Vec4f color = isnan(quadData[i])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(quadData[i]));
                 const Quad& t = topology->getQuad(i);
                 vparams->drawTool()->drawQuad(
@@ -322,16 +322,16 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int i=0; i<nbQuads; i++)
             {
                 Vec4f color0 = isnan(pointQuadData[i*4])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4]));
                 Vec4f color1 = isnan(pointQuadData[i*4+1])
-                        ? f_colorNaN.getValue()
+                        ? d_colorNaN.getValue()
                         : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
                 Vec4f color2 = isnan(pointQuadData[i*4+2])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
                 Vec4f color3 = isnan(pointQuadData[i*4+3])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
                 const Quad& q = topology->getQuad(i);
 
@@ -363,7 +363,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         for (unsigned int i=0; i<x.size(); ++i)
         {
             Vec4f color = isnan(ptData[i])
-                ? f_colorNaN.getValue()
+                ? d_colorNaN.getValue()
                 : defaulttype::RGBAColor::fromVec4(eval(ptData[i]));
             vparams->drawTool()->drawPoint(x[i], color);
         }
@@ -381,7 +381,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             Vec4f color[3];
             for (int j=0; j<3; j++) {
                 color[j] = isnan(ptData[t[j]])
-                    ? f_colorNaN.getValue()
+                    ? d_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(ptData[t[j]]));
             }
 
@@ -409,7 +409,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int j=0; j<4; j++)
             {
                 color[j] = isnan(ptData[q[j]])
-                ? f_colorNaN.getValue()
+                ? d_colorNaN.getValue()
                 : defaulttype::RGBAColor::fromVec4(eval(ptData[q[j]]));
             }
 

@@ -37,8 +37,8 @@ int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglT
 
 OglTexturePointer::OglTexturePointer()
     :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
-    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
-    ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
+    ,d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
+    ,d_enabled(initData(&d_enabled, (bool) true, "enabled", "enabled ?"))
 {
     
 }
@@ -70,9 +70,9 @@ void OglTexturePointer::reinit()
 
 void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
 {
-    if (enabled.getValue() && !l_oglTexture.empty())
+    if (d_enabled.getValue() && !l_oglTexture.empty())
     {
-        setActiveTexture(textureUnit.getValue());
+        setActiveTexture(d_textureUnit.getValue());
         bind();
         setActiveTexture(0);
     }
@@ -80,9 +80,9 @@ void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
 
 void OglTexturePointer::bwdDraw(core::visual::VisualParams*)
 {
-    if (enabled.getValue() && !l_oglTexture.empty())
+    if (d_enabled.getValue() && !l_oglTexture.empty())
     {
-        setActiveTexture(textureUnit.getValue());
+        setActiveTexture(d_textureUnit.getValue());
         unbind();
         setActiveTexture(0);
     }

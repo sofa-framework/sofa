@@ -48,19 +48,19 @@ public:
 
     SOFA_CLASS(OglViewport, core::visual::VisualManager);
 
-    Data<defaulttype::Vec<2, int> > p_screenPosition; ///< Viewport position
-    Data<defaulttype::Vec<2, unsigned int> > p_screenSize; ///< Viewport size
-    Data<defaulttype::Vec3f> p_cameraPosition; ///< Camera's position in eye's space
-    Data<defaulttype::Quat> p_cameraOrientation; ///< Camera's orientation
-    Data<RigidCoord > p_cameraRigid; ///< Camera's rigid coord
-    Data<double> p_zNear; ///< Camera's ZNear
-    Data<double> p_zFar; ///< Camera's ZFar
-    Data<double> p_fovy; ///< Field of View (Y axis)
-    Data<bool> p_enabled; ///< Enable visibility of the viewport
-    Data<bool> p_advancedRendering; ///< If true, viewport will be hidden if advancedRendering visual flag is not enabled
-    Data<bool> p_useFBO; ///< Use a FBO to render the viewport
-    Data<bool> p_swapMainView; ///< Swap this viewport with the main view
-    Data<bool> p_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
+    Data<defaulttype::Vec<2, int> > d_screenPosition; ///< Viewport position
+    Data<defaulttype::Vec<2, unsigned int> > d_screenSize; ///< Viewport size
+    Data<defaulttype::Vec3f> d_cameraPosition; ///< Camera's position in eye's space
+    Data<defaulttype::Quat> d_cameraOrientation; ///< Camera's orientation
+    Data<RigidCoord > d_cameraRigid; ///< Camera's rigid coord
+    Data<double> d_zNear; ///< Camera's ZNear
+    Data<double> d_zFar; ///< Camera's ZFar
+    Data<double> d_fovy; ///< Field of View (Y axis)
+    Data<bool> d_enabled; ///< Enable visibility of the viewport
+    Data<bool> d_advancedRendering; ///< If true, viewport will be hidden if advancedRendering visual flag is not enabled
+    Data<bool> d_useFBO; ///< Use a FBO to render the viewport
+    Data<bool> d_swapMainView; ///< Swap this viewport with the main view
+    Data<bool> d_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
 
     std::unique_ptr<helper::gl::FrameBufferObject> fbo;
 

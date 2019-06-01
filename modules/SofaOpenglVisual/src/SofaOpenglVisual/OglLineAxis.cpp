@@ -42,10 +42,10 @@ int OglLineAxisClass = core::RegisterObject("Display scene axis")
 using namespace sofa::defaulttype;
 
 OglLineAxis::OglLineAxis()
-    : axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw"))
-    , size(initData(&size, (float)(10.0),  "size", "Size of the squared grid"))
-    , thickness(initData(&thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid"))
-    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
+    : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
+    , d_size(initData(&d_size, (float)(10.0),  "size", "Size of the squared grid"))
+    , d_thickness(initData(&d_thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid"))
+    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
     , drawX(true), drawY(true), drawZ(true)
 {}
 
@@ -61,7 +61,7 @@ void OglLineAxis::reinit()
 
 void OglLineAxis::updateVisual()
 {
-    std::string a = axis.getValue();
+    std::string a = d_axis.getValue();
 
     drawX = a.find_first_of("xX")!=std::string::npos;
     drawY = a.find_first_of("yY")!=std::string::npos;
@@ -70,9 +70,9 @@ void OglLineAxis::updateVisual()
 
 void OglLineAxis::drawVisual(const core::visual::VisualParams* /*vparams*/)
 {
-    if (!draw.getValue()) return;
+    if (!d_draw.getValue()) return;
 
-    GLfloat s = size.getValue();
+    GLfloat s = d_size.getValue();
 
     glPushAttrib( GL_ALL_ATTRIB_BITS);
 

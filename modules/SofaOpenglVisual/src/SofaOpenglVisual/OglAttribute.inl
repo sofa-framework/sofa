@@ -94,14 +94,14 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
     /*todo jeremy: add multi shaders management...temp solution for tonight...*/
     // todo(dmarchal)... I suspect that the Jeremy above is Jeremie Ringard that stop working on Sofa
     // since 2010.
-    _index =  (*shaders.begin())->getAttribute ( indexShader.getValue(), id.getValue().c_str() ); //shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
+    _index =  (*d_shaders.begin())->getAttribute ( d_indexShader.getValue(), d_id.getValue().c_str() ); //shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
     if (_index == GLuint(-1) )
     {
-        serr << "Variable \""<<id.getValue()<<"\" NOT FOUND in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\""<< sendl;
+        serr << "Variable \""<<d_id.getValue()<<"\" NOT FOUND in shader \"" << (*d_shaders.begin())->vertFilename.getValue() << "\""<< sendl;
     }
     else
     {
-        sout << "Variable \""<<id.getValue()<<"\" in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\" with index: " << _index << sendl;
+        sout << "Variable \""<<d_id.getValue()<<"\" in shader \"" << (*d_shaders.begin())->vertFilename.getValue() << "\" with index: " << _index << sendl;
     }
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }

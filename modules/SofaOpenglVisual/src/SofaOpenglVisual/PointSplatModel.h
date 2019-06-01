@@ -65,16 +65,16 @@ public:
     void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 private:
-    Data<float>		radius; ///< Radius of the spheres.
-    Data<int>		textureSize; ///< Size of the billboard texture.
-    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
-    Data<defaulttype::RGBAColor>	color; ///< Billboard color.(default=[1.0,1.0,1.0,1.0])
+    Data<float>		d_radius; ///< Radius of the spheres.
+    Data<int>		d_textureSize; ///< Size of the billboard texture.
+    Data<float>		d_alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
+    Data<defaulttype::RGBAColor>	d_color; ///< Billboard color.(default=[1.0,1.0,1.0,1.0])
 
-    core::topology::BaseMeshTopology*	_topology;
-    core::behavior::BaseMechanicalState* _mstate;
+    core::topology::BaseMeshTopology*	m_topology;
+    core::behavior::BaseMechanicalState* m_mstate;
 
-    unsigned char *texture_data;
-    component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData; ///< scalar field modulating point colors
+    unsigned char *m_textureData;
+    component::topology::PointData<sofa::helper::vector<unsigned char> >		m_pointData; ///< scalar field modulating point colors
 
     typedef defaulttype::ExtVec3fTypes::Coord Coord;
     typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;

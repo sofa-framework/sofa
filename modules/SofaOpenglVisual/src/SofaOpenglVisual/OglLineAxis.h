@@ -40,10 +40,10 @@ class OglLineAxis : public core::visual::VisualModel
 public:
     SOFA_CLASS(OglLineAxis, VisualModel);
 
-    Data<std::string> axis; ///< Axis to draw
-    Data<float> size; ///< Size of the squared grid
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
+    Data<std::string> d_axis; ///< Axis to draw
+    Data<float> d_size; ///< Size of the squared grid
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
 
     OglLineAxis();
 

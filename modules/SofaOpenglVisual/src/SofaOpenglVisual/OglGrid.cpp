@@ -41,12 +41,12 @@ static int OglGridClass = core::RegisterObject("Display a simple grid")
 using namespace sofa::defaulttype;
 
 OglGrid::OglGrid()
-    : plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid"))
-    , size(initData(&size, 10.0f,  "size", "Size of the squared grid"))
-    , nbSubdiv(initData(&nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
-    , color(initData(&color, defaulttype::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
-    , thickness(initData(&thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
-    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
+    : d_plane(initData(&d_plane, std::string("z"),  "plane", "Plane of the grid"))
+    , d_size(initData(&d_size, 10.0f,  "size", "Size of the squared grid"))
+    , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
+    , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
+    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
 {}
 
 void OglGrid::init()
@@ -61,57 +61,57 @@ void OglGrid::reinit()
 
 void OglGrid::updateVisual()
 {
-    if (plane.getValue() == "x" ||
-             plane.getValue() == "X" ||
-            plane.getValue() == "zOy" ||
-            plane.getValue() == "ZOY" ||
-            plane.getValue() == "yOz" ||
-            plane.getValue() == "YOZ")
+    if (d_plane.getValue() == "x" ||
+             d_plane.getValue() == "X" ||
+            d_plane.getValue() == "zOy" ||
+            d_plane.getValue() == "ZOY" ||
+            d_plane.getValue() == "yOz" ||
+            d_plane.getValue() == "YOZ")
     {
         internalPlane = PLANE_X;
     }
-    else if (plane.getValue() == "y" ||
-             plane.getValue() == "Y" ||
-             plane.getValue() == "zOx" ||
-             plane.getValue() == "ZOX" ||
-             plane.getValue() == "xOz" ||
-             plane.getValue() == "XOZ")
+    else if (d_plane.getValue() == "y" ||
+             d_plane.getValue() == "Y" ||
+             d_plane.getValue() == "zOx" ||
+             d_plane.getValue() == "ZOX" ||
+             d_plane.getValue() == "xOz" ||
+             d_plane.getValue() == "XOZ")
     {
         internalPlane = PLANE_Y;
     }
-    else if (plane.getValue() == "z" ||
-             plane.getValue() == "Z" ||
-             plane.getValue() == "xOy" ||
-             plane.getValue() == "XOY" ||
-             plane.getValue() == "yOx" ||
-             plane.getValue() == "YOX")
+    else if (d_plane.getValue() == "z" ||
+             d_plane.getValue() == "Z" ||
+             d_plane.getValue() == "xOy" ||
+             d_plane.getValue() == "XOY" ||
+             d_plane.getValue() == "yOx" ||
+             d_plane.getValue() == "YOX")
     {
         internalPlane = PLANE_Z;
     }
     else
     {
-        serr << "Plane parameter " << plane.getValue() << " not recognized. Set to z instead" << sendl;
-        plane.setValue("z");
+        serr << "Plane parameter " << d_plane.getValue() << " not recognized. Set to z instead" << sendl;
+        d_plane.setValue("z");
         internalPlane = PLANE_Z;
     }
 
-    int nb = nbSubdiv.getValue();
+    int nb = d_nbSubdiv.getValue();
     if (nb < 2)
     {
         serr << "nbSubdiv should be > 2" << sendl;
-        nbSubdiv.setValue(2);
+        d_nbSubdiv.setValue(2);
     }
 }
 
 
 void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!draw.getValue()) return;
+    if (!d_draw.getValue()) return;
 
     std::vector<Vector3> points;
 
-    unsigned int nb = nbSubdiv.getValue();
-    float s = size.getValue();
+    unsigned int nb = d_nbSubdiv.getValue();
+    float s = d_size.getValue();
 
     switch(internalPlane)
     {
@@ -153,7 +153,7 @@ void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
         break;
     }
 
-    vparams->drawTool()->drawLines(points, thickness.getValue(), color.getValue());
+    vparams->drawTool()->drawLines(points, d_thickness.getValue(), d_color.getValue());
 }
 
 } // namespace visualmodel
