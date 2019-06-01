@@ -71,7 +71,6 @@ void OglSceneFrame::updateVisual()
 
 void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!drawFrame.getValue()) return;
 
     glPushAttrib( GL_ALL_ATTRIB_BITS);
@@ -288,8 +287,6 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 
     glPopAttrib();
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
-#endif
-
 }
 
 } // namespace visualmodel

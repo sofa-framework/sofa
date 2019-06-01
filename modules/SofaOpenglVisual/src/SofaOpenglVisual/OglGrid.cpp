@@ -34,7 +34,7 @@ namespace component
 namespace visualmodel
 {
 
-int OglGridClass = core::RegisterObject("Display a simple grid")
+static int OglGridClass = core::RegisterObject("Display a simple grid")
         .add< component::visualmodel::OglGrid>()
         ;
 
@@ -101,27 +101,6 @@ void OglGrid::updateVisual()
         serr << "nbSubdiv should be > 2" << sendl;
         nbSubdiv.setValue(2);
     }
-
-    //bounding box for the camera
-//    Real s = size.getValue();
-//    Coord min,max;
-//    switch(internalPlane)
-//    {
-//        case PLANE_X:
-//            min = Coord(-s*0.1, -s*0.5, -s*0.5);
-//            max = Coord(s*0.1, s*0.5, s*0.5);
-//            break;
-//        case PLANE_Y:
-//            min = Coord(-s*0.5, -s*0.1, -s*0.5);
-//            max = Coord(s*0.5, s*0.1, s*0.5);
-//            break;
-//        case PLANE_Z:
-//            min = Coord(-s*0.5, -s*0.5, -s*0.1);
-//            max = Coord(s*0.5, s*0.5, s*0.1);
-//            break;
-//    }
-//    f_bbox.setValue(sofa::defaulttype::BoundingBox(min,max));
-
 }
 
 

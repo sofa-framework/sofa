@@ -130,25 +130,8 @@ void OglShaderVisualModel::init()
             vrestnormals->setIndexShader(0);
             vrestnormals->init();
         }
-        /*
-            ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
-            const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
-            vrestpos.resize (vertices.size() );
-            for ( unsigned int i = 0; i < vertices.size(); i++ )
-            {
-              vrestpos[i] = vertices[i];
-            }
-            vrestpositions.endEdit();
-
-            //add restNormal as Attribute
-            vrestnormals.setContext( this->getContext());
-            vrestnormals.setID( std::string("restNormal") );
-            vrestnormals.setIndexShader( 0);
-            vrestnormals.init();
-
-            computeRestNormals();
-        */
         computeRestPositions();
+
         //
         //    //add Model Matrix as Uniform
         if (!modelMatrixUniform)
@@ -178,9 +161,6 @@ void OglShaderVisualModel::updateVisual()
 void OglShaderVisualModel::computeRestPositions()
 {
     if (!vrestpositions) return;
-    //    int counter = m_restPositions.getCounter();
-    //    if (counter == restPosition_lastUpdate) return;
-    //    restPosition_lastUpdate = counter;
 
     helper::ReadAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
     helper::ReadAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restpositions = m_restPositions;
@@ -215,21 +195,10 @@ void OglShaderVisualModel::handleTopologyChange()
         std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
-        //        while( itBegin != itEnd )
-        //        {
-        //            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-        //            if ((changeType==core::topology::TRIANGLESREMOVED) ||
-        //                (changeType==core::topology::TRIANGLESADDED) ||
-        //                (changeType==core::topology::QUADSADDED) ||
-        //                (changeType==core::topology::QUADSREMOVED))
-        //            update=true;
-        //            itBegin++;
-        //        }
         if (itBegin != itEnd)
         {
             computeRestPositions();
             computeRestNormals();
-            //            msg_info()<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
         }
     }
 

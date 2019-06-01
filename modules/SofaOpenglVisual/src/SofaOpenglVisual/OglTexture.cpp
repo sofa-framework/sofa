@@ -216,12 +216,6 @@ void OglTexture::initVisual()
         serr << "Unit Texture too high ; set it at the unit texture n°1 (MAX_NUMBER_OF_TEXTURE_UNIT=" << MAX_NUMBER_OF_TEXTURE_UNIT << ")" << sendl;
         textureUnit.setValue(1);
     }
-//    if (!img)
-//    {
-//        serr << "OglTexture: Error : OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
-//        return;
-//    }
-
 
     if (texture) delete texture;
     texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),

@@ -773,7 +773,6 @@ void OglMatrix4VectorVariable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Mat4x4f>& v = value.getValue();
-    //serr << "OglMatrix4VectorVariable::initVisual(), v = " << v << sendl;
     const float* vptr = v.empty() ? NULL : &(v[0][0][0]);
     bool transp = transpose.getValue();
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)

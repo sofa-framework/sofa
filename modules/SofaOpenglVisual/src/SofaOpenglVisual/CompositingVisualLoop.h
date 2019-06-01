@@ -29,10 +29,8 @@
 #ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #include "config.h"
-
 #include <sofa/simulation/DefaultVisualManagerLoop.h>
 #include <sofa/core/visual/VisualParams.h>
-
 #include <SofaOpenglVisual/OglShader.h>
 #include <SofaOpenglVisual/VisualManagerPass.h>
 

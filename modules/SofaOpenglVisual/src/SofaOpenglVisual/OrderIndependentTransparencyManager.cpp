@@ -151,17 +151,6 @@ void OrderIndependentTransparencyManager::preDrawScene(VisualParams* /*vp*/)
 
 }
 
-//static void DrawQuad(float offset, float scale = 1.0f)
-//{
-//    glBegin(GL_QUADS);
-//    {
-//        glVertex3f(-scale, -scale, offset);
-//        glVertex3f( scale, -scale, offset);
-//        glVertex3f( scale,  scale, offset);
-//        glVertex3f(-scale,  scale, offset);
-//    }
-//    glEnd();
-//}
 
 static void DrawFullScreenQuad()
 {
@@ -294,15 +283,6 @@ void OrderIndependentTransparencyManager::drawTransparents(VisualParams* vp, GLS
     VisualOITDrawVisitor drawTransparentVisitor(vp, oitShader);
     drawTransparentVisitor.setTags(this->getTags());
     node->execute(&drawTransparentVisitor);
-
-//    glColor4f(0.0f, 0.0f, 1.0f, 0.6f);
-//    DrawQuad(1.0f);
-
-//    glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
-//    DrawQuad(0.0f);
-
-//    glColor4f(1.0f, 0.0f, 0.0f, 0.6f);
-//    DrawQuad(-1.0f);
 }
 
 void OrderIndependentTransparencyManager::postDrawScene(VisualParams* /*vp*/)

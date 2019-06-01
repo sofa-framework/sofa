@@ -35,37 +35,6 @@ namespace component
 namespace visualmodel
 {
 
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::OglVariable()
-//: value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
-//{
-//    addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
-//}
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::~OglVariable()
-//{
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::init()
-//{
-//    OglShaderElement::init();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::initVisual()
-//{
-//    core::visual::VisualModel::initVisual();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::reinit()
-//{
-//    init();
-//    initVisual();
-//}
 
 } // namespace visualmodel
 

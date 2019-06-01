@@ -327,8 +327,8 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
-        return true;
         glPopAttrib();
+        return true;
     }
     else
         return false;

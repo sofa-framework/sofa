@@ -437,8 +437,6 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-
-    //glViewport(0,0,vp->viewport[2],vp->viewport[3]);
 }
 
 void OglViewport::draw(const core::visual::VisualParams* vparams)
