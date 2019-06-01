@@ -14,6 +14,7 @@ list(APPEND HEADER_FILES
     AddFrameButtonSetting.h
     AddRecordedCameraButtonSetting.h
     AttachBodyButtonSetting.h
+    BackgroundSetting.h
     FixPickedParticleButtonSetting.h
     Gravity.h
     InteractingBehaviorModel.h
