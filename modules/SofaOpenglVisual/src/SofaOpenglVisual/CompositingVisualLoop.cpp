@@ -43,7 +43,8 @@ namespace component
 namespace visualmodel
 {
 
-int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
+int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. "
+                                                      "Needs multiple fbo data and a compositing shader")
         .add< CompositingVisualLoop >()
         ;
 
@@ -52,7 +53,6 @@ CompositingVisualLoop::CompositingVisualLoop(simulation::Node* _gnode)
       vertFilename(initData(&vertFilename, (std::string) "shaders/compositing.vert", "vertFilename", "Set the vertex shader filename to load")),
       fragFilename(initData(&fragFilename, (std::string) "shaders/compositing.frag", "fragFilename", "Set the fragment shader filename to load"))
 {
-    //assert(gRoot);
 }
 
 CompositingVisualLoop::~CompositingVisualLoop()

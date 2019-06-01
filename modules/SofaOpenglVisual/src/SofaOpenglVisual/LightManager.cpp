@@ -52,9 +52,6 @@ namespace visualmodel
 {
 
 
-//TODO(dmarchal): There is a large amount of #ifdef SOFA_HAVE_GLEW why ? Too much #ifdef is
-//a sign it is time to refactor the code.
-
 //Register LightManager in the Object Factory
 int LightManagerClass = RegisterObject
         ("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
