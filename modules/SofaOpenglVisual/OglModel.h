@@ -71,7 +71,6 @@ protected:
     /// Suppress field for save as function
     Data < bool > isToPrint;
     Data < bool > isEnabled;
-    Data < bool > forceFloat;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
@@ -87,9 +86,8 @@ protected:
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
 
-    /// These two buffers are used with the "forceFloat" data field is activated.
-    /// When this is the case the data types send to openGL is always converted to floating points
-    /// values before touching opengl.
+    /// These two buffers are used to convert the data field to float type before being sent to
+    /// opengl
     std::vector<sofa::defaulttype::Vec3f> verticesTmpBuffer;
     std::vector<sofa::defaulttype::Vec3f> normalsTmpBuffer;
 

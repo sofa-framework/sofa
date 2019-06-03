@@ -44,7 +44,7 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
+static int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
         .add< OglModel >()
         ;
 
@@ -67,7 +67,6 @@ OglModel::OglModel()
     , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
     , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
     , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
-    , forceFloat( initData(&forceFloat, false, "forceFloat", "Convert data to float befor sending to opengl."))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
@@ -374,14 +373,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     GLuint vertexdatasize = sizeof(vertices[0]);
     GLuint normaldatasize = sizeof(vnormals[0]);
 
-
-    /// In case we are forcing to float before sending to opengl...
-    if(forceFloat.getValue())
-    {
-        datatype = GL_FLOAT;
-        vertexdatasize = sizeof(verticesTmpBuffer[0]);
-        normaldatasize = sizeof(normalsTmpBuffer[0]);
-    }
+    /// Force the data to be of float type before sending to opengl...
+    datatype = GL_FLOAT;
+    vertexdatasize = sizeof(verticesTmpBuffer[0]);
+    normaldatasize = sizeof(normalsTmpBuffer[0]);
 
     GLuint vertexArrayByteSize = vertices.size() * vertexdatasize;
     GLuint normalArrayByteSize = vnormals.size() * normaldatasize;
@@ -770,15 +765,8 @@ void OglModel::initVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    if(forceFloat.getValue())
-    {
-        positionsBufferSize = (vertices.size()*sizeof(Vec3f));
-        normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
-    }else
-    {
-        positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-        normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    }
+    positionsBufferSize = (vertices.size()*sizeof(Vec3f));
+    normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
 
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
@@ -854,19 +842,16 @@ void OglModel::updateVertexBuffer()
     const void* normalBuffer = vnormals.getData();
 
 
-    if(forceFloat.getValue())
-    {
-        verticesTmpBuffer.resize( vertices.size() );
-        normalsTmpBuffer.resize( vnormals.size() );
+    verticesTmpBuffer.resize( vertices.size() );
+    normalsTmpBuffer.resize( vnormals.size() );
 
-        copyVector(vertices, verticesTmpBuffer);
-        copyVector(vnormals, normalsTmpBuffer);
+    copyVector(vertices, verticesTmpBuffer);
+    copyVector(vnormals, normalsTmpBuffer);
 
-        positionsBufferSize = (vertices.size()*sizeof(Vec3f));
-        normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
-        positionBuffer = verticesTmpBuffer.data();
-        normalBuffer = normalsTmpBuffer.data();
-    }
+    positionsBufferSize = (vertices.size()*sizeof(Vec3f));
+    normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
+    positionBuffer = verticesTmpBuffer.data();
+    normalBuffer = normalsTmpBuffer.data();
 
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
