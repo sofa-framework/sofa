@@ -24,7 +24,7 @@
         <Node 	name="CollisionModel"  >
 
             <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0 " />
-            <Point name="ParticleModel" contactStiffness="1" />
+            <PointCollisionModel name="ParticleModel" contactStiffness="1" />
             <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particles" />
 
             <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.03" normalsPointOut="true" contactScale="0.1" penetrationOffset="0.02"/>

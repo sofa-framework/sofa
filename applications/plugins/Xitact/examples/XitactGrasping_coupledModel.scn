@@ -11,9 +11,9 @@
 		<MeshLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
 		<Mesh/>
 		<MechanicalObject scale="50.0" dz="150"/>
-		<Triangle simulated="0" moving="0"/>	
-		<Line simulated="0" moving="0"/>
-		<Point simulated="0" moving="0"/>
+		<TriangleCollisionModel simulated="0" moving="0"/>	
+		<LineCollisionModel simulated="0" moving="0"/>
+		<PointCollisionModel simulated="0" moving="0"/>
 		<OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0.0 0.4 0.6 0.2" scale="50.0" dz="150"/>
 	</Node>
 	
@@ -61,9 +61,9 @@
       <MeshLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
       <Mesh/>
       <MechanicalObject dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0"/>
-      <Triangle contactStiffness="0.1"/>
-      <Line />
-      <Point />
+      <TriangleCollisionModel contactStiffness="0.1"/>
+      <LineCollisionModel />
+      <PointCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -113,8 +113,8 @@
         <Node name="Tool1CM">
           <RegularGrid nx="1" ny="2" nz="1" min="0 -350 0" max="0 0 0" />
           <MechanicalObject name="Endoscope Collision State"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping name="MM->CM mapping" input="@.." index="1"/>
         </Node>
 
@@ -128,9 +128,9 @@
           <MeshLoader filename="dt/mors1_extralight.obj" />
           <Mesh/>
           <MechanicalObject name="CM" scale="1"  dy="25"/>
-          <Triangle group="1"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <TriangleCollisionModel group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping input="@.." output="@CM" index="2"/>
         </Node>
 
@@ -143,9 +143,9 @@
           <MeshLoader filename="dt/mors1_extralight.obj" />
           <Mesh/>
           <MechanicalObject name="CM" scale="1"  dy="25" />
-          <Triangle group="1"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <TriangleCollisionModel group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping input="@.." output="@CM" index="3"/>
         </Node>
 
@@ -227,8 +227,8 @@
         <Node name="Tool1CM">
           <RegularGrid nx="1" ny="2" nz="1" min="0 -350 0" max="0 0 0" />
           <MechanicalObject name="Endoscope Collision State"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping name="MM->CM mapping" input="@.." index="1"/>
         </Node>
 
@@ -242,9 +242,9 @@
           <MeshLoader filename="dt/mors1_extralight.obj" />
           <Mesh/>
           <MechanicalObject name="CM" scale="1"  dy="25"/>
-          <Triangle group="1"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <TriangleCollisionModel group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping input="@.." output="@CM" index="2"/>
         </Node>
 
@@ -257,9 +257,9 @@
           <MeshLoader filename="dt/mors1_extralight.obj" />
           <Mesh/>
           <MechanicalObject name="CM" scale="1"  dy="25" />
-          <Triangle group="1"/>
-          <Line group="1"/>
-          <Point group="1"/>
+          <TriangleCollisionModel group="1"/>
+          <LineCollisionModel group="1"/>
+          <PointCollisionModel group="1"/>
           <RigidMapping input="@.." output="@CM" index="3"/>
         </Node>
 

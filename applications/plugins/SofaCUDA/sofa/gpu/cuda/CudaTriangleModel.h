@@ -34,7 +34,7 @@ namespace gpu
 namespace cuda
 {
 
-typedef sofa::component::collision::TTriangleModel<CudaVec3fTypes> CudaTriangleModel;
+typedef sofa::component::collision::TriangleCollisionModel<CudaVec3fTypes> CudaTriangleModel;
 typedef sofa::component::collision::TTriangle<CudaVec3fTypes> CudaTriangle;
 
 } // namespace cuda

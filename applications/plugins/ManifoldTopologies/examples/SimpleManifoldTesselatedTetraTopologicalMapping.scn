@@ -24,7 +24,7 @@
 			<SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2"/>
 			<MechanicalObject/>
 			<SimpleTesselatedTetraMechanicalMapping/>
-			<Triangle />
+			<TriangleCollisionModel />
 		</Node>
 	</Node>
 </Node>

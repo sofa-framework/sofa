@@ -24,7 +24,7 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <HexahedronCompositeFEMMapping />
-            <Triangle />
+            <TriangleCollisionModel />
             <Node name="Soft gelatin">
                 <OglModel name="VisualBody" fileMesh="mesh/bubille_out.obj" normals="0" color="0.1 .8 .3 .6" />
                 <IdentityMapping input="@.." output="@VisualBody" />
