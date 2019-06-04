@@ -20,9 +20,9 @@
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <SubsetMapping />
         </Node>
     </Node>
@@ -30,9 +30,9 @@
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
-        <Triangle name="FloorTriangle" simulated="0" moving="0" />
-        <Line name="FloorLine" simulated="0" moving="0" />
-        <Point name="FloorLine" simulated="0" moving="0" />
+        <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
         <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" dy="-10" scale="1.75" />
     </Node>
 </Node>

@@ -17,7 +17,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -30,7 +30,7 @@
                 <Node name="Surf">
                     <MechanicalObject />
                     <SphereLoader filename="mesh/smCube27b.sph" />
-                    <Sphere listRadius="@[-1].listRadius" />
+                    <SphereCollisionModel listRadius="@[-1].listRadius" />
                     <IdentityMapping />
                 </Node>
             </Node>
@@ -50,7 +50,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -67,7 +67,7 @@
                 <Node name="Surf">
                     <MechanicalObject />
                     <SphereLoader filename="mesh/smCube27b.sph" />
-                    <Sphere listRadius="@[-1].listRadius" />
+                    <SphereCollisionModel listRadius="@[-1].listRadius" />
                     <IdentityMapping />
                 </Node>
             </Node>
@@ -83,7 +83,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/smCube27b.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <IdentityMapping />
             </Node>
         </Node>
@@ -101,7 +101,7 @@
             <Node name="Surf">
                 <MechanicalObject />
                 <SphereLoader filename="mesh/dragon.sph" />
-                <Sphere listRadius="@[-1].listRadius" />
+                <SphereCollisionModel listRadius="@[-1].listRadius" />
                 <RigidMapping />
             </Node>
         </Node>

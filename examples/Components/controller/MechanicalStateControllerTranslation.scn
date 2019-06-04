@@ -18,9 +18,9 @@
             <MeshObjLoader name="loader" filename="mesh/sphere.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" scale="50" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
         <MechanicalStateController template="Rigid" onlyTranslation="true" listening="true" handleEventTriggersUpdate="true" />

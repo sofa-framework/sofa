@@ -16,9 +16,9 @@
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" />
-            <Triangle group="1" />
-            <Line group="1" />
-            <Point group="1" />
+            <TriangleCollisionModel group="1" />
+            <LineCollisionModel group="1" />
+            <PointCollisionModel group="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
     </Node>
@@ -39,9 +39,9 @@
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" />
-            <Triangle group="1" />
-            <Line group="1" />
-            <Point group="1" />
+            <TriangleCollisionModel group="1" />
+            <LineCollisionModel group="1" />
+            <PointCollisionModel group="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
     </Node>
@@ -59,9 +59,9 @@
 			<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
 			<Mesh src="@loader"/>
 			<MechanicalObject src="@loader"/>
-			<Triangle group="1"/>
-			<Line group="1"/>
-			<Point group="1"/>
+			<TriangleCollisionModel group="1"/>
+			<LineCollisionModel group="1"/>
+			<PointCollisionModel group="1"/>
 			<RigidMapping input="@.." output="@."/>
 		</Node>
 	</Node>
@@ -79,9 +79,9 @@
 			<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
 			<Mesh src="@loader"/>
 			<MechanicalObject src="@loader"/>
-			<Triangle group="1"/>
-			<Line group="1"/>
-			<Point group="1"/>
+			<TriangleCollisionModel group="1"/>
+			<LineCollisionModel group="1"/>
+			<PointCollisionModel group="1"/>
 			<RigidMapping input="@.." output="@."/>
 		</Node>
 	</Node>

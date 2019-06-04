@@ -24,7 +24,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -45,7 +45,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="-6 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -66,7 +66,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="-12 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>
@@ -86,7 +86,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="6 0 0"/>
       <Mesh src="@loader" />
       <MechanicalObject src="@loader"  />
-      <Triangle />
+      <TriangleCollisionModel />
       <BarycentricMapping />
     </Node>
   </Node>

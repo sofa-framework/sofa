@@ -14,7 +14,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader"  tags="LDI"/>
 			<MechanicalObject  name="PointSet"  translation="0 -2 0" />
-			<Triangle />
+			<TriangleCollisionModel />
 			<FrameBlendingMapping template="Rigid,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
@@ -36,7 +36,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" tags="LDI"/>
 			<MechanicalObject  name="PointSet" />
-			<Triangle />
+			<TriangleCollisionModel />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>

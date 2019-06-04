@@ -25,7 +25,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
     		  	<Mesh src="@MeshLoader" /> 
      		 	<MechanicalObject  name="PointSet"  />
-      			<Triangle />
+      			<TriangleCollisionModel />
 			<FrameBlendingMapping template="FrameQuadratic,Vec3d" input="@../DOFs"  output="@PointSet" showStrain="1"/>
 		</Node>
 

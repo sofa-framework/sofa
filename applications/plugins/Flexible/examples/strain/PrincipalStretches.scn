@@ -38,7 +38,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus.obj" />
       <Mesh src="@loader"/>
       <MechanicalObject  />
-      <Triangle />
+      <TriangleCollisionModel />
       <LinearMapping template="Vec3d,Vec3d"/>
     </Node>
 
@@ -84,7 +84,7 @@
       <MeshObjLoader name="loader" filename="mesh/torus.obj" />
       <Mesh src="@loader"/>
       <MechanicalObject  />
-      <Triangle />
+      <TriangleCollisionModel />
       <LinearMapping template="Vec3d,Vec3d"/>
     </Node>
     <Node name="Visual"  >

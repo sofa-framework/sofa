@@ -35,9 +35,9 @@
 			<MeshLoader name="meshLoader" filename="mesh/box_inside_duriez.obj" triangulate="true"/>
                         <Mesh />
                         <MechanicalObject/>
-                        <Triangle />
-                        <Line />
-                        <Point />
+                        <TriangleCollisionModel />
+                        <LineCollisionModel />
+                        <PointCollisionModel />
                         <RigidMapping />
                 </Node>
         </Node>
@@ -53,9 +53,9 @@
                         <MeshLoader name="meshLoader" filename="mesh/smCube27.obj" triangulate="true"/>
                         <Mesh />
                         <MechanicalObject scale="0.01"/>
-                        <Triangle />
-                        <Line />
-                        <Point />
+                        <TriangleCollisionModel />
+                        <LineCollisionModel />
+                        <PointCollisionModel />
                         <RigidMapping />
                 </Node>
 	</Node>

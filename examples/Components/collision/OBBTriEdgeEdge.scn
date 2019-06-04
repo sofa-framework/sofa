@@ -15,7 +15,7 @@
 	  <MeshTopology name="meshTopology35"  edges="2 0  1 2  0 1 "  triangles="0 1 2 "  drawEdges="1"  drawTriangles="1" />
 	  <MechanicalObject template="Vec3d" name="falling_particle"  position="0 -2 0 0 2 0 2 0 2"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
 	  <UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
-	  <TTriangleModel template="Vec3d" name="tTriangleModel12"  bothSide="1" />
+	  <TriangleCollisionModel template="Vec3d" name="tTriangleModel12"  bothSide="1" />
 	  <RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@falling_particle" />
 	</Node>
   </Node>

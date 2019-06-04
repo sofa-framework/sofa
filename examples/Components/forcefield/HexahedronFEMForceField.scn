@@ -14,8 +14,8 @@
         <RegularGrid nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
         <FixedConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
         <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
-        <Triangle />
-        <Line />
-        <Point />
+        <TriangleCollisionModel />
+        <LineCollisionModel />
+        <PointCollisionModel />
     </Node>
 </Node>

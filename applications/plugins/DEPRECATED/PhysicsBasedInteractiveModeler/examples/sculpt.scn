@@ -15,9 +15,9 @@
 		<TriangleSetGeometryAlgorithms name="Geo" template="Vec3d" />
 		<!-- 		<Mesh /> -->
 		<MechanicalObject name="Collision" rx="20" rz="5"/>
-<!--		<Point />
-		<Line />-->
-		<Triangle />
+<!--		<PointCollisionModel />
+		<LineCollisionModel />-->
+		<TriangleCollisionModel />
 		<Node > 
 	        	<OglModel name="VisualModel" color="0.93 0.83 0.81 1" />
 			<IdentityMapping input="@.." output="@VisualModel" />

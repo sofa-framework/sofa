@@ -33,7 +33,7 @@
 			<Mesh src="@MeshLoader"  tags="LDI"/>
 			<MechanicalObject  name="PointSet" translation="0 2 0" />
 			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
-			<Triangle />
+			<TriangleCollisionModel />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
@@ -53,7 +53,7 @@
 			<MeshTopology name="default16" />
 			<MechanicalObject template="Vec3d" name="default17"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" />
 			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
-			<TTriangleModel template="Vec3d" name="default18"  contactStiffness="200" />
+			<TriangleCollisionModel template="Vec3d" name="default18"  contactStiffness="200" />
 			<LineModel name="default19"  contactStiffness="@[-1].contactStiffness" />
 			<PointModel name="default20"  contactStiffness="@[-1].contactStiffness" />
 			<RigidMapping template="Rigid,Vec3d" name="default21"  input="@.."  output="@." />

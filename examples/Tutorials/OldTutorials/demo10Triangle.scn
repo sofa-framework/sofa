@@ -20,9 +20,9 @@
             <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -41,9 +41,9 @@
             <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -62,9 +62,9 @@
             <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -83,9 +83,9 @@
             <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"/>
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -110,9 +110,9 @@
 			<MeshObjLoader filename="mesh/smCube27.obj"  name="loader"/>
 			<Mesh src="@loader" />
 			<MechanicalObject src="@loader" />
-			<Triangle />
-			<Line />
-			<Point />
+			<TriangleCollisionModel />
+			<LineCollisionModel />
+			<PointCollisionModel />
 			<BarycentricMapping />
 		</Node>
 	</Node>
@@ -121,9 +121,9 @@
         <MeshObjLoader filename="mesh/floor3.obj" name="loader" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-20" />
-        <Triangle name="Floor" simulated="0" moving="0" />
-        <Line name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
+        <LineCollisionModel name="Floor" simulated="0" moving="0" />
+        <PointCollisionModel name="Floor" simulated="0" moving="0" />
         <OglModel name="FloorV" filename="mesh/floor3.obj" texturename="textures/floor.bmp" dy="-20" />
     </Node>
 </Node>

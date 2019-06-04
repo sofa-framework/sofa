@@ -30,9 +30,9 @@
 				<MeshLoader name="meshLoader" filename="mesh/victoria_coarse.obj" />
 				<Mesh />
 				<MechanicalObject name="Collision" dx="10" scale="0.01"/>
-				<Triangle />
-				<Line />
-				<Point />
+				<TriangleCollisionModel />
+				<LineCollisionModel />
+				<PointCollisionModel />
 				<BarycentricMapping input="@.." output="@Collision"/> 
 			</Node>
 <!--			<Node name="Visual">
@@ -47,7 +47,7 @@
 		<ProgressiveScaling template="Vec3d" from_scale="0.001" to_scale="0.01" step="0.001" rest_position="@[-2].vertices" />
 		<MechanicalObject rest_position="@[-1].position" position="@[-1].position" />
 		<Triangle/>
-		<Line />
-		<Point />
+		<LineCollisionModel />
+		<PointCollisionModel />
 	</Node>
 </Node>

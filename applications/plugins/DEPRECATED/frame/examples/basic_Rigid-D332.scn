@@ -68,7 +68,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
     		  	<Mesh src="@MeshLoader" color="green" /> 
      		 	<MechanicalObject  name="PointSet"  />
-      			<Triangle />
+      			<TriangleCollisionModel />
 			<FrameBlendingMapping template="Rigid,Vec3d" name="CMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet" />
 		</Node>
 		<Node name="Visu">
