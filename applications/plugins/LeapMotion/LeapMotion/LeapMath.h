@@ -16,8 +16,6 @@
 
 namespace Leap {
 
-/** The constant pi as a single precision floating point number. */
-static const float PI          = M_PI;
 /**
  * The constant ratio to convert an angle measure from degrees to radians.
  * Multiply a value in degrees by this constant to convert to radians.
