@@ -940,7 +940,6 @@ void OglModel::updateBuffers()
     {
         if(!VBOGenDone)
         {
-            std::cout << "INIT BUFFERS..." << std::endl;
             createVertexBuffer();
             //Index Buffer Object
             //Edges indices
