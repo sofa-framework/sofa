@@ -368,18 +368,13 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
-    /// Default values for the vbo
-    GLuint datatype = glType<DataTypes::Real>();
-    GLuint vertexdatasize = sizeof(vertices[0]);
-    GLuint normaldatasize = sizeof(vnormals[0]);
-
     /// Force the data to be of float type before sending to opengl...
-    datatype = GL_FLOAT;
-    vertexdatasize = sizeof(verticesTmpBuffer[0]);
-    normaldatasize = sizeof(normalsTmpBuffer[0]);
+    GLuint datatype = GL_FLOAT;
+    GLuint vertexdatasize = sizeof(verticesTmpBuffer[0]);
+    GLuint normaldatasize = sizeof(normalsTmpBuffer[0]);
 
-    GLuint vertexArrayByteSize = vertices.size() * vertexdatasize;
-    GLuint normalArrayByteSize = vnormals.size() * normaldatasize;
+    GLulong vertexArrayByteSize = vertices.size() * vertexdatasize;
+    GLulong normalArrayByteSize = vnormals.size() * normaldatasize;
 
     //// Update the vertex buffers.
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
