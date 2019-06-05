@@ -63,19 +63,25 @@ void DataTracker::clean()
 
 
 ////////////////////
+void DataTrackerDDGNode::addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
+{
+    for(sofa::core::objectmodel::BaseData* d : datas)
+        addInput(d);
+}
 
-
+void DataTrackerDDGNode::addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
+{
+    for(sofa::core::objectmodel::BaseData* d : datas)
+        addOutput(d);
+}
 
 void DataTrackerDDGNode::cleanDirty(const core::ExecParams* params)
 {
     core::objectmodel::DDGNode::cleanDirty(params);
 
-    // it is also time to clean the tracked Data
+    /// it is also time to clean the tracked Data
     m_dataTracker.clean();
-
 }
-
-
 
 void DataTrackerDDGNode::updateAllInputsIfDirty()
 {
@@ -85,16 +91,20 @@ void DataTrackerDDGNode::updateAllInputsIfDirty()
         static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
     }
 }
-
-
-
 ///////////////////////
-
-
-void DataTrackerEngine::setUpdateCallback( void (*f)(DataTrackerEngine*) )
+void DataTrackerEngine::addCallback( std::function<void(DataTrackerEngine*)> f)
 {
-    m_updateCallback = f;
+    m_callbacks.push_back(f);
 }
+
+void DataTrackerEngine::update()
+{
+    for(auto& callback : m_callbacks)
+    {
+        callback(this);
+    }
+}
+
 
 }
 

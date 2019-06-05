@@ -301,11 +301,8 @@ struct DataTrackerEngine_test: public BaseTest
         core::DataTrackerEngine dataTracker;
         dataTracker.addInput(&testObject.myData); // several inputs can be added
         dataTracker.addOutput(&testObject2.myData); // several output can be added
-        dataTracker.setUpdateCallback( &DataTrackerEngine_test::myUpdate );
+        dataTracker.addCallback( &DataTrackerEngine_test::myUpdate );
         dataTracker.setDirtyValue();
-
-
-
         unsigned localCounter = 0u;
 
         testObject.myData.setValue(true);
