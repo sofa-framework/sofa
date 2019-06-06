@@ -181,7 +181,7 @@ struct SceneChecker_test : public Sofa_test<>
         PluginManager::getInstance().loadPluginByName("SofaPython");
 
         std::string withAlias = "Triangle";
-        std::string withoutAlias = "TTriangleModel";
+        std::string withoutAlias = "TriangleCollisionModel";
         std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
 
         std::stringstream scene;

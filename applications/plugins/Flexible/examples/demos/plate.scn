@@ -51,7 +51,7 @@
       <Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
       <MechanicalObject  template="Vec3d" name="pts" src="@mesh"  />
       <UniformMass totalMass="10" />
-      <Triangle />
+      <TriangleCollisionModel />
       <LinearMapping template="Affine,Vec3d"/>
     </Node>
 

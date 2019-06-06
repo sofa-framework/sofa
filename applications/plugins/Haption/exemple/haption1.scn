@@ -24,7 +24,7 @@
 			<MeshLoader name="meshLoader9"  filename="mesh/dental_instrument.obj" />
 			<MeshTopology name="meshTopology10" />
 			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="-1.1 -1.6 3.55"  rotation="180 0 150"  scale3d="1 1 1" />
-			<TTriangleModel template="Vec3d" name="tTriangleModel1" />
+			<TriangleCollisionModel template="Vec3d" name="tTriangleModel1" />
 			<LineModel name="lineModel12" />
 			<PointModel name="pointModel13" />
 			<RigidMapping template="Rigid,Vec3d" name="map"  input="@../instrumentState"  output="@instrumentCollisionState" />
@@ -34,7 +34,7 @@
 		<MeshObjLoader name="meshLoader0" filename="mesh/cube.obj" />
 		<MeshTopology name="Mesh" src="@meshLoader0" />
 		<MechanicalObject template="Vec3d" name="Obstacle"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1" />
-		<TTriangleModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
+		<TriangleCollisionModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<LineModel name="Lines"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<PointModel name="Points"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/cube.obj"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1"  material="Default Diffuse 1 0.494118 0.494118 0.494118 1 Ambient 1 0.0901961 0.0901961 0.0901961 1 Specular 0 0.494118 0.494118 0.494118 1 Emissive 0 0.494118 0.494118 0.494118 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
@@ -57,7 +57,7 @@
 			<MechanicalObject template="Vec3d" name="CollisionObject"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" />
 			<PointModel name="Points" />
 			<LineModel name="Lines" />
-			<TTriangleModel template="Vec3d" name="Triangles" />
+			<TriangleCollisionModel template="Vec3d" name="Triangles" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="MechanicalMapping"  input="@.."  output="@." />
 		</Node>
 	</Node>
@@ -75,7 +75,7 @@
 			<MeshLoader name="meshLoader"  filename="mesh/torus_for_collision.obj"  triangulate="1" />
 			<MeshTopology name="meshTopology2" />
 			<MechanicalObject template="Vec3d" name="mechanicalObject3"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  rotation="90 0 0"  scale3d="1 1 1" />
-			<TTriangleModel template="Vec3d" name="tTriangleModel2" />
+			<TriangleCollisionModel template="Vec3d" name="tTriangleModel2" />
 			<LineModel name="lineModel2" />
 			<PointModel name="pointModel2" />
 			<RigidMapping template="Rigid,Vec3d" name="rigidMapping2"  input="@.."  output="@." />

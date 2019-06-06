@@ -28,7 +28,7 @@
 			<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../controllerRigid.rigids" />
-				<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.05"/>
+				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.05"/>
 				<IdentityMapping/>
 			</Node>
 		</Node>
@@ -40,7 +40,7 @@
 			<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../controllerRigid.rigids" />
-				<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.05"/>
+				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.05"/>
 				<IdentityMapping/>
 			</Node>
 		</Node>
@@ -73,7 +73,7 @@
 		<Node name="Collision">
 			<SphereLoader name="loader" filename="OBJs/buffoon.sph" />
 			<MechanicalObject name="sphereDOFs"  position="@loader.position" />
-			<Sphere listRadius="@loader.listRadius" />
+			<SphereCollisionModel listRadius="@loader.listRadius" />
 			<BarycentricMapping input="@../DOFs" output="@sphereDOFs" />
 		</Node>
 

@@ -47,7 +47,7 @@
         <Node 	name="CollisionModel"  >
 
             <MechanicalObject template="Vec3d" name="Particle"  position="0 0 0" />
-            <Point name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
+            <PointCollisionModel name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
             <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particle" />
             <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>
 

@@ -43,7 +43,7 @@
 		<MeshObjLoader name="meshLoader"  filename="mesh/box_inside.obj"  triangulate="1" />
 		<MeshTopology name="meshTopology1"  position="@meshLoader.position"  edges="@meshLoader.edges"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  tetrahedra="@meshLoader.tetras"  hexahedra="@meshLoader.hexas" />
 		<MechanicalObject template="Vec3d" name="mechanicalObject1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="0 0 250"  rotation="@meshLoader.rotation"  scale3d="50 50 100" />
-		<TTriangleModel template="Vec3d" name="tTriangleModel1"  moving="0"  simulated="0" />
+		<TriangleCollisionModel template="Vec3d" name="tTriangleModel1"  moving="0"  simulated="0" />
 		<LineModel name="lineModel1"  moving="0"  simulated="0" />
 		<PointModel name="pointModel1"  moving="0"  simulated="0" />
 		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/box_outside.obj"  translation="0 0 250"  scale3d="50 50 100"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />

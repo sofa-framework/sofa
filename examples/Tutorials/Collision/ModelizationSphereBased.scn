@@ -19,6 +19,6 @@
     <Node name="Floor">
         <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />
         <MechanicalObject name="Particles Floor" />
-        <Triangle name="Triangle For Collision Floor" moving="0" simulated="0" />
+        <TriangleCollisionModel name="Triangle For Collision Floor" moving="0" simulated="0" />
     </Node>
 </Node>

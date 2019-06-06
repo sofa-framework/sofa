@@ -24,7 +24,7 @@
             <MechanicalObject src="@mesh"  />
             <UniformMass totalMass="4" />
             <InvertibleFVMForceField name="FEM" youngModulus="1000" poissonRatio="0" verbose="true"/>
-	    <Point />
+	    <PointCollisionModel />
 	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />
 	    <!--ProjectToLineConstraint direction="0 0 1" origin="0 0 0" indices="0" drawSize="0.03" /-->
 	    <!--ProjectToPlaneConstraint normal="0 1 0" indices="1" drawSize="0.03" /-->
@@ -39,7 +39,7 @@
             <MechanicalObject src="@mesh" dx="2" />
             <UniformMass totalMass="4" />
 	    <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
-	    <Point />
+	    <PointCollisionModel />
 	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />
 	    </Node>
 

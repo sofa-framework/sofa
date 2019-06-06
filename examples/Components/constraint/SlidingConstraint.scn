@@ -24,9 +24,9 @@
         <Node name="ColliCube">
             <Mesh filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
-            <Triangle contactStiffness="0.1" />
-            <Line contactStiffness="0.1" />
-            <Point contactStiffness="0.1" />
+            <TriangleCollisionModel contactStiffness="0.1" />
+            <LineCollisionModel contactStiffness="0.1" />
+            <PointCollisionModel contactStiffness="0.1" />
             <RigidMapping />
         </Node>
         <Node name="Constraints">
@@ -51,9 +51,9 @@
         <Node name="ColliCube">
             <Mesh filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
-            <Triangle contactStiffness="0.1" />
-            <Line contactStiffness="0.1" />
-            <Point contactStiffness="0.1" />
+            <TriangleCollisionModel contactStiffness="0.1" />
+            <LineCollisionModel contactStiffness="0.1" />
+            <PointCollisionModel contactStiffness="0.1" />
             <RigidMapping />
         </Node>
         <Node name="Constraints">
