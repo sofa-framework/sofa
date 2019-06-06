@@ -73,7 +73,7 @@ public:
         else
             notifyLoadingSceneBefore();
 
-            sofa::simulation::Node::SPtr root = doLoad(filename, sceneArgs);
+        sofa::simulation::Node::SPtr root = doLoad(filename, sceneArgs);
 
         if(reload)
             notifyReloadingSceneAfter(root);
