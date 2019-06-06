@@ -12,7 +12,7 @@ namespace collision
 
 template <class DataTypes>
 TBulletTriangleModel<DataTypes>::TBulletTriangleModel()
-    : TTriangleModel<DataTypes>()
+    : TriangleCollisionModel<DataTypes>()
     , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , _bt_mesh(0x0)
     , _bt_gmesh(0x0)
@@ -80,7 +80,7 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
 
 template <class DataTypes>
 void TBulletTriangleModel<DataTypes>::init(){
-    TTriangleModel<DataTypes>::init();
+    TriangleCollisionModel<DataTypes>::init();
     initBullet();
 }
 

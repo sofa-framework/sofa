@@ -44,8 +44,6 @@ namespace core
 namespace loader
 {
 
-//todo(dmarchal 05/02/2019): This mix of types is bad.
-using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Vec3;
 using topology::Topology;
 
@@ -101,30 +99,30 @@ public:
     /// @{
     void setTranslation(SReal dx, SReal dy, SReal dz)
     {
-        d_translation.setValue(Vector3(dx, dy, dz));
+        d_translation.setValue(Vec3(dx, dy, dz));
     }
     void setRotation(SReal rx, SReal ry, SReal rz)
     {
-        d_rotation.setValue(Vector3(rx, ry, rz));
+        d_rotation.setValue(Vec3(rx, ry, rz));
     }
     void setScale(SReal sx, SReal sy, SReal sz)
     {
-        d_scale.setValue(Vector3(sx, sy, sz));
+        d_scale.setValue(Vec3(sx, sy, sz));
     }
     void setTransformation(const sofa::defaulttype::Matrix4& t)
     {
         d_transformation.setValue(t);
     }
 
-    virtual Vector3 getTranslation() const
+    virtual Vec3 getTranslation() const
     {
         return d_translation.getValue();
     }
-    virtual Vector3 getRotation() const
+    virtual Vec3 getRotation() const
     {
         return d_rotation.getValue();
     }
-    virtual Vector3 getScale() const
+    virtual Vec3 getScale() const
     {
         return d_scale.getValue();
     }
@@ -177,9 +175,9 @@ public:
     Data< bool > d_createSubelements; ///< Divide all n-D elements into their (n-1)-D boundary elements (e.g. tetrahedra to triangles)
     Data< bool > d_onlyAttachedPoints; ///< Only keep points attached to elements of the mesh
 
-    Data< Vector3 > d_translation; ///< Translation of the DOFs
-    Data< Vector3 > d_rotation; ///< Rotation of the DOFs
-    Data< Vector3 > d_scale; ///< Scale of the DOFs in 3 dimensions
+    Data< Vec3 > d_translation; ///< Translation of the DOFs
+    Data< Vec3 > d_rotation; ///< Rotation of the DOFs
+    Data< Vec3 > d_scale; ///< Scale of the DOFs in 3 dimensions
     Data< defaulttype::Matrix4 > d_transformation; ///< 4x4 Homogeneous matrix to transform the DOFs (when present replace any)
 
 

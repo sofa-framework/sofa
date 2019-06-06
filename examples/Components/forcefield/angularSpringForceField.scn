@@ -31,9 +31,9 @@
 			<Node name="Collision">
 	            <CubeTopology max="9.2 0.05 0.05" min="0 -0.05 -0.05" nx="70" ny="2" nz="2" />
 	            <MechanicalObject name="skinDOFs" />
-	            <Triangle /> 
-	            <Line />
-	            <Point />
+	            <TriangleCollisionModel /> 
+	            <LineCollisionModel />
+	            <PointCollisionModel />
 	            <BeamLinearMapping isMechanical="true" />
 	        </Node>
 	        <RestShapeSpringsForceField stiffness="1200"  angularStiffness="500" drawSpring="1" external_points="0" external_rest_shape="@../TranslPoint/DOF" mstate="@DOFs" points="0" template="Rigid" />

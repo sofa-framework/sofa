@@ -59,8 +59,8 @@
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
             <RigidMapping />
             <PlaneForceField normal="0 1 -0.5" d="-10" />
             <PlaneForceField normal="0 0 1" d="-50" />

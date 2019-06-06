@@ -37,7 +37,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject  position="@[-1].position" />
-            <TSphereModel  listRadius="@[-2].listRadius" />
+            <SphereCollisionModel  listRadius="@[-2].listRadius" />
             <BarycentricMapping  input="@.." output="@." />
         </Node>
     </Node>

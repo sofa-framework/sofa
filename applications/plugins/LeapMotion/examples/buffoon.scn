@@ -38,7 +38,7 @@
 			<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../../../leapMotionDriver.handPalmCoordinate" />
-				<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
+				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
 				<IdentityMapping/>
 			</Node>
 		</Node>
@@ -56,7 +56,7 @@
 					<Mesh2PointTopologicalMapping input="@../EdgeContainer" output="@PointContainer" pointBaryCoords="0 0 0" edgeBaryCoords="0.33 0.0 0.0   0.66 0.0 0.0 " />
 					<MechanicalObject name="sphereCollisDOFs"/>
 					<Mesh2PointMechanicalMapping />
-					<Sphere name="colliSphere" group="1" contactStiffness="1e7" contactFriction="0.05" contactRestitution="0" radius="0.0175" />
+					<SphereCollisionModel name="colliSphere" group="1" contactStiffness="1e7" contactFriction="0.05" contactRestitution="0" radius="0.0175" />
 				</Node>
 			</Node>
 		</Node>
@@ -91,7 +91,7 @@
 	<Node name="Collision">
 	    <SphereLoader name="loader" filename="Buffoon/buffoon.sph" />
 	    <MechanicalObject name="sphereDOFs"  position="@loader.position" />
-	    <Sphere listRadius="@loader.listRadius" />
+	    <SphereCollisionModel listRadius="@loader.listRadius" />
 	    <BarycentricMapping input="@../DOFs" output="@sphereDOFs" />
 	</Node>
 

@@ -586,7 +586,6 @@ function(sofa_set_install_relocatable target install_dir)
              && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
              || true
         )
-    add_dependencies(${target}_relocatable_install ${target})
 endfunction()
 
 

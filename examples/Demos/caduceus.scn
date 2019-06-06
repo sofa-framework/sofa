@@ -36,9 +36,9 @@
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <TTriangleModel  selfCollision="0" />
-            <TLineModel    selfCollision="0" />
-            <TPointModel  selfCollision="0" />
+            <TriangleCollisionModel  selfCollision="0" />
+            <LineCollisionModel    selfCollision="0" />
+            <PointCollisionModel  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 
@@ -63,25 +63,25 @@
                  <MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
                  <MeshTopology src="@loader" />
                  <MechanicalObject src="@loader" name="CollisModel" />
-                 <TLineModel simulated="false" moving="false" />
-                 <TPointModel simulated="false"  moving="false"/>
+                 <LineCollisionModel simulated="false" moving="false" />
+                 <PointCollisionModel simulated="false"  moving="false"/>
         </Node>
         <Node name="Blobs">
                  <MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
                  <MeshTopology src="@loader" />
                  <MechanicalObject src="@loader" name="CollisModel" />
-                 <TTriangleModel simulated="false" moving="false"/>
-                 <TLineModel simulated="false" moving="false"/>
-                 <TPointModel simulated="false" moving="false"/>
+                 <TriangleCollisionModel simulated="false" moving="false"/>
+                 <LineCollisionModel simulated="false" moving="false"/>
+                 <PointCollisionModel simulated="false" moving="false"/>
         </Node>
 
             <Node name="Foot">
             <MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <TTriangleModel simulated="false" moving="false"/>
-            <TLineModel simulated="false" moving="false"/>
-            <TPointModel simulated="false" moving="false"/>
+            <TriangleCollisionModel simulated="false" moving="false"/>
+            <LineCollisionModel simulated="false" moving="false"/>
+            <PointCollisionModel simulated="false" moving="false"/>
         </Node>
 
         <Node name="Visu" tags="Visual" >

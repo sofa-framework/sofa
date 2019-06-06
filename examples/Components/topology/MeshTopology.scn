@@ -23,7 +23,7 @@
             <Mesh src="@loader" />
             <!-- or MeshTopology -->
             <MechanicalObject src="@loader" />
-            <Triangle />
+            <TriangleCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
