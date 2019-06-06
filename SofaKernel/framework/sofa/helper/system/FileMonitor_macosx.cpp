@@ -29,6 +29,7 @@
 using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
+#include <sofa/helper/system/config.h>
 
 using namespace std ;
 
