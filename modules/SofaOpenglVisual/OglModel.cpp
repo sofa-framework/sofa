@@ -56,22 +56,22 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
-    : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
-    , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
-    , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
-    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
-    , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
-    , lineWidth(initData(&lineWidth, (GLfloat) 1, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
-    , pointSize(initData(&pointSize, (GLfloat) 1, "pointSize", "Point size (set if != 1, only for points rendering)"))
-    , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
-    , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
+    : blendTransparency(initData(&blendTransparency, true, "blendTranslucency", "Blend transparent parts"))
+    , premultipliedAlpha(initData(&premultipliedAlpha, false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    , writeZTransparent(initData(&writeZTransparent, false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
+    , alphaBlend(initData(&alphaBlend, false, "alphaBlend", "Enable alpha blending"))
+    , depthTest(initData(&depthTest, true, "depthTest", "Enable depth testing"))
+    , cullFace(initData(&cullFace, 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , lineWidth(initData(&lineWidth, 1.0f, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
+    , pointSize(initData(&pointSize, 1.0f, "pointSize", "Point size (set if != 1, only for points rendering)"))
+    , lineSmooth(initData(&lineSmooth, false, "lineSmooth", "Enable smooth line rendering"))
+    , pointSmooth(initData(&pointSmooth, false, "pointSmooth", "Enable smooth point rendering"))
     , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
-    , tex(NULL)
+    , tex(nullptr)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
@@ -103,7 +103,7 @@ OglModel::OglModel()
 
 OglModel::~OglModel()
 {
-    if (tex!=NULL) delete tex;
+    if (tex!=nullptr) delete tex;
 
     for (unsigned int i = 0 ; i < textures.size() ; i++)
     {
@@ -306,7 +306,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (!tex && m.useTexture && m.activated)
     {
         int indexInTextureArray = materialTextureIdMap[g.materialId];
-        if (indexInTextureArray < int(textures.size()) && textures[indexInTextureArray])
+        if (indexInTextureArray < int(textures.size()) && textures[size_t(indexInTextureArray)])
         {
             textures[size_t(indexInTextureArray)]->unbind();
         }
@@ -407,15 +407,15 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             tex->bind();
         }
 
-        GLuint textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
+        size_t textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>vertexArrayByteSize + normalArrayByteSize );
+        glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize ));
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         if (hasTangents)
         {
-            GLuint tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
+            size_t tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
 
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -845,11 +845,11 @@ void OglModel::updateVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    long positionsBufferSize, normalsBufferSize;
-    long textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
+    size_t positionsBufferSize, normalsBufferSize;
+    size_t textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
 
-    positionsBufferSize = long(vertices.size()*sizeof(vertices[0]));
-    normalsBufferSize = long(vnormals.size()*sizeof(vnormals[0]));
+    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
     const void* positionBuffer = vertices.getData();
     const void* normalBuffer = vnormals.getData();
 
@@ -867,12 +867,12 @@ void OglModel::updateVertexBuffer()
 
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
-        textureCoordsBufferSize = long(vtexcoords.size() * sizeof(vtexcoords[0]));
+        textureCoordsBufferSize = (vtexcoords.size() * sizeof(vtexcoords[0]));
 
         if (hasTangents)
         {
-            tangentsBufferSize = long(vtangents.size() * sizeof(vtangents[0]));
-            bitangentsBufferSize = long(vbitangents.size() * sizeof(vbitangents[0]));
+            tangentsBufferSize = (vtangents.size() * sizeof(vtangents[0]));
+            bitangentsBufferSize = (vbitangents.size() * sizeof(vbitangents[0]));
         }
     }
 
