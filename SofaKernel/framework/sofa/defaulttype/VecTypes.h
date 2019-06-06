@@ -196,42 +196,34 @@ public:
     }
 };
 
+template <class TCoord, class TDeriv, class TReal> using ExtVectorTypes
+[[deprecated("since 19.06, ExtVector is deprecated. Use helper::vector instead. Will be removed in 19.12")]]
+= StdVectorTypes<TCoord, TDeriv, TReal>;
 
-template <class TCoord, class TDeriv, class TReal>
-class ExtVectorTypes : public  StdVectorTypes<TCoord, TDeriv, TReal>
-{
-public:
-    [[deprecated("since 19.06, ExtVecTypes are deprecated. Use VecTypes instead. Types will be removed in 19.12")]]
-    static const char* Name();
-};
 
 /// 3D DOFs, double precision
 typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
 template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
 /// 3D external DOFs, double precision
 typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
-template<> inline const char* ExtVec3dTypes::Name() { return "ExtVec3d"; }
 
 /// 2D DOFs, double precision
 typedef StdVectorTypes<Vec2d,Vec2d,double> Vec2dTypes;
 template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
 /// 2D external DOFs, double precision
 typedef ExtVectorTypes<Vec2d,Vec2d,double> ExtVec2dTypes;
-template<> inline const char* ExtVec2dTypes::Name() { return "ExtVec2d"; }
 
 /// 1D DOFs, double precision
 typedef StdVectorTypes<Vec1d,Vec1d,double> Vec1dTypes;
 template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
 /// 1D external DOFs, double precision
 typedef ExtVectorTypes<Vec1d,Vec1d,double> ExtVec1dTypes;
-template<> inline const char* ExtVec1dTypes::Name() { return "ExtVec1d"; }
 
 /// 6D DOFs, double precision
 typedef StdVectorTypes<Vec6d,Vec6d,double> Vec6dTypes;
 template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
 /// 6D external DOFs, double precision
 typedef ExtVectorTypes<Vec6d,Vec6d,double> ExtVec6dTypes;
-template<> inline const char* ExtVec6dTypes::Name() { return "ExtVec6d"; }
 
 
 /// 3f DOFs, single precision
@@ -239,28 +231,24 @@ typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
 template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
 /// 3f external DOFs, single precision
 typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
-template<> inline const char* ExtVec3fTypes::Name() { return "ExtVec3f"; }
 
 /// 2f DOFs, single precision
 typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
 template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
 /// 2f external DOFs, single precision
 typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
-template<> inline const char* ExtVec2fTypes::Name() { return "ExtVec2f"; }
 
 /// 1f DOFs, single precision
 typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
 template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
 /// 1f external DOFs, single precision
 typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
-template<> inline const char* ExtVec1fTypes::Name() { return "ExtVec1f"; }
 
 /// 6f DOFs, single precision
 typedef StdVectorTypes<Vec6f,Vec6f,float> Vec6fTypes;
 template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
 /// 6f external DOFs, single precision
 typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
-template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
 
 /// 6D DOFs, double precision (default)
 typedef StdVectorTypes<Vec6,Vec6,Vec6::value_type> Vec6Types;
