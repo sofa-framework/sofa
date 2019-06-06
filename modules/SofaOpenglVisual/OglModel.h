@@ -60,7 +60,6 @@ public:
     Data<bool> blendTransparency; ///< Blend transparent parts
 protected:
     Data<bool> premultipliedAlpha; ///< is alpha premultiplied ?
-    Data<bool> useVBO; ///< Use VBO for rendering
     Data<bool> writeZTransparent; ///< Write into Z Buffer for Transparent Object
     Data<bool> alphaBlend; ///< Enable alpha blending
     Data<bool> depthTest; ///< Enable depth testing
@@ -70,7 +69,7 @@ protected:
     Data<bool> lineSmooth; ///< Enable smooth line rendering
     Data<bool> pointSmooth; ///< Enable smooth point rendering
     /// Suppress field for save as function
-    Data < bool > isToPrint;
+    Data < bool > isEnabled;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
@@ -83,8 +82,14 @@ protected:
 
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
-    bool canUseVBO, VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
+    bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
+
+    /// These two buffers are used to convert the data field to float type before being sent to
+    /// opengl
+    std::vector<sofa::defaulttype::Vec3f> verticesTmpBuffer;
+    std::vector<sofa::defaulttype::Vec3f> normalsTmpBuffer;
+
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
     void drawGroup(int ig, bool transparent);
@@ -112,6 +117,7 @@ public:
     void initVisual() override;
 
     void init() override { VisualModelImpl::init(); }
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void updateBuffers() override;
 
@@ -122,7 +128,6 @@ public:
     bool isUseEdges()	{ return useEdges; }
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
-    bool isUseVbo()	{ return useVBO.getValue(); }
 
     helper::gl::Texture* getTex() const	{ return tex; }
     GLuint getVbo()	{ return vbo;	}
@@ -131,7 +136,6 @@ public:
     GLuint getIboQuads()    { return iboQuads; }
     const std::vector<helper::gl::Texture*>& getTextures() const { return textures;	}
 
-#ifdef SOFA_HAVE_GLEW
     void createVertexBuffer();
     void createEdgesIndicesBuffer();
     void createTrianglesIndicesBuffer();
@@ -144,7 +148,6 @@ public:
     void updateEdgesIndicesBuffer();
     void updateTrianglesIndicesBuffer();
     void updateQuadsIndicesBuffer();
-#endif
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
