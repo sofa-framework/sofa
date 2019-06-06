@@ -69,7 +69,6 @@ protected:
     Data<bool> lineSmooth; ///< Enable smooth line rendering
     Data<bool> pointSmooth; ///< Enable smooth point rendering
     /// Suppress field for save as function
-    Data < bool > isToPrint;
     Data < bool > isEnabled;
 
     // primitive types
@@ -118,6 +117,7 @@ public:
     void initVisual() override;
 
     void init() override { VisualModelImpl::init(); }
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void updateBuffers() override;
 
