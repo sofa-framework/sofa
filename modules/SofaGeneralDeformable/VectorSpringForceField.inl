@@ -87,8 +87,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     VectorSpringForceField<DataTypes>* dest;
     Loader(VectorSpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addVectorSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal /*initpos*/, SReal restx, SReal resty, SReal restz)
+    virtual void addVectorSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos, SReal restx, SReal resty, SReal restz)
     {
+        SOFA_UNUSED(initpos);
         dest->addSpring(m1,m2,ks,kd,Coord(Real(restx),Real(resty),Real(restz)));
     }
 };

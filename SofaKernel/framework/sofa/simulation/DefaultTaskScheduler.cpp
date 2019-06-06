@@ -24,8 +24,9 @@ namespace sofa
                 return ::operator new(sz);
             }
             
-            void free(void* ptr, std::size_t /* sz */) final
-            {
+            void free(void* ptr, std::size_t sz) final
+            {  
+                SOFA_UNUSED(sz);
                 ::operator delete(ptr);
             }
         };
