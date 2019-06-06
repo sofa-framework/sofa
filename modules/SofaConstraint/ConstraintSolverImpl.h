@@ -115,7 +115,7 @@ public:
     const char* getClassName() const override { return "MechanicalGetConstraintViolationVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
+    void setReadWriteVectors() override
     {
     }
 #endif
