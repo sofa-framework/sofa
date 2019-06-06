@@ -555,38 +555,42 @@ function(sofa_set_install_relocatable target install_dir)
 
     get_target_property(target_binary_dir ${target} BINARY_DIR)
 
-    if(WIN32)
-        string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
-        set(COMMAND_IF if not exist \"${target_binary_dir}/cmake_install.cmakepatch\")
-        set(COMMAND_IF_END "")
-        set(COMMAND_COPY_CONTENT type \"${target_binary_dir_windows}\\\\cmake_install.cmake\" >> \"${target_binary_dir_windows}\\\\cmake_install.cmakepatch\")
-        set(COMMAND_QUOTE "")
-    else()
-        set(COMMAND_IF test ! -e ${target_binary_dir}/cmake_install.cmakepatch &&)
-        set(COMMAND_IF_END || true)
-        set(COMMAND_COPY_CONTENT cat ${target_binary_dir}/cmake_install.cmake >> ${target_binary_dir}/cmake_install.cmakepatch)
-        set(COMMAND_QUOTE \")
-    endif()
-
     # Remove cmakepatch file at each configure
     file(REMOVE "${target_binary_dir}/cmake_install.cmakepatch")
 
     # Hack to make installed plugin independant and keep the add_subdirectory mechanism
     # Does not fail if cmakepatch file already exists thanks to "|| true"
-    add_custom_target(${target}_relocatable_install ALL
-        COMMENT "${target}: Patching cmake_install.cmake"
-        COMMAND
-            ${COMMAND_IF}
-            echo ${COMMAND_QUOTE} set ( CMAKE_INSTALL_PREFIX_BACK \"\$$\{CMAKE_INSTALL_PREFIX\}\" ) ${COMMAND_QUOTE}
-                > "${target_binary_dir}/cmake_install.cmakepatch"
-            && echo ${COMMAND_QUOTE} set ( CMAKE_INSTALL_PREFIX \"\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\" ) ${COMMAND_QUOTE}
-                >> "${target_binary_dir}/cmake_install.cmakepatch"
-            && ${COMMAND_COPY_CONTENT}
-            && echo ${COMMAND_QUOTE} set ( CMAKE_INSTALL_PREFIX \"\$$\{CMAKE_INSTALL_PREFIX_BACK\}\" ) ${COMMAND_QUOTE}
-                >> "${target_binary_dir}/cmake_install.cmakepatch"
-            && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
-            ${COMMAND_IF_END}
-        )
+    if(WIN32)
+        string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
+        add_custom_target(${target}_relocatable_install ALL
+            COMMENT "${target}: Patching cmake_install.cmake"
+            COMMAND
+                if not exist \"${target_binary_dir}/cmake_install.cmakepatch\"
+                echo set ( CMAKE_INSTALL_PREFIX_BACK \"\$$\{CMAKE_INSTALL_PREFIX\}\" )
+                    > "${target_binary_dir}/cmake_install.cmakepatch"
+                && echo set ( CMAKE_INSTALL_PREFIX \"\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\" )
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && type \"${target_binary_dir_windows}\\\\cmake_install.cmake\" >> \"${target_binary_dir_windows}\\\\cmake_install.cmakepatch\"
+                && echo set ( CMAKE_INSTALL_PREFIX \"\$$\{CMAKE_INSTALL_PREFIX_BACK\}\" )
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
+            )
+    else()
+        add_custom_target(${target}_relocatable_install ALL
+            COMMENT "${target}: Patching cmake_install.cmake"
+            COMMAND
+                test ! -e ${target_binary_dir}/cmake_install.cmakepatch
+                && echo \" set ( CMAKE_INSTALL_PREFIX_BACK \\\"\\\$$\{CMAKE_INSTALL_PREFIX\}\\\" ) \"
+                    > "${target_binary_dir}/cmake_install.cmakepatch"
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\\"\\\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\\\" ) \"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && cat ${target_binary_dir}/cmake_install.cmake >> ${target_binary_dir}/cmake_install.cmakepatch
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\\"\\\$$\{CMAKE_INSTALL_PREFIX_BACK\}\\\" ) \"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
+                || true
+            )
+    endif()
 endfunction()
 
 
