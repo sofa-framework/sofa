@@ -58,6 +58,12 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
+    this->SpringForceField<DataTypes>::init();
+}
+
+template<class DataTypes>
+void StiffSpringForceField<DataTypes>::bwdInit()
+{
     if (f_indices1.isSet() && f_indices2.isSet() && (f_indices1.getValue().size() == f_indices2.getValue().size()))
     {
         helper::vector<Spring>& _springs = *this->springs.beginEdit();
