@@ -48,29 +48,29 @@ namespace collision
 {
 
 template<class DataTypes>
-TTriangleModel<DataTypes>::TTriangleModel()
+TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
-    , m_mstate(NULL)
-    , m_topology(NULL)
+    , m_mstate(nullptr)
+    , m_topology(nullptr)
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
-    , m_pointModels(NULL)
-    , m_lmdFilter(NULL)
+    , m_pointModels(nullptr)
+    , m_lmdFilter(nullptr)
 {
     m_triangles = &m_internalTriangles;
     enum_type = TRIANGLE_TYPE;
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::resize(int size)
+void TriangleCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
     m_normals.resize(size);
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::init()
+void TriangleCollisionModel<DataTypes>::init()
 {
     m_topology = this->getContext()->getMeshTopology();
 
@@ -122,7 +122,7 @@ void TTriangleModel<DataTypes>::init()
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::updateNormals()
+void TriangleCollisionModel<DataTypes>::updateNormals()
 {
     for (int i=0; i<size; i++)
     {
@@ -137,7 +137,7 @@ void TTriangleModel<DataTypes>::updateNormals()
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::updateFromTopology()
+void TriangleCollisionModel<DataTypes>::updateFromTopology()
 {
     int revision = m_topology->getRevision();
     if (revision == m_topologyRevision)
@@ -205,7 +205,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
+void TriangleCollisionModel<DataTypes>::updateFlags(int /*ntri*/)
 {
 #if 0
     if (ntri < 0) ntri = m_triangles->size();
@@ -251,7 +251,7 @@ void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
 
 
 template<class DataTypes>
-bool TTriangleModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool TriangleCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
@@ -288,7 +288,7 @@ bool TTriangleModel<DataTypes>::canCollideWithElement(int index, CollisionModel*
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
+void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
 
@@ -350,7 +350,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
 
@@ -409,20 +409,20 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
 }
 
 template<class DataTypes>
-TriangleLocalMinDistanceFilter *TTriangleModel<DataTypes>::getFilter() const
+TriangleLocalMinDistanceFilter *TriangleCollisionModel<DataTypes>::getFilter() const
 {
     return m_lmdFilter;
 }
 
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
+void TriangleCollisionModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
 {
     m_lmdFilter = lmdFilter;
 }
 
 template<class DataTypes>
-int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
+int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*m_triangles)[i];
@@ -455,7 +455,7 @@ int TTriangleModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 
@@ -493,7 +493,7 @@ void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool
 
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
 {
     Element t(this,index);
 
@@ -505,7 +505,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,
 
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {

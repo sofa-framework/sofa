@@ -31,11 +31,11 @@ namespace component
 namespace collision
 {
 
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace collision
@@ -49,11 +49,11 @@ namespace cuda
 {
 
 int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::TSphereModel<CudaVec3fTypes> >()
-        .add< component::collision::TSphereModel<CudaVec3f1Types> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::TSphereModel<CudaVec3dTypes> >()
-        .add< component::collision::TSphereModel<CudaVec3d1Types> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .addAlias("CudaSphere")
         .addAlias("CudaSphereModel");

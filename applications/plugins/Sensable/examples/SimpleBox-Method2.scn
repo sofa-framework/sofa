@@ -38,7 +38,7 @@
 
         <Node name="ToolCollision">
             <MechanicalObject name="CM" position="0 0 0"/>
-            <Point bothSide="true" group="1" />
+            <PointCollisionModel bothSide="true" group="1" />
             <RigidMapping />
         </Node>
 
@@ -61,7 +61,7 @@
             <MeshObjLoader name="loader"  filename="data/mesh/box.obj" scale="10"/>
             <MeshTopology src="@loader" name="BoxCollisionModel" />
             <MechanicalObject src="@loader" template="Vec3d" name="boxState" />
-            <Triangle />
+            <TriangleCollisionModel />
 
         </Node>
     </Node>

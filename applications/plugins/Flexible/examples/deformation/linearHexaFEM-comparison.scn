@@ -50,7 +50,7 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
         
         <Node name="Visual"  >
@@ -109,7 +109,7 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
         
         <Node name="Visual"  >
@@ -150,7 +150,7 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
@@ -179,7 +179,7 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
@@ -207,7 +207,7 @@
   <Node name="Collision">      
 	<Mesh  src="@../../loader" />
 	<MechanicalObject name="dof" />
-	<TTriangleModel />
+	<TriangleCollisionModel />
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >

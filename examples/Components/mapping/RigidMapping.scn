@@ -10,7 +10,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle contactStiffness="1000" simulated="0" moving="0" />
+            <TriangleCollisionModel contactStiffness="1000" simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" texturename="textures/brushed_metal.bmp" />
         </Node>
         <Node name="TorusRigid">
@@ -26,7 +26,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -43,7 +43,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -60,7 +60,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -77,7 +77,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>

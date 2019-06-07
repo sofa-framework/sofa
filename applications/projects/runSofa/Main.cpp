@@ -445,14 +445,17 @@ int main(int argc, char** argv)
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
     }
-    GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
-
 
     //=======================================
     //Apply Options
 
+    // start anim option
     if (startAnim)
         groot->setAnimate(true);
+
+    // set scene and animation root to the gui
+    GUIManager::SetScene(groot, fileName.c_str(), temporaryFile);
+
     if (printFactory)
     {
         msg_info("") << "////////// FACTORY //////////" ;

@@ -50,26 +50,9 @@ class LineInfo : public InfoFilter
 
 public:
     /**
-     * @brief Empty constructor. Required by EdgeData<>.
-     */
-    LineInfo()
-        : InfoFilter(NULL)
-        , m_computedRightAngleCone(0.0)
-        , m_computedLeftAngleCone(0.0)
-        , m_twoTrianglesAroundEdge(false)
-    {
-    }
-
-    /**
      * @brief Default constructor.
      */
-    LineInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-        , m_computedRightAngleCone(0.0)
-        , m_computedLeftAngleCone(0.0)
-        , m_twoTrianglesAroundEdge(false)
-    {
-    }
+    LineInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.

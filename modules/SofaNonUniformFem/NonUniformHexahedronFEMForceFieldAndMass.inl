@@ -40,6 +40,15 @@ namespace forcefield
 {
 
 template <class DataTypes>
+NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::NonUniformHexahedronFEMForceFieldAndMass()
+    : HexahedronFEMForceFieldAndMassT()
+    , _nbVirtualFinerLevels(initData(&_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
+    , _useMass(initData(&_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
+    , _totalMass(initData(&_totalMass,(Real)0.0,"totalMass",""))
+{
+}
+
+template <class DataTypes>
 void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 {
     if(this->_alreadyInit)return;

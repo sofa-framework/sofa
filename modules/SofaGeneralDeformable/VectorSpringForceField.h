@@ -138,8 +138,8 @@ public:
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
 protected:
-    VectorSpringForceField(MechanicalState* _object=NULL);
-
+    VectorSpringForceField();
+    VectorSpringForceField(MechanicalState* _object);
     VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2);
     virtual ~VectorSpringForceField();
 

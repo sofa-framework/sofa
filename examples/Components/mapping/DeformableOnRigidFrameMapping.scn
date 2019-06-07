@@ -12,7 +12,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <!-- 		<Node name="TorusRigid"> -->
@@ -36,7 +36,7 @@
                         <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                         <Mesh src="@loader" />
                         <MechanicalObject src="@loader" />
-                        <Triangle group="2" />
+                        <TriangleCollisionModel group="2" />
                         <BarycentricMapping />
                         <PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" draw="1" />
                     </Node>

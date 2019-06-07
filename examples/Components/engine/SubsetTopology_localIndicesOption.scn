@@ -19,7 +19,7 @@
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-            <TTriangleModel template="Vec3d" name="default7" />
+            <TriangleCollisionModel template="Vec3d" name="default7" />
             <VisualModel template="ExtVec3f" name="Visual" color="blue" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
         </Node>
@@ -30,7 +30,7 @@
             <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
-            <TTriangleModel template="Vec3d" name="default7" />
+            <TriangleCollisionModel template="Vec3d" name="default7" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <FixedConstraint template="Vec3d" name="default6" indices="0 1" />

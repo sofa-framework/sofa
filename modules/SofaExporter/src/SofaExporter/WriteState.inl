@@ -53,7 +53,7 @@ WriteState::WriteState()
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
     , mmodel(nullptr)
-    , outfile(NULL)
+    , outfile(nullptr)
 #ifdef SOFA_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
@@ -111,7 +111,7 @@ void WriteState::init()
             {
                 msg_error() << "Error creating file "<<filename;
                 delete outfile;
-                outfile = NULL;
+                outfile = nullptr;
             }
         }
     }

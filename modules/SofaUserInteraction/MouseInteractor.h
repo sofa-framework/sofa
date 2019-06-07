@@ -49,9 +49,6 @@ struct BodyPicked
     sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    defaulttype::Vector3 baryCoords;
-#endif
     SReal dist;
     SReal rayLength;
     operator bool() { return mstate != nullptr; }

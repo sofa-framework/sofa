@@ -78,15 +78,7 @@ protected:
     * @param from the topology issuing TopologyChange objects (the "source").
     * @param to   the topology for which the TopologyChange objects must be translated (the "target").
     */
-    Edge2QuadTopologicalMapping()
-        :  TopologicalMapping(),
-           m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles")),
-           m_radius( initData(&m_radius, "radius", "Radius of created circles")),
-           edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered")),
-           flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)")),
-        m_radiusContainer(NULL)
-    {
-    }
+    Edge2QuadTopologicalMapping();
 
     /** \brief Destructor.
     *

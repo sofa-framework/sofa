@@ -99,8 +99,8 @@ helper::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(cons
 {
     helper::vector<SReal> quadCoef{(1-fx)*(1-fy),
                 (fx)*(1-fy),
-                (1-fx)*(fy),
-                (fx)*(fy)};
+                (fx)*(fy),
+                (1 - fx)*(fy)};
     return quadCoef;
 }
 

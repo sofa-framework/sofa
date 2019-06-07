@@ -49,7 +49,7 @@ WriteTopology::WriteTopology()
     , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
     , m_topology(nullptr)
-    , outfile(NULL)
+    , outfile(nullptr)
     #ifdef SOFA_HAVE_ZLIB
     , gzfile(nullptr)
     #endif
@@ -97,7 +97,7 @@ void WriteTopology::init()
     {
         msg_error() << "Unable to create the file "<<filename;
         delete outfile;
-        outfile = NULL;
+        outfile = nullptr;
     }
 }
 

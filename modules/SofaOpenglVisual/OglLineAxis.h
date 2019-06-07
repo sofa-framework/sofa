@@ -45,13 +45,7 @@ public:
     Data<float> thickness; ///< Thickness of the lines in the grid
     Data<bool> draw; ///< Display the grid or not
 
-    OglLineAxis():
-        axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw")),
-        size(initData(&size, (float)(10.0),  "size", "Size of the squared grid")),
-        thickness(initData(&thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid")),
-        draw(initData(&draw, true,  "draw", "Display the grid or not")),
-        drawX(true), drawY(true), drawZ(true)
-    {}
+    OglLineAxis();
 
     void init() override;
     void reinit() override;

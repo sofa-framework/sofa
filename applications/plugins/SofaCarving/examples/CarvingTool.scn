@@ -50,7 +50,7 @@
 	
     <Node 	name="CollisionModel"  >
       <MechanicalObject template="Vec3d" name="Particle"  position="-0.2 -0.2 -0.2" />
-      <Point name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
+      <PointCollisionModel name="ParticleModel" tags="CarvingTool" contactStiffness="2" />
       <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@Particle" />
     </Node>
 

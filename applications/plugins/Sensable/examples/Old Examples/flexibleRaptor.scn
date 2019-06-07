@@ -33,9 +33,9 @@
 		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<Mesh src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
-			<Triangle name="raptor" contactStiffness="100"/>
-			<Line name="raptor" contactStiffness="100"/>	
-			<Point name="raptor" contactStiffness="100"/>	
+			<TriangleCollisionModel name="raptor" contactStiffness="100"/>
+			<LineCollisionModel name="raptor" contactStiffness="100"/>	
+			<PointCollisionModel name="raptor" contactStiffness="100"/>	
 			<BarycentricMapping name="tongueMapping" input="@../mecaRaptor" output="@raptorState" mapForces="false"/>
 		</Node>
 	</Node>
@@ -72,8 +72,8 @@
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
 			<Mesh src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<Line name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" /> 
+			<LineCollisionModel name="instrument" contactStiffness="10" />
+			<PointCollisionModel name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField  object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />

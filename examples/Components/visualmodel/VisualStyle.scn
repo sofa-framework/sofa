@@ -19,7 +19,7 @@
             <VisualStyle displayFlags="hideBehavior showCollision showWireframe" />
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
-            <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
         

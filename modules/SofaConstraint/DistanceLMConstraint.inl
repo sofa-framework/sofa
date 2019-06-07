@@ -44,6 +44,24 @@ namespace component
 namespace constraintset
 {
 
+template <class DataTypes>
+DistanceLMConstraint<DataTypes>::DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
+    : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
+    , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+{
+}
+
+template <class DataTypes>
+DistanceLMConstraint<DataTypes>::DistanceLMConstraint( MechanicalState *dof)
+    : DistanceLMConstraint(dof,dof)
+{
+}
+
+template <class DataTypes>
+DistanceLMConstraint<DataTypes>::DistanceLMConstraint()
+    : DistanceLMConstraint(nullptr, nullptr)
+{
+}
 
 template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::init()

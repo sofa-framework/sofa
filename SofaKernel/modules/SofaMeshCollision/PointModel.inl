@@ -51,7 +51,7 @@ namespace collision
 {
 
 template<class DataTypes>
-TPointModel<DataTypes>::TPointModel()
+PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(NULL)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
@@ -63,13 +63,13 @@ TPointModel<DataTypes>::TPointModel()
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::resize(int size)
+void PointCollisionModel<DataTypes>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::init()
+void PointCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
@@ -130,7 +130,7 @@ void TPointModel<DataTypes>::init()
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::draw(const core::visual::VisualParams*,int index)
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*,int index)
 {
     SOFA_UNUSED(index);
     //TODO(fred roy 2018-06-21)...please implement.
@@ -138,7 +138,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams*,int index)
 
 
 template<class DataTypes>
-void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -194,7 +194,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 }
 
 template<class DataTypes>
-bool TPointModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
@@ -246,7 +246,7 @@ bool TPointModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mo
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
+void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
@@ -282,7 +282,7 @@ void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
@@ -326,7 +326,7 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::updateNormals()
+void PointCollisionModel<DataTypes>::updateNormals()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int n = x.size();
@@ -486,20 +486,20 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
 }
 
 template<class DataTypes>
-PointLocalMinDistanceFilter *TPointModel<DataTypes>::getFilter() const
+PointLocalMinDistanceFilter *PointCollisionModel<DataTypes>::getFilter() const
 {
     return m_lmdFilter;
 }
 
 template<class DataTypes>
-void TPointModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
+void PointCollisionModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
 {
     m_lmdFilter = lmdFilter;
 }
 
 
 template<class DataTypes>
-void TPointModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 

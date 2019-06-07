@@ -44,9 +44,9 @@ protected:
 public:
 
     StopperConstraintResolution1Dof(const double &min, const double &max)
-    :core::behavior::ConstraintResolution(1)
-    ,_min(min)
-    ,_max(max)
+        : core::behavior::ConstraintResolution(1)
+        , _min(min)
+        , _max(max)
     { 
     }
 
@@ -100,8 +100,7 @@ protected:
 
 
 
-    StopperConstraint(MechanicalState* object);
-    StopperConstraint();
+    StopperConstraint(MechanicalState* object = nullptr);
 
     virtual ~StopperConstraint() {}
 public:
