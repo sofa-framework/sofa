@@ -37,7 +37,6 @@ namespace core
 using namespace defaulttype;
 
 template class SOFA_Flexible_API Mapping< Affine3Types, Vec3Types >;
-template class SOFA_Flexible_API Mapping< Affine3Types, ExtVec3Types >;
 
 template class SOFA_Flexible_API Mapping< Affine3Types, F331Types >;
 template class SOFA_Flexible_API Mapping< Affine3Types, F332Types >;
@@ -53,7 +52,6 @@ template class SOFA_Flexible_API Mapping< Vec2Types, F221Types >;
 template class SOFA_Flexible_API Mapping< Vec3Types, Affine3Types >;
 
 template class SOFA_Flexible_API Mapping< Quadratic3Types, Vec3Types >;
-template class SOFA_Flexible_API Mapping< Quadratic3Types, ExtVec3Types >;
 template class SOFA_Flexible_API Mapping< Quadratic3Types, F331Types >;
 template class SOFA_Flexible_API Mapping< Quadratic3Types, F321Types >;
 template class SOFA_Flexible_API Mapping< Quadratic3Types, F311Types >;

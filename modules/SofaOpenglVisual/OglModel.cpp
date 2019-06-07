@@ -150,6 +150,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     const Inherit::VecEdge& edges = this->getEdges();
     const Inherit::VecTriangle& triangles = this->getTriangles();
     const Inherit::VecQuad& quads = this->getQuads();
+
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& vnormals = this->getVnormals();
 
@@ -919,7 +920,7 @@ void OglModel::updateVertexBuffer()
 
 void OglModel::updateEdgesIndicesBuffer()
 {
-    const ResizableExtVector<Edge>& edges = this->getEdges();
+    const VecEdge& edges = this->getEdges();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -927,7 +928,7 @@ void OglModel::updateEdgesIndicesBuffer()
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
-    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
+    const VecTriangle& triangles = this->getTriangles();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -935,7 +936,7 @@ void OglModel::updateTrianglesIndicesBuffer()
 
 void OglModel::updateQuadsIndicesBuffer()
 {
-    const ResizableExtVector<Quad>& quads = this->getQuads();
+    const VecQuad& quads = this->getQuads();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -945,6 +946,7 @@ void OglModel::updateBuffers()
     const Inherit::VecEdge& edges = this->getEdges();
     const Inherit::VecTriangle& triangles = this->getTriangles();
     const Inherit::VecQuad& quads = this->getQuads();
+
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& normals = this->getVnormals();
     const VecTexCoord& texCoords = this->getVtexcoords();
