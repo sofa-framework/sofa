@@ -302,7 +302,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
             // store the actual time instant
             lastTime = d_time.getValue()[nextIteration];
             // if the time simulation is >= that the actual time instant
-            if ( (time > lastTime) || (fabs(time - lastTime)< 0.0001) )
+            if ( (time > lastTime) || (fabs(time - lastTime)< std::numeric_limits<float>::epsilon()) )
             {
                 writeCurrent = true;
                 firstExport = true;
@@ -315,7 +315,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
             {
                 double nextTime = lastTime + d_period.getValue();
                 // write the state using a period
-                if ( (time > nextTime) || (fabs(time - nextTime)< std::numeric_limits<double>::epsilon()) )
+                if ( (time > nextTime) || (fabs(time - nextTime)< std::numeric_limits<float>::epsilon()) )
                 {
                     writeCurrent = true;
                     lastTime += d_period.getValue();
