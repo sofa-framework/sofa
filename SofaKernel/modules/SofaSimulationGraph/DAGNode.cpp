@@ -831,9 +831,9 @@ DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
 {
     updateDescendancy();
 
-    if ( _descendancy.find(node1) != _descendancy.end() || _descendancy.find(node2) != _descendancy.end() )
+    if ( _descendancy.find(node1) != _descendancy.end() && _descendancy.find(node2) != _descendancy.end() )
     {
-        // this is a parent
+        // this node is a parent of both node1 and node2
         for (unsigned int i = 0; i<child.size(); ++i)
         {
             DAGNode* childcommon = static_cast<DAGNode*>(child[i].get())->findCommonParent(node1, node2);
@@ -846,7 +846,7 @@ DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
     }
     else
     {
-        // this is not a parent of both node1 and node2
+        // this node is NOT a parent of both node1 and node2
         return nullptr;
     } 
 }
