@@ -135,6 +135,14 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     else
                     {
                         simulation::Node::SPtr collGroup2 = group2Iter->second;
+                        if (collGroup == collGroup2)
+                        {
+                            // already in the same collision group
+                            groupMap[group1Iter->first] = group1Iter->second;
+                            groupMap[group2Iter->first] = group2Iter->second;
+                            contactGroup.push_back(collGroup);
+                            continue;
+                        }
                         groupMap[group2] = collGroup.get();
                         // merge groups and remove collGroup2
                         SolverSet solver2;
