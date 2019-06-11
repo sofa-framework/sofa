@@ -211,7 +211,7 @@ public:
     void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}
 
     // Returns the ID of the shader element
-    const std::string& getSEID() const { return id.getValue(); }
+    const std::string& getSEID() const override { return id.getValue(); }
 
     //virtual void setInShader(OglShader& s) = 0;
 };

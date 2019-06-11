@@ -121,7 +121,7 @@ public:
             return vect[outputDerivative];
     }
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
 

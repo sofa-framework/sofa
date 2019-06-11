@@ -50,7 +50,7 @@ namespace sofa  {
 
  //#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
 
-#if ENABLE_TASK_SCHEDULER_PROFILER
+#ifdef ENABLE_TASK_SCHEDULER_PROFILER
 
 #include "TaskSchedulerProfiler.h"
 
