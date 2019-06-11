@@ -824,7 +824,7 @@ Node* DAGNode::findCommonParent( simulation::Node* node2 )
 {
     DAGNode* root = static_cast<DAGNode*>(getRoot());
     DAGNode* commonParent = root->findCommonParent(this, static_cast<DAGNode*>(node2));
-    return commonParent != nullptr ? commonParent : root;//  static_cast<DAGNode*>(getRoot())->findCommonParent(this, static_cast<DAGNode*>(node2));
+    return commonParent != nullptr ? commonParent : root;
 }
 
 DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
@@ -846,7 +846,7 @@ DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
     }
     else
     {
-        // this is not a paarent of both node1 and node2
+        // this is not a parent of both node1 and node2
         return nullptr;
     } 
 }
