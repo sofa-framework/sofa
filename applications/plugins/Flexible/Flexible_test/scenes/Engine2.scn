@@ -9,7 +9,7 @@
         
         <BarycentricShapeFunction name="SF"  />
         
-        <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" />
+        <OglModel name="Visual" fileMesh="mesh/torus.obj" />
     
 
         <Node 	name="child"   >
