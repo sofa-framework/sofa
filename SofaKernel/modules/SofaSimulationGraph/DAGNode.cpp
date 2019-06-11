@@ -822,23 +822,33 @@ void DAGNode::updateSimulationContext()
 
 Node* DAGNode::findCommonParent( simulation::Node* node2 )
 {
-    return static_cast<DAGNode*>(getRoot())->findCommonParent( this, static_cast<DAGNode*>(node2) );
+    DAGNode* root = static_cast<DAGNode*>(getRoot());
+    DAGNode* commonParent = root->findCommonParent(this, static_cast<DAGNode*>(node2));
+    return commonParent != nullptr ? commonParent : root;//  static_cast<DAGNode*>(getRoot())->findCommonParent(this, static_cast<DAGNode*>(node2));
 }
 
-
-DAGNode* DAGNode::findCommonParent( DAGNode* node1, DAGNode* node2 )
+DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
 {
     updateDescendancy();
 
-    for(unsigned int i = 0; i<child.size(); ++i)
+    if ( _descendancy.find(node1) != _descendancy.end() || _descendancy.find(node2) != _descendancy.end() )
     {
-        DAGNode* childcommon = static_cast<DAGNode*>(child[i].get())->findCommonParent( node1, node2 );
+        // this is a parent
+        for (unsigned int i = 0; i<child.size(); ++i)
+        {
+            DAGNode* childcommon = static_cast<DAGNode*>(child[i].get())->findCommonParent(node1, node2);
 
-        if( childcommon ) return childcommon;
-        else if( _descendancy.find(node1)!=_descendancy.end() && _descendancy.find(node2)!=_descendancy.end() ) return this;
+            if (childcommon != nullptr) 
+                return childcommon;
+        }   
+        
+        return this;
     }
-
-    return nullptr;
+    else
+    {
+        // this is not a paarent of both node1 and node2
+        return nullptr;
+    } 
 }
 
 void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const
