@@ -10,12 +10,13 @@
         <BarycentricShapeFunction name="SF"  />
         
         <OglModel name="Visual" fileMesh="mesh/torus.obj" />
+
     
 
         <Node 	name="child"   >
             
 	    <MechanicalObject  template="Vec3d" position="0 0 0" />
-    	    <LinearMapping template="Vec3d,Vec3d"  />
+            <LinearMapping template="Vec3d,Vec3d"  input="@../parent" output="@." />
 
         </Node>
 
