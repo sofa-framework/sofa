@@ -30,8 +30,6 @@ namespace component
 {
 
 
-void SOFA_OPENGL_VISUAL_API initOpenGLVisual();
-
 } // namespace component
 
 } // namespace sofa

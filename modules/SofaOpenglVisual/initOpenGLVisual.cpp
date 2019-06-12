@@ -30,16 +30,6 @@ namespace component
 {
 
 
-void initOpenGLVisual()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-
 
 } // namespace component
 
