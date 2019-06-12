@@ -25,6 +25,7 @@
 #include <sofa/helper/system/config.h>
 
 #ifdef SOFA_BUILD_SOFAOPENGLVISUAL
+#  define SOFA_TARGET SofaOpenglVisual
 #  define SOFA_OPENGL_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_OPENGL_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
