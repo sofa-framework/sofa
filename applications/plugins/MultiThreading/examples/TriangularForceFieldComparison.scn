@@ -26,8 +26,10 @@
       <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
       <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
       <TriangleSet />
-      <VisualModel name="Visual" color="black" />
-      <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
+      <Node >
+        <VisualModel name="Visual" color="black" />
+        <IdentityMapping name="default8" input="@.." output="@Visual" />
+      </Node>
     </Node>
   </Node>
 
@@ -51,8 +53,10 @@
       <FixedConstraint name="fixedContraints" /> <!--indices="0 1" />-->
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
-        <VisualModel name="Visual" color="white" />
-        <IdentityMapping input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="white" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
   </Node>
 
@@ -76,8 +80,10 @@
       <FixedConstraint name="fixedContraints" /> <!--indices="0 1" />-->
       <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
       <TriangleSet />
-      <VisualModel name="Visual" color="yellow" />
-      <IdentityMapping input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="yellow" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
   </Node>
 
@@ -102,8 +108,10 @@
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
-        <VisualModel name="Visual" color="red" />
-        <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="red" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
   </Node>
 

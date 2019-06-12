@@ -17,7 +17,9 @@
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="BS" stiffness="300" damping="1.0" />
         <TriangleSet />
-        <OglModel name="Visual" color="yellow" />
-        <IdentityMapping input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="yellow" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 </Node>

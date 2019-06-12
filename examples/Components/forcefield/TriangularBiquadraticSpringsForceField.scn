@@ -16,7 +16,9 @@
         <FixedConstraint indices="0 1" />
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
-        <VisualModel name="Visual" color="yellow" />
-        <IdentityMapping input="@." output="@Visual" />
+            <Node >
+              <VisualModel name="Visual" color="yellow" />
+              <IdentityMapping input="@.." output="@Visual" />
+            </Node>
     </Node>
 </Node>

@@ -16,7 +16,9 @@
         <FixedConstraint indices="0 1" />
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleSet />
-        <OglModel name="Visual" color="yellow" />
-        <IdentityMapping input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="yellow" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 </Node>
