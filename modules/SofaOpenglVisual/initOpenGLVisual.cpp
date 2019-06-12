@@ -39,8 +39,6 @@ void initOpenGLVisual()
     }
 }
 
-#ifdef SOFA_HAVE_GLEW
-#endif
 
 
 } // namespace component
