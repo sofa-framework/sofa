@@ -62,7 +62,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
 
-    // SofaOpenglVisual in #1079
+    // SofaOpenglVisual in #1080
     {"ClipPlane", Pluginized("v19.06", "SofaOpenglVisual")},
     {"CompositingVisualLoop", Pluginized("v19.06", "SofaOpenglVisual")},
     {"DataDisplay", Pluginized("v19.06", "SofaOpenglVisual")},
