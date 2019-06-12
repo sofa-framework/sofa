@@ -30,10 +30,8 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
 
-#ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglShader.h>
-#endif
 
 namespace sofa
 {
@@ -65,7 +63,6 @@ protected:
     GLint m_lightID;
     GLuint m_shadowTexWidth, m_shadowTexHeight;
 
-#ifdef SOFA_HAVE_GLEW
     std::unique_ptr<helper::gl::FrameBufferObject> m_shadowFBO;
     std::unique_ptr<helper::gl::FrameBufferObject> m_blurHFBO;
     std::unique_ptr<helper::gl::FrameBufferObject> m_blurVFBO;
@@ -75,7 +72,6 @@ protected:
     static const std::string PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER;
     OglShader::SPtr m_depthShader;
     OglShader::SPtr m_blurShader;
-#endif
     GLfloat m_lightMatProj[16];
     GLfloat m_lightMatModelview[16];
 

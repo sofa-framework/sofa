@@ -155,9 +155,7 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 
         _first = false;
 
-#if defined(SOFA_HAVE_GLEW)
         glewInit();
-#endif
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         // request 1 texture name from OpenGL
