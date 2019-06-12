@@ -7,6 +7,7 @@ if( NOT OPENHAPTICS_FOUND )
     message( SEND_ERROR "OpenHaptics library not found, GeomagicDriver cannot compile")
 endif()
 
+find_package(SofaOpenglVisual REQUIRED)
 
 set(HEADER_FILES
       src/GeomagicDriver.h
@@ -28,7 +29,7 @@ include_directories( ${OPENHAPTICS_INCLUDE_DIR})
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${SCENES_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DPLUGIN_DATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GEOMAGIC")
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics ${OPENHAPTICS_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaOpenglVisual ${OPENHAPTICS_LIBRARIES})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 if(NOT ${SOFA_NO_OPENGL})

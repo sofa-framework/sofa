@@ -4,6 +4,7 @@ project(SofaMiscCollision VERSION 1.0)
 set(SOFA_HAVE_SOFAMISCCOLLISION 1)
 
 find_package(SofaSphFluid QUIET)
+find_package(SofaOpenglVisual REQUIRED)
 
 set(HEADER_FILES
     config.h
