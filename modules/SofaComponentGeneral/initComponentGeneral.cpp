@@ -88,9 +88,6 @@ void initComponentGeneral()
 #ifdef SOFA_HAVE_NEWMAT
     initDenseSolver();
 #endif
-#ifndef SOFA_NO_OPENGL
-    initOpenGLVisual();
-#endif
 }
 
 

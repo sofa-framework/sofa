@@ -4,6 +4,7 @@ sofa_add_module(SofaExporter SofaExporter ON)
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 sofa_add_module(SofaHaptics SofaHaptics ON)
+sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
 
 ### All the other targets visible in "modules" are not real module
 ### and are contained in the SofaGeneral, SofaMisc, SofaAdvanced
