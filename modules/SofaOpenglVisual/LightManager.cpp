@@ -32,8 +32,10 @@ using sofa::core::visual::VisualParams ;
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
+#ifdef SOFA_HAVE_GLEW
 #include <SofaOpenglVisual/OglTexture.h>
 using sofa::component::visualmodel::OglTexture ;
+#endif // SOFA_HAVE_GLEW
 
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::RegisterObject ;
@@ -81,6 +83,7 @@ LightManager::~LightManager()
 void LightManager::init()
 {
     BaseContext* context = this->getContext();
+#ifdef SOFA_HAVE_GLEW
     context->get<OglShadowShader, helper::vector<OglShadowShader::SPtr> >(&m_shadowShaders, BaseContext::SearchRoot);
 
     if (m_shadowShaders.empty() && d_shadowsEnabled.getValue())
@@ -94,19 +97,23 @@ void LightManager::init()
         m_shadowShaders[i]->initShaders((unsigned int)m_lights.size(), d_softShadowsEnabled.getValue());
         m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
     }
+#endif
     m_lightModelViewMatrix.resize(m_lights.size());
 }
 
 void LightManager::bwdInit()
 {
+#ifdef SOFA_HAVE_GLEW
     for(unsigned int i=0 ; i<m_shadowShaders.size() ; ++i)
     {
         m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
     }
+#endif
 }
 
 void LightManager::initVisual()
 {
+#ifdef SOFA_HAVE_GLEW
     for(unsigned int i=0 ; i<m_shadowShaders.size() ; ++i)
         m_shadowShaders[i]->initVisual();
 
@@ -154,6 +161,7 @@ void LightManager::initVisual()
         }
     }
 
+#endif // SOFA_HAVE_GLEW
 }
 
 void LightManager::putLight(Light::SPtr light)
@@ -220,6 +228,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
         ++id;
     }
 
+#ifdef SOFA_HAVE_GLEW
     const core::visual::VisualParams::Pass pass = vp->pass();
     GLint lightFlags[MAX_NUMBER_OF_LIGHTS];
     GLint lightTypes[MAX_NUMBER_OF_LIGHTS];
@@ -324,10 +333,12 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     }
 
     glActiveTexture(GL_TEXTURE0);
+#endif
 }
 
 void LightManager::bwdDraw(core::visual::VisualParams* )
 {
+#ifdef SOFA_HAVE_GLEW
     for(unsigned int i=0 ; i<m_lights.size() ; ++i)
     {
         unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
@@ -337,6 +348,7 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
     }
 
     glActiveTexture(GL_TEXTURE0);
+#endif // SOFA_HAVE_GLEW
 
     for (unsigned int i=0 ; i<MAX_NUMBER_OF_LIGHTS ; ++i)
         glDisable(GL_LIGHT0+i);
@@ -413,6 +425,7 @@ void LightManager::reinit()
 
 void LightManager::preDrawScene(VisualParams* vp)
 {
+#ifdef SOFA_HAVE_GLEW
     if(d_shadowsEnabled.getValue())
     {
         for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
@@ -429,6 +442,7 @@ void LightManager::preDrawScene(VisualParams* vp)
         //restore viewport
         glViewport(viewport[0], viewport[1], viewport[2] , viewport[3]);
     }
+#endif
 }
 
 bool LightManager::drawScene(VisualParams* /*vp*/)
@@ -499,6 +513,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 
         case 'l':
         case 'L':
+#ifdef SOFA_HAVE_GLEW
             if (!m_shadowShaders.empty())
             {
                 bool b = d_shadowsEnabled.getValue();
@@ -519,6 +534,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 
                 sout << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED")<<sendl;
             }
+#endif
             break;
         }
     }

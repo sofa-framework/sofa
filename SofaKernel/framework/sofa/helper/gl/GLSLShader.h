@@ -34,7 +34,11 @@ namespace sofa {
     }
 }
 
+#ifndef SOFA_HAVE_GLEW
+#error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
+#endif
 
+#ifdef SOFA_HAVE_GLEW
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
@@ -290,5 +294,6 @@ protected:
 
 } // namespace sofa
 
+#endif /* SOFA_HAVE_GLEW */
 
 #endif /* SOFA_HELPER_GL_GLSLSHADER_H */

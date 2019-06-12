@@ -67,11 +67,13 @@ int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
 
 using sofa::defaulttype::Vector3;
 
+#ifdef SOFA_HAVE_GLEW
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/generate_depth_texture.vert";
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/generate_depth_texture.frag";
 
 const std::string Light::PATH_TO_BLUR_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/blur_texture.vert";
 const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/blur_texture.frag";
+#endif
 
 Light::Light()
     : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
@@ -206,6 +208,7 @@ void Light::initVisual()
     computeShadowMapSize();
     //Shadow part
     //Shadow texture init
+#ifdef SOFA_HAVE_GLEW
     m_shadowFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
                 new helper::gl::FrameBufferObject(true, true, true));
     m_blurHFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
@@ -226,6 +229,7 @@ void Light::initVisual()
     m_blurShader->fragFilename.addPath(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER,true);
     m_blurShader->init();
     m_blurShader->initVisual();
+#endif // SOFA_HAVE_GLEW
 }
 
 void Light::updateVisual()
@@ -262,12 +266,14 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
+#ifdef SOFA_HAVE_GLEW
     m_depthShader->setFloat(0, "u_zFar", this->getZFar());
     m_depthShader->setFloat(0, "u_zNear", this->getZNear());
     m_depthShader->setInt(0, "u_lightType", this->getLightType());
     m_depthShader->setFloat(0, "u_shadowFactor", d_shadowFactor.getValue());
     m_depthShader->start();
     m_shadowFBO->start();
+#endif
 }
 
 
@@ -285,9 +291,11 @@ const GLfloat* Light::getOpenGLModelViewMatrix()
 
 void Light::postDrawShadow()
 {
+#ifdef SOFA_HAVE_GLEW
     //Unbind fbo
     m_shadowFBO->stop();
     m_depthShader->stop();
+#endif
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -300,6 +308,7 @@ void Light::postDrawShadow()
 
 void Light::blurDepthTexture()
 {
+#ifdef SOFA_HAVE_GLEW
     float vxmax, vymax;
     float vxmin, vymin;
     float txmax, tymax;
@@ -363,6 +372,7 @@ void Light::blurDepthTexture()
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+#endif
 }
 
 void Light::computeShadowMapSize()
@@ -605,15 +615,23 @@ GLuint DirectionalLight::getDepthTexture()
 {
     //return debugVisualShadowTexture;
     //return shadowTexture;
+#ifdef SOFA_HAVE_GLEW
     return m_shadowFBO->getDepthTexture();
+#else
+    return 0;
+#endif
 }
 
 GLuint DirectionalLight::getColorTexture()
 {
+#ifdef SOFA_HAVE_GLEW
     if (d_softShadows.getValue())
         return m_blurVFBO->getColorTexture();
     else
         return m_shadowFBO->getColorTexture();
+#else
+    return 0;
+#endif
 }
 
 PositionalLight::PositionalLight()
@@ -985,15 +1003,23 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
 
 GLuint SpotLight::getDepthTexture()
 {
+#ifdef SOFA_HAVE_GLEW
     return m_shadowFBO->getDepthTexture();
+#else
+    return 0;
+#endif
 }
 
 GLuint SpotLight::getColorTexture()
 {
+#ifdef SOFA_HAVE_GLEW
     if(d_softShadows.getValue())
         return m_blurVFBO->getColorTexture();
     else
         return m_shadowFBO->getColorTexture();
+#else
+    return 0;
+#endif
 }
 
 }

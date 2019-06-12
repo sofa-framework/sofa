@@ -30,7 +30,9 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/types/RGBAColor.h>
 
+#ifdef SOFA_HAVE_GLEW
 #include <SofaOpenglVisual/OglShadowShader.h>
+#endif
 
 namespace sofa
 {
@@ -59,8 +61,10 @@ private:
     std::vector<defaulttype::Mat4x4f> m_lightProjectionMatrix;
     std::vector<unsigned short>       m_mapShadowTextureUnit;
 
+#ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
     helper::vector<OglShadowShader::SPtr> m_shadowShaders;
+#endif
     void makeShadowMatrix(unsigned int i);
 
 public:
