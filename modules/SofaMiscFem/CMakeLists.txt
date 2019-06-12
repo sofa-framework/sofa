@@ -63,10 +63,6 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
 
-if(NOT SOFA_NO_OPENGL)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
-endif()
-
 if(SOFA_HAVE_NEWMAT)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
