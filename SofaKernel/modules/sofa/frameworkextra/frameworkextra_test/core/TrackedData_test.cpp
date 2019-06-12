@@ -166,7 +166,7 @@ public:
     TestObject2()
         : Inherit1()
         , input(initData(&input,false,"input","input"))
-        , input2(initData(&input2,false,"input2","input2"))
+        , input2(initData(&input2,true,"input2","input2"))
         , depend_on_input(initData(&depend_on_input,"depend_on_input","depend_on_input"))
         , depend_on_input2(initData(&depend_on_input2,"depend_on_input2","depend_on_input2"))
     {
@@ -273,9 +273,9 @@ struct DataTrackerEngine_test: public BaseTest
         ++localCounter;
         ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
 
-        ASSERT_TRUE(testObject.depend_on_input2.getValue()==true);
+        ASSERT_TRUE(testObject.depend_on_input2.getValue());
         testObject.input2.setValue(false);
-        ASSERT_TRUE(testObject.depend_on_input2.getValue()==false);
+        ASSERT_FALSE(testObject.depend_on_input2.getValue());
         ++localCounter;
         ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
 
