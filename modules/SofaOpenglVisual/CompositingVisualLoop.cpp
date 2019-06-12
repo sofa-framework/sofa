@@ -111,6 +111,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     //rendering sequence: call each VisualManagerPass elements, then composite the frames
     else
     {
+#ifdef SOFA_HAVE_GLEW
         if (renderingState == sofa::core::visual::tristate::false_value || renderingState == sofa::core::visual::tristate::neutral_value) return;
 
         sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
@@ -154,6 +155,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
         //glViewport(vparams->viewport()[0],vparams->viewport()[1],vparams->viewport()[2],vparams->viewport()[3]);
+#endif
     }
 }
 

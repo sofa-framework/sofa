@@ -500,9 +500,11 @@ void MultithreadGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
+#ifdef SOFA_HAVE_GLEW
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
+#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;

@@ -28,7 +28,19 @@
 #include <sofa/helper/system/config.h>
 #include <string>
 
+#if defined(SOFA_HAVE_GLEW)
 #  include <GL/glew.h>
+#elif defined(__APPLE__)
+#  include <OpenGL/gl.h>
+#else
+#  define GL_GLEXT_PROTOTYPES // for glext.h : necessary to use glBindBuffer without glew and make GLSLShader file
+#  if defined(WIN32)
+#    include <gl/GL.h>
+#  else
+#    include <GL/gl.h>
+#    include <GL/glext.h> // necessary when you don't have glew
+#  endif // WIN32
+#endif
 
 extern SOFA_HELPER_API const char* GetGlExtensionsList();
 

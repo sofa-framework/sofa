@@ -33,8 +33,10 @@
 #include <sofa/simulation/DefaultVisualManagerLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
+#ifdef SOFA_HAVE_GLEW
 #include <SofaOpenglVisual/OglShader.h>
 #include <SofaOpenglVisual/VisualManagerPass.h>
+#endif
 
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>

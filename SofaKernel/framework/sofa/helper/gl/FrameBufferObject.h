@@ -31,6 +31,7 @@
 
 #include <sofa/helper/helper.h>
 
+#ifdef SOFA_HAVE_GLEW
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/gl.h>
@@ -110,5 +111,6 @@ public:
 
 } //sofa
 
+#endif /* SOFA_HAVE_GLEW */
 
 #endif /* FRAMEBUFFEROBJECT_H_ */
