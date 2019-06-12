@@ -159,16 +159,19 @@ public:
 
 
     Data< bool > input;
+    Data< bool > input2;
     Data< bool > depend_on_input;
-
+    Data< bool > depend_on_input2;
 
     TestObject2()
         : Inherit1()
         , input(initData(&input,false,"input","input"))
+        , input2(initData(&input2,false,"input2","input2"))
         , depend_on_input(initData(&depend_on_input,"depend_on_input","depend_on_input"))
+        , depend_on_input2(initData(&depend_on_input2,"depend_on_input2","depend_on_input2"))
     {
-        m_dataTracker.addInput(&input); // several inputs can be added
-        m_dataTracker.addOutput(&depend_on_input); // several output can be added
+        m_dataTracker.addInputs({&input,&input2}); // several inputs can be added
+        m_dataTracker.addOutputs({&depend_on_input, &depend_on_input2}); // several output can be added
         m_dataTracker.setUpdateCallback( &TestObject2::myUpdate );
         m_dataTracker.setDirtyValue();
     }
@@ -194,13 +197,15 @@ protected:
 
         // we known who is who from the order Data were added to the DataTrackerEngine
         bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
+        bool input2 = static_cast<Data< bool >*>( inputs[1] )->getValue();
 
         dataTrackerEngine->cleanDirty();
 
-
         Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
+        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[0] );
 
         output->setValue( input );
+        output2->setValue( input2 );
     }
 
 };
@@ -267,6 +272,13 @@ struct DataTrackerEngine_test: public BaseTest
         ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
         ++localCounter;
         ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
+        ASSERT_TRUE(testObject.depend_on_input2.getValue()==true);
+        testObject.input2.setValue(false);
+        ASSERT_TRUE(testObject.depend_on_input2.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
     }
 
 
