@@ -83,7 +83,7 @@ protected:
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
-    unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
+    size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
 
     /// These two buffers are used to convert the data field to float type before being sent to
     /// opengl

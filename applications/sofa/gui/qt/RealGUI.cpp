@@ -321,17 +321,15 @@ RealGUI::RealGUI ( const char* viewername)
       handleTraceVisitor(NULL),
       #endif
 
+      m_sofaMouseManager(nullptr),
       #ifdef SOFAGUIQT_HAS_QTCHARTS
       m_windowTimerProfiler(nullptr),
       #endif
-
-      m_sofaMouseManager(nullptr),
-
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
       m_dumpState(false),
-      m_dumpStateStream(NULL),
+      m_dumpStateStream(nullptr),
       m_exportGnuplot(false),
       _animationOBJ(false),
       _animationOBJcounter(0),

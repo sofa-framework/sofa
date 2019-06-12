@@ -53,7 +53,7 @@ public:
     static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
     void getExtensionList(ExtensionList* list) override;

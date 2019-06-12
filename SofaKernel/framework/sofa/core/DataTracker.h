@@ -87,6 +87,9 @@ namespace core
         void operator=(const DataTrackerDDGNode&);
 
     public:
+        /// Create a DataCallback object associated with multiple Data.
+        void addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
+        void addOutputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas);
 
         /// Set dirty flag to false
         /// for the DDGNode and for all the tracked Data
@@ -160,14 +163,17 @@ namespace core
     class SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
     {
     public:
+        /// set the update function to call
+        /// when asking for an output and any input changed.
+        [[deprecated("This function has been replaced by addCallback with similar signature. Update your code.")]]
+        void setUpdateCallback(std::function<void(DataTrackerEngine*)> f){ addCallback(f); }
 
         /// set the update function to call
         /// when asking for an output and any input changed.
-        void setUpdateCallback( void (*f)(DataTrackerEngine*) );
+        void addCallback(std::function<void(DataTrackerEngine*)> f);
 
-        /// Update this value
-        /// @warning the update callback must have been set with "setUpdateCallback"
-        void update() override { m_updateCallback( this ); }
+        /// Calls the callback when one of the data has changed.
+        void update() override;
 
         /// This method is needed by DDGNode
         const std::string& getName() const override
@@ -181,9 +187,7 @@ namespace core
         objectmodel::BaseData* getData() const override { return nullptr; }
 
     protected:
-
-        void (*m_updateCallback)(DataTrackerEngine*);
-
+        std::vector<std::function<void(DataTrackerEngine*)>> m_callbacks;
     };
 
 
@@ -218,7 +222,7 @@ namespace core
         /// This method is needed by DDGNode
         void update() override{}
         /// This method is needed by DDGNode
-        const std::string& getName() const
+        const std::string& getName() const override
         {
             static const std::string emptyName ="";
             return emptyName;

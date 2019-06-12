@@ -36,7 +36,7 @@ class SOFA_SOFAGUI_API FilesRecentlyOpenedManager
 {
 public:
     FilesRecentlyOpenedManager(const std::string &configFile);
-    virtual ~FilesRecentlyOpenedManager() {};
+    virtual ~FilesRecentlyOpenedManager() {}
 
     virtual void openFile(const std::string &file);
     virtual std::string getFilename(unsigned int idx) const
@@ -45,7 +45,7 @@ public:
         else return std::string();
     }
 
-    unsigned int getMaxNumFiles() const {return max_num_files;};
+    unsigned int getMaxNumFiles() const {return max_num_files;}
 
     const std::string &getPath() const {return path;}
     void setPath(const std::string &p);
