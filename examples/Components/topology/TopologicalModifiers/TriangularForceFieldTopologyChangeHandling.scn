@@ -94,7 +94,7 @@
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleSet />
         <Node >
-        <VisualModel name="Visual" material="Default Diffuse 1 1 0.5 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <VisualModel name="Visual" material="Default Diffuse 1 1 0.5 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping name="default8" input="@.." output="@Visual" />
         </Node>
 <!-- 	<TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" /> -->
@@ -111,7 +111,7 @@
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
         <TriangleSet />
         <Node >
-        <   VisualModel name="Visual" material="Default Diffuse 1 1 1 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <VisualModel name="Visual" material="Default Diffuse 1 1 1 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping name="default8" input="@.." output="@Visual" />
         </Node>
 

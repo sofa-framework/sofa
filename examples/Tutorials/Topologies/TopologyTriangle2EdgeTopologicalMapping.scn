@@ -19,8 +19,10 @@
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
         <DiagonalMass template="Vec3d" name="mass" massDensity="0.15" />
         <FixedConstraint template="Vec3d" name="FixedDofs" indices="0 1" />
-        <OglModel name="Visual" color="red" />
-        <IdentityMapping template="Vec3d,ExtVec3f" name="default17" input="@." output="@Visual" />
+        <Node >
+          <OglModel name="Visual" color="red" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
         <Node name="Edge Mesh">
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />

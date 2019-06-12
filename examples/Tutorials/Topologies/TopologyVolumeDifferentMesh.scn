@@ -20,8 +20,10 @@
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronModel name="Models" />
-        <OglModel name="Visual" template="ExtVec3f" color="red" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
+        <Node >
+          <OglModel name="Visual" color="red" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
     <Node name="Cylinder Regular Mesh">
         <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 -10" rotation="0 0 -90" />
@@ -32,8 +34,10 @@
         <CylinderGridTopology name="Regular Mesh" n="10 10 10" axis="0 1 0" radius="2" length="10" />
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
-        <OglModel name="Visual" template="ExtVec3f" color="blue" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
+        <Node >
+          <OglModel name="Visual" color="blue" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
     <Node name="Cylinder Dynamic Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
@@ -50,7 +54,9 @@
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronModel name="Models" />
-        <OglModel name="Visual" template="ExtVec3f" color="green" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
+        <Node >
+          <OglModel name="Visual" color="green" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 </Node>
