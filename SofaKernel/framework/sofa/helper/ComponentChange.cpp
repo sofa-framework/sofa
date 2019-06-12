@@ -33,12 +33,6 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
     {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
 
-    // SofaOpenglVisual
-    {"OglCylinderModel", Deprecated("v17.12", "v18.12")},
-    {"OglGrid", Deprecated("v17.12", "v18.12")},
-    {"OglRenderingSRGB", Deprecated("v17.12", "v18.12")},
-    {"OglLineAxis", Deprecated("v17.12", "v18.12")},
-    {"OglSceneFrame", Deprecated("v17.12", "v18.12")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
@@ -67,6 +61,37 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SparseCholeskySolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
+
+    // SofaOpenglVisual in #1079
+    {"ClipPlane", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"CompositingVisualLoop", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"DataDisplay", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"Light", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"LightManager", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"MergeVisualModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglAttribute", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglColorMap", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglCylinderModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglGrid", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglLabel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglLineAxis", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglOITShader", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglRenderingSRGB", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglSceneFrame", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShader", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShaderMacro", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShaderVisualModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglShadowShader", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglTexture", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglTexturePointer", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglVariable", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"OglViewport", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"PointSplatModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"PostProcessManager", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"SlicedVolumetricModel", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
+    {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
 
     /// SofaHaptics pluginzed in #945
     {"NullForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
@@ -104,6 +129,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolationController", Removed("v17.12", "v18.12")},
     {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
     {"NodeToggleController", Removed("v17.12", "v18.12")},
+
+
+
 };
 
 
