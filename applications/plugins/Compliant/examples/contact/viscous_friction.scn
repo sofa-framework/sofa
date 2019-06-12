@@ -42,7 +42,7 @@
    <Node name="Ball">
     <MechanicalObject name="dofs" template="Rigid" position="0 2.1 10 0 0 0 1" velocity="3 -10 -3 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction="10" contactRestitution="0.5" />
+    <SphereCollisionModel radius="1" contactFriction="10" contactRestitution="0.5" />
   </Node>
   
   

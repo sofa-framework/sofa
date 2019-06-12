@@ -57,26 +57,26 @@ public:
 
 protected:
     bool readOBJ (std::ifstream &file, const char* filename);
-    bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& materials);
+    bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& d_materials);
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
 
-    Data<bool> d_handleSeams;
-    Data<bool> loadMaterial;
     std::string textureName;
     FaceType faceType;
 
 public:
+    Data<bool> d_handleSeams;
+    Data<bool> d_loadMaterial;
     Data<sofa::helper::types::Material> d_material;
-    Data <helper::vector <sofa::helper::types::Material> > materials;
-    Data <helper::SVector <helper::SVector <int> > > faceList;
-    Data <helper::SVector <helper::SVector <int> > > texIndexList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > positionsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > texCoordsList;
-    Data <helper::SVector<helper::SVector<int> > > normalsIndexList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > normalsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
-    Data< bool > computeMaterialFaces;
-    helper::vector< Data <helper::vector <unsigned int> >* > subsets_indices;
+    Data <helper::vector <sofa::helper::types::Material> > d_materials;
+    Data <helper::SVector <helper::SVector <int> > > d_faceList;
+    Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
+    Data <helper::vector<sofa::defaulttype::Vector3> > d_positionsList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoordsList;
+    Data <helper::SVector<helper::SVector<int> > > d_normalsIndexList;
+    Data <helper::vector<sofa::defaulttype::Vector3> > d_normalsList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords;
+    Data< bool > d_computeMaterialFaces;
+    helper::vector< Data <helper::vector <unsigned int> >* > d_subsets_indices;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex

@@ -20,7 +20,7 @@
         <FixedConstraint indices="0 9 99" />
         <TriangleFEMForceField name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large" />
         <TriangleBendingSprings name="FEM-Bend" stiffness="100" damping="0.1" />
-        <Triangle />
+        <TriangleCollisionModel />
 
         <EvalPointsDistance name="dist" object1="@/Mesh/MO" object2="@." listening="true" period="0.05" draw="false" />
 

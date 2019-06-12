@@ -439,9 +439,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
                     result.body=modelInCollision;
                     result.indexCollisionElement = output[i]->elem.second.getIndex();
                     result.point = output[i]->point[1];
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    result.baryCoords = output[i]->baryCoords[1];
-#endif
                     result.dist  = (output[i]->point[1]-output[i]->point[0]).norm();
                     result.rayLength  = d;
                 }
@@ -458,9 +455,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
                     result.body=modelInCollision;
                     result.indexCollisionElement = output[i]->elem.first.getIndex();
                     result.point = output[i]->point[0];
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    result.baryCoords = output[i]->baryCoords[0];
-#endif
                     result.dist  = (output[i]->point[1]-output[i]->point[0]).norm();
                     result.rayLength  = d;
                 }

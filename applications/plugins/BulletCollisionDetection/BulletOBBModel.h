@@ -29,7 +29,7 @@ template<class TDataTypes>
 class TBulletOBBModel : public sofa::component::collision::TOBBModel<TDataTypes>,public BulletCollisionModel
 {
 public:
-    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletOBBModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes),BulletCollisionModel);
+    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletOBBModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
     SOFA_CLASS(SOFA_TEMPLATE(TBulletOBBModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TOBBModel, TDataTypes));
 
     typedef TDataTypes DataTypes;

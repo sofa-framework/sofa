@@ -69,7 +69,7 @@ void OglLabel::parse(BaseObjectDescription *arg)
         return ;
     }
 
-    arg->setAttribute("selectContrastingColor", "true");
+    arg->setAttribute("selectContrastingColor", std::string("true"));
     arg->removeAttribute("color") ;
 
     VisualModel::parse(arg);

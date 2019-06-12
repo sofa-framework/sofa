@@ -22,7 +22,7 @@
         <DiagonalMass massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" method="large" />
         <BoxConstraint box="-6 0 -2 -2 1.5 3" />
-        <!--<Sphere radius="0.4" />-->
+        <!--<SphereCollisionModel radius="0.4" />-->
         <!--
         <Node name="Surface">
 	  <include href="Objects/TriangleSetTopology.xml" />
@@ -41,7 +41,7 @@
             <MechanicalObject />
             <!--<BarycentricMapping />-->
             <!--<CircumcenterMapping/>-->
-            <!--<Sphere radius="0.1" />-->
+            <!--<SphereCollisionModel radius="0.1" />-->
         </Node>
     </Node>
 <!--

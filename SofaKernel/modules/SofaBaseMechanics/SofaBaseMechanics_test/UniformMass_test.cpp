@@ -449,23 +449,7 @@ struct UniformMassTest :  public BaseTest
 
 
 typedef Types<
-TemplateTypes<Vec3Types, Vec3Types::Real>
-/*,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
-,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
-,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
-,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
-,TemplateTypes<Rigid3dTypes, Rigid3dMass>
-,TemplateTypes<Rigid2dTypes, Rigid2dMass>
-
-#ifdef SOFA_WITH_FLOAT
-,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
-,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
-,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
-,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
-,TemplateTypes<Rigid3dTypes, Rigid3dMass>
-,TemplateTypes<Rigid2dTypes, Rigid2dMass>
-#endif*/
-> DataTypes;
+TemplateTypes<Vec3Types, Vec3Types::Real>> DataTypes;
 
 TYPED_TEST_CASE(UniformMassTest, DataTypes);
 

@@ -52,7 +52,7 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getCategoryName() const override { return "topologyChange"; }
     const char* getClassName() const override { return "TopologyChangeVisitor"; }
-    virtual std::string getInfos() const { return "Topology:" + m_source->getName(); }
+    virtual std::string getInfos() const override { return "Topology:" + m_source->getName(); }
 
 protected:
     /// Flag to know the number of iterations of the overloaded method processNodeTopDown

@@ -51,7 +51,7 @@ public:
     const char* getCategoryName() const override { return "collision"; }
     const char* getClassName() const override { return "CollisionVisitor"; }
 
-    const size_t getPrimitiveTestCount() const {return m_primitiveTestCount;}
+    size_t getPrimitiveTestCount() const {return m_primitiveTestCount;}
 private:
     size_t m_primitiveTestCount;
 };

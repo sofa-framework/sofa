@@ -27,7 +27,6 @@
 
 #include <QGridLayout>
 #include <QDebug>
-#include <QValueAxis>
 
 namespace sofa
 {
@@ -445,13 +444,13 @@ void SofaWindowProfiler::createChart()
     m_chart = new QChart();
     m_chart->addSeries(m_series);
     m_chart->addSeries(m_selectionSeries);
-    QValueAxis *axisY = new QValueAxis();
-    m_chart->addAxis(axisY, Qt::AlignLeft);
-    m_series->attachAxis(axisY);
-    m_selectionSeries->attachAxis(axisY);
+    m_axisY = new QValueAxis();
+    m_chart->addAxis(m_axisY, Qt::AlignLeft);
+    m_series->attachAxis(m_axisY);
+    m_selectionSeries->attachAxis(m_axisY);
 
     m_chart->setTitle("Steps durations (in ms)");
-    m_chart->axisY()->setRange(0, 1000);
+    m_axisY->setRange(0, 1000);
 
     m_chartView = new ProfilerChartView(m_chart, this, m_bufferSize);
     m_chartView->setRenderHint(QPainter::Antialiasing);
@@ -490,7 +489,7 @@ void SofaWindowProfiler::updateChart()
 
     // if needed enlarge the Y axis to cover new data
     if (updateAxis){
-        m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
+        m_axisY->setRange(0, m_fpsMaxAxis*1.1);
         m_chartView->updateYMax(m_fpsMaxAxis*1.1);
     }
 
@@ -501,7 +500,7 @@ void SofaWindowProfiler::updateChart()
             m_fpsMaxAxis = m_maxFps;
 
         m_maxFps = 0;
-        m_chart->axisY()->setRange(0, m_fpsMaxAxis*1.1);
+        m_axisY->setRange(0, m_fpsMaxAxis*1.1);
         m_chartView->updateYMax(m_fpsMaxAxis*1.1);
     }
 

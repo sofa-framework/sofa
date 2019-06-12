@@ -323,7 +323,7 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
     double theta;
     Vec3d n,p,q,perp;
 
-    double theta2 = 2*3.141592653;
+    double theta2 = M_2_PI;
     double m = 16; //precision
 
     /* Normal pointing from p1 to p2 */

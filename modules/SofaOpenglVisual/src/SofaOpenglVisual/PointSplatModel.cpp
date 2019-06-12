@@ -124,8 +124,8 @@ void PointSplatModel::reinit()
             const float x = i / (float) half_texture_size;
             const float y = j / (float) half_texture_size;
             const float dist = sqrt(x*x + y*y);
-            const float value = cos(3.141592f/2.0f * dist);
-            const unsigned char texValue = (value < 0.0f) ? 0 : (unsigned char) (255.0f * d_alpha.getValue() * value);
+            const float value = cos(M_PI_2 * dist);
+            const unsigned char texValue = (value < 0.0f) ? 0 : (unsigned char) (255.0f * alpha.getValue() * value);
 
             m_textureData[half_texture_size + i + (half_texture_size + j) * texture_size] = texValue;
             m_textureData[half_texture_size + i + (half_texture_size - 1 - j) * texture_size] = texValue;

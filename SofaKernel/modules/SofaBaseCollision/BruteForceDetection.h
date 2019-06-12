@@ -70,7 +70,7 @@ public:
         return intersector->endIntersect(model2, model1, contacts);
     }
 
-    virtual std::string name() const
+    virtual std::string name() const override
     {
         return intersector->name() + std::string("<SWAP>");
     }

@@ -69,9 +69,7 @@ protected:
     Data<bool> d_lineSmooth; ///< Enable smooth line rendering
     Data<bool> d_pointSmooth; ///< Enable smooth point rendering
     /// Suppress field for save as function
-    Data < bool > d_isToPrint;
-    Data < bool > d_isEnabled;
-    Data < bool > d_forceFloat;
+    Data < bool > isEnabled;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> d_primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
@@ -85,11 +83,10 @@ protected:
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
-    unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
+    size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
 
-    /// These two buffers are used with the "forceFloat" data field is activated.
-    /// When this is the case the data types send to openGL is always converted to floating points
-    /// values before touching opengl.
+    /// These two buffers are used to convert the data field to float type before being sent to
+    /// opengl
     std::vector<sofa::defaulttype::Vec3f> verticesTmpBuffer;
     std::vector<sofa::defaulttype::Vec3f> normalsTmpBuffer;
 
@@ -120,6 +117,7 @@ public:
     void initVisual() override;
 
     void init() override { VisualModelImpl::init(); }
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void updateBuffers() override;
 

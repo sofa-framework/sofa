@@ -22,9 +22,9 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" scale="1.0" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -41,9 +41,9 @@
                 <MeshObjLoader name="loader" filename="mesh/man.obj" triangulate="true" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" scale="10" dy="-3.0" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -59,9 +59,9 @@
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" scale="0.3" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -78,9 +78,9 @@
                 <MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" triangulate="true" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" scale="0.25" />
-                <Triangle />
-                <Line />
-                <Point />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
                 <RigidMapping />
             </Node>
         </Node>
@@ -88,9 +88,9 @@
             <MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle simulated="0" moving="0" />
-            <Line simulated="0" moving="0" />
-            <Point simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
+            <LineCollisionModel simulated="0" moving="0" />
+            <PointCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="1 0 0 0.3" />
         </Node>
     </Node>

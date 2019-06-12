@@ -32,9 +32,9 @@
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
+            <TriangleCollisionModel  selfCollision="0" />
+            <LineCollisionModel    selfCollision="0" />
+            <PointCollisionModel  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 
@@ -60,25 +60,25 @@
 			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Line simulated="false" moving="false" />
-            <Point simulated="false"  moving="false"/>
+            <LineCollisionModel simulated="false" moving="false" />
+            <PointCollisionModel simulated="false"  moving="false"/>
 		</Node>
 		<Node name="Blobs">
 			<MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-			<Triangle simulated="false" moving="false"/>
-            <Line simulated="false" moving="false"/>
-            <Point simulated="false" moving="false"/>
+			<TriangleCollisionModel simulated="false" moving="false"/>
+            <LineCollisionModel simulated="false" moving="false"/>
+            <PointCollisionModel simulated="false" moving="false"/>
 		</Node>
 
 		<Node name="Foot">
 			<MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-			<Triangle simulated="false" moving="false"/>
-            <Line simulated="false" moving="false"/>
-            <Point simulated="false" moving="false"/>
+			<TriangleCollisionModel simulated="false" moving="false"/>
+            <LineCollisionModel simulated="false" moving="false"/>
+            <PointCollisionModel simulated="false" moving="false"/>
 		</Node>
 
         <Node name="Visu" tags="Visual" >

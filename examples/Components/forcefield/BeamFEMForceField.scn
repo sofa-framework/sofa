@@ -30,7 +30,7 @@
         <!--
       <Node name="Collision">
         <MechanicalObject/>
-        <Sphere radius=".2" position="0 0 0 0 0 0" />
+        <SphereCollisionModel radius=".2" position="0 0 0 0 0 0" />
         <RigidMapping index="7" />
       </Node>
 -->
@@ -39,7 +39,7 @@
             <CubeTopology nx="15" ny="2" nz="2" min="0 -0.1 -0.1" max="7 0.1 0.1" />
             <MechanicalObject />
             <BeamLinearMapping isMechanical="true" />
-            <Triangle />
+            <TriangleCollisionModel />
             <!--        <OglModel /> -->
         </Node>
     </Node>
@@ -61,7 +61,7 @@
 -->
         <Node name="Collision">
             <MechanicalObject />
-            <Sphere radius=".2" position="0 0 0 0 0 0" />
+            <SphereCollisionModel radius=".2" position="0 0 0 0 0 0" />
             <RigidMapping index="1" />
         </Node>
     </Node>
