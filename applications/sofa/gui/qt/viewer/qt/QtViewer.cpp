@@ -282,7 +282,7 @@ void QtViewer::initializeGL(void)
 
         // Here we initialize our multi-texturing functions
         glewInit();
-        if (!GLEW_ARB_multitexture)
+        if (!GL_ARB_multitexture)
             msg_error("QtViewer") << "GL_ARB_multitexture not supported.";
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
