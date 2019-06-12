@@ -47,8 +47,6 @@
 #endif
 
 #include <SofaEigen2Solver/initEigen2Solver.h>
-#include <SofaOpenglVisual/initOpenGLVisual.h>
-
 
 namespace sofa
 {
