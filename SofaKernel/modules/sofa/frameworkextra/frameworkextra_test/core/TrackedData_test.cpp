@@ -202,7 +202,7 @@ protected:
         dataTrackerEngine->cleanDirty();
 
         Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
-        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[0] );
+        Data< bool >* output2 = static_cast<Data< bool >*>( outputs[1] );
 
         output->setValue( input );
         output2->setValue( input2 );
