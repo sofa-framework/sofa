@@ -94,3 +94,5 @@ sofa_generate_package(NAME ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
     INCLUDE_INSTALL_DIR ${PROJECT_NAME})
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/SofaOpenglVisual_test tests/SofaOpenglVisual)
