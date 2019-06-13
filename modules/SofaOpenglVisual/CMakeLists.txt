@@ -6,16 +6,10 @@ set(EXTRA_FILES
     SofaOpenglVisualConfig.cmake.in
 )
 
-set(HEADER_FILES
-    config.h
-    initOpenGLVisual.h
-    )
-
-set(SOURCE_FILES
-    initOpenGLVisual.cpp
-    )
 
 list(APPEND HEADER_FILES
+    src/SofaOpenglVisual/config.h
+    src/SofaOpenglVisual/initOpenGLVisual.h
     src/SofaOpenglVisual/ClipPlane.h
     src/SofaOpenglVisual/OglColorMap.h
     src/SofaOpenglVisual/CompositingVisualLoop.h
@@ -51,6 +45,7 @@ list(APPEND HEADER_FILES
     )
 
 list(APPEND SOURCE_FILES
+    src/SofaOpenglVisual/initOpenGLVisual.cpp
     src/SofaOpenglVisual/ClipPlane.cpp
     src/SofaOpenglVisual/OglColorMap.cpp
     src/SofaOpenglVisual/CompositingVisualLoop.cpp
