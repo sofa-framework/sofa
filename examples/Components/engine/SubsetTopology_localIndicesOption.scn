@@ -20,7 +20,7 @@
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <TriangleCollisionModel template="Vec3d" name="default7" />
-            <VisualModel template="ExtVec3f" name="Visual" color="blue" />
+            <OglModel template="ExtVec3f" name="Visual" color="blue" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
         </Node>
         <Node name="Out">
@@ -34,7 +34,7 @@
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <FixedConstraint template="Vec3d" name="default6" indices="0 1" />
-            <VisualModel template="ExtVec3f" name="Visual" color="red" />
+            <OglModel template="ExtVec3f" name="Visual" color="red" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
         </Node>
     </Node>

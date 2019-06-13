@@ -34,7 +34,7 @@
                             <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.3"/>
                             
                             <Node name="Visu">
-                                <VisualModel name="Visual" fileMesh="mesh/torus.obj" color="5E-1 5E-1 5E-1 5E-1" />
+                                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="5E-1 5E-1 5E-1 5E-1" />
                                 <BarycentricMapping  />
                             </Node>
                         </Node>

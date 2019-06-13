@@ -34,17 +34,17 @@
         </Node>
 
         <Node name="VisuBody" tags="Visual" >
-			<VisualModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
+			<OglModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
 			<BarycentricMapping name="baryv0" input="@.." output="@VisualBody" />
         </Node>
 
         <Node name="VisuCornea" tags="Visual" >
-			<VisualModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
+			<OglModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
 			<BarycentricMapping name="baryv1" input="@.." output="@VisualCornea" />
         </Node>	
 		
         <Node name="VisuEye" tags="Visual" >
-			<VisualModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
+			<OglModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
 			<BarycentricMapping name="baryv2" input="@.." output="@VisualEye" />
         </Node>				
     </Node>
@@ -72,7 +72,7 @@
 		</Node>		
 
         <Node name="Visu" tags="Visual" >
-            <VisualModel  name="VisualModel" fileMesh="mesh/SOFA_pod.obj" />
+            <OglModel  name="VisualModel" fileMesh="mesh/SOFA_pod.obj" />
         </Node>
     </Node>	
 </Node>

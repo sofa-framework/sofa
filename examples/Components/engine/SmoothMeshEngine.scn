@@ -3,7 +3,7 @@
     <Node name="origin" >
         <VisualStyle displayFlags="showWireframe" />
         <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
-        <VisualModel name="visual" src="@loader" color="yellow" />
+        <OglModel name="visual" src="@loader" color="yellow" />
     </Node>
     <Node name="smoothed" >
         <VisualStyle displayFlags="hideWireframe" />

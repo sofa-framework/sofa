@@ -31,7 +31,7 @@
             
             <TriangleSet />
             <Node name="Visu">
-                <VisualModel name="Visual" color="yellow" />
+                <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>

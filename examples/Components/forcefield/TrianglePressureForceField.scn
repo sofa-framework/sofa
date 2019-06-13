@@ -22,7 +22,7 @@
             <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
             <TriangleSet />
             <Node name="Visu">
-                <VisualModel name="Visual" color="yellow" />
+                <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
