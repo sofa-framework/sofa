@@ -37,6 +37,8 @@ using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
@@ -55,6 +57,11 @@ class STLExporter_test : public sofa::Sofa_test<>{
 public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
+
+    void SetUp()
+    {
+        sofa::simpleapi::importPlugin("SofaOpenglVisual");
+    }
 
     void TearDown()
     {
