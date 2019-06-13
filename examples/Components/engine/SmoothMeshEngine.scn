@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <Node name="origin" >
         <VisualStyle displayFlags="showWireframe" />
         <MeshObjLoader name="loader" filename="mesh/dragon.obj" />

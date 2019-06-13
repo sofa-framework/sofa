@@ -2,6 +2,7 @@
  + Added the visual model for the instrument in a separate node of the graph
 -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Node name="Head">
         <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />

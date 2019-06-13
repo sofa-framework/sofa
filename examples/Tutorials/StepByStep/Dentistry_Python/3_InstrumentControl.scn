@@ -3,6 +3,7 @@ Step 3:
 Instrument Control, and Python script
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 

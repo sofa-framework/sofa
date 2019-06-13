@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="-1.8 0 100" dt="0.001">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <Node name="DeformableObject">
         <RungeKutta4 name="odeExplicitSolver" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>

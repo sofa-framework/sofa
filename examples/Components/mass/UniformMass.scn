@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- <Simulation name="Simulation" /> -->
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />

@@ -1,4 +1,5 @@
 <Node dt="0.01" multiThreadSimulation="0" name="root" time="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

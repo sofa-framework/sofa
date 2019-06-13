@@ -1,5 +1,6 @@
 <!-- RegularGrid examples -->
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />

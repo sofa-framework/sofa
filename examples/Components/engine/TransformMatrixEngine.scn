@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node name="Root">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" />
     <Node name="Transformation">
         <TranslateTransformMatrixEngine name="T1" translation="10 11 12"/>

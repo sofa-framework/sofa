@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -1000 0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     
     <!-- Change the viewer size here -->
     <ViewerSetting resolution="800 600"/>

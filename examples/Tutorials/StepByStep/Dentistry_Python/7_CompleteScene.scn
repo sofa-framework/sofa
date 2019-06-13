@@ -3,6 +3,7 @@ This is the final step of his tutorial:
 An assemblage of all the previous steps altogether
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 

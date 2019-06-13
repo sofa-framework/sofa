@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9 1" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showBehaviorModels showWireframe" />
   <DefaultPipeline />
   <BruteForceDetection  />

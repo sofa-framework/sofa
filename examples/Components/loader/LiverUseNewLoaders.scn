@@ -1,5 +1,6 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- <Simulation name="Simulation" /> -->
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />

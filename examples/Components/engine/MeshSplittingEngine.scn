@@ -2,6 +2,7 @@
 <!-- MeshSplittingEngine Example -->
 
 <Node name="root" dt="0.1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehavior showVisual" />
     <BackgroundSetting color="1 1 1"/>
     

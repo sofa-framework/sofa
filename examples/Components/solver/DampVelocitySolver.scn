@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 0 0" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M0">
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />

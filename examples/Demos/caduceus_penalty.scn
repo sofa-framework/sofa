@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- NEW DEFAULT SOFA SCENE (Thanks to Jeremy Ringard for the caduceus model) -->
 <Node name="root" gravity="0 -1000 0" dt="0.004">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" /> <!--showBehaviorModels showCollisionModels-->
 
     <CollisionPipeline depth="15" verbose="0" draw="0" />
