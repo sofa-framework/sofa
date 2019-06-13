@@ -22,10 +22,18 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
+#include <SofaOpenglVisual/OglModel.h>
+
 namespace light_test
 {
 
 int initMessage(){
+    static sofa::component::visualmodel::OglModel* t;
+
+    if(t){
+        t->init();
+    }
+
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
     return 0;
