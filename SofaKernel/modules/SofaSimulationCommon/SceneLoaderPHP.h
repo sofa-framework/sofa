@@ -37,10 +37,10 @@ public:
     bool canLoadFileExtension(const char *extension) override;
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr doLoad(const char *filename);
+    virtual sofa::simulation::Node::SPtr doLoad(const char *filename) override;
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
     void getExtensionList(ExtensionList* list) override;

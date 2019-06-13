@@ -644,9 +644,7 @@ void SofaPhysicsSimulation::drawGL()
 
     if (!initGLDone)
     {
-#ifdef SOFA_HAVE_GLEW
         glewInit();
-#endif
         //Load texture for logo
         std::string imageFileName = "textures/SOFA_logo.bmp";
         if (sofa::helper::system::DataRepository.findFile(imageFileName))

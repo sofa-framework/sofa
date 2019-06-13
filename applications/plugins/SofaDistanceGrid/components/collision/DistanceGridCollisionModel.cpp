@@ -521,8 +521,8 @@ void FFDDistanceGridCollisionModel::init()
     /// fill other data and remove inactive elements
 
     sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
-    int c=0;
-    for (int e=0; e<ffdMesh->getNbHexahedra(); e++)
+    size_t c=0;
+    for (size_t e=0; e<ffdMesh->getNbHexahedra(); e++)
     {
         if (c != e)
             elems[c].points.swap(elems[e].points); // move the list of points to the new

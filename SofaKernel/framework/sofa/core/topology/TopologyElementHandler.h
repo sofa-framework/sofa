@@ -76,11 +76,11 @@ public:
     /// Apply renumbering on elements.
     virtual void ApplyTopologyChange(const ERenumbering* event) override;
     /// Apply moving elements.
-    virtual void ApplyTopologyChange(const EMoved* event);
+    virtual void ApplyTopologyChange(const EMoved* event) override;
     /// Apply adding function on moved elements.
-    virtual void ApplyTopologyChange(const EMoved_Adding* event);
+    virtual void ApplyTopologyChange(const EMoved_Adding* event) override;
     /// Apply removing function on moved elements.
-    virtual void ApplyTopologyChange(const EMoved_Removing* event);
+    virtual void ApplyTopologyChange(const EMoved_Removing* event) override;
 
 protected:
     /// Swaps values at indices i1 and i2.

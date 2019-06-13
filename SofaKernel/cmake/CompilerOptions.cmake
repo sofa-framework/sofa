@@ -39,6 +39,11 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
+# Mac specific
+if(APPLE)
+    #remove OpenGL deprecation message
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGL_SILENCE_DEPRECATION")
+endif()
 
 ## SOFA_DEBUG preprocessor macro
 if(WIN32 OR APPLE)

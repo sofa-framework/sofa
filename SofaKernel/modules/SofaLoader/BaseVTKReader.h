@@ -98,10 +98,10 @@ public:
         void resize(int n) override ;
         static T swapT(T t, int nestedDataSize) ;
         void swap() override ;
-        virtual bool read(const string& s, int n, int binary) ;
-        virtual bool read(const string& s, int binary) ;
-        virtual bool read(istream& in, int n, int binary) ;
-        virtual bool write(ofstream& out, int n, int groups, int binary) ;
+        virtual bool read(const string& s, int n, int binary) override;
+        virtual bool read(const string& s, int binary) override;
+        virtual bool read(istream& in, int n, int binary) override;
+        virtual bool write(ofstream& out, int n, int groups, int binary) override;
         BaseData* createSofaData() override ;
     };
 
