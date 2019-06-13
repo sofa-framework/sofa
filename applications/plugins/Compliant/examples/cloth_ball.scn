@@ -36,7 +36,7 @@
      </Node>
      
      <Node name="Visual" >
-       <VisualModel  color="green"/>
+       <OglModel  color="green"/>
        <IdentityMapping />
      </Node>
 

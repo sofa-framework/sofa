@@ -25,7 +25,7 @@
 		  		ymin="0" ymax="3"
 		  		zmin="0" zmax="15"
 		  	/>
-      <VisualModel name="Visual" />
+      <OglModel name="Visual" />
 		  <SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>

@@ -33,7 +33,7 @@
                 <LinearMapping template="Vec3d,Vec3d" />
 		<SurfacePressureForceField pressure="100"  drawForceScale="1" volumeConservationMode="1"/> 
 		<Node name="Visual"  >
-		    <VisualModel color="0.5 0.5 0.5 0.5" />
+		    <OglModel color="0.5 0.5 0.5 0.5" />
 		    <IdentityMapping />
 		</Node>
             </Node>

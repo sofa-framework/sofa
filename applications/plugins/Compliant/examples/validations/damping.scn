@@ -86,7 +86,7 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" color="red" />
+				<OglModel  fileMesh="mesh/torus.obj" color="red" />
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 
@@ -178,7 +178,7 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" color="blue" />
+				<OglModel  fileMesh="mesh/torus.obj" color="blue" />
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 
@@ -263,7 +263,7 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" />
+				<OglModel  fileMesh="mesh/torus.obj" />
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 
@@ -348,7 +348,7 @@
 
 			<Node name="Visual"  >
 
-				<VisualModel  fileMesh="mesh/torus.obj" color="magenta"/>
+				<OglModel  fileMesh="mesh/torus.obj" color="magenta"/>
 
 				<LinearMapping template="Vec3d,ExtVec3f" />
 

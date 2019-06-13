@@ -33,7 +33,7 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <OglModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
     </Node>
@@ -59,7 +59,7 @@
 	    <Mesh name="mesh" src="@mapping" position="@pts.position"/>
 		
 		<Node name="Visual"  >
-		    <VisualModel  color="0 1 0"/>
+		    <OglModel  color="0 1 0"/>
         	     <IdentityMapping />
 		</Node>
 
@@ -82,7 +82,7 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
              <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
 

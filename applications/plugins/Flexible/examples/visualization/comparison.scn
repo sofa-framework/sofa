@@ -99,7 +99,7 @@
 
 
         <Node name="Visual"  >
-                <VisualModel name="mesh" fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
+                <OglModel name="mesh" fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
                 <BarycentricMapping input="@.." output="@." />
                 
                 <TransformPosition name="ref_position" input_position="@../../AffineFrames/collision/pts.position"  translation="-1 0 0" method="translation" />

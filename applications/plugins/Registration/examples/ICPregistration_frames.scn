@@ -51,7 +51,7 @@
 					cacheSize="4"
 					stiffness="0.1" damping="0" />
 			<Node name="Visu">
-				<VisualModel fileMesh="data/femur_m.obj" color="1 .4 0.5 1" />
+				<OglModel fileMesh="data/femur_m.obj" color="1 .4 0.5 1" />
 				<IdentityMapping />
 			</Node>		
 		</Node>		

@@ -29,7 +29,7 @@
 	<HexahedronFEMForceField youngModulus="2000.0" poissonRatio="0.2" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj"  color="1 .4 0.5 1" />
+	     <OglModel  fileMesh="mesh/torus.obj"  color="1 .4 0.5 1" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>
@@ -62,18 +62,18 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <OglModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 
  	<Node name="VisuHexa"  >
-		<VisualModel color="0.8 0.8 1 0.1" />
+		<OglModel color="0.8 0.8 1 0.1" />
 		<IdentityMapping />
 	</Node>
 
  	<Node name="VisuHexa2"  >
 		<VisualStyle displayFlags="showWireframe"/>
-		<VisualModel color="0.8 0.8 1 1" />
+		<OglModel color="0.8 0.8 1 1" />
 		<IdentityMapping />
 	</Node>
   </Node>

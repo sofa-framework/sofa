@@ -46,7 +46,7 @@
    
     <!--Visualisation-->
     <Node 	name="Visualisation" >
-      <VisualModel  />
+      <OglModel  />
       <IdentityMapping />
     </Node>
  

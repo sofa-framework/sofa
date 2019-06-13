@@ -37,7 +37,7 @@
 
              
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <OglModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
@@ -76,7 +76,7 @@
 
              
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="green"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="green"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>

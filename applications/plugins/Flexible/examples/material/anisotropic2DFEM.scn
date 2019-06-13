@@ -38,7 +38,7 @@
         </Node>
 
 	<Node name="Visual"  >
-            <VisualModel  />
+            <OglModel  />
             <IdentityMapping />
         </Node>
 
@@ -79,7 +79,7 @@
         </Node>
 
 	<Node name="Visual"  >
-            <VisualModel  />
+            <OglModel  />
             <IdentityMapping />
         </Node>
     </Node>

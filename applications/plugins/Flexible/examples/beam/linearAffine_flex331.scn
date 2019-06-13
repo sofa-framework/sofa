@@ -33,7 +33,7 @@
 	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="beam.obj"  color="blue" />
+	     <OglModel  fileMesh="beam.obj"  color="blue" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>

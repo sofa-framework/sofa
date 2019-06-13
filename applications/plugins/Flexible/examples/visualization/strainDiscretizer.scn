@@ -149,7 +149,7 @@
 
 
 	<Node name="Visual"  >
-		<VisualModel  fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
+		<OglModel  fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
 	     	<BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>

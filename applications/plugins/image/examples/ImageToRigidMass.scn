@@ -32,7 +32,7 @@
 		<RigidMapping globalToLocalCoords="1"/>
 
 		<Node 	name="visual" >
-	  		<VisualModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
+	  		<OglModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
 			<IdentityMapping />
 		</Node>
 	</Node>

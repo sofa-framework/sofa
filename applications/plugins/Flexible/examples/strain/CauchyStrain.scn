@@ -45,7 +45,7 @@
 	</Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
+	     <OglModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     

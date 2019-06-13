@@ -61,12 +61,12 @@
         </Node>
 
  	<Node name="VisuHexa"  >
-		<VisualModel color="0.8 0.8 1 0.3" />
+		<OglModel color="0.8 0.8 1 0.3" />
 		<IdentityMapping />
 	</Node>
  	<Node name="VisuHexa2"  >
 		<VisualStyle displayFlags="showWireframe"/>
-		<VisualModel color="0.8 0.8 1 1" />
+		<OglModel color="0.8 0.8 1 1" />
 		<IdentityMapping />
 	</Node>
 

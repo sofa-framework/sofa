@@ -41,7 +41,7 @@
 	    	</Node>
 
 	 	<Node name="visu"> 
-			<VisualModel filename="mesh/liver-smooth.obj"/> 
+			<OglModel filename="mesh/liver-smooth.obj"/> 
 			<LinearMapping template="Vec3d,ExtVec3f"/> 
 		</Node>
 

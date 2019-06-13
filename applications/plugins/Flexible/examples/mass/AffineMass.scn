@@ -49,7 +49,7 @@
 	<MechanicalObject  template="Vec3d" name="pts"    />
     	<LinearMapping template="Affine,Vec3d"/>
     	<Node 	name="visual"   >
-		<VisualModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
 	    	<IdentityMapping />
     	</Node>
     </Node>

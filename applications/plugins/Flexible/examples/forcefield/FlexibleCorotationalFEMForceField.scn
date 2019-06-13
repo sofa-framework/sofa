@@ -23,7 +23,7 @@
         <FlexibleCorotationalMeshFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1"/>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="yellow"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="yellow"/>
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	
@@ -48,7 +48,7 @@
 	    <Mesh name="mesh" src="@mapping" position="@pts.position"/>
 		
 <!--		<Node name="Visual"  >
-		    <VisualModel  color="0 1 0"/>
+		    <OglModel  color="0 1 0"/>
         	     <IdentityMapping />
 		</Node>-->
 
@@ -71,7 +71,7 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
+	     <OglModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
              <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
 
@@ -95,7 +95,7 @@
         <FlexibleCorotationalFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1" method="polar" geometricStiffness="true"/>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" />
+	     <OglModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	
@@ -130,7 +130,7 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
+	     <OglModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 	

@@ -19,7 +19,7 @@
 	  <MeshSpringForceField stiffness="3000.0" />
 
 	  <Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+	     <OglModel  fileMesh="mesh/Armadillo_simplified.obj"   />
 	     <BarycentricMapping input="@.." output="@." />
 	  </Node>
   </Node>

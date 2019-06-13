@@ -29,9 +29,9 @@
 
     
     <Node name="Visu">
-        <VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .05" />
-<!--         <VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 .2" /> -->
-<!--         <VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 .2" /> -->
+        <OglModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .05" />
+<!--         <OglModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 .2" /> -->
+<!--         <OglModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 .2" /> -->
     </Node>
    
   </Node>

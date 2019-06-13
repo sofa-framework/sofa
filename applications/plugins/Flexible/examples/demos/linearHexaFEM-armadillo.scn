@@ -48,7 +48,7 @@
         <LinearMapping name="colmap" template="Vec3d,Vec3d" />
 
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+            <OglModel  fileMesh="mesh/Armadillo_simplified.obj"   />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
     </Node>
@@ -56,13 +56,13 @@
 
 
     <Node name="VisuHexa"  >
-        <VisualModel color="0.8 0.8 1 0.1" />
+        <OglModel color="0.8 0.8 1 0.1" />
         <IdentityMapping />
     </Node>
 
     <Node name="VisuHexa2"  >
         <VisualStyle displayFlags="showWireframe"/>
-        <VisualModel color="0.8 0.8 1 1" />
+        <OglModel color="0.8 0.8 1 1" />
         <IdentityMapping />
     </Node>
 

@@ -39,7 +39,7 @@
             <TriangleCollisionModel />
             <LinearMapping template="Affine,Vec3d" />
             <Node name="Visual"  >
-                <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+                <OglModel  fileMesh="mesh/Armadillo_simplified.obj"   />
                 <IdentityMapping template="Vec3d,ExtVec3f"  />
             </Node>
         </Node>

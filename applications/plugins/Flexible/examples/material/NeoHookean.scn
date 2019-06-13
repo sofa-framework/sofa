@@ -224,7 +224,7 @@
     </Node>
 
     <Node name="Visual" >
-      <VisualModel color="0.2 1 0.2 1" />
+      <OglModel color="0.2 1 0.2 1" />
       <IdentityMapping />
     </Node>
 
@@ -258,7 +258,7 @@
     </Node>
 
     <Node name="Visual" >
-      <VisualModel color="0.1 0.8 0.1 1" />
+      <OglModel color="0.1 0.8 0.1 1" />
       <IdentityMapping />
     </Node>
 
