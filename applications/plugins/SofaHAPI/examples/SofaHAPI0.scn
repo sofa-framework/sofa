@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"   >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <Node name="Haptics">
     <MechanicalObject name="State" template="Rigid" position="0 0 0  0 0 0 1" />
     <HAPIHapticsDevice name="HAPI" printLog="1" drawDevice="1" scale="100" />

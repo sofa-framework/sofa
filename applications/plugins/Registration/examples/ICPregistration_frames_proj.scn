@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Scene" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="Flexible" pluginName="Flexible" />
 	<RequiredPlugin name="Registration" pluginName="Registration" />
 	<RequiredPlugin name="Image" pluginName="image" />

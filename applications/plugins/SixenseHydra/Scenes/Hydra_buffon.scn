@@ -1,4 +1,5 @@
 <Node 	name="Root" dt="0.02"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
 	<!-- <BackgroundSetting color="0.2 0.2 0.25" /> -->
     <Gravity name="G" gravity="0 -9.81 0" />

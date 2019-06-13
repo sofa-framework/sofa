@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node animate="0" gravity="0 0 -1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="optiTrackNatNet"/>
   <VisualStyle displayFlags="showVisual showCollisionModels" />
     <CollisionPipeline verbose="0" />
