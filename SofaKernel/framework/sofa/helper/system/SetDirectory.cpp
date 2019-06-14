@@ -50,20 +50,15 @@ namespace system
     #define getcwd _getcwd
 #endif
 
-SetDirectory::SetDirectory(const char* filename)
+SetDirectory::SetDirectory(const std::string& filename)
 {
-    directory = GetParentDir(filename);
+    directory = GetParentDir(filename.c_str());
     if (!directory.empty())
     {
         previousDir = GetCurrentDir();
         if (chdir(directory.c_str()) != 0)
             msg_error("SetDirectory") << "can't change directory.";
     }
-}
-
-SetDirectory::SetDirectory(const std::string& filename)
-    : SetDirectory(filename.c_str())
-{
 }
 
 SetDirectory::~SetDirectory()
