@@ -206,7 +206,7 @@ std::vector<std::vector<int>> dimvalues={
     {5,1,-1, 1, 1},
     {-2,1,1, 1, 1},
 };
-/*
+
 TEST_P(RegularGridTopology_test, regularGridSize )
 {
     /// We check if this test should returns a warning.
@@ -222,6 +222,5 @@ TEST_P(RegularGridTopology_test, regularGridSize )
 INSTANTIATE_TEST_CASE_P(regularGridSize3D,
                         RegularGridTopology_test,
                         ::testing::ValuesIn(dimvalues));
-*/
 
 
