@@ -62,8 +62,8 @@ SetDirectory::SetDirectory(const char* filename)
 }
 
 SetDirectory::SetDirectory(const std::string& filename)
+    : SetDirectory(filename.c_str())
 {
-    SetDirectory(filename.c_str());
 }
 
 SetDirectory::~SetDirectory()
