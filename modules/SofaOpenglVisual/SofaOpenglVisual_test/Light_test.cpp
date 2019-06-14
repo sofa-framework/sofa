@@ -23,6 +23,7 @@ using sofa::core::ExecParams ;
 using sofa::helper::BackTrace ;
 
 #include <SofaOpenglVisual/OglModel.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace light_test
 {
@@ -33,6 +34,8 @@ int initMessage(){
     if(t){
         t->init();
     }
+
+    sofa::core::ObjectFactory::getInstance()->dump();
 
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
