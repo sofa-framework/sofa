@@ -78,6 +78,7 @@ public:
     /// Should be implemented by using macros SOFA_EVENT_H / SOFA_EVENT_CPP
     virtual size_t getEventTypeIndex() const = 0;
 
+    static size_t getEventTypeCount() { return s_lastEventTypeIndex; }
 protected:
     bool m_handled;
 
