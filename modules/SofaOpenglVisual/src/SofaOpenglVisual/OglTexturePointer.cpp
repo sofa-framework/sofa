@@ -33,7 +33,7 @@ namespace visualmodel
 {
 
 // Register the OglTexturePointer class in the Factory
-int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
+static int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
 
 OglTexturePointer::OglTexturePointer()
     :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )

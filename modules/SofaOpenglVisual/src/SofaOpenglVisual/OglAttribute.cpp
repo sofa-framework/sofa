@@ -34,20 +34,20 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 
 
-int OglFloatAttributeClass = core::RegisterObject ( "OglFloatAttribute" ).add< OglFloatAttribute >();
-int OglFloat2AttributeClass = core::RegisterObject ( "OglFloat2Attribute" ).add< OglFloat2Attribute >();
-int OglFloat3AttributeClass = core::RegisterObject ( "OglFloat3Attribute" ).add< OglFloat3Attribute >();
-int OglFloat4AttributeClass = core::RegisterObject ( "OglFloat4Attribute" ).add< OglFloat4Attribute >();
+static  int OglFloatAttributeClass = core::RegisterObject ( "OglFloatAttribute" ).add< OglFloatAttribute >();
+static  int OglFloat2AttributeClass = core::RegisterObject ( "OglFloat2Attribute" ).add< OglFloat2Attribute >();
+static  int OglFloat3AttributeClass = core::RegisterObject ( "OglFloat3Attribute" ).add< OglFloat3Attribute >();
+static  int OglFloat4AttributeClass = core::RegisterObject ( "OglFloat4Attribute" ).add< OglFloat4Attribute >();
 
-int OglIntAttributeClass = core::RegisterObject ( "OglIntAttribute" ).add< OglIntAttribute >();
-int OglInt2AttributeClass = core::RegisterObject ( "OglInt2Attribute" ).add< OglInt2Attribute >();
-int OglInt3AttributeClass = core::RegisterObject ( "OglInt3Attribute" ).add< OglInt3Attribute >();
-int OglInt4AttributeClass = core::RegisterObject ( "OglInt4Attribute" ).add< OglInt4Attribute >();
+static int OglIntAttributeClass = core::RegisterObject ( "OglIntAttribute" ).add< OglIntAttribute >();
+static int OglInt2AttributeClass = core::RegisterObject ( "OglInt2Attribute" ).add< OglInt2Attribute >();
+static int OglInt3AttributeClass = core::RegisterObject ( "OglInt3Attribute" ).add< OglInt3Attribute >();
+static int OglInt4AttributeClass = core::RegisterObject ( "OglInt4Attribute" ).add< OglInt4Attribute >();
 
-int OglUIntAttributeClass = core::RegisterObject ( "OglUIntAttribute" ).add< OglUIntAttribute >();
-int OglUInt2AttributeClass = core::RegisterObject ( "OglUInt2Attribute" ).add< OglUInt2Attribute >();
-int OglUInt3AttributeClass = core::RegisterObject ( "OglUInt3Attribute" ).add< OglUInt3Attribute >();
-int OglUInt4AttributeClass = core::RegisterObject ( "OglUInt4Attribute" ).add< OglUInt4Attribute >();
+static int OglUIntAttributeClass = core::RegisterObject ( "OglUIntAttribute" ).add< OglUIntAttribute >();
+static int OglUInt2AttributeClass = core::RegisterObject ( "OglUInt2Attribute" ).add< OglUInt2Attribute >();
+static int OglUInt3AttributeClass = core::RegisterObject ( "OglUInt3Attribute" ).add< OglUInt3Attribute >();
+static int OglUInt4AttributeClass = core::RegisterObject ( "OglUInt4Attribute" ).add< OglUInt4Attribute >();
 
 } // namespace visual
 

@@ -21,8 +21,12 @@
 ******************************************************************************/
 #include <string>
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::RegisterObject;
+
 #include <sofa/helper/system/config.h>
 #include <SofaOpenglVisual/initOpenGLVisual.h>
+
+#include <SofaOpenglVisual/OglModel.h>
 
 namespace sofa
 {
@@ -30,6 +34,8 @@ namespace sofa
 namespace component
 {
 
+static int OglModelClass = RegisterObject("Generic visual model for OpenGL display")
+        .add< sofa::component::visualmodel::OglModel >();
 
 extern "C" {
     SOFA_OPENGL_VISUAL_API void initExternalModule();
@@ -45,7 +51,9 @@ void initExternalModule()
     static bool first = true;
     if (!first)
     {
-        return;
+        std::cout << "REGISTER TO OGLFACTORY" << std::endl;
+       OglModelClass = 1;
+       return;
     }
     first = false;
 }
@@ -67,7 +75,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "The plugin allows to control soft robots";
+    return "Visual object rendered using OpenGL 1.x/2.x.";
 }
 
 const char* getModuleComponentList()

@@ -48,7 +48,7 @@ using namespace helper::gl;
 using namespace simulation;
 
 //Register RenderingSRGB in the Object Factory
-int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
+static int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
         .add< OglRenderingSRGB >()
         ;
 

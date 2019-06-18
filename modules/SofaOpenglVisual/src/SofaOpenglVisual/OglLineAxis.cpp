@@ -35,7 +35,7 @@ namespace component
 namespace visualmodel
 {
 
-int OglLineAxisClass = core::RegisterObject("Display scene axis")
+static int OglLineAxisClass = core::RegisterObject("Display scene axis")
         .add< component::visualmodel::OglLineAxis >()
         ;
 

@@ -44,9 +44,6 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-static int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
-        .add< OglModel >()
-        ;
 
 template<class T>
 const T* getData(const defaulttype::ResizableExtVector<T>& v) { return v.getData(); }

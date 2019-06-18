@@ -48,7 +48,7 @@ namespace visualmodel
 
 
 //Register OglShader in the Object Factory
-int OglOITShaderClass = core::RegisterObject("OglOITShader")
+static int OglOITShaderClass = core::RegisterObject("OglOITShader")
         .add< OglOITShader >()
         ;
 
