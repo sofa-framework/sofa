@@ -26,11 +26,27 @@ endif()
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Option for packaging
+option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
+
 ## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
+if(APPLE AND SOFA_BUILD_APP_BUNDLE)
+    set(SOFA_BUILD_RELEASE_PACKAGE ON)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/runSofa.app/Contents/MacOS)
+    message("SOFA_BUILD_APP_BUNDLE = ${SOFA_BUILD_APP_BUNDLE}
+  Forcing SOFA_BUILD_RELEASE_PACKAGE = ${SOFA_BUILD_RELEASE_PACKAGE}
+  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+# Use packaging.cmake configuration (used for Continuous Delivery)
+if(SOFA_BUILD_RELEASE_PACKAGE)
+    message("Using package.cmake")
+    include("package.cmake")
+endif()
 
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
@@ -309,13 +325,8 @@ install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applicat
 set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-if(APPLE AND SOFA_BUILD_APP_BUNDLE)
-    set(SHARE_DIR "share/sofa")
-    set(EXAMPLES_DIR "share/sofa/examples")
-else()
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-endif()
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
 configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
@@ -501,24 +512,24 @@ endif()
 #######################
 
 if(APPLE)
+    list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/icu4c")
     find_package(ICU COMPONENTS data i18n uc)
     sofa_install_libraries(LIBRARIES ${ICU_LIBRARIES})
     message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
-endif()
 
-#dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
-#if not set, it will install everything as usual
-#TODO: Redesign of a better architecture about bundling (runSofa ? libraries ? modeler ? other application ?)
-get_property(TEMP_CPACK_COMPONENTS_ALL GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL )
-if(APPLE AND TEMP_CPACK_COMPONENTS_ALL)
-    set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
-    set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
-endif()
+    if(SOFA_BUILD_APP_BUNDLE)
+        set(CPACK_BINARY_DRAGNDROP ON)
+        set(CPACK_GENERATOR DragNDrop)
 
-option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
-if(SOFA_BUILD_RELEASE_PACKAGE)
-    message("Using package.cmake")
-    include("package.cmake")
+        # Monolithic install containing everything
+        unset(CPACK_COMPONENTS_ALL)
+        set(CPACK_MONOLITHIC_INSTALL ON)
+
+        # Force CPack install dir to $ENV{DESTDIR}/runSofa.app/Contents/MacOS
+        # CPack always adds "$ENV{DESTDIR}/" before CPACK_INSTALL_PREFIX
+        set(CPACK_SET_DESTDIR TRUE)
+        set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
+    endif()
 endif()
 
 include(CPack)

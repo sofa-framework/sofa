@@ -51,25 +51,35 @@ endif()
 # Create build and install versions of .ini file for resources finding
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
-if(APPLE AND SOFA_BUILD_APP_BUNDLE)
-    set(RESOURCES_DIR "share/sofa/gui/runSofa")
-else()
-    set(RESOURCES_DIR "../share/sofa/gui/runSofa")
-endif()
+set(RESOURCES_DIR "../share/sofa/gui/runSofa")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
 install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 
-if(APPLE AND SOFA_BUILD_APP_BUNDLE)
-    find_package(CImgPlugin REQUIRED)
-    find_package(SofaMiscCollision REQUIRED)
-    find_package(SofaPython REQUIRED)
-    target_link_libraries(${PROJECT_NAME} SofaAllCommonComponents CImgPlugin SofaMiscCollision SofaPython SofaSparseSolver SofaPreconditioner)
-    set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
-    include(cmake/bundle.cmake)
-else()
-    sofa_install_targets(SofaGui runSofa runSofa)
-endif()
+sofa_install_targets(SofaGui runSofa runSofa)
 
+if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)
+    if(SOFA_BUILD_APP_BUNDLE)
+        install(CODE "file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\" \"[Paths]\\n  Plugins = MacOS/bin\")" COMPONENT applications)
+    endif()
+
+    # postInstall.cmake will be executed at the end of install
+    file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch")
+    add_custom_target(post_install ALL
+        COMMENT "${PROJECT_NAME}: Patching cmake_install.cmake (to run post install script)."
+        COMMAND
+            test ! -e ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            && cat ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake > ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            
+            && printf \"\\n\" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            && printf \"execute_process ( \" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            && printf 'COMMAND' >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            && printf \" /bin/bash \\\"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\\\" \\\"\\\$$ENV\{DESTDIR\}\\\$$\{CMAKE_INSTALL_PREFIX\}\\\" ) \" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            && printf \"\\n\" >> ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch
+            
+            && ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmakepatch ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
+            || true
+        )
+endif()

@@ -475,6 +475,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             LIBRARY DESTINATION "lib" COMPONENT libraries
             ARCHIVE DESTINATION "lib" COMPONENT libraries
             PUBLIC_HEADER DESTINATION "include/${include_install_dir}" COMPONENT headers
+
+            # [MacOS] install runSofa above the already populated runSofa.app (see CMAKE_INSTALL_PREFIX)
+            BUNDLE DESTINATION "../../.." COMPONENT applications
             )
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in")
@@ -712,7 +715,13 @@ function(sofa_install_libraries)
 
     foreach(target ${targets})
         get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-        list(APPEND libraries "${target_location}")
+        get_target_property(is_framework ${target} FRAMEWORK)
+        if(APPLE AND is_framework)
+            get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
+            install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
+        else()
+            list(APPEND libraries "${target_location}")
+        endif()
     endforeach()
 
     foreach(library ${libraries})
