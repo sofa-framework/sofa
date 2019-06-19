@@ -44,7 +44,6 @@ using namespace core;
 using namespace component;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace std;
 using sofa::helper::vector;
 typedef std::size_t Index;
 
@@ -349,8 +348,8 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         // ================ test getJs() : check that J.vp = vc
         if (this->vectorMaxDiff(Jv, vc) > this->epsilon()*errorMax){
             succeed = false;
-            cout << "Jvp = " << Jv << endl;
-            cout << "vc  = " << vc << endl;
+            msg_info() << "Jvp = " << Jv;
+            msg_info() << "vc  = " << vc;
             ADD_FAILURE() << "getJs() test failed" << endl << "Jvp = " << Jv << endl << "vc  = " << vc << endl;
         }
 
