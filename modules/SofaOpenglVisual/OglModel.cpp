@@ -854,8 +854,8 @@ void OglModel::updateVertexBuffer()
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    const void* positionBuffer = vertices.getData();
-    const void* normalBuffer = vnormals.getData();
+    const void* positionBuffer = vertices.data();
+    const void* normalBuffer = vnormals.data();
 
 
     verticesTmpBuffer.resize( vertices.size() );
@@ -906,12 +906,12 @@ void OglModel::updateVertexBuffer()
             glBufferSubData(GL_ARRAY_BUFFER,
                             positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
                             tangentsBufferSize,
-                            vtangents.getData());
+                            vtangents.data());
 
             glBufferSubData(GL_ARRAY_BUFFER,
                             positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
                             bitangentsBufferSize,
-                            vbitangents.getData());
+                            vbitangents.data());
         }
     }
 
