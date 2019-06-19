@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o errexit # Exit on error
+# set -o errexit # Exit on error
 
 usage() {
     echo "Usage: macos-postinstall-fixup.sh <install-dir>"
@@ -11,16 +11,18 @@ else
     usage; exit 1
 fi
 
-cd "$INSTALL_DIR"
-
-echo "Moving executable to bin ..."
-if [ -e runSofa ]; then
-    mv -f "runSofa" "bin"
+if [ -e "$INSTALL_DIR/../MacOS/runSofa" ]; then
+    echo "Moving executable to bin ..."
+    mv -f "$INSTALL_DIR/runSofa" "$INSTALL_DIR/bin/runSofa"
 fi
 
 echo "Fixing up libs..."
 
-(find . -name "*.dylib" -not -path "*/bin/*" ; find . -name "runSofa" -path "*/bin/*") | while read lib; do
+(
+find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
+find "$INSTALL_DIR" -type f -name "*.dylib"
+find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+) | while read lib; do
 
     libboost=""
     libqt=""
@@ -59,7 +61,7 @@ echo "Fixing up libs..."
             install_name_tool -change $dep @rpath/$libpng $lib
         fi
     done
-    
+
     echo ": done."
 
 done
