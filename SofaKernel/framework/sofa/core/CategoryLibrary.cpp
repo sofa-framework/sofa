@@ -140,7 +140,6 @@ std::vector<std::string> CategoryLibrary::getCategories()
                                          "Mass", "OdeSolver", "ConstraintSolver", "ConstraintSolver",
                                          "LinearSolver", "AnimationLoop", "Topology", "TopologyObject",
                                          "Controller", "Loader", "CollisionAlgorithm",
-                                         "CollisionAlgorithm", "CollisionAlgorithm",
                                          "ConfigurationSetting", "_Miscellaneous"};
 }
 
