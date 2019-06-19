@@ -25,6 +25,8 @@ using sofa::helper::BackTrace ;
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 namespace light_test
 {
 
@@ -35,7 +37,7 @@ int initMessage(){
         t->init();
     }
 
-    sofa::core::ObjectFactory::getInstance()->dump();
+    sofa::simpleapi::importPlugin("SofaOpenglVisual");
 
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
