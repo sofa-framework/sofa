@@ -86,9 +86,6 @@ public:
     static void SetFullScreen();
     static void SaveScreenshot(const char* filename);
 
-    static void SetSofaPrefix(const char* path);
-    static const char * GetSofaPrefix();
-
     /// @}
 protected:
     /*!
@@ -105,7 +102,6 @@ protected:
     static BaseGUI* currentGUI;
     static const char* valid_guiname;
     static ArgumentParser* currentArgumentParser;
-    static std::string sofa_prefix;
 public:
     static BaseGUI* getGUI();
 };
