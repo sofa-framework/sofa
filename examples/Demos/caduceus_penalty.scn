@@ -27,9 +27,9 @@
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0"  contactStiffness="10"/>
-            <Line    selfCollision="0" contactStiffness="10"/>
-            <Point  selfCollision="0" contactStiffness="10"/>
+            <TriangleCollisionModel  selfCollision="0"  contactStiffness="10"/>
+            <LineCollisionModel    selfCollision="0" contactStiffness="10"/>
+            <PointCollisionModel  selfCollision="0" contactStiffness="10"/>
             <BarycentricMapping name="barymeca" input="@.." output="@." />
         </Node>
 
@@ -55,20 +55,20 @@
 			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Line simulated="false" moving="false"  contactStiffness="10000"/>
+            <LineCollisionModel simulated="false" moving="false"  contactStiffness="10000"/>
 		</Node>
 		<Node name="Blobs">
 			<MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-			<Triangle simulated="false" moving="false" contactStiffness="10000"/>
+			<TriangleCollisionModel simulated="false" moving="false" contactStiffness="10000"/>
 		</Node>	
 		
 		<Node name="Foot">
 			<MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-			<Triangle simulated="false" moving="false" contactStiffness="10000" />
+			<TriangleCollisionModel simulated="false" moving="false" contactStiffness="10000" />
 		</Node>		
 
         <Node name="Visu" tags="Visual" >

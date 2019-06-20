@@ -153,7 +153,7 @@
 			<MeshObjLoader name="MeshLoader" filename="beam.obj"/>
       			<Mesh name="mesh" src="@MeshLoader"  /> 
       			<MechanicalObject  name="PointSet"/>
-      			<Triangle />
+      			<TriangleCollisionModel />
 			<FrameBlendingMapping template="Affine,Vec3d" input="@../DOFs"  output="@PointSet" showStrain="false"/>
 
 			<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 

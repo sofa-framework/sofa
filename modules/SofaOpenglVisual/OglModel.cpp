@@ -31,7 +31,6 @@
 #include <cstring>
 #include <sofa/helper/types/RGBAColor.h>
 
-//#define NO_VBO
 //#define DEBUG_DRAW
 namespace sofa
 {
@@ -45,7 +44,7 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
-int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
+static int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
         .add< OglModel >()
         ;
 
@@ -57,29 +56,24 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
-    : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
-    , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    #ifndef SOFA_HAVE_GLEW
-    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
-    #else
-    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
-    #endif
-    , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
-    , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
-    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
-    , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
-    , lineWidth(initData(&lineWidth, (GLfloat) 1, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
-    , pointSize(initData(&pointSize, (GLfloat) 1, "pointSize", "Point size (set if != 1, only for points rendering)"))
-    , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
-    , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
+    : blendTransparency(initData(&blendTransparency, true, "blendTranslucency", "Blend transparent parts"))
+    , premultipliedAlpha(initData(&premultipliedAlpha, false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    , writeZTransparent(initData(&writeZTransparent, false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
+    , alphaBlend(initData(&alphaBlend, false, "alphaBlend", "Enable alpha blending"))
+    , depthTest(initData(&depthTest, true, "depthTest", "Enable depth testing"))
+    , cullFace(initData(&cullFace, 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , lineWidth(initData(&lineWidth, 1.0f, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
+    , pointSize(initData(&pointSize, 1.0f, "pointSize", "Point size (set if != 1, only for points rendering)"))
+    , lineSmooth(initData(&lineSmooth, false, "lineSmooth", "Enable smooth line rendering"))
+    , pointSmooth(initData(&pointSmooth, false, "pointSmooth", "Enable smooth point rendering"))
+    , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
-    , tex(NULL)
+    , tex(nullptr)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
-    , canUseVBO(false), VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
+    , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
 {
 
@@ -109,37 +103,48 @@ OglModel::OglModel()
 
 OglModel::~OglModel()
 {
-    if (tex!=NULL) delete tex;
+    if (tex!=nullptr) delete tex;
 
     for (unsigned int i = 0 ; i < textures.size() ; i++)
     {
         delete textures[i];
     }
 
-#ifdef GL_ARB_vertex_buffer_object
     // NB fjourdes : I don t know why gDEBugger still reports
     // graphics memory leaks after destroying the GLContext
     // even if the vbos destruction is claimed with the following
     // lines...
     if( vbo > 0 )
     {
-        glDeleteBuffersARB(1,&vbo);
+        glDeleteBuffers(1,&vbo);
     }
     if( iboEdges > 0)
     {
-        glDeleteBuffersARB(1,&iboEdges);
+        glDeleteBuffers(1,&iboEdges);
     }
     if( iboTriangles > 0)
     {
-        glDeleteBuffersARB(1,&iboTriangles);
+        glDeleteBuffers(1,&iboTriangles);
     }
     if( iboQuads > 0 )
     {
-        glDeleteBuffersARB(1,&iboQuads);
+        glDeleteBuffers(1,&iboQuads);
     }
-#endif
 
 }
+
+void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("isToPrint")!=nullptr)
+    {
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+                            "Please contact sofa-dev team in case you need similar.";
+    }
+    Inherit1::parse(arg);
+}
+
+
+
 
 void OglModel::drawGroup(int ig, bool transparent)
 {
@@ -156,52 +161,41 @@ void OglModel::drawGroup(int ig, bool transparent)
     {
         g.materialId = -1;
         g.edge0 = 0;
-        g.nbe = edges.size();
+        g.nbe = int(edges.size());
         g.tri0 = 0;
-        g.nbt = triangles.size();
+        g.nbt = int(triangles.size());
         g.quad0 = 0;
-        g.nbq = quads.size();
+        g.nbq = int(quads.size());
     }
     else
     {
-        g = this->groups.getValue()[ig];
+        g = this->groups.getValue()[size_t(ig)];
     }
     Material m;
     if (g.materialId < 0)
         m = this->material.getValue();
     else
-        m = this->materials.getValue()[g.materialId];
+        m = this->materials.getValue()[size_t(g.materialId)];
 
-    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0) || hasTransparent();
+    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0f) || hasTransparent();
     if (transparent ^ isTransparent) return;
 
 
     if (!tex && m.useTexture && m.activated)
     {
         //get the texture id corresponding to the current material
-        unsigned int indexInTextureArray = materialTextureIdMap[g.materialId];
+        size_t indexInTextureArray = size_t(materialTextureIdMap[g.materialId]);
         if (indexInTextureArray < textures.size() && textures[indexInTextureArray])
         {
             textures[indexInTextureArray]->bind();
         }
 
         glEnable(GL_TEXTURE_2D);
-#ifdef SOFA_HAVE_GLEW
-        if(VBOGenDone && useVBO.getValue())
-        {
-            glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0]))
-                    + (vnormals.size()*sizeof(vnormals[0]))
-                    );
-            glBindBufferARB(GL_ARRAY_BUFFER, 0);
-        }
-        else
-#endif // SOFA_HAVE_GLEW
-        {
-            //get the texture coordinates
-            const VecTexCoord& vtexcoords = this->getVtexcoords();
-            glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
-        }
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	uintptr_t pt = (vertices.size()*sizeof(vertices[0]))
+                    + (vnormals.size()*sizeof(vnormals[0]));
+            glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(pt));
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
@@ -230,26 +224,20 @@ void OglModel::drawGroup(int ig, bool transparent)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.data());
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.data());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-    const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
         //Disable lighting if we draw points
         glDisable(GL_LIGHTING);
         glColor4fv(diffuse.data());
-        glDrawArrays(GL_POINTS, 0, vertices.size());
+        glDrawArrays(GL_POINTS, 0, GLsizei(vertices.size()));
         glEnable(GL_LIGHTING);
         glColor4f(1.0,1.0,1.0,1.0);
     }
     if (g.nbe > 0 && !drawPoints)
     {
-        const Edge* indices = NULL;
-#ifdef SOFA_HAVE_GLEW
-        if (useBufferObjects)
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
-        else
-#endif
-            indices = edges.getData();
+        const Edge* indices = nullptr;
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
         GLenum prim = GL_LINES;
         switch (primitiveType.getValue().getSelectedId())
@@ -258,13 +246,8 @@ void OglModel::drawGroup(int ig, bool transparent)
             msg_warning() << "LINES_ADJACENCY primitive type invalid for edge topologies" ;
             break;
         case 2:
-#if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
-            if (canUsePatches)
-            {
-                prim = GL_PATCHES;
-                glPatchParameteri(GL_PATCH_VERTICES,2);
-            }
-#endif
+            prim = GL_PATCHES;
+            glPatchParameteri(GL_PATCH_VERTICES,2);
             break;
         default:
             break;
@@ -272,20 +255,12 @@ void OglModel::drawGroup(int ig, bool transparent)
 
         glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
 
-#ifdef SOFA_HAVE_GLEW
-        if (useBufferObjects)
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     if (g.nbt > 0 && !drawPoints)
     {
-        const Triangle* indices = NULL;
-#ifdef SOFA_HAVE_GLEW
-        if (useBufferObjects)
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-        else
-#endif
-            indices = triangles.getData();
+        const Triangle* indices = nullptr;
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
         GLenum prim = GL_TRIANGLES;
         switch (primitiveType.getValue().getSelectedId())
@@ -294,56 +269,30 @@ void OglModel::drawGroup(int ig, bool transparent)
             msg_warning() << "LINES_ADJACENCY primitive type invalid for triangular topologies" ;
             break;
         case 2:
-#if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
-            if (canUsePatches)
-            {
-                prim = GL_PATCHES;
-                glPatchParameteri(GL_PATCH_VERTICES,3);
-            }
-#endif
+            prim = GL_PATCHES;
+            glPatchParameteri(GL_PATCH_VERTICES,3);
             break;
         default:
             break;
         }
 
         glDrawElements(prim, g.nbt * 3, GL_UNSIGNED_INT, indices + g.tri0);
-
-#ifdef SOFA_HAVE_GLEW
-        if (useBufferObjects)
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     if (g.nbq > 0 && !drawPoints)
     {
-        const Quad* indices = NULL;
-#ifdef SOFA_HAVE_GLEW
-        if (useBufferObjects)
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-        else
-#endif
-            indices = quads.getData();
-
+        const Quad* indices = nullptr;
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
 
         GLenum prim = GL_QUADS;
         switch (primitiveType.getValue().getSelectedId())
         {
         case 1:
-#ifndef GL_LINES_ADJACENCY_EXT
-            msg_warning() << "GL_LINES_ADJACENCY_EXT not defined, please activage GLEW" ;
-#else
-        {
             prim = GL_LINES_ADJACENCY_EXT;
-        }
-#endif
             break;
         case 2:
-#if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
-            if (canUsePatches)
-            {
-                prim = GL_PATCHES;
-                glPatchParameteri(GL_PATCH_VERTICES,4);
-            }
-#endif
+            prim = GL_PATCHES;
+            glPatchParameteri(GL_PATCH_VERTICES,4);
             break;
         default:
             break;
@@ -351,18 +300,15 @@ void OglModel::drawGroup(int ig, bool transparent)
 
         glDrawElements(prim, g.nbq * 4, GL_UNSIGNED_INT, indices + g.quad0);
 
-#ifdef SOFA_HAVE_GLEW
-        if (useBufferObjects)
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     if (!tex && m.useTexture && m.activated)
     {
-        unsigned int indexInTextureArray = materialTextureIdMap[g.materialId];
-        if (indexInTextureArray < textures.size() && textures[indexInTextureArray])
+        int indexInTextureArray = materialTextureIdMap[g.materialId];
+        if (indexInTextureArray < int(textures.size()) && textures[size_t(indexInTextureArray)])
         {
-            textures[indexInTextureArray]->unbind();
+            textures[size_t(indexInTextureArray)]->unbind();
         }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisable(GL_TEXTURE_2D);
@@ -371,12 +317,6 @@ void OglModel::drawGroup(int ig, bool transparent)
 
 void OglModel::drawGroups(bool transparent)
 {
-    if(isToPrint.getValue()==true) {
-        m_positions.setPersistent(false);
-        m_vnormals.setPersistent(false);
-        m_vtexcoords.setPersistent(false);
-        m_triangles.setPersistent(false);}
-
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
 
     if (groups.empty())
@@ -385,10 +325,11 @@ void OglModel::drawGroups(bool transparent)
     }
     else
     {
-        for (unsigned int i=0; i<groups.size(); ++i)
-            drawGroup(i, transparent);
+        for (size_t i=0; i<groups.size(); ++i)
+            drawGroup(int(i), transparent);
     }
 }
+
 
 void glVertex3v(const float* d){ glVertex3fv(d); }
 void glVertex3v(const double* d){ glVertex3dv(d); }
@@ -402,10 +343,28 @@ GLuint glType<double>(){ return GL_DOUBLE; }
 template<>
 GLuint glType<float>(){ return GL_FLOAT; }
 
+template<class InType, class OutType>
+void copyVector(const InType& src, OutType& dst)
+{
+    unsigned int i=0;
+    for(auto& item : src)
+    {
+        dst[i].set(item);
+        ++i;
+    }
+}
 
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
-    if (!vparams->displayFlags().getShowVisualModels()) return;
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    if(!isEnabled.getValue())
+        return;
+
+    /// Checks that the VBO's are ready.
+    if(!VBOGenDone)
+        return;
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -417,29 +376,25 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
+
     glEnable(GL_LIGHTING);
 
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
-    GLuint datatype = glType<DataTypes::Real>();
+    /// Force the data to be of float type before sending to opengl...
+    GLuint datatype = GL_FLOAT;
+    GLuint vertexdatasize = sizeof(verticesTmpBuffer[0]);
+    GLuint normaldatasize = sizeof(normalsTmpBuffer[0]);
 
-#ifdef SOFA_HAVE_GLEW
-    if(VBOGenDone && useVBO.getValue())
-    {
-        glBindBufferARB(GL_ARRAY_BUFFER, vbo);
+    GLulong vertexArrayByteSize = vertices.size() * vertexdatasize;
+    GLulong normalArrayByteSize = vnormals.size() * normaldatasize;
 
-        glVertexPointer(3, datatype, 0, (char*)NULL + 0);
-        glNormalPointer(datatype, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
-
-        glBindBufferARB(GL_ARRAY_BUFFER, 0);
-    }
-    else
-#endif // SOFA_HAVE_GLEW
-    {
-        glVertexPointer (3, datatype, 0, vertices.getData());
-        glNormalPointer (datatype, 0, vnormals.getData());
-    }
+    //// Update the vertex buffers.
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glVertexPointer(3, datatype, 0, nullptr);
+    glNormalPointer(datatype, 0, reinterpret_cast<void*>(vertexArrayByteSize));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -451,54 +406,35 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnable(GL_TEXTURE_2D);
             tex->bind();
         }
-#ifdef SOFA_HAVE_GLEW
-        if(VBOGenDone && useVBO.getValue())
-        {
-            glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
-            glBindBufferARB(GL_ARRAY_BUFFER, 0);
-        }
-        else
-#endif // SOFA_HAVE_GLEW
-        {
-            glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
-        }
+
+        size_t textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize ));
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         if (hasTangents)
         {
-#ifdef SOFA_HAVE_GLEW
+            size_t tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
+
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            if(VBOGenDone && useVBO.getValue())
-            {
-                glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-                glTexCoordPointer(3, GL_FLOAT, 0,
-                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
-                        (vnormals.size()*sizeof(vnormals[0])) +
-                        (vtexcoords.size()*sizeof(vtexcoords[0])));
-                glBindBufferARB(GL_ARRAY_BUFFER, 0);
-            }
-            else
-                glTexCoordPointer(3, GL_FLOAT, 0, vtangents.getData());
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glTexCoordPointer(3, GL_FLOAT, 0,
+                              reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize + textureArrayByteSize));
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             glClientActiveTexture(GL_TEXTURE2);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            if(VBOGenDone && useVBO.getValue())
-            {
-                glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-                glTexCoordPointer(3, GL_FLOAT, 0,
-                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
-                        (vnormals.size()*sizeof(vnormals[0])) +
-                        (vtexcoords.size()*sizeof(vtexcoords[0])) +
-                        (vtangents.size()*sizeof(vtangents[0])));
-                glBindBufferARB(GL_ARRAY_BUFFER, 0);
-            }
-            else
-                glTexCoordPointer(3, GL_FLOAT, 0, vbitangents.getData());
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glTexCoordPointer(3, GL_FLOAT, 0,
+                              reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize
+                              + textureArrayByteSize + tangentArrayByteSize));
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             glClientActiveTexture(GL_TEXTURE0);
-#endif //  SOFA_HAVE_GLEW
         }
     }
 
@@ -522,9 +458,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         glDepthMask(GL_FALSE);
-#ifdef SOFA_HAVE_GLEW
         glBlendEquation( blendEq );
-#endif // SOFA_HAVE_GLEW
         glBlendFunc( sfactor, dfactor );
         glEnable(GL_BLEND);
     }
@@ -579,12 +513,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (lineWidth.isSet())
     {
-        glLineWidth((GLfloat)1);
+        glLineWidth(1.0f);
     }
 
     if (pointSize.isSet())
     {
-        glPointSize((GLfloat)1);
+        glPointSize(1.0f);
     }
 
     switch (cullFace.getValue())
@@ -601,9 +535,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         // restore Default value
-#ifdef SOFA_HAVE_GLEW
         glBlendEquation( GL_FUNC_ADD );
-#endif // SOFA_HAVE_GLEW
         glBlendFunc( GL_ONE, GL_ONE );
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
@@ -617,7 +549,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glDisable(GL_TEXTURE_2D);
         }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#ifdef SOFA_HAVE_GLEW
         if (hasTangents)
         {
             glClientActiveTexture(GL_TEXTURE1);
@@ -626,7 +557,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             glClientActiveTexture(GL_TEXTURE0);
         }
-#endif // SOFA_HAVE_GLEW
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
@@ -740,9 +670,6 @@ void OglModel::initVisual()
     initTextures();
 
     initDone = true;
-#ifdef NO_VBO
-    canUseVBO = false;
-#else
     static bool vboAvailable = false; // check the vbo availability
 
     static bool init = false;
@@ -752,16 +679,11 @@ void OglModel::initVisual()
         init = true;
     }
 
-    canUseVBO = vboAvailable;
-
-    if (useVBO.getValue() && !canUseVBO)
+    if (!vboAvailable)
     {
         msg_warning() << "OglModel : VBO is not supported by your GPU" ;
     }
 
-#endif
-
-#if defined(SOFA_HAVE_GLEW)
     if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
         msg_warning() << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." ;
@@ -771,16 +693,11 @@ void OglModel::initVisual()
 
     if (primitiveType.getValue().getSelectedId() == 2 && !canUsePatches)
     {
-#ifdef GL_ARB_tessellation_shader
         msg_warning() << "GL_ARB_tessellation_shader not supported by your graphics card and/or OpenGL driver." ;
-#else
-        msg_warning() << "GL_ARB_tessellation_shader not defined, please update GLEW to 1.5.4+" ;
-#endif
         msg_warning() << "GL Version: " << glGetString(GL_VERSION) ;
         msg_warning() << "GL Vendor : " << glGetString(GL_VENDOR) ;
         msg_warning() << "GL Extensions: " << glGetString(GL_EXTENSIONS) ;
     }
-#endif
 
     updateBuffers();
 
@@ -797,7 +714,6 @@ void OglModel::initVisual()
         sfactor = getGLenum( sourceFactor.getValue().getSelectedItem().c_str() );
         dfactor = getGLenum( destFactor.getValue().getSelectedItem().c_str() );
     }
-
 }
 
 void OglModel::initTextures()
@@ -817,24 +733,24 @@ void OglModel::initTextures()
         }
     }
 }
-#ifdef SOFA_HAVE_GLEW
+
 void OglModel::createVertexBuffer()
 {
-    glGenBuffersARB(1, &vbo);
+    glGenBuffers(1, &vbo);
     initVertexBuffer();
     VBOGenDone = true;
 }
 
 void OglModel::createEdgesIndicesBuffer()
 {
-    glGenBuffersARB(1, &iboEdges);
+    glGenBuffers(1, &iboEdges);
     initEdgesIndicesBuffer();
     useEdges = true;
 }
 
 void OglModel::createTrianglesIndicesBuffer()
 {
-    glGenBuffersARB(1, &iboTriangles);
+    glGenBuffers(1, &iboTriangles);
     initTrianglesIndicesBuffer();
     useTriangles = true;
 }
@@ -842,16 +758,15 @@ void OglModel::createTrianglesIndicesBuffer()
 
 void OglModel::createQuadsIndicesBuffer()
 {
-    glGenBuffersARB(1, &iboQuads);
+    glGenBuffers(1, &iboQuads);
     initQuadsIndicesBuffer();
     useQuads = true;
 }
 
-
 void OglModel::initVertexBuffer()
 {
-    unsigned positionsBufferSize, normalsBufferSize;
-    unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
+    size_t positionsBufferSize, normalsBufferSize;
+    size_t textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
     const VecCoord& vertices = this->getVertices();
     const VecCoord& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
@@ -859,8 +774,9 @@ void OglModel::initVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    positionsBufferSize = (vertices.size()*sizeof(Vec3f));
+    normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
+
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
@@ -872,20 +788,17 @@ void OglModel::initVertexBuffer()
         }
     }
 
-    unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
+    size_t totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
             tangentsBufferSize + bitangentsBufferSize;
 
-    glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-    //Vertex Buffer creation
-    glBufferDataARB(GL_ARRAY_BUFFER,
-                    totalSize,
-                    NULL,
-                    GL_DYNAMIC_DRAW);
-
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER,
+                 long(totalSize),
+                 nullptr,
+                 GL_DYNAMIC_DRAW);
 
     updateVertexBuffer();
-
-    glBindBufferARB(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
@@ -893,38 +806,38 @@ void OglModel::initEdgesIndicesBuffer()
 {
     const ResizableExtVector<Edge>& edges = this->getEdges();
 
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
 
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, edges.size()*sizeof(edges[0]), NULL, GL_DYNAMIC_DRAW);
     updateEdgesIndicesBuffer();
-
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initTrianglesIndicesBuffer()
 {
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
 
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
 
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
     updateTrianglesIndicesBuffer();
-
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initQuadsIndicesBuffer()
 {
     const ResizableExtVector<Quad>& quads = this->getQuads();
 
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
+
     updateQuadsIndicesBuffer();
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateVertexBuffer()
 {
+
     const VecCoord& vertices = this->getVertices();
     const VecCoord& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
@@ -932,85 +845,98 @@ void OglModel::updateVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    unsigned positionsBufferSize, normalsBufferSize;
-    unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
+    size_t positionsBufferSize, normalsBufferSize;
+    size_t textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    const void* positionBuffer = vertices.getData();
+    const void* normalBuffer = vnormals.getData();
+
+
+    verticesTmpBuffer.resize( vertices.size() );
+    normalsTmpBuffer.resize( vnormals.size() );
+
+    copyVector(vertices, verticesTmpBuffer);
+    copyVector(vnormals, normalsTmpBuffer);
+
+    positionsBufferSize = (vertices.size()*sizeof(Vec3f));
+    normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
+    positionBuffer = verticesTmpBuffer.data();
+    normalBuffer = normalsTmpBuffer.data();
+
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
-        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+        textureCoordsBufferSize = (vtexcoords.size() * sizeof(vtexcoords[0]));
 
         if (hasTangents)
         {
-            tangentsBufferSize = vtangents.size() * sizeof(vtangents[0]);
-            bitangentsBufferSize = vbitangents.size() * sizeof(vbitangents[0]);
+            tangentsBufferSize = (vtangents.size() * sizeof(vtangents[0]));
+            bitangentsBufferSize = (vbitangents.size() * sizeof(vbitangents[0]));
         }
     }
 
-    glBindBufferARB(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     //Positions
-    glBufferSubDataARB(GL_ARRAY_BUFFER,
-                       0,
-                       positionsBufferSize,
-                       vertices.getData());
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    0,
+                    positionsBufferSize,
+                    positionBuffer);
 
     //Normals
-    glBufferSubDataARB(GL_ARRAY_BUFFER,
-                       positionsBufferSize,
-                       normalsBufferSize,
-                       vnormals.getData());
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    positionsBufferSize,
+                    normalsBufferSize,
+                    normalBuffer);
 
     //Texture coords
     if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
     {
-        glBufferSubDataARB(GL_ARRAY_BUFFER,
-                           positionsBufferSize + normalsBufferSize,
-                           textureCoordsBufferSize,
-                           getData(vtexcoords));
+        glBufferSubData(GL_ARRAY_BUFFER,
+                        positionsBufferSize + normalsBufferSize,
+                        textureCoordsBufferSize,
+                        getData(vtexcoords));
 
         if (hasTangents)
         {
-            glBufferSubDataARB(GL_ARRAY_BUFFER,
-                               positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
-                               tangentsBufferSize,
-                               vtangents.getData());
+            glBufferSubData(GL_ARRAY_BUFFER,
+                            positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
+                            tangentsBufferSize,
+                            vtangents.getData());
 
-            glBufferSubDataARB(GL_ARRAY_BUFFER,
-                               positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
-                               bitangentsBufferSize,
-                               vbitangents.getData());
+            glBufferSubData(GL_ARRAY_BUFFER,
+                            positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
+                            bitangentsBufferSize,
+                            vbitangents.getData());
         }
     }
 
-    glBindBufferARB(GL_ARRAY_BUFFER, 0);
-
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateEdgesIndicesBuffer()
 {
     const ResizableExtVector<Edge>& edges = this->getEdges();
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
-    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, edges.size()*sizeof(edges[0]), &edges[0]);
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateQuadsIndicesBuffer()
 {
     const ResizableExtVector<Quad>& quads = this->getQuads();
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-#endif
 void OglModel::updateBuffers()
 {
     const ResizableExtVector<Edge>& edges = this->getEdges();
@@ -1024,74 +950,70 @@ void OglModel::updateBuffers()
 
     if (initDone)
     {
-#ifdef SOFA_HAVE_GLEW
-        if (useVBO.getValue() && canUseVBO)
+        if(!VBOGenDone)
         {
-            if(!VBOGenDone)
-            {
-                createVertexBuffer();
-                //Index Buffer Object
-                //Edges indices
-                if(edges.size() > 0)
-                    createEdgesIndicesBuffer();
-                //Triangles indices
-                if(triangles.size() > 0)
-                    createTrianglesIndicesBuffer();
-                //Quads indices
-                if(quads.size() > 0)
-                    createQuadsIndicesBuffer();
-            }
-            //Update VBO & IBO
-            else
-            {
-                if(oldVerticesSize != vertices.size() ||
-                        oldNormalsSize != normals.size() ||
-                        oldTexCoordsSize != texCoords.size() ||
-                        oldTangentsSize != tangents.size() ||
-                        oldBitangentsSize != bitangents.size())
-                    initVertexBuffer();
-                else
-                    updateVertexBuffer();
-                //Indices
-                //Edges
-                if(useEdges)
-                    if(oldEdgesSize != edges.size())
-                        initEdgesIndicesBuffer();
-                    else
-                        updateEdgesIndicesBuffer();
-                else if (edges.size() > 0)
-                    createEdgesIndicesBuffer();
-
-                //Triangles
-                if(useTriangles)
-                    if(oldTrianglesSize != triangles.size())
-                        initTrianglesIndicesBuffer();
-                    else
-                        updateTrianglesIndicesBuffer();
-                else if (triangles.size() > 0)
-                    createTrianglesIndicesBuffer();
-
-                //Quads
-                if (useQuads)
-                    if(oldQuadsSize != quads.size())
-                        initQuadsIndicesBuffer();
-                    else
-                        updateQuadsIndicesBuffer();
-                else if (quads.size() > 0)
-                    createQuadsIndicesBuffer();
-            }
-            oldVerticesSize = vertices.size();
-            oldNormalsSize = normals.size();
-            oldTexCoordsSize = texCoords.size();
-            oldTangentsSize = tangents.size();
-            oldBitangentsSize = bitangents.size();
-            oldEdgesSize = edges.size();
-            oldTrianglesSize = triangles.size();
-            oldQuadsSize = quads.size();
+            createVertexBuffer();
+            //Index Buffer Object
+            //Edges indices
+            if(edges.size() > 0)
+                createEdgesIndicesBuffer();
+            //Triangles indices
+            if(triangles.size() > 0)
+                createTrianglesIndicesBuffer();
+            //Quads indices
+            if(quads.size() > 0)
+                createQuadsIndicesBuffer();
         }
-#endif
-    }
+        //Update VBO & IBO
+        else
+        {
+            if(oldVerticesSize != vertices.size() ||
+                    oldNormalsSize != normals.size() ||
+                    oldTexCoordsSize != texCoords.size() ||
+                    oldTangentsSize != tangents.size() ||
+                    oldBitangentsSize != bitangents.size())
+                initVertexBuffer();
+            else
+                updateVertexBuffer();
 
+
+            //Indices
+            //Edges
+            if(useEdges)
+                if(oldEdgesSize != edges.size())
+                    initEdgesIndicesBuffer();
+                else
+                    updateEdgesIndicesBuffer();
+            else if (edges.size() > 0)
+                createEdgesIndicesBuffer();
+
+            //Triangles
+            if(useTriangles)
+                if(oldTrianglesSize != triangles.size())
+                    initTrianglesIndicesBuffer();
+                else
+                    updateTrianglesIndicesBuffer();
+            else if (triangles.size() > 0)
+                createTrianglesIndicesBuffer();
+
+            //Quads
+            if (useQuads)
+                if(oldQuadsSize != quads.size())
+                    initQuadsIndicesBuffer();
+                else
+                    updateQuadsIndicesBuffer();
+            else if (quads.size() > 0)
+                createQuadsIndicesBuffer();
+        }
+        oldVerticesSize = vertices.size();
+        oldNormalsSize = normals.size();
+        oldTexCoordsSize = texCoords.size();
+        oldTangentsSize = tangents.size();
+        oldBitangentsSize = bitangents.size();
+        oldEdgesSize = edges.size();
+        oldTrianglesSize = triangles.size();
+        oldQuadsSize = quads.size();
+    }
 }
 
 
@@ -1114,7 +1036,6 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_ONE_MINUS_SRC_ALPHA;
     }
-#ifdef SOFA_HAVE_GLEW
     // .... add ohter OGL symbolic constants
     // glBlendEquation Value
     else if  ( strcmp( c, "GL_FUNC_ADD") == 0)
@@ -1133,14 +1054,11 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_MIN;
     }
-#endif // SOFA_HAVE_GLEW
     else
     {
         msg_warning() << " OglModel - not valid or not supported openGL enum value: " << c ;
         return GL_ZERO;
     }
-
-
 }
 
 

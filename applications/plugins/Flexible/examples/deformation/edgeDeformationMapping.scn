@@ -37,7 +37,7 @@
             <EdgeSetTopologyModifier />
             <MechanicalObject template="Vec3d" name="splineMapped" />
             <CatmullRomSplineMapping input="@../DOFs" output="@splineMapped" SplittingLevel="3" />
-	    <Line />
+	    <LineCollisionModel />
         </Node>
     </Node>
 
@@ -69,7 +69,7 @@
             <EdgeSetTopologyModifier />
             <MechanicalObject template="Vec3d" name="splineMapped" />
             <CatmullRomSplineMapping input="@../DOFs" output="@splineMapped" SplittingLevel="3" />
-	    <Line />
+	    <LineCollisionModel />
         </Node>
     </Node>
 
@@ -92,7 +92,7 @@
             <EdgeSetTopologyModifier />
             <MechanicalObject template="Vec3d" name="splineMapped" />
             <CatmullRomSplineMapping input="@../DOFs" output="@splineMapped" SplittingLevel="3" />
-	    <Line />
+	    <LineCollisionModel />
         </Node>
     </Node>
 
@@ -108,7 +108,7 @@
             <EdgeSetTopologyModifier />
             <MechanicalObject template="Vec3d" name="splineMapped" />
             <CatmullRomSplineMapping input="@../DOFs" output="@splineMapped" SplittingLevel="3" />
-            <Line />
+            <LineCollisionModel />
         </Node>
     </Node>
 

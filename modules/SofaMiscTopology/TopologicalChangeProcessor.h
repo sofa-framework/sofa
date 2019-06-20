@@ -193,7 +193,7 @@ public:
             defaulttype::Vec3Types::Coord coord[3];
             unsigned int triIndex = triangleIndices[i];
 
-            if ( (int)triIndex >= topology->getNbTriangles())
+            if ( triIndex >= topology->getNbTriangles())
             {
                 msg_error("TriangleIncisionInformation") << " Bad index to access triangles  " <<  triIndex ;
             }

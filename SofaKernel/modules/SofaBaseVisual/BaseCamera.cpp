@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define _USE_MATH_DEFINES // for C++
 #include <cmath>
 
 #include <SofaBaseVisual/BaseCamera.h>

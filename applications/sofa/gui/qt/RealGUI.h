@@ -243,7 +243,7 @@ public:
 
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
-    virtual void setScene(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
+    virtual void setScene(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false) override;
     virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false);
 
     virtual void unloadScene(bool _withViewer = true);
@@ -256,7 +256,7 @@ public:
     void setFullScreen() override { setFullScreen(true); }
     virtual void setFullScreen(bool enable);
     void setBackgroundColor(const defaulttype::RGBAColor& c) override;
-    virtual void setBackgroundImage(const std::string& i);
+    virtual void setBackgroundImage(const std::string& i) override;
     void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
     void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button) override;
 
@@ -264,8 +264,8 @@ public:
     void setDumpState(bool) override;
     void setLogTime(bool) override;
     void setExportState(bool) override;
-    virtual void setRecordPath(const std::string & path);
-    virtual void setGnuplotPath(const std::string & path);
+    virtual void setRecordPath(const std::string & path) override;
+    virtual void setGnuplotPath(const std::string & path) override;
 
     /// create a viewer according to the argument key
     /// \note the viewerMap have to be initialize at least once before
@@ -287,9 +287,9 @@ public:
 
     virtual void removeViewer();
 
-    void dragEnterEvent( QDragEnterEvent* event);
+    void dragEnterEvent( QDragEnterEvent* event) override;
 
-    void dropEvent(QDropEvent* event);
+    void dropEvent(QDropEvent* event) override;
 
 protected:
     /// init data member from RealGUI for the viewer initialisation in the GUI
@@ -298,7 +298,7 @@ protected:
     void loadSimulation(bool one_step=false); //? where is the implementation ?
     void eventNewStep();
     void eventNewTime();
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent ( QKeyEvent * e ) override;
     void startDumpVisitor();
     void stopDumpVisitor();
 

@@ -20,13 +20,13 @@
 	    <VisualStyle displayFlags="hideCollision" />
 	    <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Sphere listRadius="@[-2].listRadius" />
+            <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
     <SphereLoader filename="mesh/floor.sph" />
     <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
-    <Sphere name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
+    <SphereCollisionModel name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
     <Node>
 	<OglModel name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="0 -12.5 0" />
     </Node>

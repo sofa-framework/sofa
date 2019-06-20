@@ -33,9 +33,9 @@
             <MeshObjLoader name="loader" filename="mesh/frog-push25.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>

@@ -34,7 +34,7 @@
                 <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetTopologyModifier />
                 <Tetra2TriangleTopologicalMapping input="@../container" output="@container" />
-                <TTriangleModel template="Vec3d" />
+                <TriangleCollisionModel template="Vec3d" />
             </Node>
         </Node>
     </Node>

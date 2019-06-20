@@ -42,7 +42,7 @@
 				zmin="-5.5" zmax="6.5"
 			/>
 			<MechanicalObject template="CudaVec3f"/> 
-			<TSphereModel radius="1.0" />
+			<SphereCollisionModel radius="1.0" />
 			<BarycentricMapping />
 		</Node>
 		<Node>

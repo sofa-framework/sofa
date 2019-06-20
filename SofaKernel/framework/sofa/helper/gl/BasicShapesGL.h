@@ -46,13 +46,13 @@ public:
     struct GLBuffers
     {
         GLuint VBO, IBO;
-        GLuint64 verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize;
-        GLuint64 indicesSize;
+        GLint64 verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize;
+        GLint64 indicesSize;
     };
     struct CustomGLBuffer
     {
         GLuint VBO;
-        GLuint64 bufferSize;
+        GLint64 bufferSize;
         GLint location;
     };
 };

@@ -203,10 +203,18 @@ if(Qt5Core_FOUND)
         endif()
     endif()
     # Install Qt plugins
-    install(DIRECTORY "${QT_PLUGINS_DIR}/iconengines" DESTINATION "bin" COMPONENT applications)
-    install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION "bin" COMPONENT applications)
-    install(DIRECTORY "${QT_PLUGINS_DIR}/platforms" DESTINATION "bin" COMPONENT applications)
-    install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
+    if(EXISTS "${QT_PLUGINS_DIR}/iconengines")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/iconengines" DESTINATION "bin" COMPONENT applications)
+    endif()
+    if(EXISTS "${QT_PLUGINS_DIR}/imageformats")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION "bin" COMPONENT applications)
+    endif()
+    if(EXISTS "${QT_PLUGINS_DIR}/platforms")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/platforms" DESTINATION "bin" COMPONENT applications)
+    endif()
+    if(EXISTS "${QT_PLUGINS_DIR}/styles")
+        install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
+    endif()
     # Install Qt XCB libraries
     file(GLOB QT_XCB_LIBRARIES
         "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"

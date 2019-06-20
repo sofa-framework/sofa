@@ -41,7 +41,7 @@
 				zmin="-5.5" zmax="6.5"
 			/>
 			<MechanicalObject/>
-			<TSphereModel radius="1.0" />
+			<SphereCollisionModel radius="1.0" />
 			<BarycentricMapping />
 		</Node>
 		<Node>

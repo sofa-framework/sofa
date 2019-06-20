@@ -20,9 +20,9 @@
             <MeshObjLoader filename="mesh/truthCylinder-Deformed.obj"  name="loader"/>
             <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="1.0" />
-            <Triangle />
-            <Line />
-            <Point />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
         </Node>
 	</Node>
 

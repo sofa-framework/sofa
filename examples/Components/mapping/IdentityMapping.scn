@@ -16,7 +16,7 @@
         <UniformMass vertexMass="1" />
         <FixedConstraint indices="38 39 40 41 42 43 123 124 137" />
         <TriangleFEMForceField name="FEM" youngModulus="50000" poissonRatio="0.3" method="large" />
-        <Triangle />
+        <TriangleCollisionModel />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
             <IdentityMapping input="@.." output="@Visual" />

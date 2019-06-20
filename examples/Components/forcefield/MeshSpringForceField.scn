@@ -9,7 +9,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
-            <Triangle simulated="0" moving="0" />
+            <TriangleCollisionModel simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <Node name="TorusSpring1">
@@ -28,7 +28,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" translation="2.5 0 0"/>
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" />
-                <Triangle />
+                <TriangleCollisionModel />
                 <BarycentricMapping />
             </Node>
         </Node>
@@ -48,7 +48,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" translation="5 0 0"/>
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader"  />
-                <Triangle />
+                <TriangleCollisionModel />
                 <BarycentricMapping />
             </Node>
         </Node>
@@ -68,7 +68,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" translation="7.5 0 0"/>
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader"  />
-                <Triangle />
+                <TriangleCollisionModel />
                 <BarycentricMapping />
             </Node>
         </Node>
@@ -88,7 +88,7 @@
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" translation="10 0 0"/>
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader"  />
-                <Triangle />
+                <TriangleCollisionModel />
                 <BarycentricMapping />
             </Node>
         </Node>

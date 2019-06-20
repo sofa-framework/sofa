@@ -20,7 +20,7 @@ and stiffness coefficients for the collision models.
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject />
-            <TTriangleModel contactStiffness="100"  contactFriction="1" />
+            <TriangleCollisionModel contactStiffness="100"  contactFriction="1" />
             <LineModel  contactStiffness="@[-1].contactStiffness"  contactFriction="@[-1].contactFriction" />
             <PointModel   contactStiffness="@[-1].contactStiffness"  contactFriction="@[-1].contactFriction" />
             <RigidMapping  input="@.." output="@." />
@@ -38,7 +38,7 @@ and stiffness coefficients for the collision models.
             <MeshObjLoader name="loader"  filename="mesh/sphere.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject />
-            <TTriangleModel  contactFriction="1" contactStiffness="10" />
+            <TriangleCollisionModel  contactFriction="1" contactStiffness="10" />
             <LineModel contactFriction="@[-1].contactFriction"  contactStiffness="@[-1].contactStiffness" />
             <PointModel  contactFriction="@[-1].contactFriction"  contactStiffness="@[-1].contactStiffness"  /> 
             <BarycentricMapping input="@.." output="@." />
@@ -49,7 +49,7 @@ and stiffness coefficients for the collision models.
             <MeshObjLoader name="loader"  filename="mesh/cube.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" translation="0 -6 0" scale3d="12 1 12" />
-            <TTriangleModel  moving="0"  simulated="0"  contactFriction="0.5" />
+            <TriangleCollisionModel  moving="0"  simulated="0"  contactFriction="0.5" />
             <LineModel moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
             <PointModel moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
 		</Node>

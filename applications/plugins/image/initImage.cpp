@@ -22,6 +22,7 @@
 #include <image/config.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #ifdef SOFA_HAVE_SOFAPYTHON
     #include <SofaPython/PythonFactory.h>

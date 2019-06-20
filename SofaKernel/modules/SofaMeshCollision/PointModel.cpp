@@ -36,16 +36,17 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
-        .add< TPointModel<defaulttype::Vec3Types> >()
+int PointCollisionModelClass = core::RegisterObject("Collision model which represents a set of points")
+        .add< PointCollisionModel<defaulttype::Vec3Types> >()
 
+        .addAlias("TPointModel")
         .addAlias("Point")
         .addAlias("PointModel")
         .addAlias("PointMesh")
         .addAlias("PointSet")
         ;
 
-template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3Types>;
+template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 
 } // namespace collision
