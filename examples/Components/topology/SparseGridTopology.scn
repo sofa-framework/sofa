@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- SparseGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -9 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

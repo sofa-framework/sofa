@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="default1" response="default" />
@@ -19,7 +20,7 @@
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="30" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <TriangleCollisionModel template="Vec3d" name="default7" />
-            <VisualModel template="ExtVec3f" name="Visual" color="blue" />
+            <OglModel template="ExtVec3f" name="Visual" color="blue" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
         </Node>
         <Node name="Out">
@@ -33,7 +34,7 @@
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <TriangleCollisionModel template="Vec3d" name="default7" />
             <FixedConstraint template="Vec3d" name="default6" indices="0 1" />
-            <VisualModel template="ExtVec3f" name="Visual" color="red" />
+            <OglModel template="ExtVec3f" name="Visual" color="red" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
         </Node>
     </Node>

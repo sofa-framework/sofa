@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="0.03"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   
       <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="Compliant"/>
@@ -43,7 +44,7 @@
         </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel   />
+	     <OglModel   />
              <IdentityMapping />
 	</Node>
     </Node>
@@ -82,7 +83,7 @@
 
 
 	<Node name="Visual"  >
-	     <VisualModel color="red"  />
+	     <OglModel color="red"  />
              <IdentityMapping />
 	</Node>
     </Node>

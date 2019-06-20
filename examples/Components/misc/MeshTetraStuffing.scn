@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node>
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!--<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />-->
     <!--
     <CollisionPipeline verbose="0" name="CollisionPipeline"/>

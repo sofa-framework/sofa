@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root"  dt="0.005" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="1" gravity="0 0 -9810">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<MasterContactSolver />
 	<LCPConstraintSolver initial_guess="true" displayTime="0" mu="0.7" tolerance="0.0000000001" printLog="0" maxIt="3000" build_lcp="true"/>
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>

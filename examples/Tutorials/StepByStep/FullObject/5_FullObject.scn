@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  gravity="0 0 -9.81"  dt="0.005"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle name="visualStyle1"  displayFlags="showVisual showBehaviorModels showInteractionForceFields showCollisionModels" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />

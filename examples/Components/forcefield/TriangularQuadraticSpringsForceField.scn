@@ -1,5 +1,6 @@
 <!-- TriangularQuadraticSpringsForceField Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9 1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -16,7 +17,7 @@
         <FixedConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
-        <VisualModel name="Visual" color="yellow" />
+        <OglModel name="Visual" color="yellow" />
         <IdentityMapping input="@." output="@Visual" />
     </Node>
 </Node>

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="tool" gravity="0 0 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<NewOmniDriver name="default38"  listening="1"  scale="10"  positionBase="0 1 0.75"  omniVisu="1" />
 	<Node 	name="Instrument" gravity="0 0 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<MechanicalObject template="Rigid" name="rigidDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  internalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />

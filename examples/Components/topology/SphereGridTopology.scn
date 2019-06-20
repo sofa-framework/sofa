@@ -1,5 +1,6 @@
 <!-- SphereGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -10 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <Node name="SphereFEMTetra">
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />

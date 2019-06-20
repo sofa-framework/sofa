@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Root" gravity="0 -10 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="image"/>
@@ -54,19 +55,19 @@
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"  color='red' />
+            <OglModel  fileMesh="mesh/Armadillo_simplified.obj"  color='red' />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
 
    <!-- 
     <Node name="VisuHexa"  >
-            <VisualModel color="0.8 0.8 1 0.1" />
+            <OglModel color="0.8 0.8 1 0.1" />
             <IdentityMapping />
     </Node>
     <Node name="VisuHexa2"  >
             <VisualStyle displayFlags="showWireframe"/>
-            <VisualModel color="0.8 0.8 1 1" />
+            <OglModel color="0.8 0.8 1 1" />
             <IdentityMapping />
     </Node>
     -->
@@ -113,19 +114,19 @@
         <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='green'  />
+            <OglModel  fileMesh="mesh/Armadillo_simplified.obj" color='green'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
 
    <!-- 
     <Node name="VisuHexa"  >
-            <VisualModel color="0.8 0.8 1 0.1" />
+            <OglModel color="0.8 0.8 1 0.1" />
             <IdentityMapping />
     </Node>
     <Node name="VisuHexa2"  >
             <VisualStyle displayFlags="showWireframe"/>
-            <VisualModel color="0.8 0.8 1 1" />
+            <OglModel color="0.8 0.8 1 1" />
             <IdentityMapping />
     </Node>
     -->
@@ -154,7 +155,7 @@
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='blue'  />
+            <OglModel  fileMesh="mesh/Armadillo_simplified.obj" color='blue'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
@@ -183,7 +184,7 @@
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='yellow'  />
+            <OglModel  fileMesh="mesh/Armadillo_simplified.obj" color='yellow'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>
@@ -211,7 +212,7 @@
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='magenta'  />
+            <OglModel  fileMesh="mesh/Armadillo_simplified.obj" color='magenta'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>

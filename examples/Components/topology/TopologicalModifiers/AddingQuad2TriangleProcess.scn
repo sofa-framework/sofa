@@ -1,5 +1,6 @@
 <!-- Automatic Quad adding example with Quad2Triangle mapping: Element added are define in: ./AddingQuadsProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscCollision' />
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />
@@ -31,7 +32,7 @@
 			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>		-->
             <TriangleSet />
             <!--			<Node name="Visu">
-				<VisualModel name="Visual" color="red" />
+				<OglModel name="Visual" color="red" />
 				<IdentityMapping input="@../../Quads" output="@Visual" />
 			</Node>	-->
         </Node>

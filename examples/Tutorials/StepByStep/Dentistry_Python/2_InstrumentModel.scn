@@ -3,6 +3,7 @@ Step 2:
 Instrument Visual & Collision Models setup
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <BackgroundSetting color="0.5 0.5 0.5" />
 

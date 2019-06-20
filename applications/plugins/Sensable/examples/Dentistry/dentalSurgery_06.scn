@@ -6,6 +6,7 @@ Using LCP contact detection and resolution:
  + Added VectorSpringForceField && JointSpringForceField to link the mouvements of the Omni phantom and the instrument
 -->
 <Node name="root" dt="0.005">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
         

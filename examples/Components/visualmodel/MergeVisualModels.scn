@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <OglModel name="visualModel1" fileMesh="mesh/snake_body.obj" translation="0 0 0" useNormals="0"  />
     <OglModel name="visualModel2" fileMesh="mesh/snake_body.obj" translation="10 0 0" useNormals="0"/>

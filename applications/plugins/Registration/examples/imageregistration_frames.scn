@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt="0.1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="Flexible" pluginName="Flexible" />
 	<RequiredPlugin name="Registration" pluginName="Registration" />
 	<RequiredPlugin name="Image" pluginName="image" />
@@ -60,7 +61,7 @@
 <!--        <ImageViewer  name="view_prof"  image="@ipff.profiles" transform="1 0 0 0 0 0 .1 .01 .1 0 1 0"/>-->
 <!--        <ImageViewer template="ImageD" name="view_simi"  image="@ipff.similarity" transform="10 0 0 0 0 0 .1 .01 .1 0 1 0"/>-->
 			<Node name="Visu">
-				<VisualModel fileMesh="data/femur_m.obj" color="0.8 0.5 0.5 1" />
+				<OglModel fileMesh="data/femur_m.obj" color="0.8 0.5 0.5 1" />
 				<IdentityMapping />
 			</Node>		
 		</Node>		

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0 " dt="0.03"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
@@ -45,7 +46,7 @@
 	</Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
+	     <OglModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     

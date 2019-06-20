@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showInteractionForceFields" />
   <Gravity name="G"  gravity="0 -9.8 0" />
   <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />

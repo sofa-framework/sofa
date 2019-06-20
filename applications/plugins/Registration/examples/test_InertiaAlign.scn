@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="Scene"  gravity="0 0 0"  dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="Registration"  printLog="1"  pluginName="Registration" />
 	<VisualStyle name="visualStyle1"  displayFlags="showVisual showForceFields" />
 	<EulerImplicitSolver name="eulerImplicitSolver1"  rayleighStiffness="0.1"  rayleighMass="0.1" />

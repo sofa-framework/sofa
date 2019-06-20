@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt=".1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="image"/>
 
@@ -50,17 +51,17 @@
       </Node>
 
       <Node name="Gelatin-Visu">
-        <VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
+        <OglModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball1-Visu">
-        <VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
+        <OglModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball2-Visu">
-        <VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
+        <OglModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
       <Node name="Collision">
@@ -110,17 +111,17 @@
       </Node>
 
       <Node name="Gelatin-Visu">
-        <VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
+        <OglModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball1-Visu">
-        <VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
+        <OglModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball2-Visu">
-        <VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
+        <OglModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
       <Node name="Collision">

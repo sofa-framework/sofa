@@ -1,4 +1,5 @@
 <Node name="root" dt="0.0025" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
@@ -48,7 +49,7 @@
 				ymin="0" ymax="3"
 				zmin="-7.5" zmax="7.5"
 			/>
-			<VisualModel name="Visual"/>
+			<OglModel name="Visual"/>
 			<SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>

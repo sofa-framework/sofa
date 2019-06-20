@@ -1,4 +1,5 @@
 <Node name="root" dt="0.03">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" build_lcp="false" />
     <CollisionPipeline depth="8" verbose="0" draw="0" />

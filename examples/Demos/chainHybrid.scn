@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline verbose="0" draw="0"/>
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
