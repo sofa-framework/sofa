@@ -76,6 +76,7 @@ public:
      */
     static void getCategories(const sofa::core::objectmodel::BaseClass* mclass,
                               std::vector<std::string>& outputVector);
+    static std::vector<std::string> getCategories();
 
 protected:
     virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles) {return new ComponentLibrary(componentName, name, entry, exampleFiles);}
