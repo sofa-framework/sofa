@@ -34,7 +34,7 @@ namespace component
 namespace visualmodel
 {
 
-int OglGridClass = core::RegisterObject("Display a simple grid")
+static int OglGridClass = core::RegisterObject("Display a simple grid")
         .add< component::visualmodel::OglGrid>()
         ;
 

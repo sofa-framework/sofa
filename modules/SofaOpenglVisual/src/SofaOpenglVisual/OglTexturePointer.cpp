@@ -19,38 +19,87 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglAttribute.inl>
+#include <SofaOpenglVisual/OglTexturePointer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
-
 namespace component
 {
 
 namespace visualmodel
 {
 
-using namespace sofa::defaulttype;
+// Register the OglTexturePointer class in the Factory
+static int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
 
+OglTexturePointer::OglTexturePointer()
+    :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
+    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
+    ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
+{
+    
+}
 
-int OglFloatAttributeClass = core::RegisterObject ( "OglFloatAttribute" ).add< OglFloatAttribute >();
-int OglFloat2AttributeClass = core::RegisterObject ( "OglFloat2Attribute" ).add< OglFloat2Attribute >();
-int OglFloat3AttributeClass = core::RegisterObject ( "OglFloat3Attribute" ).add< OglFloat3Attribute >();
-int OglFloat4AttributeClass = core::RegisterObject ( "OglFloat4Attribute" ).add< OglFloat4Attribute >();
+OglTexturePointer::~OglTexturePointer()
+{
 
-int OglIntAttributeClass = core::RegisterObject ( "OglIntAttribute" ).add< OglIntAttribute >();
-int OglInt2AttributeClass = core::RegisterObject ( "OglInt2Attribute" ).add< OglInt2Attribute >();
-int OglInt3AttributeClass = core::RegisterObject ( "OglInt3Attribute" ).add< OglInt3Attribute >();
-int OglInt4AttributeClass = core::RegisterObject ( "OglInt4Attribute" ).add< OglInt4Attribute >();
+}
 
-int OglUIntAttributeClass = core::RegisterObject ( "OglUIntAttribute" ).add< OglUIntAttribute >();
-int OglUInt2AttributeClass = core::RegisterObject ( "OglUInt2Attribute" ).add< OglUInt2Attribute >();
-int OglUInt3AttributeClass = core::RegisterObject ( "OglUInt3Attribute" ).add< OglUInt3Attribute >();
-int OglUInt4AttributeClass = core::RegisterObject ( "OglUInt4Attribute" ).add< OglUInt4Attribute >();
+void OglTexturePointer::setActiveTexture(unsigned short unit)
+{
+    glActiveTexture(GL_TEXTURE0 + unit);
+}
 
-} // namespace visual
+void OglTexturePointer::init()
+{
+    OglShaderElement::init();
+}
 
-} // namespace component
+void OglTexturePointer::initVisual()
+{
 
-} // namespace sofa
+}
+
+void OglTexturePointer::reinit()
+{
+
+}
+
+void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
+{
+    if (enabled.getValue() && !l_oglTexture.empty())
+    {
+        setActiveTexture(textureUnit.getValue());
+        bind();
+        setActiveTexture(0);
+    }
+}
+
+void OglTexturePointer::bwdDraw(core::visual::VisualParams*)
+{
+    if (enabled.getValue() && !l_oglTexture.empty())
+    {
+        setActiveTexture(textureUnit.getValue());
+        unbind();
+        setActiveTexture(0);
+    }
+}
+
+void OglTexturePointer::bind()
+{
+    if(!l_oglTexture.empty())
+        l_oglTexture->bind();
+}
+
+void OglTexturePointer::unbind()
+{
+    if(!l_oglTexture.empty())
+        l_oglTexture->unbind();
+}
+
+}//end of namespaces
+}
+}

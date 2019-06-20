@@ -19,87 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglTexturePointer.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
+#ifndef SOFAOPENGLVISUAL_CONFIG_H
+#define SOFAOPENGLVISUAL_CONFIG_H
 
-namespace sofa
-{
-namespace component
-{
+#include <sofa/helper/system/config.h>
 
-namespace visualmodel
-{
+#ifdef SOFA_BUILD_SOFAOPENGLVISUAL
+#  define SOFA_TARGET SofaOpenglVisual
+#  define SOFA_OPENGL_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_OPENGL_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-// Register the OglTexturePointer class in the Factory
-int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
-
-OglTexturePointer::OglTexturePointer()
-    :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
-    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
-    ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
-{
-    
-}
-
-OglTexturePointer::~OglTexturePointer()
-{
-
-}
-
-void OglTexturePointer::setActiveTexture(unsigned short unit)
-{
-    glActiveTexture(GL_TEXTURE0 + unit);
-}
-
-void OglTexturePointer::init()
-{
-    OglShaderElement::init();
-}
-
-void OglTexturePointer::initVisual()
-{
-
-}
-
-void OglTexturePointer::reinit()
-{
-
-}
-
-void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
-{
-    if (enabled.getValue() && !l_oglTexture.empty())
-    {
-        setActiveTexture(textureUnit.getValue());
-        bind();
-        setActiveTexture(0);
-    }
-}
-
-void OglTexturePointer::bwdDraw(core::visual::VisualParams*)
-{
-    if (enabled.getValue() && !l_oglTexture.empty())
-    {
-        setActiveTexture(textureUnit.getValue());
-        unbind();
-        setActiveTexture(0);
-    }
-}
-
-void OglTexturePointer::bind()
-{
-    if(!l_oglTexture.empty())
-        l_oglTexture->bind();
-}
-
-void OglTexturePointer::unbind()
-{
-    if(!l_oglTexture.empty())
-        l_oglTexture->unbind();
-}
-
-}//end of namespaces
-}
-}
+#endif

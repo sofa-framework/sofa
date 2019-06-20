@@ -19,12 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "OglLineAxis.h"
+#include <string>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+using sofa::core::RegisterObject;
 
+#include <sofa/helper/system/config.h>
+#include <SofaOpenglVisual/initOpenGLVisual.h>
+
+#include <SofaOpenglVisual/OglModel.h>
 
 namespace sofa
 {
@@ -32,80 +34,56 @@ namespace sofa
 namespace component
 {
 
-namespace visualmodel
-{
+static int OglModelClass = RegisterObject("Generic visual model for OpenGL display")
+        .add< sofa::component::visualmodel::OglModel >();
 
-int OglLineAxisClass = core::RegisterObject("Display scene axis")
-        .add< component::visualmodel::OglLineAxis >()
-        ;
-
-using namespace sofa::defaulttype;
-
-OglLineAxis::OglLineAxis()
-    : axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw"))
-    , size(initData(&size, (float)(10.0),  "size", "Size of the squared grid"))
-    , thickness(initData(&thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid"))
-    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
-    , drawX(true), drawY(true), drawZ(true)
-{}
-
-void OglLineAxis::init()
-{
-    updateVisual();
+extern "C" {
+    SOFA_OPENGL_VISUAL_API void initExternalModule();
+    SOFA_OPENGL_VISUAL_API const char* getModuleName();
+    SOFA_OPENGL_VISUAL_API const char* getModuleVersion();
+    SOFA_OPENGL_VISUAL_API const char* getModuleLicense();
+    SOFA_OPENGL_VISUAL_API const char* getModuleDescription();
+    SOFA_OPENGL_VISUAL_API const char* getModuleComponentList();
 }
 
-void OglLineAxis::reinit()
+void initExternalModule()
 {
-    updateVisual();
-}
-
-void OglLineAxis::updateVisual()
-{
-    std::string a = axis.getValue();
-
-    drawX = a.find_first_of("xX")!=std::string::npos;
-    drawY = a.find_first_of("yY")!=std::string::npos;
-    drawZ = a.find_first_of("zZ")!=std::string::npos;
-}
-
-void OglLineAxis::drawVisual(const core::visual::VisualParams* /*vparams*/)
-{
-    if (!draw.getValue()) return;
-
-    GLfloat s = size.getValue();
-
-    glPushAttrib( GL_ALL_ATTRIB_BITS);
-
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_LINES);
-    if(drawX)
+    static bool first = true;
+    if (!first)
     {
-        glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-        glVertex3f(-s*0.5f, 0.0f, 0.0f);
-        glVertex3f( s*0.5f, 0.0f, 0.0f);
+        std::cout << "REGISTER TO OGLFACTORY" << std::endl;
+       OglModelClass = 1;
+       return;
     }
-    if (drawY)
-    {
-        glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-        glVertex3f(0.0f, -s*0.5f, 0.0f);
-        glVertex3f(0.0f,  s*0.5f, 0.0f);
-    }
-    if (drawZ)
-    {
-        glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-        glVertex3f(0.0f, 0.0f, -s*0.5f);
-        glVertex3f(0.0f, 0.0f, s*0.5f);
-    }
-    glEnd();
-
-
-    glPopAttrib();
-
+    first = false;
 }
 
+const char* getModuleName()
+{
+    return "SofaOpenglVisual";
+}
 
-} // namespace visualmodel
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "Visual object rendered using OpenGL 1.x/2.x.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
 } // namespace component
 

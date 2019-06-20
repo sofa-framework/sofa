@@ -19,8 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaOpenglVisual/initOpenGLVisual.h>
+//
+// C++ Implementation: OglRenderingSRGB
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include <SofaOpenglVisual/OglRenderingSRGB.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa
@@ -29,18 +41,31 @@ namespace sofa
 namespace component
 {
 
-
-void initOpenGLVisual()
+namespace visualmodel
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+
+using namespace helper::gl;
+using namespace simulation;
+
+//Register RenderingSRGB in the Object Factory
+static int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
+        .add< OglRenderingSRGB >()
+        ;
+
+void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
+{
+#if defined(GL_FRAMEBUFFER_SRGB)
+    glEnable(GL_FRAMEBUFFER_SRGB);
+#endif
 }
 
+void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
+{
+#if defined(GL_FRAMEBUFFER_SRGB)
+    glDisable(GL_FRAMEBUFFER_SRGB);
+#endif
+}
 
-
-} // namespace component
-
-} // namespace sofa
+}
+}
+}

@@ -30,7 +30,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <SofaOpenglVisual/OglOITShader.h>
+#include <SofaOpenglVisual/OglShadowShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -48,38 +48,60 @@ namespace visualmodel
 
 
 //Register OglShader in the Object Factory
-int OglOITShaderClass = core::RegisterObject("OglOITShader")
-        .add< OglOITShader >()
+static int OglShadowShaderClass = core::RegisterObject("This component sets the shader system responsible of the shadowing.")
+        .add< OglShadowShader >()
         ;
 
-const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS = "shaders/orderIndependentTransparency/accumulation.vert";
-const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS = "shaders/orderIndependentTransparency/accumulation.frag";
+const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/hardShadows/shadowMapping.vert";
+const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/hardShadows/shadowMapping.frag";
+const std::string OglShadowShader::PATH_TO_SOFT_SHADOW_VERTEX_SHADERS = "shaders/softShadows/VSM/variance_shadow_mapping.vert";
+const std::string OglShadowShader::PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS = "shaders/softShadows/VSM/variance_shadow_mapping.frag";
 
-OglOITShader::OglOITShader()
+OglShadowShader::OglShadowShader()
 {
     passive.setValue(false);
-
+    turnOn.setValue(true);
     helper::vector<std::string>& vertF = *vertFilename.beginEdit();
-    vertF.resize(1);
-    vertF[0] = PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;
+    vertF.resize(2);
+    vertF[0] = PATH_TO_SHADOW_VERTEX_SHADERS;
+    vertF[1] = PATH_TO_SHADOW_VERTEX_SHADERS;
     vertFilename.endEdit();
     helper::vector<std::string>& fragF = *fragFilename.beginEdit();
-    fragF.resize(1);
-    fragF[0] = PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS;
+    fragF.resize(2);
+    fragF[0] = PATH_TO_SHADOW_FRAGMENT_SHADERS;
+    fragF[1] = PATH_TO_SHADOW_FRAGMENT_SHADERS;
     fragFilename.endEdit();
 }
 
-OglOITShader::~OglOITShader()
+OglShadowShader::~OglShadowShader()
 {
-
 }
 
-helper::gl::GLSLShader* OglOITShader::accumulationShader()
+void OglShadowShader::init()
 {
-    if(shaderVector.size() < 1)
-        return nullptr;
+    OglShader::init();
 
-    return shaderVector[0];
+    std::ostringstream oss;
+    oss << LightManager::MAX_NUMBER_OF_LIGHTS;
+
+    addDefineMacro(0,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
+    addDefineMacro(0,std::string("ENABLE_SHADOW"), "0");
+    addDefineMacro(1,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
+    addDefineMacro(1,std::string("ENABLE_SHADOW"), "1");
+}
+
+void OglShadowShader::initShaders(unsigned int /* numberOfLights */, bool softShadow)
+{
+    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    vertF.resize(2);
+    vertF[0] = (softShadow ? PATH_TO_SOFT_SHADOW_VERTEX_SHADERS : PATH_TO_SHADOW_VERTEX_SHADERS);
+    vertF[1] = (softShadow ? PATH_TO_SOFT_SHADOW_VERTEX_SHADERS : PATH_TO_SHADOW_VERTEX_SHADERS);
+    vertFilename.endEdit();
+    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    fragF.resize(2);
+    fragF[0] = (softShadow ? PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS : PATH_TO_SHADOW_FRAGMENT_SHADERS);
+    fragF[1] = (softShadow ? PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS : PATH_TO_SHADOW_FRAGMENT_SHADERS);
+    fragFilename.endEdit();
 }
 
 }//namespace visualmodel

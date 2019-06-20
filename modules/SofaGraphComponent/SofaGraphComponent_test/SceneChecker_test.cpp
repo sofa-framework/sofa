@@ -90,6 +90,7 @@ struct SceneChecker_test : public Sofa_test<>
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "    <RequiredPlugin name='SofaOpenglVisual'/>                   \n"
               << "    <Node name='nodeCheck'>                                     \n"
               << "      <Node name='nodeA' />                                     \n"
               << "      <Node name='nodeA' />                                     \n"

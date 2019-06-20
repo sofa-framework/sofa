@@ -1,0 +1,11 @@
+# CMake package configuration file for the SofaOpenglVisual module
+
+@PACKAGE_INIT@
+
+### Is the target existing ?
+if(NOT TARGET SofaOpenglVisual)
+        ### If not we are building out of tree.
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaOpenglVisual.cmake")
+endif()
+
+check_required_components(SofaOpenglVisual)

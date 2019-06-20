@@ -19,8 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "OglShaderMacro.h"
+
+#include "OglLineAxis.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
+
+
 namespace sofa
 {
 
@@ -30,44 +35,78 @@ namespace component
 namespace visualmodel
 {
 
-//Register OglIntVariable in the Object Factory
-int OglShaderDefineMacroClass = core::RegisterObject("OglShaderDefineMacro")
-        .add< OglShaderDefineMacro >();
+static int OglLineAxisClass = core::RegisterObject("Display scene axis")
+        .add< component::visualmodel::OglLineAxis >()
+        ;
 
-OglShaderMacro::OglShaderMacro()
+using namespace sofa::defaulttype;
+
+OglLineAxis::OglLineAxis()
+    : axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw"))
+    , size(initData(&size, (float)(10.0),  "size", "Size of the squared grid"))
+    , thickness(initData(&thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid"))
+    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
+    , drawX(true), drawY(true), drawZ(true)
+{}
+
+void OglLineAxis::init()
 {
-
+    updateVisual();
 }
 
-OglShaderMacro::~OglShaderMacro()
+void OglLineAxis::reinit()
 {
+    updateVisual();
 }
 
-void OglShaderMacro::init()
+void OglLineAxis::updateVisual()
 {
-    OglShaderElement::init();
+    std::string a = axis.getValue();
+
+    drawX = a.find_first_of("xX")!=std::string::npos;
+    drawY = a.find_first_of("yY")!=std::string::npos;
+    drawZ = a.find_first_of("zZ")!=std::string::npos;
 }
 
-OglShaderDefineMacro::OglShaderDefineMacro()
-    : value(initData(&value, (std::string) "", "value", "Set a value for define macro"))
+void OglLineAxis::drawVisual(const core::visual::VisualParams* /*vparams*/)
 {
+    if (!draw.getValue()) return;
+
+    GLfloat s = size.getValue();
+
+    glPushAttrib( GL_ALL_ATTRIB_BITS);
+
+    glDisable(GL_LIGHTING);
+
+    glBegin(GL_LINES);
+    if(drawX)
+    {
+        glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+        glVertex3f(-s*0.5f, 0.0f, 0.0f);
+        glVertex3f( s*0.5f, 0.0f, 0.0f);
+    }
+    if (drawY)
+    {
+        glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
+        glVertex3f(0.0f, -s*0.5f, 0.0f);
+        glVertex3f(0.0f,  s*0.5f, 0.0f);
+    }
+    if (drawZ)
+    {
+        glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
+        glVertex3f(0.0f, 0.0f, -s*0.5f);
+        glVertex3f(0.0f, 0.0f, s*0.5f);
+    }
+    glEnd();
+
+
+    glPopAttrib();
 
 }
 
-OglShaderDefineMacro::~OglShaderDefineMacro()
-{
-}
 
-void OglShaderDefineMacro::init()
-{
-    OglShaderMacro::init();
+} // namespace visualmodel
 
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
-        (*it)->addDefineMacro(indexShader.getValue(), id.getValue(), value.getValue());
-}
+} // namespace component
 
-}
-
-}
-
-}
+} // namespace sofa

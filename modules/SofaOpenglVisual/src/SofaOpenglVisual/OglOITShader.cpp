@@ -19,8 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MergeVisualModels.h"
+//
+// C++ Implementation: Shader
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include <SofaOpenglVisual/OglOITShader.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
+
+#include <SofaOpenglVisual/LightManager.h>
 
 namespace sofa
 {
@@ -31,14 +46,44 @@ namespace component
 namespace visualmodel
 {
 
-int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
-        .add< MergeVisualModels >(true);
 
+//Register OglShader in the Object Factory
+static int OglOITShaderClass = core::RegisterObject("OglOITShader")
+        .add< OglOITShader >()
+        ;
 
+const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS = "shaders/orderIndependentTransparency/accumulation.vert";
+const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS = "shaders/orderIndependentTransparency/accumulation.frag";
 
-} // namespace visualmodel
+OglOITShader::OglOITShader()
+{
+    passive.setValue(false);
 
-} // namespace component
+    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    vertF.resize(1);
+    vertF[0] = PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;
+    vertFilename.endEdit();
+    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    fragF.resize(1);
+    fragF[0] = PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS;
+    fragFilename.endEdit();
+}
 
-} // namespace sofa
+OglOITShader::~OglOITShader()
+{
 
+}
+
+helper::gl::GLSLShader* OglOITShader::accumulationShader()
+{
+    if(shaderVector.size() < 1)
+        return nullptr;
+
+    return shaderVector[0];
+}
+
+}//namespace visualmodel
+
+} //namespace component
+
+} //namespace sofa

@@ -19,21 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: OglRenderingSRGB
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#include <SofaOpenglVisual/OglRenderingSRGB.h>
-#include <sofa/core/visual/VisualParams.h>
+#include "MergeVisualModels.h"
 #include <sofa/core/ObjectFactory.h>
-
 
 namespace sofa
 {
@@ -44,28 +31,14 @@ namespace component
 namespace visualmodel
 {
 
-using namespace helper::gl;
-using namespace simulation;
+static  int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
+        .add< MergeVisualModels >(true);
 
-//Register RenderingSRGB in the Object Factory
-int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
-        .add< OglRenderingSRGB >()
-        ;
 
-void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glEnable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
 
-void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glDisable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
+} // namespace visualmodel
 
-}
-}
-}
+} // namespace component
+
+} // namespace sofa
+

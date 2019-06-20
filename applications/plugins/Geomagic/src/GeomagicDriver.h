@@ -29,9 +29,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
 
-#ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
-#endif
 
 #include <Geomagic/src/config.h>
 #include <SofaUserInteraction/Controller.h>
