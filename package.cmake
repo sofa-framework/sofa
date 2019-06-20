@@ -24,10 +24,10 @@ macro(setSofaFilePath name value)
 endmacro()
 ######################
 
-setSofaString(CMAKE_BUILD_TYPE Release)
+message("---------- Setting some options ---------")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	setSofaString(CMAKE_CXX_FLAGS "-std=c++11")
+    setSofaString(CMAKE_CXX_FLAGS "-std=c++11")
 endif()
 
 setSofaOption(APPLICATION_RUNSOFA ON)
@@ -39,9 +39,10 @@ setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 setSofaOption(SOFA_BUILD_METIS ON)
 
+# Copy resources files (etc/, share/, examples/) when installing
+setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
 
-# Set all modules/plugins OFF
-message("----------------------")
+# Setting all modules/plugins OFF
 get_cmake_property(_variableNames VARIABLES)
 list (SORT _variableNames)
 foreach (_variableName ${_variableNames})
@@ -49,15 +50,16 @@ foreach (_variableName ${_variableNames})
         setSofaOption(${_variableName} OFF TRUE)
     endif()
 endforeach()
-message("----------------------")
 
-# Set some modules ON
+message("-------- Setting some modules ON --------")
+
 setSofaOption(MODULE_SOFAEXPORTER ON)
 setSofaOption(MODULE_SOFAHAPTICS ON)
 setSofaOption(MODULE_SOFASPARSESOLVER ON)
 setSofaOption(MODULE_SOFAPRECONDITIONER ON)
-message("----------------------")
-# Set some plugins ON
+
+message("-------- Setting some plugins ON --------")
+
 setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_COMPLIANT ON)
@@ -83,10 +85,4 @@ setSofaOption(PLUGIN_THMPGSPATIALHASHING ON)
 
 #setSofaOption(PLUGIN_VOLUMETRICRENDERING ON)
 
-message("----------------------")
-
-# Copy resources files (etc/, share/, examples/) when installing 
-setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
-
-# install GTest even if SOFA_BUILD_TESTS=OFF
-#add_subdirectory(extlibs/gtest)
+message("-----------------------------------------")
