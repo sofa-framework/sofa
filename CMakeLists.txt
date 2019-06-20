@@ -36,9 +36,10 @@ endif()
 if(APPLE AND SOFA_BUILD_APP_BUNDLE)
     set(SOFA_BUILD_RELEASE_PACKAGE ON)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/runSofa.app/Contents/MacOS)
-    message("SOFA_BUILD_APP_BUNDLE = ${SOFA_BUILD_APP_BUNDLE}
-  Forcing SOFA_BUILD_RELEASE_PACKAGE = ${SOFA_BUILD_RELEASE_PACKAGE}
-  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+    message("SOFA_BUILD_APP_BUNDLE = ${SOFA_BUILD_APP_BUNDLE}\n"
+        "  Forcing SOFA_BUILD_RELEASE_PACKAGE = ${SOFA_BUILD_RELEASE_PACKAGE}\n"
+        "  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}"
+        )
 endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
@@ -97,9 +98,7 @@ if(UNIX)
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
         list(APPEND CMAKE_INSTALL_RPATH
-            "@loader_path"
             "@loader_path/../lib"
-            "@executable_path"
             "@executable_path/../lib"
             )
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -123,27 +122,21 @@ if(NOT Boost_FOUND)
     endif()
 endif()
 
-### Dependency pack for Windows
+### Windows config
 if(MSVC)
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
-    set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "sofa windows dependency pack path")
-    if(SOFA_DEPENDENCY_PACK_DIR)
-        set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
-    else()
-        set(DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}") # Default
-    endif()
-
-    list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
+    # WinDepPack
+    set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
+    list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
     if(CMAKE_CL_64)
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
+        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
     else()
-        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
+        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
     endif()
-
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
+    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
 ### Mask
