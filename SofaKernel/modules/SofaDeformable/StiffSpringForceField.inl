@@ -50,7 +50,7 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
     : SpringForceField<DataTypes>(object1, object2, ks, kd)
     , f_indices1(initData(&f_indices1, "indices1", "Indices of the source points on the first model"))
     , f_indices2(initData(&f_indices2, "indices2", "Indices of the fixed points on the second model"))
-    , d_length(initData(&d_length, static_cast<Real>(0.0), "length", "uniform length of all springs"))
+    , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
 {
 }
 
