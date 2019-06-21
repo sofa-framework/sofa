@@ -43,7 +43,6 @@ ____________________________________________________________
 - [All] Refactor the loading of Xsp files. [#918](https://github.com/sofa-framework/sofa/pull/918)
 - **[SofaBaseTopology]** Change triangles orientation in tetrahedron [#878](https://github.com/sofa-framework/sofa/pull/878)
 - **[SofaBaseTopology]** Major Change in Topology Containers [#967](https://github.com/sofa-framework/sofa/pull/967)
-- [SofaHaptics] Modularize sofa haptics [#945](https://github.com/sofa-framework/sofa/pull/945)
 - **[SofaKernel]** Refactor the MutationListener [#917](https://github.com/sofa-framework/sofa/pull/917)
 - **[SofaKernel]** Some Topology cleaning... [#866](https://github.com/sofa-framework/sofa/pull/866)
 - [SofaOpenglVisual] Fix ogl perf problem [#1069](https://github.com/sofa-framework/sofa/pull/1069)
@@ -52,6 +51,7 @@ ____________________________________________________________
 ### Modularizations
 
 - [SofaExporter] Modularize (+minor dependency cleaning) [#915](https://github.com/sofa-framework/sofa/pull/915)
+- [SofaHaptics] Modularize sofa haptics [#945](https://github.com/sofa-framework/sofa/pull/945)
 - [SofaOpenglVisual] Pluginize. [#1080](https://github.com/sofa-framework/sofa/pull/1080)
 
 
