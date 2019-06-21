@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- BilateralInteractionConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />

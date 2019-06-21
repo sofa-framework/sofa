@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 0 0" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- A soft grape containing a very stiff seed is deformed by using only one element. By using the HexahedronCompositeFEMMapping, the seed does not deform.  -->
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
     <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale="1" dy="-10.2" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45"/>

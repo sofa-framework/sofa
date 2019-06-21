@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />

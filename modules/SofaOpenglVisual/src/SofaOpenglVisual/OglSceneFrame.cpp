@@ -33,7 +33,7 @@ namespace component
 namespace visualmodel
 {
 
-int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of the scene view")
+static int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of the scene view")
         .add< OglSceneFrame >()
         ;
 

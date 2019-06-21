@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 3" dt="0.04"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<DefaultPipeline name="defaultPipeline1"  verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="defaultContactManager1"  response="default" />

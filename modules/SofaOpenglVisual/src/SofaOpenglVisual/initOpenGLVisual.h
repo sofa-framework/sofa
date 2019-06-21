@@ -19,17 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OpenglVisual.h>
-#include <sofa/core/Plugin.h>
+#ifndef SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
+#define SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
+#include "config.h"
 
-class OpenglVisualPlugin: public sofa::core::Plugin {
-public:
-    OpenglVisualPlugin(): Plugin("OpenglVisual") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
-    }
-};
+namespace sofa
+{
 
-SOFA_PLUGIN(OpenglVisualPlugin);
+namespace component
+{
+
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
+

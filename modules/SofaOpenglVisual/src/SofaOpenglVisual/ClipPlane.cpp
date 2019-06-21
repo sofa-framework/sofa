@@ -34,7 +34,7 @@ namespace component
 namespace visualmodel
 {
 
-int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
+static int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
         .add< ClipPlane >()
         ;
 

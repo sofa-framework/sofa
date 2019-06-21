@@ -95,9 +95,6 @@ void setSimulation ( Simulation* s )
 
 Simulation* getSimulation()
 {
-    //TODO(damien):  replace that with an assert system that use the messaging API.
-    assert(Simulation::theSimulation.get()!=NULL && "There is no simulation initialized.") ;
-
     return Simulation::theSimulation.get();
 }
 

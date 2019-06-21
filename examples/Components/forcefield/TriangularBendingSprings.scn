@@ -1,5 +1,6 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -90 10">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />

@@ -19,22 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
-#define SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
-#include "config.h"
-
+#include "OglShaderMacro.h"
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
 namespace component
 {
 
+namespace visualmodel
+{
 
-void SOFA_OPENGL_VISUAL_API initOpenGLVisual();
+//Register OglIntVariable in the Object Factory
+static int OglShaderDefineMacroClass = core::RegisterObject("OglShaderDefineMacro")
+        .add< OglShaderDefineMacro >();
 
-} // namespace component
+OglShaderMacro::OglShaderMacro()
+{
 
-} // namespace sofa
+}
 
-#endif
+OglShaderMacro::~OglShaderMacro()
+{
+}
 
+void OglShaderMacro::init()
+{
+    OglShaderElement::init();
+}
+
+OglShaderDefineMacro::OglShaderDefineMacro()
+    : value(initData(&value, (std::string) "", "value", "Set a value for define macro"))
+{
+
+}
+
+OglShaderDefineMacro::~OglShaderDefineMacro()
+{
+}
+
+void OglShaderDefineMacro::init()
+{
+    OglShaderMacro::init();
+
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+        (*it)->addDefineMacro(indexShader.getValue(), id.getValue(), value.getValue());
+}
+
+}
+
+}
+
+}

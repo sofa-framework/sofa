@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <VisualStyle displayFlags="showWireframe showBehaviorModels" />
   <DefaultAnimationLoop />
   <DefaultVisualManagerLoop />
@@ -149,7 +150,7 @@
 
 
 	<Node name="Visual"  >
-		<VisualModel  fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
+		<OglModel  fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
 	     	<BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>

@@ -43,7 +43,7 @@ namespace component
 namespace visualmodel
 {
 
-int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
+static int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
         .add< CompositingVisualLoop >()
         ;
 

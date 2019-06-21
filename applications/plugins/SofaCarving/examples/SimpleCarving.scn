@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 -0.9">
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin name="Carving" pluginName="SofaCarving" />
 
   <VisualStyle displayFlags="showCollisionModels" />

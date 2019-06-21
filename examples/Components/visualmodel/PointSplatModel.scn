@@ -1,5 +1,6 @@
 <!-- Mechanical PointSplatModel Example -->
 <Node dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
     <RequiredPlugin pluginName="SofaMiscCollision"/>
 

@@ -1,5 +1,6 @@
 <!-- Mechanical EllipsoidForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields showVisual" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />

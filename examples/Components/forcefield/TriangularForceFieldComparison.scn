@@ -1,5 +1,6 @@
 <!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
 <Node name="root" gravity="0 -9 1" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -18,10 +19,12 @@
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
+
         <Node >
-          <VisualModel name="Visual" color="black" />
+          <OglModel name="Visual" color="black" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
+
     </Node>
 
     <Node name="TriangularBiquadratic">
@@ -34,11 +37,11 @@
         <FixedConstraint indices="0 1" />
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
+
         <Node >
-          <VisualModel name="Visual" color="white" />
+          <OglModel name="Visual" color="white" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
-
     </Node>
 
 
@@ -52,11 +55,11 @@
         <FixedConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
-        <Node >
-          <VisualModel name="Visual" color="yellow" />
-          <IdentityMapping input="@.." output="@Visual" />
-        </Node>
 
+        <Node >
+            <OglModel name="Visual" color="yellow" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 
     <Node name="TriangularFEM">
@@ -71,8 +74,8 @@
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
         <Node >
-          <VisualModel name="Visual" color="red" />
-          <IdentityMapping input="@.." output="@Visual" />
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
 
     </Node>
@@ -87,9 +90,10 @@
         <FixedConstraint indices="0 1" />
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleSet />
+
         <Node >
-          <VisualModel name="Visual" color="green" />
-          <IdentityMapping input="@.." output="@Visual" />
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
 
     </Node>
@@ -105,8 +109,8 @@
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0 1 0" />
         <TriangleSet />
         <Node >
-          <VisualModel name="Visual" color="blue" />
-          <IdentityMapping input="@.." output="@Visual" />
+            <OglModel name="Visual" color="blue" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
 
     </Node>

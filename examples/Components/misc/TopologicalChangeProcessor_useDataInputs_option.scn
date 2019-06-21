@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9 0" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -20,10 +21,9 @@
         <TriangleModel name="default7" />
 
         <Node >
-            <VisualModel name="Visual" material="Default Diffuse 1 0 0 1 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <OglModel name="Visual" material="Default Diffuse 1 0 0 1 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping name="default8" input="@.." output="@Visual" />
         </Node>
-
         <BoxROI template="Vec3d" box="2 0 -1 8 -3 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="trash" />
         <TopologicalChangeProcessor listening="1" useDataInputs="1" trianglesToRemove="@trash.triangleIndices" timeToRemove="0.1" interval="0.05" />
     </Node>

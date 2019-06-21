@@ -1,4 +1,5 @@
 <Node name="root" gravity="-1.8 0 100" dt="0.1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <Node name="Reference">
         <OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
     </Node>

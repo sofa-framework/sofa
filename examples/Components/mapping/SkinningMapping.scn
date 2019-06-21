@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels" />
     <BruteForceDetection name="default0" />
     <DefaultContactManager name="default1" />

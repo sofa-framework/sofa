@@ -52,7 +52,7 @@ namespace visualmodel
 {
 
 //Register LightManager in the Object Factory
-int LightManagerClass = RegisterObject
+static  int LightManagerClass = RegisterObject
         ("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
          "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
         .add< LightManager >()

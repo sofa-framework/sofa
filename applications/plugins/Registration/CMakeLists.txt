@@ -35,7 +35,7 @@ set(README_FILES README.txt)
 
 find_package(SofaGui REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
-
+find_package(SofaOpenglVisual REQUIRED)
 find_package(image QUIET)
 
 if(image_FOUND)
@@ -52,7 +52,7 @@ endif()
 sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaOpenglVisual SofaLoader SofaMiscForceField SofaGeneralEngine)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PRIVATE image)
