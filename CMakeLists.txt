@@ -264,7 +264,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 
     # Not sure what is it
-    add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
+    add_subdirectory(applications/plugins/SofaTest/SofaTest_test)
 endif()
 
 ## Plugins

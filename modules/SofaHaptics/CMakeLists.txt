@@ -28,11 +28,15 @@ set(EXTRA_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
-target_compile_definitions(${PROJECT_NAME} PRIVATE COMPILE_FLAGS "-DSOFA_BUILD_SOFAHAPTICS")
-target_compile_definitions(${PROJECT_NAME} PUBLIC COMPILE_FLAGS "-DSOFA_HAVE_SOFAHAPTICS")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAHAPTICS")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAHAPTICS")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-sofa_generate_package(NAME ${PROJECT_NAME}
-                      VERSION ${PROJECT_VERSION}
-                      TARGETS ${PROJECT_NAME}
-                      INCLUDE_INSTALL_DIR ${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src/SofaHaptics"
+    INCLUDE_INSTALL_DIR "SofaHaptics/SofaHaptics"
+    )

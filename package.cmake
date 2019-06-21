@@ -57,6 +57,7 @@ setSofaOption(MODULE_SOFAEXPORTER ON)
 setSofaOption(MODULE_SOFAHAPTICS ON)
 setSofaOption(MODULE_SOFASPARSESOLVER ON)
 setSofaOption(MODULE_SOFAPRECONDITIONER ON)
+setSofaOption(MODULE_SOFAOPENGLVISUAL ON)
 
 message("-------- Setting some plugins ON --------")
 
