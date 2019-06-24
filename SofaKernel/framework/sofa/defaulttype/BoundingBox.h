@@ -250,6 +250,11 @@ protected:
     bbox_t bbox;
 };
 
+template <>
+struct DataTypeName<BoundingBox>
+{
+  static const char *name() { return "BoundingBox"; }
+};
 
 }
 }
