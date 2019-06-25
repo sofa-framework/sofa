@@ -36,6 +36,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
+    // SofaDistanceGrid was pluginized in #389
     {"BarycentricPenalityContact", Pluginized("v17.12", "SofaDistanceGrid")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
     {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
@@ -43,12 +44,13 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"RigidDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
     {"DistanceGridForceField", Pluginized("v17.12", "SofaDistanceGrid")},
 
+    // SofaImplicitField was pluginized in #389
     {"ImplicitSurfaceContainer", Pluginized("v17.12", "SofaImplicitField")},
     {"InterpolatedImplicitSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
 
-    // Pluginized in #663
+    // SofaPreconditioner was pluginized in #663
     {"ShewchukPCGLinearSolver", Pluginized("v18.06", "SofaPreconditioner")},
     {"JacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
     {"BlockJacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
@@ -56,13 +58,26 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"WarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
     {"PrecomputedWarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
 
-    // Pluginized in #663
+    // SofaSparseSolver was pluginized in #663
     {"PrecomputedLinearSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseCholeskySolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
     {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
 
-    // SofaOpenglVisual in #1080
+    // SofaExporter was pluginized in #915
+    {"WriteTopology", Pluginized("v19.06", "SofaExporter")},
+    {"MeshExporter", Pluginized("v19.06", "SofaExporter")},
+    {"OBJExporter", Pluginized("v19.06", "SofaExporter")},
+    {"STLExporter", Pluginized("v19.06", "SofaExporter")},
+    {"VTKExporter", Pluginized("v19.06", "SofaExporter")},
+    {"WriteState", Pluginized("v19.06", "SofaExporter")},
+    {"WriteTopology", Pluginized("v19.06", "SofaExporter")},
+
+    // SofaHaptics was pluginized in #945
+    {"NullForceFeedback", Pluginized("v19.06", "SofaHaptics")},
+    {"LCPForceFeedback", Pluginized("v19.06", "SofaHaptics")},
+
+    // SofaOpenglVisual was pluginized in #1080
     {"ClipPlane", Pluginized("v19.06", "SofaOpenglVisual")},
     {"CompositingVisualLoop", Pluginized("v19.06", "SofaOpenglVisual")},
     {"DataDisplay", Pluginized("v19.06", "SofaOpenglVisual")},
@@ -92,10 +107,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SlicedVolumetricModel", Pluginized("v19.06", "SofaOpenglVisual")},
     {"VisualManagerPass", Pluginized("v19.06", "SofaOpenglVisual")},
     {"VisualmanagerSecondaryPass", Pluginized("v19.06", "SofaOpenglVisual")},
-
-    /// SofaHaptics pluginzed in #945
-    {"NullForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
-    {"LCPForceFeedback", Pluginized("v19.06", "<RequirePlugin name='SofaHaptics'/>")},
 
     /***********************/
     // REMOVED SINCE v18.12
@@ -129,9 +140,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolationController", Removed("v17.12", "v18.12")},
     {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
     {"NodeToggleController", Removed("v17.12", "v18.12")},
-
-
-
 };
 
 
