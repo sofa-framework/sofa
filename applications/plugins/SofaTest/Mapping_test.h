@@ -43,6 +43,7 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/ArgumentParser.h>
 
 namespace sofa {
 
@@ -160,7 +161,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str());
+        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false, sofa::helper::ArgumentParser::extra_args());
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);
