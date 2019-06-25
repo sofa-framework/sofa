@@ -26,30 +26,27 @@ endmacro()
 
 message("---------- Setting some options ---------")
 
+# Setting all applications/modules/plugins OFF
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    if(_variableName MATCHES "^PLUGIN_" OR _variableName MATCHES "^MODULE_" OR _variableName MATCHES "^APPLICATION_")
+        setSofaOption(${_variableName} OFF TRUE)
+    endif()
+endforeach()
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     setSofaString(CMAKE_CXX_FLAGS "-std=c++11")
 endif()
 
 setSofaOption(APPLICATION_RUNSOFA ON)
-setSofaOption(APPLICATION_MODELER OFF)
-
 setSofaOption(SOFA_USE_MASK OFF)
-
 setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 setSofaOption(SOFA_BUILD_METIS ON)
 
 # Copy resources files (etc/, share/, examples/) when installing
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
-
-# Setting all modules/plugins OFF
-get_cmake_property(_variableNames VARIABLES)
-list (SORT _variableNames)
-foreach (_variableName ${_variableNames})
-    if(_variableName MATCHES "^PLUGIN_" OR _variableName MATCHES "^MODULE_")
-        setSofaOption(${_variableName} OFF TRUE)
-    endif()
-endforeach()
 
 message("-------- Setting some modules ON --------")
 
