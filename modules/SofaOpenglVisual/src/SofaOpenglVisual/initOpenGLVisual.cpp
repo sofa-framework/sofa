@@ -34,9 +34,6 @@ namespace sofa
 namespace component
 {
 
-static int OglModelClass = RegisterObject("Generic visual model for OpenGL display")
-        .add< sofa::component::visualmodel::OglModel >();
-
 extern "C" {
     SOFA_OPENGL_VISUAL_API void initExternalModule();
     SOFA_OPENGL_VISUAL_API const char* getModuleName();
@@ -49,13 +46,10 @@ extern "C" {
 void initExternalModule()
 {
     static bool first = true;
-    if (!first)
+    if (first)
     {
-        std::cout << "REGISTER TO OGLFACTORY" << std::endl;
-       OglModelClass = 1;
-       return;
+        first = false;
     }
-    first = false;
 }
 
 const char* getModuleName()
