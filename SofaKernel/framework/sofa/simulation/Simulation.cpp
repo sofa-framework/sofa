@@ -140,7 +140,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
     else
     {
         // unable to write the file
-        serr << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << sendl;
+        msg_error() << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export";
     }
 }
 
@@ -222,7 +222,7 @@ void Simulation::animate ( Node* root, SReal dt )
     sofa::helper::AdvancedTimer::stepBegin("Simulation::animate");
 
     if ( !root ) {
-        serr<<"Simulation::animate, no root found"<<sendl;
+        msg_error() << "Simulation::animate, no root found";
         return;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
@@ -234,7 +234,7 @@ void Simulation::animate ( Node* root, SReal dt )
     }
     else
     {
-        serr<<"ERROR in Simulation::animate(): AnimationLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::animate: AnimationLoop expected at the root node";
         return;
     }
 
@@ -254,7 +254,7 @@ void Simulation::updateVisual ( Node* root)
     }
     else
     {
-        serr<<"ERROR in updateVisual(): VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::updateVisual: VisualLoop expected at the root node";
         return;
     }
 
@@ -299,7 +299,7 @@ void Simulation::initTextures ( Node* root )
     }
     else
     {
-        serr<<"ERROR in initTextures() : VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::initTextures() : VisualLoop expected at the root node";
         return;
     }
 }
@@ -317,7 +317,7 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
     }
     else
     {
-        serr<<"ERROR in computeBBox() : VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::computeBBox() : VisualLoop expected at the root node";
         return;
     }
 }
@@ -356,7 +356,7 @@ void Simulation::updateVisualContext (Node* root)
     }
     else
     {
-        serr<<"ERROR in updateVisualContext() : VisualLoop expected at the root node"<<sendl;
+        msg_error() << "Simulation::updateVisualContext() : VisualLoop expected at the root node";
         return;
     }
 }
@@ -375,7 +375,7 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     }
     else
     {
-        serr<<"ERROR in draw() : VisualLoop expected at the root node"<<sendl;
+        msg_error() <<"Simulation::draw(): VisualLoop expected at the root node";
         return;
     }
 
@@ -440,7 +440,7 @@ Node::SPtr Simulation::load ( const char *filename, bool reload )
     if (loader) return loader->load(filename, reload);
 
     // unable to load file
-    serr << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;
+    msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled";
     return NULL;
 }
 
