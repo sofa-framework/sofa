@@ -127,7 +127,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 
     helper::vector<CollisionModel*> vectBoundingVolume;
     {
-        ScopedAdvancedTimer bboxtimer("BBox");
+        ScopedAdvancedTimer bboxtimer("ComputeBoundingTree");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printNode("ComputeBoundingTree");
@@ -148,10 +148,16 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 
             int used_depth = broadPhaseDetection->needsDeepBoundingTree() ? d_depth.getValue() : 0;
 
-            if (continuous)
+            if (continuous){
+                std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
+                ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, used_depth);
-            else
+            }
+            else {
+                std::string msg = "Compute BoundingTree: " + (*it)->getName();
+                ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
+            }
 
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;

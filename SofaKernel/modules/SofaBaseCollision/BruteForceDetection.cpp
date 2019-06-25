@@ -176,12 +176,14 @@ bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::
 
 
 void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
-{
-    sofa::helper::AdvancedTimer::StepVar bfTimer("BruteForceDetection::addCollisionPair");
+{    
     typedef std::pair< std::pair<core::CollisionElementIterator,core::CollisionElementIterator>, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
 
     core::CollisionModel *cm1 = cmPair.first; //->getNext();
     core::CollisionModel *cm2 = cmPair.second; //->getNext();
+
+    std::string msg = "BruteForceDetection addCollisionPair: " + cm1->getName() + " - " + cm2->getName();
+    sofa::helper::AdvancedTimer::StepVar bfTimer();
 
     //int size0 = elemPairs.size();
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<" - "<<cm2->getLast()->getName()<<sendl;
@@ -401,7 +403,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         }
     }
 
-    //sofa::helper::AdvancedTimer::stepEnd("BruteForceDetection::addCollisionPair");
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }
 

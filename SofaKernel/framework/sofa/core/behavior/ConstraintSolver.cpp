@@ -42,18 +42,18 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 {
     using sofa::helper::AdvancedTimer;
 
-    std::string className = "SolveConstraints " + cParams->getName();
-    AdvancedTimer::stepBegin(className + "SolveConstraints ");
+    std::string className = "SolveConstraint: " + cParams->getName();
+    AdvancedTimer::stepBegin(className);
 
-    AdvancedTimer::stepBegin(className + " PrepareState");
+    AdvancedTimer::stepBegin(className + " - PrepareState");
     bool continueSolving = prepareStates(cParams, res1, res2);
-    AdvancedTimer::stepEnd(className + " PrepareState");
+    AdvancedTimer::stepEnd(className + " - PrepareState");
 
     if (continueSolving)
     {
-        AdvancedTimer::stepBegin(className + " BuildSystem");
+        AdvancedTimer::stepBegin(className + " - BuildSystem");
         continueSolving = buildSystem(cParams, res1, res2);
-        AdvancedTimer::stepEnd(className + " BuildSystem");
+        AdvancedTimer::stepEnd(className + " - BuildSystem");
     }
     else
     {
@@ -63,9 +63,9 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     if (continueSolving)
     {
-        AdvancedTimer::stepBegin(className + " SolveSystem ");
+        AdvancedTimer::stepBegin(className + " - SolveSystem");
         continueSolving = solveSystem(cParams, res1, res2);
-        AdvancedTimer::stepEnd(className + " SolveSystem ");
+        AdvancedTimer::stepEnd(className + " - SolveSystem");
     }
     else
     {
@@ -75,12 +75,12 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     if (continueSolving)
     {
-        AdvancedTimer::stepBegin(className + " ApplyCorrection ");
+        AdvancedTimer::stepBegin(className + " - ApplyCorrection");
         applyCorrection(cParams, res1, res2);
-        AdvancedTimer::stepEnd(className + " ApplyCorrection ");
+        AdvancedTimer::stepEnd(className + " - ApplyCorrection");
     }
 
-    AdvancedTimer::stepEnd(className + "SolveConstraints ");
+    AdvancedTimer::stepEnd(className);
 }
 
 
