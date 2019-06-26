@@ -2,6 +2,8 @@
 
 @PACKAGE_INIT@
 
+find_package(SofaSimulation REQUIRED)
+
 ### Is the target existing ?
 if(NOT TARGET SofaExporter)
         ### If not we are building out of tree.

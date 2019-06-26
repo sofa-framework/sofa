@@ -73,7 +73,7 @@ DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
         handle = ::LoadLibraryExA(p.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
     }
 # else
-    void *handle = ::dlopen(filename.c_str(), RTLD_NOW);
+    void *handle = ::dlopen(filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
 # endif
     if (handle == nullptr)
         fetchLastError();

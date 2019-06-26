@@ -2,6 +2,10 @@
 
 @PACKAGE_INIT@
 
+find_package(SofaBase REQUIRED)
+find_package(SofaCommon REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
 ### Is the target existing ?
 if(NOT TARGET SofaSparseSolver)
         ### If not we are building out of tree.

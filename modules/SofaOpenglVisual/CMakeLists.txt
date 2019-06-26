@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaOpenglVisual VERSION 1.0 LANGUAGES CXX)
 
-set(EXTRA_FILES
-    README.md
-    SofaOpenglVisualConfig.cmake.in
-)
+find_package(SofaBase REQUIRED)
+find_package(SofaSimulation REQUIRED)
 
-
-list(APPEND HEADER_FILES
+set(HEADER_FILES
     src/SofaOpenglVisual/config.h
     src/SofaOpenglVisual/initOpenGLVisual.h
     src/SofaOpenglVisual/ClipPlane.h
@@ -43,8 +40,7 @@ list(APPEND HEADER_FILES
     src/SofaOpenglVisual/VisualManagerPass.h
     src/SofaOpenglVisual/VisualManagerSecondaryPass.h
     )
-
-list(APPEND SOURCE_FILES
+set(SOURCE_FILES
     src/SofaOpenglVisual/initOpenGLVisual.cpp
     src/SofaOpenglVisual/ClipPlane.cpp
     src/SofaOpenglVisual/OglColorMap.cpp
@@ -77,17 +73,30 @@ list(APPEND SOURCE_FILES
     src/SofaOpenglVisual/SlicedVolumetricModel.cpp
     src/SofaOpenglVisual/VisualManagerPass.cpp
     src/SofaOpenglVisual/VisualManagerSecondaryPass.cpp
-)
+    )
+set(EXTRA_FILES
+    README.md
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
-target_compile_definitions(${PROJECT_NAME} PRIVATE COMPILE_FLAGS "-DSOFA_BUILD_SOFAOPENGLVISUAL")
-target_compile_definitions(${PROJECT_NAME} PUBLIC COMPILE_FLAGS "-DSOFA_HAVE_SOFAOPENGLVISUAL")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAOPENGLVISUAL")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAOPENGLVISUAL")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-sofa_generate_package(NAME ${PROJECT_NAME}
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_INSTALL_DIR ${PROJECT_NAME})
+    INCLUDE_SOURCE_DIR "src/SofaOpenglVisual"
+    INCLUDE_INSTALL_DIR "SofaOpenglVisual/SofaOpenglVisual"
+    )
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/SofaOpenglVisual_test tests/SofaOpenglVisual)
+# Enable tests if SofaTest found
+# Will pass only in out-of-SOFA builds
+# See modules/tests/CMakeLists.txt if building through SOFA
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(SofaOpenglVisual_test)
+endif()

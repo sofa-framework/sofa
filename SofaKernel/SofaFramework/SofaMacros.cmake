@@ -475,6 +475,9 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             LIBRARY DESTINATION "lib" COMPONENT libraries
             ARCHIVE DESTINATION "lib" COMPONENT libraries
             PUBLIC_HEADER DESTINATION "include/${include_install_dir}" COMPONENT headers
+
+            # [MacOS] install runSofa above the already populated runSofa.app (see CMAKE_INSTALL_PREFIX)
+            BUNDLE DESTINATION "../../.." COMPONENT applications
             )
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in")
@@ -555,37 +558,42 @@ function(sofa_set_install_relocatable target install_dir)
 
     get_target_property(target_binary_dir ${target} BINARY_DIR)
 
-    set(COMMAND_IF test)
-    set(COMMAND_IF_ARGS ! -e ${target_binary_dir}/cmake_install.cmakepatch)
-    set(COMMAND_IF_AFTER &&)
-    set(COMMAND_READ cat)
-    set(COMMAND_READ_ARGS "${target_binary_dir}/cmake_install.cmake" >> "${target_binary_dir}/cmake_install.cmakepatch")
-    set(COMMAND_QUOTE "\'")
+    # Remove cmakepatch file at each configure
+    file(REMOVE "${target_binary_dir}/cmake_install.cmakepatch")
+
+    # Hack to make installed plugin independant and keep the add_subdirectory mechanism
+    # Does not fail if cmakepatch file already exists thanks to "|| true"
     if(WIN32)
         string(REGEX REPLACE "/" "\\\\" target_binary_dir_windows "${target_binary_dir}")
-        set(COMMAND_IF "if")
-        set(COMMAND_IF_ARGS "not exist \"${target_binary_dir}/cmake_install.cmakepatch\"")
-        set(COMMAND_IF_AFTER "")
-        set(COMMAND_READ type)
-        set(COMMAND_READ_ARGS "\"${target_binary_dir_windows}\\\\cmake_install.cmake\" >> \"${target_binary_dir_windows}\\\\cmake_install.cmakepatch\"")
-        set(COMMAND_QUOTE "\"")
+        add_custom_target(${target}_relocatable_install ALL
+            COMMENT "${target}: Patching cmake_install.cmake"
+            COMMAND
+                if not exist \"${target_binary_dir}/cmake_install.cmakepatch\"
+                echo set ( CMAKE_INSTALL_PREFIX_BACK \"\$$\{CMAKE_INSTALL_PREFIX\}\" )
+                    > "${target_binary_dir}/cmake_install.cmakepatch"
+                && echo set ( CMAKE_INSTALL_PREFIX \"\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\" )
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && type \"${target_binary_dir_windows}\\\\cmake_install.cmake\" >> \"${target_binary_dir_windows}\\\\cmake_install.cmakepatch\"
+                && echo set ( CMAKE_INSTALL_PREFIX \"\$$\{CMAKE_INSTALL_PREFIX_BACK\}\" )
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
+            )
+    else()
+        add_custom_target(${target}_relocatable_install ALL
+            COMMENT "${target}: Patching cmake_install.cmake"
+            COMMAND
+                test ! -e ${target_binary_dir}/cmake_install.cmakepatch
+                && echo \" set ( CMAKE_INSTALL_PREFIX_BACK \\\"\\\$$\{CMAKE_INSTALL_PREFIX\}\\\" ) \"
+                    > "${target_binary_dir}/cmake_install.cmakepatch"
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\\"\\\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${target}\\\" ) \"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && cat ${target_binary_dir}/cmake_install.cmake >> ${target_binary_dir}/cmake_install.cmakepatch
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\\"\\\$$\{CMAKE_INSTALL_PREFIX_BACK\}\\\" ) \"
+                    >> "${target_binary_dir}/cmake_install.cmakepatch"
+                && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
+                || true
+            )
     endif()
-    file(REMOVE "${target_binary_dir}/cmake_install.cmakepatch")
-    add_custom_target(${target}_relocatable_install ALL
-        COMMENT "${target}: Patching cmake_install.cmake"
-        COMMAND ${COMMAND_IF} ${COMMAND_IF_ARGS} ${COMMAND_IF_AFTER}
-                ${CMAKE_COMMAND} -E echo ${COMMAND_QUOTE}\# Hack to make installed plugin independant and keep the add_subdirectory mechanism${COMMAND_QUOTE}
-                > ${target_binary_dir}/cmake_install.cmakepatch
-             && ${CMAKE_COMMAND} -E echo ${COMMAND_QUOTE}set ( CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${install_dir}/${target} ) ${COMMAND_QUOTE}
-                >> ${target_binary_dir}/cmake_install.cmakepatch
-             && ${CMAKE_COMMAND} -E echo ${COMMAND_QUOTE} ${COMMAND_QUOTE}
-                >> ${target_binary_dir}/cmake_install.cmakepatch
-             && ${COMMAND_READ} ${COMMAND_READ_ARGS}
-             && ${CMAKE_COMMAND} -E echo ${COMMAND_QUOTE}set ( CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} ) ${COMMAND_QUOTE}
-                >> ${target_binary_dir}/cmake_install.cmakepatch
-             && ${CMAKE_COMMAND} -E copy ${target_binary_dir}/cmake_install.cmakepatch ${target_binary_dir}/cmake_install.cmake
-             || true
-        )
 endfunction()
 
 
@@ -707,7 +715,13 @@ function(sofa_install_libraries)
 
     foreach(target ${targets})
         get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-        list(APPEND libraries "${target_location}")
+        get_target_property(is_framework ${target} FRAMEWORK)
+        if(APPLE AND is_framework)
+            get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
+            install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
+        else()
+            list(APPEND libraries "${target_location}")
+        endif()
     endforeach()
 
     foreach(library ${libraries})
