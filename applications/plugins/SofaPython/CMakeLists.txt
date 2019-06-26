@@ -46,6 +46,7 @@ set(HEADER_FILES
     Binding_RigidMapping.h
     Binding_SofaModule.h
 #    Binding_SubsetMultiMapping.h
+    Binding_SparseGridTopology.h
     Binding_Topology.h
     Binding_Vector.h
     Binding_VectorLinearSpringData.h
@@ -107,6 +108,7 @@ set(SOURCE_FILES
     Binding_RigidMapping.cpp
     Binding_SofaModule.cpp
 #    Binding_SubsetMultiMapping.cpp
+    Binding_SparseGridTopology.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
     Binding_VectorLinearSpringData.cpp
@@ -163,6 +165,11 @@ if(SofaExporter_FOUND)
         )
 endif()
 
+GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(LIBRARY_NAME ${LIBRARY_NAME}_d)
+endif()
+add_definitions("-DLIBRARY_NAME=${LIBRARY_NAME}")
 # TODO: Get rid of absolute paths in SofaPython
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 

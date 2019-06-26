@@ -906,7 +906,22 @@ static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static constexpr const char* addPluginRepository_DOC =
+R"DOC(
+Adds a plugin repository path.
 
+:param path: The repository's directory path
+:type path: str
+)DOC";
+static PyObject * Sofa_addPluginRepository(PyObject *, PyObject *arg)
+{
+    const char *path;
+    if (!PyArg_ParseTuple(arg, "s", &path))
+        return NULL;
+    sofa::helper::system::PluginRepository.addFirstPath(path);
+
+    return Py_None;
+}
 
 /// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
@@ -939,6 +954,7 @@ SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (cla
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
+SP_MODULE_METHOD_DOC(Sofa,addPluginRepository, addPluginRepository_DOC)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
