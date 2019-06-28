@@ -491,6 +491,8 @@ macro(sofa_install_targets package_name the_targets include_install_dir)
             set_target_properties(${target} PROPERTIES VERSION "${version}")
         elseif(SofaFramework_VERSION)
             set_target_properties(${target} PROPERTIES VERSION "${SofaFramework_VERSION}")
+        elseif(Sofa_VERSION)
+            set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
         endif()
 
         # non-flat headers install (if no PUBLIC_HEADER and include_install_dir specified)

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(gtest CXX C)
+project(gtest VERSION 2.6.2 LANGUAGES CXX C)
 
 ## Options
 # When other libraries are using a shared version of runtime libraries,
@@ -64,4 +64,4 @@ target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURC
 target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/include>")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_generate_package(NAME GTest VERSION 2.6.2 TARGETS "gtest" INCLUDE_INSTALL_DIR "extlibs/GTest")
+sofa_generate_package(NAME GTest VERSION ${PROJECT_VERSION} TARGETS "gtest" INCLUDE_INSTALL_DIR "extlibs/GTest")
