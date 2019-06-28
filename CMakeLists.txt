@@ -91,6 +91,7 @@ if(UNIX)
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH
+        "../lib"
         "$ORIGIN/../lib"
         "$$ORIGIN/../lib"
         )
