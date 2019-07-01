@@ -19,13 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BINDING_OBJEXPORTER_H
-#define BINDING_OBJEXPORTER_H
 
-#include "PythonMacros.h"
 
-#include <SofaExporter/OBJExporter.h>
+#include "Binding_OBJExporter.h"
+#include <SofaPython/Binding_BaseObject.h>
+#include <SofaPython/PythonToSofa.inl>
 
-SP_DECLARE_CLASS_TYPE(OBJExporter)
+using namespace sofa::component::misc;
+using namespace sofa::core::objectmodel;
 
-#endif
+
+/// getting a OBJExporter* from a PyObject*
+static inline OBJExporter* get_OBJExporter(PyObject* obj) {
+    return sofa::py::unwrap<OBJExporter>(obj);
+}
+
+
+static PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
+{
+    OBJExporter* obj = get_OBJExporter( self );
+    return PyBool_FromLong( obj->writeOBJ() ) ;
+}
+
+
+SP_CLASS_METHODS_BEGIN(OBJExporter)
+SP_CLASS_METHOD(OBJExporter,writeOBJ)
+SP_CLASS_METHODS_END
+
+
+SP_CLASS_TYPE_SPTR(OBJExporter,OBJExporter,BaseObject)
+
+
