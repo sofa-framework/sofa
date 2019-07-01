@@ -58,12 +58,16 @@ if(Qt5Core_FOUND)
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
 
-    sofa_install_libraries(TARGETS ${QT_TARGETS})
-
     # QT INSTALL (dirty)
+    sofa_install_libraries(TARGETS ${QT_TARGETS})
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
+    get_filename_component(QT_LIBRARIES_DIR_NAME ${QT_LIBRARIES_DIR} NAME)
+    if(NOT "${QT_LIBRARIES_DIR_NAME}" STREQUAL "lib")
+        get_filename_component(QT_LIBRARIES_DIR ${QT_LIBRARIES_DIR} DIRECTORY) # parent dir
+        get_filename_component(QT_LIBRARIES_DIR_NAME ${QT_LIBRARIES_DIR} NAME)
+    endif()
     # Get Qt plugins dir
     list(GET Qt5Gui_PLUGINS 1 QT_PLUGIN_ANY)
     if(TARGET ${QT_PLUGIN_ANY})
@@ -102,6 +106,20 @@ if(Qt5Core_FOUND)
         "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
     sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
+    # Install libpng (libQt5Gui dependency)
+    find_package(PNG QUIET)
+    if(PNG_FOUND)
+        sofa_install_libraries(TARGETS PNG::PNG)
+    endif()
+    # Install Apple Qt frameworks
+    if(APPLE)
+        if(EXISTS "${QT_LIBRARIES_DIR}/QtDBus.framework")
+            install(DIRECTORY "${QT_LIBRARIES_DIR}/QtDBus.framework" DESTINATION "lib" COMPONENT appications)
+        endif()
+        if(EXISTS "${QT_LIBRARIES_DIR}/QtPrintSupport.framework")
+            install(DIRECTORY "${QT_LIBRARIES_DIR}/QtPrintSupport.framework" DESTINATION "lib" COMPONENT appications)
+        endif()
+    endif()
 endif()
 
 # These header files don't need to be processed by the moc.

@@ -183,9 +183,8 @@ if(Qt5Core_FOUND)
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
 
-    sofa_install_libraries(TARGETS ${QT_TARGETS})
-
     # QT INSTALL (dirty)
+    sofa_install_libraries(TARGETS ${QT_TARGETS})
     # Get Qt libraries dir
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_LIBRARIES_DIR ${QtCore_location} DIRECTORY)
@@ -232,6 +231,11 @@ if(Qt5Core_FOUND)
         "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
     sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
+    # Install libpng (libQt5Gui dependency)
+    find_package(PNG QUIET)
+    if(PNG_FOUND)
+        sofa_install_libraries(TARGETS PNG::PNG)
+    endif()
     # Install Apple Qt frameworks
     if(APPLE)
         if(EXISTS "${QT_LIBRARIES_DIR}/QtDBus.framework")
