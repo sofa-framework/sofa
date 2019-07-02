@@ -7,7 +7,7 @@
     <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalMass="100.0" />
@@ -26,7 +26,7 @@
         </Node>
     </Node>
     <Node name="LiverFFD-hires">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalMass="100.0" />

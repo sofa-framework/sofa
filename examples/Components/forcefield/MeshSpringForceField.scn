@@ -14,7 +14,7 @@
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <Node name="TorusSpring1">
-            <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="2.5 0 0"/>
             <Mesh src="@loader" />
@@ -34,7 +34,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring2">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" translation="5 0 0"/>
             <Mesh src="@loader" />
@@ -54,7 +54,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring3">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="7.5 0 0"/>
             <Mesh src="@loader" />
@@ -74,7 +74,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring4">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" translation="10 0 0"/>
             <Mesh src="@loader" />

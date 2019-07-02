@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M0">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <DampVelocity rate="0.9" threshold="0.01" printLog="0" name="damp" />
         <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="1 0 0  1 0 0  1 0 0  1 0 0" />

@@ -22,7 +22,7 @@ Control the instrument with the UP and DOWN keys + CTRL
     <Node name="Head">
         <Node name="Tongue" activated="true">
 	    
-            <EulerImplicit name="odesolver" vdamping="4.0"/>
+            <EulerImplicitSolver name="odesolver" vdamping="4.0"/>
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
             <SparseGrid n="4 4 6" fileTopology="data/mesh/tongue.obj" />

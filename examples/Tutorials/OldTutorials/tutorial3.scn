@@ -7,7 +7,7 @@
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="18" dy="17" dz="29" />
         <UniformMass totalMass="10" />
@@ -28,7 +28,7 @@
         </Node>
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="17" dz="29" />
         <UniformMass totalMass="10" />
@@ -49,7 +49,7 @@
         </Node>
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4 />

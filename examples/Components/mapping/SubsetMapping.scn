@@ -8,7 +8,7 @@
 	<DefaultContactManager name="Response" response="NeedleContact"/>
 
 	<Node name="sutureSoftCubes">
-		<EulerImplicit name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
+		<EulerImplicitSolver name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MechanicalObject template="Vec3d"/>
 		<UniformMass mass="0.001"/>

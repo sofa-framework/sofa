@@ -6,7 +6,7 @@
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="Frog">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog.obj" />
         <MechanicalObject dx="-10.0" />
@@ -29,7 +29,7 @@
         </Node>
     </Node>
     <Node name="Frog2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog_quads.obj" />
         <MechanicalObject dx="10.0" />

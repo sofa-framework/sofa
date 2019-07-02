@@ -15,7 +15,7 @@
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" texturename="textures/brushed_metal.bmp" />
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="2.5" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
@@ -32,7 +32,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="5" />
             <UniformMass />
@@ -49,7 +49,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="7.5" />
             <UniformMass />
@@ -66,7 +66,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid" dx="10" />
             <UniformMass />

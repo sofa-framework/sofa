@@ -8,7 +8,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager />
     <Node name="tshirt">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/tshirt_0.msh" />
         <Mesh src="@loader" />

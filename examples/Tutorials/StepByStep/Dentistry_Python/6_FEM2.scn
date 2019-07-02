@@ -21,7 +21,7 @@ FEM force field of the tongue
     <Node name="Head">
         <Node name="Tongue" activated="true">
 	    
-            <EulerImplicit name="odesolver" vdamping="4.0"/>
+            <EulerImplicitSolver name="odesolver" vdamping="4.0"/>
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshVTKLoader name="volTongue" filename="data/mesh/volumetricTongue.vtu" />
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />

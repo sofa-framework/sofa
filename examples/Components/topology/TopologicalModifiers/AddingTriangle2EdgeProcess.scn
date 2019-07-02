@@ -8,7 +8,7 @@
     <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <Node name="SquareGravity">
-        <EulerImplicit name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" />
         <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
         <MechanicalObject name="dofs" src="@loader" template="Vec3d" />

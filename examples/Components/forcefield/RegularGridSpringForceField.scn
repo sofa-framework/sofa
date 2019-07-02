@@ -14,7 +14,7 @@
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <Node name="TorusFFD1">
-            <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject translation="2.5 0 0" />
             <UniformMass totalMass="5" />
@@ -33,7 +33,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD2">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject dx="5" />
             <UniformMass totalMass="5" />
@@ -52,7 +52,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD3">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject dx="7.5" />
             <UniformMass totalMass="5" />
@@ -71,7 +71,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD4">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MechanicalObject dx="10" />
             <UniformMass totalMass="5" />

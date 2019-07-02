@@ -8,11 +8,11 @@
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
-    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Liver1">
         <!--<CGImplicit iterations="25"/>-->
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
@@ -33,7 +33,7 @@
     </Node>
     <Node name="Liver2">
         <!--<CGImplicit iterations="25"/>-->
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
@@ -53,7 +53,7 @@
     </Node>
     <Node name="Liver3">
         <!--<CGImplicit iterations="25"/>-->
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />

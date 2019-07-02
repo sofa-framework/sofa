@@ -7,7 +7,7 @@
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <PCGLinearSolver iterations="1000" threshold="1.0e-9" printLog="0" refresh="0" verbose="0" />
         <MechanicalObject />
         <UniformMass mass="1" />

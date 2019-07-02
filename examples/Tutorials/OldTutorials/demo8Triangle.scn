@@ -8,7 +8,7 @@
     <DefaultContactManager name="Response" response="default" />
     <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject src="@../meshLoader" dz="-21.0" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
@@ -28,7 +28,7 @@
         </Node>
     </Node>
     <Node name="M2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" dz="-10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
@@ -51,7 +51,7 @@
         </Node>
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject src="@../meshLoader" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
@@ -71,7 +71,7 @@
         </Node>
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" dz="10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
@@ -94,7 +94,7 @@
         </Node>
     </Node>
     <Node name="M5">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5" />
         <MechanicalObject src="@../meshLoader" dz="21" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
@@ -114,7 +114,7 @@
         </Node>
     </Node>
     <Node name="M6">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" dz="31.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
