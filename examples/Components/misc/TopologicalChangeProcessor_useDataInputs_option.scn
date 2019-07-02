@@ -18,7 +18,7 @@
         <DiagonalMass template="Vec3d" name="default5" massDensity="0.15" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-        <TriangleModel name="default7" />
+        <TriangleCollisionModel name="default7" />
         <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
         <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
         <BoxROI template="Vec3d" box="2 0 -1 8 -3 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="trash" />

@@ -22,8 +22,8 @@
             <MeshTopology src="@meshLoader" />
             <MechanicalObject template="Vec3d" name="default6"  translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" restScale="1" />
             <TriangleCollisionModel template="Vec3d" name="default1" contactFriction="0.6" />
-            <LineModel name="default2" contactFriction="@[-1].contactFriction" />
-            <PointModel name="default3" contactFriction="@[-1].contactFriction" />
+            <LineCollisionModel name="default2" contactFriction="@[-1].contactFriction" />
+            <PointCollisionModel name="default3" contactFriction="@[-1].contactFriction" />
             <SubsetMapping template="Vec3d,Vec3d" name="default10" />
         </Node>
     </Node>
@@ -32,8 +32,8 @@
         <MeshTopology src="@meshLoader" />
         <MechanicalObject template="Vec3d" name="default12"  translation="0 -10 0" scale3d="1.75 1.75 1.75" restScale="1" />
         <TriangleCollisionModel template="Vec3d" name="FloorTriangle" moving="0" simulated="0" contactFriction="0.6" />
-        <LineModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
-        <PointModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
+        <LineCollisionModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
+        <PointCollisionModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
         <OglModel template="ExtVec3f" name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" translation="0 -10 0" scale3d="1.75 1.75 1.75" />
     </Node>
 </Node>

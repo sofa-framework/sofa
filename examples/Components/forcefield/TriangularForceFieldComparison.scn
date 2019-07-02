@@ -18,7 +18,7 @@
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <OglModel name="Visual" color="black" />
         <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
     </Node>
@@ -32,7 +32,7 @@
         <DiagonalMass massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <OglModel name="Visual" color="white" />
         <IdentityMapping input="@." output="@Visual" />
     </Node>
@@ -47,7 +47,7 @@
         <DiagonalMass massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <OglModel name="Visual" color="yellow" />
         <IdentityMapping input="@." output="@Visual" />
     </Node>
@@ -62,7 +62,7 @@
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <OglModel name="Visual" color="red" />
         <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
     </Node>
@@ -76,7 +76,7 @@
         <DiagonalMass massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <OglModel name="Visual" color="green" />
         <IdentityMapping input="@." output="@Visual" />
     </Node>
@@ -90,7 +90,7 @@
         <DiagonalMass massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0 1 0" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <OglModel name="Visual" color="blue" />
         <IdentityMapping input="@." output="@Visual" />
     </Node>

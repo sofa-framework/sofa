@@ -21,7 +21,7 @@
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
-        <TriangleModel />
+        <TriangleCollisionModel />
         <Node>
             <OglModel src="@../GmshLoader" name="VisualModel" color="blue" />
             <IdentityMapping name="mapping" input="@.." output="@VisualModel" />

@@ -26,7 +26,7 @@
             <SubsetTopologicalMapping input="@Container1" output="@Container2" samePoints="true" />
             <MechanicalObject />
             <IdentityMapping />
-            <TriangleModel color="1 0 0 1" group="1" printLog="1" />
+            <TriangleCollisionModel color="1 0 0 1" group="1" printLog="1" />
         </Node>
         <Node name="SubsetTopology2">
             <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 -55 55 55 25" />
@@ -36,7 +36,7 @@
             <SubsetTopologicalMapping input="@Container1" output="@Container2" samePoints="true" />
             <MechanicalObject />
             <IdentityMapping />
-            <TriangleModel group="1" printLog="1" />
+            <TriangleCollisionModel group="1" printLog="1" />
         </Node>
     </Node>
 </Node>

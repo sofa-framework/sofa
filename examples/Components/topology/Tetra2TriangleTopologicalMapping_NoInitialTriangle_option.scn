@@ -17,7 +17,7 @@
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" noNewTriangles="1" />

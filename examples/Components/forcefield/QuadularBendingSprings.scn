@@ -25,7 +25,7 @@
             <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-            <TriangleSet />
+            <TriangleCollisionModel />
         </Node>
     </Node>
 </Node>

@@ -23,7 +23,7 @@
         <FastTriangularBendingSprings name="Bending" bendingStiffness="100" />
         <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="100" printLog="1" />
         <DiagonalMass name="mass" massDensity="1" printLog="0" />
-        <TriangleModel name="CM" />
+        <TriangleCollisionModel name="CM" />
 
         <Node name="Visu">
             <OglModel name="VisualModel" src="@../loader" color="white" />

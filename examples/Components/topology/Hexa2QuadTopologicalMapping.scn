@@ -24,7 +24,7 @@
             <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="blue" quads="@../Container.quads" />
                 <IdentityMapping input="@../../Hexa" output="@Visual" />

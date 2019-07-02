@@ -29,7 +29,7 @@
             <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" name="mapping_topo" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="red" />
                 <IdentityMapping input="@../../Quads" output="@Visual" />

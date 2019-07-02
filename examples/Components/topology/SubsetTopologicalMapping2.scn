@@ -18,7 +18,7 @@
         <BoxROI name="roi1" box="-55 -55 -55 55 55 -25" />
         <FixedConstraint name="FixedConstraint" indices="@roi1.indices" />
         <DiagonalMass massDensity="1" name="computed using mass density" />
-        <TriangleModel group="1" printLog="1" />
+        <TriangleCollisionModel group="1" printLog="1" />
         <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="0" printLog="1" />
         <Node name="SubsetTopology1">
             <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 25 55 55 55" />
@@ -30,7 +30,7 @@
             <IdentityMapping />
             <TriangularFEMForceFieldOptim name="FEM1" youngModulus="1000" poissonRatio="0.3" showStressColorMap="red  1 0 0 1  1 0.5 0.5 1" />
             <FastTriangularBendingSprings name="Bending" bendingStiffness="100" />
-            <!--<TriangleModel color="1 0 0 1" group="1" printLog="1" />-->
+            <!--<TriangleCollisionModel color="1 0 0 1" group="1" printLog="1" />-->
         </Node>
         <Node name="SubsetTopology2">
             <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 -55 55 55 25" />
@@ -42,7 +42,7 @@
             <IdentityMapping />
             <TriangularFEMForceFieldOptim name="FEM2" youngModulus="10000" poissonRatio="0.4" showStressColorMap="green  0 0.5 0 1  0.5 1 0 1" />
             <FastTriangularBendingSprings name="Bending" bendingStiffness="1000" />
-            <!--<TriangleModel group="1" printLog="1" />-->
+            <!--<TriangleCollisionModel group="1" printLog="1" />-->
         </Node>
     </Node>
 </Node>
