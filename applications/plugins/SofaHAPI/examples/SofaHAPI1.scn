@@ -78,9 +78,9 @@
         <Node name="Surface">
 	      <TriangleSetTopologyContainer src="@../../InputMesh" />
           <MechanicalObject />
-          <TriangleModel name="CMT" />
-          <LineModel name="CML" />
-          <PointModel name="CMP" />
+          <TriangleCollisionModel name="CMT" />
+          <LineCollisionModel name="CML" />
+          <PointCollisionModel name="CMP" />
           <BarycentricMapping useRestPosition="1" />
         </Node>
     </Node>

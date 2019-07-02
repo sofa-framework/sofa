@@ -28,7 +28,7 @@
     <Node name="T">
       <include href="Objects/TriangleSetTopology.xml" />
       <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-      <TriangleSet />
+      <TriangleCollisionModel />
       <Node name="Visu">
         <OglModel name="Visual" material="Default Diffuse 1 0 1 0 1 Ambient 0 1 1 1 1 Specular 1 1 1 0 1 Emissive 0 1 1 0 1 Shininess 1 100"/>
         <IdentityMapping input="@../../Volume" output="@Visual" />

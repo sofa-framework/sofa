@@ -27,18 +27,18 @@
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left.obj" triangulate="1" createSubelements="true"/>
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" simulated="0" moving="1" />
-      <LineModel group="1" simulated="0" moving="1" />
-      <PointModel group="1" simulated="0" moving="1" />
+      <TriangleCollisionModel group="1" simulated="0" moving="1" />
+      <LineCollisionModel group="1" simulated="0" moving="1" />
+      <PointCollisionModel group="1" simulated="0" moving="1" />
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right.obj" triangulate="1" createSubelements="true" />
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" simulated="0" moving="1" />
-      <LineModel group="1" simulated="0" moving="1" />
-      <PointModel group="1" simulated="0" moving="1" />
+      <TriangleCollisionModel group="1" simulated="0" moving="1" />
+      <LineCollisionModel group="1" simulated="0" moving="1" />
+      <PointCollisionModel group="1" simulated="0" moving="1" />
       <RigidMapping index="2" />
     </Node>
     <Node name="GrabVisualL">
@@ -63,9 +63,9 @@
         <FixedConstraint indices="0 1 2 3" />
         <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <TriangleModel name="cmTriangles" contactStiffness="5000" />
-        <LineModel name="cmLines" contactStiffness="5000" />
-        <PointModel name="cmPoints" contactStiffness="5000" />
+        <TriangleCollisionModel name="cmTriangles" contactStiffness="5000" />
+        <LineCollisionModel name="cmLines" contactStiffness="5000" />
+        <PointCollisionModel name="cmPoints" contactStiffness="5000" />
         <Node name="VM">
             <OglModel name="Visual" color="red" />
             <IdentityMapping />
