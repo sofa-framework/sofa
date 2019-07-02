@@ -93,24 +93,6 @@ if(Qt5Core_FOUND)
     if(EXISTS "${QT_PLUGINS_DIR}/styles")
         install(DIRECTORY "${QT_PLUGINS_DIR}/styles" DESTINATION "bin" COMPONENT applications)
     endif()
-    # Install Qt XCB libraries
-    file(GLOB QT_XCB_LIBRARIES
-        "${QT_LIBRARIES_DIR}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-    sofa_install_libraries(LIBRARIES ${QT_XCB_LIBRARIES})
-    # Install Qt ICU libraries
-    file(GLOB QT_ICU_LIBRARIES
-        "${QT_LIBRARIES_DIR}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${QT_LIBRARIES_DIR}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-    sofa_install_libraries(LIBRARIES ${QT_ICU_LIBRARIES})
-    # Install libpng (libQt5Gui dependency)
-    find_package(PNG QUIET)
-    if(PNG_FOUND)
-        sofa_install_libraries(TARGETS PNG::PNG)
-    endif()
     # Install Apple Qt frameworks
     if(APPLE)
         if(EXISTS "${QT_LIBRARIES_DIR}/QtDBus.framework")
