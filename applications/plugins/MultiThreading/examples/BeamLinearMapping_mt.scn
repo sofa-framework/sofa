@@ -3,11 +3,11 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="MultiThreading" />
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.03" contactDistance="0.02" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="beam">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver bandWidth="11" printLog="false" verbose="false" />

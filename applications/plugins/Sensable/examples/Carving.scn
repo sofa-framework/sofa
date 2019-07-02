@@ -6,11 +6,11 @@
     <RequiredPlugin name="Carving" pluginName="SofaCarving" />
 
   <VisualStyle displayFlags="" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
 
   <CarvingManager key="0" active="true"/>
 

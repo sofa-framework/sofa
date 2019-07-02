@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <Node animate="0" gravity="0 0.1 0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <Node name="Grab">

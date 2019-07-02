@@ -5,9 +5,9 @@
 
   <VisualStyle displayFlags="showCollisionModels" />
   
-  <CollisionPipeline verbose="0" />
+  <DefaultPipeline verbose="0" />
   <BruteForceDetection name="N2" />
-  <CollisionResponse response="default" />
+  <DefaultContactManager response="default" />
   <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.02"/>
   
   <CarvingManager active="true" carvingDistance="-0.02"/>

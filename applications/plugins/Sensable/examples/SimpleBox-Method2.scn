@@ -9,7 +9,7 @@
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver />
 
-    <CollisionPipeline depth="8" />
+    <DefaultPipeline depth="8" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
     <RuleBasedContactManager name="Response" response="FrictionContact"

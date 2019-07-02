@@ -8,7 +8,7 @@
 
     <VisualStyle displayFlags="showVisual  " />
 
-    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <DefaultPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance=".5" contactDistance=".3" useLinePoint="false" />
 

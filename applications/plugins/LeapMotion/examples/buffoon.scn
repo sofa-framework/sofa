@@ -9,10 +9,10 @@
     <VisualStyle displayFlags="showVisualModels hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 
 
-    <CollisionPipeline name="pipeline" depth="6" />
+    <DefaultPipeline name="pipeline" depth="6" />
     <BruteForceDetection name="detection" />
 	<DiscreteIntersection />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
 
     <LeapMotionDriver name="leapMotionDriver" scale="0.0025" rotation="90 0 0" translation="0 0. 0" displayHand="true" printLog="0"/>
 
