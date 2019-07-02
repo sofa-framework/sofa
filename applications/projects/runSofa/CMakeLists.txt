@@ -62,30 +62,30 @@ sofa_install_targets(SofaGui runSofa runSofa)
 
 # Post-install scripts
 if(SOFA_BUILD_RELEASE_PACKAGE)
-	if(UNIX AND NOT APPLE) # Linux
-		install(CODE "file(WRITE
-			\"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
-			\"[Paths]\\n  Prefix = ..\\n  LibraryExecutables = bin\"
-			)"
-			COMPONENT applications)
-		install(CODE "execute_process(COMMAND /bin/bash
-			\"${CMAKE_SOURCE_DIR}/scripts/linux-postinstall-fixup.sh\"
-			\"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
-			\"${Qt5_DIR}/../../..\"
-			)"
-			COMPONENT applications)
-	elseif(APPLE) # MacOS
-		if(SOFA_BUILD_APP_BUNDLE)
-			install(CODE "file(WRITE
-			\"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\"
-			\"[Paths]\\n  Plugins = MacOS/bin\"
-			)"
-			COMPONENT applications)
-		endif()
-		install(CODE "execute_process(COMMAND /bin/bash
-			\"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\"
-			\"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
-			)"
-			COMPONENT applications)
-	endif()
+    if(UNIX AND NOT APPLE) # Linux
+        install(CODE "file(WRITE
+            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
+            \"[Paths]\\n  Prefix = ..\\n  LibraryExecutables = bin\"
+            )"
+            COMPONENT applications)
+        install(CODE "execute_process(COMMAND /bin/bash
+            \"${CMAKE_SOURCE_DIR}/scripts/linux-postinstall-fixup.sh\"
+            \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
+            \"${Qt5_DIR}/../../..\"
+            )"
+            COMPONENT applications)
+    elseif(APPLE) # MacOS
+        if(SOFA_BUILD_APP_BUNDLE)
+            install(CODE "file(WRITE
+                \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../Resources/qt.conf\"
+                \"[Paths]\\n  Plugins = MacOS/bin\"
+                )"
+                COMPONENT applications)
+        endif()
+        install(CODE "execute_process(COMMAND /bin/bash
+            \"${CMAKE_SOURCE_DIR}/scripts/macos-postinstall-fixup.sh\"
+            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
+            )"
+            COMPONENT applications)
+    endif()
 endif()
