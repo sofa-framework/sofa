@@ -4,14 +4,25 @@ usage() {
     echo "Usage: linux-postinstall-fixup.sh <install-dir> <qt-dir>"
 }
 
-if [ "$#" -ge 1 ]; then
+if [ "$#" -ge 2 ]; then
     INSTALL_DIR="$(cd $1 && pwd)"
-    QT_DIR="$(cd $2 && pwd)"
+    
+    QT_DIR=""
+	if [ -d "$2" ]; then
+		QT_DIR="$(cd $2 && pwd)"
+	fi
 else
     usage; exit 1
 fi
 
 echo "Fixing up libs..."
+
+# Why are these folders installed in plugins?
+rm -rf "$INSTALL_DIR/plugins/iconengines"
+rm -rf "$INSTALL_DIR/plugins/imageformats"
+rm -rf "$INSTALL_DIR/plugins/platforms"
+rm -rf "$INSTALL_DIR/plugins/styles"
+
 
 get-lib-deps() {
 	local base_dir="$1"
@@ -24,38 +35,35 @@ get-lib-deps() {
 	ldd $libs | grep " => [^ \.].* " | grep -v "$base_dir" | cut -c2- | sed -e 's/\(.*\) => .*/\1/g' | sort | uniq
 }
 
+
+echo "  Searching deps for $INSTALL_DIR"
+
 lib_deps="$(get-lib-deps "$INSTALL_DIR")"
 
-#echo " ------- lib deps --------"
-#echo "$lib_deps" | tr " " "\n"
-#echo "--------------------------"
+# Copy Qt libs (and their deps)
+if [ -n "$QT_DIR" ]; then
+	qt_deps="$(echo $lib_deps | tr " " "\n" | grep "libQt")"
 
-qt_deps="$(echo $lib_deps | tr " " "\n" | grep "libQt")"
+	qt_deps_to_copy="$qt_deps"
+	for qtlib in $qt_deps; do
+		qt_deps_to_copy="$qt_deps_to_copy $(ldd "$QT_DIR/lib/$qtlib" | grep "$QT_DIR" | cut -c2- | sed -e 's/\(.*\) => .*/\1/g')"
+	done
+	qt_deps_to_copy="$(echo $qt_deps_to_copy | tr " " "\n" | sort | uniq)"
 
-#echo " -------- Qt deps --------"
-#echo "$qt_deps" | tr " " "\n"
-#echo "--------------------------"
+	for qtlib in $qt_deps_to_copy; do
+		echo "    $qtlib"
+		cp -Rf "$QT_DIR/lib/$qtlib"* "$INSTALL_DIR/lib"
+	done
+fi
 
-qt_deps_to_copy="$qt_deps"
-for qtlib in $qt_deps; do
-	qt_deps_to_copy="$qt_deps_to_copy $(ldd "$QT_DIR/lib/$qtlib" | grep "$QT_DIR" | cut -c2- | sed -e 's/\(.*\) => .*/\1/g')"
-done
-qt_deps_to_copy="$(echo $qt_deps_to_copy | tr " " "\n" | sort | uniq)"
-
-echo " ---- Qt deps to copy ----"
-echo "$qt_deps_to_copy" | tr " " "\n"
-echo "--------------------------"
-
-for qtlib in $qt_deps_to_copy; do
-	cp -Rf "$QT_DIR/lib/$qtlib"* "$INSTALL_DIR/lib"
-done
-
+echo "Done."
 exit 0
 
 ######################################
 
 # TODO
-# Check if some system deps are not from default system packages
+# Check if the system deps are in default system packages
+# and copy them if not
 
 # refresh libs to integrate new Qt libs
 lib_deps="$(get-lib-deps "$INSTALL_DIR")"
