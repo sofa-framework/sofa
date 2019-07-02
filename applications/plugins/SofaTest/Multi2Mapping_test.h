@@ -331,7 +331,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if (this->vectorMaxDiff(jfcIn1[p], fIn1p[p])>this->epsilon()*errorMax)
             {
                 succeed = false;
-                ADD_FAILURE() << "applyJT (parent 1) test failed" << endl << "jfcIn1[" << p << "] = " << jfcIn1[p] << endl << " fp[" << p << "] = " << fIn1p[p] << endl;
+                ADD_FAILURE() << "applyJT (parent 1) test failed" << std::endl << "jfcIn1[" << p << "] = " << jfcIn1[p] << std::endl << " fp[" << p << "] = " << fIn1p[p] << std::endl;
             }
         }
         for (Index p = 0; p<Np2.size(); p++)
@@ -341,16 +341,16 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if (this->vectorMaxDiff(jfcIn2[p], fIn2p[p])>this->epsilon()*errorMax)
             {
                 succeed = false;
-                ADD_FAILURE() << "applyJT (parent 2) test failed" << endl << "jfcIn2[" << p << "] = " << jfcIn2[p] << endl << " fp[" << p << "] = " << fIn2p[p] << endl;
+                ADD_FAILURE() << "applyJT (parent 2) test failed" << std::endl << "jfcIn2[" << p << "] = " << jfcIn2[p] << std::endl << " fp[" << p << "] = " << fIn2p[p] << std::endl;
             }
         }
 
         // ================ test getJs() : check that J.vp = vc
         if (this->vectorMaxDiff(Jv, vc) > this->epsilon()*errorMax){
             succeed = false;
-            msg_info() << "Jvp = " << Jv;
-            msg_info() << "vc  = " << vc;
-            ADD_FAILURE() << "getJs() test failed" << endl << "Jvp = " << Jv << endl << "vc  = " << vc << endl;
+            std::cout << "Jvp = " << Jv << std::endl;
+            std::cout << "vc  = " << vc << std::endl;
+            ADD_FAILURE() << "getJs() test failed" << std::endl << "Jvp = " << Jv << std::endl << "vc  = " << vc << std::endl;
         }
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
@@ -394,9 +394,9 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         if (this->vectorMaxDiff(dxc, vc) > this->epsilon()*errorMax)
         {
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << endl
-                          << "position change = " << dxc << endl
-                          << "velocity        = " << vc << endl;
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << std::endl
+                          << "position change = " << dxc << std::endl
+                          << "velocity        = " << vc << std::endl;
         }
 
         // update parent force based on the same child forces
@@ -425,9 +425,9 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if( this->vectorMaxDiff(dfIn1p[p],fIn1p12[p]) > this->epsilon()*errorMax )
             {
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test (parent 1) failed" << endl <<
-                                 "dfIn1p["<<p<<"]    = " << dfIn1p[p] << endl <<
-                                 "fIn1p2["<<p<<"]-fIn1p["<<p<<"] = " << fIn1p12[p] << endl;
+                ADD_FAILURE() << "applyDJT test (parent 1) failed" << std::endl <<
+                                 "dfIn1p["<<p<<"]    = " << dfIn1p[p] << std::endl <<
+                                 "fIn1p2["<<p<<"]-fIn1p["<<p<<"] = " << fIn1p12[p] << std::endl;
             }
         }
         // ================ test applyDJT() (Case 2)
@@ -439,9 +439,9 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             if( this->vectorMaxDiff(dfIn2p[p],fIn2p12[p]) > this->epsilon()*errorMax )
             {
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test (parent 2) failed" << endl <<
-                                 "dfIn2p["<<p<<"]    = " << dfIn2p[p] << endl <<
-                                 "fIn2p2["<<p<<"]-fIn2p["<<p<<"] = " << fIn2p12[p] << endl;
+                ADD_FAILURE() << "applyDJT test (parent 2) failed" << std::endl <<
+                                 "dfIn2p["<<p<<"]    = " << dfIn2p[p] << std::endl <<
+                                 "fIn2p2["<<p<<"]-fIn2p["<<p<<"] = " << fIn2p12[p] << std::endl;
             }
         }
 
