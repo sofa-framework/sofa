@@ -285,7 +285,7 @@ void OglShader::start()
             glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
         if ( backfaceWriting.getValue() )
             glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
-#if defined(SOFA_HAVE_GLEW) && defined(GL_TESS_CONTROL_SHADER)
+#if defined(GL_TESS_CONTROL_SHADER)
         if (shaderVector[indexActiveShader.getValue()]->GetTessellationEvaluationShaderID() && !shaderVector[indexActiveShader.getValue()]->GetTessellationControlShaderID() && GLEW_ARB_tessellation_shader)
         {
             helper::fixed_array<GLfloat,4> levels;

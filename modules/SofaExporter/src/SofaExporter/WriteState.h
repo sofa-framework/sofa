@@ -126,9 +126,13 @@ public:
     void setCreateInMapping(bool b) { createInMapping=b; }
     void setCounter(int c) { counterWriteState = c; }
     const char* getClassName() const override { return "WriteStateCreator"; }
+
+    void setExportTimes(const helper::vector<double> times) { m_times = times; }
 protected:
     std::string sceneName;
     std::string extension;
+    helper::vector<double> m_times;
+
     bool recordX,recordV,recordF;
     bool createInMapping;
 
