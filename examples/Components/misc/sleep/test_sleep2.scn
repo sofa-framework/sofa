@@ -4,10 +4,10 @@
 	<VisualStyle displayFlags="" /> <!-- showInteractionForceFields -->
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.1" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" responseParams="mu=0.2" />
+    <DefaultContactManager name="Response" response="FrictionContact" responseParams="mu=0.2" />
 	<SleepController immobileThreshold="0.2" rotationThreshold="0.1" minTimeSinceWakeUp="0.1" printLog="1" />
 	
 	<LightManager />

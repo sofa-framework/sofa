@@ -2,7 +2,7 @@
 <Node name="root" dt="0.01">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
-    <CollisionPipeline depth="6" verbose="0" draw="1" />
+    <DefaultPipeline depth="6" verbose="0" draw="1" />
     <BruteForceDetection name="N2" />
     <!--<ProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5"  />

@@ -4,10 +4,10 @@
 <Node name="root" dt="0.01">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.03" contactDistance="0.02" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <Node name="beam">
         <EulerImplicit rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false" />

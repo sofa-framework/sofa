@@ -1,10 +1,10 @@
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showCollisionModels" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.5" contactDistance="0.05" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <!-- A deformable square mesh -->
     <Node name="Truss" activated="true" gravity="0 0 0">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

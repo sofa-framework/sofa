@@ -1,9 +1,9 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
-    <CollisionGroup />
+    <DefaultContactManager response="default" />
+    <DefaultCollisionGroupManager />
     <DiscreteIntersection />
     <Node name="Liver">
         <EulerImplicit name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />

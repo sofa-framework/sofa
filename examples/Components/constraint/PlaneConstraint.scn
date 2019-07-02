@@ -2,11 +2,11 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- <Simulation name="Simulation" /> -->
     <VisualStyle displayFlags="showBehaviorModels" />
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <DiscreteIntersection />
-    <CollisionResponse response="default" name="collision response" />
-    <!--<CollisionGroup />-->
+    <DefaultContactManager response="default" name="collision response" />
+    <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver">
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />

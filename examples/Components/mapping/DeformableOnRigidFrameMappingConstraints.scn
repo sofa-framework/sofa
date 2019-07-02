@@ -3,11 +3,11 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehavior" />
     <FreeMotionAnimationLoop />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
-    <CollisionResponse name="Response" response="FrictionContact" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultCollisionGroupManager name="Group" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="ChainRigid">
         <Node name="TorusFixed">

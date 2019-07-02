@@ -1,8 +1,8 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" name="collision response" />
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection/>
 
     <Node name="Cubes" >

@@ -3,10 +3,10 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <!--<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />-->
     <!--
-    <CollisionPipeline verbose="0" name="CollisionPipeline"/>
+    <DefaultPipeline verbose="0" name="CollisionPipeline"/>
     <BruteForceDetection name="N2" />
     <DiscreteIntersection/>
-    <CollisionResponse response="default" name="collision response"/>
+    <DefaultContactManager response="default" name="collision response"/>
 -->
     <VisualStyle displayFlags="showForceFields" />
     <Node name="input">

@@ -1,11 +1,11 @@
 <!-- MechanicalStateController example -->
 <Node name="root" dt="0.005" gravity="0 -10 0">
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="InstrumentEdgeSet">
         <EulerImplicit rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false" />

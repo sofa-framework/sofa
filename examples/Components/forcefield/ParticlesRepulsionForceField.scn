@@ -2,9 +2,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
 
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" />
+    <DefaultContactManager name="Response" />
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="Floor">
         <RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />

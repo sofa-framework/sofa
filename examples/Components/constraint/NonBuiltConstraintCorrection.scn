@@ -2,15 +2,15 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" build_lcp="false" />
-    <CollisionPipeline depth="8" verbose="0" draw="0" />
+    <DefaultPipeline depth="8" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.35" contactDistance="0.1" />
-    <CollisionResponse name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node>
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <CollisionGroup name="Group" />
+        <DefaultCollisionGroupManager name="Group" />
         <Node name="TORUS">
             <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
             <UniformMass totalMass="40.0" printLog="false" />

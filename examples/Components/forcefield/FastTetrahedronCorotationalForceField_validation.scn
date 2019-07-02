@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="2" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
-    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" name="collision response" />
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
     <Node name="MeshTopology">
         <MeshGmshLoader name="meshLoader0" filename="mesh/cylinder.msh" />

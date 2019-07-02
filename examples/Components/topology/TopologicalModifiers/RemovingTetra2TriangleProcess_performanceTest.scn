@@ -2,13 +2,13 @@
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <InteractiveCamera name="camera" position ="-43.0916 -14.6777 18.7712" orientation ="0.150872 -0.594478 -0.286645 0.735981" fieldOfView ="45" distance ="34.729" zNear ="0" zFar ="0" projectionType ="0" minBBox="-2.11554 -0.250372 0.88082"  maxBBox="2.10716 6.97043 16.8875" widthViewport="800" heightViewport="600" zoomSpeed="250" panSpeed="0.1" pivot="0" fixedLookAt="0" activated="1" listening="0" />
 
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
     <Node name="TT">
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />

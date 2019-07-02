@@ -10,9 +10,9 @@ FEM force field of the tongue
     <BackgroundSetting color="0.5 0.5 0.5" />
     <VisualStyle displayFlags="showVisualModels showForceFields" /> 
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />

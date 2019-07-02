@@ -3,9 +3,9 @@
 
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
     
-    <CollisionPipeline/>
+    <DefaultPipeline/>
     <BruteForceDetection/>
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     
     

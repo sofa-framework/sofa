@@ -2,10 +2,10 @@
 <Node name="root" dt="0.01">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
-    <CollisionPipeline verbose="0" draw="0" />
+    <DefaultPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <Node name="Poutre1">
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5" />

@@ -6,11 +6,11 @@
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />
         <Node name="Visu">

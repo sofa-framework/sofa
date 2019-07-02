@@ -2,10 +2,10 @@
 <Node name="root" dt="0.01" gravity="0 -9.6 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
-    <CollisionPipeline depth="6" verbose="0" draw="0"/>
+    <DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity"  alarmDistance="0.006" contactDistance="0.001" coneFactor="0.3" angleCone="0.01" filterIntersection="true"/>
-	<CollisionResponse name="Response" response="NeedleContact"/>
+	<DefaultContactManager name="Response" response="NeedleContact"/>
 
 	<Node name="sutureSoftCubes">
 		<EulerImplicit name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
