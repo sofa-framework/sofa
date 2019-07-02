@@ -36,7 +36,7 @@ get-lib-deps() {
 }
 
 
-echo "  Searching deps for $INSTALL_DIR"
+echo "  Searching missing deps in $INSTALL_DIR"
 
 lib_deps="$(get-lib-deps "$INSTALL_DIR")"
 
@@ -54,6 +54,12 @@ if [ -n "$QT_DIR" ]; then
 		echo "    $qtlib"
 		cp -Rf "$QT_DIR/lib/$qtlib"* "$INSTALL_DIR/lib"
 	done
+fi
+
+# Copy libPNG
+if echo "$lib_deps" | grep -q "libpng12"; then
+    echo "    libpng12.so"
+    cp -Rf "/lib/x86_64-linux-gnu/libpng12.so"* "$INSTALL_DIR/lib"
 fi
 
 echo "Done."
