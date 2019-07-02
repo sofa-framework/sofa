@@ -17,7 +17,7 @@
 	<Node name="Raptor">
 		
 
-           	<EulerImplicit name="odesolver" />
+           	<EulerImplicitSolver name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>

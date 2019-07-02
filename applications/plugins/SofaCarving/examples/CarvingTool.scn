@@ -13,7 +13,7 @@
   <CarvingManager active="true" carvingDistance="-0.01"/>
 
   <Node name="TT">
-    <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
     <MeshGmshLoader filename="mesh/cylinder_8x30x6.msh" name="loader" scale="100"/>
     <MechanicalObject src="@loader" name="Volume" />
@@ -37,7 +37,7 @@
   </Node>
 
   <Node 	name="Instrument"  >
-    <EulerImplicit name="cg_odesolver" printLog="false" />
+    <EulerImplicitSolver name="cg_odesolver" printLog="false" />
     <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <MechanicalObject template="Rigid" name="instrumentState" tags="Omni" rotation="90 45 0" translation="0 0 1"/>

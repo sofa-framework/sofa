@@ -16,7 +16,7 @@
     <!-- <ImageViewer template="ImageB" name="viewer" src="@image"  /> -->
     <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="false" printLog="true"/>
 
-    <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+    <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
     <CGLinearSolver />
 
 

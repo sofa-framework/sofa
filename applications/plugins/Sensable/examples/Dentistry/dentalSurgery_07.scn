@@ -22,7 +22,7 @@ Using LCP contact detection and resolution:
         <OglModel name="HeadVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
         <Node name="Tongue">
             <VisualStyle displayFlags="showForceFields" />
-            <EulerImplicit name="odesolver" />
+            <EulerImplicitSolver name="odesolver" />
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshVTKLoader name="volTongue" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/volumetricTongue.vtu" />
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />
