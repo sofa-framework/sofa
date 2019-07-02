@@ -123,6 +123,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     collGroup->moveChild(BaseNode::SPtr(group2));
                     groupMap[group1] = collGroup.get();
                     groupMap[group2] = collGroup.get();
+                    groupMap[collGroup.get()] = collGroup.get();
                 }
                 else if (group1IsColl)
                 {
