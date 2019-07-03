@@ -97,10 +97,7 @@ class TestController(Sofa.PythonScriptController):
     def draw(self):
         $line
 )";
-        //TODO(dmarchal): I do not use regex_replace because clang 3.4 we use in our CI is buggy.
-        //After 2018 please restore back the regex_replace version
-        //pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
-        ReplaceSubstring(pytmp, std::string("$line"), teststring) ;
+        pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
 
         f << pytmp ;
         f.close();
