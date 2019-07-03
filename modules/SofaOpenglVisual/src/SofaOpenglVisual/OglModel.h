@@ -55,7 +55,10 @@ namespace visualmodel
 class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
 {
 public:
-    SOFA_CLASS(OglModel, VisualModelImpl);
+    using Inherit = VisualModelImpl;
+
+    SOFA_CLASS(OglModel, Inherit);
+
 
     Data<bool> blendTransparency; ///< Blend transparent parts
 protected:
@@ -151,7 +154,6 @@ public:
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
-typedef sofa::defaulttype::ExtVectorTypes<GLVec3f,GLVec3f> GLExtVec3fTypes;
 
 } // namespace visualmodel
 

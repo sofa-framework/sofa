@@ -78,7 +78,6 @@ protected:
     //////////////////////////////////////////////////////////////////////////////////
     #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
     #define V2(type) StdVectorTypes<Vec<2,type>,Vec<2,type>,type>
-    #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
 
     #define Rigid3(type)  StdRigidTypes<3,type>
     #define Affine3(type)  StdAffineTypes<3,type>

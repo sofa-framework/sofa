@@ -165,10 +165,7 @@ extern template class SOFA_CORE_API State<defaulttype::Vec1Types>;
 extern template class SOFA_CORE_API State<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid2Types>;
-extern template class SOFA_CORE_API State<defaulttype::ExtVec3Types>;
-
-
-extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec3fTypes>;
 
 #endif
 } // namespace core

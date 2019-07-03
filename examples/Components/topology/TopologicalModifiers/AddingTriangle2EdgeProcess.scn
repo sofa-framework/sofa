@@ -28,9 +28,10 @@
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Triangle_topo"  output="@Edge_topo" />
 		</Node>
         
-        
-        <OglModel template="ExtVec3f" name="Visual" color="red" />
-		<IdentityMapping template="Vec3d,ExtVec3f" name="default8"  input="@."  output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="red" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
         
         <TopologicalChangeProcessor listening="1" filename="AddingTrianglesProcess.txt" />
     </Node>

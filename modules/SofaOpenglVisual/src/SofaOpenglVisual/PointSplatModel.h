@@ -76,9 +76,9 @@ private:
     unsigned char *texture_data;
     component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData; ///< scalar field modulating point colors
 
-    typedef defaulttype::ExtVec3fTypes::Coord Coord;
-    typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
-    typedef defaulttype::ExtVec3fTypes::Real Real;
+    typedef defaulttype::Vec3fTypes::Coord Coord;
+    typedef defaulttype::Vec3fTypes::VecCoord VecCoord;
+    typedef defaulttype::Vec3fTypes::Real Real;
 };
 
 } // namespace visualmodel

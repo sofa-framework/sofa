@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 -9" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaMiscCollision" />
+
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
