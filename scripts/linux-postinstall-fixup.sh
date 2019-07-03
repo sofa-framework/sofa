@@ -59,8 +59,14 @@ fi
 # Copy libPNG
 if echo "$lib_deps" | grep -q "libpng12"; then
     echo "    libpng12.so"
-    cp -Rf "/lib/x86_64-linux-gnu/libpng12.so"* "$INSTALL_DIR/lib"
+    cp -Rf "/lib/x86_64-linux-gnu/libpng12.so.0"* "$INSTALL_DIR/lib"
 fi
+
+# System libs absent from VM
+cp -Rf "/usr/lib/x86_64-linux-gnu/libmng.so.2"* "$INSTALL_DIR/lib"
+cp -Rf "/usr/lib/x86_64-linux-gnu/libxcb-image.so.0"* "$INSTALL_DIR/lib"
+cp -Rf "/usr/lib/x86_64-linux-gnu/libxcb-keysyms.so.1"* "$INSTALL_DIR/lib"
+cp -Rf "/usr/lib/x86_64-linux-gnu/libxcb-render-util.so.0"* "$INSTALL_DIR/lib"
 
 echo "Done."
 exit 0
