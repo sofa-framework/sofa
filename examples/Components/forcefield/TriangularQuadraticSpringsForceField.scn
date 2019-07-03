@@ -17,7 +17,10 @@
         <FixedConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
-        <OglModel name="Visual" color="yellow" />
-        <IdentityMapping input="@." output="@Visual" />
+
+        <Node >
+          <OglModel name="Visual" color="yellow" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 </Node>

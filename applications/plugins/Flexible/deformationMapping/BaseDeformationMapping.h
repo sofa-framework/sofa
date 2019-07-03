@@ -77,19 +77,6 @@ public:
     static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
-template<class TCoord, class TDeriv, class TReal>
-class OutDataTypesInfo<defaulttype::ExtVectorTypes<TCoord, TDeriv, TReal> >
-{
-public:
-    enum {material_dimensions = TCoord::spatial_dimensions};
-    static const bool positionMapped=true;
-    static const bool FMapped=false;
-    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
-};
-
-
-
-
 namespace component
 {
 namespace mapping

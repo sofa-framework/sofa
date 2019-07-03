@@ -39,7 +39,6 @@ template class SOFA_CORE_API MechanicalState<Vec1Types>;
 template class SOFA_CORE_API MechanicalState<Vec6Types>;
 template class SOFA_CORE_API MechanicalState<Rigid3Types>;
 template class SOFA_CORE_API MechanicalState<Rigid2Types>;
-template class SOFA_CORE_API MechanicalState<ExtVec3Types>;
 
 
 } // namespace behavior

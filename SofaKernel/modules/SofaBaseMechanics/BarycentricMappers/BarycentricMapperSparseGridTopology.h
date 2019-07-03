@@ -38,7 +38,6 @@ using sofa::defaulttype::BaseMatrix;
 using core::visual::VisualParams;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3Types;
 
 /// Class allowing barycentric mapping computation on a SparseGridTopology
 template<class In, class Out>
@@ -93,7 +92,6 @@ protected:
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_CPP)
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, ExtVec3Types >;
 
 
 #endif

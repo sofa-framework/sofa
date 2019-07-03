@@ -1,6 +1,8 @@
 <!-- Automatic Quad removing with Quad2Triangle mapping example: Element removed are define in: ./RemovingQuad2TriangleProcess.txt -->
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 -9.81 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaMiscCollision" />
+
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
