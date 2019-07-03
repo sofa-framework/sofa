@@ -73,11 +73,12 @@ protected:
     {
         unsigned int nb = d_nbInput.getValue();
 
-        unsigned int nbpos = 0, nbvert = 0, nbedges = 0, nbtris = 0, nbquads = 0;
+        unsigned int nbpos = 0, nbvert = 0, nbedges = 0, nbtris = 0, nbquads = 0, nbrTexC = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
             nbpos += (*vl_input[i])->m_positions.getValue().size();
             nbvert += (*vl_input[i])->m_vertices2.getValue().size();
+            nbrTexC += (*vl_input[i])->m_vtexcoords.getValue().size();
             nbedges += (*vl_input[i])->m_edges.getValue().size();
             nbtris += (*vl_input[i])->m_triangles.getValue().size();
             nbquads += (*vl_input[i])->m_quads.getValue().size();
@@ -167,7 +168,7 @@ protected:
 
         {
             VecTexCoord& vert = *this->m_vtexcoords.beginWriteOnly();
-            vert.resize( nbvert );
+            vert.resize(nbrTexC);
 
             unsigned offset = 0;
             for (unsigned int i=0; i<nb; ++i)
