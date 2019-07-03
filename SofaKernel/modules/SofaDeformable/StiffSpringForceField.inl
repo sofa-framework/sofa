@@ -48,8 +48,8 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
 template<class DataTypes>
 StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
     : SpringForceField<DataTypes>(object1, object2, ks, kd)
-    , f_indices1(initData(&f_indices1, "indices1", "Indices of the source points on the first model"))
-    , f_indices2(initData(&f_indices2, "indices2", "Indices of the fixed points on the second model"))
+    , d_indices1(initData(&d_indices1, "indices1", "Indices of the source points on the first model"))
+    , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
     , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
 {
 }
@@ -58,29 +58,61 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
+    if (d_indices1.isSet() && d_indices2.isSet())
+    {        
+        m_dataTrackerIndices.trackData(d_indices1);
+        m_dataTrackerIndices.trackData(d_indices2);
+
+        createSpringsFromInputs();
+    }
+
     this->SpringForceField<DataTypes>::init();
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::bwdInit()
+void StiffSpringForceField<DataTypes>::updateSpringsIfChanged()
 {
-    if (f_indices1.isSet() && f_indices2.isSet() && (f_indices1.getValue().size() == f_indices2.getValue().size()))
-    {
-        helper::vector<Spring>& _springs = *this->springs.beginEdit();
-        const SetIndexArray & indices1 = f_indices1.getValue();
-        const SetIndexArray & indices2 = f_indices2.getValue();
-        const SReal& _ks = this->ks.getValue();
-        const SReal& _kd = this->kd.getValue();
-        const SReal& _length = d_length.getValue();
-        for (unsigned int i=0; i<indices1.size(); ++i)
-            _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, _length));
+    if (!d_indices1.isSet() && !d_indices2.isSet()) // nothing to do in this case
+        return;
 
-        this->springs.endEdit();
+    // force update
+    d_indices1.updateIfDirty();
+    d_indices2.updateIfDirty();
+
+    if (m_dataTrackerIndices.hasChanged())
+        createSpringsFromInputs();
+}
+
+
+template<class DataTypes>
+void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
+{
+    if (d_indices1.getValue().size() != d_indices2.getValue().size())
+    {
+        msg_error() << "Inputs indices sets sizes are different: d_indices1: " << d_indices1.getValue().size() 
+            << " | d_indices2 " << d_indices2.getValue().size()
+            << " . No springs will be created";
+        return;
     }
 
+    msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";    
+    helper::vector<Spring>& _springs = *this->springs.beginEdit();
+    _springs.clear();
 
-    this->SpringForceField<DataTypes>::init();
+    const SetIndexArray & indices1 = d_indices1.getValue();
+    const SetIndexArray & indices2 = d_indices2.getValue();
+    
+    const SReal& _ks = this->ks.getValue();
+    const SReal& _kd = this->kd.getValue();
+    const SReal& _length = d_length.getValue();
+    for (unsigned int i = 0; i<indices1.size(); ++i)
+        _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, _length));
+
+    m_dataTrackerIndices.clean();
+
+    this->springs.endEdit();
 }
+
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addSpringForce(
@@ -163,6 +195,8 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
+    updateSpringsIfChanged();
+
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
     const VecDeriv& v1 =  data_v1.getValue();
@@ -186,6 +220,8 @@ void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
+    updateSpringsIfChanged();
+
     VecDeriv&        df1 = *data_df1.beginEdit();
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
@@ -212,6 +248,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    updateSpringsIfChanged();
 
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     if (this->mstate1 == this->mstate2)

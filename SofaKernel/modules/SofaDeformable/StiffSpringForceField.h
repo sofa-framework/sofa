@@ -71,8 +71,10 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    SetIndex f_indices1; ///< Indices of the source points on the first model
-    SetIndex f_indices2; ///< Indices of the fixed points on the second model
+    SetIndex d_indices1; ///< Indices of the source points on the first model
+    SetIndex d_indices2; ///< Indices of the fixed points on the second model
+    sofa::core::DataTracker m_dataTrackerIndices;
+
     core::objectmodel::Data<SReal> d_length;
 protected:
     sofa::helper::vector<Mat>  dfdx;
@@ -86,10 +88,13 @@ protected:
     StiffSpringForceField(double ks=100.0, double kd=5.0);
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
 
+    void updateSpringsIfChanged();
+
+    /// Will create the set of springs using \sa d_indices1 and \sa d_indices2 with \sa d_length
+    void createSpringsFromInputs();
+
 public:
     void init() override;
-
-    void bwdInit() override;
 
     /// Accumulate f corresponding to x,v
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
