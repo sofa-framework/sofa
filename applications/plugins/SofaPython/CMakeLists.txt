@@ -170,6 +170,9 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE  "${SOFAPYTHON_COMPILER_FLAGS}")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON")
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${PYTHON_INCLUDE_DIRS}
     PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/>"
