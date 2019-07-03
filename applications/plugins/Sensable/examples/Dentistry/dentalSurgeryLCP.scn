@@ -5,6 +5,7 @@
 -->
 
 <Node name="root" dt="0.005" gravity="10 0 0" >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
     

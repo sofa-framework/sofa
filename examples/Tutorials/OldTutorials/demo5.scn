@@ -1,5 +1,6 @@
 <!-- Mechanical+Visual+Collision+BarycentricMapping Example -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <Node name="Poutre1">
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />

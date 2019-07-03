@@ -1,5 +1,6 @@
 <!-- Mechanical SphereForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels showForceFields hideCollisionModels hideVisualModels" />
 
     <Node name="Floor">

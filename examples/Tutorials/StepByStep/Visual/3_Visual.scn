@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <LightManager name="lightManager" listening="1" shadows="1" />
     <SpotLight name="redLight" color="1 0 0" position="-5 -2.5 20" direction="0 0 -1" />
     <SpotLight name="greenLight" color="0 1 0" position="0 2.5 20" direction="0 0 -1" />

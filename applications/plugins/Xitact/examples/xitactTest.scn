@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root"  dt="0.05" gravity="0 0 -9810">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver/>

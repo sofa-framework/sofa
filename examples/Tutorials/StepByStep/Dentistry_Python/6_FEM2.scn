@@ -3,6 +3,7 @@ Step 6:
 FEM force field of the tongue
 -->
 <Node name="root" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 

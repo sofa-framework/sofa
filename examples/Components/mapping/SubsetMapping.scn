@@ -1,5 +1,6 @@
 <!-- Mechanical SubsetMapping Group Basic Example -->
 <Node name="root" dt="0.01" gravity="0 -9.6 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
     <CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
 
@@ -39,7 +40,7 @@
             <TriangleCollisionModel />
             <LinearMapping template="Affine,Vec3d" />
             <Node name="Visual"  >
-                <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+                <OglModel  fileMesh="mesh/Armadillo_simplified.obj"   />
                 <IdentityMapping template="Vec3d,ExtVec3f"  />
             </Node>
         </Node>

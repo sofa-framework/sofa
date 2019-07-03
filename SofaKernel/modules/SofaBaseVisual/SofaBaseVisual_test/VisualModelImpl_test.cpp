@@ -50,7 +50,7 @@ typedef Types<
 TYPED_TEST_CASE(VisualModelImpl_test, DataTypes);
 
 template <class T>
-bool ResizableVector_Comparison(defaulttype::ResizableExtVector< T > expected, defaulttype::ResizableExtVector< T > actual)
+bool Vector_Comparison(helper::vector< T > expected, helper::vector< T > actual)
 {
     if (expected.size() != actual.size())
         return false;
@@ -77,16 +77,15 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(true_var,  visualModel.m_handleDynamicTopology.getValue());
     ASSERT_EQ(true_var,  visualModel.m_fixMergedUVSeams.getValue());
 
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vertices2.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vtangents.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vbitangents.getValue()));
 
-    ASSERT_EQ(true_var, ResizableVector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vertices2.getValue()));
-    ASSERT_EQ(true_var, ResizableVector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vtangents.getValue()));
-    ASSERT_EQ(true_var, ResizableVector_Comparison(component::visualmodel::VisualModelImpl::VecCoord(), visualModel.m_vbitangents.getValue()));
-
-    ASSERT_EQ(true_var, ResizableVector_Comparison(defaulttype::ResizableExtVector< sofa::core::topology::BaseMeshTopology::Edge >(), visualModel.m_edges.getValue()));
-    ASSERT_EQ(true_var, ResizableVector_Comparison(defaulttype::ResizableExtVector< sofa::core::topology::BaseMeshTopology::Triangle >(), visualModel.m_triangles.getValue()));
-    ASSERT_EQ(true_var, ResizableVector_Comparison(defaulttype::ResizableExtVector< sofa::core::topology::BaseMeshTopology::Quad >(), visualModel.m_quads.getValue()));
-    ASSERT_EQ(true_var, ResizableVector_Comparison(defaulttype::ResizableExtVector<int>(), visualModel.m_vertPosIdx.getValue()));
-    ASSERT_EQ(true_var, ResizableVector_Comparison(defaulttype::ResizableExtVector<int>(), visualModel.m_vertNormIdx.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecEdge(), visualModel.m_edges.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecTriangle(), visualModel.m_triangles.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecQuad(), visualModel.m_quads.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<int>(), visualModel.m_vertPosIdx.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<int>(), visualModel.m_vertNormIdx.getValue()));
 
     ASSERT_EQ(core::objectmodel::DataFileName().getValue(), visualModel.fileMesh.getValue());
     ASSERT_EQ(core::objectmodel::DataFileName().getValue(), visualModel.texturename.getValue());
@@ -100,7 +99,7 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(false_var, visualModel.putOnlyTexCoords.getValue());
     ASSERT_EQ(false_var, visualModel.srgbTexturing.getValue());
     ASSERT_EQ(false_var, visualModel.xformsModified);
-    ASSERT_EQ(0, visualModel.m_topology);
+    ASSERT_EQ(nullptr, visualModel.m_topology);
     ASSERT_EQ(true_var, visualModel.getDataAliases().find("filename") != visualModel.getDataAliases().end());
 
     ASSERT_EQ("Vector", std::string(visualModel.m_vertices2.getGroup()));

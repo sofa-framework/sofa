@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(Compliant_gui)
 
+
 set(MOC_HEADER_FILES
     QCompliantMouseOperations.h
 )
@@ -18,6 +19,7 @@ set(SOURCE_FILES
 )
 
 find_package(SofaGui REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
 if(Qt5Core_FOUND)
@@ -26,7 +28,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
 add_definitions("-DSOFA_BUILD_COMPLIANT_GUI")
-target_link_libraries(${PROJECT_NAME} SofaGuiMain Compliant)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain Compliant SofaOpenglVisual)
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 

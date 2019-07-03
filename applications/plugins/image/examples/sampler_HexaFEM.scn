@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showVisual" />
 
@@ -19,7 +20,7 @@
           <HexahedronFEMForceField youngModulus="30.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
 
 	  <Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+	     <OglModel  fileMesh="mesh/Armadillo_simplified.obj"   />
 	     <BarycentricMapping input="@.." output="@." />
 	  </Node>
   </Node>

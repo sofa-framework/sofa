@@ -108,10 +108,14 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        ws->d_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
+        ws->d_filename.setValue(ofilename.str());
+        if (!m_times.empty())
+            ws->d_time.setValue(m_times);
 
+        ws->init();
+        ws->f_listening.setValue(true);  //Activated at init
+        
         ++counterWriteState;
-
     }
 }
 

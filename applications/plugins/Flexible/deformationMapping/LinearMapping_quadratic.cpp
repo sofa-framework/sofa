@@ -45,7 +45,6 @@ using namespace defaulttype;
 // Register in the Factory
 int LinearMappingClass_quadratic = core::RegisterObject("Map child positions as a linear combination of parents.")
         .add< LinearMapping< Quadratic3Types, Vec3Types > >()
-        .add< LinearMapping< Quadratic3Types, ExtVec3Types > >()
         .add< LinearMapping< Quadratic3Types, F331Types > >()
         .add< LinearMapping< Quadratic3Types, F321Types > >()
         .add< LinearMapping< Quadratic3Types, F311Types > >()
@@ -54,7 +53,6 @@ int LinearMappingClass_quadratic = core::RegisterObject("Map child positions as 
         ;
 
 template class SOFA_Flexible_API LinearMapping< Quadratic3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMapping< Quadratic3Types, ExtVec3Types >;
 template class SOFA_Flexible_API LinearMapping< Quadratic3Types, F331Types >;
 template class SOFA_Flexible_API LinearMapping< Quadratic3Types, F321Types >;
 template class SOFA_Flexible_API LinearMapping< Quadratic3Types, F311Types >;

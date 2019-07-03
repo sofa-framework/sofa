@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline name="default0" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

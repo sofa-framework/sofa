@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -700 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <!-- A soft gelatin object contains 2 bead, one stiff and one soft. Even using large embedding mesh, the
 	  HexahedronCompositeFEM permits to well simulate the global behavior, and the HexahedronCompositeFEMMapping
 	  permits to have a good interpolation of the inside bead behaviors.-->

@@ -1733,15 +1733,17 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
 void RealGUI::parseOptions()
 {
-    po::variables_map vm = mArgumentParser->getVariableMap();
-    if(vm.find("interactive") != vm.end())
-        m_enableInteraction = vm["interactive"].as<bool>();
-    if(vm.find("msaa") != vm.end())
-        m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
+    if (mArgumentParser) {
+        po::variables_map vm = mArgumentParser->getVariableMap();
+        if(vm.find("interactive") != vm.end())
+            m_enableInteraction = vm["interactive"].as<bool>();
+        if(vm.find("msaa") != vm.end())
+            m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
 
-    if(m_enableInteraction)
-        msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
-                                  "that may change or be removed in the future. ";
+        if(m_enableInteraction)
+            msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
+                                      "that may change or be removed in the future. ";
+    }
 }
 
 //------------------------------------

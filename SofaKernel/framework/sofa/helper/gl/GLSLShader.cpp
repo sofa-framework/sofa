@@ -355,7 +355,7 @@ void GLSLShader::InitShaders()
         glAttachObjectARB(m_hProgramObject, it->second);
     }
 
-#if defined(GL_EXT_geometry_shader4) && defined(SOFA_HAVE_GLEW)
+#if defined(GL_EXT_geometry_shader4)
     if (GetGeometryShaderID())
     {
         if (geometry_input_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_INPUT_TYPE_EXT, geometry_input_type );

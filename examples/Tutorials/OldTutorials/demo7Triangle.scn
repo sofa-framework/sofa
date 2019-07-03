@@ -1,5 +1,6 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <CollisionPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

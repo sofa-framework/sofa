@@ -1,4 +1,5 @@
 <Node 	name="Root" dt="0.02"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
 	<!-- <BackgroundSetting color="0.2 0.2 0.25" /> -->
     <Gravity name="G" gravity="0 -9.81 0" />
@@ -78,30 +79,30 @@
 		</Node>
 
 		<Node name="VisuSpring">
-			<VisualModel name="Visual" filename="OBJs/BuffoonSpring.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonSpring.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuSkin">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadSkin.obj" scale="1.0" texturename="OBJs/Buffoon.png" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadSkin.obj" scale="1.0" texturename="OBJs/Buffoon.png" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuRed">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadRed.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadRed.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuPurple">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadPurple.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadPurple.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="VisuYellow">
-			<VisualModel name="Visual" filename="OBJs/BuffoonHeadYellow.obj" scale="1.0" />
+			<OglModel name="Visual" filename="OBJs/BuffoonHeadYellow.obj" scale="1.0" />
 			<BarycentricMapping input="@../DOFs" output="@Visual" />
 		</Node>
 		<Node name="BoxRed">
-			<VisualModel name="Visual" filename="OBJs/BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
+			<OglModel name="Visual" filename="OBJs/BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
 		</Node>
 		<Node name="BoxPurple">
-			<VisualModel name="Visual" filename="OBJs/BoxPurple.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
+			<OglModel name="Visual" filename="OBJs/BoxPurple.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />
 		</Node>
     </Node>
 	

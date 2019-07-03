@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
     <VisualStyle displayFlags="" />

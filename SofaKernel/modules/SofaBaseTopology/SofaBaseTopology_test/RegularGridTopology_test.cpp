@@ -6,13 +6,16 @@ using sofa::Sofa_test;
 using sofa::core::objectmodel::New ;
 using sofa::defaulttype::Vector3 ;
 using namespace sofa::component::topology;
+using namespace sofa::helper::testing;
+
 
 struct RegularGridTopology_test :
-        public Sofa_test<>,
+        public BaseTest,
         public ::testing::WithParamInterface<std::vector<int>>
 {
     bool regularGridCreation();
     bool regularGridPosition();
+    bool regularGridFindPoint();
 
     bool regularGridSize(const std::vector<int>& p);
 };
@@ -132,9 +135,33 @@ bool RegularGridTopology_test::regularGridPosition()
     return true;
 }
 
+bool RegularGridTopology_test::regularGridFindPoint()
+{
+    using Dimension   = RegularGridTopology::Vec3i;
+    using BoundingBox = RegularGridTopology::BoundingBox;
+    using Coordinates  = sofa::defaulttype::Vector3;
+    using Epsilon = float;
+
+    // 3D grid with 3x3x3=27 cells, each of dimension 1x1x1,  starting at {1,1,1} and ending at {4,4,4}
+    auto grid = New<RegularGridTopology>(Dimension {4, 4, 4}, BoundingBox (Coordinates {1., 1., 1.} /*min*/, Coordinates {4, 4, 4} /*max*/));
+    grid->init();
+
+    EXPECT_EQ(grid->findPoint(Coordinates { .4,  .4,  .4}), -1); // No margin set means anything position rounded to a valid node will be returned
+    EXPECT_EQ(grid->findPoint(Coordinates { .51,  .51,  .51}), 0);
+    EXPECT_EQ(grid->findPoint(Coordinates { .51,  .51,  .51}, Epsilon (0.01)), -1); // Margin set means anything within a radius of 0.01*cell_size will be returned
+    EXPECT_EQ(grid->findPoint(Coordinates {1., 1., 1.}), 0); // First node of the grid
+    EXPECT_EQ(grid->findPoint(Coordinates {4., 4., 4.}), 63); // Last node of the grid
+    EXPECT_EQ(grid->findPoint(Coordinates {4.49, 4.49, 4.49}), 63);
+    EXPECT_EQ(grid->findPoint(Coordinates {4.51, 4, 4}), -1);
+    EXPECT_EQ(grid->findPoint(Coordinates {4., 4.51, 4}), -1);
+    EXPECT_EQ(grid->findPoint(Coordinates {4., 4, 4.51}), -1);
+    return true;
+}
+
 
 TEST_F(RegularGridTopology_test, regularGridCreation ) { ASSERT_TRUE( regularGridCreation()); }
 TEST_F(RegularGridTopology_test, regularGridPosition ) { ASSERT_TRUE( regularGridPosition()); }
+TEST_F(RegularGridTopology_test, regularGridFindPoint ) { ASSERT_TRUE( regularGridFindPoint()); }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

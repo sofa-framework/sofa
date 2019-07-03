@@ -27,8 +27,8 @@
 #include <sofa/helper/system/FileSystem.h>
 
 #include <SofaGraphComponent/SofaDefaultPathSetting.h>
-#include <SofaGraphComponent/BackgroundSetting.h>
 #include <SofaGraphComponent/StatsSetting.h>
+#include <SofaBaseVisual/BackgroundSetting.h>
 
 #include <algorithm>
 #include <cstring>

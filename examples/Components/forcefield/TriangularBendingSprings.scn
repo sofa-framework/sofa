@@ -1,5 +1,6 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -90 10">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -17,7 +18,9 @@
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="BS" stiffness="300" damping="1.0" />
         <TriangleSet />
-        <OglModel name="Visual" color="yellow" />
-        <IdentityMapping input="@." output="@Visual" />
+        <Node >
+          <VisualModel name="Visual" color="yellow" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
 </Node>

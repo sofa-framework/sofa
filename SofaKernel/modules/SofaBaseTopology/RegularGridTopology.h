@@ -77,6 +77,27 @@ public:
      * */
     Vector3 getPointInGrid(int i, int j, int k) const override;
 
+    /**
+     * Get the index of a node located close to a given position.
+     *
+     * @param position The world coordinates of the queried node.
+     * @return The index of the node, or -1 if no such node exists at that position.
+     */
+    virtual int findPoint(const Vector3& position) const;
+
+    /**
+     * Get the index of a node located at a given position.
+     *
+     * @param position The world coordinates of the queried node.
+     * @param epsilon Allows a small margin around the queried position to find the node. This value
+     * is relative to the size of a cell. As an example, setting epsilon = 0.01 will return the index of the closest
+     * node within a sphere radius of 1% of the cell size around the queried position. Setting this value outside of
+     * [0, 1] will have no effect as only the nodes of the containing cell are taken.
+     *
+     * @return The index of the node, or -1 if no such node exists at that position.
+     */
+    virtual int findPoint(const Vector3& position, SReal epsilon) const;
+
 
     /// set the spatial extent
     void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);

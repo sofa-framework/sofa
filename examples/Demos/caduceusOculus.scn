@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  gravity="0 -1000 0"  dt="0.04"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle name="visualStyle1"  displayFlags="showVisual" />
 
 	<MeshObjLoader name="loader_snake_body" filename="mesh/snake_body.obj" />
