@@ -30,6 +30,7 @@ set(MOC_HEADER_FILES
     SofaPluginManager.h
     WDoubleLineEdit.h
     panels/QDocBrowser.h
+    GLPickHandler.h
 )
 
 # these header files do not need MOCcing
@@ -60,6 +61,7 @@ set(SOURCE_FILES
     RGBAColorDataWidget.cpp
     ModifyObject.cpp
     PickHandlerCallBacks.cpp
+    GLPickHandler.cpp
     QDataDescriptionWidget.cpp
     QDisplayDataWidget.cpp
     QDisplayLinkWidget.cpp
@@ -82,6 +84,7 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
+    viewer/VisualModelPolicy.cpp
     panels/QDocBrowser.cpp
 )
 
@@ -130,7 +133,7 @@ if(SOFAGUI_ENABLE_QWT)
          GraphDataWidget.cpp
          QGraphStatWidget.cpp
          QEnergyStatWidget.cpp
-         QMomentumStatWidget.cpp
+         QMomentumStatWidget.cpp∫
          )
 endif()
 
@@ -147,6 +150,19 @@ if(SOFAGUI_QGLVIEWER)
     list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
     list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
+
+## Qt3DViewer
+#if(SOFAGUI_QT3DVIEWER)
+#    list(APPEND MOC_HEADER_FILES
+#        viewer/qt3d/Qt3DViewer.h
+#        viewer/qt3d/DrawToolQt3D.h
+#    )
+
+#    list(APPEND SOURCE_FILES
+#        viewer/qt3d/Qt3DViewer.cpp
+#        viewer/qt3d/DrawToolQt3D.cpp
+#    )
+#endif()
 
 # QChart
 find_package(Qt5 COMPONENTS Charts QUIET)
@@ -172,11 +188,11 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
-    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
+    find_package(Qt5 COMPONENTS Gui OpenGL 3DCore 3DRender 3DExtras REQUIRED)
 
-    set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+    set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::3DCore Qt5::3DRender Qt5::3DExtras)
     set(EXT_QT_INCLUDES ${EXT_QT_INCLUDES} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(EXT_QT_LIBRARIES ${EXT_QT_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES}   Qt5::3DCore Qt5::3DRender Qt5::3DExtras)
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")

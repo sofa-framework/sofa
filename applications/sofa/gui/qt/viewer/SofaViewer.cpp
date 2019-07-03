@@ -23,6 +23,7 @@
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/gui/qt/PickHandlerCallBacks.h>
 
 namespace sofa
 {
@@ -72,8 +73,9 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Shift:
     {
         if (!getPickHandler()) break;
-        GLint viewport[4];
-        glGetIntegerv(GL_VIEWPORT,viewport);
+        int viewport[4];
+        //todo
+//        glGetIntegerv(GL_VIEWPORT,viewport);
         getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
         break;
     }
@@ -91,7 +93,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     }
     case Qt::Key_S:
     {
-        screenshot(capture.findFilename());
+//        screenshot(capture.findFilename());
         break;
     }
     case Qt::Key_V:
@@ -114,12 +116,12 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                     unsigned int bitrate = videoManager->getBitrate();
                     unsigned int framerate = videoManager->getFramerate();
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-                    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, videoManager->getCodecExtension());
-                    int width = getQWidget()->width();
-                    int height = getQWidget()->height();
-                    m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
-#endif // SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//                    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, videoManager->getCodecExtension());
+//                    int width = getQWidget()->width();
+//                    int height = getQWidget()->height();
+//                    m_videoRecorderFFMPEG.init(videoFilename, width, height, framerate, bitrate, videoManager->getCodecName());
+//#endif // SOFA_HAVE_FFMPEG_EXEC
 
                     break;
                 }
@@ -147,9 +149,9 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                     break;
                 case SofaVideoRecorderManager::MOVIE:
                 {
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-                    m_videoRecorderFFMPEG.finishVideo();
-#endif //SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//                    m_videoRecorderFFMPEG.finishVideo();
+//#endif //SOFA_HAVE_FFMPEG_EXEC
                     break;
                 }
                 default:
@@ -375,8 +377,8 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
 {
     if (!currentCamera) return true;
 
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
+    int viewport[4];
+//    glGetIntegerv(GL_VIEWPORT,viewport);
 
     MousePosition mousepos;
     mousepos.screenWidth  = viewport[2];
@@ -463,12 +465,12 @@ void SofaViewer::captureEvent()
             switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
             {
             case SofaVideoRecorderManager::SCREENSHOTS :
-                screenshot(capture.findFilename(), 1);
+//                screenshot(capture.findFilename(), 1);
                 break;
             case SofaVideoRecorderManager::MOVIE :
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-                m_videoRecorderFFMPEG.addFrame();
-#endif //SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//                m_videoRecorderFFMPEG.addFrame();
+//#endif //SOFA_HAVE_FFMPEG_EXEC
                 break;
             default :
                 break;

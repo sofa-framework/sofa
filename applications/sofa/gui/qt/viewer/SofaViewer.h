@@ -119,7 +119,6 @@ protected:
 
 typedef CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
 
-
 }
 }
 }

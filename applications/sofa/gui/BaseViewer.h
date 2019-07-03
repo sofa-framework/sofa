@@ -36,12 +36,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/helper/gl/Capture.h>
-#include <sofa/helper/gl/Texture.h>
+//#include <sofa/helper/gl/Capture.h>
+//#include <sofa/helper/gl/Texture.h>
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-#endif // SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+//#endif // SOFA_HAVE_FFMPEG_EXEC
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -154,12 +154,12 @@ protected:
     std::string sceneFileName;
 
 #ifndef SOFA_NO_OPENGL
-    sofa::helper::gl::Capture capture;
-    sofa::helper::gl::Texture* texLogo;
+//    sofa::helper::gl::Capture capture;
+//    sofa::helper::gl::Texture* texLogo;
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
-#endif // SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+//#endif // SOFA_HAVE_FFMPEG_EXEC
 #endif // SOFA_NO_OPENGL
 
     bool _video;

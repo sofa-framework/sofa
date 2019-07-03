@@ -598,13 +598,13 @@ void QtViewer::DrawLogo()
     int w = 0;
     int h = 0;
 
-    if (texLogo && texLogo->getImage())
-    {
-        h = texLogo->getImage()->getHeight();
-        w = texLogo->getImage()->getWidth();
-    }
-    else
-        return;
+//    if (texLogo && texLogo->getImage())
+//    {
+//        h = texLogo->getImage()->getHeight();
+//        w = texLogo->getImage()->getWidth();
+//    }
+//    else
+//        return;
 
     Enable<GL_TEXTURE_2D> tex;
     glDisable(GL_DEPTH_TEST);
@@ -616,8 +616,8 @@ void QtViewer::DrawLogo()
     glPushMatrix();
     glLoadIdentity();
 
-    if (texLogo)
-        texLogo->bind();
+//    if (texLogo)
+//        texLogo->bind();
 
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);

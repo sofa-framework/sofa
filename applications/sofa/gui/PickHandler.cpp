@@ -54,12 +54,8 @@ PickHandler::PickHandler(double defaultLength):
     mouseNode(NULL),
     mouseContainer(NULL),
     mouseCollision(NULL),
-#ifndef SOFA_NO_OPENGL
-    _fbo(true,true,true,false,0),
-#endif
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),
-    _fboAllocated(false),
     m_defaultLength(defaultLength)
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
@@ -94,42 +90,12 @@ PickHandler::~PickHandler()
 
 void PickHandler::allocateSelectionBuffer(int width, int height)
 {
-    /*called when shift key is pressed */
-    assert(_fboAllocated == false );
-#ifndef SOFA_NO_OPENGL
-    static bool firstTime=true;
-    if (firstTime)
-    {
-        _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-#if defined(GL_VERSION_3_0)
-        if (GLEW_VERSION_3_0)
-        {
-            _fboParams.colorInternalformat = GL_RGBA32F;
-        }
-        else
-#endif //  (GL_VERSION_3_0)
-        {
-            _fboParams.colorInternalformat = GL_RGBA16;
-        }
-        _fboParams.colorFormat         = GL_RGBA;
-        _fboParams.colorType           = GL_FLOAT;
 
-        _fbo.setFormat(_fboParams);
-        firstTime=false;
-    }
-    _fbo.init(width,height);
-#endif /* SOFA_NO_OPENGL */
-    _fboAllocated = true;
 }
 
 void PickHandler::destroySelectionBuffer()
 {
-    /*called when shift key is released */
-    assert(_fboAllocated);
-#ifndef SOFA_NO_OPENGL
-    _fbo.destroy();
-#endif // SOFA_NO_OPENGL
-    _fboAllocated = false;
+
 }
 
 
@@ -505,35 +471,10 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const defaulttype::Vector3& origin,
         const defaulttype::Vector3& direction)
 {
-    assert(_fboAllocated);
     BodyPicked result;
-#ifndef SOFA_NO_OPENGL
-    result.dist =  0;
-    sofa::defaulttype::Vec4f color;
-    int x = mousePosition.x;
-    int y = mousePosition.screenHeight - mousePosition.y;
-    TriangleModel* tmodel;
-    SphereModel* smodel;
-    _fbo.start();
-    if(renderCallback)
-    {
-        renderCallback->render(ColourPickingVisitor::ENCODE_COLLISIONELEMENT );
-        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-        decodeCollisionElement(color,result);
-        renderCallback->render(ColourPickingVisitor::ENCODE_RELATIVEPOSITION );
-        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-        if( ( tmodel = dynamic_cast<TriangleModel*>(result.body) ) != NULL )
-        {
-            decodePosition(result,color,tmodel,result.indexCollisionElement);
-        }
-        if( ( smodel = dynamic_cast<SphereModel*>(result.body)) != NULL)
-        {
-            decodePosition(result, color,smodel,result.indexCollisionElement);
-        }
-        result.rayLength = (result.point-origin)*direction;
-    }
-    _fbo.stop();
-#endif // SOFA_NO_OPENGL
+
+    msg_error("PickHandler") << "findCollisionUsingColourCoding not implemented!";
+
     return result;
 }
 

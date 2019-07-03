@@ -19,12 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
-#define SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
 
-#include <sofa/gui/qt/SofaGUIQt.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/gui/qt/viewer/VisualModelPolicy.h>
+#include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofa
 {
@@ -35,36 +32,26 @@ namespace qt
 namespace viewer
 {
 
-class SOFA_SOFAGUIQT_API VisualModelPolicy
+void OglModelPolicy::load()
 {
-public:
-    VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance())
-        :vparams(vparams)
-    {}
-    virtual ~VisualModelPolicy() {}
-    virtual void load() = 0;
-    virtual void unload() = 0;
-protected:
-    sofa::core::visual::VisualParams* vparams;
+    drawTool = std::unique_ptr<sofa::core::visual::DrawTool>(new sofa::core::visual::DrawToolGL());
 
-};
+    // Replace generic visual models with OglModel
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
+            &classVisualModel);
+    vparams->drawTool() = drawTool.get();
+    vparams->setSupported(sofa::core::visual::API_OpenGL);
+}
 
-
-class OglModelPolicy : public VisualModelPolicy
+void OglModelPolicy::unload()
 {
-protected:
-    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
-    std::unique_ptr<sofa::core::visual::DrawTool> drawTool;
-public:
-    void load() override;
-    void unload() override;
-};
+    sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
+    vparams->drawTool() = nullptr;
+
+}
 
 }
 }
 }
 }
 
-
-
-#endif // SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H

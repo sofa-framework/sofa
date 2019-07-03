@@ -19,52 +19,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
-#define SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
+#ifndef SOFA_GUI_GLPICKHANDLER_H
+#define SOFA_GUI_GLPICKHANDLER_H
 
 #include <sofa/gui/qt/SofaGUIQt.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/gui/OperationFactory.h>
+
+#include <sofa/gui/PickHandler.h>
+
+#include <sofa/gui/ColourPickingVisitor.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/helper/gl/FrameBufferObject.h>
 
 namespace sofa
 {
+namespace component
+{
+namespace collision
+{
+    class ComponentMouseInteraction;
+    class RayModel;
+}
+namespace configurationsetting
+{
+    class MouseButtonSetting;
+}
+}
+
+
 namespace gui
 {
-namespace qt
-{
-namespace viewer
-{
 
-class SOFA_SOFAGUIQT_API VisualModelPolicy
+class SOFA_SOFAGUIQT_API GLPickHandler : public PickHandler
 {
+    typedef PickHandler Inherit;
+    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
+
 public:
-    VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance())
-        :vparams(vparams)
-    {}
-    virtual ~VisualModelPolicy() {}
-    virtual void load() = 0;
-    virtual void unload() = 0;
+    enum PickingMethod
+    {
+        RAY_CASTING,
+        SELECTION_BUFFER
+    };
+
+    GLPickHandler(double defaultLength = 1000000);
+    virtual ~GLPickHandler() override;
+
+    void allocateSelectionBuffer(int width, int height) override;
+    void destroySelectionBuffer() override;
+
+    BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction) override;
+
 protected:
-    sofa::core::visual::VisualParams* vparams;
+    bool _fboAllocated;
+    sofa::helper::gl::FrameBufferObject _fbo;
+    sofa::helper::gl::fboParameters     _fboParams;
 
 };
-
-
-class OglModelPolicy : public VisualModelPolicy
-{
-protected:
-    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
-    std::unique_ptr<sofa::core::visual::DrawTool> drawTool;
-public:
-    void load() override;
-    void unload() override;
-};
-
-}
-}
 }
 }
 
-
-
-#endif // SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
+#endif

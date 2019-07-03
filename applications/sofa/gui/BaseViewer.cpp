@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BaseViewer.h"
-#include "PickHandler.h"
+#include <sofa/gui/PickHandler.h>
 #include "BaseGUI.h"
 
 #include <sofa/helper/Factory.inl>
@@ -35,9 +35,9 @@ namespace gui
 BaseViewer::BaseViewer()
     : groot(NULL)
     , currentCamera(NULL)
-#ifndef SOFA_NO_OPENGL
-    , texLogo(nullptr)
-#endif
+//#ifndef SOFA_NO_OPENGL
+//    , texLogo(nullptr)
+//#endif
     , _video(false)
     , m_isVideoButtonPressed(false)
     , _axis(false)
@@ -48,17 +48,18 @@ BaseViewer::BaseViewer()
     , _screenshotDirectory(".")
 {
     pick = new PickHandler();
+    //todo: do a baseGLViewer
 }
 
 BaseViewer::~BaseViewer()
 {
-#ifndef SOFA_NO_OPENGL
-   if(texLogo)
-    {
-        delete texLogo;
-        texLogo = nullptr;
-    }
-#endif
+//#ifndef SOFA_NO_OPENGL
+//   if(texLogo)
+//    {
+//        delete texLogo;
+//        texLogo = nullptr;
+//    }
+//#endif
 }
 
 sofa::simulation::Node* BaseViewer::getScene()
@@ -116,11 +117,11 @@ void BaseViewer::configure(sofa::component::configurationsetting::ViewerSetting*
 //Fonctions needed to take a screenshot
 const std::string BaseViewer::screenshotName()
 {
-#ifndef SOFA_NO_OPENGL
-    return capture.findFilename().c_str();
-#else
+//#ifndef SOFA_NO_OPENGL
+//    return capture.findFilename().c_str();
+//#else
     return "";
-#endif
+//#endif
 }
 
 void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
@@ -128,19 +129,19 @@ void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
     const std::string fullPrefix = (prependDirectory) ? sofa::gui::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix
                                                       : prefix;
 #ifndef SOFA_NO_OPENGL
-    capture.setPrefix(fullPrefix);
+//    capture.setPrefix(fullPrefix);
 
-#ifdef SOFA_HAVE_FFMPEG_EXEC
-    m_videoRecorderFFMPEG.setPrefix(fullPrefix);
-#endif // SOFA_HAVE_FFMPEG_EXEC
+//#ifdef SOFA_HAVE_FFMPEG_EXEC
+//    m_videoRecorderFFMPEG.setPrefix(fullPrefix);
+//#endif // SOFA_HAVE_FFMPEG_EXEC
 #endif // SOFA_NO_OPENGL
 }
 
 void BaseViewer::screenshot(const std::string& filename, int compression_level)
 {
-#ifndef SOFA_NO_OPENGL
-    capture.saveScreen(filename, compression_level);
-#endif
+//#ifndef SOFA_NO_OPENGL
+//    capture.saveScreen(filename, compression_level);
+//#endif
 }
 
 void BaseViewer::getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const
@@ -219,11 +220,11 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
 #ifndef SOFA_NO_OPENGL
         std::string extension = sofa::helper::system::SetDirectory::GetExtension(imageFileName.c_str());
         std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
-        if(texLogo)
-        {
-            delete texLogo;
-            texLogo = nullptr;
-        }
+//        if(texLogo)
+//        {
+//            delete texLogo;
+//            texLogo = nullptr;
+//        }
         helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
         if( !image )
         {
@@ -232,11 +233,11 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
             msg_warning("BaseViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
                     << "  Valid extensions: " << validExtensions;
         }
-        else
-        {
-            texLogo = new helper::gl::Texture( image );
-            texLogo->init();
-        }
+//        else
+//        {
+//            texLogo = new helper::gl::Texture( image );
+//            texLogo->init();
+//        }
 #endif
     }
 }

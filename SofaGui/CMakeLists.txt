@@ -83,6 +83,12 @@ if(NOT SOFA_NO_OPENGL)
                 endif()
             endif()
 
+            ## Qt3DViewer
+            option(SOFAGUI_QT3DVIEWER "Compile the Qt3DViewer for the Qt3D GUI" ON)
+            if(SOFAGUI_QT3DVIEWER)
+                set(SOFA_GUI_QT3DVIEWER 1) # cmakedefine
+            endif()
+
             ## VSync
             option(SOFAGUI_ENABLE_VSYNC "Enable vertical refresh sync" OFF)
             if(SOFAGUI_ENABLE_VSYNC)
