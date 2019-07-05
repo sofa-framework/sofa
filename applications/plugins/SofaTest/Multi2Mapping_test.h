@@ -53,6 +53,7 @@ template <typename _MultiMapping>
 struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 {
 
+
     typedef _MultiMapping Mapping;
 
     typedef typename Mapping::In1 In1Type;
@@ -348,8 +349,8 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         // ================ test getJs() : check that J.vp = vc
         if (this->vectorMaxDiff(Jv, vc) > this->epsilon()*errorMax){
             succeed = false;
-            std::cout << "Jvp = " << Jv << std::endl;
-            std::cout << "vc  = " << vc << std::endl;
+            msg_info("Multi2Mapping_test") << "Jvp = " << Jv << std::endl;
+            msg_info("Multi2Mapping_test") << "vc  = " << vc << std::endl;
             ADD_FAILURE() << "getJs() test failed" << std::endl << "Jvp = " << Jv << std::endl << "vc  = " << vc << std::endl;
         }
 
@@ -490,3 +491,5 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 };
 } // namespace
 } // namespace sofa
+
+
