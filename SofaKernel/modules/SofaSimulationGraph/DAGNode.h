@@ -132,6 +132,8 @@ public:
 
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    /// it assumes that the DAG node is a tree node. In case of multiple parents it returns any of the parents.
+    /// it uses the node descendancy informations.
     Node* findCommonParent( Node* node2 ) override;
 
     /// compute the traversal order from this Node

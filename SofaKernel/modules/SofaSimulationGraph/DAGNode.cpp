@@ -822,23 +822,27 @@ void DAGNode::updateSimulationContext()
 
 Node* DAGNode::findCommonParent( simulation::Node* node2 )
 {
-    return static_cast<DAGNode*>(getRoot())->findCommonParent( this, static_cast<DAGNode*>(node2) );
+    return static_cast<DAGNode*>(getRoot())->findCommonParent(this, static_cast<DAGNode*>(node2));
 }
 
-
-DAGNode* DAGNode::findCommonParent( DAGNode* node1, DAGNode* node2 )
+DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
 {
     updateDescendancy();
 
-    for(unsigned int i = 0; i<child.size(); ++i)
+    if (_descendancy.find(node1) == _descendancy.end() || _descendancy.find(node2) == _descendancy.end())
+        return nullptr; // this is NOT a parent
+
+    // this is a parent
+    for (unsigned int i = 0; i<child.size(); ++i)
     {
-        DAGNode* childcommon = static_cast<DAGNode*>(child[i].get())->findCommonParent( node1, node2 );
+        // look for closer parents
+        DAGNode* childcommon = static_cast<DAGNode*>(child[i].get())->findCommonParent(node1, node2);
 
-        if( childcommon ) return childcommon;
-        else if( _descendancy.find(node1)!=_descendancy.end() && _descendancy.find(node2)!=_descendancy.end() ) return this;
+        if (childcommon != nullptr)
+            return childcommon;
     }
-
-    return nullptr;
+    // NO closer parents found
+    return this;
 }
 
 void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const
