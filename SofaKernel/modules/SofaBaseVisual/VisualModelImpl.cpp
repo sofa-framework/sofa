@@ -1253,6 +1253,7 @@ void VisualModelImpl::updateVisual()
     {
         if (useTopology)
         {
+            sofa:helper::ScopedAdvancedTimer timer("VisualModelImpl::updateMesh");
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
 
@@ -1269,12 +1270,24 @@ void VisualModelImpl::updateVisual()
                 computeMesh();
             }
         }
+        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computePositions");
         computePositions();
-        updateBuffers();
+        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computePositions");
 
+        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::updateBuffers");
+        updateBuffers();
+        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::updateBuffers");
+
+        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeNormals");
         computeNormals();
+        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeNormals");
+        
         if (m_updateTangents.getValue())
+        {
+            sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeTangents");
             computeTangents();
+            sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeTangents");
+        }
         modified = false;
 
         if (m_vtexcoords.getValue().size() == 0)
