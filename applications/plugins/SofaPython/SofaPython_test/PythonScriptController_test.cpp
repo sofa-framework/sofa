@@ -95,10 +95,9 @@ class TestController(Sofa.PythonScriptController):
         f3()
 
     def draw(self):
-        $line
-)";
-        pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
+        )" + teststring + R"(
 
+)";
         f << pytmp ;
         f.close();
 
@@ -146,12 +145,12 @@ TEST_P(PythonScriptController_test, checkErrorMessageFromCPPBinding)
 }
 
 std::vector<std::string> testvalues = {
-    "self.anInvalidFunction()",
-    "self.name = 5",
-    "Sofa.BaseContext.getObject(1234, 'WillNotWork')",
-    "Sofa.Topology.setNbPoints(1234)",
-    "Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')",
-    "Sofa.BaseContext.getObject(None, 'WillNotWork')"
+    R"(self.anInvalidFunction())",
+    R"(self.name = 5)",
+    R"(Sofa.BaseContext.getObject(1234, 'WillNotWork'))",
+    R"(Sofa.Topology.setNbPoints(1234))",
+    R"(Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork'))",
+    R"(Sofa.BaseContext.getObject(None, 'WillNotWork'))"
 };
 
 INSTANTIATE_TEST_CASE_P(checkErrorMesageFromCPPBinding,
