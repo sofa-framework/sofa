@@ -110,9 +110,9 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
     if (hasEdgesAroundVertex()) // created by upper topology
         return;
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > edges = d_edge;
 
-    if (m_edge.empty())
+    if (edges.empty())
     {
         msg_warning() << "EdgesAroundVertex buffer can't be created as no edges are present in this topology.";
         return;
@@ -123,11 +123,19 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         this->setNbPoints(d_initPoints.getValue().size());
 
     m_edgesAroundVertex.resize(getNbPoints());
-    for (unsigned int edge=0; edge<m_edge.size(); ++edge)
+    for (unsigned int edgeId=0; edgeId<edges.size(); ++edgeId)
     {
+        const Edge& edge = edges[edgeId];
         // adding edge in the edge shell of both points
-        m_edgesAroundVertex[ m_edge[edge][0] ].push_back(edge);
-        m_edgesAroundVertex[ m_edge[edge][1] ].push_back(edge);
+        
+        if (edge[0] >= nbPoints || edge[1] >= nbPoints)
+        {
+            msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not concistent with number of points: Edge: " << edge << " for: " << nbPoints << " points.";
+            continue;
+        }
+
+        m_edgesAroundVertex[ edge[0] ].push_back(edgeId);
+        m_edgesAroundVertex[ edge[1] ].push_back(edgeId);
     }
 
     if (m_checkConnexity.getValue())
