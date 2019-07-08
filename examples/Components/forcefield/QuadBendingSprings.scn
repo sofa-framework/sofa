@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" />
+    <DefaultContactManager name="Response" />
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="SquareCloth1">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />

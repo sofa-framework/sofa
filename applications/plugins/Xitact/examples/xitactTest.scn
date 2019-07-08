@@ -4,15 +4,15 @@
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver/>
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="0.06" contactDistance="0.02" coneFactor="0.5" angleCone="-0.001"/>
-	<CollisionResponse name="Response" response="FrictionContact" />
+	<DefaultContactManager name="Response" response="FrictionContact" />
 
 
 
   <Node name="VirtualArticulatedXitact">
-    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01" printLog="0"/>
+    <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01" printLog="0"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15" printLog="0"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="0 0 0 0 0 0 1"/>

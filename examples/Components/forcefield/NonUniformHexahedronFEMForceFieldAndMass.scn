@@ -1,14 +1,14 @@
 <Node name="SandBox" animate="0" dt="0.06" gravity="0 0 -9.81" multiThreadSimulation="0" time="0.0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" />
-    <CollisionPipeline verbose="0" draw="0" />
+    <DefaultPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
+    <DefaultContactManager name="Response" response="default" />
     <include name="Salad Bowl 1" href="Objects/SaladBowl.xml" contactStiffness="10000" dy="-10" dz="-20" scale="100" />
     <include name="Salad Bowl 2" href="Objects/SaladBowl.xml" contactStiffness="10000" dx="70" dy="-10" dz="-20" scale="100" />
     <Node name="uniform">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <SparseGrid n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" />
         <MechanicalObject dx="70" ry="25" />
@@ -28,7 +28,7 @@
         </Node>
     </Node>
     <Node name="non uniform">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <SparseGrid n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" nbVirtualFinerLevels="2" />
         <MechanicalObject ry="25" />

@@ -30,9 +30,9 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TriangleModel template="Vec3d" contactFriction="5" contactRestitution="0"/>
-<!--       <LineModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
-<!--       <PointModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
+      <TriangleCollisionModel template="Vec3d" contactFriction="5" contactRestitution="0"/>
+<!--       <LineCollisionModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
+<!--       <PointCollisionModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node> 
@@ -58,9 +58,9 @@
       <MeshObjLoader filename="mesh/cube.obj" name="loader" scale3d="20 2 20" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TriangleModel template="Vec3d" simulated="0" moving="0" contactFriction="1" contactRestitution="1"/>
-<!--       <LineModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
-<!--       <PointModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
+      <TriangleCollisionModel template="Vec3d" simulated="0" moving="0" contactFriction="1" contactRestitution="1"/>
+<!--       <LineCollisionModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
+<!--       <PointCollisionModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
     <FixedConstraint indices="0" />

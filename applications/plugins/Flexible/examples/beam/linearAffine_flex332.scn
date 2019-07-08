@@ -52,7 +52,7 @@
     <TriangleSetTopologyModifier name="Modifier" />
     <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
     <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-    <TriangleModel name="CollisionModel" />
+    <TriangleCollisionModel name="CollisionModel" />
 
     <UniformMass totalMass="10" />
 

@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="0" />
         <UniformMass totalMass="10" />
@@ -15,7 +15,7 @@
         <PlaneForceField normal="0 1 0" d="-10" />
     </Node>
     <Node name="M2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-12" dy="0" />
         <UniformMass totalMass="10" />
@@ -28,7 +28,7 @@
         <PlaneForceField normal="0 1 0" d="-10" />
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-24" dy="0" />
         <UniformMass totalMass="10" />
@@ -41,7 +41,7 @@
         <PlaneForceField normal="0 1 0" d="-10" />
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <MechanicalObject template="Rigid" dx="-36" />
         <UniformMass filename="BehaviorModels/smCube125.rigid" />

@@ -23,8 +23,8 @@
             <MeshTopology src="@loader" name="default5" />
             <MechanicalObject src="@loader" template="Vec3d" name="default6"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" />
             <TriangleCollisionModel template="Vec3d" name="default1" contactFriction="0.6" />
-            <LineModel name="default2" contactFriction="@[-1].contactFriction" />
-            <PointModel name="default3" contactFriction="@[-1].contactFriction" />
+            <LineCollisionModel name="default2" contactFriction="@[-1].contactFriction" />
+            <PointCollisionModel name="default3" contactFriction="@[-1].contactFriction" />
             <SubsetMapping template="Vec3d,Vec3d" name="default10" />
         </Node>
     </Node>
@@ -33,8 +33,8 @@
         <MeshTopology src="@loader" name="default11" />
         <MechanicalObject src="@loader" template="Vec3d" name="default12"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 -10 0" scale3d="1.75 1.75 1.75" />
         <TriangleCollisionModel template="Vec3d" name="FloorTriangle" moving="0" simulated="0" contactFriction="0.6" />
-        <LineModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
-        <PointModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
+        <LineCollisionModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
+        <PointCollisionModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
         <OglModel template="ExtVec3f" name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" translation="0 -10 0" scale3d="1.75 1.75 1.75" />
     </Node>
     <Node name="cubeFEM" gravity="0 -9.81 0">
@@ -51,8 +51,8 @@
             <MeshTopology src="@loader" name="default5" />
             <MechanicalObject src="@loader" template="Vec3d" name="default6"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" />
             <TriangleCollisionModel template="Vec3d" name="default1" contactFriction="0.6" />
-            <LineModel name="default2" contactFriction="@[-1].contactFriction" />
-            <PointModel name="default3" contactFriction="@[-1].contactFriction" />
+            <LineCollisionModel name="default2" contactFriction="@[-1].contactFriction" />
+            <PointCollisionModel name="default3" contactFriction="@[-1].contactFriction" />
             <SubsetMapping template="Vec3d,Vec3d" name="default10" />
         </Node>
     </Node>

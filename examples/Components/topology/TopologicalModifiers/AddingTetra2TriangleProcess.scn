@@ -30,7 +30,7 @@
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" listening="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
             
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />

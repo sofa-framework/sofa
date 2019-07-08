@@ -1,12 +1,12 @@
 <Node name="root" dt="0.03333">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <CollisionPipeline verbose="0" depth="10" draw="0" />
+    <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="20" dz="29" />
         <UniformMass totalMass="10" />
@@ -27,7 +27,7 @@
         </Node>
     </Node>
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="20" dy="20" dz="29" />
         <UniformMass totalMass="10" />
@@ -48,7 +48,7 @@
         </Node>
     </Node>
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-20" dy="20" dz="29" />
         <UniformMass totalMass="10" />

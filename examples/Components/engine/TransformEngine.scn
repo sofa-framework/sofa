@@ -23,9 +23,9 @@
             <MeshObjLoader name="loader" filename="mesh/doubleBall.obj" />
             <MeshTopology src="@loader" name="default18" />
             <MechanicalObject src="@loader" template="Vec3d" name="default19" restScale="1" />
-            <TriangleModel name="default20" />
-            <LineModel name="default21" />
-            <PointModel name="default22" />
+            <TriangleCollisionModel name="default20" />
+            <LineCollisionModel name="default21" />
+            <PointCollisionModel name="default22" />
             <BarycentricMapping template="Vec3d,Vec3d" name="default23" />
         </Node>
     </Node>

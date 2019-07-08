@@ -1,13 +1,13 @@
 <Node name="root" dt="0.005">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <DiscreteIntersection />
     <Node name="M1">
-        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="0" dy="-10.5" dz="0" />
         <UniformMass vertexMass="0.37" />
@@ -25,7 +25,7 @@
         </Node>
     </Node>
     <Node name="M2">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="20" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="0" dy="0" dz="0" />
         <UniformMass vertexMass="0.37" />
@@ -43,7 +43,7 @@
         </Node>
     </Node>
     <Node name="M3">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="20" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="0" dy="10.5" dz="-4" />
         <UniformMass vertexMass="0.37" />
@@ -61,7 +61,7 @@
         </Node>
     </Node>
     <Node name="M4">
-        <EulerImplicit />
+        <EulerImplicitSolver />
         <CGLinearSolver iterations="20" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="0" dy="21" dz="0" />
         <UniformMass vertexMass="0.37" />
@@ -80,7 +80,7 @@
     </Node>
     <!--
 	<Node name="M5">
-		<EulerImplicit />
+		<EulerImplicitSolver />
 		<CGLinearSolver iterations="20" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject dx="-4" dy="31.5" dz="-4"/>
 		<UniformMass mass="0.37"/>

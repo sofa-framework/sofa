@@ -4,10 +4,10 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" /> <!--showBehaviorModels showCollisionModels-->
 
-    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <DefaultPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
 	<NewProximityIntersection name="Proximity" alarmDistance="1" contactDistance="1" useLineLine="true" />
-    <CollisionResponse name="Response" response="default" />  <!-- response="FrictionContact" /> -->
+    <DefaultContactManager name="Response" response="default" />  <!-- response="FrictionContact" /> -->
 	
     <LightManager />
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />

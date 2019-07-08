@@ -3,10 +3,10 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<MasterContactSolver />
 	<LCPConstraintSolver initial_guess="true" displayTime="0" mu="0.7" tolerance="0.0000000001" printLog="0" maxIt="3000" build_lcp="true"/>
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="6.0" contactDistance="1.5" coneFactor="0.5" angleCone="-0.001"/>
-	<CollisionResponse name="Response" response="FrictionContact" />
+	<DefaultContactManager name="Response" response="FrictionContact" />
 	
 	<Node name="BOX">
 		<MeshLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
@@ -20,7 +20,7 @@
 	
   
 	<Node name="TORUS">
-		<EulerImplicit name="cg_odesolver" printLog="false"  rayleighMass="30"  rayleighStiffness="0.001"/>
+		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighMass="30"  rayleighStiffness="0.001"/>
     <CGLinearSolver iterations="25" threshold="1.0e-15"  tolerance="1.0e-9" />
     <MechanicalObject template="Rigid" scale="5.0"  dx="40.0" dy="0.0" dz="-70.0"/>
 		<UniformMass mass="0.01"/>
@@ -74,7 +74,7 @@
 
 
   <Node name="VirtualArticulatedXitactRight">
-    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01"/>
+    <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="-50 30 0 -0.7071068 0 0 0.7071068"/>
@@ -188,7 +188,7 @@
 
   
     <Node name="VirtualArticulatedXitactLeft">
-    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01"/>
+    <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="50 30 0 -0.7071068 0 0 0.7071068"/>
@@ -302,7 +302,7 @@
 
   
   <Node name="VirtualArticulatedXitact_Camera">
-    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01"/>
+    <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.01"/>
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="0 60 0 -0.7071068 0 0 0.7071068"/>

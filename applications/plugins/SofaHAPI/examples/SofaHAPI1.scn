@@ -9,10 +9,10 @@
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver />
 
-	<CollisionPipeline depth="8" />
+	<DefaultPipeline depth="8" />
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
-<!--	<CollisionResponse name="Response" response="FrictionContact"/>-->
+<!--	<DefaultContactManager name="Response" response="FrictionContact"/>-->
 	<RuleBasedContactManager name="Response" response="FrictionContact"
                              rules="1 * FrictionContact?mu=0.01
                                     " />
@@ -33,7 +33,7 @@
 	</Node>
 	
 	<Node name="Tool1">	
-		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver />
 		
 		<MechanicalObject name="ms" template="Rigid"  position="7.13718 -5.81916 23.8066 0.807871 0.160225 -0.1368 0.550416"/>
@@ -61,7 +61,7 @@
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="false" draw="false" size="2.5" inputPoints="@surface.points" inputTriangles="@surface.triangles" />
     </Node>
     <Node name="SoftSphere" >
-        <EulerImplicit name="odesolver" />
+        <EulerImplicitSolver name="odesolver" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-10" threshold="1.0e-10" />
         <TetrahedronSetTopologyContainer name="volume" points="@../InitTopology/stuffing.outputPoints" tetras="@../InitTopology/stuffing.outputTetras" />
 		<TetrahedronSetTopologyModifier  name="Modifier" />
@@ -78,15 +78,15 @@
         <Node name="Surface">
 	      <TriangleSetTopologyContainer src="@../../InputMesh" />
           <MechanicalObject />
-          <TriangleModel name="CMT" />
-          <LineModel name="CML" />
-          <PointModel name="CMP" />
+          <TriangleCollisionModel name="CMT" />
+          <LineCollisionModel name="CML" />
+          <PointCollisionModel name="CMP" />
           <BarycentricMapping useRestPosition="1" />
         </Node>
     </Node>
 
     <Node name="Rigid" >
-        <EulerImplicit name="odesolver" />
+        <EulerImplicitSolver name="odesolver" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-10" threshold="1.0e-10" />
         <MechanicalObject template="Rigid" position="-12 0 0 0 0 0 1" />
         <UniformMass totalMass="1" name="mass" />

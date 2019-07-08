@@ -40,7 +40,7 @@
 
 
     <Node name="Implicit Euler">
-	    <EulerImplicit rayleighStiffness="0" rayleighMass="0"/> <CGLinearSolver iterations="50" tolerance="1e-9" threshold="1e-9"/>
+	    <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> <CGLinearSolver iterations="50" tolerance="1e-9" threshold="1e-9"/>
 
 		<MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
 		<MechanicalObject src="@loader" velocity="0 -20 100 20 30 60 50 -80 -60 20 30 60 40 0 14 30 0 60 0 50 30 10 40 -50 -30 -60 -70 120 -70 -80 -20 0 20 30 0 0 0 0 10 20 60 80"

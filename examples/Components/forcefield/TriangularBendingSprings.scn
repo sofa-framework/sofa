@@ -2,13 +2,13 @@
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -90 10">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
     <Node name="SquareGravity">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject src="@loader" scale="10" />
@@ -17,7 +17,7 @@
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="BS" stiffness="300" damping="1.0" />
-        <TriangleSet />
+        <TriangleCollisionModel />
         <Node >
           <VisualModel name="Visual" color="yellow" />
           <IdentityMapping input="@.." output="@Visual" />

@@ -7,7 +7,7 @@
     <!-- Activate this loader to load a square mesh with many triangles -->
     <MeshGmshLoader filename="mesh/square3.msh" name="loaderSquare" />
     <Node name="SquareGravity1">
-        <EulerImplicit name="odesolver1" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="odesolver1" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver verbose="0" printLog="0" iterations="25" name="linearsolver1" tolerance="1.0e-9" threshold="1.0e-9" />
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />
@@ -24,7 +24,7 @@
     </Node>
     <!-- Activate this version to compare computed stiffness matrix (addKToMatrix) with addDForce -->
     <!--<Node name="SquareGravityTestMatrixConstruction">
-        <EulerImplicit name="odesolver2" printLog="0" />
+        <EulerImplicitSolver name="odesolver2" printLog="0" />
         <CGLinearSolver template="SparseMatrix" verbose="0" printLog="1" iterations="25" name="linearsolver2" tolerance="1.0e-9" threshold="1.0e-9" />
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />

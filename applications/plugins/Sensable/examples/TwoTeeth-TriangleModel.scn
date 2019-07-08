@@ -5,9 +5,9 @@
   <Gravity name="G"  gravity="0 -9.8 0" />
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
   <BruteForceDetection name="detection" />
-  <CollisionResponse name="response" response="default" />
+  <DefaultContactManager name="response" response="default" />
   <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="true"/>
 
   <NewOmniDriver name="Omni Driver"  listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" />

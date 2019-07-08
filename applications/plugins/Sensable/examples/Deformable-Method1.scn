@@ -5,13 +5,13 @@
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
     <VisualStyle displayFlags="" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
     <Node name="TT">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader filename="data/mesh/cylinder.msh" name="loader" />
         <MechanicalObject src="@loader" name="Volume" />
@@ -23,7 +23,7 @@
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />

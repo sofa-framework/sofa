@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <Node animate="1">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <OptiTrackNatNetClient serverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
@@ -19,7 +19,7 @@
     <Node name="CutEdges">
       <Mesh position="-0.2745 -2.7482 -40.7508    -0.2760 -1.5256 -40.7505    -0.2775 -0.3030 -40.4702    -0.2790 0.9196 -40.4699" edges="0 1 1 2 2 3" />
       <MechanicalObject name="vertices" />
-      <LineModel name="CM" group="1" simulated="0" moving="1" contactStiffness="0" />
+      <LineCollisionModel name="CM" group="1" simulated="0" moving="1" contactStiffness="0" />
       <RigidMapping index="1" />
 
     </Node>
@@ -27,18 +27,18 @@
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" createSubelements="true"/>
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" simulated="0" moving="1" />
-      <LineModel group="1" simulated="0" moving="1" />
-      <PointModel group="1" simulated="0" moving="1" />
+      <TriangleCollisionModel group="1" simulated="0" moving="1" />
+      <LineCollisionModel group="1" simulated="0" moving="1" />
+      <PointCollisionModel group="1" simulated="0" moving="1" />
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
       <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" createSubelements="true"/>
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
-      <TriangleModel group="1" simulated="0" moving="1" />
-      <LineModel group="1" simulated="0" moving="1" />
-      <PointModel group="1" simulated="0" moving="1" />
+      <TriangleCollisionModel group="1" simulated="0" moving="1" />
+      <LineCollisionModel group="1" simulated="0" moving="1" />
+      <PointCollisionModel group="1" simulated="0" moving="1" />
       <RigidMapping index="2" />
     </Node>
     <Node name="GrabVisualL">
@@ -54,7 +54,7 @@
     <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Phaco.obj" simMarkersMeshFile="./data/markers-Phaco.obj" drawMarkersColor="0 1 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
   </Node>
     <Node name="SquareGravity">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" createSubelements="true"/>
         <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
@@ -63,9 +63,9 @@
         <FixedConstraint indices="0 1 2 3" />
         <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <TriangleModel name="cmTriangles" contactStiffness="5000" />
-        <LineModel name="cmLines" contactStiffness="5000" />
-        <PointModel name="cmPoints" contactStiffness="5000" />
+        <TriangleCollisionModel name="cmTriangles" contactStiffness="5000" />
+        <LineCollisionModel name="cmLines" contactStiffness="5000" />
+        <PointCollisionModel name="cmPoints" contactStiffness="5000" />
         <Node name="VM">
             <OglModel name="Visual" color="red" />
             <IdentityMapping />

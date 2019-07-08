@@ -3,11 +3,11 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
   <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
-  <CollisionPipeline verbose="0" depth="10" draw="0" />
+  <DefaultPipeline verbose="0" depth="10" draw="0" />
   <BruteForceDetection name="N2" />
   <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.33" />
-  <CollisionResponse name="Response" response="default" />
-  <CollisionGroup name="Group" />
+  <DefaultContactManager name="Response" response="default" />
+  <DefaultCollisionGroupManager name="Group" />
 
   <Node name="Floor">
     <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />

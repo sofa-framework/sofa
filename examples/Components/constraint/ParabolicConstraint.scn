@@ -1,13 +1,13 @@
 <Node dt="0.01" multiThreadSimulation="0" name="root" time="0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="LiverParabolic">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1" />
         <UniformMass name="mass" totalMass="1" showAxisSizeFactor="0.1" />

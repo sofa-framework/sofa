@@ -4,13 +4,13 @@
     <RequiredPlugin name="SofaMiscCollision" />
 
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
     <Node name="Q">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/nine_quads.msh" />
         <MechanicalObject src="@loader" name="Quads" />
@@ -31,7 +31,7 @@
             <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" name="mapping_topo" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="red" />
                 <IdentityMapping input="@../../Quads" output="@Visual" />

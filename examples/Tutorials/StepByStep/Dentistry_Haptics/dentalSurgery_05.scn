@@ -2,9 +2,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Gravity name="G" gravity="0 -9.81 0" />
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
     <FreeMotionAnimationLoop mu="0.01" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>

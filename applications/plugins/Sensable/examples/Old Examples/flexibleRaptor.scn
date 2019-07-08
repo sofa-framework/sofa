@@ -7,9 +7,9 @@
 <Node name="root" dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<Gravity name="G" gravity="10 0 0" />
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="FrictionContact" />
+	<DefaultContactManager name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop/>
 	<LCPConstraintSolver />
@@ -17,7 +17,7 @@
 	<Node name="Raptor">
 		
 
-           	<EulerImplicit name="odesolver" />
+           	<EulerImplicitSolver name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>

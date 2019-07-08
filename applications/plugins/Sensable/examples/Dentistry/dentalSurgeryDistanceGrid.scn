@@ -10,9 +10,9 @@
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
 
     <OmniDriver scale="0.1" orientation="0 0 90"/>
-	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="default" />
+	<DefaultContactManager name="response" response="default" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
 
 	<Node name="Tooth" >

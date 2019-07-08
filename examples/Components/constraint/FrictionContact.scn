@@ -5,12 +5,12 @@
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <LCPConstraintSolver maxIt="1000" tolerance="1e-6" initial_guess="false" build_lcp="true" multi_grid="false" printLog="0" mu="0.000000000000000001"/>
     <FreeMotionAnimationLoop />
-    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <DefaultPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" useLMDFilters="0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
     <Node>
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="TORUS">
             <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />

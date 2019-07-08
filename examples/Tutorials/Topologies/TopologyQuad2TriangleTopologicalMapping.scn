@@ -33,7 +33,7 @@
             <Quad2TriangleTopologicalMapping name="Topological Mapping" input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="1000" />
             <TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1" />
-            <TriangleModel name="Models" />
+            <TriangleCollisionModel name="Models" />
         </Node>
     </Node>
 </Node>

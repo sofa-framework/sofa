@@ -11,7 +11,7 @@
   <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="true" printLog="true"/>
 
   <Node name="simu"  >
-	  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+	  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
 	  <CGLinearSolver />
 	  <Mesh  src="@../sampler" />
 	  <MechanicalObject  />

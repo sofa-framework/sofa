@@ -26,7 +26,7 @@
 
 
 <Node name="red: flexible"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -77,7 +77,7 @@
 
 
 <Node name="green: flexible_corotational mesh"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -136,7 +136,7 @@
     
     
 <Node name="blue: hexaFEMforcefield"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -165,7 +165,7 @@
 
 
 <Node name="yellow: meta-FlexibleCorotationalStrain"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />
@@ -193,7 +193,7 @@
 
 
 <Node name="magenta: meta-FlexibleCorotationalMesh"   >
-  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
   <Mesh  name="mesh" src="@../sampler" />

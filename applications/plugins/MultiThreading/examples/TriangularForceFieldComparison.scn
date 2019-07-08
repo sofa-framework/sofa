@@ -17,7 +17,7 @@
     <TreeCollisionGroupManager name="default2" />
 
     <Node name="TriangularBendingSprings">
-      <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+      <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
       <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
       <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 0" createSubelements="true"/>
       <MechanicalObject name="TriangularBendingSprings" src="@loader" scale="10" />
@@ -26,12 +26,14 @@
       <FixedConstraint name="fixedContraints" indices="0 1" />
       <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
       <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-      <TriangleSet />
+      <TriangleCollisionModel />
 
       <Node >
         <OglModel name="Visual" color="black" />
         <IdentityMapping name="default8" input="@.." output="@Visual" />
-      </Node>    </Node>
+      </Node>    
+    
+    </Node>
   </Node>
 
   
@@ -45,7 +47,7 @@
     <TreeCollisionGroupManager name="default2" />
     
     <Node name="TriangularBiquadratic">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject name="TriangularBiquadratic" src="@loader" scale="10" />
@@ -53,12 +55,13 @@
         <DiagonalMass massDensity="0.015" />
       <FixedConstraint name="fixedContraints" /> <!--indices="0 1" />-->
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
-        <TriangleSet />
+        <TriangleCollisionModel />
 
         <Node >
           <OglModel name="Visual" color="white" />
           <IdentityMapping input="@.." output="@Visual" />
-        </Node>    </Node>
+        </Node>    
+      </Node>
   </Node>
 
 
@@ -72,7 +75,7 @@
     <TreeCollisionGroupManager name="default2" />
 
     <Node name="TriangularQuadratic">
-      <EulerImplicit name="cg_odesolver" printLog="false" />
+      <EulerImplicitSolver name="cg_odesolver" printLog="false" />
       <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
       <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 0" createSubelements="true"/>
       <MechanicalObject name="TriangularQuadratic" src="@loader" scale="10" />
@@ -80,12 +83,13 @@
       <DiagonalMass massDensity="0.015" />
       <FixedConstraint name="fixedContraints" /> <!--indices="0 1" />-->
       <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
-      <TriangleSet />
+      <TriangleCollisionModel />
 
         <Node >
           <OglModel name="Visual" color="yellow" />
           <IdentityMapping input="@.." output="@Visual" />
-        </Node>    </Node>
+        </Node>    
+      </Node>
   </Node>
 
   
@@ -99,7 +103,7 @@
     <TreeCollisionGroupManager name="default2" />
     
     <Node name="TriangularFEM">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 -1" createSubelements="true"/>
         <MechanicalObject name="TriangularFEM" src="@loader" scale="10" />
@@ -108,12 +112,13 @@
         <FixedConstraint name="fixedContraints" /> <!--indices="0 1" />-->
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-        <TriangleSet />
+        <TriangleCollisionModel />
 
         <Node >
           <OglModel name="Visual" color="red" />
           <IdentityMapping input="@.." output="@Visual" />
-        </Node>    </Node>
+        </Node>    
+      </Node>
   </Node>
 
   <DataExchange name="exchangeData1" template="vector<int>" from="@TriangularBendingSpringsScene/TriangularBendingSprings/fixedContraints.indices" to="@TriangularFEMScene/TriangularFEM/fixedContraints.indices" />

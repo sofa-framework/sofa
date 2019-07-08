@@ -3,11 +3,11 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings hideForceFields"/>
     <RequiredPlugin name="ManifoldTopologies"/>
-	<CollisionPipeline verbose="0" />
+	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
-	<CollisionResponse response="default" />
+	<DefaultContactManager response="default" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-	<CollisionGroup />
+	<DefaultCollisionGroupManager />
 	<Node name="SquareGravity">
 		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
                 <MeshObjLoader name="loader" filename="mesh/square1.obj" />

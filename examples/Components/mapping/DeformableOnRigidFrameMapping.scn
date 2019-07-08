@@ -3,11 +3,11 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehavior showVisual" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="default" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="ChainRigid">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -18,7 +18,7 @@
         </Node>
         <!-- 		<Node name="TorusRigid"> -->
         <Node name="Torus">
-            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             <MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
             <UniformMass filename="BehaviorModels/torus.rigid" />

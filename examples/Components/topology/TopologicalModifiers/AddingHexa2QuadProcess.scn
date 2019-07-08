@@ -4,13 +4,13 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 
     <VisualStyle displayFlags="showBehaviorModels" />
-    <CollisionPipeline verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
+    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionGroup />
+    <DefaultCollisionGroupManager />
     <Node name="H">
-        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
         <MechanicalObject src="@loader" name="Hexa" />
@@ -29,7 +29,7 @@
             <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1" />
             <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@Quad_topo" />
             <!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->
-            <TriangleSet />
+            <TriangleCollisionModel />
             <!--			<Node name="Visu">
 				<OglModel name="Visual" color="blue" />
 				<IdentityMapping input="@../../Hexa" output="@Visual" />

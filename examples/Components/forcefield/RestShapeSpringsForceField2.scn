@@ -13,7 +13,7 @@
 	</Node> 
 	
 	<Node name="Object2">
-		<EulerImplicit rayleighMass="0" rayleighStiffness="0"/>
+		<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/>
 		<SparseLUSolver />
 		<MechanicalObject name="mstate" template="Rigid" position="0.1 0 0  0  0 0 0 1" />     
 		<SphereCollisionModel color="1 0 0 1" radius="0.01" />

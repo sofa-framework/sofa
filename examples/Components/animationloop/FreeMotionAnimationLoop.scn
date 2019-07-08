@@ -4,10 +4,10 @@
     <VisualStyle displayFlags="showBehaviorModels"/>
     <FreeMotionAnimationLoop/>
     <LCPConstraintSolver tolerance="1e-3" maxIt="1000"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0"/>
+    <DefaultPipeline depth="6" verbose="0" draw="0"/>
     <BruteForceDetection name="N2"/>
     <LocalMinDistance name="Proximity" alarmDistance="2.5" contactDistance="1.0" angleCone="0.0"/>
-    <CollisionResponse name="Response" response="FrictionContact"/>
+    <DefaultContactManager name="Response" response="FrictionContact"/>
     <Node name="Torus1">
         <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
         <Mesh src="@loader"/>

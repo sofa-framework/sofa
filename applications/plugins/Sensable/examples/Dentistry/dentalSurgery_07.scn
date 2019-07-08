@@ -11,9 +11,9 @@ Using LCP contact detection and resolution:
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
 
     <Gravity name="G" gravity="0 -9.8 0" />
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.3" contactDistance="0.15" angleCone="0.0" />
     <FreeMotionAnimationLoop />
     <OmniDriver scale="0.1" orientation="0 180 0" />
@@ -22,7 +22,7 @@ Using LCP contact detection and resolution:
         <OglModel name="HeadVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
         <Node name="Tongue">
             <VisualStyle displayFlags="showForceFields" />
-            <EulerImplicit name="odesolver" />
+            <EulerImplicitSolver name="odesolver" />
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshVTKLoader name="volTongue" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/volumetricTongue.vtu" />
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />

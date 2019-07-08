@@ -25,7 +25,7 @@
             <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
             <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
             <Hexa2QuadTopologicalMapping input="@../grid" output="@Container" />
-            <TriangleSet />
+            <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="blue" quads="@../Container.quads" />
                 <IdentityMapping input="@../../Hexa" output="@Visual" />
@@ -43,7 +43,7 @@
         <BoxROI template="Vec3d" name="box_roi" box="-7 9 -11 17 11 -9" indices="0" drawBoxes="0" />
         <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
 
-        <TriangleSet />
+        <TriangleCollisionModel />
         <Node name="Visu">
             <OglModel name="Visual" color="blue" triangles="@../grid.triangles" />
             <IdentityMapping input="@../Tri" output="@Visual" />

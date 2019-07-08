@@ -29,8 +29,8 @@
         <MeshTopology name="Mesh" src="@meshLoader2" />
         <MechanicalObject template="Vec3d" name="Obstacle" translation="0 0 -10" rotation="0 0 0" scale3d="40 40 0.1" restScale="1" />
         <TriangleCollisionModel template="Vec3d" name="Triangles" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />
-        <LineModel name="Lines" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />
-        <PointModel name="Points" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />
+        <LineCollisionModel name="Lines" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />
+        <PointCollisionModel name="Points" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />
         <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/cube.obj" translation="0 0 -10" rotation="0 0 0" scale3d="40 40 0.1" material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
     </Node>
 </Node>

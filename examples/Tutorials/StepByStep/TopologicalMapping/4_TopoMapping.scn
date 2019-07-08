@@ -23,7 +23,7 @@
             <TriangleSetGeometryAlgorithms  name="GeomAlgo" />
             <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
             <TriangularBendingSprings  name="FEM-Bend" stiffness="10" damping="1" />
-            <TriangleModel name="Models" />
+            <TriangleCollisionModel name="Models" />
             <Node name="Visu">
                 <OglModel  name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />

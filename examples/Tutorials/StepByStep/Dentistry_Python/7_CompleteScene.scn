@@ -10,9 +10,9 @@ An assemblage of all the previous steps altogether
     <BackgroundSetting color="0.5 0.5 0.5" />
     <VisualStyle displayFlags="showVisualModels hideForceFields" /> 
 
-    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <CollisionResponse name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />
@@ -24,7 +24,7 @@ An assemblage of all the previous steps altogether
 	    <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
 	</Node>
         <Node name="Tongue" activated="true">
-            <EulerImplicit name="odesolver" vdamping="4.0"/>
+            <EulerImplicitSolver name="odesolver" vdamping="4.0"/>
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshVTKLoader name="volTongue" filename="data/mesh/volumetricTongue.vtu" />
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />

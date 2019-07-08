@@ -29,8 +29,8 @@
 		<Node 	name="Tool1CM"  >
 			<RegularGridTopology name="regularGridTopology1"  fileTopology="dt/aspi.trian"  n="1 2 1"  min="0 -350 0"  max="0 0 0"  p0="0 -350 0" />
 			<MechanicalObject template="Vec3d" name="Endoscope Collision State"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  rotation="-90 0 0"  filename="dt/aspi.trian" />
-			<LineModel name="lineModel4"  group="1" />
-			<PointModel name="pointModel4"  group="1" />
+			<LineCollisionModel name="lineModel4"  group="1" />
+			<PointCollisionModel name="pointModel4"  group="1" />
 			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@.."  output="@."  index="0" />
 		</Node>
 	</Node>
@@ -39,8 +39,8 @@
 		<MeshTopology name="meshTopology1"  position="@meshLoader.position"  edges="@meshLoader.edges"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  tetrahedra="@meshLoader.tetras"  hexahedra="@meshLoader.hexas" />
 		<MechanicalObject template="Vec3d" name="mechanicalObject1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="0 0 250"  rotation="@meshLoader.rotation"  scale3d="50 50 100" />
 		<TriangleCollisionModel template="Vec3d" name="tTriangleModel1"  moving="0"  simulated="0" />
-		<LineModel name="lineModel1"  moving="0"  simulated="0" />
-		<PointModel name="pointModel1"  moving="0"  simulated="0" />
+		<LineCollisionModel name="lineModel1"  moving="0"  simulated="0" />
+		<PointCollisionModel name="pointModel1"  moving="0"  simulated="0" />
 		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/box_outside.obj"  translation="0 0 250"  scale3d="50 50 100"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
 	</Node>
 </Node>

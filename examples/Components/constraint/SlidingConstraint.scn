@@ -4,16 +4,16 @@
     <VisualStyle displayFlags="showForceFields showVisual showBehavior" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="SlidingPoint">
         <MechanicalObject name="points" template="Vec3d" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />
     </Node>
     <Node name="CUBE_1">
-        <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="10.0" />
@@ -40,7 +40,7 @@
         <MechanicalObject name="points" template="Vec3d" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
     </Node>
     <Node name="CUBE_2">
-        <EulerImplicit printLog="false" />
+        <EulerImplicitSolver printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="5.0" dy="0" dz="0.0" />
         <UniformMass totalMass="10.0" />

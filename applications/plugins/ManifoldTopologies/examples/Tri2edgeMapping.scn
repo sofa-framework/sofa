@@ -18,7 +18,7 @@
 		<FixedConstraint template="Vec3d" name="default6" indices="0 1"/>
 		<TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60"/>
 		<TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1"/>
-		<TriangleModel name="default7"/>
+		<TriangleCollisionModel name="default7"/>
 		<Node 	name="Edge Mesh" gravity="0 -9.81 0"  >
 			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
