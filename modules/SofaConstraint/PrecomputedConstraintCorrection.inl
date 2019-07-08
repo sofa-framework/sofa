@@ -131,7 +131,7 @@ template<class DataTypes>
 bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string fileName)
 {
     // Try to load from memory
-    msg_info(this) << "Try to load compliance from memory " << fileName ;
+    msg_info() << "Try to load compliance from memory " << fileName ;
 
     invM = getInverse(fileName);
     dimensionAppCompliance = nbRows;
@@ -139,7 +139,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
     if (invM->data == NULL)
     {
         // Try to load from file
-        msg_info(this) << "Try to load compliance from : " << fileName ;
+        msg_info() << "Try to load compliance from : " << fileName ;
 
         std::string dir = fileDir.getValue();
         if (!dir.empty())
@@ -149,7 +149,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             {
                 invM->data = new Real[nbRows * nbCols];
 
-                msg_info(this) << "File " << dir + "/" + fileName << " found. Loading..." ;
+                msg_info() << "File " << dir + "/" + fileName << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
                 compFileIn.close();
@@ -167,7 +167,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
                 std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
 
-                msg_info(this) << "File " << fileName << " found. Loading..." ;
+                msg_info() << "File " << fileName << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
                 compFileIn.close();
@@ -187,7 +187,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
 {
-    msg_info(this) << "saveCompliance in " << fileName;
+    msg_info() << "saveCompliance in " << fileName;
 
     std::string filePathInSofaShare;
     std::string dir = fileDir.getValue();
@@ -214,7 +214,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     if (nbNodes == 0)
     {
-        msg_error(this) << "No degree of freedom" ;
+        msg_error() << "No degree of freedom" ;
         return;
     }
 
@@ -229,7 +229,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     if (!loadCompliance(invName))
     {
-        msg_info(this) << "Compliance being built";
+        msg_info() << "Compliance being built";
 
         // Buffer Allocation
         invM->data = new Real[nbRows * nbCols];
@@ -252,22 +252,22 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         if (eulerSolver && cgLinearSolver)
         {
-            msg_info(this) << "use EulerImplicitSolver & CGLinearSolver" ;
+            msg_info() << "use EulerImplicitSolver & CGLinearSolver" ;
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if (eulerSolver && linearSolver)
         {
-            msg_info(this) << "use EulerImplicitSolver & LinearSolver";
+            msg_info() << "use EulerImplicitSolver & LinearSolver";
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if(eulerSolver)
         {
-            msg_info(this) << "use EulerImplicitSolver";
+            msg_info() << "use EulerImplicitSolver";
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else
         {
-            msg_error(this) << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
+            msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
             return;
         }
 
@@ -413,13 +413,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //  Print 400 first row and column of the matrix
     if (this->notMuted())
     {
-        msg_info(this) << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
+        msg_info() << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
         for (unsigned int i = 0; i < 20 && i < nbCols; i++)
         {
             for (unsigned int j = 0; j < 20 && j < nbCols; j++)
             {
-                msg_info(this) << " \t " << appCompliance[j*nbCols + i];
+                msg_info() << " \t " << appCompliance[j*nbCols + i];
             }
         }
 
@@ -846,7 +846,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
-                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
@@ -907,14 +907,14 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
-                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
     }
     else
     {
-        msg_error(this) << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
+        msg_error() << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
         return;
     }
 
@@ -971,14 +971,14 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
-                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
     }
     else
     {
-        msg_error(this) << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
+        msg_error() << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
         return;
     }
 
