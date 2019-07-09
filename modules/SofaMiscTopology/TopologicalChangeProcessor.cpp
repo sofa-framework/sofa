@@ -305,7 +305,8 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    while (nextTime < time || fabs(nextTime - time) < std::numeric_limits<SReal>::epsilon() )
+    const SReal epsilon = std::numeric_limits<SReal>::epsilon();
+    while (nextTime < time || fabs(nextTime - time) < epsilon )
     {
 #ifdef SOFA_HAVE_ZLIB
         if (gzfile)
@@ -356,11 +357,11 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
         {
             str >> nextTime;
             nextTime += loopTime;
-            if (nextTime < time || fabs(nextTime - time) < std::numeric_limits<SReal>::epsilon())
+            if (nextTime < time || fabs(nextTime - time) < epsilon)
                 validLines.clear();
         }
 
-        if (nextTime < time || fabs(nextTime - time) < std::numeric_limits<SReal>::epsilon())
+        if (nextTime < time || fabs(nextTime - time) < epsilon)
             validLines.push_back(line);
     }
     return true;
