@@ -22,7 +22,7 @@
 #ifndef BINDING_STLEXPORTER_H
 #define BINDING_STLEXPORTER_H
 
-#include "PythonMacros.h"
+#include <SofaPython/PythonMacros.h>
 
 #include <SofaExporter/STLExporter.h>
 

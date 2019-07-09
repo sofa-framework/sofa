@@ -19,41 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef BINDING_OBJEXPORTER_H
+#define BINDING_OBJEXPORTER_H
 
+#include <SofaPython/PythonMacros.h>
 
-#include "Binding_STLExporter.h"
-#include "Binding_BaseObject.h"
-#include "PythonToSofa.inl"
+#include <SofaExporter/OBJExporter.h>
 
-using namespace sofa::component::misc;
-using namespace sofa::core::objectmodel;
+SP_DECLARE_CLASS_TYPE(OBJExporter)
 
-/// getting a STLExporter* from a PyObject*
-static inline STLExporter* get_STLExporter(PyObject* obj) {
-    return sofa::py::unwrap<STLExporter>(obj);
-}
-
-static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
-{
-    STLExporter* obj = get_STLExporter( self );
-    obj->writeSTL();
-    Py_RETURN_NONE;
-}
-
-static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
-{
-    STLExporter* obj = get_STLExporter( self );
-    obj->writeSTLBinary();
-    Py_RETURN_NONE;
-}
-
-
-SP_CLASS_METHODS_BEGIN(STLExporter)
-SP_CLASS_METHOD(STLExporter,writeSTL)
-SP_CLASS_METHOD(STLExporter,writeSTLBinary)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_TYPE_SPTR(STLExporter,STLExporter,BaseObject)
-
-
+#endif

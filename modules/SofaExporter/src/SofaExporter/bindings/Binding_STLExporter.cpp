@@ -21,32 +21,39 @@
 ******************************************************************************/
 
 
-#include "Binding_OBJExporter.h"
-#include "Binding_BaseObject.h"
-#include "PythonToSofa.inl"
+#include "Binding_STLExporter.h"
+#include <SofaPython/Binding_BaseObject.h>
+#include <SofaPython/PythonToSofa.inl>
 
 using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
-
-/// getting a OBJExporter* from a PyObject*
-static inline OBJExporter* get_OBJExporter(PyObject* obj) {
-    return sofa::py::unwrap<OBJExporter>(obj);
+/// getting a STLExporter* from a PyObject*
+static inline STLExporter* get_STLExporter(PyObject* obj) {
+    return sofa::py::unwrap<STLExporter>(obj);
 }
 
-
-static PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
+static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
-    OBJExporter* obj = get_OBJExporter( self );
-    return PyBool_FromLong( obj->writeOBJ() ) ;
+    STLExporter* obj = get_STLExporter( self );
+    obj->writeSTL();
+    Py_RETURN_NONE;
+}
+
+static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
+{
+    STLExporter* obj = get_STLExporter( self );
+    obj->writeSTLBinary();
+    Py_RETURN_NONE;
 }
 
 
-SP_CLASS_METHODS_BEGIN(OBJExporter)
-SP_CLASS_METHOD(OBJExporter,writeOBJ)
+SP_CLASS_METHODS_BEGIN(STLExporter)
+SP_CLASS_METHOD(STLExporter,writeSTL)
+SP_CLASS_METHOD(STLExporter,writeSTLBinary)
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(OBJExporter,OBJExporter,BaseObject)
+SP_CLASS_TYPE_SPTR(STLExporter,STLExporter,BaseObject)
 
 

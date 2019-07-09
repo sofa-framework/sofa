@@ -42,8 +42,25 @@ list(APPEND SOURCE_FILES
     src/SofaExporter/WriteTopology.cpp
     )
 
+find_package(SofaPython QUIET)
+if(SofaPython_FOUND)
+    list(APPEND HEADER_FILES
+        src/SofaExporter/bindings/Binding_OBJExporter.h
+        src/SofaExporter/bindings/Binding_STLExporter.h
+    )
+    list(APPEND SOURCE_FILES
+        src/SofaExporter/bindings/Binding_OBJExporter.cpp
+        src/SofaExporter/bindings/Binding_STLExporter.cpp
+    )
+else()
+    message(STATUS "SofaPython disabled, will not compile python bindings.")
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+if(SofaPython_FOUND)
+target_link_libraries(${PROJECT_NAME} PRIVATE SofaPython)
+endif()
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_EXPORTER")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAEXPORTER")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
