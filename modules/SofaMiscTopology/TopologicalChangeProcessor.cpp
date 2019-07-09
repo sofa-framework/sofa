@@ -79,7 +79,6 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_saveIndicesAtInit( initData(&m_saveIndicesAtInit, false, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
     , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
     , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
-    , m_epsilon( initData(&m_epsilon, std::numeric_limits<SReal>::epsilon(), "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
     , m_topology(nullptr)
     , infile(NULL)
@@ -306,7 +305,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    while (nextTime < time || fabs(nextTime - time) < m_epsilon.getValue() )
+    while (nextTime < time || fabs(nextTime - time) < std::numeric_limits<SReal>::epsilon() )
     {
 #ifdef SOFA_HAVE_ZLIB
         if (gzfile)
@@ -357,11 +356,11 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
         {
             str >> nextTime;
             nextTime += loopTime;
-            if (nextTime < time || fabs(nextTime - time) < m_epsilon.getValue())
+            if (nextTime < time || fabs(nextTime - time) < std::numeric_limits<SReal>::epsilon())
                 validLines.clear();
         }
 
-        if (nextTime < time || fabs(nextTime - time) < m_epsilon.getValue())
+        if (nextTime < time || fabs(nextTime - time) < std::numeric_limits<SReal>::epsilon())
             validLines.push_back(line);
     }
     return true;

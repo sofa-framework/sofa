@@ -79,7 +79,6 @@ public:
 
     Data<SReal>  m_epsilonSnapPath; ///< epsilon snap path
     Data<SReal>  m_epsilonSnapBorder; ///< epsilon snap path
-    Data<SReal>  m_epsilon; ///< epsilon snap path
 
     Data<bool>  m_draw; ///< draw information
 
