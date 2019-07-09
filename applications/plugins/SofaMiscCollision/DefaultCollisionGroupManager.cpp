@@ -123,6 +123,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     collGroup->moveChild(BaseNode::SPtr(group2));
                     groupMap[group1] = collGroup.get();
                     groupMap[group2] = collGroup.get();
+                    groupMap[collGroup.get()] = collGroup.get();
                 }
                 else if (group1IsColl)
                 {
@@ -180,6 +181,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     collGroup = group2Iter->second;
                     // group1 is not a collision group while group2 is
                     collGroup->moveChild(BaseNode::SPtr(group1));
+                    groupMap[group1] = collGroup.get();
                 }
                 if (!collGroup->solver.empty())
                 {

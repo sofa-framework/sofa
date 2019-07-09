@@ -822,9 +822,7 @@ void DAGNode::updateSimulationContext()
 
 Node* DAGNode::findCommonParent( simulation::Node* node2 )
 {
-    DAGNode* root = static_cast<DAGNode*>(getRoot());
-    DAGNode* commonParent = root->findCommonParent(this, static_cast<DAGNode*>(node2));
-    return commonParent != nullptr ? commonParent : root;
+    return static_cast<DAGNode*>(getRoot())->findCommonParent(this, static_cast<DAGNode*>(node2));
 }
 
 DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
