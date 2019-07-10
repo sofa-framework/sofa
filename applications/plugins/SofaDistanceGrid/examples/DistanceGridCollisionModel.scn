@@ -8,7 +8,8 @@
     <DiscreteIntersection name="proximity" />
     
     <Node name="RigidLiver">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="white" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_0" color="white" />
             <DistanceGrid fileRigidDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.1" contactStiffness="5.0" contactFriction="0.0" />
     </Node>
     

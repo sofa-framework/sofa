@@ -7,7 +7,8 @@
     <DefaultVisualManagerLoop />
 
   <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
-  <OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="0.5 0.8 0.5 0.6"/>
+  <MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
+  <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.8 0.5 0.6"/>
 
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.02" padSize="1" rotateImage="false" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>

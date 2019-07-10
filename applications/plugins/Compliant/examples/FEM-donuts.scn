@@ -39,7 +39,8 @@
 				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 			</Node>
 			<Node name="Visual"  >
-				<OglModel  fileMesh="mesh/torus.obj" color="red" />
+				<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_0" color="red" />
 				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
@@ -74,7 +75,8 @@
 				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 			</Node>
 			<Node name="Visual"  >
-				<OglModel  fileMesh="mesh/torus.obj" color="blue" />
+				<MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_3" color="blue" />
 				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
@@ -109,7 +111,8 @@
 				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 			</Node>
 			<Node name="Visual"  >
-				<OglModel  fileMesh="mesh/torus.obj" color="green" />
+				<MeshObjLoader name="meshLoader_4" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_4" color="green" />
 				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
@@ -144,7 +147,8 @@
 				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 			</Node>
 			<Node name="Visual"  >
-				<OglModel  fileMesh="mesh/torus.obj" />
+				<MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_1" />
 				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
@@ -181,7 +185,8 @@
 				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 			</Node>
 			<Node name="Visual"  >
-				<OglModel  fileMesh="mesh/torus.obj" color="yellow"/>
+				<MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
+				<OglModel src="@meshLoader_2" color="yellow"/>
 				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>

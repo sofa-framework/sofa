@@ -14,7 +14,8 @@
         <MeshSpringForceField template="CudaVec3f" name="FEM" tetrahedraStiffness="10000"/>
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
-            <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel  name="VisualModel" src="@meshLoader_0" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
     </Node>

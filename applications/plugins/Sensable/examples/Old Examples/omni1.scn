@@ -41,6 +41,7 @@
 		<TriangleCollisionModel template="Vec3d" name="tTriangleModel1"  moving="0"  simulated="0" />
 		<LineCollisionModel name="lineModel1"  moving="0"  simulated="0" />
 		<PointCollisionModel name="pointModel1"  moving="0"  simulated="0" />
-		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/box_outside.obj"  translation="0 0 250"  scale3d="50 50 100"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+		<MeshObjLoader name="meshLoader_0" filename="mesh/box_outside.obj"  translation="0 0 250"  scale3d="50 50 100" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
 	</Node>
 </Node>

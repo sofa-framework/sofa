@@ -10,7 +10,8 @@
         
         <BarycentricShapeFunction name="SF"  />
         
-        <OglModel name="Visual" fileMesh="mesh/torus.obj" />
+        <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_0" />
 
     
 
